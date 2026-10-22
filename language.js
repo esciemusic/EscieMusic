@@ -1,53 +1,19 @@
 /*
   ESCIE LANGUAGE ENGINE
-  ---------------------
 
-  The interface has no single narrator.
+  RULES:
 
-  Its voice may move between:
-  - documentary
-  - memory
-  - psychological
-  - street
-  - myth
-  - signal
-  - unknown
-
-  One thing does not change:
-
-  CC ORTHOGRAPHY.
-
-  Every visible interface-generated piece of language
-  passes through this layer before reaching the visitor.
-
-  The interface never explains the rule.
+  1. CC ORTHOGRAPHY IS PERMANENT.
+  2. THE SITE NEVER EXPLAINS THAT RULE.
+  3. NARRATION CAN SHIFT BETWEEN MODES.
+  4. THE SITE KNOWS MORE THAN THE VISITOR.
+  5. THE SOURCE OF THAT KNOWLEDGE IS NEVER IDENTIFIED.
+  6. REALITY, MEMORY, PSYCHOLOGY, STREET, MYTH AND SIGNAL
+     MAY BLEED INTO EACH OTHER.
+  7. THE INTERFACE NEVER CALLS ATTENTION TO ITSELF.
 */
 
-
-/* =========================================================
-   1. CC ORTHOGRAPHY
-   ========================================================= */
-
 const ESCIE_ORTHOGRAPHY = {
-
-  /*
-    Words containing the hard "ck" construction receive
-    the ESCIE CC treatment.
-
-    Examples:
-    back      → bacc
-    black     → blacc
-    track     → tracc
-    fuck      → fucc
-    background → baccground
-
-    The replacement is deliberately simple:
-    "ck" → "cc"
-
-    This means the rule can operate continuously across
-    future interface language without manually editing
-    every sentence.
-  */
 
   transform(text) {
 
@@ -55,17 +21,22 @@ const ESCIE_ORTHOGRAPHY = {
       return text;
     }
 
-    return text.replace(/ck/gi, match => {
-      return match === "CK" ? "CC" : "cc";
+    return text.replace(/ck/gi, (match) => {
+
+      if (match === "CK") {
+        return "CC";
+      }
+
+      if (match === "Ck") {
+        return "Cc";
+      }
+
+      return "cc";
     });
   }
 
 };
 
-
-/* =========================================================
-   2. NARRATIVE MODES
-   ========================================================= */
 
 const ESCIE_LANGUAGE_MODES = {
 
@@ -114,18 +85,7 @@ const ESCIE_LANGUAGE_MODES = {
 };
 
 
-/* =========================================================
-   3. INTERFACE LANGUAGE
-   ========================================================= */
-
 const ESCIE_LANGUAGE = {
-
-  /*
-    These are intentionally not conventional website
-    status messages.
-
-    They describe states without explaining them.
-  */
 
   unavailable: [
     "NOTHING IS HERE YET.",
@@ -185,58 +145,60 @@ const ESCIE_LANGUAGE = {
 };
 
 
-/* =========================================================
-   4. LANGUAGE ENGINE
-   ========================================================= */
-
 const ESCIE_LANGUAGE_ENGINE = {
 
   /*
-    Apply the permanent orthographic layer.
+    Permanent orthographic transformation.
   */
 
   speak(text) {
+
     return ESCIE_ORTHOGRAPHY.transform(text);
+
   },
 
 
   /*
-    Select a phrase from one of the interface language
-    groups.
-
-    We deliberately do not make the selection predictable.
-    The interface can therefore feel slightly different
-    without requiring different code.
+    Return one phrase from the ESCIE vocabulary.
   */
 
   phrase(category, index = null) {
 
-    const group = ESCIE_LANGUAGE[category];
+    const collection = ESCIE_LANGUAGE[category];
 
-    if (!group || !group.length) {
+    if (!collection || !collection.length) {
       return "";
     }
 
-    let selectedIndex;
-
-    if (
-      typeof index === "number" &&
-      index >= 0 &&
-      index < group.length
-    ) {
-      selectedIndex = index;
-    } else {
-      selectedIndex = Math.floor(
-        Math.random() * group.length
+    if (index === null) {
+      const randomIndex = Math.floor(
+        Math.random() * collection.length
       );
+
+      return this.speak(collection[randomIndex]);
     }
 
-    return this.speak(group[selectedIndex]);
+    return this.speak(
+      collection[index % collection.length]
+    );
+
   },
 
 
   /*
-    Render text safely into an element.
+    Return information about a narration mode.
+  */
+
+  mode(name) {
+
+    return ESCIE_LANGUAGE_MODES[name]
+      || ESCIE_LANGUAGE_MODES.unknown;
+
+  },
+
+
+  /*
+    Render transformed text into an element.
   */
 
   render(element, text) {
@@ -246,15 +208,12 @@ const ESCIE_LANGUAGE_ENGINE = {
     }
 
     element.textContent = this.speak(text);
+
   },
 
 
   /*
-    Render HTML text while still applying the CC rule
-    to text content.
-
-    This should only be used for controlled interface
-    templates, never arbitrary user HTML.
+    Render HTML-safe transformed text.
   */
 
   renderText(element, text) {
@@ -263,39 +222,113 @@ const ESCIE_LANGUAGE_ENGINE = {
       return;
     }
 
-    element.textContent = this.speak(text);
+    element.innerHTML = this.speak(text);
+
   },
 
 
   /*
-    Return the current narrative mode.
+    Apply the CC law to visible interface text.
 
-    This is deliberately separate from the orthography.
-    The mode may change.
-    The orthography does not.
+    This deliberately ignores:
+    - scripts
+    - styles
+    - form fields
+    - technical attributes
+    - URLs
   */
 
-  mode(name) {
+  enforceInterface() {
 
-    if (
-      name &&
-      Object.prototype.hasOwnProperty.call(
-        ESCIE_LANGUAGE_MODES,
-        name
-      )
-    ) {
-      return ESCIE_LANGUAGE_MODES[name];
+    const ignoredTags = new Set([
+      "SCRIPT",
+      "STYLE",
+      "NOSCRIPT",
+      "TEXTAREA",
+      "INPUT",
+      "SELECT",
+      "OPTION"
+    ]);
+
+
+    const walker = document.createTreeWalker(
+      document.body,
+      NodeFilter.SHOW_TEXT
+    );
+
+
+    const nodes = [];
+
+    let node;
+
+    while ((node = walker.nextNode())) {
+
+      if (
+        !node.parentElement ||
+        ignoredTags.has(node.parentElement.tagName)
+      ) {
+        continue;
+      }
+
+      nodes.push(node);
+
     }
 
-    return ESCIE_LANGUAGE_MODES.unknown;
+
+    nodes.forEach((textNode) => {
+
+      const original = textNode.nodeValue;
+
+      if (!original || !original.trim()) {
+        return;
+      }
+
+      textNode.nodeValue = this.speak(original);
+
+    });
+
+
+    /*
+      Apply the same rule to human-facing accessibility
+      labels without touching URLs or technical attributes.
+    */
+
+    document
+      .querySelectorAll("[aria-label], [title]")
+      .forEach((element) => {
+
+        if (element.hasAttribute("aria-label")) {
+
+          element.setAttribute(
+            "aria-label",
+            this.speak(
+              element.getAttribute("aria-label")
+            )
+          );
+
+        }
+
+        if (element.hasAttribute("title")) {
+
+          element.setAttribute(
+            "title",
+            this.speak(
+              element.getAttribute("title")
+            )
+          );
+
+        }
+
+      });
+
   }
 
 };
 
 
-/* =========================================================
-   5. GLOBAL ACCESS
-   ========================================================= */
+/*
+  Global access.
+*/
 
 window.ESCIE_ORTHOGRAPHY = ESCIE_ORTHOGRAPHY;
 window.ESCIE_LANGUAGE_MODES = ESCIE_LANGUAGE_MODES;
