@@ -8,7 +8,7 @@
 
   <meta
     name="description"
-    content="ESCIE — music, memory, survival, evidence and reality with the signal distorted."
+    content="ESCIE — Montréal. Reality with the signal distorted."
   >
 
   <link rel="stylesheet" href="style.css">
@@ -16,41 +16,51 @@
 
 <body>
 
-  <!-- LIVING ATMOSPHERE -->
-  <div class="sky-layer"></div>
-  <div class="grain-layer"></div>
+  <!-- LIVING SKY -->
+  <div class="sky" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
 
   <!-- HEADER -->
   <header class="site-header">
 
-    <a href="#" class="escie-logo">ESCIE</a>
+    <div class="header-inner">
 
-    <nav class="main-nav">
-      <a href="#music">MUSIC</a>
-      <a href="#projects">PROJECTS</a>
-      <a href="#investigation">INVESTIGATION</a>
-      <a href="#archive">ARCHIVE</a>
-      <a href="#about">ABOUT</a>
-    </nav>
+      <a href="#top" class="logo">ESCIE</a>
 
-    <button class="menu-button" aria-label="Open menu">
-      MENU
-    </button>
+      <button
+        class="menu-toggle"
+        id="menuToggle"
+        aria-label="Open navigation"
+        aria-expanded="false"
+      >
+        MENU
+      </button>
+
+      <nav class="main-nav" id="mainNav">
+
+        <a href="#music">MUSIC</a>
+        <a href="#bam">BAM</a>
+        <a href="#investigation">INVESTIGATION</a>
+        <a href="#archive">ARCHIVE</a>
+        <a href="#signal">SIGNAL</a>
+        <a href="#about">ABOUT</a>
+
+      </nav>
+
+    </div>
 
   </header>
 
 
   <!-- MAIN -->
-  <main>
+  <main id="top">
 
     <!-- HERO -->
-    <section class="hero">
+    <section class="hero section">
 
-      <div class="hero-content">
+      <div class="hero-inner">
 
-        <div class="eyebrow">
-          MONTRÉAL / ESCIE / OPEN SIGNAL
-        </div>
+        <p class="eyebrow">ESCIE / MONTRÉAL / 2027</p>
 
         <h1>
           REALITY WITH<br>
@@ -59,13 +69,9 @@
         </h1>
 
         <p class="hero-description">
-          Music, memory, survival, evidence, images and stories
-          from the reality surrounding ESCIE.
+          The music does not create the universe.
+          The universe creates the music.
         </p>
-
-        <a href="#projects" class="enter-button">
-          ENTER
-        </a>
 
       </div>
 
@@ -73,51 +79,29 @@
 
 
     <!-- CURRENT TRANSMISSION -->
-    <section id="projects" class="section transmission-section">
+    <section class="section transmission-section">
 
-      <div class="section-heading">
-
-        <div>
-          <span class="eyebrow">
-            CURRENT TRANSMISSION
-          </span>
-
-          <h2>
-            BAM: BY ANY MEANS
-          </h2>
-        </div>
-
-        <span class="metadata">
-          2026 / CASE 001
-        </span>
-
+      <div class="section-label">
+        CURRENT TRANSMISSION
       </div>
 
+      <div class="transmission-card">
 
-      <div class="transmission">
+        <div>
+          <p class="case-number">CASE 001</p>
 
-        <div class="transmission-info">
-
-          <span class="metadata">
-            FIRST TRANSMISSION
-          </span>
-
-          <h3>
-            DALLAS '63
-          </h3>
+          <h2>BAM: BY ANY MEANS</h2>
 
           <p>
             The first transmission.
-            Six tracks.
-            One body of evidence.
-            One reality seen from different angles.
+            The beginning of the investigation.
           </p>
-
         </div>
 
-        <a href="#investigation" class="outline-button">
-          ENTER CASE
-        </a>
+        <div class="transmission-status">
+          <span class="status-dot"></span>
+          DEVELOPING
+        </div>
 
       </div>
 
@@ -125,78 +109,84 @@
 
 
     <!-- MUSIC -->
-    <section id="music" class="section">
+    <section class="section" id="music">
 
       <div class="section-heading">
+        <p class="eyebrow">01 / MUSIC</p>
+        <h2>TRANSMISSIONS</h2>
+      </div>
 
-        <div>
-          <span class="eyebrow">
-            THE SIGNAL
-          </span>
+      <div class="music-grid">
 
-          <h2>
-            MUSIC
-          </h2>
-        </div>
+        <article class="media-card">
+          <span class="track-number">001</span>
+          <h3>DALLAS ’63</h3>
+          <p>THE MYTH</p>
+          <a href="#bam">ENTER CASE →</a>
+        </article>
 
-        <span class="metadata">
-          LATEST / ARCHIVE
-        </span>
+        <article class="media-card">
+          <span class="track-number">002</span>
+          <h3>PUMPY TO THE CHEST</h3>
+          <p>THE MONSTER</p>
+          <a href="#bam">ENTER CASE →</a>
+        </article>
+
+        <article class="media-card">
+          <span class="track-number">003</span>
+          <h3>I NEED A FLEX</h3>
+          <p>THE FATHER</p>
+          <a href="#bam">ENTER CASE →</a>
+        </article>
+
+        <article class="media-card">
+          <span class="track-number">004</span>
+          <h3>SANA, SANA, COLITA DE RANA</h3>
+          <p>THE INHERITANCE</p>
+          <a href="#bam">ENTER CASE →</a>
+        </article>
+
+        <article class="media-card">
+          <span class="track-number">005</span>
+          <h3>BACC 2 BASICS</h3>
+          <p>THE TRAP</p>
+          <a href="#bam">ENTER CASE →</a>
+        </article>
+
+        <article class="media-card">
+          <span class="track-number">006</span>
+          <h3>DICHOTOMY</h3>
+          <p>THE HUMAN</p>
+          <a href="#bam">ENTER CASE →</a>
+        </article>
 
       </div>
 
+    </section>
 
-      <div class="content-grid">
 
-        <article class="content-card">
+    <!-- BAM -->
+    <section class="section" id="bam">
 
-          <span class="metadata">
-            001
-          </span>
+      <div class="section-heading">
+        <p class="eyebrow">02 / CASE 001</p>
+        <h2>BAM: BY ANY MEANS</h2>
+      </div>
 
-          <h3>
-            DALLAS '63
-          </h3>
+      <div class="case-intro">
 
+        <div>
+          <p class="case-question">WHO MADE HIM?</p>
+          <p class="case-question">WHAT DID HE BECOME?</p>
+          <p class="case-question">WHAT WILL HE MAKE?</p>
+        </div>
+
+        <div>
           <p>
-            THE MYTH
+            BAM is the first transmission from the ESCIE universe.
+            The case is still developing.
           </p>
-
-        </article>
-
-
-        <article class="content-card">
-
-          <span class="metadata">
-            002
-          </span>
-
-          <h3>
-            PUMPY TO THE CHEST
-          </h3>
-
-          <p>
-            THE MONSTER
-          </p>
-
-        </article>
-
-
-        <article class="content-card">
-
-          <span class="metadata">
-            003 — 006
-          </span>
-
-          <h3>
-            MORE TRANSMISSIONS
-          </h3>
-
-          <p>
-            The archive expands as the work arrives.
-          </p>
-
-        </article>
+        </div>
 
       </div>
 
@@ -204,49 +194,25 @@
 
 
     <!-- INVESTIGATION -->
-    <section id="investigation" class="section">
+    <section class="section" id="investigation">
 
       <div class="section-heading">
-
-        <div>
-          <span class="eyebrow">
-            INVESTIGATION
-          </span>
-
-          <h2>
-            CASE 001
-          </h2>
-        </div>
-
-        <span class="status">
-          ● OPEN
-        </span>
-
+        <p class="eyebrow">03 / INVESTIGATION</p>
+        <h2>THE CASE IS CONNECTED.</h2>
       </div>
-
 
       <div class="investigation-box">
 
-        <div>
+        <p class="case-number">CASE 001</p>
 
-          <span class="metadata">
-            BAM / BY ANY MEANS
-          </span>
+        <p>
+          Evidence will appear here.
+        </p>
 
-          <h3>
-            THE CASE IS CONNECTED.
-          </h3>
-
-          <p>
-            Music, photographs, audio, locations, social signals,
-            questions and evidence can connect here.
-          </p>
-
-        </div>
-
-        <a href="#" class="outline-button">
-          INVESTIGATE
-        </a>
+        <p class="muted">
+          Photographs. Audio. Video. Locations.
+          Fragments. Connections.
+        </p>
 
       </div>
 
@@ -254,76 +220,31 @@
 
 
     <!-- ARCHIVE -->
-    <section id="archive" class="section">
+    <section class="section" id="archive">
 
       <div class="section-heading">
-
-        <div>
-          <span class="eyebrow">
-            THE ARCHIVE
-          </span>
-
-          <h2>
-            NOT EVERYTHING HAS A CATEGORY.
-          </h2>
-        </div>
-
+        <p class="eyebrow">04 / ARCHIVE</p>
+        <h2>THE RECORD</h2>
       </div>
 
+      <div class="archive-grid">
 
-      <div class="content-grid">
-
-        <article class="content-card">
-
-          <span class="metadata">
-            PHOTOS
-          </span>
-
-          <h3>
-            PLACES
-          </h3>
-
-          <p>
-            Montréal streets, rooms, winter, concrete,
-            people and the spaces between events.
-          </p>
-
+        <article class="archive-card">
+          <span>PLACES</span>
+          <h3>MONTRÉAL</h3>
+          <p>Locations connected to the record.</p>
         </article>
 
-
-        <article class="content-card">
-
-          <span class="metadata">
-            MEMORY
-          </span>
-
-          <h3>
-            FRAGMENTS
-          </h3>
-
-          <p>
-            Stories, recordings, notes and things whose
-            status may remain unresolved.
-          </p>
-
+        <article class="archive-card">
+          <span>FRAGMENTS</span>
+          <h3>MEMORY</h3>
+          <p>Images, sounds and pieces of the signal.</p>
         </article>
 
-
-        <article class="content-card">
-
-          <span class="metadata">
-            EVIDENCE
-          </span>
-
-          <h3>
-            CONNECTIONS
-          </h3>
-
-          <p>
-            Images, audio, posts, questions and discoveries
-            linked throughout the ESCIE reality.
-          </p>
-
+        <article class="archive-card">
+          <span>CONNECTIONS</span>
+          <h3>PEOPLE</h3>
+          <p>The relationships behind the work.</p>
         </article>
 
       </div>
@@ -331,26 +252,217 @@
     </section>
 
 
+    <!-- SIGNAL -->
+    <section class="section signal-section" id="signal">
+
+      <div class="section-heading">
+
+        <p class="eyebrow">05 / SIGNAL</p>
+
+        <h2>LIVE CHANNELS</h2>
+
+        <p class="section-intro">
+          External transmissions connected to ESCIE.
+          Selected material will appear here as the universe develops.
+        </p>
+
+      </div>
+
+
+      <!-- YOUTUBE -->
+      <article class="embed-card">
+
+        <div class="embed-header">
+
+          <div>
+            <p class="eyebrow">VIDEO</p>
+            <h3>YOUTUBE</h3>
+          </div>
+
+          <a
+            href="https://youtube.com/@esciemusic"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            OPEN CHANNEL →
+          </a>
+
+        </div>
+
+        <div class="embed-placeholder">
+
+          <p>VIDEO TRANSMISSION</p>
+
+          <span>
+            A specific transmission will be embedded here.
+          </span>
+
+        </div>
+
+      </article>
+
+
+      <!-- SOUNDCLOUD -->
+      <article class="embed-card">
+
+        <div class="embed-header">
+
+          <div>
+            <p class="eyebrow">AUDIO</p>
+            <h3>SOUNDCLOUD</h3>
+          </div>
+
+          <a
+            href="https://on.soundcloud.com/EN7PAwuwfeA35Zz1We"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            OPEN SOUND CLOUD →
+          </a>
+
+        </div>
+
+        <div class="embed-placeholder audio-placeholder">
+
+          <p>AUDIO TRANSMISSION</p>
+
+          <span>
+            SoundCloud player will appear here when the first track is selected.
+          </span>
+
+        </div>
+
+      </article>
+
+
+      <!-- TIKTOK -->
+      <article class="embed-card">
+
+        <div class="embed-header">
+
+          <div>
+            <p class="eyebrow">SHORT SIGNALS</p>
+            <h3>TIKTOK</h3>
+          </div>
+
+          <a
+            href="https://www.tiktok.com/@esciemusic"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            OPEN TIKTOK →
+          </a>
+
+        </div>
+
+        <div class="embed-placeholder">
+
+          <p>SHORT TRANSMISSIONS</p>
+
+          <span>
+            Selected TikTok transmissions will appear here.
+          </span>
+
+        </div>
+
+      </article>
+
+
+      <!-- INSTAGRAM -->
+      <article class="embed-card">
+
+        <div class="embed-header">
+
+          <div>
+            <p class="eyebrow">VISUAL SIGNAL</p>
+            <h3>INSTAGRAM</h3>
+          </div>
+
+          <a
+            href="https://www.instagram.com/esciemusic"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            OPEN INSTAGRAM →
+          </a>
+
+        </div>
+
+        <div class="embed-placeholder">
+
+          <p>VISUAL TRANSMISSIONS</p>
+
+          <span>
+            Selected visual evidence will appear here.
+          </span>
+
+        </div>
+
+      </article>
+
+
+      <!-- AUDIOMACK -->
+      <article class="embed-card">
+
+        <div class="embed-header">
+
+          <div>
+            <p class="eyebrow">AUDIO ARCHIVE</p>
+            <h3>AUDIOMACK</h3>
+          </div>
+
+          <a
+            href="https://audiomack.com/esciemgmt"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            OPEN AUDIOMACK →
+          </a>
+
+        </div>
+
+        <div class="embed-placeholder audio-placeholder">
+
+          <p>AUDIOMACK TRANSMISSION</p>
+
+          <span>
+            Selected releases will appear here.
+          </span>
+
+        </div>
+
+      </article>
+
+    </section>
+
+
     <!-- ABOUT -->
-    <section id="about" class="section about-section">
+    <section class="section about-section" id="about">
 
-      <span class="eyebrow">
-        ESCIE
-      </span>
+      <div class="section-heading">
 
-      <h2>
-        THE MUSIC DOES NOT CREATE
-        THE UNIVERSE.
-      </h2>
+        <p class="eyebrow">06 / ABOUT</p>
 
-      <p>
-        The universe creates the music.
-      </p>
+        <h2>THE UNIVERSE</h2>
 
-      <p>
-        ESCIE is the interface between reality, memory,
-        survival, art and the signal that distorts them.
-      </p>
+      </div>
+
+      <div class="about-copy">
+
+        <p class="statement">
+          THE MUSIC DOES NOT CREATE THE UNIVERSE.
+        </p>
+
+        <p class="statement">
+          THE UNIVERSE CREATES THE MUSIC.
+        </p>
+
+        <p>
+          ESCIE is an evolving record of reality,
+          memory, music, relationships, places and signal distortion.
+        </p>
+
+      </div>
 
     </section>
 
@@ -360,17 +472,17 @@
   <!-- FOOTER -->
   <footer class="site-footer">
 
-    <span>
+    <div>
       ESCIE
-    </span>
+    </div>
 
-    <span>
-      MONTRÉAL / CANADA
-    </span>
+    <div>
+      MONTRÉAL / CANADA / 2027
+    </div>
 
-    <span>
+    <div>
       REALITY WITH THE SIGNAL DISTORTED.
-    </span>
+    </div>
 
   </footer>
 
