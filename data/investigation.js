@@ -11,11 +11,16 @@ const ESCIE_INVESTIGATION = [
 
     published: false,
 
+    narration: "unknown",
+
     question: "WHO MADE HIM?",
 
     secondaryQuestions: [
+
       "WHAT DID HE BECOME?",
+
       "WHAT WILL HE MAKE?"
+
     ],
 
     entries: [],
@@ -31,8 +36,11 @@ const ESCIE_INVESTIGATION = [
     signals: [],
 
     relatedMusic: [
+
       "bam-by-any-means"
+
     ]
+
   }
 
 ];
