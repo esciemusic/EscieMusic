@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8">
 
   <meta
@@ -10,75 +12,90 @@
 
   <meta
     name="description"
-    content="ESCIE — Reality With The Signal Distorted."
+    content="ESCIE — REALITY WITH THE SIGNAL DISTORTED."
   >
 
   <title>ESCIE — Reality With The Signal Distorted</title>
 
-  <link rel="stylesheet" href="style.css">
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
 </head>
 
-<body>
 
-  <!-- ATMOSPHERE -->
-  <div id="sky" aria-hidden="true"></div>
-  <div class="film-grain" aria-hidden="true"></div>
+<body id="top">
+
+  <!-- =====================================================
+       ATMOSPHERE
+       ===================================================== -->
+
+  <div class="sky" aria-hidden="true"></div>
+
+  <div class="grain" aria-hidden="true"></div>
 
 
-  <!-- HEADER -->
+  <!-- =====================================================
+       HEADER
+       ===================================================== -->
+
   <header class="site-header">
 
-    <div class="header-inner">
+    <a
+      href="#top"
+      class="site-logo"
+      aria-label="ESCIE"
+    >
+      ESCIE
+    </a>
 
-      <a href="#home" class="logo">ESCIE</a>
 
-      <button
-        class="menu-toggle"
-        id="menuToggle"
-        aria-label="Open navigation"
-        aria-expanded="false"
-      >
-        MENU
-      </button>
+    <button
+      id="mobile-menu-button"
+      class="index-trigger"
+      type="button"
+      aria-label="Open index"
+      aria-controls="main-navigation"
+      aria-expanded="false"
+    >
+      INDEX
+    </button>
 
-      <nav class="main-nav" id="mainNav">
 
-        <a href="#music">MUSIC</a>
-        <a href="#bam">BAM</a>
-        <a href="#investigation">INVESTIGATION</a>
-        <a href="#archive">ARCHIVE</a>
-        <a href="#signal">SIGNAL</a>
-        <a href="#about">ABOUT</a>
-
-      </nav>
-
-    </div>
+    <nav
+      id="main-navigation"
+      class="index-navigation"
+      aria-label="Index"
+    ></nav>
 
   </header>
 
 
-  <!-- MAIN -->
-  <main id="home">
 
+  <!-- =====================================================
+       HERO
+       ===================================================== -->
 
-    <!-- HERO -->
-    <section class="hero">
+  <main>
+
+    <section
+      id="hero"
+      class="hero"
+    >
 
       <div class="hero-inner">
 
-        <p class="eyebrow">
-          ESCIE / MONTRÉAL / 2027
+        <p class="hero-year">
+          2027
         </p>
 
         <h1>
-          REALITY WITH<br>
-          THE SIGNAL<br>
-          DISTORTED.
+          ESCIE
         </h1>
 
-        <p class="hero-description">
-          The music does not create the universe.
-          The universe creates the music.
+        <p class="hero-tagline">
+          REALITY WITH THE SIGNAL DISTORTED.
         </p>
 
       </div>
@@ -86,166 +103,180 @@
     </section>
 
 
-    <!-- MUSIC -->
-    <section id="music" class="section">
 
-      <div class="section-heading">
+    <!-- ===================================================
+         MUSIC
+         =================================================== -->
 
-        <span class="section-number">01</span>
+    <section
+      id="music"
+      class="site-section"
+    >
 
-        <div>
-          <p class="eyebrow">MUSIC</p>
-          <h2>TRANSMISSIONS</h2>
-        </div>
+      <div class="section-inner">
+
+        <p class="section-label">
+          MUSIC
+        </p>
+
+        <h2>
+          MUSIC
+        </h2>
+
+        <div
+          id="music-container"
+          class="content-container"
+        ></div>
 
       </div>
-
-      <div
-        id="music-container"
-        class="content-grid"
-      ></div>
 
     </section>
 
 
-    <!-- BAM -->
-    <section id="bam" class="section section-dark">
 
-      <div class="section-heading">
+    <!-- ===================================================
+         BAM
+         =================================================== -->
 
-        <span class="section-number">02</span>
+    <section
+      id="bam"
+      class="site-section bam-section"
+    >
 
-        <div>
-          <p class="eyebrow">CASE 001</p>
-          <h2>BAM: BY ANY MEANS</h2>
-        </div>
+      <div class="section-inner">
+
+        <p class="section-label">
+          BAM
+        </p>
+
+        <h2>
+          BAM: BY ANY MEANS
+        </h2>
+
+        <div
+          id="bam-container"
+          class="content-container"
+        ></div>
 
       </div>
-
-      <div class="case-intro">
-
-        <p class="case-label">
-          WHO MADE HIM?
-        </p>
-
-        <p class="case-label">
-          WHAT DID HE BECOME?
-        </p>
-
-        <p class="case-label">
-          WHAT WILL HE MAKE?
-        </p>
-
-      </div>
-
-      <div
-        id="bam-container"
-        class="track-list"
-      ></div>
 
     </section>
 
 
-    <!-- INVESTIGATION -->
-    <section id="investigation" class="section">
 
-      <div class="section-heading">
+    <!-- ===================================================
+         INVESTIGATION
+         =================================================== -->
 
-        <span class="section-number">03</span>
+    <section
+      id="investigation"
+      class="site-section"
+    >
 
-        <div>
-          <p class="eyebrow">INVESTIGATION</p>
-          <h2>THE CASE IS CONNECTED.</h2>
-        </div>
+      <div class="section-inner">
+
+        <p class="section-label">
+          INVESTIGATION
+        </p>
+
+        <h2>
+          INVESTIGATION
+        </h2>
+
+        <div
+          id="investigation-container"
+          class="content-container"
+        ></div>
 
       </div>
-
-      <div
-        id="investigation-container"
-        class="investigation-grid"
-      ></div>
 
     </section>
 
 
-    <!-- ARCHIVE -->
-    <section id="archive" class="section section-dark">
 
-      <div class="section-heading">
+    <!-- ===================================================
+         ARCHIVE
+         =================================================== -->
 
-        <span class="section-number">04</span>
+    <section
+      id="archive"
+      class="site-section"
+    >
 
-        <div>
-          <p class="eyebrow">ARCHIVE</p>
-          <h2>FRAGMENTS OF HERE.</h2>
-        </div>
+      <div class="section-inner">
+
+        <p class="section-label">
+          ARCHIVE
+        </p>
+
+        <h2>
+          ARCHIVE
+        </h2>
+
+        <div
+          id="archive-container"
+          class="content-container"
+        ></div>
 
       </div>
-
-      <div
-        id="archive-container"
-        class="archive-grid"
-      ></div>
 
     </section>
 
 
-    <!-- SIGNAL -->
-    <section id="signal" class="section">
 
-      <div class="section-heading">
+    <!-- ===================================================
+         SIGNAL
+         =================================================== -->
 
-        <span class="section-number">05</span>
+    <section
+      id="signal"
+      class="site-section signal-section"
+    >
 
-        <div>
-          <p class="eyebrow">SIGNAL</p>
-          <h2>TRANSMISSIONS FROM ELSEWHERE.</h2>
-        </div>
+      <div class="section-inner">
+
+        <p class="section-label">
+          SIGNAL
+        </p>
+
+        <h2>
+          SIGNAL
+        </h2>
+
+        <div
+          id="signal-container"
+          class="signal-grid"
+        ></div>
 
       </div>
-
-      <div
-        id="signal-container"
-        class="signal-grid"
-      ></div>
 
     </section>
 
 
-    <!-- ABOUT -->
-    <section id="about" class="section section-about">
 
-      <div class="section-heading">
+    <!-- ===================================================
+         ABOUT
+         =================================================== -->
 
-        <span class="section-number">06</span>
+    <section
+      id="about"
+      class="site-section about-section"
+    >
 
-        <div>
-          <p class="eyebrow">ABOUT</p>
-          <h2>THE UNIVERSE.</h2>
-        </div>
+      <div class="section-inner">
 
-      </div>
-
-      <div class="about-copy">
-
-        <p class="statement">
-          THE MUSIC DOES NOT CREATE THE UNIVERSE.
+        <p class="section-label">
+          ABOUT
         </p>
 
-        <p class="statement">
-          THE UNIVERSE CREATES THE MUSIC.
-        </p>
+        <h2>
+          ESCIE
+        </h2>
 
-        <p>
-          ESCIE is a living archive of reality,
-          memory, music, relationships, places,
-          contradictions and distortion.
-        </p>
-
-        <p>
-          Montréal is not the backdrop.
-          It is part of the signal.
-        </p>
+        <div
+          id="about-container"
+          class="about-content"
+        ></div>
 
       </div>
 
@@ -254,39 +285,46 @@
   </main>
 
 
-  <!-- FOOTER -->
+
+  <!-- =====================================================
+       FOOTER
+       ===================================================== -->
+
   <footer class="site-footer">
 
-    <div>
+    <p>
       ESCIE
-    </div>
+    </p>
 
-    <div>
-      MONTRÉAL / CANADA
-    </div>
-
-    <div>
+    <p>
       REALITY WITH THE SIGNAL DISTORTED.
-    </div>
+    </p>
 
   </footer>
 
 
-  <!-- DATA -->
+
+  <!-- =====================================================
+       DATA
+       ===================================================== -->
+
   <script src="data/site.js"></script>
-<script src="data/navigation.js"></script>
-<script src="data/projects.js"></script>
-<script src="data/music.js"></script>
-<script src="data/signals.js"></script>
-<script src="data/archive.js"></script>
-<script src="data/investigation.js"></script>
-<script src="data/people.js"></script>
-<script src="data/language.js"></script>
-<script src="app.js"></script>
+  <script src="data/navigation.js"></script>
+  <script src="data/projects.js"></script>
+  <script src="data/music.js"></script>
+  <script src="data/signals.js"></script>
+  <script src="data/archive.js"></script>
+  <script src="data/investigation.js"></script>
+  <script src="data/people.js"></script>
+  <script src="data/language.js"></script>
 
 
-  <!-- ENGINE -->
+  <!-- =====================================================
+       APPLICATION
+       ===================================================== -->
+
   <script src="app.js"></script>
 
 </body>
+
 </html>
