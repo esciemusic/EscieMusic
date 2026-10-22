@@ -1,119 +1,89 @@
 /*
-=========================================================
-ESCIE — LIVING SIGNAL
-=========================================================
-
-The website observes the visitor's local time and changes
-the atmospheric state accordingly.
-
-This is intentionally subtle.
-ESCIE should feel alive, not like an animated gimmick.
-=========================================================
+  ESCIE
+  Reality With The Signal Distorted
+  2027 Site Foundation
 */
 
 
-document.addEventListener("DOMContentLoaded", () => {
+/* ================================
+   LIVING TIME / SKY
+================================ */
 
-  const body = document.body;
-  const sky = document.querySelector(".sky-layer");
+function updateTimeAtmosphere() {
 
+  const now = new Date();
 
-  /*
-  ---------------------------------------------------------
-  TIME OF DAY
-  ---------------------------------------------------------
-  */
+  const hour = now.getHours();
+  const minutes = now.getMinutes();
 
-  function getTimePhase() {
+  const time = hour + minutes / 60;
 
-    const now = new Date();
+  let phase = "night";
 
-    const hour = now.getHours();
-
-    if (hour >= 5 && hour < 8) {
-      return "dawn";
-    }
-
-    if (hour >= 8 && hour < 17) {
-      return "day";
-    }
-
-    if (hour >= 17 && hour < 20) {
-      return "golden-hour";
-    }
-
-    if (hour >= 20 && hour < 23) {
-      return "dusk";
-    }
-
-    return "night";
+  if (time >= 5 && time < 8) {
+    phase = "dawn";
   }
 
-
-  /*
-  ---------------------------------------------------------
-  ATMOSPHERIC STATE
-  ---------------------------------------------------------
-  */
-
-  function updateAtmosphere() {
-
-    const phase = getTimePhase();
-
-    body.dataset.time = phase;
-
-    /*
-      Optional accessibility hook.
-      Future versions can use this same state to alter
-      imagery, typography, audio or investigation content.
-    */
-
-    if (sky) {
-      sky.dataset.phase = phase;
-    }
-
+  else if (time >= 8 && time < 17) {
+    phase = "day";
   }
 
+  else if (time >= 17 && time < 19) {
+    phase = "golden";
+  }
 
-  /*
-  ---------------------------------------------------------
-  INITIAL STATE
-  ---------------------------------------------------------
-  */
+  else if (time >= 19 && time < 21) {
+    phase = "dusk";
+  }
 
-  updateAtmosphere();
+  else {
+    phase = "night";
+  }
 
+  document.body.dataset.time = phase;
 
-  /*
-  ---------------------------------------------------------
-  CHECK EVERY MINUTE
-  ---------------------------------------------------------
-  */
+  const sky = document.querySelector(".sky");
 
-  setInterval(() => {
-
-    updateAtmosphere();
-
-  }, 60 * 1000);
+  if (sky) {
+    sky.dataset.phase = phase;
+  }
+}
 
 
-  /*
-  ---------------------------------------------------------
-  SMOOTH SCROLLING
-  ---------------------------------------------------------
-  */
+/* Run immediately */
 
-  document.querySelectorAll('a[href^="#"]').forEach(link => {
+updateTimeAtmosphere();
 
-    link.addEventListener("click", event => {
 
-      const targetID =
+/* Update every minute */
+
+setInterval(
+  updateTimeAtmosphere,
+  60000
+);
+
+
+/* ================================
+   SMOOTH NAVIGATION
+================================ */
+
+document.querySelectorAll(
+  'a[href^="#"]'
+).forEach(link => {
+
+  link.addEventListener(
+    "click",
+    event => {
+
+      const targetId =
         link.getAttribute("href");
 
       const target =
-        document.querySelector(targetID);
+        document.querySelector(targetId);
 
-      if (!target) return;
+      if (!target) {
+        return;
+      }
 
       event.preventDefault();
 
@@ -122,72 +92,232 @@ document.addEventListener("DOMContentLoaded", () => {
         block: "start"
       });
 
-    });
 
-  });
+      /* Close mobile navigation */
 
+      const nav =
+        document.getElementById("mainNav");
 
-  /*
-  ---------------------------------------------------------
-  MENU
-  ---------------------------------------------------------
-  */
+      const toggle =
+        document.getElementById("menuToggle");
 
-  const menuButton =
-    document.querySelector(".menu-button");
+      if (nav) {
+        nav.classList.remove("mobile-open");
+      }
 
-  const navigation =
-    document.querySelector(".main-nav");
-
-
-  if (menuButton && navigation) {
-
-    menuButton.addEventListener("click", () => {
-
-      navigation.classList.toggle("mobile-open");
-
-    });
-
-  }
-
-
-  /*
-  ---------------------------------------------------------
-  SUBTLE PARALLAX
-  ---------------------------------------------------------
-  ---------------------------------------------------------
-  Only the atmospheric layer moves.
-  The actual content remains stable.
-  ---------------------------------------------------------
-  */
-
-  let ticking = false;
-
-  window.addEventListener("scroll", () => {
-
-    if (!ticking) {
-
-      window.requestAnimationFrame(() => {
-
-        const scrollY =
-          window.scrollY;
-
-        if (sky) {
-
-          sky.style.transform =
-            `translateY(${scrollY * 0.035}px)`;
-
-        }
-
-        ticking = false;
-
-      });
-
-      ticking = true;
+      if (toggle) {
+        toggle.setAttribute(
+          "aria-expanded",
+          "false"
+        );
+      }
 
     }
-
-  });
-
+  );
 
 });
+
+
+/* ================================
+   MOBILE MENU
+================================ */
+
+const menuToggle =
+  document.getElementById("menuToggle");
+
+const mainNav =
+  document.getElementById("mainNav");
+
+
+if (menuToggle && mainNav) {
+
+  menuToggle.addEventListener(
+    "click",
+    () => {
+
+      const open =
+        mainNav.classList.toggle(
+          "mobile-open"
+        );
+
+      menuToggle.setAttribute(
+        "aria-expanded",
+        open ? "true" : "false"
+      );
+
+    }
+  );
+
+}
+
+
+/* ================================
+   SUBTLE SKY MOVEMENT
+================================ */
+
+let lastScrollY = 0;
+
+window.addEventListener(
+  "scroll",
+  () => {
+
+    const sky =
+      document.querySelector(".sky");
+
+    if (!sky) {
+      return;
+    }
+
+    const currentScroll =
+      window.scrollY;
+
+    const movement =
+      currentScroll * 0.025;
+
+    sky.style.transform =
+      `translateY(${movement}px)`;
+
+    lastScrollY =
+      currentScroll;
+
+  },
+  {
+    passive: true
+  }
+);
+
+
+/* ================================
+   EMBED SYSTEM
+================================ */
+
+/*
+  Future media can be added here.
+
+  YouTube:
+  Add a YouTube video ID.
+
+  SoundCloud:
+  Add the complete SoundCloud URL.
+
+  We are deliberately keeping the content
+  separate from the site's structure so that
+  future automation can update these values.
+*/
+
+
+const ESCIE_MEDIA = {
+
+  youtube: {
+    active: false,
+
+    videoId: "",
+
+    title: "Current Transmission"
+  },
+
+
+  soundcloud: {
+    active: false,
+
+    url: "",
+
+    title: "Current Audio Transmission"
+  }
+
+};
+
+
+/* ================================
+   YOUTUBE EMBED
+================================ */
+
+function createYouTubeEmbed() {
+
+  if (!ESCIE_MEDIA.youtube.active) {
+    return;
+  }
+
+  if (!ESCIE_MEDIA.youtube.videoId) {
+    return;
+  }
+
+  const placeholder =
+    document.querySelector(
+      ".youtube-placeholder"
+    );
+
+  if (!placeholder) {
+    return;
+  }
+
+  const frame =
+    document.createElement("div");
+
+  frame.className =
+    "embed-frame youtube-frame";
+
+  frame.innerHTML = `
+    <iframe
+      src="https://www.youtube.com/embed/${ESCIE_MEDIA.youtube.videoId}?playsinline=1"
+      title="${ESCIE_MEDIA.youtube.title}"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowfullscreen>
+    </iframe>
+  `;
+
+  placeholder.replaceWith(frame);
+}
+
+
+/* ================================
+   SOUNDCLOUD EMBED
+================================ */
+
+function createSoundCloudEmbed() {
+
+  if (!ESCIE_MEDIA.soundcloud.active) {
+    return;
+  }
+
+  if (!ESCIE_MEDIA.soundcloud.url) {
+    return;
+  }
+
+  const placeholder =
+    document.querySelector(
+      ".soundcloud-placeholder"
+    );
+
+  if (!placeholder) {
+    return;
+  }
+
+  const frame =
+    document.createElement("div");
+
+  frame.className =
+    "embed-frame soundcloud-frame";
+
+  const encodedUrl =
+    encodeURIComponent(
+      ESCIE_MEDIA.soundcloud.url
+    );
+
+  frame.innerHTML = `
+    <iframe
+      scrolling="no"
+      frameborder="no"
+      allow="autoplay"
+      src="https://w.soundcloud.com/player/?url=${encodedUrl}&color=%23243b55&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false">
+    </iframe>
+  `;
+
+  placeholder.replaceWith(frame);
+}
+
+
+/* Initialize embeds */
+
+createYouTubeEmbed();
+createSoundCloudEmbed();
