@@ -15,6 +15,8 @@ const ESCIE_MUSIC = [
 
     published: false,
 
+    narration: "myth",
+
     releaseDate: null,
 
     audio: {
@@ -42,6 +44,7 @@ const ESCIE_MUSIC = [
     tags: [],
 
     relatedContent: []
+
   },
 
 
@@ -60,6 +63,8 @@ const ESCIE_MUSIC = [
 
     published: false,
 
+    narration: "psychological",
+
     releaseDate: null,
 
     audio: {
@@ -87,6 +92,7 @@ const ESCIE_MUSIC = [
     tags: [],
 
     relatedContent: []
+
   },
 
 
@@ -105,6 +111,8 @@ const ESCIE_MUSIC = [
 
     published: false,
 
+    narration: "memory",
+
     releaseDate: null,
 
     audio: {
@@ -132,6 +140,7 @@ const ESCIE_MUSIC = [
     tags: [],
 
     relatedContent: []
+
   },
 
 
@@ -150,6 +159,8 @@ const ESCIE_MUSIC = [
 
     published: false,
 
+    narration: "street",
+
     releaseDate: null,
 
     audio: {
@@ -177,6 +188,7 @@ const ESCIE_MUSIC = [
     tags: [],
 
     relatedContent: []
+
   },
 
 
@@ -195,6 +207,8 @@ const ESCIE_MUSIC = [
 
     published: false,
 
+    narration: "documentary",
+
     releaseDate: null,
 
     audio: {
@@ -222,6 +236,7 @@ const ESCIE_MUSIC = [
     tags: [],
 
     relatedContent: []
+
   },
 
 
@@ -240,6 +255,8 @@ const ESCIE_MUSIC = [
 
     published: false,
 
+    narration: "unknown",
+
     releaseDate: null,
 
     audio: {
@@ -267,6 +284,7 @@ const ESCIE_MUSIC = [
     tags: [],
 
     relatedContent: []
+
   }
 
 ];
