@@ -11,6 +11,8 @@ const ESCIE_ARCHIVE = [
 
     published: false,
 
+    narration: "documentary",
+
     description:
       "Fragments, memories, places, images, sounds and other material connected to ESCIE.",
 
@@ -27,6 +29,7 @@ const ESCIE_ARCHIVE = [
     tags: [],
 
     relatedContent: []
+
   }
 
 ];
