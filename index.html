@@ -2,30 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>ESCIE — Reality With The Signal Distorted</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <meta
     name="description"
-    content="ESCIE — Montréal. Reality with the signal distorted."
+    content="ESCIE — Reality With The Signal Distorted."
   >
+
+  <title>ESCIE — Reality With The Signal Distorted</title>
 
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-  <!-- LIVING SKY -->
-  <div class="sky" aria-hidden="true"></div>
-  <div class="grain" aria-hidden="true"></div>
+  <!-- ATMOSPHERE -->
+  <div id="sky" aria-hidden="true"></div>
+  <div class="film-grain" aria-hidden="true"></div>
+
 
   <!-- HEADER -->
   <header class="site-header">
 
     <div class="header-inner">
 
-      <a href="#top" class="logo">ESCIE</a>
+      <a href="#home" class="logo">ESCIE</a>
 
       <button
         class="menu-toggle"
@@ -53,14 +58,17 @@
 
 
   <!-- MAIN -->
-  <main id="top">
+  <main id="home">
+
 
     <!-- HERO -->
-    <section class="hero section">
+    <section class="hero">
 
       <div class="hero-inner">
 
-        <p class="eyebrow">ESCIE / MONTRÉAL / 2027</p>
+        <p class="eyebrow">
+          ESCIE / MONTRÉAL / 2027
+        </p>
 
         <h1>
           REALITY WITH<br>
@@ -78,372 +86,143 @@
     </section>
 
 
-    <!-- CURRENT TRANSMISSION -->
-    <section class="section transmission-section">
-
-      <div class="section-label">
-        CURRENT TRANSMISSION
-      </div>
-
-      <div class="transmission-card">
-
-        <div>
-          <p class="case-number">CASE 001</p>
-
-          <h2>BAM: BY ANY MEANS</h2>
-
-          <p>
-            The first transmission.
-            The beginning of the investigation.
-          </p>
-        </div>
-
-        <div class="transmission-status">
-          <span class="status-dot"></span>
-          DEVELOPING
-        </div>
-
-      </div>
-
-    </section>
-
-
     <!-- MUSIC -->
-    <section class="section" id="music">
+    <section id="music" class="section">
 
       <div class="section-heading">
-        <p class="eyebrow">01 / MUSIC</p>
-        <h2>TRANSMISSIONS</h2>
-      </div>
 
-      <div class="music-grid">
+        <span class="section-number">01</span>
 
-        <article class="media-card">
-          <span class="track-number">001</span>
-          <h3>DALLAS ’63</h3>
-          <p>THE MYTH</p>
-          <a href="#bam">ENTER CASE →</a>
-        </article>
-
-        <article class="media-card">
-          <span class="track-number">002</span>
-          <h3>PUMPY TO THE CHEST</h3>
-          <p>THE MONSTER</p>
-          <a href="#bam">ENTER CASE →</a>
-        </article>
-
-        <article class="media-card">
-          <span class="track-number">003</span>
-          <h3>I NEED A FLEX</h3>
-          <p>THE FATHER</p>
-          <a href="#bam">ENTER CASE →</a>
-        </article>
-
-        <article class="media-card">
-          <span class="track-number">004</span>
-          <h3>SANA, SANA, COLITA DE RANA</h3>
-          <p>THE INHERITANCE</p>
-          <a href="#bam">ENTER CASE →</a>
-        </article>
-
-        <article class="media-card">
-          <span class="track-number">005</span>
-          <h3>BACC 2 BASICS</h3>
-          <p>THE TRAP</p>
-          <a href="#bam">ENTER CASE →</a>
-        </article>
-
-        <article class="media-card">
-          <span class="track-number">006</span>
-          <h3>DICHOTOMY</h3>
-          <p>THE HUMAN</p>
-          <a href="#bam">ENTER CASE →</a>
-        </article>
+        <div>
+          <p class="eyebrow">MUSIC</p>
+          <h2>TRANSMISSIONS</h2>
+        </div>
 
       </div>
+
+      <div
+        id="music-container"
+        class="content-grid"
+      ></div>
 
     </section>
 
 
     <!-- BAM -->
-    <section class="section" id="bam">
+    <section id="bam" class="section section-dark">
 
       <div class="section-heading">
-        <p class="eyebrow">02 / CASE 001</p>
-        <h2>BAM: BY ANY MEANS</h2>
+
+        <span class="section-number">02</span>
+
+        <div>
+          <p class="eyebrow">CASE 001</p>
+          <h2>BAM: BY ANY MEANS</h2>
+        </div>
+
       </div>
 
       <div class="case-intro">
 
-        <div>
-          <p class="case-question">WHO MADE HIM?</p>
-          <p class="case-question">WHAT DID HE BECOME?</p>
-          <p class="case-question">WHAT WILL HE MAKE?</p>
-        </div>
+        <p class="case-label">
+          WHO MADE HIM?
+        </p>
 
-        <div>
-          <p>
-            BAM is the first transmission from the ESCIE universe.
-            The case is still developing.
-          </p>
-        </div>
+        <p class="case-label">
+          WHAT DID HE BECOME?
+        </p>
+
+        <p class="case-label">
+          WHAT WILL HE MAKE?
+        </p>
 
       </div>
+
+      <div
+        id="bam-container"
+        class="track-list"
+      ></div>
 
     </section>
 
 
     <!-- INVESTIGATION -->
-    <section class="section" id="investigation">
+    <section id="investigation" class="section">
 
       <div class="section-heading">
-        <p class="eyebrow">03 / INVESTIGATION</p>
-        <h2>THE CASE IS CONNECTED.</h2>
-      </div>
 
-      <div class="investigation-box">
+        <span class="section-number">03</span>
 
-        <p class="case-number">CASE 001</p>
-
-        <p>
-          Evidence will appear here.
-        </p>
-
-        <p class="muted">
-          Photographs. Audio. Video. Locations.
-          Fragments. Connections.
-        </p>
+        <div>
+          <p class="eyebrow">INVESTIGATION</p>
+          <h2>THE CASE IS CONNECTED.</h2>
+        </div>
 
       </div>
+
+      <div
+        id="investigation-container"
+        class="investigation-grid"
+      ></div>
 
     </section>
 
 
     <!-- ARCHIVE -->
-    <section class="section" id="archive">
+    <section id="archive" class="section section-dark">
 
       <div class="section-heading">
-        <p class="eyebrow">04 / ARCHIVE</p>
-        <h2>THE RECORD</h2>
-      </div>
 
-      <div class="archive-grid">
+        <span class="section-number">04</span>
 
-        <article class="archive-card">
-          <span>PLACES</span>
-          <h3>MONTRÉAL</h3>
-          <p>Locations connected to the record.</p>
-        </article>
-
-        <article class="archive-card">
-          <span>FRAGMENTS</span>
-          <h3>MEMORY</h3>
-          <p>Images, sounds and pieces of the signal.</p>
-        </article>
-
-        <article class="archive-card">
-          <span>CONNECTIONS</span>
-          <h3>PEOPLE</h3>
-          <p>The relationships behind the work.</p>
-        </article>
+        <div>
+          <p class="eyebrow">ARCHIVE</p>
+          <h2>FRAGMENTS OF HERE.</h2>
+        </div>
 
       </div>
+
+      <div
+        id="archive-container"
+        class="archive-grid"
+      ></div>
 
     </section>
 
 
     <!-- SIGNAL -->
-    <section class="section signal-section" id="signal">
+    <section id="signal" class="section">
 
       <div class="section-heading">
 
-        <p class="eyebrow">05 / SIGNAL</p>
+        <span class="section-number">05</span>
 
-        <h2>LIVE CHANNELS</h2>
-
-        <p class="section-intro">
-          External transmissions connected to ESCIE.
-          Selected material will appear here as the universe develops.
-        </p>
+        <div>
+          <p class="eyebrow">SIGNAL</p>
+          <h2>TRANSMISSIONS FROM ELSEWHERE.</h2>
+        </div>
 
       </div>
 
-
-      <!-- YOUTUBE -->
-      <article class="embed-card">
-
-        <div class="embed-header">
-
-          <div>
-            <p class="eyebrow">VIDEO</p>
-            <h3>YOUTUBE</h3>
-          </div>
-
-          <a
-            href="https://youtube.com/@esciemusic"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            OPEN CHANNEL →
-          </a>
-
-        </div>
-
-        <div class="embed-placeholder">
-
-          <p>VIDEO TRANSMISSION</p>
-
-          <span>
-            A specific transmission will be embedded here.
-          </span>
-
-        </div>
-
-      </article>
-
-
-      <!-- SOUNDCLOUD -->
-      <article class="embed-card">
-
-        <div class="embed-header">
-
-          <div>
-            <p class="eyebrow">AUDIO</p>
-            <h3>SOUNDCLOUD</h3>
-          </div>
-
-          <a
-            href="https://on.soundcloud.com/EN7PAwuwfeA35Zz1We"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            OPEN SOUND CLOUD →
-          </a>
-
-        </div>
-
-        <div class="embed-placeholder audio-placeholder">
-
-          <p>AUDIO TRANSMISSION</p>
-
-          <span>
-            SoundCloud player will appear here when the first track is selected.
-          </span>
-
-        </div>
-
-      </article>
-
-
-      <!-- TIKTOK -->
-      <article class="embed-card">
-
-        <div class="embed-header">
-
-          <div>
-            <p class="eyebrow">SHORT SIGNALS</p>
-            <h3>TIKTOK</h3>
-          </div>
-
-          <a
-            href="https://www.tiktok.com/@esciemusic"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            OPEN TIKTOK →
-          </a>
-
-        </div>
-
-        <div class="embed-placeholder">
-
-          <p>SHORT TRANSMISSIONS</p>
-
-          <span>
-            Selected TikTok transmissions will appear here.
-          </span>
-
-        </div>
-
-      </article>
-
-
-      <!-- INSTAGRAM -->
-      <article class="embed-card">
-
-        <div class="embed-header">
-
-          <div>
-            <p class="eyebrow">VISUAL SIGNAL</p>
-            <h3>INSTAGRAM</h3>
-          </div>
-
-          <a
-            href="https://www.instagram.com/esciemusic"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            OPEN INSTAGRAM →
-          </a>
-
-        </div>
-
-        <div class="embed-placeholder">
-
-          <p>VISUAL TRANSMISSIONS</p>
-
-          <span>
-            Selected visual evidence will appear here.
-          </span>
-
-        </div>
-
-      </article>
-
-
-      <!-- AUDIOMACK -->
-      <article class="embed-card">
-
-        <div class="embed-header">
-
-          <div>
-            <p class="eyebrow">AUDIO ARCHIVE</p>
-            <h3>AUDIOMACK</h3>
-          </div>
-
-          <a
-            href="https://audiomack.com/esciemgmt"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            OPEN AUDIOMACK →
-          </a>
-
-        </div>
-
-        <div class="embed-placeholder audio-placeholder">
-
-          <p>AUDIOMACK TRANSMISSION</p>
-
-          <span>
-            Selected releases will appear here.
-          </span>
-
-        </div>
-
-      </article>
+      <div
+        id="signal-container"
+        class="signal-grid"
+      ></div>
 
     </section>
 
 
     <!-- ABOUT -->
-    <section class="section about-section" id="about">
+    <section id="about" class="section section-about">
 
       <div class="section-heading">
 
-        <p class="eyebrow">06 / ABOUT</p>
+        <span class="section-number">06</span>
 
-        <h2>THE UNIVERSE</h2>
+        <div>
+          <p class="eyebrow">ABOUT</p>
+          <h2>THE UNIVERSE.</h2>
+        </div>
 
       </div>
 
@@ -458,8 +237,14 @@
         </p>
 
         <p>
-          ESCIE is an evolving record of reality,
-          memory, music, relationships, places and signal distortion.
+          ESCIE is a living archive of reality,
+          memory, music, relationships, places,
+          contradictions and distortion.
+        </p>
+
+        <p>
+          Montréal is not the backdrop.
+          It is part of the signal.
         </p>
 
       </div>
@@ -477,7 +262,7 @@
     </div>
 
     <div>
-      MONTRÉAL / CANADA / 2027
+      MONTRÉAL / CANADA
     </div>
 
     <div>
@@ -487,6 +272,18 @@
   </footer>
 
 
+  <!-- DATA -->
+  <script src="data/site.js"></script>
+  <script src="data/navigation.js"></script>
+  <script src="data/projects.js"></script>
+  <script src="data/music.js"></script>
+  <script src="data/signals.js"></script>
+  <script src="data/archive.js"></script>
+  <script src="data/investigation.js"></script>
+  <script src="data/people.js"></script>
+
+
+  <!-- ENGINE -->
   <script src="app.js"></script>
 
 </body>
