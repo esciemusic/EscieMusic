@@ -7,11 +7,8 @@
   The content is data-driven.
   The language layer is permanent.
 
-  This engine is intentionally presentation-focused.
-
-  Canonical data, relationships, history, automation and
-  intelligence will be introduced through separate layers
-  rather than being embedded inside individual renderers.
+  The runtime provides a bridge between existing data and
+  the future ESCIE record / relationship architecture.
 */
 
 
@@ -110,7 +107,7 @@ function isPublished(item) {
 
   For now it exposes the existing data safely.
 
-  Later this becomes the bridge to:
+  Future layers can connect here:
 
   RECORDS
   RELATIONSHIPS
@@ -227,13 +224,6 @@ function initializeSite() {
 
   renderAbout();
 
-  /*
-    The final interface pass happens AFTER all dynamic
-    content has been rendered.
-
-    This makes ESCIE orthography universal.
-  */
-
   enforceESCIELanguage();
 
 }
@@ -245,9 +235,9 @@ function initializeSite() {
 
 function renderNavigation() {
 
-  const navigation = byId(
-    "main-navigation"
-  );
+  const navigation =
+    byId("main-navigation");
+
 
   if (!navigation) {
     return;
@@ -265,27 +255,38 @@ function renderNavigation() {
     .filter(
       item => item.visible !== false
     )
-    .forEach(item => {
+    .sort(
+      (a, b) =>
+        (a.order || 0) -
+        (b.order || 0)
+    )
+    .forEach(
+      item => {
 
-      const link =
-        document.createElement("a");
-
-
-      link.href =
-        item.target || "#top";
-
-
-      link.dataset.target =
-        item.target || "#top";
+        const link =
+          document.createElement("a");
 
 
-      link.textContent =
-        speak(item.label || "");
+        link.href =
+          item.target || "#top";
 
 
-      navigation.appendChild(link);
+        link.dataset.target =
+          item.target || "#top";
 
-    });
+
+        link.textContent =
+          speak(
+            item.label || ""
+          );
+
+
+        navigation.appendChild(
+          link
+        );
+
+      }
+    );
 
 }
 
@@ -406,22 +407,27 @@ function initializeNavigation() {
       closeIndex();
 
 
-      setTimeout(() => {
+      setTimeout(
+        () => {
 
-        const section =
-          document.querySelector(target);
+          const section =
+            document.querySelector(
+              target
+            );
 
 
-        if (section) {
+          if (section) {
 
-          section.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-          });
+            section.scrollIntoView({
+              behavior: "smooth",
+              block: "start"
+            });
 
-        }
+          }
 
-      }, 80);
+        },
+        80
+      );
 
     }
   );
@@ -442,7 +448,7 @@ function initializeNavigation() {
 
 
 /* =========================================================
-   MUSIC
+   ART
 ========================================================= */
 
 function renderMusic() {
@@ -469,14 +475,18 @@ function renderMusic() {
 
     container.innerHTML = `
       <div class="empty-state">
-        <span>${escapeHTML(
-          speak(
-            languagePhrase(
-              "unavailable",
-              ""
+
+        <span>
+          ${escapeHTML(
+            speak(
+              languagePhrase(
+                "unavailable",
+                ""
+              )
             )
-          )
-        )}</span>
+          )}
+        </span>
+
       </div>
     `;
 
@@ -498,6 +508,19 @@ function renderMusic() {
         "music-card";
 
 
+      /*
+        These attributes connect visible material
+        to the future universal record system.
+      */
+
+      card.dataset.recordType =
+        "art";
+
+
+      card.dataset.recordId =
+        track.id || "";
+
+
       card.innerHTML = `
 
         <div class="music-card-number">
@@ -508,20 +531,26 @@ function renderMusic() {
 
         <h3>
           ${escapeHTML(
-            speak(track.title || "")
+            speak(
+              track.title || ""
+            )
           )}
         </h3>
 
         <p>
           ${escapeHTML(
-            speak(track.subtitle || "")
+            speak(
+              track.subtitle || ""
+            )
           )}
         </p>
 
       `;
 
 
-      container.appendChild(card);
+      container.appendChild(
+        card
+      );
 
     }
   );
@@ -564,14 +593,18 @@ function renderBAM() {
 
     container.innerHTML = `
       <div class="empty-state">
-        <span>${escapeHTML(
-          speak(
-            languagePhrase(
-              "hidden",
-              ""
+
+        <span>
+          ${escapeHTML(
+            speak(
+              languagePhrase(
+                "hidden",
+                ""
+              )
             )
-          )
-        )}</span>
+          )}
+        </span>
+
       </div>
     `;
 
@@ -586,7 +619,13 @@ function renderBAM() {
 
   container.innerHTML = `
 
-    <div class="project-introduction">
+    <div
+      class="project-introduction"
+      data-record-type="body"
+      data-record-id="${escapeHTML(
+        project.id || ""
+      )}"
+    >
 
       <p class="project-description">
         ${escapeHTML(
@@ -601,25 +640,52 @@ function renderBAM() {
 
         ${structure
           .map(
-            (part, index) => `
+            (part, index) => {
 
-              <div class="project-part">
+              const partId =
+                typeof part === "object"
+                  ? part.id || ""
+                  : "";
 
-                <span class="project-part-number">
-                  ${String(
-                    index + 1
-                  ).padStart(3, "0")}
-                </span>
+              const partTitle =
+                typeof part === "object"
+                  ? part.title || ""
+                  : part;
 
-                <span class="project-part-title">
-                  ${escapeHTML(
-                    speak(part)
-                  )}
-                </span>
 
-              </div>
+              return `
 
-            `
+                <div
+                  class="project-part"
+                  data-record-type="art"
+                  data-record-id="${escapeHTML(
+                    partId
+                  )}"
+                >
+
+                  <span
+                    class="project-part-number"
+                  >
+                    ${String(
+                      index + 1
+                    ).padStart(3, "0")}
+                  </span>
+
+                  <span
+                    class="project-part-title"
+                  >
+                    ${escapeHTML(
+                      speak(
+                        partTitle
+                      )
+                    )}
+                  </span>
+
+                </div>
+
+              `;
+
+            }
           )
           .join("")}
 
@@ -662,14 +728,18 @@ function renderInvestigation() {
 
     container.innerHTML = `
       <div class="empty-state">
-        <span>${escapeHTML(
-          speak(
-            languagePhrase(
-              "investigation",
-              ""
+
+        <span>
+          ${escapeHTML(
+            speak(
+              languagePhrase(
+                "investigation",
+                ""
+              )
             )
-          )
-        )}</span>
+          )}
+        </span>
+
       </div>
     `;
 
@@ -689,6 +759,14 @@ function renderInvestigation() {
 
       article.className =
         "investigation-case";
+
+
+      article.dataset.recordType =
+        "investigation";
+
+
+      article.dataset.recordId =
+        caseFile.id || "";
 
 
       article.innerHTML = `
@@ -724,7 +802,9 @@ function renderInvestigation() {
               question => `
                 <span>
                   ${escapeHTML(
-                    speak(question)
+                    speak(
+                      question
+                    )
                   )}
                 </span>
               `
@@ -747,7 +827,7 @@ function renderInvestigation() {
 
 
 /* =========================================================
-   ARCHIVE
+   ARCHIVES
 ========================================================= */
 
 function renderArchive() {
@@ -774,14 +854,18 @@ function renderArchive() {
 
     container.innerHTML = `
       <div class="empty-state">
-        <span>${escapeHTML(
-          speak(
-            languagePhrase(
-              "archived",
-              ""
+
+        <span>
+          ${escapeHTML(
+            speak(
+              languagePhrase(
+                "archived",
+                ""
+              )
             )
-          )
-        )}</span>
+          )}
+        </span>
+
       </div>
     `;
 
@@ -801,6 +885,14 @@ function renderArchive() {
 
       article.className =
         "archive-entry";
+
+
+      article.dataset.recordType =
+        "archive";
+
+
+      article.dataset.recordId =
+        entry.id || "";
 
 
       article.innerHTML = `
@@ -882,6 +974,14 @@ function renderSignals() {
         "signal-card";
 
 
+      card.dataset.recordType =
+        "fragment";
+
+
+      card.dataset.recordId =
+        signal.id || "";
+
+
       let media = "";
 
 
@@ -898,6 +998,7 @@ function renderSignals() {
         ) {
 
           media = `
+
             <div class="signal-embed">
 
               <iframe
@@ -914,6 +1015,7 @@ function renderSignals() {
               </iframe>
 
             </div>
+
           `;
 
         }
@@ -925,6 +1027,7 @@ function renderSignals() {
         ) {
 
           media = `
+
             <div class="signal-embed">
 
               <iframe
@@ -941,6 +1044,7 @@ function renderSignals() {
               </iframe>
 
             </div>
+
           `;
 
         }
@@ -951,6 +1055,7 @@ function renderSignals() {
       if (!media) {
 
         media = `
+
           <div class="signal-placeholder">
 
             <span>
@@ -965,6 +1070,7 @@ function renderSignals() {
             </span>
 
           </div>
+
         `;
 
       }
@@ -1016,7 +1122,7 @@ function renderSignals() {
 
 
 /* =========================================================
-   ABOUT / ESCIE
+   ESCIE
 ========================================================= */
 
 function renderAbout() {
@@ -1082,7 +1188,8 @@ function initializeTimeSystem() {
       new Date().getHours();
 
 
-    let state = "night";
+    let state =
+      "night";
 
 
     if (
@@ -1090,7 +1197,8 @@ function initializeTimeSystem() {
       hour < 8
     ) {
 
-      state = "dawn";
+      state =
+        "dawn";
 
     }
 
@@ -1099,7 +1207,8 @@ function initializeTimeSystem() {
       hour < 16
     ) {
 
-      state = "day";
+      state =
+        "day";
 
     }
 
@@ -1108,7 +1217,8 @@ function initializeTimeSystem() {
       hour < 19
     ) {
 
-      state = "golden";
+      state =
+        "golden";
 
     }
 
@@ -1117,7 +1227,8 @@ function initializeTimeSystem() {
       hour < 22
     ) {
 
-      state = "dusk";
+      state =
+        "dusk";
 
     }
 
@@ -1177,7 +1288,11 @@ function initializeParallax() {
 
 
       sky.style.transform =
-        `translate3d(0, ${offset}px, 0)`;
+        `translate3d(
+          0,
+          ${offset}px,
+          0
+        )`;
 
     },
     {
