@@ -31,9 +31,15 @@
        ATMOSPHERE
        ===================================================== -->
 
-  <div class="sky" aria-hidden="true"></div>
+  <div
+    class="sky"
+    aria-hidden="true"
+  ></div>
 
-  <div class="grain" aria-hidden="true"></div>
+  <div
+    class="grain"
+    aria-hidden="true"
+  ></div>
 
 
   <!-- =====================================================
@@ -74,29 +80,49 @@
 
 
   <!-- =====================================================
-       HERO
+       MAIN EXPERIENCE
        ===================================================== -->
 
   <main>
 
+
+    <!-- ===================================================
+         ENTRY
+         =================================================== -->
+
     <section
-      id="hero"
-      class="hero"
+      id="entry"
+      class="site-section entry-section"
     >
 
-      <div class="hero-inner">
+      <div class="section-inner">
 
-        <p class="hero-year">
-          2027
+        <p class="section-label">
+          ENTRY
         </p>
 
-        <h1>
-          ESCIE
-        </h1>
+        <div
+          id="entry-container"
+          class="content-container"
+        >
 
-        <p class="hero-tagline">
-          REALITY WITH THE SIGNAL DISTORTED.
-        </p>
+          <div class="entry-inner">
+
+            <p class="hero-year">
+              2027
+            </p>
+
+            <h1>
+              ESCIE
+            </h1>
+
+            <p class="hero-tagline">
+              REALITY WITH THE SIGNAL DISTORTED.
+            </p>
+
+          </div>
+
+        </div>
 
       </div>
 
@@ -105,26 +131,26 @@
 
 
     <!-- ===================================================
-         MUSIC
+         NOW
          =================================================== -->
 
     <section
-      id="music"
-      class="site-section"
+      id="now"
+      class="site-section now-section"
     >
 
       <div class="section-inner">
 
         <p class="section-label">
-          MUSIC
+          NOW
         </p>
 
         <h2>
-          MUSIC
+          NOW
         </h2>
 
         <div
-          id="music-container"
+          id="now-container"
           class="content-container"
         ></div>
 
@@ -135,28 +161,125 @@
 
 
     <!-- ===================================================
-         BAM
+         ART
          =================================================== -->
 
     <section
-      id="bam"
-      class="site-section bam-section"
+      id="art"
+      class="site-section art-section"
     >
 
       <div class="section-inner">
 
         <p class="section-label">
-          BAM
+          ART
         </p>
 
         <h2>
-          BAM: BY ANY MEANS
+          ART
         </h2>
 
         <div
-          id="bam-container"
+          id="art-container"
           class="content-container"
-        ></div>
+        >
+
+          <!-- Existing music content temporarily lives here. -->
+
+          <div
+            id="music-container"
+            class="content-container"
+          ></div>
+
+
+          <!-- Existing BAM content temporarily lives here. -->
+
+          <div
+            id="bam-container"
+            class="content-container"
+          ></div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ===================================================
+         THE WEB
+         =================================================== -->
+
+    <section
+      id="web"
+      class="site-section web-section"
+    >
+
+      <div class="section-inner">
+
+        <p class="section-label">
+          THE WEB
+        </p>
+
+        <h2>
+          THE WEB
+        </h2>
+
+        <div
+          id="web-container"
+          class="content-container"
+        >
+
+          <div class="empty-state">
+
+            <span>
+              THE WEB IS BEING CONNECTED.
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ===================================================
+         THE ARCHIVES
+         =================================================== -->
+
+    <section
+      id="archives"
+      class="site-section archives-section"
+    >
+
+      <div class="section-inner">
+
+        <p class="section-label">
+          THE ARCHIVES
+        </p>
+
+        <h2>
+          THE ARCHIVES
+        </h2>
+
+        <div
+          id="archives-container"
+          class="content-container"
+        >
+
+          <!-- Existing archive renderer continues to use
+               #archive-container during migration. -->
+
+          <div
+            id="archive-container"
+            class="content-container"
+          ></div>
+
+        </div>
 
       </div>
 
@@ -170,7 +293,7 @@
 
     <section
       id="investigation"
-      class="site-section"
+      class="site-section investigation-section"
     >
 
       <div class="section-inner">
@@ -195,78 +318,18 @@
 
 
     <!-- ===================================================
-         ARCHIVE
+         ESCIE
          =================================================== -->
 
     <section
-      id="archive"
-      class="site-section"
+      id="escie"
+      class="site-section escie-section"
     >
 
       <div class="section-inner">
 
         <p class="section-label">
-          ARCHIVE
-        </p>
-
-        <h2>
-          ARCHIVE
-        </h2>
-
-        <div
-          id="archive-container"
-          class="content-container"
-        ></div>
-
-      </div>
-
-    </section>
-
-
-
-    <!-- ===================================================
-         SIGNAL
-         =================================================== -->
-
-    <section
-      id="signal"
-      class="site-section signal-section"
-    >
-
-      <div class="section-inner">
-
-        <p class="section-label">
-          SIGNAL
-        </p>
-
-        <h2>
-          SIGNAL
-        </h2>
-
-        <div
-          id="signal-container"
-          class="signal-grid"
-        ></div>
-
-      </div>
-
-    </section>
-
-
-
-    <!-- ===================================================
-         ABOUT
-         =================================================== -->
-
-    <section
-      id="about"
-      class="site-section about-section"
-    >
-
-      <div class="section-inner">
-
-        <p class="section-label">
-          ABOUT
+          ESCIE
         </p>
 
         <h2>
@@ -274,13 +337,64 @@
         </h2>
 
         <div
-          id="about-container"
-          class="about-content"
-        ></div>
+          id="escie-container"
+          class="content-container"
+        >
+
+          <!-- Existing About renderer continues to use
+               #about-container during migration. -->
+
+          <div
+            id="about-container"
+            class="about-content"
+          ></div>
+
+        </div>
 
       </div>
 
     </section>
+
+
+
+    <!-- ===================================================
+         THE GLASS EYE
+         =================================================== -->
+
+    <section
+      id="glass-eye"
+      class="site-section glass-eye-section"
+    >
+
+      <div class="section-inner">
+
+        <p class="section-label">
+          THE GLASS EYE
+        </p>
+
+        <h2>
+          THE GLASS EYE
+        </h2>
+
+        <div
+          id="glass-eye-container"
+          class="content-container"
+        >
+
+          <div class="empty-state">
+
+            <span>
+              LOOKING THROUGH THE GLASS.
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
 
   </main>
 
@@ -318,6 +432,7 @@
   <script src="data/people.js"></script>
   <script src="data/language.js"></script>
   <script src="data/narration.js"></script>
+
 
   <!-- =====================================================
        APPLICATION
