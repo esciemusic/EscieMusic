@@ -1,202 +1,538 @@
 /*
-  ============================================================
-  ESCIE SITE ENGINE
-  ============================================================
+============================================================
+ESCIE — APPLICATION RUNTIME
+============================================================
 
-  The interface is modular.
-  The content is data-driven.
-  The language layer is permanent.
+The runtime is the bridge between:
 
-  The runtime provides a bridge between existing data and
-  the future ESCIE record / relationship architecture.
+ESCIE DATA
+     ↓
+UNIVERSAL RECORDS
+     ↓
+RUNTIME
+     ↓
+INTERFACE
+
+The runtime does not create canon.
+
+The runtime does not invent relationships.
+
+The runtime does not decide meaning.
+
+It organizes what already exists and exposes it
+consistently to the interface.
+============================================================
 */
 
 
-/* =========================================================
-   CORE UTILITIES
-========================================================= */
+/*
+============================================================
+UTILITY
+============================================================
+*/
 
 function byId(id) {
+
   return document.getElementById(id);
+
 }
 
 
 function escapeHTML(value) {
 
   if (value === null || value === undefined) {
+
     return "";
+
   }
 
+
   return String(value)
+
     .replace(/&/g, "&amp;")
+
     .replace(/</g, "&lt;")
+
     .replace(/>/g, "&gt;")
+
     .replace(/"/g, "&quot;")
+
     .replace(/'/g, "&#039;");
 
 }
 
 
-/* =========================================================
-   LANGUAGE
-========================================================= */
+/*
+============================================================
+LANGUAGE
+============================================================
+*/
 
-function speak(text) {
+function speak(key) {
 
   if (
-    window.ESCIE_LANGUAGE_ENGINE &&
-    typeof window.ESCIE_LANGUAGE_ENGINE.speak === "function"
+
+    window.ESCIE_LANGUAGE &&
+
+    typeof window.ESCIE_LANGUAGE.get === "function"
+
   ) {
-    return window.ESCIE_LANGUAGE_ENGINE.speak(text);
+
+    return window.ESCIE_LANGUAGE.get(key);
+
   }
 
-  return text;
+
+  return key;
+
 }
 
 
-function languagePhrase(key, fallback = "") {
+function languagePhrase(value) {
 
-  if (
-    window.ESCIE_LANGUAGE_ENGINE &&
-    typeof window.ESCIE_LANGUAGE_ENGINE.phrase === "function"
-  ) {
-    return window.ESCIE_LANGUAGE_ENGINE.phrase(
-      key,
-      fallback
-    );
+  if (!value) {
+
+    return "";
+
   }
 
-  return fallback;
+
+  if (
+
+    typeof value === "string" &&
+
+    value.startsWith("language:")
+
+  ) {
+
+    return speak(value.replace("language:", ""));
+
+  }
+
+
+  return value;
+
 }
 
 
 function enforceESCIELanguage() {
 
   if (
-    window.ESCIE_LANGUAGE_ENGINE &&
-    typeof window.ESCIE_LANGUAGE_ENGINE.enforceInterface === "function"
+
+    window.ESCIE_LANGUAGE &&
+
+    typeof window.ESCIE_LANGUAGE.init === "function"
+
   ) {
-    window.ESCIE_LANGUAGE_ENGINE.enforceInterface();
+
+    window.ESCIE_LANGUAGE.init();
+
   }
 
 }
 
 
-/* =========================================================
-   PUBLICATION
-========================================================= */
+/*
+============================================================
+PUBLICATION
+============================================================
+*/
 
 function isPublished(item) {
 
+  if (!item) {
+
+    return false;
+
+  }
+
+
+  if (item.published === false) {
+
+    return false;
+
+  }
+
+
+  if (item.status === "draft") {
+
+    return false;
+
+  }
+
+
+  if (item.status === "private") {
+
+    return false;
+
+  }
+
+
+  if (
+
+    window.ESCIE_RECORD &&
+
+    typeof window.ESCIE_RECORD.isPublic === "function"
+
+  ) {
+
+    if (
+
+      item.identity ||
+
+      item.disclosure ||
+
+      item.provenance
+
+    ) {
+
+      return window.ESCIE_RECORD.isPublic(item);
+
+    }
+
+  }
+
+
+  return true;
+
+}
+
+
+/*
+============================================================
+RECORD LAYER
+============================================================
+
+Existing data remains untouched.
+
+The runtime normalizes records only when requested.
+
+This allows the site to transition gradually instead of
+requiring a destructive migration.
+============================================================
+*/
+
+function normalizeRecord(record) {
+
+  if (!record) {
+
+    return null;
+
+  }
+
+
+  if (
+
+    window.ESCIE_RECORD &&
+
+    typeof window.ESCIE_RECORD.normalize === "function"
+
+  ) {
+
+    return window.ESCIE_RECORD.normalize(record);
+
+  }
+
+
+  return record;
+
+}
+
+
+function normalizeRecords(records) {
+
+  if (!Array.isArray(records)) {
+
+    return [];
+
+  }
+
+
+  return records
+
+    .map(normalizeRecord)
+
+    .filter(Boolean);
+
+}
+
+
+/*
+============================================================
+RECORD ACCESS
+============================================================
+*/
+
+function getRecordId(record) {
+
+  if (
+
+    window.ESCIE_RECORD &&
+
+    typeof window.ESCIE_RECORD.getId === "function"
+
+  ) {
+
+    return window.ESCIE_RECORD.getId(record);
+
+  }
+
+
+  return record?.id || null;
+
+}
+
+
+function getRecordTitle(record) {
+
+  if (
+
+    window.ESCIE_RECORD &&
+
+    typeof window.ESCIE_RECORD.getTitle === "function"
+
+  ) {
+
+    return window.ESCIE_RECORD.getTitle(record);
+
+  }
+
+
   return (
-    item &&
-    item.published === true &&
-    item.status !== "hidden"
+
+    record?.title ||
+
+    record?.name ||
+
+    ""
+
   );
 
 }
 
 
-/* =========================================================
-   ESCIE RUNTIME
-========================================================= */
-
 /*
-  The runtime is the first layer between the interface and
-  the deeper ESCIE system.
-
-  For now it exposes the existing data safely.
-
-  Future layers can connect here:
-
-  RECORDS
-  RELATIONSHIPS
-  EVENTS
-  HISTORY
-  BRAIN
-  CONTROL
-  SIGNAL ENGINE
-  GLASS EYE
+============================================================
+RUNTIME
+============================================================
 */
 
 window.ESCIE_RUNTIME = {
 
-  version: "0.1.0",
+  /*
+  ----------------------------------------------------------
+  RECORD
+  ----------------------------------------------------------
+  */
 
-  getData(name, fallback = []) {
+  record: {
 
-    if (
-      Object.prototype.hasOwnProperty.call(
-        window,
-        name
-      )
-    ) {
-      return window[name];
-    }
+    normalize: normalizeRecord,
 
-    return fallback;
+    normalizeAll: normalizeRecords,
+
+    getId: getRecordId,
+
+    getTitle: getRecordTitle,
+
+    isPublic: isPublished
 
   },
+
+
+  /*
+  ----------------------------------------------------------
+  SITE
+  ----------------------------------------------------------
+  */
 
   getSite() {
 
-    return this.getData(
-      "ESCIE_SITE",
-      null
-    );
+    return window.ESCIE_SITE || {};
 
   },
+
+
+  /*
+  ----------------------------------------------------------
+  NAVIGATION
+  ----------------------------------------------------------
+  */
 
   getNavigation() {
 
-    return this.getData(
-      "ESCIE_NAVIGATION",
-      []
-    );
+    return Array.isArray(window.ESCIE_NAVIGATION)
+
+      ? [...window.ESCIE_NAVIGATION]
+
+      : [];
 
   },
+
+
+  /*
+  ----------------------------------------------------------
+  MUSIC
+  ----------------------------------------------------------
+  */
 
   getMusic() {
 
-    return this.getData(
-      "ESCIE_MUSIC",
-      []
-    );
+    return Array.isArray(window.ESCIE_MUSIC)
+
+      ? [...window.ESCIE_MUSIC]
+
+      : [];
 
   },
+
+
+  /*
+  ----------------------------------------------------------
+  PROJECTS
+  ----------------------------------------------------------
+  */
 
   getProjects() {
 
-    return this.getData(
-      "ESCIE_PROJECTS",
-      []
-    );
+    return Array.isArray(window.ESCIE_PROJECTS)
+
+      ? [...window.ESCIE_PROJECTS]
+
+      : [];
 
   },
+
+
+  /*
+  ----------------------------------------------------------
+  SIGNALS
+  ----------------------------------------------------------
+  */
 
   getSignals() {
 
-    return this.getData(
-      "ESCIE_SIGNALS",
-      []
-    );
+    return Array.isArray(window.ESCIE_SIGNALS)
+
+      ? [...window.ESCIE_SIGNALS]
+
+      : [];
 
   },
+
+
+  /*
+  ----------------------------------------------------------
+  ARCHIVE
+  ----------------------------------------------------------
+  */
 
   getArchive() {
 
-    return this.getData(
-      "ESCIE_ARCHIVE",
-      []
+    return Array.isArray(window.ESCIE_ARCHIVE)
+
+      ? [...window.ESCIE_ARCHIVE]
+
+      : [];
+
+  },
+
+
+  /*
+  ----------------------------------------------------------
+  INVESTIGATION
+  ----------------------------------------------------------
+  */
+
+  getInvestigation() {
+
+    return Array.isArray(window.ESCIE_INVESTIGATION)
+
+      ? [...window.ESCIE_INVESTIGATION]
+
+      : [];
+
+  },
+
+
+  /*
+  ----------------------------------------------------------
+  PEOPLE
+  ----------------------------------------------------------
+  */
+
+  getPeople() {
+
+    return Array.isArray(window.ESCIE_PEOPLE)
+
+      ? [...window.ESCIE_PEOPLE]
+
+      : [];
+
+  },
+
+
+  /*
+  ----------------------------------------------------------
+  NORMALIZED COLLECTIONS
+  ----------------------------------------------------------
+
+  These are intentionally derived views.
+
+  They do not replace the source data.
+  ----------------------------------------------------------
+  */
+
+  getArtRecords() {
+
+    return normalizeRecords(
+
+      this.getMusic()
+
     );
 
   },
 
-  getInvestigation() {
 
-    return this.getData(
-      "ESCIE_INVESTIGATION",
-      []
+  getBodyRecords() {
+
+    return normalizeRecords(
+
+      this.getProjects()
+
+    );
+
+  },
+
+
+  getInvestigationRecords() {
+
+    return normalizeRecords(
+
+      this.getInvestigation()
+
+    );
+
+  },
+
+
+  getArchiveRecords() {
+
+    return normalizeRecords(
+
+      this.getArchive()
+
+    );
+
+  },
+
+
+  getFragmentRecords() {
+
+    return normalizeRecords(
+
+      this.getSignals()
+
     );
 
   }
@@ -204,13 +540,873 @@ window.ESCIE_RUNTIME = {
 };
 
 
-/* =========================================================
-   SITE
-========================================================= */
+/*
+============================================================
+NAVIGATION
+============================================================
+*/
+
+function renderNavigation() {
+
+  const navigation =
+
+    window.ESCIE_RUNTIME.getNavigation();
+
+
+  const containers =
+
+    document.querySelectorAll(
+
+      "[data-escie-navigation]"
+
+    );
+
+
+  if (!containers.length) {
+
+    return;
+
+  }
+
+
+  navigation
+
+    .filter(item => item.visible !== false)
+
+    .sort(
+
+      (a, b) =>
+
+        (a.order || 0) -
+
+        (b.order || 0)
+
+    )
+
+    .forEach(item => {
+
+      containers.forEach(container => {
+
+        const link =
+
+          document.createElement("a");
+
+
+        link.href = item.target || "#";
+
+
+        link.textContent =
+
+          languagePhrase(item.label || item.id);
+
+
+        link.dataset.navigationId =
+
+          item.id || "";
+
+
+        link.className =
+
+          "escie-navigation-link";
+
+
+        container.appendChild(link);
+
+      });
+
+    });
+
+}
+
+
+/*
+============================================================
+NAVIGATION INTERACTION
+============================================================
+*/
+
+function initializeNavigation() {
+
+  document.addEventListener(
+
+    "click",
+
+    event => {
+
+      const link =
+
+        event.target.closest(
+
+          ".escie-navigation-link"
+
+        );
+
+
+      if (!link) {
+
+        return;
+
+      }
+
+
+      const target =
+
+        link.getAttribute("href");
+
+
+      if (
+
+        !target ||
+
+        !target.startsWith("#")
+
+      ) {
+
+        return;
+
+      }
+
+
+      const destination =
+
+        document.querySelector(target);
+
+
+      if (!destination) {
+
+        return;
+
+      }
+
+
+      event.preventDefault();
+
+
+      destination.scrollIntoView({
+
+        behavior: "smooth",
+
+        block: "start"
+
+      });
+
+
+      history.replaceState(
+
+        null,
+
+        "",
+
+        target
+
+      );
+
+    }
+
+  );
+
+}
+
+
+/*
+============================================================
+MUSIC
+============================================================
+*/
+
+function renderMusic() {
+
+  const container =
+
+    byId("music-container");
+
+
+  if (!container) {
+
+    return;
+
+  }
+
+
+  const music =
+
+    window.ESCIE_RUNTIME
+
+      .getMusic()
+
+      .filter(isPublished);
+
+
+  if (!music.length) {
+
+    container.innerHTML = "";
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+
+    music
+
+      .map(track => {
+
+        return `
+
+          <article
+
+            class="music-card"
+
+            data-record-type="art"
+
+            data-record-id="${escapeHTML(
+
+              getRecordId(track)
+
+            )}"
+
+          >
+
+            <div class="music-card-title">
+
+              ${escapeHTML(
+
+                getRecordTitle(track)
+
+              )}
+
+            </div>
+
+          </article>
+
+        `;
+
+      })
+
+      .join("");
+
+}
+
+
+/*
+============================================================
+BAM / BODIES
+============================================================
+*/
+
+function renderBAM() {
+
+  const container =
+
+    byId("bam-container");
+
+
+  if (!container) {
+
+    return;
+
+  }
+
+
+  const projects =
+
+    window.ESCIE_RUNTIME
+
+      .getProjects()
+
+      .filter(isPublished);
+
+
+  if (!projects.length) {
+
+    container.innerHTML = "";
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+
+    projects
+
+      .map(project => {
+
+        const parts =
+
+          Array.isArray(project.structure)
+
+            ? project.structure
+
+            : Array.isArray(project.parts)
+
+              ? project.parts
+
+              : [];
+
+
+        const projectId =
+
+          getRecordId(project);
+
+
+        const title =
+
+          getRecordTitle(project);
+
+
+        const partMarkup =
+
+          parts
+
+            .map(part => {
+
+              const item =
+
+                typeof part === "string"
+
+                  ? {
+
+                      id: part,
+
+                      title: part
+
+                    }
+
+                  : part;
+
+
+              const id =
+
+                getRecordId(item) ||
+
+                item?.id ||
+
+                "";
+
+
+              const partTitle =
+
+                getRecordTitle(item) ||
+
+                item?.title ||
+
+                item?.name ||
+
+                "";
+
+
+              return `
+
+                <article
+
+                  class="bam-part"
+
+                  data-record-type="art"
+
+                  data-record-id="${escapeHTML(id)}"
+
+                >
+
+                  ${escapeHTML(partTitle)}
+
+                </article>
+
+              `;
+
+            })
+
+            .join("");
+
+
+        return `
+
+          <article
+
+            class="bam-project"
+
+            data-record-type="body"
+
+            data-record-id="${escapeHTML(projectId)}"
+
+          >
+
+            <h2>
+
+              ${escapeHTML(title)}
+
+            </h2>
+
+            <div class="bam-parts">
+
+              ${partMarkup}
+
+            </div>
+
+          </article>
+
+        `;
+
+      })
+
+      .join("");
+
+}
+
+
+/*
+============================================================
+INVESTIGATION
+============================================================
+*/
+
+function renderInvestigation() {
+
+  const container =
+
+    byId("investigation-container");
+
+
+  if (!container) {
+
+    return;
+
+  }
+
+
+  const investigations =
+
+    window.ESCIE_RUNTIME
+
+      .getInvestigation()
+
+      .filter(isPublished);
+
+
+  if (!investigations.length) {
+
+    container.innerHTML = "";
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+
+    investigations
+
+      .map(item => {
+
+        return `
+
+          <article
+
+            class="investigation-card"
+
+            data-record-type="investigation"
+
+            data-record-id="${escapeHTML(
+
+              getRecordId(item)
+
+            )}"
+
+          >
+
+            <h3>
+
+              ${escapeHTML(
+
+                getRecordTitle(item)
+
+              )}
+
+            </h3>
+
+          </article>
+
+        `;
+
+      })
+
+      .join("");
+
+}
+
+
+/*
+============================================================
+ARCHIVE
+============================================================
+*/
+
+function renderArchive() {
+
+  const container =
+
+    byId("archive-container");
+
+
+  if (!container) {
+
+    return;
+
+  }
+
+
+  const archive =
+
+    window.ESCIE_RUNTIME
+
+      .getArchive()
+
+      .filter(isPublished);
+
+
+  if (!archive.length) {
+
+    container.innerHTML = "";
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+
+    archive
+
+      .map(item => {
+
+        return `
+
+          <article
+
+            class="archive-card"
+
+            data-record-type="fragment"
+
+            data-record-id="${escapeHTML(
+
+              getRecordId(item)
+
+            )}"
+
+          >
+
+            <h3>
+
+              ${escapeHTML(
+
+                getRecordTitle(item)
+
+              )}
+
+            </h3>
+
+          </article>
+
+        `;
+
+      })
+
+      .join("");
+
+}
+
+
+/*
+============================================================
+SIGNALS
+============================================================
+*/
+
+function renderSignals() {
+
+  const container =
+
+    byId("signal-container");
+
+
+  if (!container) {
+
+    return;
+
+  }
+
+
+  const signals =
+
+    window.ESCIE_RUNTIME
+
+      .getSignals()
+
+      .filter(isPublished);
+
+
+  if (!signals.length) {
+
+    container.innerHTML = "";
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+
+    signals
+
+      .map(signal => {
+
+        return `
+
+          <article
+
+            class="signal-card"
+
+            data-record-type="fragment"
+
+            data-record-id="${escapeHTML(
+
+              getRecordId(signal)
+
+            )}"
+
+          >
+
+            <h3>
+
+              ${escapeHTML(
+
+                getRecordTitle(signal)
+
+              )}
+
+            </h3>
+
+          </article>
+
+        `;
+
+      })
+
+      .join("");
+
+}
+
+
+/*
+============================================================
+ABOUT / ESCIE
+============================================================
+*/
+
+function renderAbout() {
+
+  const container =
+
+    byId("about-container");
+
+
+  if (!container) {
+
+    return;
+
+  }
+
+
+  const site =
+
+    window.ESCIE_RUNTIME.getSite();
+
+
+  container.innerHTML = `
+
+    <div class="escie-about">
+
+      <h2>
+
+        ${escapeHTML(
+
+          site.name || "ESCIE"
+
+        )}
+
+      </h2>
+
+    </div>
+
+  `;
+
+}
+
+
+/*
+============================================================
+TIME
+============================================================
+*/
+
+function initializeTime() {
+
+  const elements =
+
+    document.querySelectorAll(
+
+      "[data-escie-time]"
+
+    );
+
+
+  if (!elements.length) {
+
+    return;
+
+  }
+
+
+  function updateTime() {
+
+    const now =
+
+      new Date();
+
+
+    elements.forEach(element => {
+
+      const format =
+
+        element.dataset.escieTime;
+
+
+      if (format === "year") {
+
+        element.textContent =
+
+          now.getFullYear();
+
+        return;
+
+      }
+
+
+      if (format === "iso") {
+
+        element.textContent =
+
+          now.toISOString();
+
+        return;
+
+      }
+
+
+      element.textContent =
+
+        now.toLocaleString();
+
+    });
+
+  }
+
+
+  updateTime();
+
+
+  setInterval(
+
+    updateTime,
+
+    1000
+
+  );
+
+}
+
+
+/*
+============================================================
+PARALLAX
+============================================================
+*/
+
+function initializeParallax() {
+
+  const elements =
+
+    document.querySelectorAll(
+
+      "[data-parallax]"
+
+    );
+
+
+  if (!elements.length) {
+
+    return;
+
+  }
+
+
+  window.addEventListener(
+
+    "scroll",
+
+    () => {
+
+      const scrollY =
+
+        window.scrollY;
+
+
+      elements.forEach(element => {
+
+        const speed =
+
+          parseFloat(
+
+            element.dataset.parallax
+
+          ) || 0;
+
+
+        element.style.transform =
+
+          `translateY(${scrollY * speed}px)`;
+
+      });
+
+    },
+
+    {
+
+      passive: true
+
+    }
+
+  );
+
+}
+
+
+/*
+============================================================
+SITE INITIALIZATION
+============================================================
+*/
 
 function initializeSite() {
 
+  enforceESCIELanguage();
+
+
   renderNavigation();
+
+  initializeNavigation();
+
 
   renderMusic();
 
@@ -224,1100 +1420,50 @@ function initializeSite() {
 
   renderAbout();
 
-  enforceESCIELanguage();
 
-}
+  initializeTime();
 
+  initializeParallax();
 
-/* =========================================================
-   NAVIGATION
-========================================================= */
 
-function renderNavigation() {
+  document.documentElement.dataset.escieReady =
 
-  const navigation =
-    byId("main-navigation");
+    "true";
 
 
-  if (!navigation) {
-    return;
-  }
+  window.dispatchEvent(
 
+    new CustomEvent(
 
-  const items =
-    window.ESCIE_RUNTIME.getNavigation();
+      "escie:ready",
 
+      {
 
-  navigation.innerHTML = "";
+        detail: {
 
-
-  items
-    .filter(
-      item => item.visible !== false
-    )
-    .sort(
-      (a, b) =>
-        (a.order || 0) -
-        (b.order || 0)
-    )
-    .forEach(
-      item => {
-
-        const link =
-          document.createElement("a");
-
-
-        link.href =
-          item.target || "#top";
-
-
-        link.dataset.target =
-          item.target || "#top";
-
-
-        link.textContent =
-          speak(
-            item.label || ""
-          );
-
-
-        navigation.appendChild(
-          link
-        );
-
-      }
-    );
-
-}
-
-
-function initializeNavigation() {
-
-  const trigger =
-    byId("mobile-menu-button");
-
-  const navigation =
-    byId("main-navigation");
-
-
-  if (!trigger || !navigation) {
-    return;
-  }
-
-
-  function openIndex() {
-
-    navigation.classList.add(
-      "is-open"
-    );
-
-    document.body.classList.add(
-      "menu-open"
-    );
-
-
-    trigger.setAttribute(
-      "aria-expanded",
-      "true"
-    );
-
-
-    trigger.setAttribute(
-      "aria-label",
-      speak("Close index")
-    );
-
-  }
-
-
-  function closeIndex() {
-
-    navigation.classList.remove(
-      "is-open"
-    );
-
-    document.body.classList.remove(
-      "menu-open"
-    );
-
-
-    trigger.setAttribute(
-      "aria-expanded",
-      "false"
-    );
-
-
-    trigger.setAttribute(
-      "aria-label",
-      speak("Open index")
-    );
-
-  }
-
-
-  function toggleIndex() {
-
-    if (
-      navigation.classList.contains(
-        "is-open"
-      )
-    ) {
-
-      closeIndex();
-
-    } else {
-
-      openIndex();
-
-    }
-
-  }
-
-
-  trigger.addEventListener(
-    "click",
-    toggleIndex
-  );
-
-
-  navigation.addEventListener(
-    "click",
-    event => {
-
-      const link =
-        event.target.closest("a");
-
-
-      if (!link) {
-        return;
-      }
-
-
-      const target =
-        link.dataset.target;
-
-
-      if (!target) {
-        return;
-      }
-
-
-      event.preventDefault();
-
-      closeIndex();
-
-
-      setTimeout(
-        () => {
-
-          const section =
-            document.querySelector(
-              target
-            );
-
-
-          if (section) {
-
-            section.scrollIntoView({
-              behavior: "smooth",
-              block: "start"
-            });
-
-          }
-
-        },
-        80
-      );
-
-    }
-  );
-
-
-  document.addEventListener(
-    "keydown",
-    event => {
-
-      if (event.key === "Escape") {
-        closeIndex();
-      }
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   ART
-========================================================= */
-
-function renderMusic() {
-
-  const container =
-    byId("music-container");
-
-
-  if (!container) {
-    return;
-  }
-
-
-  container.innerHTML = "";
-
-
-  const publishedMusic =
-    window.ESCIE_RUNTIME
-      .getMusic()
-      .filter(isPublished);
-
-
-  if (!publishedMusic.length) {
-
-    container.innerHTML = `
-      <div class="empty-state">
-
-        <span>
-          ${escapeHTML(
-            speak(
-              languagePhrase(
-                "unavailable",
-                ""
-              )
-            )
-          )}
-        </span>
-
-      </div>
-    `;
-
-    return;
-
-  }
-
-
-  publishedMusic.forEach(
-    track => {
-
-      const card =
-        document.createElement(
-          "article"
-        );
-
-
-      card.className =
-        "music-card";
-
-
-      /*
-        These attributes connect visible material
-        to the future universal record system.
-      */
-
-      card.dataset.recordType =
-        "art";
-
-
-      card.dataset.recordId =
-        track.id || "";
-
-
-      card.innerHTML = `
-
-        <div class="music-card-number">
-          ${escapeHTML(
-            track.number || ""
-          )}
-        </div>
-
-        <h3>
-          ${escapeHTML(
-            speak(
-              track.title || ""
-            )
-          )}
-        </h3>
-
-        <p>
-          ${escapeHTML(
-            speak(
-              track.subtitle || ""
-            )
-          )}
-        </p>
-
-      `;
-
-
-      container.appendChild(
-        card
-      );
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   BAM
-========================================================= */
-
-function renderBAM() {
-
-  const container =
-    byId("bam-container");
-
-
-  if (!container) {
-    return;
-  }
-
-
-  container.innerHTML = "";
-
-
-  const project =
-    window.ESCIE_RUNTIME
-      .getProjects()
-      .find(
-        item =>
-          item.id ===
-          "bam-by-any-means"
-      );
-
-
-  if (
-    !project ||
-    !isPublished(project)
-  ) {
-
-    container.innerHTML = `
-      <div class="empty-state">
-
-        <span>
-          ${escapeHTML(
-            speak(
-              languagePhrase(
-                "hidden",
-                ""
-              )
-            )
-          )}
-        </span>
-
-      </div>
-    `;
-
-    return;
-
-  }
-
-
-  const structure =
-    project.structure || [];
-
-
-  container.innerHTML = `
-
-    <div
-      class="project-introduction"
-      data-record-type="body"
-      data-record-id="${escapeHTML(
-        project.id || ""
-      )}"
-    >
-
-      <p class="project-description">
-        ${escapeHTML(
-          speak(
-            project.description || ""
-          )
-        )}
-      </p>
-
-
-      <div class="project-structure">
-
-        ${structure
-          .map(
-            (part, index) => {
-
-              const partId =
-                typeof part === "object"
-                  ? part.id || ""
-                  : "";
-
-              const partTitle =
-                typeof part === "object"
-                  ? part.title || ""
-                  : part;
-
-
-              return `
-
-                <div
-                  class="project-part"
-                  data-record-type="art"
-                  data-record-id="${escapeHTML(
-                    partId
-                  )}"
-                >
-
-                  <span
-                    class="project-part-number"
-                  >
-                    ${String(
-                      index + 1
-                    ).padStart(3, "0")}
-                  </span>
-
-                  <span
-                    class="project-part-title"
-                  >
-                    ${escapeHTML(
-                      speak(
-                        partTitle
-                      )
-                    )}
-                  </span>
-
-                </div>
-
-              `;
-
-            }
-          )
-          .join("")}
-
-      </div>
-
-    </div>
-
-  `;
-
-}
-
-
-/* =========================================================
-   INVESTIGATION
-========================================================= */
-
-function renderInvestigation() {
-
-  const container =
-    byId(
-      "investigation-container"
-    );
-
-
-  if (!container) {
-    return;
-  }
-
-
-  container.innerHTML = "";
-
-
-  const cases =
-    window.ESCIE_RUNTIME
-      .getInvestigation()
-      .filter(isPublished);
-
-
-  if (!cases.length) {
-
-    container.innerHTML = `
-      <div class="empty-state">
-
-        <span>
-          ${escapeHTML(
-            speak(
-              languagePhrase(
-                "investigation",
-                ""
-              )
-            )
-          )}
-        </span>
-
-      </div>
-    `;
-
-    return;
-
-  }
-
-
-  cases.forEach(
-    caseFile => {
-
-      const article =
-        document.createElement(
-          "article"
-        );
-
-
-      article.className =
-        "investigation-case";
-
-
-      article.dataset.recordType =
-        "investigation";
-
-
-      article.dataset.recordId =
-        caseFile.id || "";
-
-
-      article.innerHTML = `
-
-        <span class="case-number">
-          ${escapeHTML(
-            speak(
-              caseFile.caseNumber || ""
-            )
-          )}
-        </span>
-
-        <h3>
-          ${escapeHTML(
-            speak(
-              caseFile.title || ""
-            )
-          )}
-        </h3>
-
-        <p class="case-question">
-          ${escapeHTML(
-            speak(
-              caseFile.question || ""
-            )
-          )}
-        </p>
-
-        <div class="case-secondary">
-
-          ${(caseFile.secondaryQuestions || [])
-            .map(
-              question => `
-                <span>
-                  ${escapeHTML(
-                    speak(
-                      question
-                    )
-                  )}
-                </span>
-              `
-            )
-            .join("")}
-
-        </div>
-
-      `;
-
-
-      container.appendChild(
-        article
-      );
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   ARCHIVES
-========================================================= */
-
-function renderArchive() {
-
-  const container =
-    byId("archive-container");
-
-
-  if (!container) {
-    return;
-  }
-
-
-  container.innerHTML = "";
-
-
-  const entries =
-    window.ESCIE_RUNTIME
-      .getArchive()
-      .filter(isPublished);
-
-
-  if (!entries.length) {
-
-    container.innerHTML = `
-      <div class="empty-state">
-
-        <span>
-          ${escapeHTML(
-            speak(
-              languagePhrase(
-                "archived",
-                ""
-              )
-            )
-          )}
-        </span>
-
-      </div>
-    `;
-
-    return;
-
-  }
-
-
-  entries.forEach(
-    entry => {
-
-      const article =
-        document.createElement(
-          "article"
-        );
-
-
-      article.className =
-        "archive-entry";
-
-
-      article.dataset.recordType =
-        "archive";
-
-
-      article.dataset.recordId =
-        entry.id || "";
-
-
-      article.innerHTML = `
-
-        <span class="archive-type">
-          ${escapeHTML(
-            speak(
-              entry.type || ""
-            )
-          )}
-        </span>
-
-        <h3>
-          ${escapeHTML(
-            speak(
-              entry.title || ""
-            )
-          )}
-        </h3>
-
-        <p>
-          ${escapeHTML(
-            speak(
-              entry.description || ""
-            )
-          )}
-        </p>
-
-      `;
-
-
-      container.appendChild(
-        article
-      );
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   SIGNAL
-========================================================= */
-
-function renderSignals() {
-
-  const container =
-    byId("signal-container");
-
-
-  if (!container) {
-    return;
-  }
-
-
-  container.innerHTML = "";
-
-
-  const signals =
-    window.ESCIE_RUNTIME
-      .getSignals()
-      .filter(
-        signal =>
-          signal.active !== false
-      );
-
-
-  signals.forEach(
-    signal => {
-
-      const card =
-        document.createElement(
-          "article"
-        );
-
-
-      card.className =
-        "signal-card";
-
-
-      card.dataset.recordType =
-        "fragment";
-
-
-      card.dataset.recordId =
-        signal.id || "";
-
-
-      let media = "";
-
-
-      if (
-        signal.embed &&
-        signal.embed.enabled === true &&
-        signal.embed.source
-      ) {
-
-
-        if (
-          signal.embed.type ===
-          "youtube"
-        ) {
-
-          media = `
-
-            <div class="signal-embed">
-
-              <iframe
-                src="https://www.youtube.com/embed/${encodeURIComponent(
-                  signal.embed.source
-                )}?playsinline=1"
-                title="${escapeHTML(
-                  speak(
-                    signal.name
-                  )
-                )}"
-                frameborder="0"
-                allowfullscreen>
-              </iframe>
-
-            </div>
-
-          `;
-
-        }
-
-
-        if (
-          signal.embed.type ===
-          "soundcloud"
-        ) {
-
-          media = `
-
-            <div class="signal-embed">
-
-              <iframe
-                src="https://w.soundcloud.com/player/?url=${encodeURIComponent(
-                  signal.embed.source
-                )}"
-                title="${escapeHTML(
-                  speak(
-                    signal.name
-                  )
-                )}"
-                frameborder="0"
-                allow="autoplay">
-              </iframe>
-
-            </div>
-
-          `;
+          runtime: window.ESCIE_RUNTIME
 
         }
 
       }
 
+    )
 
-      if (!media) {
-
-        media = `
-
-          <div class="signal-placeholder">
-
-            <span>
-              ${escapeHTML(
-                speak(
-                  languagePhrase(
-                    "transmission",
-                    ""
-                  )
-                )
-              )}
-            </span>
-
-          </div>
-
-        `;
-
-      }
-
-
-      card.innerHTML = `
-
-        <div class="signal-header">
-
-          <span class="signal-name">
-            ${escapeHTML(
-              speak(
-                signal.name || ""
-              )
-            )}
-          </span>
-
-          <span class="signal-type">
-            ${escapeHTML(
-              speak(
-                signal.type || ""
-              )
-            )}
-          </span>
-
-        </div>
-
-        ${media}
-
-        <p class="signal-description">
-          ${escapeHTML(
-            speak(
-              signal.description || ""
-            )
-          )}
-        </p>
-
-      `;
-
-
-      container.appendChild(
-        card
-      );
-
-    }
   );
 
 }
 
 
-/* =========================================================
-   ESCIE
-========================================================= */
-
-function renderAbout() {
-
-  const container =
-    byId("about-container");
-
-
-  if (!container) {
-    return;
-  }
-
-
-  const site =
-    window.ESCIE_RUNTIME.getSite();
-
-
-  if (!site) {
-    return;
-  }
-
-
-  container.innerHTML = `
-
-    <p class="about-location">
-      ${escapeHTML(
-        speak(
-          site.location || ""
-        )
-      )}
-    </p>
-
-    <p class="about-tagline">
-      ${escapeHTML(
-        speak(
-          site.tagline || ""
-        )
-      )}
-    </p>
-
-    <p class="about-philosophy">
-      ${escapeHTML(
-        speak(
-          site.philosophy || ""
-        )
-      )}
-    </p>
-
-  `;
-
-}
-
-
-/* =========================================================
-   TIME
-========================================================= */
-
-function initializeTimeSystem() {
-
-  function updateTimeState() {
-
-    const hour =
-      new Date().getHours();
-
-
-    let state =
-      "night";
-
-
-    if (
-      hour >= 5 &&
-      hour < 8
-    ) {
-
-      state =
-        "dawn";
-
-    }
-
-    else if (
-      hour >= 8 &&
-      hour < 16
-    ) {
-
-      state =
-        "day";
-
-    }
-
-    else if (
-      hour >= 16 &&
-      hour < 19
-    ) {
-
-      state =
-        "golden";
-
-    }
-
-    else if (
-      hour >= 19 &&
-      hour < 22
-    ) {
-
-      state =
-        "dusk";
-
-    }
-
-
-    document.body.dataset.time =
-      state;
-
-  }
-
-
-  updateTimeState();
-
-
-  setInterval(
-    updateTimeState,
-    60000
-  );
-
-}
-
-
-/* =========================================================
-   PARALLAX
-========================================================= */
-
-function initializeParallax() {
-
-  if (
-    window.matchMedia &&
-    window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches
-  ) {
-
-    return;
-
-  }
-
-
-  const sky =
-    document.querySelector(
-      ".sky"
-    );
-
-
-  if (!sky) {
-    return;
-  }
-
-
-  window.addEventListener(
-    "scroll",
-    () => {
-
-      const offset =
-        window.scrollY * 0.08;
-
-
-      sky.style.transform =
-        `translate3d(
-          0,
-          ${offset}px,
-          0
-        )`;
-
-    },
-    {
-      passive: true
-    }
-  );
-
-}
-
-
-/* =========================================================
-   INITIALIZATION
-========================================================= */
+/*
+============================================================
+BOOT
+============================================================
+*/
 
 document.addEventListener(
+
   "DOMContentLoaded",
-  () => {
 
-    initializeSite();
+  initializeSite
 
-    initializeTimeSystem();
-
-    initializeNavigation();
-
-    initializeParallax();
-
-  }
 );
