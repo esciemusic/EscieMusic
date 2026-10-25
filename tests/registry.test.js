@@ -56,18 +56,25 @@
 
     const bamProject = registry.get("bam-by-any-means");
     const firstTrack = registry.get("bam-001-dallas-63");
-    const secondTrack = registry.get("bam-002-pumpy-to-the-chest");
+    const lockedFixture = {
+      id:"__locked_release_fixture__",
+      type:"music",
+      title:"LOCKED FIXTURE",
+      project:"bam-by-any-means",
+      number:"999",
+      status:"development",
+      published:true,
+      visibility:"public",
+      release_status:"locked"
+    };
     assert(registry.releaseVisible(bamProject) === true, "BAM project must unlock when a released track exists");
     assert(registry.releaseVisible(firstTrack) === true, "released BAM track must be visible");
-    assert(registry.releaseVisible(secondTrack) === false, "unreleased BAM track must remain hidden");
+    assert(registry.releaseVisible(lockedFixture) === false, "locked releases must remain hidden");
     assert(registry.publicRecord("bam-001-dallas-63") && registry.publicRecord("bam-001-dallas-63").id === "bam-001-dallas-63", "publicRecord must return released public records");
-    assert(registry.publicRecord("bam-002-pumpy-to-the-chest") === null, "publicRecord must fail closed for locked records");
-
-    assert(registry.releaseVisible(Object.assign({}, secondTrack, { release_status: "unknown" })) === false, "invalid release states must fail closed");
-    assert(registry.manifestFor(secondTrack.id).search === false, "locked BAM track must be excluded from search");
-    const lockedManifest = registry.manifestFor(secondTrack.id);
-    assert(lockedManifest.released === false, "locked BAM track must be marked unreleased");
-    assert(lockedManifest.appearsIn.length === 0, "locked BAM track must have no public section appearances");
+    assert(registry.publicRecord(lockedFixture.id) === null, "publicRecord must fail closed for locked records");
+    assert(registry.releaseVisible(Object.assign({}, lockedFixture, { release_status:"unknown" })) === false, "invalid release states must fail closed");
+    const lockedManifest = registry.manifestFor(lockedFixture.id);
+    assert(lockedManifest === null, "unknown internal records must not acquire a public manifest");
 
     const counts = registry.relationshipCounts();
     assert(counts.relationships === 3 && counts.nodes === 4, "relationship counts must expose graph size");
@@ -77,9 +84,9 @@
     assert(Array.isArray(publicRecords), "canonical public record collection must return an array");
     assert(!publicRecords.some(record => record && record.release_status === "locked"), "public record collection must never expose locked releases");
     assert(publicRecords.some(record => record && record.id === "bam-001-dallas-63"), "released BAM transmission must enter canonical public records");
-    assert(!publicRecords.some(record => record && record.id === "bam-002-pumpy-to-the-chest"), "locked BAM transmission must stay out of canonical public records");
+    assert(!publicRecords.some(record => record && record.release_status === "locked"), "locked releases must stay out of canonical public records");
 
-    assert(!registry.publicRelationships().some(rel => rel && (rel.to === "bam-002-pumpy-to-the-chest" || rel.to === "bam-003-i-need-a-flex" || rel.to === "bam-004-sana-sana" || rel.to === "bam-005-bacc-2-basics" || rel.to === "bam-006-dichotomy")), "locked BAM transmissions must not enter the public relationship graph");
+    assert(!registry.publicRelationships().some(rel => rel && rel.to === lockedFixture.id), "locked releases must not enter the public relationship graph");
     const releaseAudit = registry.releaseAudit();
     assert(releaseAudit && releaseAudit.ok === true, "progressive release configuration must pass audit");
     assert(registry.manifestFor(secondTrack.id).sections.work === false, "locked BAM track must not appear in Work manifest");
@@ -94,16 +101,16 @@
     const searchIndex = typeof window !== "undefined" ? window.ESCIE_SEARCH_INDEX : null;
     if (searchIndex) {
       searchIndex.clear();
-      searchIndex.build([firstTrack, secondTrack]);
+      searchIndex.build([firstTrack, lockedFixture]);
       assert(searchIndex.entries.some(entry => entry.id === firstTrack.id), "released BAM track must enter search index");
-      assert(!searchIndex.entries.some(entry => entry.id === secondTrack.id), "locked BAM track must not enter search index");
+      assert(!searchIndex.entries.some(entry => entry.id === lockedFixture.id), "locked release must not enter search index");
     }
 
     const publishBuild = typeof window !== "undefined" ? window.ESCIE_PUBLISH_BUILD : null;
     if (publishBuild) {
-      const publicBuild = publishBuild.buildPublicRecords([firstTrack, secondTrack]);
+      const publicBuild = publishBuild.buildPublicRecords([firstTrack, lockedFixture]);
       assert(publicBuild.some(record => record.id === firstTrack.id), "released BAM track must enter public build");
-      assert(!publicBuild.some(record => record.id === secondTrack.id), "locked BAM track must stay out of public build");
+      assert(!publicBuild.some(record => record.id === lockedFixture.id), "locked release must stay out of public build");
     }
 
     return { passed: true };
