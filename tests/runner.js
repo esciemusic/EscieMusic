@@ -16,6 +16,7 @@
     ["navigation", "ESCIE_TEST_NAVIGATION"],
     ["responsive", "ESCIE_TEST_RESPONSIVE"],
     ["signal", "ESCIE_TEST_SIGNAL"],
+    ["permissions", "ESCIE_TEST_PERMISSIONS"],
     ["publishing", "ESCIE_TEST_PUBLISHING"]
   ];
 
