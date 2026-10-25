@@ -208,6 +208,66 @@ function auditHistory(history = [], sourceRegistry = []) {
   };
 }
 
+function auditHistoryChain(history = [], recordIds = []) {
+  const list = Array.isArray(history) ? history : [];
+  const knownRecords = new Set(
+    (Array.isArray(recordIds) ? recordIds : []).filter(Boolean)
+  );
+  const errors = [];
+  const seen = new Set();
+
+  list.forEach((entry, index) => {
+    if (!entry || typeof entry !== "object") {
+      errors.push({ index, message: "History entry must be an object." });
+      return;
+    }
+
+    if (!entry.id || seen.has(entry.id)) {
+      errors.push({
+        index,
+        id: entry.id || null,
+        message: entry.id ? "Duplicate history id." : "Missing history id."
+      });
+    } else {
+      seen.add(entry.id);
+    }
+
+    if (!entry.recordId || (knownRecords.size > 0 && !knownRecords.has(entry.recordId))) {
+      errors.push({
+        index,
+        id: entry.id || null,
+        recordId: entry.recordId || null,
+        message: "History record endpoint is missing."
+      });
+    }
+
+    if (!entry.timestamp || Number.isNaN(Date.parse(entry.timestamp))) {
+      errors.push({
+        index,
+        id: entry.id || null,
+        message: "Invalid history timestamp."
+      });
+    }
+
+    if (!Array.isArray(entry.sourceIds)) {
+      errors.push({
+        index,
+        id: entry.id || null,
+        message: "History sourceIds must be an array."
+      });
+    }
+  });
+
+  return {
+    ok: errors.length === 0,
+    counts: {
+      entries: list.length,
+      errors: errors.length
+    },
+    errors
+  };
+}
+
 function resolveAuditEntry(id, resolution = null) {
   const entry = ESCIE_AUDIT.find((item) => item.id === id);
 
@@ -229,7 +289,8 @@ if (typeof window !== "undefined") {
     add: addAuditEntry,
     resolve: resolveAuditEntry,
     auditRelationships,
-    auditHistory
+    auditHistory,
+    auditHistoryChain
   };
 }
 
