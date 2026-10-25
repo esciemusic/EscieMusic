@@ -3448,3 +3448,51 @@ body.player-visible{padding-bottom:clamp(88px,12vh,124px)}
 @media(prefers-reduced-motion:reduce){
   .entry-social-link{transition:none}
 }
+
+
+/* ALBUM VISUAL LAYER
+ * Project artwork becomes part of the Work atmosphere without replacing the
+ * underlying ESCIE atlas. The artwork is intentionally translucent and organic.
+ */
+.section-visual-work .section-visual-album{
+  position:absolute;
+  inset:7% 8% auto auto;
+  z-index:0;
+  width:min(48%,520px);
+  aspect-ratio:1;
+  object-fit:cover;
+  object-position:center;
+  opacity:0;
+  border-radius:3px;
+  filter:grayscale(.16) contrast(.86) saturate(.70) brightness(1.03);
+  mix-blend-mode:screen;
+  transform:translate3d(3%,1%,0) scale(1.025) rotate(.35deg);
+  box-shadow:0 0 80px rgba(0,0,0,.38);
+  transition:opacity 700ms var(--slow),transform 1100ms var(--slow),filter 900ms ease;
+  pointer-events:none;
+}
+.section-visual-work .section-visual-album.is-ready{
+  opacity:.34;
+  transform:translate3d(0,0,0) scale(1) rotate(0);
+}
+.section-visual-work.visual-active .section-visual-album.is-ready,
+.section-visual-work.visitor-present .section-visual-album.is-ready{
+  opacity:.48;
+  filter:grayscale(.08) contrast(.90) saturate(.82) brightness(1.08);
+}
+@media(max-width:700px){
+  .section-visual-work .section-visual-album{
+    inset:10% 6% auto auto;
+    width:min(64%,360px);
+    opacity:0;
+  }
+  .section-visual-work .section-visual-album.is-ready{opacity:.27}
+  .section-visual-work.visual-active .section-visual-album.is-ready,
+  .section-visual-work.visitor-present .section-visual-album.is-ready{opacity:.39}
+}
+@media(prefers-reduced-motion:reduce){
+  .section-visual-work .section-visual-album{
+    transition:none!important;
+    transform:none!important;
+  }
+}
