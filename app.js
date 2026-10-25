@@ -1359,7 +1359,8 @@
       button,
       nav,
       open: false,
-      lastFocused: null
+      lastFocused: null,
+      previousOverflow: ""
     };
 
     const sync = function (open) {
@@ -1369,6 +1370,14 @@
       button.setAttribute("aria-expanded", String(state.open));
       button.setAttribute("aria-label", state.open ? "Close index" : "Open index");
       nav.setAttribute("aria-hidden", String(!state.open));
+
+      if (state.open) {
+        if (!state.previousOverflow) state.previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = state.previousOverflow;
+        state.previousOverflow = "";
+      }
     };
 
     const closeMenu = function (restoreFocus = false) {
@@ -1378,8 +1387,16 @@
     };
 
     const openMenu = function () {
+      if (state.open) return;
       state.lastFocused = document.activeElement;
       sync(true);
+
+      const firstLink = nav.querySelector("a");
+      if (firstLink && typeof window.requestAnimationFrame === "function") {
+        window.requestAnimationFrame(function () {
+          if (state.open) firstLink.focus();
+        });
+      }
     };
 
     const toggleMenu = function () {
