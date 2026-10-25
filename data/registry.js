@@ -143,7 +143,15 @@
     return publicNodes().filter(node=>node.section&&manifest.sections&&manifest.sections[node.section]);
   }
 
-  function allPublicRecords(){
+  function publicRecord(id){
+  const record=build().byId[id]||null;
+  if(!record||!releaseVisible(record)) return null;
+  if(record.published===false) return null;
+  if(record.visibility==="private"||record.visibility==="withheld"||record.visibility==="limited") return null;
+  return record;
+}
+
+function allPublicRecords(){
     return build().records.filter(record=>releaseVisible(record)&&record.published!==false&&record.visibility!=="private"&&record.visibility!=="withheld"&&record.visibility!=="limited");
   }
 
@@ -314,5 +322,5 @@
     });
     return {ok:missing.length===0,missing};
   }
-  window.ESCIE_RECORD_REGISTRY={version:"1.15.0",build,records:()=>build().records,publicNodes,nodeFor,nodesForRecord,allPublicRecords,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,releaseAudit,manifestFor,filter,contextFor,publicRelationships,relationshipTypes,relationshipCategories,relationshipsFor,relationshipCounts,releaseVisible};
+  window.ESCIE_RECORD_REGISTRY={version:"1.15.0",build,records:()=>build().records,publicNodes,nodeFor,nodesForRecord,allPublicRecords,publicRecord,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,releaseAudit,manifestFor,filter,contextFor,publicRelationships,relationshipTypes,relationshipCategories,relationshipsFor,relationshipCounts,releaseVisible};
 })();
