@@ -3,6 +3,8 @@
  *
  * Audio signal state describes possible sonic responses.
  * It references existing material rather than inventing audio content.
+ *
+ * Playback belongs to the UI/media layer.
  */
 
 const ESCIE_SIGNAL_AUDIO = {
@@ -17,12 +19,25 @@ const ESCIE_SIGNAL_AUDIO = {
     "silence"
   ]),
 
+  isValidEffect(effect) {
+    return this.effects.includes(effect);
+  },
+
   create(input = {}) {
+    const effect = this.isValidEffect(input.effect) ? input.effect : null;
+
     return {
-      effect: input.effect || null,
+      effect,
       sourceId: input.sourceId || null,
-      volume: typeof input.volume === "number" ? input.volume : 1,
-      duration: typeof input.duration === "number" ? input.duration : 0
+      recordIds: Array.isArray(input.recordIds) ? [...input.recordIds] : [],
+      volume: Math.max(
+        0,
+        Math.min(1, typeof input.volume === "number" ? input.volume : 1)
+      ),
+      duration: Math.max(
+        0,
+        typeof input.duration === "number" ? input.duration : 0
+      )
     };
   }
 };
