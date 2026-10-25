@@ -61,6 +61,8 @@
       assert(document.body.style.overflow === "hidden", "INDEX should lock background scrolling while open");
       menu.close(false);
       assert(button.getAttribute("aria-expanded") === "false", "INDEX should close through its runtime controller");
+      assert(nav.dataset.open === "false", "INDEX data state should report closed");
+      assert(!nav.classList.contains("is-open"), "INDEX closed state should remove the open class");
       assert(document.body.style.overflow === "", "INDEX should restore background scrolling when closed");
       assert(nav.getAttribute("aria-hidden") === "true", "INDEX navigation should become hidden again when closed");
 
