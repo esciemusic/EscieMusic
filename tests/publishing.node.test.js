@@ -61,3 +61,28 @@ assert(
 );
 
 console.log("ESCIE publishing contracts OK");
+
+
+const publicationCases = [
+  { id: "status-published", type: "art", status: "published", visibility: "public" },
+  { id: "not-published", type: "art", status: "active", visibility: "public" },
+  { id: "limited-publication", type: "art", published: true, visibility: "limited" },
+  { id: "withheld-disclosure", type: "art", published: true, visibility: "public", public_disclosure: false }
+];
+
+assert(
+  validate.validatePublicRecord(publicationCases[0]).valid,
+  "Published status must satisfy public validation."
+);
+assert(
+  !validate.validatePublicRecord(publicationCases[1]).valid,
+  "Unpublished active records must fail public validation."
+);
+assert(
+  !validate.validatePublicRecord(publicationCases[2]).valid,
+  "Limited records must fail public validation."
+);
+assert(
+  !validate.validatePublicRecord(publicationCases[3]).valid,
+  "Records denying public disclosure must fail public validation."
+);
