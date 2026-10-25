@@ -213,7 +213,7 @@ assert(history.validateHistoryEntry(createdHistory, [registeredSource], []).vali
 const appendedHistory = history.appendHistory(createdHistory, { sources: [registeredSource] });
 assert(appendedHistory.valid === true, "valid history entry should append");
 const duplicateHistory = history.appendHistory(createdHistory, { sources: [registeredSource] });
-assert(duplicateHistory.valid === false, "duplicate history id must be rejected");
+assert(duplicateHistory2.valid === false, "duplicate history id must be rejected");
 const invalidHistory = history.createHistoryEntry({
   id: "history-missing-source",
   recordId: "provenance-record",
@@ -242,7 +242,6 @@ const invalidHistoryChain = historyChainAudit(
 assert(invalidHistoryChain.ok === false, "invalid history chain must fail audit");
 
 
-const history = require("../core/history.js");
 const historyEntry = history.createHistoryEntry({
   id: "history-test-001",
   event: "updated",
@@ -255,11 +254,11 @@ const historyEntry = history.createHistoryEntry({
 });
 assert(history.validate(historyEntry, [registeredSource]).valid, "valid history entry should pass validation");
 
-const appendedHistory = history.append(historyEntry, [registeredSource]);
-assert(appendedHistory.valid === true, "valid history entry should append");
-assert(appendedHistory.entry.id === "history-test-001", "appended history should return its entry");
+const appendedHistory2 = history.append(historyEntry, [registeredSource]);
+assert(appendedHistory2.valid === true, "valid history entry should append");
+assert(appendedHistory2.entry.id === "history-test-001", "appended history should return its entry");
 
-const duplicateHistory = history.append(historyEntry, [registeredSource]);
+const duplicateHistory2 = history.append(historyEntry, [registeredSource]);
 assert(duplicateHistory.valid === false, "duplicate history id must be rejected");
 
 const invalidHistory = history.append({
