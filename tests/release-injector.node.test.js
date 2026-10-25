@@ -16,6 +16,7 @@ function run(){
   const tempDir=fs.mkdtempSync(path.join(os.tmpdir(),"escie-release-"));
   const cwd=process.cwd();
   try{
+    fs.mkdirSync(path.join(tempDir,"data"),{recursive:true});
     fs.copyFileSync("publishing/inject-release.js",path.join(tempDir,"inject-release.js"));
     const queue={
       tracks:[
