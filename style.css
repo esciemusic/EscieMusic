@@ -3234,3 +3234,14 @@ body.menu-open .index-navigation.is-open{
   .index-navigation{transition:none!important;transform:none!important}
   .index-navigation a{transition:none!important;transform:none!important}
 }
+
+/* Final interaction contract: header controls remain clickable; player never hides content. */
+.site-header{pointer-events:auto!important}
+.site-logo,.index-trigger{pointer-events:auto!important}
+body.player-visible{padding-bottom:clamp(88px,12vh,124px)}
+@media(max-width:700px){
+  body.player-visible{padding-bottom:clamp(96px,16vh,142px)}
+}
+@media(prefers-reduced-motion:reduce){
+  body.player-visible{scroll-behavior:auto}
+}
