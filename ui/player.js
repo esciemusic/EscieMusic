@@ -74,6 +74,7 @@ const ESCIE_UI_PLAYER = {
       if (!this.ui || this.ui.dock.hidden || event.ctrlKey || event.metaKey || event.altKey) return;
       const target = event.target;
       if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) return;
+      if (!this.current) return;
       if (event.code === "Space") {
         event.preventDefault();
         this.playing ? this.pause() : this.play();
