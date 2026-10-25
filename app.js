@@ -565,13 +565,24 @@
     const reality = record.reality || record.reality_level || record.knowledge || "UNSPECIFIED";
     const status = record.status || "unknown";
     const description = record.description || "No public description has been established.";
+    const relationships = normalizeCollection(getRelationships());
+    const relatedIds = relationships
+      .filter(r => r && (r.from === recordId(record) || r.to === recordId(record)))
+      .map(r => r.from === recordId(record) ? r.to : r.from)
+      .filter((id, index, list) => id && list.indexOf(id) === index);
+    const related = relatedIds
+      .map(id => getAllPublicRecords().find(item => recordId(item) === id))
+      .filter(Boolean);
     body.innerHTML =
       '<p class="eyebrow">' + escapeHTML(record.type || "RECORD") + '</p>' +
       '<h3>' + escapeHTML(recordTitle(record)) + '</h3>' +
       '<p>' + escapeHTML(description) + '</p>' +
       '<dl class="record-facts"><div><dt>REALITY</dt><dd>' + escapeHTML(reality) + '</dd></div>' +
       '<div><dt>STATUS</dt><dd>' + escapeHTML(status) + '</dd></div>' +
-      '<div><dt>ID</dt><dd>' + escapeHTML(recordId(record)) + '</dd></div></dl>';
+      '<div><dt>ID</dt><dd>' + escapeHTML(recordId(record)) + '</dd></div></dl>' +
+      (related.length ? '<div class="record-related"><p class="eyebrow">CONNECTED RECORDS</p>' +
+        related.map(item => '<button class="record-related-link" type="button" data-record-id="' + escapeHTML(recordId(item)) + '">' +
+          escapeHTML(recordTitle(item)) + '</button>').join('') + '</div>' : '');
     modal.hidden = false;
     document.body.classList.add("inspector-open");
     const close = modal.querySelector("[data-inspector-close]");
