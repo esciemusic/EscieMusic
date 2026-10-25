@@ -34,6 +34,16 @@
     assert(N.some(item => item.id === "archives" && item.target === "#archives"), "ARCHIVE route should target #archives");
     assert(N.some(item => item.id === "investigation" && item.target === "#investigation"), "INVESTIGATION route should target #investigation");
 
+    const router = typeof window !== "undefined" ? window.ESCIE_UI_ROUTER : null;
+    if (router && typeof router.resolve === "function") {
+      assert(router.resolve("#art") === "art", "hash route should resolve to WORK");
+      assert(router.resolve("work") === "art", "legacy WORK alias should resolve to art");
+      assert(router.resolve("#archives") === "archives", "hash route should resolve to ARCHIVE");
+      assert(router.resolve("archive") === "archives", "legacy ARCHIVE alias should resolve to archives");
+      assert(router.resolve("cases") === "investigation", "legacy CASES alias should resolve to investigation");
+      assert(router.resolve("#missing") === null, "unknown route should fail closed");
+    }
+
 
     return { passed: true };
   }
