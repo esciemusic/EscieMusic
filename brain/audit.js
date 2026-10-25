@@ -142,6 +142,72 @@ function auditRelationships(relationships = [], records = [], relationshipAPI = 
   };
 }
 
+function auditHistory(history = [], sourceRegistry = []) {
+  const list = Array.isArray(history) ? history : [];
+  const sourceIds = new Set(
+    (Array.isArray(sourceRegistry) ? sourceRegistry : [])
+      .map((source) => source && source.id)
+      .filter(Boolean)
+  );
+  const errors = [];
+  const duplicateIds = [];
+  const seen = new Map();
+
+  list.forEach((entry, index) => {
+    if (!entry || typeof entry !== "object") {
+      errors.push({ index, message: "History entry must be an object." });
+      return;
+    }
+
+    if (!entry.id) {
+      errors.push({ index, message: "History entry is missing id." });
+    } else if (seen.has(entry.id)) {
+      duplicateIds.push({
+        id: entry.id,
+        firstIndex: seen.get(entry.id),
+        duplicateIndex: index
+      });
+    } else {
+      seen.set(entry.id, index);
+    }
+
+    if (!entry.timestamp || Number.isNaN(Date.parse(entry.timestamp))) {
+      errors.push({ index, id: entry.id || null, message: "Invalid timestamp." });
+    }
+
+    if (Array.isArray(entry.sourceIds)) {
+      entry.sourceIds.forEach((sourceId, valueIndex) => {
+        if (!sourceIds.has(sourceId)) {
+          errors.push({
+            index,
+            id: entry.id || null,
+            valueIndex,
+            message: "Unknown history source id.",
+            sourceId
+          });
+        }
+      });
+    } else {
+      errors.push({
+        index,
+        id: entry.id || null,
+        message: "History sourceIds must be an array."
+      });
+    }
+  });
+
+  return {
+    ok: errors.length === 0 && duplicateIds.length === 0,
+    counts: {
+      entries: list.length,
+      errors: errors.length,
+      duplicateIds: duplicateIds.length
+    },
+    errors,
+    duplicateIds
+  };
+}
+
 function resolveAuditEntry(id, resolution = null) {
   const entry = ESCIE_AUDIT.find((item) => item.id === id);
 
@@ -162,7 +228,8 @@ if (typeof window !== "undefined") {
     create: createAuditEntry,
     add: addAuditEntry,
     resolve: resolveAuditEntry,
-    auditRelationships
+    auditRelationships,
+    auditHistory
   };
 }
 
@@ -172,6 +239,7 @@ if (typeof module !== "undefined" && module.exports) {
     createAuditEntry,
     addAuditEntry,
     resolveAuditEntry,
-    auditRelationships
+    auditRelationships,
+    auditHistory
   };
 }
