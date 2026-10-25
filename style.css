@@ -2229,6 +2229,34 @@ body.inspector-open{overflow:hidden}
   background:linear-gradient(180deg,rgba(5,5,5,.24),transparent 38%,rgba(5,5,5,.34)),repeating-linear-gradient(0deg,transparent 0,transparent 5px,rgba(255,255,255,.024) 6px);
 }
 
+@keyframes escie-visual-backlight{
+  0%,76%,100%{
+    background-position:50% 50%,50% 50%;
+    background-size:140% 180%,120% 160%;
+    filter:none;
+  }
+  77%{
+    background-position:49.7% 50.2%,50.4% 49.8%;
+    background-size:142% 178%,121% 158%;
+  }
+  78%{
+    background-position:50.3% 49.8%,49.6% 50.2%;
+    background-size:138% 182%,119% 162%;
+  }
+  79%{
+    background-position:50% 50%,50% 50%;
+    background-size:140% 180%,120% 160%;
+  }
+  86%{
+    background-position:50.1% 49.9%,49.9% 50.1%;
+    background-size:141% 179%,120.5% 159.5%;
+  }
+  87%{
+    background-position:50% 50%,50% 50%;
+    background-size:140% 180%,120% 160%;
+  }
+}
+
 @keyframes escie-visual-night{0%{background-position:center top}50%{background-position:51% 2%}100%{background-position:49% -1%}}
 @keyframes escie-visual-vhs{0%{background-position:right top}45%{background-position:97% 2%}100%{background-position:103% -2%}}
 @keyframes escie-visual-network{0%{background-position:left 34%}50%{background-position:2% 35%}100%{background-position:-1% 33%}}
