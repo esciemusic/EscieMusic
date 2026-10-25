@@ -42,8 +42,69 @@ function auditRecordReferences(records, fields) {
   };
 }
 
+function auditProvenanceSources(records = [], sources = []) {
+  const list = Array.isArray(records) ? records : [];
+  const registry = Array.isArray(sources) ? sources : [];
+  const sourceIds = new Set(
+    registry.map((source) => source && source.id).filter(Boolean)
+  );
+  const missing = [];
+  const malformed = [];
+
+  list.forEach((record, index) => {
+    if (!record || !record.provenance) return;
+
+    const ids = Array.isArray(record.provenance.sourceIds)
+      ? record.provenance.sourceIds
+      : null;
+
+    if (!ids) {
+      malformed.push({
+        recordId: record.id || record.identity?.id || null,
+        index,
+        reason: "provenance.sourceIds must be an array"
+      });
+      return;
+    }
+
+    ids.forEach((sourceId, valueIndex) => {
+      if (typeof sourceId !== "string" || !sourceId.trim()) {
+        malformed.push({
+          recordId: record.id || record.identity?.id || null,
+          index,
+          valueIndex,
+          reason: "sourceId must be a non-empty string"
+        });
+        return;
+      }
+
+      if (!sourceIds.has(sourceId)) {
+        missing.push({
+          recordId: record.id || record.identity?.id || null,
+          index,
+          valueIndex,
+          sourceId
+        });
+      }
+    });
+  });
+
+  return {
+    ok: missing.length === 0 && malformed.length === 0,
+    counts: {
+      records: list.length,
+      sources: registry.length,
+      missing: missing.length,
+      malformed: malformed.length
+    },
+    missing,
+    malformed
+  };
+}
+
 const ESCIE_REFERENCE_AUDIT = {
-  auditRecordReferences
+  auditRecordReferences,
+  auditProvenanceSources
 };
 
 if (typeof window !== "undefined") {
