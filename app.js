@@ -197,7 +197,7 @@
     const visible = music.filter(isPublic);
 
     if (!visible.length) {
-      renderEmpty(container, "THE MUSIC IS STILL BEING DEVELOPED.");
+      renderEmpty(container, "THE MUSIC EXISTS. IT HAS NOT BEEN TRANSMITTED HERE YET.");
       return;
     }
 
@@ -219,7 +219,7 @@
     const visible = projects.filter(isPublic);
 
     if (!visible.length) {
-      renderEmpty(container, "PROJECTS ARE BEING DEVELOPED.");
+      renderEmpty(container, "THE WORK IS BEING PREPARED.");
       return;
     }
 
