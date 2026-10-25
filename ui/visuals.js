@@ -15,6 +15,7 @@
  let MEDIA_QUERY_HANDLER=null;
  let FOCUS_REFRESH=null;
  let POINTER_HANDLER=null;
+ let WORK_ALBUM_OBSERVER=null;
 
  
  function chooseVisualFocus(items,viewportWidth,viewportHeight){
@@ -102,6 +103,62 @@
   });
 }
 
+ function safeAlbumURL(value){
+  if(typeof value!=="string"||!value.trim())return null;
+  try{
+   const u=new URL(value,window.location.href);
+   return ["http:","https:"].includes(u.protocol)?u.href:null;
+  }catch(e){return null;}
+ }
+
+ function syncWorkAlbumVisuals(){
+  const work=document.querySelector('.section-visual[data-visual-section="work"]');
+  if(!work)return;
+  if(WORK_ALBUM_OBSERVER){WORK_ALBUM_OBSERVER.disconnect();WORK_ALBUM_OBSERVER=null;}
+  const cards=Array.from(document.querySelectorAll(".bam-project[data-album-visual]"));
+  const clear=()=>{
+   const current=work.querySelector(".section-visual-album");
+   if(current){current.style.opacity="0";window.setTimeout(()=>current.remove(),260);}
+   work.removeAttribute("data-album-visual");
+  };
+  if(!cards.length){clear();return;}
+  const apply=card=>{
+   const url=safeAlbumURL(card&&card.getAttribute("data-album-visual"));
+   if(!url)return;
+   const current=work.querySelector(".section-visual-album");
+   if(current&&current.getAttribute("src")===url)return;
+   const image=document.createElement("img");
+   image.className="section-visual-album";
+   image.src=url;
+   image.alt="";
+   image.loading="lazy";
+   image.decoding="async";
+   image.setAttribute("aria-hidden","true");
+   image.onload=()=>{
+    image.classList.add("is-ready");
+    if(current)window.setTimeout(()=>current.remove(),280);
+   };
+   image.onerror=()=>image.remove();
+   work.insertBefore(image,work.firstChild);
+   work.setAttribute("data-album-visual","active");
+  };
+  if("IntersectionObserver" in window){
+   const visible=new Map();
+   const choose=()=>{
+    let winner=null,best=-1;
+    visible.forEach((ratio,card)=>{if(ratio>best){best=ratio;winner=card;}});
+    if(winner)apply(winner);
+   };
+   WORK_ALBUM_OBSERVER=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+     if(entry.isIntersecting)visible.set(entry.target,entry.intersectionRatio);else visible.delete(entry.target);
+    });
+    choose();
+   },{threshold:[.2,.45,.7,.9],rootMargin:"-18% 0px -18% 0px"});
+   cards.forEach(card=>WORK_ALBUM_OBSERVER.observe(card));
+  }else apply(cards[0]);
+ }
+
  function init(){
   if(SECTION_OBSERVER){SECTION_OBSERVER.disconnect();SECTION_OBSERVER=null;}
   if(RESIZE_HANDLER){window.removeEventListener("resize",RESIZE_HANDLER);RESIZE_HANDLER=null;}
@@ -118,7 +175,7 @@
 
    const cleanup=MEDIA_CLEANUPS.get(el);
    if(cleanup)cleanup();
-   el.querySelectorAll(".section-visual-media").forEach(media=>media.remove());
+   el.querySelectorAll(".section-visual-media,.section-visual-album").forEach(media=>media.remove());
    el.classList.remove("has-visual-asset");
    delete el.dataset.visualMode;
    delete el.dataset.visualSymbols;
