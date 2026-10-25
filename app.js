@@ -136,15 +136,16 @@
   function detectLanguage() {
     const state = getRuntimeState();
     const saved = state && state.language;
-    if (saved && saved !== "en") {
-      return normalizeLanguage(saved);
+    if (saved) {
+      const normalizedSaved = normalizeLanguage(saved);
+      if (["en", "fr", "es"].includes(normalizedSaved)) {
+        return normalizedSaved;
+      }
     }
 
-    const browser = normalizeLanguage(
+    return normalizeLanguage(
       navigator.language || navigator.userLanguage || "en"
     );
-
-    return browser;
   }
 
   function setLanguage(language) {
@@ -1444,7 +1445,6 @@
       nav.setAttribute("aria-hidden", String(!state.open));
       button.setAttribute("aria-expanded", String(state.open));
       button.setAttribute("aria-label", state.open ? "Close index" : "Open index");
-      nav.setAttribute("aria-hidden", String(!state.open));
       nav.style.visibility = state.open ? "visible" : "hidden";
       nav.style.opacity = state.open ? "1" : "0";
       nav.style.pointerEvents = state.open ? "auto" : "none";
@@ -1461,8 +1461,15 @@
 
     const closeMenu = function (restoreFocus = false) {
       const wasOpen = state.open;
+      const returnTarget = state.lastFocused;
       sync(false);
-      if (restoreFocus && wasOpen) button.focus();
+      state.lastFocused = null;
+      if (restoreFocus && wasOpen) {
+        const target = returnTarget && typeof returnTarget.focus === "function"
+          ? returnTarget
+          : button;
+        target.focus();
+      }
     };
 
     const openMenu = function () {
