@@ -3141,3 +3141,46 @@ body.menu-open .index-navigation.is-open{
     animation:none!important;
   }
 }
+
+/* =========================================================
+   POINTER DEPTH / LIVING FOOTAGE
+   ========================================================= */
+.section-visual[data-visual-section]::before{
+  transform:
+    translate3d(var(--pointer-x,0px),var(--pointer-y,0px),0)
+    scale(1.025);
+  transition:transform 900ms var(--slow),opacity .9s ease,filter .9s ease;
+}
+.section-visual[data-visual-section].visual-active::before{
+  transform:
+    translate3d(var(--pointer-x,0px),var(--pointer-y,0px),0)
+    rotate(var(--pointer-rotate,0deg))
+    scale(1.045);
+}
+.section-visual[data-visual-section]::after{
+  transform:translate3d(calc(var(--pointer-x,0px) * -.22),calc(var(--pointer-y,0px) * -.18),0);
+  transition:transform 1200ms var(--slow),opacity .8s ease;
+}
+.escie-player{
+  min-height:64px;
+  border-color:rgba(79,134,173,.22);
+}
+.escie-player::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(79,134,173,.055),transparent);
+  background-size:200% 100%;
+  animation:escie-player-signal 6s linear infinite;
+}
+.escie-player-main{position:relative;z-index:1}
+@keyframes escie-player-signal{
+  from{background-position:200% 0}
+  to{background-position:-20% 0}
+}
+@media(prefers-reduced-motion:reduce){
+  .section-visual[data-visual-section]::before,
+  .section-visual[data-visual-section]::after,
+  .escie-player::before{animation:none!important;transition:none!important}
+}
