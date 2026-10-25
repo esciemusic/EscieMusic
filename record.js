@@ -362,7 +362,17 @@ const ESCIE_RECORD = {
 
         certainty:
           data.certainty ||
-          ESCIE_RECORD.CERTAINTY.UNKNOWN
+          ESCIE_RECORD.CERTAINTY.UNKNOWN,
+
+        sourceIds:
+          Array.isArray(data.sourceIds)
+            ? [...data.sourceIds]
+            : [],
+
+        chain:
+          Array.isArray(data.provenance_chain)
+            ? data.provenance_chain.map((step) => ({ ...step }))
+            : []
 
       },
 
@@ -482,6 +492,20 @@ const ESCIE_RECORD = {
 
       errors.push("Missing system.");
 
+    }
+
+    if (
+      record.provenance &&
+      !Array.isArray(record.provenance.sourceIds)
+    ) {
+      errors.push("provenance.sourceIds must be an array.");
+    }
+
+    if (
+      record.provenance &&
+      !Array.isArray(record.provenance.chain)
+    ) {
+      errors.push("provenance.chain must be an array.");
     }
 
     const validType = Object.values(ESCIE_RECORD.TYPES).includes(record.identity?.type);
@@ -606,6 +630,16 @@ const ESCIE_RECORD = {
       certainty:
         data.certainty ||
         data.provenance?.certainty,
+
+      sourceIds:
+        data.sourceIds ||
+        data.provenance?.sourceIds ||
+        [],
+
+      provenance_chain:
+        data.provenance_chain ||
+        data.provenance?.chain ||
+        [],
 
       status:
         data.status ||
