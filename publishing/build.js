@@ -22,8 +22,16 @@ function isPublicRecord(record = {}) {
 function buildPublicRecords(records = []) {
   if (!Array.isArray(records)) return [];
 
+  const seenIds = new Set();
+
   return records
     .filter(isPublicRecord)
+    .filter((record) => {
+      const id = record && record.id;
+      if (!id || seenIds.has(id)) return false;
+      seenIds.add(id);
+      return true;
+    })
     .map((record) => ({
       id: record.id || null,
       type: record.type || null,
