@@ -268,6 +268,36 @@ function auditHistoryChain(history = [], recordIds = []) {
   };
 }
 
+function auditHistorySequence(history = []) {
+  const list = Array.isArray(history) ? history : [];
+  const errors = [];
+  let previousTimestamp = null;
+
+  list.forEach((entry, index) => {
+    if (!entry || !entry.timestamp) return;
+    const current = Date.parse(entry.timestamp);
+    if (Number.isNaN(current)) return;
+
+    if (previousTimestamp !== null && current < previousTimestamp) {
+      errors.push({
+        index,
+        id: entry.id || null,
+        message: "History is not chronological.",
+        previousTimestamp: new Date(previousTimestamp).toISOString(),
+        timestamp: entry.timestamp
+      });
+    }
+
+    previousTimestamp = current;
+  });
+
+  return {
+    ok: errors.length === 0,
+    counts: { entries: list.length, errors: errors.length },
+    errors
+  };
+}
+
 function resolveAuditEntry(id, resolution = null) {
   const entry = ESCIE_AUDIT.find((item) => item.id === id);
 
@@ -290,6 +320,7 @@ if (typeof window !== "undefined") {
     resolve: resolveAuditEntry,
     auditRelationships,
     auditHistory,
+    auditHistorySequence,
     auditHistoryChain
   };
 }
