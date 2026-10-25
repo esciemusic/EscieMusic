@@ -705,6 +705,10 @@
   }
 
   function getAllPublicRecords() {
+    const registry = getGlobal("ESCIE_RECORD_REGISTRY", null);
+    if (registry && typeof registry.allPublicRecords === "function") {
+      return registry.allPublicRecords().filter(isPublic);
+    }
     return getAllRecords().filter(isPublic);
   }
 
