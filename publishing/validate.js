@@ -16,6 +16,19 @@ function validatePublicRecord(record = {}) {
     }
   }
 
+  const registry =
+    typeof window !== "undefined" ? window.ESCIE_RECORD_REGISTRY : null;
+
+  if (registry && typeof registry.releaseVisible === "function") {
+    if (!registry.releaseVisible(record)) {
+      errors.push("Record is not visible under the canonical release gate.");
+    }
+  } else if (record.release_status && record.release_status !== "released") {
+    errors.push("Record release status is not released.");
+  } else if (record.type === "project" && record.release_mode === "progressive") {
+    errors.push("Progressive project is not visible without a released transmission.");
+  }
+
   const published = record.published === true || record.status === "published";
 
   if (!published) {
