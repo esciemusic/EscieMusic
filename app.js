@@ -1406,9 +1406,15 @@
       state.open = !!open;
       document.body.classList.toggle("menu-open", state.open);
       nav.classList.toggle("is-open", state.open);
+      nav.dataset.open = String(state.open);
+      nav.setAttribute("aria-hidden", String(!state.open));
       button.setAttribute("aria-expanded", String(state.open));
       button.setAttribute("aria-label", state.open ? "Close index" : "Open index");
       nav.setAttribute("aria-hidden", String(!state.open));
+      nav.style.visibility = state.open ? "visible" : "hidden";
+      nav.style.opacity = state.open ? "1" : "0";
+      nav.style.pointerEvents = state.open ? "auto" : "none";
+      nav.style.transform = state.open ? "translateY(0)" : "translateY(-8px)";
 
       if (state.open) {
         if (!state.previousOverflow) state.previousOverflow = document.body.style.overflow;
