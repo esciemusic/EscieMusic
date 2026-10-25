@@ -624,6 +624,11 @@
     const status = record.status || "unknown";
     const description = record.description || "No public description has been established.";
     const symbols = getRecordSymbols(record);
+    const locations = Array.isArray(record.locations) ? record.locations : [];
+    const people = Array.isArray(record.people) ? record.people : [];
+    const tags = Array.isArray(record.tags) ? record.tags : [];
+    const media = Array.isArray(record.media) ? record.media : [];
+    const evidence = Array.isArray(record.evidence) ? record.evidence : [];
     const relationships = normalizeCollection(getRelationships());
     const relatedIds = relationships
       .filter(r => r && (r.from === recordId(record) || r.to === recordId(record)))
@@ -642,6 +647,13 @@
       (symbols.length ? '<div class="record-symbols"><p class="eyebrow">RECURRING MOTIFS</p>' +
         symbols.map(symbol => '<button class="record-symbol-link" type="button" data-symbol-id="' + escapeHTML(symbol.id) + '">' +
           escapeHTML(symbol.name) + '<span>' + escapeHTML(symbol.motif || "") + '</span></button>').join("") + '</div>' : '') +
+      ((locations.length || people.length || tags.length || media.length || evidence.length) ?
+        '<div class="record-context"><p class="eyebrow">DECLARED CONTEXT</p>' +
+        (locations.length ? '<p><strong>LOCATIONS</strong> ' + escapeHTML(locations.join(" / ")) + '</p>' : '') +
+        (people.length ? '<p><strong>PEOPLE</strong> ' + escapeHTML(people.join(" / ")) + '</p>' : '') +
+        (tags.length ? '<p><strong>TAGS</strong> ' + escapeHTML(tags.join(" / ")) + '</p>' : '') +
+        '<p><strong>MEDIA</strong> ' + escapeHTML(String(media.length)) + ' / <strong>EVIDENCE</strong> ' + escapeHTML(String(evidence.length)) + '</p>' +
+        '</div>' : '') +
       (related.length ? '<div class="record-related"><p class="eyebrow">CONNECTED RECORDS</p>' +
         related.map(item => '<button class="record-related-link" type="button" data-record-id="' + escapeHTML(recordId(item)) + '">' +
           escapeHTML(recordTitle(item)) + '</button>').join('') + '</div>' : '');
