@@ -147,3 +147,55 @@ const duplicateAudit = audit.auditRelationships(
 );
 assert(duplicateAudit.duplicateIds.length === 1, "duplicate relationship ids must be reported");
 assert(duplicateAudit.duplicateConnections.length === 1, "duplicate connections must be reported");
+
+
+const provenance = require("../core/provenance.js");
+const referenceAudit = require("../brain/reference-audit.js");
+
+const registeredSource = sources.createSource({
+  id: "provenance-source",
+  type: "documentation",
+  name: "Provenance Test Source"
+});
+assert(sources.validateSource(registeredSource).valid, "valid source should pass source validation");
+
+const recordProvenance = provenance.create({
+  sourceIds: ["provenance-source"],
+  origin: "documentation",
+  transformation: "selected",
+  certainty: "verified",
+  chain: [
+    {
+      sourceId: "provenance-source",
+      action: "selected",
+      actor: "test"
+    }
+  ]
+});
+assert(recordProvenance.sourceIds.length === 1, "record provenance should retain source ids");
+assert(provenance.validate(recordProvenance, [registeredSource]).valid, "known provenance source should validate");
+
+const missingProvenance = provenance.validate(
+  provenance.create({ sourceIds: ["missing-source"] }),
+  [registeredSource]
+);
+assert(missingProvenance.valid === false, "missing provenance source must fail validation");
+
+const provenanceRecord = {
+  id: "provenance-record",
+  provenance: recordProvenance
+};
+const provenanceAudit = referenceAudit.auditProvenanceSources(
+  [provenanceRecord],
+  [registeredSource]
+);
+assert(provenanceAudit.ok === true, "known provenance sources should pass audit");
+
+const orphanProvenanceAudit = referenceAudit.auditProvenanceSources(
+  [{ id: "orphan-provenance", provenance: { sourceIds: ["missing-source"] } }],
+  [registeredSource]
+);
+assert(orphanProvenanceAudit.ok === false, "orphan provenance source must fail audit");
+assert(orphanProvenanceAudit.missing.length === 1, "missing provenance source must be reported");
+
+console.log("ESCIE provenance contracts OK");
