@@ -1683,3 +1683,164 @@ body.inspector-open{overflow:hidden}
   .record-inspector-panel{padding-top:46px}
   .record-inspector-close{top:12px;right:12px}
 }
+
+/* =========================================================
+   EMPTY UNIVERSE / SIGNAL CHAMBER
+   A living placeholder for the period before transmissions.
+   No external asset required.
+   ========================================================= */
+
+.entry-section {
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.signal-chamber {
+  position: absolute;
+  inset: 72px 0 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: .72;
+}
+
+.signal-chamber::before {
+  content: "";
+  position: absolute;
+  inset: 4% 8% 8%;
+  border: 1px solid rgba(242,242,237,.08);
+  background:
+    radial-gradient(ellipse at 50% 48%, rgba(41,55,72,.22), transparent 42%),
+    linear-gradient(180deg, rgba(4,8,12,.18), rgba(0,0,0,.72));
+  box-shadow: inset 0 0 120px rgba(0,0,0,.75);
+}
+
+.signal-window {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(82vw, 1080px);
+  height: min(48vw, 590px);
+  transform: translate(-50%,-50%);
+  overflow: hidden;
+  border: 1px solid rgba(242,242,237,.10);
+  background:
+    linear-gradient(180deg, rgba(15,24,34,.68), rgba(2,3,5,.96));
+  box-shadow: 0 0 100px rgba(0,0,0,.7), inset 0 0 80px rgba(0,0,0,.8);
+}
+
+.signal-window::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 3px, rgba(242,242,237,.018) 4px),
+    linear-gradient(90deg, transparent 0 18%, rgba(90,112,132,.08) 18.2%, transparent 18.5% 62%, rgba(90,112,132,.05) 62.2%, transparent 62.5%);
+  mix-blend-mode: screen;
+  animation: signalFlicker 7s steps(2,end) infinite;
+}
+
+.signal-window::after {
+  content: "";
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  bottom: 0;
+  height: 38%;
+  background:
+    linear-gradient(165deg, transparent 0 48%, rgba(242,242,237,.06) 48.2% 48.6%, transparent 48.8%),
+    linear-gradient(15deg, transparent 0 56%, rgba(242,242,237,.045) 56.2% 56.5%, transparent 56.7%);
+  opacity: .8;
+}
+
+.signal-city {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: 19%;
+  height: 22%;
+  background:
+    linear-gradient(90deg,
+      transparent 0 4%, rgba(242,242,237,.10) 4% 7%, transparent 7% 11%,
+      rgba(242,242,237,.07) 11% 16%, transparent 16% 21%,
+      rgba(242,242,237,.11) 21% 28%, transparent 28% 31%,
+      rgba(242,242,237,.06) 31% 40%, transparent 40% 44%,
+      rgba(242,242,237,.12) 44% 51%, transparent 51% 56%,
+      rgba(242,242,237,.07) 56% 63%, transparent 63% 67%,
+      rgba(242,242,237,.10) 67% 75%, transparent 75% 81%,
+      rgba(242,242,237,.06) 81% 91%, transparent 91%);
+  clip-path: polygon(0 100%,0 55%,5% 55%,5% 35%,10% 35%,10% 62%,16% 62%,16% 25%,21% 25%,21% 48%,27% 48%,27% 14%,32% 14%,32% 50%,38% 50%,38% 30%,44% 30%,44% 4%,48% 4%,48% 44%,54% 44%,54% 20%,60% 20%,60% 52%,67% 52%,67% 31%,73% 31%,73% 58%,80% 58%,80% 23%,86% 23%,86% 49%,93% 49%,93% 36%,100% 36%,100% 100%);
+  opacity: .55;
+}
+
+.signal-light {
+  position: absolute;
+  bottom: 23%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(242,242,237,.75);
+  box-shadow: 0 0 9px rgba(180,205,230,.55);
+  animation: signalPulse 3.8s ease-in-out infinite;
+}
+
+.signal-light-a { left: 24%; animation-delay: -.7s; }
+.signal-light-b { left: 51%; animation-delay: -2.1s; }
+.signal-light-c { left: 77%; animation-delay: -3.2s; }
+
+.signal-scan {
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  top: 18%;
+  height: 1px;
+  background: rgba(242,242,237,.16);
+  box-shadow: 0 0 18px rgba(150,180,210,.16);
+  animation: signalScan 8s linear infinite;
+}
+
+.signal-status {
+  position: absolute;
+  left: 50%;
+  bottom: 8%;
+  transform: translateX(-50%);
+  color: rgba(242,242,237,.28);
+  font-size: 8px;
+  letter-spacing: .42em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.entry-inner {
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 2px 18px rgba(0,0,0,.85);
+}
+
+@keyframes signalScan {
+  0% { top: 16%; opacity: 0; }
+  10% { opacity: .8; }
+  50% { opacity: .18; }
+  90% { opacity: .8; }
+  100% { top: 82%; opacity: 0; }
+}
+
+@keyframes signalPulse {
+  0%,100% { opacity: .22; transform: scale(.8); }
+  50% { opacity: .9; transform: scale(1.6); }
+}
+
+@keyframes signalFlicker {
+  0%,92%,100% { opacity: 1; }
+  93% { opacity: .72; }
+  94% { opacity: .98; }
+  96% { opacity: .82; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .signal-scan,
+  .signal-light,
+  .signal-window::before {
+    animation: none;
+  }
+}
