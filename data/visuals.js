@@ -12,13 +12,20 @@ const ESCIE_VISUALS=[
 ];
 function normalizeEscieVisuals(items){
  if(!Array.isArray(items))return [];
+ const seen=new Set();
  return items.filter(v=>v&&typeof v==="object"&&v.id&&v.section&&v.status!=="hidden").map(v=>({
   id:String(v.id),section:String(v.section),mode:String(v.mode||"default"),
   symbols:Array.isArray(v.symbols)?v.symbols.map(String):[],
-  intensity:Math.max(0,Math.min(1,Number(v.intensity??.7))),
+  intensity:Math.max(0,Math.min(1,Number.isFinite(Number(v.intensity))?Number(v.intensity):.7)),
   asset:v.asset||null,
   status:String(v.status||"active")
- }));
+ })).filter(v=>{if(seen.has(v.id))return false;seen.add(v.id);return true;});
 }
-if(typeof window!=="undefined"){window.ESCIE_VISUALS=ESCIE_VISUALS;window.normalizeEscieVisuals=normalizeEscieVisuals;}
-if(typeof module!=="undefined"&&module.exports)module.exports={ESCIE_VISUALS,normalizeEscieVisuals};
+function auditEscieVisuals(items){
+ const normalized=normalizeEscieVisuals(items);
+ const sections=["now","work","the-web","archive","investigation","glass-eye","escie"];
+ const ids=normalized.map(v=>v.id);
+ return {ok:sections.every(section=>normalized.some(v=>v.section===section))&&new Set(ids).size===ids.length,sections,configured:normalized.length,missing:sections.filter(section=>!normalized.some(v=>v.section===section)),duplicateIds:ids.filter((id,i)=>ids.indexOf(id)!==i)};
+}
+if(typeof window!=="undefined"){window.ESCIE_VISUALS=ESCIE_VISUALS;window.normalizeEscieVisuals=normalizeEscieVisuals;window.auditEscieVisuals=auditEscieVisuals;}
+if(typeof module!=="undefined"&&module.exports)module.exports={ESCIE_VISUALS,normalizeEscieVisuals,auditEscieVisuals};
