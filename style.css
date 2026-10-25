@@ -83,6 +83,46 @@ a {
   text-decoration: none;
 }
 
+
+/* =========================================================
+   ACCESSIBILITY / FOCUS
+   ========================================================= */
+
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 18px;
+  z-index: 500;
+  transform: translateY(-180%);
+  padding: 10px 12px;
+  border: 1px solid rgba(242,242,237,.35);
+  background: rgba(3,3,3,.96);
+  color: var(--white);
+  font-size: 8px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  transition: transform 180ms ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+  outline: 2px solid var(--white);
+  outline-offset: 3px;
+}
+
+:where(a, button, select, input, textarea, [tabindex]):focus-visible {
+  outline: 1px solid var(--white);
+  outline-offset: 4px;
+}
+
+section[id] {
+  scroll-margin-top: calc(var(--header-height) + 18px);
+}
+
+#main-content:focus {
+  outline: none;
+}
+
 button {
   font: inherit;
 }
