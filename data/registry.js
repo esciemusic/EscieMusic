@@ -118,9 +118,9 @@
 
   function releaseVisible(record){
     if(!record) return false;
-    if(record.release_status==="locked") return false;
+    if(record.release_status) return record.release_status==="released";
     if(record.type==="project"&&record.release_mode==="progressive"){
-      return currentMusic().some(track=>track&&track.project===record.id&&track.release_status!=="locked");
+      return currentMusic().some(track=>track&&track.project===record.id&&track.release_status==="released");
     }
     return true;
   }
@@ -281,5 +281,5 @@
     });
     return {ok:missing.length===0,missing};
   }
-  window.ESCIE_RECORD_REGISTRY={version:"1.10.0",build,records:()=>build().records,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,releaseAudit,manifestFor,filter,contextFor,publicRelationships,relationshipTypes,relationshipCategories,relationshipsFor,relationshipCounts,releaseVisible};
+  window.ESCIE_RECORD_REGISTRY={version:"1.11.0",build,records:()=>build().records,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,releaseAudit,manifestFor,filter,contextFor,publicRelationships,relationshipTypes,relationshipCategories,relationshipsFor,relationshipCounts,releaseVisible};
 })();
