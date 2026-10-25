@@ -1559,6 +1559,9 @@ body.inspector-open{overflow:hidden}
 .section-motif-item:hover,.section-motif-item:focus-visible{opacity:1}
 .section-motif-glyph{display:inline-flex;align-items:center;justify-content:center;width:1.8rem;height:1.8rem;border:1px solid currentColor;font-size:1rem;line-height:1}
 .section-motif-name{font-size:.62rem}
+.record-context{margin-top:1.25rem;padding-top:1rem;border-top:1px solid currentColor;opacity:.82}
+.record-context p{margin:.4rem 0;font-size:.78rem;line-height:1.45}
+.record-context strong{font-size:.64rem;letter-spacing:.1em;margin-right:.35rem}
 .record-symbols{margin-top:1.25rem}
 .record-symbol-link{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;width:100%;border:0;background:transparent;color:inherit;padding:.55rem 0;text-align:left;cursor:pointer;border-bottom:1px solid currentColor;font:inherit}
 .record-symbol-link span{opacity:.62;font-size:.72rem}
