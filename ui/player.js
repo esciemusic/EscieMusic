@@ -70,6 +70,23 @@ const ESCIE_UI_PLAYER = {
       this.audio.currentTime = (Number(event.target.value) / 1000) * this.audio.duration;
     });
 
+    this._keyHandler = event => {
+      if (!this.ui || this.ui.dock.hidden || event.ctrlKey || event.metaKey || event.altKey) return;
+      const target = event.target;
+      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) return;
+      if (event.code === "Space") {
+        event.preventDefault();
+        this.playing ? this.pause() : this.play();
+      } else if (event.code === "ArrowLeft") {
+        event.preventDefault();
+        this.seekBy(-5);
+      } else if (event.code === "ArrowRight") {
+        event.preventDefault();
+        this.seekBy(5);
+      }
+    };
+    document.addEventListener("keydown", this._keyHandler);
+
     this.mounted = true;
   },
 
@@ -145,6 +162,14 @@ const ESCIE_UI_PLAYER = {
     this.audio.pause();
     this.playing = false;
     this.sync(false);
+    return true;
+  },
+
+  seekBy(seconds = 0) {
+    if (!this.audio || !Number.isFinite(this.audio.duration) || this.audio.duration <= 0) return false;
+    const next = Math.max(0, Math.min(this.audio.duration, this.audio.currentTime + Number(seconds || 0)));
+    this.audio.currentTime = next;
+    this.syncProgress();
     return true;
   },
 
