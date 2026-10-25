@@ -406,7 +406,7 @@ body[data-time="night"] .sky {
 
   inset: 0;
 
-  z-index: -1;
+  z-index: 101;
 
   display: flex;
 
@@ -503,6 +503,18 @@ body.menu-open .index-navigation.is-open {
 
   transform:
     translateY(0);
+}
+
+.index-navigation.is-open a {
+
+  opacity: 1;
+
+  transform:
+    translateY(0);
+}
+
+.index-trigger {
+  z-index: 102;
 }
 
 
