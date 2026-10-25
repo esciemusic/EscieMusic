@@ -50,7 +50,7 @@
 
     <section id="now" class="site-section now-section">
       <div class="section-inner">
-        <div class="section-visual section-visual-now" aria-hidden="true"><span class="visual-nightlight"></span><span class="visual-horizon"></span><span class="visual-flicker"></span></div>
+        <div class="section-visual section-visual-now" data-visual-section="now" aria-hidden="true"><span class="visual-nightlight"></span><span class="visual-horizon"></span><span class="visual-flicker"></span></div>
         <h2>NOW</h2>
         <div id="now-container" class="content-container"></div>
       </div>
@@ -58,7 +58,7 @@
 
     <section id="art" class="site-section art-section">
       <div class="section-inner">
-        <div class="section-visual section-visual-work" aria-hidden="true"><span class="visual-vhs"></span><span class="visual-daisy">✳</span><span class="visual-scanline"></span></div>
+        <div class="section-visual section-visual-work" data-visual-section="work" aria-hidden="true"><span class="visual-vhs"></span><span class="visual-daisy">✳</span><span class="visual-scanline"></span></div>
         <h2>WORK</h2>
         <p class="art-threshold">WHERE REALITY BECOMES WORK.</p>
         <div id="art-container" class="content-container">
@@ -71,7 +71,7 @@
 
     <section id="web" class="site-section web-section">
       <div class="section-inner">
-        <div class="section-visual section-visual-web" aria-hidden="true"><span class="visual-key">⌕</span><span class="visual-node n1"></span><span class="visual-node n2"></span><span class="visual-node n3"></span><span class="visual-wire w1"></span><span class="visual-wire w2"></span><span class="visual-wire w3"></span></div>
+        <div class="section-visual section-visual-web" data-visual-section="the-web" aria-hidden="true"><span class="visual-key">⌕</span><span class="visual-node n1"></span><span class="visual-node n2"></span><span class="visual-node n3"></span><span class="visual-wire w1"></span><span class="visual-wire w2"></span><span class="visual-wire w3"></span></div>
         <h2>THE WEB</h2>
         <div id="web-container" class="content-container"></div>
       </div>
@@ -79,7 +79,7 @@
 
     <section id="archives" class="site-section archives-section">
       <div class="section-inner">
-        <div class="section-visual section-visual-archive" aria-hidden="true"><span class="visual-tape"></span><span class="visual-shoe">⌁</span><span class="visual-chair">□</span><span class="visual-date"></span></div>
+        <div class="section-visual section-visual-archive" data-visual-section="archive" aria-hidden="true"><span class="visual-tape"></span><span class="visual-shoe">⌁</span><span class="visual-chair">□</span><span class="visual-date"></span></div>
         <h2>ARCHIVE</h2>
         <div id="archives-container" class="content-container">
           <div id="archive-container" class="content-container"></div>
@@ -89,7 +89,7 @@
 
     <section id="investigation" class="site-section investigation-section">
       <div class="section-inner">
-        <div class="section-visual section-visual-investigation" aria-hidden="true"><span class="visual-lens"></span><span class="visual-cross"></span><span class="visual-evidence e1"></span><span class="visual-evidence e2"></span></div>
+        <div class="section-visual section-visual-investigation" data-visual-section="investigation" aria-hidden="true"><span class="visual-lens"></span><span class="visual-cross"></span><span class="visual-evidence e1"></span><span class="visual-evidence e2"></span></div>
         <h2>INVESTIGATION</h2>
         <div id="investigation-container" class="content-container"></div>
       </div>
@@ -97,7 +97,7 @@
 
     <section id="glass-eye" class="site-section glass-eye-section">
       <div class="section-inner">
-        <div class="section-visual section-visual-glass" aria-hidden="true"><span class="visual-eye-ring"></span><span class="visual-eye-dot"></span><span class="visual-glass-scan"></span></div>
+        <div class="section-visual section-visual-glass" data-visual-section="glass-eye" aria-hidden="true"><span class="visual-eye-ring"></span><span class="visual-eye-dot"></span><span class="visual-glass-scan"></span></div>
         <h2>GLASS EYE</h2>
         <div id="glass-eye-container" class="content-container"></div>
       </div>
@@ -105,7 +105,7 @@
 
     <section id="escie" class="site-section escie-section">
       <div class="section-inner">
-        <div class="section-visual section-visual-escie" aria-hidden="true"><span class="visual-presence"></span><span class="visual-pulse"></span></div>
+        <div class="section-visual section-visual-escie" data-visual-section="escie" aria-hidden="true"><span class="visual-presence"></span><span class="visual-pulse"></span></div>
         <h2>ESCIE</h2>
         <div id="escie-container" class="content-container">
           <div id="about-container" class="about-content"></div>
@@ -159,6 +159,7 @@
   <script src="ui/router.js"></script>
   <script src="ui/player.js"></script>
   <script src="ui/media.js"></script>
+  <script src="ui/visuals.js"></script>
   <script src="ui/states.js"></script>
   <script src="ui/idle-signal.js"></script>
   <script src="ui/responsive.js"></script>
@@ -187,6 +188,7 @@
   <script src="data/archive.js"></script>
   <script src="data/signals.js"></script>
   <script src="data/symbols.js"></script>
+  <script src="data/visuals.js"></script>
   <script src="data/nodes.js"></script>
   <script src="data/release-runtime.js"></script>
   <script src="data/registry.js"></script>
