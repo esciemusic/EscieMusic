@@ -47,6 +47,16 @@
   return String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
  }
 
+ function observeMedia(el){
+  const media=el.querySelector(".section-visual-media");
+  if(!media||media.tagName!=="VIDEO")return;
+  if(!("IntersectionObserver" in window)){return;}
+  const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
+    if(entry.isIntersecting&&!document.hidden){media.play().catch(()=>{});}else{media.pause();}
+  }),{threshold:.15});
+  observer.observe(el);
+}
+
  function init(){
   const items=window.ESCIE_VISUALS||[];
   const normalized=typeof window.normalizeEscieVisuals==="function"?window.normalizeEscieVisuals(items):items;
@@ -60,6 +70,7 @@
    if(asset){
     el.insertAdjacentHTML("afterbegin",asset);
     el.classList.add("has-visual-asset");
+    observeMedia(el);
    }
   });
  }
