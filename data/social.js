@@ -32,18 +32,22 @@ function normalizeEscieSocial(items){
       const host=parsed.hostname.toLowerCase();
       const allowed=ESCIE_SOCIAL_HOSTS[platform]||[];
       if(!["http:","https:"].includes(parsed.protocol)||!allowed.includes(host))return null;
-      return {id:String(item.id||platform),label:String(item.label||platform).trim(),platform,url:parsed.href,status:String(item.status||"active")};
+      const status=String(item.status||"active").toLowerCase().trim();
+      if(status!=="active"&&status!=="unconfigured")return null;
+      return {id:String(item.id||platform),label:String(item.label||platform).trim(),platform,url:parsed.href,status:"active"};
     }catch(error){return null;}
   }).filter(Boolean);
 }
 function auditEscieSocial(items){
   const normalized=normalizeEscieSocial(items);
+  const uniquePlatforms=[...new Set(normalized.map(item=>item.platform))];
   const source=Array.isArray(items)?items:[];
   return {
     configured:normalized.length,
     rejected:Math.max(0,source.filter(item=>item&&item.url).length-normalized.length),
-    platforms:normalized.map(item=>item.platform),
-    ok:normalized.every(item=>ESCIE_SOCIAL_PLATFORMS.includes(item.platform))
+    platforms:uniquePlatforms,
+    duplicates:Math.max(0,normalized.length-uniquePlatforms.length),
+    ok:normalized.every(item=>ESCIE_SOCIAL_PLATFORMS.includes(item.platform))&&uniquePlatforms.length===normalized.length
   };
 }
 if(typeof window!=="undefined"){
