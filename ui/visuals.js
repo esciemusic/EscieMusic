@@ -11,6 +11,8 @@
  const MEDIA_CLEANUPS=new WeakMap();
  let SECTION_OBSERVER=null;
  let RESIZE_HANDLER=null;
+ let MEDIA_QUERY=null;
+ let MEDIA_QUERY_HANDLER=null;
 
  function safeURL(value){
   if(typeof value!=="string"||!value.trim())return null;
@@ -79,6 +81,10 @@
  function init(){
   if(SECTION_OBSERVER){SECTION_OBSERVER.disconnect();SECTION_OBSERVER=null;}
   if(RESIZE_HANDLER){window.removeEventListener("resize",RESIZE_HANDLER);RESIZE_HANDLER=null;}
+  if(MEDIA_QUERY&&MEDIA_QUERY_HANDLER){
+   MEDIA_QUERY.removeEventListener ? MEDIA_QUERY.removeEventListener("change",MEDIA_QUERY_HANDLER) : MEDIA_QUERY.removeListener(MEDIA_QUERY_HANDLER);
+   MEDIA_QUERY=null;MEDIA_QUERY_HANDLER=null;
+  }
   document.querySelectorAll(".section-visual").forEach(el=>{
 
    const cleanup=MEDIA_CLEANUPS.get(el);
@@ -98,6 +104,7 @@
    const chooseActive=()=>{
     let best=null;
     let bestScore=0;
+    const viewportCenter=window.innerHeight*.5;
     visuals.forEach(el=>{
      if(!visible.has(el))return;
      const rect=el.getBoundingClientRect();
@@ -107,8 +114,9 @@
      const width=Math.max(0,Math.min(rect.right,window.innerWidth)-Math.max(rect.left,0));
      const area=height*width;
      if(area<=0)return;
-     const centerDistance=Math.abs((rect.top+rect.bottom)/2-window.innerHeight/2);
-     const score=area/(1+centerDistance*.015);
+     const centerDistance=Math.abs((rect.top+rect.bottom)/2-viewportCenter);
+     const visibleRatio=area/Math.max(1,rect.width*rect.height);
+     const score=visibleRatio/(1+centerDistance*.02);
      if(score>bestScore){bestScore=score;best=el;}
     });
     setActiveVisual(best);
@@ -123,8 +131,19 @@
    visuals.forEach(el=>SECTION_OBSERVER.observe(el));
    RESIZE_HANDLER=chooseActive;
    window.addEventListener("resize",RESIZE_HANDLER,{passive:true});
+   chooseActive();
   }else{
    setActiveVisual(visuals[0]||null);
+  }
+
+  MEDIA_QUERY=window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
+  if(MEDIA_QUERY){
+   MEDIA_QUERY_HANDLER=()=>{
+    if(MEDIA_QUERY.matches) visuals.forEach(el=>el.classList.remove("visual-active"));
+    else chooseActive&&chooseActive();
+   };
+   if(MEDIA_QUERY.addEventListener) MEDIA_QUERY.addEventListener("change",MEDIA_QUERY_HANDLER);
+   else if(MEDIA_QUERY.addListener) MEDIA_QUERY.addListener(MEDIA_QUERY_HANDLER);
   }
 
   const items=window.ESCIE_VISUALS||[];
