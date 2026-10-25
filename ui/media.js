@@ -91,6 +91,21 @@
     return null;
   }
 
+  function normalizeAll(items){
+    if(!Array.isArray(items)) return [];
+    return items.map(normalize).filter(Boolean).map(item=>{
+      const copy=Object.assign({},item);
+      const url=safeURL(copy.url);
+      if(url) copy.url=url.href;
+      if(copy.type) copy.type=String(copy.type).toLowerCase();
+      if(copy.kind) copy.kind=String(copy.kind).toLowerCase();
+      return copy;
+    }).filter(item=>{
+      const url=safeURL(item.url);
+      return !!(url&&kind(item,url));
+    });
+  }
+
   function render(item,index){
     const media=normalize(item);
     if(!media) return "";
@@ -152,6 +167,7 @@
   window.ESCIE_MEDIA={
     render:render,
     renderAll:renderAll,
+    normalizeAll:normalizeAll,
     countPlayable:countPlayable,
     kind:kind,
     embedURL:embedURL,
@@ -159,5 +175,5 @@
     safeURL:safeURL,
     iframeHosts:IFRAME_HOSTS.slice()
   };
-  if(typeof module!=="undefined"&&module.exports) module.exports={render,renderAll,countPlayable,normalize,safeURL,kind,embedURL,iframeHosts:IFRAME_HOSTS.slice()};
+  if(typeof module!=="undefined"&&module.exports) module.exports={render,renderAll,normalizeAll,countPlayable,normalize,safeURL,kind,embedURL,iframeHosts:IFRAME_HOSTS.slice()};
 })();
