@@ -75,11 +75,14 @@
 }
 
  function init(){
-  document.querySelectorAll(".section-visual.has-visual-asset").forEach(el=>{
+  document.querySelectorAll(".section-visual").forEach(el=>{
    const cleanup=MEDIA_CLEANUPS.get(el);
    if(cleanup)cleanup();
    el.querySelectorAll(".section-visual-media").forEach(media=>media.remove());
    el.classList.remove("has-visual-asset");
+   delete el.dataset.visualMode;
+   delete el.dataset.visualSymbols;
+   el.style.removeProperty("--visual-intensity");
   });
   const items=window.ESCIE_VISUALS||[];
   const normalized=typeof window.normalizeEscieVisuals==="function"?window.normalizeEscieVisuals(items):items;
