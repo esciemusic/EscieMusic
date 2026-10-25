@@ -364,19 +364,21 @@
     const nav = byId("main-navigation");
     if (!nav) return;
 
-    const items = normalizeCollection(getNavigation())
-      .filter(item => item && item.primary !== false)
-      .sort((a, b) => Number(a.order || 0) - Number(b.order || 0));
+    const nodes = normalizeCollection(window.ESCIE_NODES);
+    const currentRoute = (window.location.hash || "").replace(/^#/, "");
 
-    const currentRoute = (window.location.hash || "#entry").replace(/^#/, "");
-    nav.innerHTML = items.map(item => {
-      const label = item.label || item.title || item.id || "";
-      const target = item.target || item.href || ("#" + (item.id || "").toLowerCase().replace(/\s+/g, "-"));
-      const route = target.replace(/^#/, "");
-      return '<a class="nav-link' + (route === currentRoute ? ' is-current' : '') + '" href="' + escapeHTML(target) + '"' +
-        (route === currentRoute ? ' aria-current="page"' : '') + '>' +
-        escapeHTML(label) + "</a>";
-    }).join("");
+    nav.innerHTML =
+      '<div class="index-heading"><span>INFORMATION NODES</span><span>' + escapeHTML(String(nodes.length).padStart(2, "0")) + '</span></div>' +
+      nodes.map(node => {
+        const target = node.target || "#";
+        const route = target.replace(/^#/, "");
+        return '<a class="nav-link node-link' + (route === currentRoute ? ' is-current' : '') + '" href="' + escapeHTML(target) + '"' +
+          (route === currentRoute ? ' aria-current="page"' : '') + '>' +
+          '<span class="node-link-label">' + escapeHTML(node.label || node.id || "") + '</span>' +
+          '<span class="node-link-kind">' + escapeHTML(node.kind || "node") + '</span>' +
+          '<small>' + escapeHTML(node.description || "") + '</small>' +
+          '</a>';
+      }).join("");
   }
 
   function renderNow() {
