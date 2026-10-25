@@ -34,7 +34,7 @@ const ESCIE_NAVIGATION = [
 
   {
     id: "art",
-    label: "ART",
+    label: "WORK",
     target: "#art",
     visible: true,
     primary: true,
@@ -43,7 +43,7 @@ const ESCIE_NAVIGATION = [
 
   {
     id: "web",
-    label: "THE WEB",
+    label: "WEB",
     target: "#web",
     visible: true,
     primary: true,
@@ -52,7 +52,7 @@ const ESCIE_NAVIGATION = [
 
   {
     id: "archives",
-    label: "THE ARCHIVES",
+    label: "ARCHIVE",
     target: "#archives",
     visible: true,
     primary: true,
@@ -61,7 +61,7 @@ const ESCIE_NAVIGATION = [
 
   {
     id: "investigation",
-    label: "INVESTIGATION",
+    label: "CASES",
     target: "#investigation",
     visible: true,
     primary: true,
@@ -79,7 +79,7 @@ const ESCIE_NAVIGATION = [
 
   {
     id: "glass-eye",
-    label: "THE GLASS EYE",
+    label: "GLASS EYE",
     target: "#glass-eye",
     visible: true,
     primary: true,
