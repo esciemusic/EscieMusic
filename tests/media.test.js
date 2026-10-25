@@ -18,6 +18,21 @@
     ])===3,"only supported public media should be counted");
     const normalized=media.normalizeAll([{type:"audio",url:"https://example.com/a.mp3"},{type:"image",url:"https://example.com/a.jpg"},{type:"bad",url:"https://example.com/a.bin"}]);
     assert(normalized.length===2,"normalizeAll should keep only playable media");
+    const ingestionNormalizer=typeof window!=="undefined"?window.ESCIE_NORMALIZE:null;
+    if(ingestionNormalizer){
+      const normalizedInput=ingestionNormalizer({
+        id:"media-ingestion-test",
+        type:"fragment",
+        title:" Media Test ",
+        media:[
+          {type:"audio",url:"https://example.com/a.mp3"},
+          {type:"image",url:"https://example.com/a.jpg"},
+          {type:"bad",url:"https://example.com/a.bin"}
+        ]
+      });
+      assert(normalizedInput.title==="Media Test","ingestion should normalize text");
+      assert(Array.isArray(normalizedInput.media)&&normalizedInput.media.length===2,"ingestion should normalize playable media");
+    }
     assert(media.renderAll([{type:"image",url:"https://example.com/a.jpg",alt:"TEST"}]).includes("<img"),"images should render as native images");
     assert(media.renderAll([{type:"audio",url:"https://example.com/a.mp3"}]).includes("<audio"),"audio should render as native audio");
     assert(media.renderAll([{type:"video",url:"https://example.com/a.mp4"}]).includes("<video"),"video should render as native video");
