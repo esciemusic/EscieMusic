@@ -786,6 +786,10 @@
   }
 
   function showRecordInspector(record) {
+    const registry = getGlobal("ESCIE_RECORD_REGISTRY", null);
+    if (registry && typeof registry.publicRecord === "function") {
+      record = registry.publicRecord(recordId(record));
+    }
     if (!record || !isPublic(record)) return;
     const modal = byId("record-inspector");
     if (!modal || !record) return;
