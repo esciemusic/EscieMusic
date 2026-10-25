@@ -254,6 +254,7 @@
         record.visibility !== "public") return false;
     if (record.visibility === "PRIVATE" || record.visibility === "private") return false;
     if (record.visibility === "WITHHELD" || record.visibility === "withheld") return false;
+    if (record.visibility === "LIMITED" || record.visibility === "limited") return false;
     return isPublished(record);
   }
 
