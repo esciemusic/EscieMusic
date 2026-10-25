@@ -437,6 +437,20 @@
       shell.mount("#top");
     }
 
+    const player = window.ESCIE_UI_PLAYER;
+    if (player && typeof player.attach === "function") {
+      let audio = document.getElementById("escie-global-audio");
+      if (!audio) {
+        audio = document.createElement("audio");
+        audio.id = "escie-global-audio";
+        audio.preload = "none";
+        audio.setAttribute("aria-hidden", "true");
+        audio.style.display = "none";
+        document.body.appendChild(audio);
+      }
+      player.attach(audio);
+    }
+
     const router = getRouter();
     const navigation = normalizeCollection(getNavigation());
 
