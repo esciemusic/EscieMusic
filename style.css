@@ -1545,3 +1545,9 @@ body.inspector-open{overflow:hidden}
 .nav-link.is-current{opacity:1;letter-spacing:.14em}
 .nav-link.is-current::before{content:"/ ";color:var(--faint)}
 .record-card{font:inherit;color:inherit}
+
+
+/* RECORD RELATIONSHIP SURFACE */
+.record-related{margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.12)}
+.record-related-link{display:block;width:100%;margin:.35rem 0;padding:.65rem .75rem;text-align:left;background:transparent;border:1px solid rgba(255,255,255,.14);color:inherit;font:inherit;cursor:pointer}
+.record-related-link:hover,.record-related-link:focus-visible{border-color:currentColor;outline:none}
