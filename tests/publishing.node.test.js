@@ -8,11 +8,13 @@ function assert(condition, message) {
 const publicRecords = build.buildPublicRecords([
   { id: "public-a", type: "art", title: "Public A", published: true, visibility: "public" },
   { id: "private-a", type: "art", title: "Private A", published: true, visibility: "private" },
-  { id: "draft-a", type: "art", title: "Draft A", published: false, visibility: "public" }
+  { id: "limited-a", type: "art", title: "Limited A", published: true, visibility: "limited" },
+  { id: "draft-a", type: "art", title: "Draft A", published: false, visibility: "public" },
+  { id: "implicit-a", type: "art", title: "Implicit A", visibility: "public" }
 ]);
 
 assert(publicRecords.length === 1, "Public build filtering failed.");
-assert(publicRecords[0].id === "public-a", "Unexpected public record survived filtering.");
+assert(publicRecords[0].id === "public-a", "Unexpected non-public record survived filtering.");
 
 const duplicateBuild = {
   records: [
