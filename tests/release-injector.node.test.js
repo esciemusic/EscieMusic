@@ -20,8 +20,8 @@ function run(){
     fs.copyFileSync("publishing/inject-release.js",path.join(tempDir,"inject-release.js"));
     const queue={
       tracks:[
-        {id:"bam-001-dallas-63",project:"bam-by-any-means",project_title:"BAM: BY ANY MEANS",project_description:"ESCIE debut project",number:"001",title:"DALLAS '63",role:"THE MYTH",release_status:"released",published:true,visibility:"public"},
-        {id:"bam-002-private",project:"bam-by-any-means",number:"002",title:"PRIVATE TITLE",role:"THE MONSTER",release_status:"locked",published:true,visibility:"public"}
+        {id:"test-001-transmission",project:"test-project",project_title:"TEST PROJECT",project_description:"ESCIE debut project",number:"001",title:"TRANSMISSION ONE",role:"THE FIRST",release_status:"released",published:true,visibility:"public"},
+        {id:"test-002-private",project:"test-project",number:"002",title:"PRIVATE TITLE",role:"THE MONSTER",release_status:"locked",published:true,visibility:"public"}
       ]
     };
     const result=child.spawnSync(process.execPath,[path.join(tempDir,"inject-release.js")],{
@@ -31,14 +31,14 @@ function run(){
     });
     assert(result.status===0,"release injector must accept a valid queue");
     const generated=fs.readFileSync(path.join(tempDir,"data","release-runtime.js"),"utf8");
-    assert(generated.includes("bam-001-dallas-63"),"released record must enter generated runtime");
-    assert(generated.includes('"projects":[{"id":"bam-by-any-means"'),"released project shell must enter generated runtime");
-    assert(generated.includes('"trackId":"bam-001-dallas-63"'),"released project structure must contain released track");
-    assert(!generated.includes("bam-002-private"),"locked record must never enter generated runtime");
+    assert(generated.includes("test-001-transmission"),"released record must enter generated runtime");
+    assert(generated.includes('"projects":[{"id":"test-project"'),"released project shell must enter generated runtime");
+    assert(generated.includes('"trackId":"test-001-transmission"'),"released project structure must contain released track");
+    assert(!generated.includes("test-002-private"),"locked record must never enter generated runtime");
     assert(!generated.includes("PRIVATE TITLE"),"locked title must never enter generated runtime");
 
     const invalidQueue={
-      tracks:[{id:"bad-status",project:"bam-by-any-means",number:"002",title:"Bad",role:"THE MONSTER",release_status:"maybe",published:true,visibility:"public"}]
+      tracks:[{id:"bad-status",project:"test-project",number:"002",title:"Bad",role:"THE MONSTER",release_status:"maybe",published:true,visibility:"public"}]
     };
     const invalid=child.spawnSync(process.execPath,[path.join(tempDir,"inject-release.js")],{
       cwd:tempDir,
