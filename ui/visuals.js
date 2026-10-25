@@ -138,7 +138,9 @@
      window.innerWidth,
      window.innerHeight
     );
-    setActiveVisual(winner>=0 ? visibleElements[winner] : null);
+    const active=winner>=0 ? visibleElements[winner] : null;
+    visuals.forEach(el=>el.classList.toggle("visitor-present",el===active));
+    setActiveVisual(active);
    };
    SECTION_OBSERVER=new IntersectionObserver(entries=>{
     entries.forEach(entry=>{
