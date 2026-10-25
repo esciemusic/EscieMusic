@@ -126,13 +126,20 @@
       id,
       work:record.type==="project"||record.type==="music"||record.type==="body"||!!record.project,
       archive:record.type==="archive"||media.length>0||evidence.length>0||record.archive_state==="active",
-      investigation:record.type==="investigation"||relationships.length>0||record.type==="moment"||record.type==="fragment",
+      investigation:record.type==="investigation"||relationships.length>0||record.type==="moment"||record.type==="fragment"||Array.isArray(record.evidence)&&record.evidence.length>0,
       glassEye:media.some(item=>{
         if(typeof item==="string") return /image|photo|video|film|vhs|jpg|jpeg|png|webp|gif|mp4|mov/i.test(item);
         if(!item) return false;
         return /image|photo|video|film|vhs|jpg|jpeg|png|webp|gif|mp4|mov/i.test([item.type,item.kind,item.mime,item.url,item.src].filter(Boolean).join(" "));
       }),
-      search:true
+      search:true,
+      sections: {
+        work: record.type==="project"||record.type==="music"||record.type==="body"||!!record.project,
+        web: relationships.length>0,
+        archive: record.type==="archive"||media.length>0||evidence.length>0||record.archive_state==="active",
+        investigation: record.type==="investigation"||relationships.length>0||record.type==="moment"||record.type==="fragment"||evidence.length>0,
+        glassEye: media.length>0
+      }
     };
   }
 
@@ -169,5 +176,5 @@
     });
     return {ok:missing.length===0,missing};
   }
-  window.ESCIE_RECORD_REGISTRY={version:"1.4.0",build,records:()=>build().records,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,contractAudit,referenceAudit,manifestFor,filter,contextFor};
+  window.ESCIE_RECORD_REGISTRY={version:"1.5.0",build,records:()=>build().records,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,contractAudit,referenceAudit,manifestFor,filter,contextFor};
 })();
