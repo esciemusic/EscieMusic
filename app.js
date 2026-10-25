@@ -394,16 +394,24 @@
 
     const location = site.location || "Montréal, Canada";
     const status = site.status || "development";
+    const publicMusic = getAllPublicRecords()
+      .filter(record => record && record.type === "music" && isPublic(record))
+      .sort((a, b) => String(a.number || "").localeCompare(String(b.number || ""), undefined, { numeric: true }))
+      .slice(-1)[0] || null;
+    const transmission = publicMusic || active;
+    const transmissionLabel = publicMusic
+      ? "CURRENT TRANSMISSION / " + String(publicMusic.number || "—").padStart(3, "0")
+      : (active ? "ACTIVE SIGNAL" : "SIGNAL QUIET");
+    const transmissionText = publicMusic
+      ? recordTitle(publicMusic)
+      : (active && active.description ? active.description : "The signal is quiet. The reality is not.");
 
     container.innerHTML =
       '<div class="now-state">' + motifMarkup("now") + '' +
         '<p class="eyebrow">CURRENT STATE</p>' +
-        '<h3>' + escapeHTML(active ? "ACTIVE TRANSMISSION" : "SIGNAL QUIET") + "</h3>" +
-        '<p>' + escapeHTML(
-          active && active.description
-            ? active.description
-            : "The signal is quiet. The reality is not."
-        ) + "</p>" +
+        '<h3>' + escapeHTML(transmissionLabel) + "</h3>" +
+        '<p>' + escapeHTML(transmissionText) + "</p>" +
+        (publicMusic ? '<button class="record-action record-card" type="button" data-record-id="' + escapeHTML(recordId(publicMusic)) + '">OPEN TRANSMISSION</button>' : '') +
         '<div class="now-meta">' +
           '<span>' + escapeHTML(location) + "</span>" +
           '<span>' + escapeHTML(String(site.publicYear || new Date().getFullYear())) + "</span>" +
@@ -1034,14 +1042,17 @@
       return null;
     }
 
-    const records = [
-      ...normalizeCollection(getMusic()),
-      ...normalizeCollection(getProjects()),
-      ...normalizeCollection(getArchive()),
-      ...normalizeCollection(getInvestigation()),
-      ...normalizeCollection(getPeople()),
-      ...normalizeCollection(getLocations())
-    ];
+    const registry = getGlobal("ESCIE_RECORD_REGISTRY", null);
+    const records = registry && typeof registry.allPublicRecords === "function"
+      ? registry.allPublicRecords()
+      : [
+          ...normalizeCollection(getMusic()),
+          ...normalizeCollection(getProjects()),
+          ...normalizeCollection(getArchive()),
+          ...normalizeCollection(getInvestigation()),
+          ...normalizeCollection(getPeople()),
+          ...normalizeCollection(getLocations())
+        ];
 
     const publicRecords = records.filter(isPublic);
 
