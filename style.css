@@ -2278,6 +2278,7 @@ body.inspector-open{overflow:hidden}
 }
 
 
+/* =========================================================
    The section nearest the viewer carries the motion.
    Inactive visuals remain present but breathe more slowly.
    ========================================================= */
@@ -2422,4 +2423,95 @@ body.inspector-open{overflow:hidden}
 }
 @media(prefers-reduced-motion:reduce){
   .escie-player-step{transition:none}
+}
+
+
+/* =========================================================
+   FINAL ATMOSPHERE PASS
+   Brighter visual presence without turning the interface into a
+   conventional horror site. The image layer remains translucent,
+   documentary-like, and subordinate to the content.
+   ========================================================= */
+
+.section-visual[data-visual-section]{
+  border-top:1px solid rgba(242,242,237,.07);
+  border-bottom:1px solid rgba(242,242,237,.05);
+  background-color:#090b0e;
+}
+
+.section-visual[data-visual-section]::before{
+  opacity:calc(.19 + (var(--visual-intensity,.7) * .15));
+  filter:grayscale(.16) contrast(.84) saturate(.78) brightness(1.08);
+}
+
+.section-visual[data-visual-section].visual-active::before{
+  opacity:calc(.26 + (var(--visual-intensity,.7) * .17));
+  filter:grayscale(.12) contrast(.88) saturate(.82) brightness(1.12);
+}
+
+.section-visual[data-visual-section]:not(.visual-active)::before{
+  opacity:calc(.15 + (var(--visual-intensity,.7) * .11));
+}
+
+.section-visual[data-visual-section]::after{
+  background:
+    linear-gradient(180deg,rgba(3,3,3,.18),transparent 34%,rgba(3,3,3,.30)),
+    repeating-linear-gradient(0deg,transparent 0,transparent 5px,rgba(255,255,255,.028) 6px);
+}
+
+.section-visual-media{
+  opacity:calc(var(--visual-intensity,.7) * .38);
+  filter:grayscale(.82) contrast(.88) saturate(.34) brightness(.92);
+}
+
+.entry-section::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 50% 48%,rgba(110,145,170,.055),transparent 30%),
+    linear-gradient(180deg,transparent 0%,rgba(0,0,0,.10) 70%,rgba(0,0,0,.42) 100%);
+}
+
+.entry-section .section-inner{position:relative;z-index:1}
+
+.index-navigation{
+  background:
+    linear-gradient(180deg,rgba(4,5,6,.93),rgba(2,2,2,.89));
+  border-left:1px solid rgba(242,242,237,.05);
+}
+
+.index-navigation a{
+  width:min(86vw,720px);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+  padding:9px 12px;
+  border-bottom:1px solid rgba(242,242,237,.055);
+  text-align:left;
+}
+
+.index-navigation a .node-link-symbol{
+  color:var(--faint);
+  font-size:.55em;
+  transition:transform .45s var(--ease),color .35s ease;
+}
+
+.index-navigation a:hover .node-link-symbol,
+.index-navigation a:focus-visible .node-link-symbol{color:var(--white);transform:translateX(4px)}
+
+@media(max-width:700px){
+  .entry-section{padding-left:18px;padding-right:18px}
+  .hero-location{letter-spacing:.28em;line-height:1.8}
+  .hero-philosophy{max-width:330px;font-size:9px;line-height:1.9}
+  .index-navigation{padding:88px 18px 34px}
+  .index-navigation a{width:100%;font-size:clamp(18px,7vw,28px);padding:10px 4px}
+  .section-visual[data-visual-section]::before{background-size:190% auto}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .section-visual[data-visual-section]::before,
+  .section-visual[data-visual-section]::after{animation:none!important}
 }
