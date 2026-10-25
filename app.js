@@ -642,6 +642,21 @@
     ).join("");
   }
 
+  function renderFooterSocial() {
+    const container = byId("footer-social");
+    if (!container) return;
+    const socialNormalizer = getGlobal("normalizeEscieSocial", null);
+    const social = typeof socialNormalizer === "function"
+      ? socialNormalizer(getGlobal("ESCIE_SOCIAL", []))
+      : normalizeCollection(getGlobal("ESCIE_SOCIAL", [])).filter(item => item && item.url && /^https?:\\/\\//i.test(String(item.url)));
+    container.innerHTML = social.length
+      ? '<span class="footer-social-label">EXTERNAL SIGNAL</span>' + social.map(item =>
+          '<a class="footer-social-link" href="' + escapeHTML(item.url) + '" target="_blank" rel="noopener noreferrer">' +
+          escapeHTML(item.label || item.platform || "SIGNAL") + '</a>'
+        ).join("")
+      : "";
+  }
+
   function renderAbout() {
     const container = byId("about-container");
     if (!container) return;
@@ -1175,6 +1190,7 @@
         renderArchive();
         renderInvestigation();
         renderAbout();
+    renderFooterSocial();
       });
 
       events.on("signal:emitted", signal => {
