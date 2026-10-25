@@ -417,17 +417,14 @@
     const currentRoute = (window.location.hash || "").replace(/^#/, "");
 
     nav.innerHTML =
-      '<div class="index-heading"><span>INFORMATION NODES</span><span>' + escapeHTML(String(nodes.length).padStart(2, "0")) + '</span></div>' +
+      '<div class="index-heading"><span>INDEX</span></div>' +
       nodes.map(node => {
         const target = node.target || "#";
         const route = target.replace(/^#/, "");
-        const stats = informationNodeStats(node);
         return '<a class="nav-link node-link' + (route === currentRoute ? ' is-current' : '') + '" href="' + escapeHTML(target) + '"' +
           (route === currentRoute ? ' aria-current="page"' : '') + '>' +
           '<span class="node-link-label">' + escapeHTML(node.label || node.id || "") + '</span>' +
-          '<span class="node-link-kind">' + escapeHTML(node.role || node.kind || "NODE") + '</span>' +
-          '<small>' + escapeHTML(node.description || "") + '</small>' +
-          '<span class="node-link-stat">' + escapeHTML(String(stats.count)) + ' ' + escapeHTML(stats.label) + '</span>' +
+          '<span class="node-link-symbol" aria-hidden="true">' + escapeHTML(node.symbol || "·") + '</span>' +
           '</a>';
       }).join("");
   }
