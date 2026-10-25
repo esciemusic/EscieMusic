@@ -1468,18 +1468,6 @@ body{background:#030303}
 body.inspector-open{overflow:hidden}
 
 .entry-inner{position:relative}
-.entry-section::after{
-  content:"SCROLL TO ENTER";
-  position:absolute;
-  left:50%;
-  bottom:32px;
-  transform:translateX(-50%);
-  color:var(--faint);
-  font-size:8px;
-  letter-spacing:.28em;
-  text-transform:uppercase;
-  opacity:.65;
-}
 
 .now-section{min-height:62vh}
 .now-state{position:relative;overflow:hidden}
@@ -1652,60 +1640,6 @@ body.inspector-open{overflow:hidden}
   margin-left:-10px;
 }
 .node-link.is-current .node-link-symbol{color:var(--white)}
-.entry-nodes{
-  width:min(760px,100%);
-  display:block;
-  margin:58px auto 0;
-  border-top:1px solid var(--line);
-}
-.information-node{
-  display:grid;
-  grid-template-columns:32px minmax(0,1fr) auto;
-  gap:15px;
-  align-items:start;
-  width:100%;
-  min-height:0;
-  padding:17px 0 18px;
-  border:0;
-  border-bottom:1px solid rgba(242,242,237,.09);
-  text-decoration:none;
-  transition:opacity 250ms ease,padding-left 350ms var(--ease),border-color 250ms ease;
-}
-.information-node-index{
-  padding-top:2px;
-  color:var(--faint);
-  font-size:7px;
-  letter-spacing:.18em;
-}
-.information-node-body{display:flex;flex-direction:column;gap:5px}
-.information-node-body strong{
-  font-size:14px;
-  font-weight:400;
-  letter-spacing:.12em;
-}
-.information-node-body small{
-  color:var(--muted);
-  font-size:8px;
-  letter-spacing:.07em;
-  line-height:1.5;
-  text-transform:uppercase;
-}
-.information-node-body .information-node-stat{color:var(--faint)}
-.information-node-arrow{
-  padding-top:1px;
-  color:var(--faint);
-  font-size:12px;
-}
-.information-node:hover{
-  padding-left:10px;
-  background:transparent;
-}
-.information-node:hover .information-node-arrow{color:var(--white)}
-@media(max-width:640px){
-  .entry-nodes{margin-top:48px}
-  .information-node{grid-template-columns:25px minmax(0,1fr) auto;gap:11px}
-  .node-link{grid-template-columns:1fr auto}
-}
 /* INSPECTOR CLOSE — visible without breaking the interface language */
 .record-inspector-panel{position:relative;padding-top:42px}
 .record-inspector-close{
