@@ -2136,3 +2136,47 @@ body.inspector-open{overflow:hidden}
   .visual-cross{left:16%;width:100px}
   .visual-cross::after{left:50px;height:100px;top:-50px}
 }
+
+/* SECTION VISUAL DEPTH / MOTION */
+.section-visual{isolation:isolate;cursor:default;transition:opacity .6s var(--ease),transform .8s var(--slow)}
+.section-visual:hover{opacity:.9;transform:scale(1.006)}
+.section-visual::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(circle at 50% 50%,rgba(242,242,237,.035),transparent 52%);pointer-events:none}
+.section-visual-now{background:
+  linear-gradient(90deg,transparent 0 14%,rgba(242,242,237,.018) 14.1%,transparent 14.2%),
+  linear-gradient(180deg,rgba(242,242,237,.02),transparent 45%,rgba(0,0,0,.3)),
+  #050505}
+.section-visual-work{background:
+  repeating-linear-gradient(90deg,transparent 0 80px,rgba(242,242,237,.012) 81px),
+  linear-gradient(180deg,rgba(255,255,255,.025),transparent 50%,rgba(0,0,0,.28)),
+  #050505}
+.section-visual-web{background:
+  radial-gradient(circle at 50% 50%,rgba(242,242,237,.035),transparent 35%),
+  linear-gradient(135deg,transparent 0 48%,rgba(242,242,237,.025) 49%,transparent 50%),
+  #050505}
+.section-visual-archive{background:
+  linear-gradient(90deg,rgba(242,242,237,.018),transparent 25%,transparent 75%,rgba(242,242,237,.018)),
+  repeating-linear-gradient(0deg,transparent 0 14px,rgba(242,242,237,.01) 15px),
+  #050505}
+.section-visual-investigation{background:
+  radial-gradient(circle at 18% 50%,rgba(242,242,237,.04),transparent 25%),
+  linear-gradient(90deg,transparent 0 42%,rgba(242,242,237,.025) 42.1%,transparent 42.2%),
+  #050505}
+.section-visual-glass{background:
+  radial-gradient(ellipse at center,rgba(242,242,237,.035),transparent 45%),
+  repeating-linear-gradient(0deg,transparent 0 7px,rgba(242,242,237,.012) 8px),
+  #050505}
+.section-visual-escie{background:
+  radial-gradient(circle at 50% 50%,rgba(242,242,237,.055),transparent 24%),
+  radial-gradient(circle at 50% 50%,transparent 0 31%,rgba(242,242,237,.018) 32%,transparent 33%),
+  #050505}
+.visual-vhs{animation:escie-float 9s ease-in-out infinite}
+.visual-key{animation:escie-key 8s ease-in-out infinite}
+.visual-lens{animation:escie-lens 8s ease-in-out infinite}
+.visual-eye-ring{animation:escie-eye 7s ease-in-out infinite}
+@keyframes escie-float{0%,100%{transform:rotate(-2deg) translateY(0)}50%{transform:rotate(1deg) translateY(-5px)}}
+@keyframes escie-key{0%,100%{transform:translate(-50%,-50%) rotate(-12deg)}50%{transform:translate(-50%,-53%) rotate(-4deg)}}
+@keyframes escie-lens{0%,100%{transform:translateY(-50%) rotate(0)}50%{transform:translateY(-50%) rotate(2deg)}}
+@keyframes escie-eye{0%,100%{transform:translate(-50%,-50%) rotate(-8deg) scale(1)}50%{transform:translate(-50%,-50%) rotate(2deg) scale(1.04)}}
+@media(prefers-reduced-motion:reduce){
+  .section-visual,.section-visual *{animation:none!important;transition:none!important}
+}
