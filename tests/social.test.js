@@ -25,6 +25,13 @@
       {id:"spoof",label:"SPOOF",platform:"instagram",url:"https://youtube.com/@example"}
     ]);
     assert(report.configured===1&&report.rejected===1,"social audit should report rejected domain mismatches");
+    const invalidStatus=normalize([{id:"bad-status",label:"BAD",platform:"instagram",url:"https://instagram.com/example",status:"pending"}]);
+    assert(invalidStatus.length===0,"social normalizer must reject unsupported statuses");
+    const duplicateAudit=audit([
+      {id:"one",label:"ONE",platform:"instagram",url:"https://instagram.com/one"},
+      {id:"two",label:"TWO",platform:"instagram",url:"https://instagram.com/two"}
+    ]);
+    assert(duplicateAudit.duplicates===1&&duplicateAudit.ok===false,"social audit must flag duplicate platforms");
     assert(normalized.every(item=>/^https?:\\/\\//i.test(item.url)),"normalized links must use http or https");
     return {passed:true,configured:normalized.length};
   }
