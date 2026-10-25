@@ -42,6 +42,8 @@ function normalizeEscieRecord(record,type){
   normalized.origin=record.origin||null;
   normalized.transformation=record.transformation||null;
   normalized.archive_state=record.archive_state||null;
+  normalized.release_status=record.release_status ? String(record.release_status).toLowerCase() : null;
+  normalized.release_mode=record.release_mode ? String(record.release_mode).toLowerCase() : null;
   normalized.people=Array.isArray(record.people)?record.people:[];
   normalized.locations=Array.isArray(record.locations)?record.locations:[];
   normalized.media=Array.isArray(record.media)?record.media:[];
