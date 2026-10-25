@@ -15,13 +15,21 @@ if(raw.trim()){
   try{queue=JSON.parse(raw);}catch(error){fail("ESCIE_RELEASE_QUEUE_JSON is not valid JSON");}
 }
 if(!queue||typeof queue!=="object"||!Array.isArray(queue.tracks)) fail("queue must be an object with a tracks array");
-const released=queue.tracks.filter(track=>track&&track.release_status==="released");
+const allowedStatuses=new Set(["locked","released"]);
+queue.tracks.forEach(track=>{
+  if(!track||typeof track!=="object") fail("every queue entry must be an object");
+  if(!track.id) fail("every queue entry requires an id");
+  if(!allowedStatuses.has(String(track.release_status||"").toLowerCase())) fail("invalid release_status for "+track.id);
+});
+const released=queue.tracks.filter(track=>track&&String(track.release_status).toLowerCase()==="released");
 const seen=new Set();
 released.forEach(track=>{
-  if(!track.id||seen.has(track.id)) fail("duplicate or missing released track id");
+  if(seen.has(track.id)) fail("duplicate released track id: "+track.id);
   seen.add(track.id);
-  if(track.published!==true) fail("released track must be published");
-  if(track.visibility!=="public") fail("released track must be public");
+  if(!track.title||!track.number||!track.role) fail("released track requires id, number, title and role: "+track.id);
+  if(track.published!==true) fail("released track must be published: "+track.id);
+  if(track.visibility!=="public") fail("released track must be public: "+track.id);
+  if(track.status&& !["development","active","published","archived","silence"].includes(String(track.status).toLowerCase())) fail("invalid status: "+track.id);
   if(track.project!=="bam-by-any-means") fail("unsupported project: "+String(track.project||""));
 });
 released.sort((a,b)=>String(a.number||"").localeCompare(String(b.number||""),undefined,{numeric:true}));
