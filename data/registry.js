@@ -135,6 +135,14 @@
     return publicNodes().find(node=>node.id===id)||null;
   }
 
+  function nodesForRecord(id){
+    const record=build().byId[id]||null;
+    if(!record||!releaseVisible(record)) return [];
+    const manifest=manifestFor(id);
+    if(!manifest) return [];
+    return publicNodes().filter(node=>node.section&&manifest.sections&&manifest.sections[node.section]);
+  }
+
   function allPublicRecords(){
     return build().records.filter(record=>releaseVisible(record)&&record.published!==false&&record.visibility!=="private"&&record.visibility!=="withheld"&&record.visibility!=="limited");
   }
