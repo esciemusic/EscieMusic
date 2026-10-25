@@ -16,14 +16,20 @@ function validatePublicRecord(record = {}) {
     }
   }
 
-  if (record.published === false) {
+  const published = record.published === true || record.status === "published";
+
+  if (!published) {
     errors.push("Record is not marked for publication.");
   }
 
   const visibility = String(record.visibility || "").toLowerCase();
 
-  if (["private", "withheld"].includes(visibility)) {
+  if (["private", "withheld", "limited"].includes(visibility)) {
     errors.push(`Record visibility is ${visibility}.`);
+  }
+
+  if (record.public_disclosure === false) {
+    errors.push("Record does not permit public disclosure.");
   }
 
   return {
