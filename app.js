@@ -919,19 +919,25 @@
     const index = getSearchIndex();
     if (!index || typeof index.build !== "function") return [];
 
-    const records = [
-      { id: "escie", type: "identity", title: "ESCIE", description: "The central consciousness / interface.", status: "active", published: true, visibility: "public" },
-      ...normalizeCollection(getMusic()),
-      ...normalizeCollection(getProjects()),
-      ...normalizeCollection(getArchive()),
-      ...normalizeCollection(getInvestigation()),
-      ...normalizeCollection(getPeople()),
-      ...normalizeCollection(getLocations())
-    ].filter(record =>
-      record &&
-      (record.id || record.recordId) &&
-      isPublic(record)
-    );
+    const registry = getGlobal("ESCIE_RECORD_REGISTRY", null);
+    const records = (registry && typeof registry.records === "function"
+      ? registry.records()
+      : [
+          { id: "escie", type: "identity", title: "ESCIE", description: "The central consciousness / interface.", status: "active", published: true, visibility: "public" },
+          ...normalizeCollection(getMusic()),
+          ...normalizeCollection(getProjects()),
+          ...normalizeCollection(getArchive()),
+          ...normalizeCollection(getInvestigation()),
+          ...normalizeCollection(getPeople()),
+          ...normalizeCollection(getLocations())
+        ])
+      .filter(record => {
+        if (!record || !(record.id || record.recordId) || !isPublic(record)) return false;
+        const manifest = registry && typeof registry.manifestFor === "function"
+          ? registry.manifestFor(recordId(record))
+          : null;
+        return !manifest || manifest.search !== false;
+      });
 
     const built = index.build(records);
     ESCIE_RUNTIME.searchIndex = Array.isArray(built) ? built : [];
