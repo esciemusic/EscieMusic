@@ -529,7 +529,7 @@
 
   function getAllPublicRecords() {
     return [
-      { id: "escie", type: "identity", title: "ESCIE", description: "The central consciousness / interface." },
+      { id: "escie", type: "identity", title: "ESCIE", description: "The central consciousness / interface.", status: "active", published: true, visibility: "public" },
       ...normalizeCollection(getMusic()),
       ...normalizeCollection(getProjects()),
       ...normalizeCollection(getArchive()),
