@@ -6,6 +6,7 @@ const ESCIE_PROJECTS = [{
   type:"project",
   status:"active",
   published:true,
+  release_mode:"progressive",
   visibility:"public",
   description:"ESCIE's debut project — first transmission, investigation, evidence, event, and doorway.",
   questions:["WHO MADE HIM?","WHAT DID HE BECOME?","WHAT WILL HE MAKE?"],
