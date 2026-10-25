@@ -1320,8 +1320,6 @@
   function render() {
     renderEntry();
     renderNavigation();
-    renderInformationNodes();
-    renderInformationNodes();
     renderWorkFilters();
     renderNow();
     renderMusic();
