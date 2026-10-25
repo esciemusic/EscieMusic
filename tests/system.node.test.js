@@ -98,3 +98,15 @@ off();
 assert(received, "event subscribers should receive structured events");
 
 console.log("ESCIE system contracts OK");
+
+
+const relationship = require("../relationship.js");
+const invalidRelationship = relationship.create({
+  id: "system-invalid-relationship",
+  type: "collaborated_with",
+  from: "person-a",
+  to: "person-b",
+  visibility: "private",
+  public_disclosure: true
+});
+assert(invalidRelationship.valid === false, "relationship disclosure invariant should hold in Node");
