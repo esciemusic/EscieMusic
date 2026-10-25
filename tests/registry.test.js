@@ -44,6 +44,14 @@
     const contained = registry.relationshipsFor("bam-by-any-means", { type: "contains" });
     assert(contained.length === 6, "record-centric relationship query must filter by type");
 
+    const bamProject = registry.get("bam-by-any-means");
+    const firstTrack = registry.get("bam-001-dallas-63");
+    const secondTrack = registry.get("bam-002-pumpy-to-the-chest");
+    assert(registry.releaseVisible(bamProject) === true, "BAM project must unlock when a released track exists");
+    assert(registry.releaseVisible(firstTrack) === true, "released BAM track must be visible");
+    assert(registry.releaseVisible(secondTrack) === false, "unreleased BAM track must remain hidden");
+    assert(registry.manifestFor(secondTrack.id).search === false, "locked BAM track must be excluded from search");
+
     const counts = registry.relationshipCounts();
     assert(counts.relationships === 8 && counts.nodes === 9, "relationship counts must expose graph size");
     assert(counts.byType.contains === 6, "relationship counts must aggregate connection types");
