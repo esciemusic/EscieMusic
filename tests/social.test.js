@@ -10,6 +10,7 @@
     assert(social.every(item=>item&&item.id&&item.label&&item.platform),"social entries require identity metadata");
     const ids=social.map(item=>item.id);
     assert(new Set(ids).size===ids.length,"social IDs must be unique");
+    assert(social.every(item=>item.status==="unconfigured" || item.status==="active"),"social status must be unconfigured or active");
     const normalized=normalize([
       {id:"instagram",label:"INSTAGRAM",platform:"instagram",url:"https://instagram.com/example"},
       {id:"bad",label:"BAD",platform:"unknown",url:"https://example.com"},
