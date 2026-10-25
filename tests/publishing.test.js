@@ -39,6 +39,20 @@
     });
     assert(!invalidLockedBuild.valid, "publication validation must reject locked releases");
 
+    const canonicalPlan = B.createBuildPlan({
+      records: [{
+        id: "fake-public",
+        type: "music",
+        title: "Fake Public",
+        published: true,
+        visibility: "public",
+        release_status: "released"
+      }]
+    });
+    if (typeof window !== "undefined" && window.ESCIE_RECORD_REGISTRY && typeof window.ESCIE_RECORD_REGISTRY.allPublicRecords === "function") {
+      assert(!canonicalPlan.records.some(record => record.id === "fake-public"), "runtime build must prefer canonical public records over injected records");
+    }
+
     const duplicateBuild = B.createBuildPlan({
       records: [
         { id: "duplicate-a", type: "art", title: "One", published: true },
