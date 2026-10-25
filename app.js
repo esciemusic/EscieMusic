@@ -1385,13 +1385,16 @@
     const navigate = () => {
       const route = window.location.hash.replace(/^#/, "") || "entry";
       const resolved = typeof router.resolve === "function" ? router.resolve(route) : null;
-      document.body.dataset.route = resolved || route || "entry";
-      updateEntryState(document.body.dataset.route);
+      const activeRoute = resolved || route || "entry";
+      document.body.dataset.route = activeRoute;
+      document.documentElement.dataset.route = activeRoute;
+      updateEntryState(activeRoute);
       renderEntry();
       document.documentElement.classList.remove("route-shift");
       void document.documentElement.offsetWidth;
       document.documentElement.classList.add("route-shift");
       renderNavigation();
+      refreshNavigationState();
       if (resolved && typeof router.navigate === "function") {
         router.navigate(resolved);
       }
@@ -1502,13 +1505,6 @@
     };
 
     button.addEventListener("click", toggleMenu);
-    button.addEventListener("pointerup", function (event) {
-      if (event.pointerType !== "mouse") {
-        event.preventDefault();
-        toggleMenu();
-      }
-    });
-
     nav.addEventListener("click", function (event) {
       const link = event.target.closest("a");
       if (link) closeMenu(false);
@@ -1578,7 +1574,6 @@
 
     ESCIE_RUNTIME.initialized = true;
     initializeSystemContracts();
-    initializeLanguage();
     render();
     setupMobileMenu();
     setupRecordInspector();
