@@ -16,7 +16,14 @@ const ESCIE_UI_ROUTER = {
   },
 
   resolve(path) {
-    return this.routes.has(path) ? path : null;
+    if (!path) return null;
+    const raw = String(path);
+    if (this.routes.has(raw)) return raw;
+    const normalized = raw.charAt(0) === "#" ? raw.slice(1) : raw;
+    if (this.routes.has(normalized)) return normalized;
+    const aliases = { work: "art", archive: "archives", cases: "investigation" };
+    const alias = aliases[normalized];
+    return alias && this.routes.has(alias) ? alias : null;
   },
 
   navigate(path) {
