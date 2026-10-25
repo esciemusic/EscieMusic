@@ -118,6 +118,23 @@
     return {ok:hard.length===0,errors:hard,warnings};
   }
 
+  function publicNodes(){
+    const nodes=collection("ESCIE_NODES").filter(node=>node&&node.public!==false);
+    return nodes.slice().sort((a,b)=>(Number(a.order)||999)-(Number(b.order)||999)).map(node=>{
+      const section=node.section||null;
+      const records=section
+        ? build().records.filter(record=>{
+            const manifest=manifestFor(record.id);
+            return releaseVisible(record)&&manifest&&manifest.sections&&manifest.sections[section]===true;
+          })
+        : [];
+      return Object.assign({},node,{records:records.map(record=>record.id),recordCount:records.length});
+    });
+  }
+  function nodeFor(id){
+    return publicNodes().find(node=>node.id===id)||null;
+  }
+
   function allPublicRecords(){
     return build().records.filter(record=>releaseVisible(record)&&record.published!==false&&record.visibility!=="private"&&record.visibility!=="withheld"&&record.visibility!=="limited");
   }
@@ -289,5 +306,5 @@
     });
     return {ok:missing.length===0,missing};
   }
-  window.ESCIE_RECORD_REGISTRY={version:"1.13.0",build,records:()=>build().records,allPublicRecords,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,releaseAudit,manifestFor,filter,contextFor,publicRelationships,relationshipTypes,relationshipCategories,relationshipsFor,relationshipCounts,releaseVisible};
+  window.ESCIE_RECORD_REGISTRY={version:"1.14.0",build,records:()=>build().records,publicNodes,nodeFor,allPublicRecords,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,releaseAudit,manifestFor,filter,contextFor,publicRelationships,relationshipTypes,relationshipCategories,relationshipsFor,relationshipCounts,releaseVisible};
 })();
