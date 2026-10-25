@@ -3044,6 +3044,17 @@ body.menu-open .index-navigation.is-open{
 }
 
 /* ENTRY SIGNAL WORDING — blue line above the name */
+.entry-inner .hero-state{
+  margin:0 auto 18px;
+  color:#9fc5dd;
+  font-size:clamp(11px,1.15vw,14px);
+  font-weight:600;
+  letter-spacing:.24em;
+  line-height:1.3;
+  text-transform:uppercase;
+  text-shadow:0 0 18px rgba(79,134,173,.18);
+  opacity:.88;
+}
 .entry-inner .hero-tagline{
   margin:0 auto 22px;
   color:#9fc5dd;
