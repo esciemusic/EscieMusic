@@ -655,7 +655,8 @@
           relationships: registry.relationshipAudit(),
           symbols: typeof registry.symbolAudit === "function" ? registry.symbolAudit() : null,
           contract: typeof registry.contractAudit === "function" ? registry.contractAudit() : null,
-          references: typeof registry.referenceAudit === "function" ? registry.referenceAudit() : null
+          references: typeof registry.referenceAudit === "function" ? registry.referenceAudit() : null,
+          sections: typeof registry.sectionAudit === "function" ? registry.sectionAudit() : null
         }
       : null;
   }
