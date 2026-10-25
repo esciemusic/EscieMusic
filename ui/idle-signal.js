@@ -29,7 +29,6 @@
     const reduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if(hasPublicTransmission()||reduced)return;
     let index=0;
-    const reduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const set=()=>{
       node.classList.remove("signal-status-shift");
       void node.offsetWidth;
