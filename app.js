@@ -485,10 +485,25 @@
         const track = recordsById.get(part.trackId);
         return track && isReleaseVisible(track);
       });
+      const totalParts = structure.length;
+      const releasedParts = releasedStructure.length;
+      const nextPart = structure.find(part => {
+        const track = recordsById.get(part.trackId);
+        return track && !isReleaseVisible(track);
+      });
+      const progressLabel = totalParts
+        ? "TRANSMISSIONS " + String(releasedParts).padStart(2, "0") + " / " + String(totalParts).padStart(2, "0")
+        : "TRANSMISSION STATE UNKNOWN";
+      const nextLabel = nextPart
+        ? "NEXT TRANSMISSION / " + String(nextPart.number || "").padStart(3, "0")
+        : (totalParts ? "COMPLETE TRANSMISSION" : "NO TRANSMISSION MAP");
       return '<article class="bam-project" data-record-type="body" data-record-id="' +
         escapeHTML(recordId(project)) + '"' + narrationAttributes(project) + '>' +
         '<p class="eyebrow">' + escapeHTML(project.type || "BODY") + "</p>" +
         '<h3>' + escapeHTML(recordTitle(project)) + "</h3>" +
+        '<div class="bam-progress" aria-label="' + escapeHTML(progressLabel) + '">' +
+          '<span>' + escapeHTML(progressLabel) + '</span><span>' + escapeHTML(nextLabel) + '</span>' +
+        '</div>' +
         (project.description ? "<p>" + escapeHTML(project.description) + "</p>" : "") +
         (project.questions ? '<div class="project-questions">' + project.questions.map(q => '<span>' + escapeHTML(q) + '</span>').join("") + '</div>' : "") +
         (releasedStructure.length ? '<div class="bam-structure">' + releasedStructure.map(part => '<button class="bam-part record-card" type="button" data-record-id="' + escapeHTML(part.trackId || "") + '"><span>' + escapeHTML(part.number) + '</span><strong>' + escapeHTML(part.title) + '</strong><em>' + escapeHTML(part.role) + '</em></button>').join("") + '</div>' : "") +
