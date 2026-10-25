@@ -1844,3 +1844,15 @@ body.inspector-open{overflow:hidden}
     animation: none;
   }
 }
+
+.signal-status {
+  transition: opacity 500ms ease, letter-spacing 700ms var(--ease);
+}
+.signal-status-shift {
+  animation: signalStatusShift 900ms var(--ease);
+}
+@keyframes signalStatusShift {
+  0% { opacity: 0; letter-spacing: .65em; transform: translateX(-50%) translateY(3px); }
+  35% { opacity: .42; }
+  100% { opacity: .28; letter-spacing: .42em; transform: translateX(-50%) translateY(0); }
+}
