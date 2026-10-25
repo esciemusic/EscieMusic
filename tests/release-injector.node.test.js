@@ -33,6 +33,16 @@ function run(){
     assert(generated.includes("bam-001-dallas-63"),"released record must enter generated runtime");
     assert(!generated.includes("bam-002-private"),"locked record must never enter generated runtime");
     assert(!generated.includes("PRIVATE TITLE"),"locked title must never enter generated runtime");
+
+    const invalidQueue={
+      tracks:[{id:"bad-status",project:"bam-by-any-means",number:"002",title:"Bad",role:"THE MONSTER",release_status:"maybe",published:true,visibility:"public"}]
+    };
+    const invalid=child.spawnSync(process.execPath,[path.join(tempDir,"inject-release.js")],{
+      cwd:tempDir,
+      env:Object.assign({},process.env,{ESCIE_RELEASE_QUEUE_JSON:JSON.stringify(invalidQueue)}),
+      encoding:"utf8"
+    });
+    assert(invalid.status!==0,"invalid release status must fail the private build");
     return {passed:true};
   } finally {
     fs.rmSync(tempDir,{recursive:true,force:true});
