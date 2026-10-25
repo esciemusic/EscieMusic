@@ -1184,3 +1184,7 @@
     ESCIE_RELATIONSHIP;
 
 })();
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = ESCIE_RELATIONSHIP;
+}
