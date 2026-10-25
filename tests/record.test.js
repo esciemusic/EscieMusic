@@ -48,6 +48,36 @@
 
     assert(!R.isPublic(withheldRecord), "withheld record must not be public");
 
+    const limitedRecord = R.create({
+      id: "limited-art",
+      type: R.TYPES.ART,
+      title: "Limited Art",
+      visibility: R.VISIBILITY.LIMITED,
+      public_disclosure: false
+    });
+
+    assert(!R.isPublic(limitedRecord), "limited record must not be public");
+
+    const invalidRecord = R.create({
+      id: "invalid-art",
+      type: "not-a-record-type",
+      title: "Invalid Art",
+      visibility: R.VISIBILITY.PUBLIC,
+      public_disclosure: true
+    });
+
+    assert(!R.validate(invalidRecord).valid, "invalid record type must fail validation");
+
+    const contradictoryRecord = R.create({
+      id: "contradictory-art",
+      type: R.TYPES.ART,
+      title: "Contradictory Art",
+      visibility: R.VISIBILITY.PRIVATE,
+      public_disclosure: true
+    });
+
+    assert(!R.validate(contradictoryRecord).valid, "private record cannot declare public disclosure");
+
     const normalized = R.normalize({
       id: "legacy-art",
       type: R.TYPES.ART,
