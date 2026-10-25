@@ -614,6 +614,14 @@
       : null;
   }
 
+  function recordContext(record) {
+    const registry = getGlobal("ESCIE_RECORD_REGISTRY", null);
+    if (!registry || typeof registry.contextFor !== "function" || !record) {
+      return {parents:[],children:[],connections:[]};
+    }
+    return registry.contextFor(recordId(record)) || {parents:[],children:[],connections:[]};
+  }
+
   function showRecordInspector(record) {
     const modal = byId("record-inspector");
     if (!modal || !record) return;
@@ -629,6 +637,7 @@
     const tags = Array.isArray(record.tags) ? record.tags : [];
     const media = Array.isArray(record.media) ? record.media : [];
     const evidence = Array.isArray(record.evidence) ? record.evidence : [];
+    const derivedContext = recordContext(record);
     const relationships = normalizeCollection(getRelationships());
     const relatedIds = relationships
       .filter(r => r && (r.from === recordId(record) || r.to === recordId(record)))
@@ -654,6 +663,9 @@
         (tags.length ? '<p><strong>TAGS</strong> ' + escapeHTML(tags.join(" / ")) + '</p>' : '') +
         '<p><strong>MEDIA</strong> ' + escapeHTML(String(media.length)) + ' / <strong>EVIDENCE</strong> ' + escapeHTML(String(evidence.length)) + '</p>' +
         '</div>' : '') +
+      (derivedContext.parents.length ? '<div class="record-context"><p class="eyebrow">CONTAINED BY</p>' +
+        derivedContext.parents.map(item => '<button class="record-related-link" type="button" data-record-id="' + escapeHTML(item.record) + '">' +
+          escapeHTML(recordTitle(getAllRecords().find(r => recordId(r) === item.record) || {title:item.record})) + '</button>').join("") + '</div>' : '') +
       (related.length ? '<div class="record-related"><p class="eyebrow">CONNECTED RECORDS</p>' +
         related.map(item => '<button class="record-related-link" type="button" data-record-id="' + escapeHTML(recordId(item)) + '">' +
           escapeHTML(recordTitle(item)) + '</button>').join('') + '</div>' : '');
