@@ -1105,6 +1105,7 @@
       stateLabel.textContent = node && node.role
         ? String(node.role)
         : (route === "entry" ? "CURRENT SIGNAL" : String(route || "CURRENT SIGNAL").replace(/-/g, " ").toUpperCase());
+      stateLabel.dataset.route = route;
     }
 
     const year = byId("entry-year");
@@ -1132,6 +1133,25 @@
         "The music does not create the universe. The universe creates the music."
       );
     }
+  }
+
+  function updateEntryState(route) {
+    const stateLabel = byId("entry-state");
+    if (!stateLabel) return;
+
+    const normalizedRoute = String(route || "entry").replace(/^#/, "");
+    const nodes = getInformationNodes();
+    const node = nodes.find(item => {
+      const target = String(item && item.target || "").replace(/^#/, "");
+      return target === normalizedRoute;
+    });
+
+    stateLabel.textContent = node && node.role
+      ? String(node.role)
+      : (normalizedRoute === "entry"
+        ? "CURRENT SIGNAL"
+        : normalizedRoute.replace(/-/g, " ").toUpperCase());
+    stateLabel.dataset.route = normalizedRoute;
   }
 
   function buildSearchIndex() {
@@ -1343,6 +1363,7 @@
       const route = window.location.hash.replace(/^#/, "") || "entry";
       const resolved = typeof router.resolve === "function" ? router.resolve(route) : null;
       document.body.dataset.route = resolved || route || "entry";
+      updateEntryState(document.body.dataset.route);
       renderEntry();
       document.documentElement.classList.remove("route-shift");
       void document.documentElement.offsetWidth;
