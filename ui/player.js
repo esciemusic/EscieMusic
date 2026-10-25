@@ -37,6 +37,7 @@ const ESCIE_UI_PLAYER = {
     dock.setAttribute("aria-label", "ESCIE player");
     dock.innerHTML =
       '<div class="escie-player-main">' +
+        '<button type="button" class="escie-player-step" data-player-prev aria-label="Previous transmission">PREV</button>' +
         '<button type="button" class="escie-player-toggle" data-player-toggle aria-label="Play" aria-pressed="false">PLAY</button>' +
         '<div class="escie-player-track">' +
           '<span class="escie-player-label">SIGNAL</span>' +
@@ -44,6 +45,7 @@ const ESCIE_UI_PLAYER = {
           '<span class="escie-player-time" data-player-time aria-live="off">0:00 / 0:00</span>' +
           '<input class="escie-player-progress" data-player-progress type="range" min="0" max="1000" value="0" step="1" aria-label="Playback position">' +
         '</div>' +
+        '<button type="button" class="escie-player-step" data-player-next aria-label="Next transmission">NEXT</button>' +
         '<button type="button" class="escie-player-close" data-player-close aria-label="Close player">×</button>' +
       '</div>';
 
@@ -51,6 +53,8 @@ const ESCIE_UI_PLAYER = {
     this.ui = {
       dock,
       toggle: dock.querySelector("[data-player-toggle]"),
+      previous: dock.querySelector("[data-player-prev]"),
+      next: dock.querySelector("[data-player-next]"),
       title: dock.querySelector("[data-player-title]"),
       progress: dock.querySelector("[data-player-progress]"),
       time: dock.querySelector("[data-player-time]"),
@@ -58,6 +62,8 @@ const ESCIE_UI_PLAYER = {
     };
 
     this.ui.toggle.addEventListener("click", () => this.playing ? this.pause() : this.play());
+    this.ui.previous.addEventListener("click", () => this.previous());
+    this.ui.next.addEventListener("click", () => this.next());
     this.ui.close.addEventListener("click", () => this.hide());
     this.ui.progress.addEventListener("input", event => {
       if (!this.audio || !Number.isFinite(this.audio.duration) || this.audio.duration <= 0) return;
@@ -188,6 +194,22 @@ const ESCIE_UI_PLAYER = {
     return loaded;
   },
 
+  previous() {
+    if (!this.queue.length) return null;
+    const previousIndex = this.queueIndex - 1;
+    if (previousIndex < 0) {
+      if (this.audio && this.audio.currentTime > 3) {
+        this.audio.currentTime = 0;
+        return this.current;
+      }
+      return null;
+    }
+    this.queueIndex = previousIndex;
+    const loaded = this.load(this.queue[this.queueIndex]);
+    if (loaded) this.play();
+    return loaded;
+  },
+
   next(source = {}) {
     if (source && source.url) {
       const index = this.queue.findIndex(item => item.id && source.id && item.id === source.id);
@@ -210,6 +232,9 @@ const ESCIE_UI_PLAYER = {
     this.ui.toggle.setAttribute("aria-label", this.playing ? "Pause" : "Play");
     this.ui.toggle.setAttribute("aria-pressed", String(this.playing));
     this.ui.dock.classList.toggle("is-playing", this.playing);
+    const hasQueue = this.queue.length > 0;
+    if (this.ui.previous) this.ui.previous.disabled = !hasQueue || this.queueIndex <= 0;
+    if (this.ui.next) this.ui.next.disabled = !hasQueue || this.queueIndex >= this.queue.length - 1;
   },
 
   syncProgress() {
