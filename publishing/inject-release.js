@@ -1,0 +1,47 @@
+/*
+ * ESCIE PRIVATE RELEASE INJECTOR
+ *
+ * Reads ESCIE_RELEASE_QUEUE_JSON from the GitHub Actions environment.
+ * Only records explicitly marked released are written into the Pages artifact.
+ * The queue never belongs in the public repository.
+ */
+const fs=require("fs");
+const raw=process.env.ESCIE_RELEASE_QUEUE_JSON||"";
+const output="data/release-runtime.js";
+function fail(message){throw new Error("Release injector: "+message);}
+let queue={tracks:[]};
+if(raw.trim()){
+  try{queue=JSON.parse(raw);}catch(error){fail("ESCIE_RELEASE_QUEUE_JSON is not valid JSON");}
+}
+if(!queue||typeof queue!=="object"||!Array.isArray(queue.tracks)) fail("queue must be an object with a tracks array");
+const released=queue.tracks.filter(track=>track&&track.release_status==="released");
+const seen=new Set();
+released.forEach(track=>{
+  if(!track.id||seen.has(track.id)) fail("duplicate or missing released track id");
+  seen.add(track.id);
+  if(track.published!==true) fail("released track must be published");
+  if(track.visibility!=="public") fail("released track must be public");
+  if(track.project!=="bam-by-any-means") fail("unsupported project: "+String(track.project||""));
+});
+released.sort((a,b)=>String(a.number||"").localeCompare(String(b.number||""),undefined,{numeric:true}));
+const projectStructures={};
+released.forEach(track=>{
+  if(!projectStructures[track.project]) projectStructures[track.project]=[];
+  projectStructures[track.project].push({number:track.number,title:track.title,role:track.role,trackId:track.id});
+});
+const relationships=released.map(track=>({
+  id:"rel-"+track.project+"-contains-"+track.id.replace(/[^a-z0-9]+/gi,"-").replace(/^-|-$/g,""),
+  from:track.project,
+  type:"contains",
+  to:track.id,
+  status:"active",
+  confidence:"verified",
+  canonical_status:"canonical",
+  visibility:"public",
+  public_disclosure:true
+}));
+const payload="/* GENERATED — public released subset only. */\n"+
+"const ESCIE_RELEASE_RUNTIME="+JSON.stringify({music:released,relationships,projectStructures})+";\n"+
+"if(typeof window!==\"undefined\")window.ESCIE_RELEASE_RUNTIME=ESCIE_RELEASE_RUNTIME;\n";
+fs.writeFileSync(output,payload,{encoding:"utf8"});
+console.log("Release injector: "+released.length+" transmitted record(s) emitted.");
