@@ -15,6 +15,14 @@ const ESCIE_SEARCH_INDEX = {
   add(record = {}) {
     if (!record || !record.id) return null;
 
+    const registry =
+      typeof window !== "undefined" ? window.ESCIE_RECORD_REGISTRY : null;
+
+    if (registry && typeof registry.releaseVisible === "function" &&
+        !registry.releaseVisible(record)) {
+      return null;
+    }
+
     const entry = {
       id: record.id,
       type: record.type || null,
