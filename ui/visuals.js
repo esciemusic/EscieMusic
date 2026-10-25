@@ -18,6 +18,11 @@
   }catch(e){return null;}
  }
 
+ function safePoster(value){
+  const u=safeURL(value);
+  return u ? u.href : null;
+ }
+
  function visualAsset(asset){
   if(typeof asset==="string") return {url:asset,type:"image"};
   if(!asset||typeof asset!=="object")return null;
@@ -26,7 +31,9 @@
   const type=String(asset.type||asset.kind||"image").toLowerCase();
   if(!IMAGE_TYPES.includes(type)&&!VIDEO_TYPES.includes(type)&&type!=="iframe")return null;
   if(type==="iframe"&&!HOSTS.includes(url.hostname.toLowerCase()))return null;
-  return {url:url.href,type,alt:String(asset.alt||"").trim(),caption:String(asset.caption||"").trim(),poster:String(asset.poster||"").trim()};
+  if(type==="iframe"&&url.username)return null;
+  const poster=safePoster(asset.poster);
+  return {url:url.href,type,alt:String(asset.alt||"").trim(),caption:String(asset.caption||"").trim(),poster};
  }
 
  function renderAsset(asset){
@@ -38,7 +45,7 @@
      ' aria-hidden="true"><source src="'+escapeHTML(item.url)+'"></video>';
   }
   if(item.type==="iframe"){
-   return '<iframe class="section-visual-media" src="'+escapeHTML(item.url)+'" title="ESCIE visual" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" aria-hidden="true"></iframe>';
+   return '<iframe class="section-visual-media" src="'+escapeHTML(item.url)+'" title="ESCIE visual" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin" aria-hidden="true"></iframe>';
   }
   return '<img class="section-visual-media" src="'+escapeHTML(item.url)+'" alt="'+escapeHTML(item.alt)+'" loading="lazy" decoding="async">';
  }
@@ -58,10 +65,12 @@
     if(entry.isIntersecting&&!document.hidden){media.play().catch(()=>{});}else{media.pause();}
   }),{threshold:.15});
   observer.observe(el);
-  document.addEventListener("visibilitychange",()=>{if(document.hidden)media.pause();});
+  const onVisibility=()=>{if(document.hidden)media.pause();else if(!reducedMotion()&&el.getBoundingClientRect().bottom>0&&el.getBoundingClientRect().top<window.innerHeight)media.play().catch(()=>{});};
+  document.addEventListener("visibilitychange",onVisibility);
 }
 
  function init(){
+  document.querySelectorAll(".section-visual.has-visual-asset").forEach(el=>{el.querySelectorAll(".section-visual-media").forEach(media=>media.remove());el.classList.remove("has-visual-asset");});
   const items=window.ESCIE_VISUALS||[];
   const normalized=typeof window.normalizeEscieVisuals==="function"?window.normalizeEscieVisuals(items):items;
   normalized.forEach(v=>{
