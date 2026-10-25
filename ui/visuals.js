@@ -160,6 +160,7 @@
  }
 
  function init(){
+  if(WORK_ALBUM_OBSERVER){WORK_ALBUM_OBSERVER.disconnect();WORK_ALBUM_OBSERVER=null;}
   if(SECTION_OBSERVER){SECTION_OBSERVER.disconnect();SECTION_OBSERVER=null;}
   if(RESIZE_HANDLER){window.removeEventListener("resize",RESIZE_HANDLER);RESIZE_HANDLER=null;}
   if(MEDIA_QUERY&&MEDIA_QUERY_HANDLER){
