@@ -1050,6 +1050,28 @@
           return type === "audio" && item.url;
         });
         if (audio) {
+          if (typeof player.setQueue === "function") {
+            const queue = getAllPublicRecords()
+              .filter(item => item && item.type === "music" && isPublic(item))
+              .sort((a, b) => String(a.number || "").localeCompare(String(b.number || ""), undefined, { numeric: true }))
+              .map(item => {
+                const itemMedia = mediaAPI && typeof mediaAPI.normalizeAll === "function"
+                  ? mediaAPI.normalizeAll(Array.isArray(item.media) ? item.media : [])
+                  : (Array.isArray(item.media) ? item.media : []);
+                const itemAudio = itemMedia.find(entry => {
+                  const type = entry && String(entry.type || entry.kind || "").toLowerCase();
+                  return type === "audio" && entry.url;
+                });
+                return itemAudio ? {
+                  id: recordId(item),
+                  title: recordTitle(item),
+                  url: itemAudio.url,
+                  sourceId: recordId(item)
+                } : null;
+              })
+              .filter(Boolean);
+            player.setQueue(queue, { autoAdvance: true });
+          }
           player.load({
             id: recordId(record),
             title: recordTitle(record),
