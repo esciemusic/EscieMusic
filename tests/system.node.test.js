@@ -258,7 +258,7 @@ assert(appendedHistory2.valid === true, "valid history entry should append");
 assert(appendedHistory2.entry.id === "history-test-001", "appended history should return its entry");
 
 const duplicateHistory2 = history.append(historyEntry2, [registeredSource]);
-assert(duplicateHistory2.valid === false, "duplicate history id must be rejected");
+assert(duplicateHistory.valid === false, "duplicate history id must be rejected");
 
 const invalidHistory2 = history.append({
   id: "history-test-invalid",
