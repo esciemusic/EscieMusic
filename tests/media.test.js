@@ -38,6 +38,14 @@
     assert(media.renderAll([{type:"video",url:"https://example.com/a.mp4"}]).includes("<video"),"video should render as native video");
     assert(media.renderAll([{type:"iframe",url:"https://www.youtube.com/watch?v=test"}]).includes("<iframe"),"YouTube should render as iframe");
     assert(media.renderAll([{type:"iframe",url:"https://evil.example/embed"}])==="","unapproved iframe host must render nothing");
+    const player=typeof window!=="undefined"?window.ESCIE_UI_PLAYER:null;
+    if(player){
+      assert(typeof player.attach==="function"&&typeof player.load==="function","player contract must expose attach and load");
+      assert(typeof player.play==="function"&&typeof player.pause==="function","player contract must expose playback controls");
+      const loaded=player.load({id:"player-test",title:"PLAYER TEST",url:"https://example.com/test.mp3"});
+      assert(loaded&&loaded.id==="player-test","player should load a valid transmission");
+      assert(player.current&&player.current.title==="PLAYER TEST","player should retain current transmission");
+    }
     return {passed:true};
   }
   if(typeof window!=="undefined")window.ESCIE_TEST_MEDIA={run};
