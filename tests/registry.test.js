@@ -36,13 +36,13 @@
     assert(sections && sections.ok === true, "section manifest audit must pass");
 
     const publicRelationships = registry.publicRelationships();
-    assert(Array.isArray(publicRelationships) && publicRelationships.length === 8, "public relationship query must expose canonical disclosed connections");
+    assert(Array.isArray(publicRelationships) && publicRelationships.length === 3, "public relationship query must expose canonical disclosed connections");
 
     const typeList = registry.relationshipTypes();
     assert(typeList.includes("contains") && typeList.includes("created"), "relationship type facets must be derived from public connections");
 
     const contained = registry.relationshipsFor("bam-by-any-means", { type: "contains" });
-    assert(contained.length === 6, "record-centric relationship query must filter by type");
+    assert(contained.length === 1, "record-centric relationship query must filter by type");
 
     const bamProject = registry.get("bam-by-any-means");
     const firstTrack = registry.get("bam-001-dallas-63");
@@ -53,8 +53,14 @@
     assert(registry.manifestFor(secondTrack.id).search === false, "locked BAM track must be excluded from search");
 
     const counts = registry.relationshipCounts();
-    assert(counts.relationships === 8 && counts.nodes === 9, "relationship counts must expose graph size");
-    assert(counts.byType.contains === 6, "relationship counts must aggregate connection types");
+    assert(counts.relationships === 3 && counts.nodes === 4, "relationship counts must expose graph size");
+    assert(counts.byType.contains === 1, "relationship counts must aggregate connection types");
+
+    const releaseAudit = registry.releaseAudit();
+    assert(releaseAudit && releaseAudit.ok === true, "progressive release configuration must pass audit");
+
+    const projectContext = registry.contextFor("bam-by-any-means");
+    assert(projectContext.children.length === 1 && projectContext.children[0].record === "bam-001-dallas-63", "locked BAM tracks must stay out of public record context");
 
     return { passed: true };
   }
