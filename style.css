@@ -2240,6 +2240,12 @@ body.inspector-open{overflow:hidden}
 
 .section-visual[data-visual-section].visual-active::before{
   animation-play-state:running;
+  opacity:calc(.22 + (var(--visual-intensity,.7) * .15));
+  filter:grayscale(.18) contrast(.86) saturate(.78);
+}
+.section-visual[data-visual-section]:not(.visual-active)::before{
+  opacity:calc(.13 + (var(--visual-intensity,.7) * .10));
+  filter:grayscale(.30) contrast(.78) saturate(.62);
 }
 
 .section-visual[data-visual-section]:not(.visual-active)::after{
