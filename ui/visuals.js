@@ -88,13 +88,40 @@
    el.style.removeProperty("--visual-intensity");
   });
   const visuals=Array.from(document.querySelectorAll(".section-visual"));
+  const setActiveVisual=active=>{
+   visuals.forEach(el=>el.classList.toggle("visual-active",el===active));
+  };
   if("IntersectionObserver" in window){
+   const visible=new Set();
+   const chooseActive=()=>{
+    let best=null;
+    let bestScore=0;
+    visuals.forEach(el=>{
+     if(!visible.has(el))return;
+     const rect=el.getBoundingClientRect();
+     const top=Math.max(rect.top,0);
+     const bottom=Math.min(rect.bottom,window.innerHeight);
+     const height=Math.max(0,bottom-top);
+     const width=Math.max(0,Math.min(rect.right,window.innerWidth)-Math.max(rect.left,0));
+     const area=height*width;
+     if(area<=0)return;
+     const centerDistance=Math.abs((rect.top+rect.bottom)/2-window.innerHeight/2);
+     const score=area/(1+centerDistance*.015);
+     if(score>bestScore){bestScore=score;best=el;}
+    });
+    setActiveVisual(best);
+   };
    SECTION_OBSERVER=new IntersectionObserver(entries=>{
-    entries.forEach(entry=>entry.target.classList.toggle("visual-active",entry.isIntersecting));
-   },{threshold:.35,rootMargin:"-12% 0px -12% 0px"});
+    entries.forEach(entry=>{
+     if(entry.isIntersecting)visible.add(entry.target);
+     else visible.delete(entry.target);
+    });
+    chooseActive();
+   },{threshold:[0,.2,.35,.5,.7,1],rootMargin:"-12% 0px -12% 0px"});
    visuals.forEach(el=>SECTION_OBSERVER.observe(el));
+   window.addEventListener("resize",chooseActive,{passive:true});
   }else{
-   visuals.forEach(el=>el.classList.add("visual-active"));
+   setActiveVisual(visuals[0]||null);
   }
 
   const items=window.ESCIE_VISUALS||[];
