@@ -1,117 +1,22 @@
-const ESCIE_SIGNALS = [
+/*
+ * ESCIE SIGNAL REGISTRY
+ *
+ * Signals are external or internal transmission sources that can feed
+ * the ESCIE interface.
+ *
+ * A signal describes a source/channel. It does not itself create canon,
+ * relationships, evidence, or meaning.
+ *
+ * Individual transmissions should become records/fragments when they
+ * are intentionally preserved by ESCIE.
+ */
 
-  {
-    id: "youtube",
+const ESCIE_SIGNALS = [];
 
-    name: "YOUTUBE",
+if (typeof window !== "undefined") {
+  window.ESCIE_SIGNALS = ESCIE_SIGNALS;
+}
 
-    type: "video",
-
-    active: true,
-
-    profileUrl:
-      "https://youtube.com/@esciemusic",
-
-    embed: {
-      enabled: false,
-      type: "youtube",
-      source: null
-    },
-
-    description:
-      "Video transmissions from ESCIE."
-  },
-
-
-  {
-    id: "soundcloud",
-
-    name: "SOUNDCLOUD",
-
-    type: "audio",
-
-    active: true,
-
-    profileUrl:
-      "https://on.soundcloud.com/EN7PAwuwfeA35Zz1We",
-
-    embed: {
-      enabled: false,
-      type: "soundcloud",
-      source: null
-    },
-
-    description:
-      "Audio transmissions from ESCIE."
-  },
-
-
-  {
-    id: "tiktok",
-
-    name: "TIKTOK",
-
-    type: "social",
-
-    active: true,
-
-    profileUrl:
-      "https://www.tiktok.com/@esciemusic",
-
-    embed: {
-      enabled: false,
-      type: "tiktok",
-      source: null
-    },
-
-    description:
-      "Short-form transmissions."
-  },
-
-
-  {
-    id: "instagram",
-
-    name: "INSTAGRAM",
-
-    type: "social",
-
-    active: true,
-
-    profileUrl:
-      "https://www.instagram.com/esciemusic",
-
-    embed: {
-      enabled: false,
-      type: "instagram",
-      source: null
-    },
-
-    description:
-      "Visual transmissions and fragments."
-  },
-
-
-  {
-    id: "audiomack",
-
-    name: "AUDIOMACK",
-
-    type: "audio",
-
-    active: true,
-
-    profileUrl:
-      "https://audiomack.com/esciemgmt",
-
-    embed: {
-      enabled: false,
-      type: "audiomack",
-      source: null
-    },
-
-    description:
-      "Music transmissions."
-  }
-
-];
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = ESCIE_SIGNALS;
+}
