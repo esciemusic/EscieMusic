@@ -76,4 +76,7 @@ if (typeof module !== "undefined" && module.exports) {
   module.exports = ESCIE_STATE;
   module.exports.API = ESCIE_STATE_API;
   module.exports.STATUS = ESCIE_STATE_STATUS;
+  module.exports.validate = ESCIE_STATE_API.validate;
+  module.exports.setStatus = ESCIE_STATE_API.setStatus;
+  module.exports.reset = ESCIE_STATE_API.reset;
 }
