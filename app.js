@@ -304,7 +304,11 @@
       ...normalizeCollection(getArchive()),
       ...normalizeCollection(getInvestigation()),
       ...normalizeCollection(getPeople())
-    ].filter(record => record && (record.id || record.recordId));
+    ].filter(record =>
+      record &&
+      (record.id || record.recordId) &&
+      isPublic(record)
+    );
 
     return index.build(records);
   }
