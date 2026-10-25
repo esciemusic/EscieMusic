@@ -35,6 +35,7 @@ function validatePublicRecord(record = {}) {
 function validateBuild(build = {}) {
   const errors = [];
   const records = Array.isArray(build.records) ? build.records : [];
+  const seenIds = new Set();
 
   records.forEach((record) => {
     const data = record.data || record;
@@ -50,6 +51,17 @@ function validateBuild(build = {}) {
         recordId: record.id || record.data?.id || null,
         errors: result.errors
       });
+    }
+
+    const id = data && data.id;
+    if (id) {
+      if (seenIds.has(id)) {
+        errors.push({
+          recordId: id,
+          errors: ["Duplicate public record id."]
+        });
+      }
+      seenIds.add(id);
     }
   });
 
