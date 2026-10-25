@@ -475,46 +475,44 @@
     }).join("");
   }
 
-  function renderWeb() {
-    const container = byId("web-container");
-    if (!container) return;
-
-    const relationships = normalizeCollection(getRelationships());
-    const records = getAllRecords();
-    const byIdMap = new Map(records.filter(Boolean).map(record => [recordId(record), record]));
-    const visible = relationships.filter(relationship =>
+  function getPublicRelationshipRecords(){
+    const records=getAllPublicRecords();
+    const byIdMap=new Map(records.filter(Boolean).map(record=>[recordId(record),record]));
+    return normalizeCollection(getRelationships()).filter(relationship=>
       relationship &&
-      relationship.public_disclosure === true &&
-      relationship.visibility !== "private" &&
-      relationship.visibility !== "withheld" &&
+      relationship.public_disclosure===true &&
+      relationship.visibility!=="private" &&
+      relationship.visibility!=="withheld" &&
       byIdMap.has(relationship.from) &&
       byIdMap.has(relationship.to)
     );
+  }
 
-    if (!visible.length) {
-      renderEmpty(container, "THE WEB EXISTS. PUBLIC CONNECTIONS WILL APPEAR WHEN THEY ARE ESTABLISHED.");
+  function renderWeb() {
+    const container=byId("web-container");
+    if(!container)return;
+    const relationships=getPublicRelationshipRecords();
+    const records=getAllPublicRecords();
+    const byIdMap=new Map(records.filter(Boolean).map(record=>[recordId(record),record]));
+    if(!relationships.length){
+      renderEmpty(container,"THE WEB EXISTS. PUBLIC CONNECTIONS WILL APPEAR WHEN THEY ARE ESTABLISHED.");
       return;
     }
-
-    container.innerHTML =
-      '<div class="web-intro">' + motifMarkup("the-web") + '<p class="eyebrow">RELATIONSHIP GRAPH</p>' +
-      '<p>Nothing here is decorative. A connection is shown because the record system says it exists.</p></div>' +
-      '<div class="web-list">' +
-      visible.map(relationship => {
-        const from = byIdMap.get(relationship.from);
-        const to = byIdMap.get(relationship.to);
-        return '<article class="web-connection" data-relationship-id="' + escapeHTML(relationship.id || "") + '">' +
-          '<button class="web-node web-node-button" type="button" data-record-id="' + escapeHTML(relationship.from) + '">' +
-            '<strong>' + escapeHTML(recordTitle(from)) + '</strong><span>' + escapeHTML(from.type || "record") + '</span>' +
-          '</button>' +
-          '<span class="web-arrow" aria-hidden="true">→</span>' +
-          '<span class="web-type">' + escapeHTML(relationship.type || "CONNECTION") + '</span>' +
-          '<span class="web-arrow" aria-hidden="true">→</span>' +
-          '<button class="web-node web-node-button" type="button" data-record-id="' + escapeHTML(relationship.to) + '">' +
-            '<strong>' + escapeHTML(recordTitle(to)) + '</strong><span>' + escapeHTML(to.type || "record") + '</span>' +
-          '</button>' +
+    const nodes=new Set();
+    relationships.forEach(r=>{nodes.add(r.from);nodes.add(r.to);});
+    const nodeRecords=Array.from(nodes).map(id=>byIdMap.get(id)).filter(Boolean);
+    container.innerHTML=
+      '<div class="web-intro">'+motifMarkup("the-web")+'<p class="eyebrow">RELATIONSHIP GRAPH / '+escapeHTML(String(nodeRecords.length))+' NODES</p>'+
+      '<p>Nothing here is decorative. A connection is shown because the record system says it exists.</p></div>'+
+      '<div class="web-list">'+
+      relationships.map(relationship=>{
+        const from=byIdMap.get(relationship.from),to=byIdMap.get(relationship.to);
+        return '<article class="web-connection" data-relationship-id="'+escapeHTML(relationship.id||"")+'">'+
+          '<button class="web-node web-node-button" type="button" data-record-id="'+escapeHTML(relationship.from)+'"><strong>'+escapeHTML(recordTitle(from))+'</strong><span>'+escapeHTML(from.type||"record")+'</span></button>'+
+          '<span class="web-arrow" aria-hidden="true">→</span><span class="web-type">'+escapeHTML(relationship.type||"CONNECTION")+'</span><span class="web-arrow" aria-hidden="true">→</span>'+
+          '<button class="web-node web-node-button" type="button" data-record-id="'+escapeHTML(relationship.to)+'"><strong>'+escapeHTML(recordTitle(to))+'</strong><span>'+escapeHTML(to.type||"record")+'</span></button>'+
         '</article>';
-      }).join("") +
+      }).join("")+
       '</div>';
   }
 
@@ -1035,10 +1033,17 @@
 
     if (signalLevel > 0) return transmission;
 
-    const publicInvestigations = normalizeCollection(getInvestigation()).filter(isPublic);
+    const registry=getGlobal("ESCIE_RECORD_REGISTRY",null);
+    const publicInvestigations=getAllPublicRecords().filter(record=>{
+      const manifest=registry&&registry.manifestFor?registry.manifestFor(recordId(record)):null;
+      return manifest&&manifest.investigation;
+    });
     if (publicInvestigations.length) return investigation;
 
-    const publicArchive = normalizeCollection(getArchive()).filter(isPublic);
+    const publicArchive=getAllPublicRecords().filter(record=>{
+      const manifest=registry&&registry.manifestFor?registry.manifestFor(recordId(record)):null;
+      return manifest&&manifest.archive;
+    });
     if (publicArchive.length) return archival;
 
     if (getSiteValue("status", "development") === "silence") return silence;
