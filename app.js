@@ -645,6 +645,16 @@
     return registry.contextFor(recordId(record)) || {parents:[],children:[],connections:[]};
   }
 
+  function declaredRecordLinks(ids){
+    const records=getAllPublicRecords();
+    return (Array.isArray(ids)?ids:[]).map(id=>{
+      const target=records.find(item=>recordId(item)===id);
+      return target
+        ? '<button class="record-related-link record-inline-link" type="button" data-record-id="'+escapeHTML(id)+'">'+escapeHTML(recordTitle(target))+'</button>'
+        : '<span class="inspector-note">'+escapeHTML(id)+'</span>';
+    }).join("");
+  }
+
   function showRecordInspector(record) {
     const modal = byId("record-inspector");
     if (!modal || !record) return;
@@ -681,8 +691,8 @@
           escapeHTML(symbol.name) + '<span>' + escapeHTML(symbol.motif || "") + '</span></button>').join("") + '</div>' : '') +
       ((locations.length || people.length || tags.length || media.length || evidence.length) ?
         '<div class="record-context"><p class="eyebrow">DECLARED CONTEXT</p>' +
-        (locations.length ? '<p><strong>LOCATIONS</strong> ' + escapeHTML(locations.join(" / ")) + '</p>' : '') +
-        (people.length ? '<p><strong>PEOPLE</strong> ' + escapeHTML(people.join(" / ")) + '</p>' : '') +
+        (locations.length ? '<p><strong>LOCATIONS</strong> ' + declaredRecordLinks(locations) + '</p>' : '') +
+        (people.length ? '<p><strong>PEOPLE</strong> ' + declaredRecordLinks(people) + '</p>' : '') +
         (tags.length ? '<p><strong>TAGS</strong> ' + escapeHTML(tags.join(" / ")) + '</p>' : '') +
         '<p><strong>MEDIA</strong> ' + escapeHTML(String(media.length)) + ' / <strong>EVIDENCE</strong> ' + escapeHTML(String(evidence.length)) + '</p>' +
         '</div>' : '') +
