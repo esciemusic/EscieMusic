@@ -448,7 +448,8 @@ body[data-time="night"] .sky {
 */
 
 .site-header:has(.index-navigation.is-open)
-.index-navigation {
+.index-navigation,
+body.menu-open .index-navigation.is-open {
 
   visibility: visible;
 
