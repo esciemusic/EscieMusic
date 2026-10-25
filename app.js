@@ -671,6 +671,14 @@
       (derivedContext.parents.length ? '<div class="record-context"><p class="eyebrow">CONTAINED BY</p>' +
         derivedContext.parents.map(item => '<button class="record-related-link" type="button" data-record-id="' + escapeHTML(item.record) + '">' +
           escapeHTML(recordTitle(getAllRecords().find(r => recordId(r) === item.record) || {title:item.record})) + '</button>').join("") + '</div>' : '') +
+      (derivedContext.children.length ? '<div class="record-context"><p class="eyebrow">CONTAINS</p>' +
+        derivedContext.children.map(item => '<button class="record-related-link" type="button" data-record-id="' + escapeHTML(item.record) + '">' +
+          escapeHTML(recordTitle(getAllRecords().find(r => recordId(r) === item.record) || {title:item.record})) + '</button>').join("") + '</div>' : '') +
+      (derivedContext.connections.length ? '<div class="record-context"><p class="eyebrow">RELATIONSHIPS</p>' +
+        derivedContext.connections.map(item => '<p><strong>' + escapeHTML(item.direction === "out" ? "TO" : "FROM") + '</strong> ' +
+          '<button class="record-related-link" type="button" data-record-id="' + escapeHTML(item.record) + '">' +
+          escapeHTML(recordTitle(getAllRecords().find(r => recordId(r) === item.record) || {title:item.record})) + '</button>' +
+          ' <span class="inspector-note">[' + escapeHTML(item.type) + ']</span></p>').join("") + '</div>' : '') +
       (related.length ? '<div class="record-related"><p class="eyebrow">CONNECTED RECORDS</p>' +
         related.map(item => '<button class="record-related-link" type="button" data-record-id="' + escapeHTML(recordId(item)) + '">' +
           escapeHTML(recordTitle(item)) + '</button>').join('') + '</div>' : '');
