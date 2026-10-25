@@ -22,7 +22,17 @@
     document.documentElement.classList.toggle("idle-universe",!hasPublicTransmission());
   }
 
+  let IDLE_TIMER=null;
+
+  function stop(){
+    if(IDLE_TIMER!==null){
+      window.clearInterval(IDLE_TIMER);
+      IDLE_TIMER=null;
+    }
+  }
+
   function init(){
+    stop();
     const node=document.querySelector(".signal-status");
     if(!node) return;
     apply();
@@ -30,6 +40,11 @@
     if(hasPublicTransmission()||reduced)return;
     let index=0;
     const set=()=>{
+      if(hasPublicTransmission()){
+        stop();
+        apply();
+        return;
+      }
       node.classList.remove("signal-status-shift");
       void node.offsetWidth;
       node.textContent=STATES[index];
@@ -37,7 +52,7 @@
       index=(index+1)%STATES.length;
     };
     set();
-    window.setInterval(set,5200);
+    IDLE_TIMER=window.setInterval(set,5200);
   }
 
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",init,{once:true});
