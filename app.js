@@ -1565,9 +1565,6 @@
     renderInvestigation();
     renderAbout();
     renderGlassEye();
-    const player = window.ESCIE_UI_PLAYER;
-    if (player && typeof player.show === "function") player.show();
-
     const narration = getNarrationEngine();
     if (narration && typeof narration.present === "function") {
       ESCIE_RUNTIME.narration = narration;
