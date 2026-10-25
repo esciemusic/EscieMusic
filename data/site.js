@@ -8,7 +8,6 @@
 
 const ESCIE_SITE = {
   name: "ESCIE",
-  pronunciation: "S.C.",
   location: "Montréal, Canada",
   publicYear: 2026,
   tagline: "REALITY WITH THE SIGNAL DISTORTED.",
