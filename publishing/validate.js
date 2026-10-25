@@ -37,7 +37,13 @@ function validateBuild(build = {}) {
   const records = Array.isArray(build.records) ? build.records : [];
 
   records.forEach((record) => {
-    const result = validatePublicRecord(record.data || record);
+    const data = record.data || record;
+
+    if (data && data.published === false) {
+      return;
+    }
+
+    const result = validatePublicRecord(data);
 
     if (!result.valid) {
       errors.push({
