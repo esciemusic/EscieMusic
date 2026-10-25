@@ -20,7 +20,8 @@
     ["navigation", "ESCIE_TEST_NAVIGATION"],
     ["idle-signal", "ESCIE_TEST_IDLE_SIGNAL"],
     ["media", "ESCIE_TEST_MEDIA"],
-    ["social", "ESCIE_TEST_SOCIAL"]
+    ["social", "ESCIE_TEST_SOCIAL"],
+    ["visuals", "ESCIE_TEST_VISUALS"]
   ];
 
   function run() {
