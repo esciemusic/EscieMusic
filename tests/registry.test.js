@@ -15,6 +15,14 @@
     const registry = typeof window !== "undefined" ? window.ESCIE_RECORD_REGISTRY : null;
     if (!registry) return { skipped: true, reason: "record registry unavailable" };
 
+    const nodes = registry.publicNodes();
+    assert(Array.isArray(nodes) && nodes.length === 7, "canonical public node set must contain seven nodes");
+    assert(nodes[0].id === "node-now" && nodes[6].id === "node-escie", "public nodes must preserve canonical order");
+    const workNode = registry.nodeFor("node-work");
+    assert(workNode && workNode.section === "work", "node lookup must resolve the work node");
+    assert(workNode.records.includes("bam-001-dallas-63"), "work node must expose released transmission records");
+    assert(!workNode.records.includes("bam-002-pumpy-to-the-chest"), "work node must hide locked transmission records");
+
     const manifest = registry.manifestFor("bam-by-any-means");
     assert(manifest && manifest.work === true, "project manifest must route to work");
     assert(manifest.sections && manifest.sections.work === true, "section manifest must expose work routing");
