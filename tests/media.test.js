@@ -42,10 +42,20 @@
     if(player){
       assert(typeof player.attach==="function"&&typeof player.load==="function","player contract must expose attach and load");
       assert(typeof player.play==="function"&&typeof player.pause==="function","player contract must expose playback controls");
+      assert(typeof player.setQueue==="function"&&typeof player.advance==="function","player should expose queue controls");
       const loaded=player.load({id:"player-test",title:"PLAYER TEST",url:"https://example.com/test.mp3"});
       assert(loaded&&loaded.id==="player-test","player should load a valid transmission");
       assert(player.current&&player.current.title==="PLAYER TEST","player should retain current transmission");
       player.pause(); assert(player.playing===false,"player pause should clear playing state");
+      const queue=player.setQueue([
+        {id:"queue-1",title:"QUEUE ONE",url:"https://example.com/one.mp3"},
+        {id:"queue-2",title:"QUEUE TWO",url:"https://example.com/two.mp3"}
+      ]);
+      assert(queue.length===2&&player.queue.length===2,"player should retain a transmission queue");
+      const advanced=player.advance();
+      assert(advanced&&advanced.id==="queue-1","player should advance to the first queued transmission");
+      player.pause();
+      assert(player.current&&player.current.id==="queue-1","queue advance should load the selected transmission");
     }
     return {passed:true};
   }
