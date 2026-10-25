@@ -527,13 +527,6 @@ body[data-time="night"] .sky {
   text-align: center;
 }
 
-.hero-pronunciation {
-  margin: 0 0 22px;
-  color: var(--faint);
-  font-size: 10px;
-  letter-spacing: 0.45em;
-  text-transform: uppercase;
-}
 
 .hero-location {
   margin: 26px 0 0;
