@@ -222,3 +222,21 @@ const invalidHistory = history.createHistoryEntry({
 });
 assert(history.validateHistoryEntry(invalidHistory, [registeredSource], []).valid === false, "history must reject unknown sources");
 assert(history.get("provenance-record").length === 1, "history lookup should return appended record history");
+
+
+const historyChainAudit = require("../brain/audit.js").auditHistoryChain;
+const validHistoryChain = historyChainAudit(
+  history.get("provenance-record"),
+  ["provenance-record"]
+);
+assert(validHistoryChain.ok === true, "valid history chain should pass audit");
+const invalidHistoryChain = historyChainAudit(
+  [{
+    id: "orphan-history",
+    recordId: "missing-record",
+    timestamp: "not-a-date",
+    sourceIds: []
+  }],
+  ["provenance-record"]
+);
+assert(invalidHistoryChain.ok === false, "invalid history chain must fail audit");
