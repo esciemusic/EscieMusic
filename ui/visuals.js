@@ -298,6 +298,6 @@
   });
  }
 
- window.ESCIE_VISUALS_UI={init,renderAsset,chooseVisualFocus};
+ window.ESCIE_VISUALS_UI={init,renderAsset,chooseVisualFocus,syncWorkAlbumVisuals};
  if(typeof module!=="undefined"&&module.exports)module.exports={chooseVisualFocus};
 })();
