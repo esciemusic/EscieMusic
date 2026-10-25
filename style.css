@@ -3496,3 +3496,58 @@ body.player-visible{padding-bottom:clamp(88px,12vh,124px)}
     transform:none!important;
   }
 }
+
+
+/* CURRENT PROJECT IMAGE FIELD
+ * A project's visual set can bleed softly into every section it belongs to.
+ */
+.section-visual[data-visual-section] .section-visual-album{
+  position:absolute;
+  inset:8% auto auto 8%;
+  z-index:0;
+  width:min(42%,500px);
+  aspect-ratio:1;
+  object-fit:cover;
+  object-position:center;
+  opacity:0;
+  border-radius:2px;
+  filter:grayscale(.22) contrast(.82) saturate(.64) brightness(1.02);
+  mix-blend-mode:screen;
+  transform:translate3d(-2%,1%,0) scale(1.035) rotate(-.25deg);
+  box-shadow:0 0 90px rgba(0,0,0,.42);
+  transition:opacity 900ms ease,transform 1300ms var(--slow),filter 900ms ease;
+  pointer-events:none;
+}
+.section-visual[data-visual-section] .section-visual-album.is-ready{opacity:.20;transform:none}
+.section-visual[data-visual-section].visual-active .section-visual-album.is-ready,
+.section-visual[data-visual-section].visitor-present .section-visual-album.is-ready{
+  opacity:.32;
+  filter:grayscale(.10) contrast(.88) saturate(.78) brightness(1.07);
+}
+.section-visual-work .section-visual-album{
+  inset:7% 8% auto auto;
+}
+.section-visual-now .section-visual-album,
+.section-visual-glass-eye .section-visual-album{
+  inset:12% 10% auto auto;
+  width:min(34%,390px);
+}
+.section-visual-investigation .section-visual-album,
+.section-visual-archive .section-visual-album{
+  inset:auto 8% 10% auto;
+}
+@media(max-width:700px){
+  .section-visual[data-visual-section] .section-visual-album{
+    width:min(58%,330px);
+    inset:10% 6% auto auto;
+  }
+  .section-visual[data-visual-section] .section-visual-album.is-ready{opacity:.16}
+  .section-visual[data-visual-section].visual-active .section-visual-album.is-ready,
+  .section-visual[data-visual-section].visitor-present .section-visual-album.is-ready{opacity:.25}
+}
+@media(prefers-reduced-motion:reduce){
+  .section-visual[data-visual-section] .section-visual-album{
+    transition:none!important;
+    transform:none!important;
+  }
+}
