@@ -8,12 +8,16 @@
 function isPublicRecord(record = {}) {
   if (!record) return false;
 
-  if (record.published === false) return false;
+  const published =
+    record.published === true ||
+    record.status === "published";
+
+  if (!published) return false;
 
   const visibility = String(record.visibility || "").toLowerCase();
 
   if (["private", "withheld", "limited"].includes(visibility)) {
-    return visibility === "limited" && record.published === true;
+    return false;
   }
 
   return true;
