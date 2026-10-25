@@ -441,54 +441,41 @@ body[data-time="night"] .sky {
    ========================================================= */
 
 .index-navigation {
-
   position: fixed;
-
-  inset: 0;
-
-  z-index:  201;
-
+  top: calc(var(--header-height) + 10px);
+  right: 22px;
+  z-index: 1200;
   display: flex;
-
+  width: min(430px, calc(100vw - 44px));
+  max-height: min(72svh, 620px);
+  box-sizing: border-box;
   flex-direction: column;
-
-  align-items: center;
-
-  justify-content: center;
-
-  gap: clamp(10px, 1.5vh, 18px);
-
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 2px;
   visibility: hidden;
-
   opacity: 0;
-
   pointer-events: none;
-
-  padding: 96px 28px 48px;
-
+  padding: 14px;
   overflow-y: auto;
-
-  background:
-    rgba(3, 3, 3, 0.88);
-
-  backdrop-filter:
-    blur(18px);
-
-  -webkit-backdrop-filter:
-    blur(18px);
-
-  transition:
-    opacity 500ms var(--slow),
-    visibility 500ms;
+  overscroll-behavior: contain;
+  border: 1px solid rgba(79,134,173,.34);
+  border-radius: 4px;
+  background: rgba(5,7,9,.92);
+  box-shadow: 0 18px 60px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.035);
+  backdrop-filter: blur(18px) saturate(.88);
+  -webkit-backdrop-filter: blur(18px) saturate(.88);
+  transform: translate3d(0,-8px,0) scale(.985);
+  transform-origin: top right;
+  transition: opacity 240ms var(--slow), transform 360ms var(--slow), visibility 240ms;
 }
-
 
 /*
   app.js toggles this through the mobile menu class.
 */
 
 .index-navigation.is-open,
-.site-header:has(.index-navigation.is-open) .index-navigation,
+.index-navigation[data-open="true"],
 body.menu-open .index-navigation.is-open {
 
   visibility: visible;
@@ -505,14 +492,18 @@ body.menu-open .index-navigation.is-open {
 
 .index-navigation a {
 
-  display: block;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  width:100%;
+  box-sizing:border-box;
 
-  padding: 8px 0;
+  padding:13px 12px;
 
   color: var(--white);
 
-  font-size:
-    clamp(18px, 3vw, 34px);
+  font-size:clamp(15px, 2.4vw, 22px);
 
   font-weight: 400;
 
@@ -521,12 +512,11 @@ body.menu-open .index-navigation.is-open {
 
   line-height: 1.15;
 
-  text-align: center;
+  text-align:left;
 
   opacity: 0.72;
 
-  transform:
-    translateY(22px);
+  transform:translate3d(0,10px,0);
 
   transition:
     opacity 350ms ease,
@@ -545,12 +535,10 @@ body.menu-open .index-navigation.is-open {
     translateY(0);
 }
 
-.index-navigation.is-open a {
-
-  opacity: 1;
-
-  transform:
-    translateY(0);
+.index-navigation.is-open a,
+.index-navigation[data-open="true"] a {
+  opacity:1;
+  transform:translate3d(0,0,0);
 }
 
 .index-trigger {
@@ -3231,4 +3219,18 @@ body.menu-open .index-navigation.is-open{
     animation:none!important;
     transition:none!important;
   }
+}
+
+/* Compact index: explicit JS data-state is the source of truth. */
+.site-header{pointer-events:none;z-index:1190}
+.index-trigger{position:relative;z-index:1210}
+.index-navigation[data-open="false"]{visibility:hidden!important;opacity:0!important;pointer-events:none!important}
+.index-navigation[data-open="true"]{visibility:visible!important;opacity:1!important;pointer-events:auto!important;transform:translate3d(0,0,0) scale(1)!important}
+@media(max-width:560px){
+  .index-navigation{top:calc(var(--header-height) + 8px);right:10px;width:calc(100vw - 20px);max-height:70svh;padding:10px}
+  .index-navigation a{padding:12px 10px;font-size:clamp(15px,5vw,21px)}
+}
+@media(prefers-reduced-motion:reduce){
+  .index-navigation{transition:none!important;transform:none!important}
+  .index-navigation a{transition:none!important;transform:none!important}
 }
