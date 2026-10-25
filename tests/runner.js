@@ -13,7 +13,6 @@
     ["record", "ESCIE_TEST_RECORD"],
     ["relationship", "ESCIE_TEST_RELATIONSHIP"],
     ["brain", "ESCIE_TEST_BRAIN"],
-    ["navigation", "ESCIE_TEST_NAVIGATION"],
     ["responsive", "ESCIE_TEST_RESPONSIVE"],
     ["signal", "ESCIE_TEST_SIGNAL"],
     ["permissions", "ESCIE_TEST_PERMISSIONS"],
