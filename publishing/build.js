@@ -45,6 +45,8 @@ function createBuildPlan(input = {}) {
   const seenIds = new Set();
 
   records.forEach((record) => {
+    if (!isPublicRecord(record)) return;
+
     const id = record && record.id;
     if (!id) return;
 
