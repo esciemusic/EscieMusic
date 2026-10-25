@@ -31,7 +31,12 @@
       if(!record||!record.id) return;
       if(seen.has(record.id)){duplicates.push(record.id);return;}
       seen.add(record.id);
-      records.push(Object.assign({type:type},record));
+      const normalizer=window.normalizeEscieRecord;
+      records.push(
+        typeof normalizer==="function"
+          ? normalizer(record,type)
+          : Object.assign({type:type},record)
+      );
     }));
     return {records,byId:Object.fromEntries(records.map(r=>[r.id,r])),duplicates};
   }
