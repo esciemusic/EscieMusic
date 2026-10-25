@@ -715,7 +715,6 @@
         '<p><span>IDENTITY</span>' + escapeHTML(
           Array.isArray(about.role) ? about.role.join(" / ") : (about.role || "artist / writer / narrator")
         ) + "</p>" +
-        '<p><span>PRONUNCIATION</span>' + escapeHTML(about.pronunciation || site.pronunciation || "S.C.") + "</p>" +
       '</div>' +
       socialMarkup +
       '<p class="about-location">' + escapeHTML(site.location || "Montréal, Canada") +
