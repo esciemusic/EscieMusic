@@ -3354,3 +3354,94 @@ body.player-visible{padding-bottom:clamp(88px,12vh,124px)}
 @media(prefers-reduced-motion:reduce){
   body.player-visible{scroll-behavior:auto}
 }
+
+
+/* =========================================================
+   ENTRY SOCIAL SIGNAL
+   Social links live at the threshold of the universe.
+   They remain quiet until real URLs are configured.
+   ========================================================= */
+.entry-social{
+  position:relative;
+  z-index:5;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:center;
+  gap:8px 10px;
+  width:fit-content;
+  max-width:100%;
+  margin:0 auto clamp(26px,4vh,42px);
+  padding:6px;
+  border:1px solid rgba(79,134,173,.16);
+  border-radius:999px;
+  background:rgba(4,6,8,.30);
+  backdrop-filter:blur(10px) saturate(.8);
+  -webkit-backdrop-filter:blur(10px) saturate(.8);
+}
+.entry-social-link{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  min-height:32px;
+  padding:6px 10px;
+  border:1px solid transparent;
+  border-radius:999px;
+  color:rgba(242,242,237,.66);
+  font-size:8px;
+  font-weight:500;
+  letter-spacing:.16em;
+  line-height:1;
+  text-transform:uppercase;
+  transition:
+    color 300ms ease,
+    background 300ms ease,
+    border-color 300ms ease,
+    transform 350ms var(--ease);
+}
+.entry-social-link:hover,
+.entry-social-link:focus-visible{
+  color:#a9cce3;
+  background:rgba(79,134,173,.08);
+  border-color:rgba(79,134,173,.24);
+  transform:translateY(-1px);
+}
+.entry-social .social-icon{
+  display:grid;
+  place-items:center;
+  width:15px;
+  height:15px;
+  flex:0 0 15px;
+}
+.entry-social .social-icon svg{
+  display:block;
+  width:100%;
+  height:100%;
+  fill:currentColor;
+}
+.entry-social .social-icon-cut{
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.25;
+  stroke-linecap:round;
+}
+.entry-social .social-icon-label{
+  white-space:nowrap;
+}
+@media(max-width:700px){
+  .entry-social{
+    max-width:calc(100vw - 32px);
+    gap:5px;
+    padding:5px;
+  }
+  .entry-social-link{
+    min-height:30px;
+    padding:6px 8px;
+    font-size:7px;
+    letter-spacing:.12em;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .entry-social-link{transition:none}
+}
