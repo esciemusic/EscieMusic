@@ -1037,7 +1037,28 @@
       const trigger = event.target.closest("[data-record-id]");
       if (!trigger) return;
       const record = getAllPublicRecords().find(item => recordId(item) === trigger.getAttribute("data-record-id"));
-      if (record) showRecordInspector(record);
+      if (!record) return;
+
+      const player = window.ESCIE_UI_PLAYER;
+      if (record.type === "music" && player && typeof player.load === "function") {
+        const media = Array.isArray(record.media) ? record.media : [];
+        const audio = media.find(item => {
+          const type = item && String(item.type || item.kind || "").toLowerCase();
+          return type === "audio";
+        });
+        if (audio && audio.url) {
+          player.load({
+            id: recordId(record),
+            title: recordTitle(record),
+            url: audio.url,
+            sourceId: recordId(record)
+          });
+          player.play();
+          return;
+        }
+      }
+
+      showRecordInspector(record);
     });
 
     document.addEventListener("keydown", event => {
