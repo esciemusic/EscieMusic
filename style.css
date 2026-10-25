@@ -2387,3 +2387,100 @@ body.inspector-open{overflow:hidden}
     background-size:100% auto;
   }
 }
+
+/* =========================================================
+   GENERATED VISUAL MOTION
+   Slow cinematic movement keeps the visual alive without
+   turning the page into a distraction.
+   ========================================================= */
+
+.section-visual[data-visual-section]{
+  overflow:hidden;
+  will-change:transform,opacity;
+}
+
+.section-visual[data-visual-section]::after{
+  animation:escie-visual-breathe 8s ease-in-out infinite alternate;
+  will-change:opacity,transform;
+}
+
+.section-visual[data-visual-section]{
+  animation:escie-visual-drift 18s ease-in-out infinite alternate;
+}
+
+.section-visual-now{
+  animation-name:escie-visual-night;
+  animation-duration:22s;
+}
+.section-visual-work{
+  animation-name:escie-visual-vhs;
+  animation-duration:19s;
+}
+.section-visual-web{
+  animation-name:escie-visual-network;
+  animation-duration:24s;
+}
+.section-visual-archive{
+  animation-name:escie-visual-archive;
+  animation-duration:21s;
+}
+.section-visual-investigation{
+  animation-name:escie-visual-investigation;
+  animation-duration:17s;
+}
+.section-visual-glass{
+  animation-name:escie-visual-glass;
+  animation-duration:20s;
+}
+.section-visual-escie{
+  animation-name:escie-visual-presence;
+  animation-duration:26s;
+}
+
+@keyframes escie-visual-night{
+  0%{background-position:center top;}
+  50%{background-position:51% 2%;}
+  100%{background-position:49% -1%;}
+}
+@keyframes escie-visual-vhs{
+  0%{background-position:right top;}
+  45%{background-position:97% 2%;}
+  100%{background-position:103% -2%;}
+}
+@keyframes escie-visual-network{
+  0%{background-position:left 34%;}
+  50%{background-position:2% 35%;}
+  100%{background-position:-1% 33%;}
+}
+@keyframes escie-visual-archive{
+  0%{background-position:right 34%;}
+  50%{background-position:98% 32%;}
+  100%{background-position:102% 36%;}
+}
+@keyframes escie-visual-investigation{
+  0%{background-position:left 68%;}
+  50%{background-position:2% 66%;}
+  100%{background-position:-1% 69%;}
+}
+@keyframes escie-visual-glass{
+  0%{background-position:right 68%;}
+  50%{background-position:97% 70%;}
+  100%{background-position:103% 67%;}
+}
+@keyframes escie-visual-presence{
+  0%{background-position:center bottom;}
+  50%{background-position:51% 98%;}
+  100%{background-position:49% 100%;}
+}
+
+@keyframes escie-visual-breathe{
+  0%{opacity:.72;transform:scale(1);}
+  100%{opacity:.94;transform:scale(1.012);}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .section-visual[data-visual-section],
+  .section-visual[data-visual-section]::after{
+    animation:none!important;
+  }
+}
