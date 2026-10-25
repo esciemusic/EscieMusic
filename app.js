@@ -354,11 +354,6 @@
       year.textContent = getSiteValue("publicYear", new Date().getFullYear());
     }
 
-    const pronunciation = byId("entry-pronunciation");
-    if (pronunciation) {
-      pronunciation.textContent = getSiteValue("pronunciation", "S.C.");
-    }
-
     const location = byId("entry-location");
     if (location) {
       location.textContent = getSiteValue("location", "Montréal, Canada");
