@@ -2220,3 +2220,108 @@ body.inspector-open{overflow:hidden}
 .section-visual.has-visual-asset > :not(.section-visual-media){
   position:relative;
 }
+
+
+/* =========================================================
+   VISUAL SIGNAL LIFT
+   Brighter atmosphere without turning the interface into a
+   generic neon treatment.
+   ========================================================= */
+.section-visual{
+  opacity:.38;
+  background-color:#08090b;
+}
+.section-visual.visual-visible{
+  opacity:.84;
+}
+.section-visual::after{
+  background:repeating-linear-gradient(
+    0deg,
+    transparent 0,
+    transparent 5px,
+    rgba(255,255,255,.028) 6px
+  );
+}
+.section-visual::before{
+  background:
+    radial-gradient(circle at 50% 50%,rgba(242,242,237,.065),transparent 54%),
+    linear-gradient(90deg,transparent,rgba(90,150,190,.025),transparent);
+}
+.visual-nightlight{
+  border-color:rgba(242,242,237,.62);
+  box-shadow:0 0 42px rgba(242,242,237,.14);
+}
+.visual-nightlight::before{background:rgba(242,242,237,.22)}
+.visual-horizon{background:rgba(242,242,237,.24)}
+.visual-flicker{
+  background:rgba(242,242,237,.26);
+  box-shadow:-18px 34px 0 rgba(242,242,237,.13),22px 62px 0 rgba(242,242,237,.10);
+}
+.visual-vhs{
+  border-color:rgba(242,242,237,.42);
+  background:repeating-linear-gradient(0deg,transparent 0,transparent 7px,rgba(242,242,237,.065) 8px);
+}
+.visual-vhs::before,.visual-vhs::after{border-color:rgba(242,242,237,.28)}
+.visual-daisy{opacity:.38}
+.visual-scanline{background:rgba(242,242,237,.20)}
+.visual-key{opacity:.34;text-shadow:0 0 28px rgba(120,180,220,.12)}
+.visual-node{opacity:.58}
+.visual-wire{background:rgba(242,242,237,.20)}
+.visual-tape{border-color:rgba(242,242,237,.38)}
+.visual-shoe{opacity:.28}
+.visual-chair{opacity:.24}
+.visual-date{background:rgba(242,242,237,.20)}
+.visual-lens{
+  border-color:rgba(242,242,237,.42);
+  box-shadow:inset 0 0 0 13px rgba(242,242,237,.045),0 0 34px rgba(90,150,190,.08);
+}
+.visual-lens::before{border-color:rgba(242,242,237,.28)}
+.visual-cross{background:rgba(242,242,237,.20)}
+.visual-cross::after{background:rgba(242,242,237,.20)}
+.visual-evidence{border-color:rgba(242,242,237,.30)}
+.visual-evidence::after{background:rgba(242,242,237,.20);box-shadow:0 9px 0 rgba(242,242,237,.20)}
+.visual-eye-ring{
+  border-color:rgba(242,242,237,.42);
+  box-shadow:0 0 36px rgba(80,150,210,.08);
+}
+.visual-eye-dot{border-color:rgba(242,242,237,.54)}
+.visual-eye-dot::after{opacity:.52}
+.visual-glass-scan{background:rgba(242,242,237,.19)}
+.visual-presence{border-color:rgba(242,242,237,.20)}
+.visual-presence::before{border-color:rgba(242,242,237,.34)}
+.visual-pulse{
+  border-color:rgba(242,242,237,.11);
+  box-shadow:0 0 45px rgba(80,150,210,.07);
+}
+.section-visual-now{background:
+  linear-gradient(90deg,transparent 0 14%,rgba(242,242,237,.028) 14.1%,transparent 14.2%),
+  linear-gradient(180deg,rgba(242,242,237,.035),transparent 45%,rgba(0,0,0,.25)),
+  #08090b}
+.section-visual-work{background:
+  repeating-linear-gradient(90deg,transparent 0 80px,rgba(242,242,237,.020) 81px),
+  linear-gradient(180deg,rgba(255,255,255,.040),transparent 50%,rgba(0,0,0,.24)),
+  #08090b}
+.section-visual-web{background:
+  radial-gradient(circle at 50% 50%,rgba(90,160,210,.065),transparent 38%),
+  linear-gradient(135deg,transparent 0 48%,rgba(242,242,237,.035) 49%,transparent 50%),
+  #08090b}
+.section-visual-archive{background:
+  linear-gradient(90deg,rgba(242,242,237,.028),transparent 25%,transparent 75%,rgba(242,242,237,.028)),
+  repeating-linear-gradient(0deg,transparent 0 14px,rgba(242,242,237,.015) 15px),
+  #08090b}
+.section-visual-investigation{background:
+  radial-gradient(circle at 18% 50%,rgba(100,165,210,.075),transparent 28%),
+  linear-gradient(90deg,transparent 0 42%,rgba(242,242,237,.035) 42.1%,transparent 42.2%),
+  #08090b}
+.section-visual-glass{background:
+  radial-gradient(ellipse at center,rgba(90,160,215,.075),transparent 48%),
+  repeating-linear-gradient(0deg,transparent 0 7px,rgba(242,242,237,.016) 8px),
+  #08090b}
+.section-visual-escie{background:
+  radial-gradient(circle at 50% 50%,rgba(90,160,215,.11),transparent 28%),
+  radial-gradient(circle at 50% 50%,transparent 0 31%,rgba(242,242,237,.028) 32%,transparent 33%),
+  #08090b}
+.section-visual-media{
+  opacity:calc(var(--visual-intensity, .7) * .52);
+  filter:grayscale(.82) contrast(.96) saturate(.42);
+}
