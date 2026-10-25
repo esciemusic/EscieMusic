@@ -189,6 +189,27 @@
     return record && (record.title || record.name || "UNTITLED");
   }
 
+  function getNarrationEngine() {
+    return getGlobal("ESCIE_NARRATION_ENGINE", null);
+  }
+
+  function presentRecord(record) {
+    const narration = getNarrationEngine();
+    if (!narration || typeof narration.present !== "function") {
+      return null;
+    }
+
+    return narration.present(record);
+  }
+
+  function narrationAttributes(record) {
+    const presentation = presentRecord(record);
+    if (!presentation) return "";
+
+    return ' data-narration="' + escapeHTML(presentation.narration || "unknown") +
+      '" data-certainty="' + escapeHTML(presentation.certainty || "unknown") + '"';
+  }
+
   function renderEmpty(container, message) {
     if (!container) return;
     container.innerHTML =
@@ -260,7 +281,7 @@
 
     container.innerHTML = visible.map(track =>
       '<article class="music-card" data-record-type="art" data-record-id="' +
-      escapeHTML(recordId(track)) + '">' +
+      escapeHTML(recordId(track)) + '"' + narrationAttributes(track) + '>' +
         '<p class="music-card-index">' + escapeHTML(track.number || "ART") + "</p>" +
         '<div class="music-card-content"><h3>' + escapeHTML(recordTitle(track)) + "</h3>" +
         (track.role ? "<p>" + escapeHTML(track.role) + "</p>" : "") +
@@ -282,7 +303,7 @@
 
     container.innerHTML = visible.map(project =>
       '<article class="bam-project" data-record-type="body" data-record-id="' +
-      escapeHTML(recordId(project)) + '">' +
+      escapeHTML(recordId(project)) + '"' + narrationAttributes(project) + '>' +
         '<p class="eyebrow">' + escapeHTML(project.type || "BODY") + "</p>" +
         '<h3>' + escapeHTML(recordTitle(project)) + "</h3>" +
         (project.description ? "<p>" + escapeHTML(project.description) + "</p>" : "") +
@@ -350,7 +371,7 @@
 
     container.innerHTML = visible.map(record =>
       '<article class="archive-entry" data-record-id="' +
-      escapeHTML(recordId(record)) + '">' +
+      escapeHTML(recordId(record)) + '"' + narrationAttributes(record) + '>' +
         '<h3>' + escapeHTML(recordTitle(record)) + "</h3>" +
       "</article>"
     ).join("");
@@ -370,7 +391,7 @@
 
     container.innerHTML = visible.map(item =>
       '<article class="investigation-case" data-record-id="' +
-      escapeHTML(recordId(item)) + '">' +
+      escapeHTML(recordId(item)) + '"' + narrationAttributes(item) + '>' +
         '<h3>' + escapeHTML(recordTitle(item)) + "</h3>" +
       "</article>"
     ).join("");
@@ -650,6 +671,12 @@
     renderArchive();
     renderInvestigation();
     renderAbout();
+
+    const narration = getNarrationEngine();
+    if (narration && typeof narration.present === "function") {
+      ESCIE_RUNTIME.narration = narration;
+    }
+
     updateTimeState();
     applyUIState();
   }
