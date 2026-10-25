@@ -110,3 +110,40 @@ const invalidRelationship = relationship.create({
   public_disclosure: true
 });
 assert(invalidRelationship.valid === false, "relationship disclosure invariant should hold in Node");
+
+
+const audit = require("../brain/audit.js");
+const relationshipRecords = [
+  ...require("../data/projects.js"),
+  ...require("../data/music.js")
+];
+const relationships = require("../data/relationships.js");
+const relationshipAPI = require("../relationship.js");
+const endpointAudit = audit.auditRelationships(
+  relationships,
+  relationshipRecords,
+  relationshipAPI
+);
+assert(endpointAudit.ok === true, "current relationship endpoints should resolve");
+assert(endpointAudit.counts.orphaned === 0, "current relationships must have no orphaned endpoints");
+assert(endpointAudit.counts.duplicateIds === 0, "current relationships must have unique ids");
+assert(endpointAudit.counts.duplicateConnections === 0, "current relationships must have unique connections");
+
+const orphanAudit = audit.auditRelationships(
+  [{ id: "orphan", from: "missing-a", type: "contains", to: "missing-b" }],
+  [{ id: "known" }],
+  relationshipAPI
+);
+assert(orphanAudit.ok === false, "orphaned relationship endpoints must fail audit");
+assert(orphanAudit.orphaned.length === 2, "both missing endpoints must be reported");
+
+const duplicateAudit = audit.auditRelationships(
+  [
+    { id: "duplicate", from: "a", type: "contains", to: "b" },
+    { id: "duplicate", from: "a", type: "contains", to: "b" }
+  ],
+  [{ id: "a" }, { id: "b" }],
+  relationshipAPI
+);
+assert(duplicateAudit.duplicateIds.length === 1, "duplicate relationship ids must be reported");
+assert(duplicateAudit.duplicateConnections.length === 1, "duplicate connections must be reported");
