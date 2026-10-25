@@ -50,6 +50,7 @@
     assert(registry.releaseVisible(bamProject) === true, "BAM project must unlock when a released track exists");
     assert(registry.releaseVisible(firstTrack) === true, "released BAM track must be visible");
     assert(registry.releaseVisible(secondTrack) === false, "unreleased BAM track must remain hidden");
+    assert(registry.releaseVisible(Object.assign({}, secondTrack, { release_status: "unknown" })) === false, "invalid release states must fail closed");
     assert(registry.manifestFor(secondTrack.id).search === false, "locked BAM track must be excluded from search");
     const lockedManifest = registry.manifestFor(secondTrack.id);
     assert(lockedManifest.released === false, "locked BAM track must be marked unreleased");
