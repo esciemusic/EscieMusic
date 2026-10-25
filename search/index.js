@@ -22,7 +22,13 @@ const ESCIE_SEARCH_INDEX = {
       text: [
         record.title,
         record.description,
-        ...(Array.isArray(record.tags) ? record.tags : [])
+        ...(Array.isArray(record.tags) ? record.tags : []),
+        ...(Array.isArray(record.people) ? record.people : []),
+        ...(Array.isArray(record.locations) ? record.locations : []),
+        record.reality,
+        record.reality_level,
+        record.role,
+        record.type
       ]
         .filter(Boolean)
         .join(" ")
