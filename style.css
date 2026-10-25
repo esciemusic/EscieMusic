@@ -909,6 +909,26 @@ body[data-time="night"] .sky {
   line-height: 1.9;
 }
 
+.bam-progress {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px 24px;
+  margin: 28px 0 0;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  color: var(--faint);
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+
+.bam-progress span:last-child {
+  text-align: right;
+}
+
 .bam-structure {
 
   margin-top: 55px;
