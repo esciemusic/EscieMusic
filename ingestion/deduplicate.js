@@ -13,7 +13,8 @@ function findDuplicates(items = [], key = "id") {
   const seen = new Map();
   const duplicates = [];
 
-  for (const item of items) {
+  for (let index = 0; index < items.length; index += 1) {
+    const item = items[index];
     const value = item && item[key];
 
     if (value == null) {
@@ -25,12 +26,12 @@ function findDuplicates(items = [], key = "id") {
         key,
         value,
         firstIndex: seen.get(value),
-        duplicateIndex: items.indexOf(item)
+        duplicateIndex: index
       });
       continue;
     }
 
-    seen.set(value, items.indexOf(item));
+    seen.set(value, index);
   }
 
   return duplicates;
