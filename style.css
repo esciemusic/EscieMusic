@@ -1521,6 +1521,7 @@ body.inspector-open{overflow:hidden}
 .record-inspector-panel{position:relative;width:min(620px,100%);min-height:55vh;padding:42px;background:#080808;border-left:1px solid var(--line);border-top:1px solid var(--line);box-shadow:0 -20px 80px rgba(0,0,0,.4);overflow:auto}
 .record-inspector-close{position:absolute;top:24px;right:24px;border:0;background:transparent;color:var(--faint);font:inherit;font-size:8px;letter-spacing:.2em;cursor:pointer}
 .record-inspector-close:hover{color:var(--white)}
+.record-node-trace{margin-top:18px!important;color:var(--faint)!important;font-size:8px!important;letter-spacing:.2em!important;line-height:1.8!important;text-transform:uppercase}
 .record-inspector-body{padding-top:35px}.record-inspector-body h3{margin:0;font-size:clamp(30px,6vw,62px);font-weight:400;letter-spacing:.04em}.record-inspector-body>p:not(.eyebrow){max-width:540px;color:var(--muted);font-size:14px;line-height:1.9}
 .record-facts{margin-top:45px;border-top:1px solid var(--line)}.record-facts div{display:grid;grid-template-columns:120px 1fr;gap:20px;padding:16px 0;border-bottom:1px solid var(--line)}.record-facts dt{color:var(--faint);font-size:8px;letter-spacing:.2em}.record-facts dd{margin:0;color:var(--muted);font-size:10px;letter-spacing:.12em;text-transform:uppercase}
 
