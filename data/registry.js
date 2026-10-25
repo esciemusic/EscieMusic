@@ -162,6 +162,28 @@
     });
   }
 
+  function sectionAudit(){
+    const current=build();
+    const errors=[];
+    current.records.forEach(record=>{
+      const manifest=manifestFor(record.id);
+      if(!manifest||!manifest.sections){
+        errors.push({record:record.id,error:"manifest missing sections"});
+        return;
+      }
+      Object.keys(manifest.sections).forEach(section=>{
+        if(typeof manifest.sections[section]!=="boolean"){
+          errors.push({record:record.id,section,error:"section value must be boolean"});
+        }
+      });
+      const expected=Object.keys(manifest.sections).filter(section=>manifest.sections[section]);
+      if(expected.join("|")!==(manifest.appearsIn||[]).join("|")){
+        errors.push({record:record.id,error:"appearsIn does not match section manifest"});
+      }
+    });
+    return {ok:errors.length===0,errors};
+  }
+
   function symbolAudit(){
     const symbols=collection("ESCIE_SYMBOLS");
     const symbolIds=new Set(symbols.map(symbol=>symbol&&symbol.id).filter(Boolean));
@@ -177,5 +199,5 @@
     });
     return {ok:missing.length===0,missing};
   }
-  window.ESCIE_RECORD_REGISTRY={version:"1.6.0",build,records:()=>build().records,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,contractAudit,referenceAudit,manifestFor,filter,contextFor};
+  window.ESCIE_RECORD_REGISTRY={version:"1.6.0",build,records:()=>build().records,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,manifestFor,filter,contextFor};
 })();
