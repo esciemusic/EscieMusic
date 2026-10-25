@@ -2401,3 +2401,34 @@ body.inspector-open{overflow:hidden}
   .section-visual[data-visual-section]::before,
   .section-visual[data-visual-section]::after{animation:none!important;transition:none!important}
 }
+
+/* =========================================================
+   ACTIVE VISUAL PERFORMANCE
+   The section nearest the viewer carries the motion.
+   Inactive visuals remain present but breathe more slowly.
+   ========================================================= */
+
+.section-visual[data-visual-section]::before{
+  animation-play-state:paused;
+  transition:opacity .9s ease,filter .9s ease;
+}
+
+.section-visual[data-visual-section].visual-active::before{
+  animation-play-state:running;
+}
+
+.section-visual[data-visual-section]:not(.visual-active)::after{
+  opacity:.72;
+}
+
+.section-visual[data-visual-section].visual-active::after{
+  opacity:.96;
+}
+
+@media(prefers-reduced-motion:reduce){
+  .section-visual[data-visual-section]::before,
+  .section-visual[data-visual-section]::after{
+    animation:none!important;
+    transition:none!important;
+  }
+}
