@@ -551,6 +551,8 @@
 
     container.innerHTML = visible.map(project => {
       const structure = Array.isArray(project.structure) ? project.structure : [];
+      const artwork = project.artwork || project.cover_art || project.cover || project.visual || null;
+      const artworkURL = typeof artwork === "string" ? artwork : (artwork && (artwork.url || artwork.src || artwork.href));
       const recordsById = new Map(getAllRecords().map(item => [recordId(item), item]));
       const releasedStructure = structure.filter(part => {
         const track = recordsById.get(part.trackId);
