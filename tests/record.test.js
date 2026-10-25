@@ -28,6 +28,26 @@
     assert(R.isPublic(record), "public record should be public");
     assert(R.validate(record).valid, "created record should satisfy its contract");
 
+    const privateRecord = R.create({
+      id: "private-art",
+      type: R.TYPES.ART,
+      title: "Private Art",
+      visibility: R.VISIBILITY.PRIVATE,
+      public_disclosure: false
+    });
+
+    assert(!R.isPublic(privateRecord), "private record must not be public");
+
+    const withheldRecord = R.create({
+      id: "withheld-art",
+      type: R.TYPES.ART,
+      title: "Withheld Art",
+      visibility: R.VISIBILITY.WITHHELD,
+      public_disclosure: false
+    });
+
+    assert(!R.isPublic(withheldRecord), "withheld record must not be public");
+
     const normalized = R.normalize({
       id: "legacy-art",
       type: R.TYPES.ART,
