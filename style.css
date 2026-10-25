@@ -1621,48 +1621,45 @@ body.inspector-open{overflow:hidden}
 
 .node-link-stat{grid-column:1 / -1;color:var(--faint);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase}
 .information-node-stat{font-size:.58rem!important;letter-spacing:.14em;text-transform:uppercase}
-
-/* INSPECTOR CLOSE CONTROL — always obvious and reachable */
-.record-inspector-panel{position:relative;padding-top:72px}
+/* INSPECTOR CLOSE — visible without breaking the interface language */
+.record-inspector-panel{position:relative;padding-top:42px}
 .record-inspector-close{
-  position:fixed;
+  position:absolute;
   top:18px;
   right:18px;
   z-index:20;
   display:inline-flex;
   align-items:center;
-  justify-content:center;
-  min-width:88px;
-  min-height:42px;
-  padding:0 14px;
-  border:1px solid rgba(255,255,255,.55);
-  border-radius:2px;
-  background:#050505;
-  color:#fff;
-  font-size:9px;
-  font-weight:700;
+  gap:7px;
+  min-height:28px;
+  padding:0 8px;
+  border:1px solid rgba(255,255,255,.22);
+  background:rgba(8,8,8,.94);
+  color:var(--faint);
+  font:inherit;
+  font-size:8px;
   letter-spacing:.2em;
   line-height:1;
   text-transform:uppercase;
-  opacity:1;
-  box-shadow:0 4px 22px rgba(0,0,0,.65);
+  opacity:.9;
   cursor:pointer;
+  transition:color 180ms ease,border-color 180ms ease,background 180ms ease;
+}
+.record-inspector-close::before{
+  content:"×";
+  font-size:15px;
+  line-height:1;
+  letter-spacing:0;
 }
 .record-inspector-close:hover,
 .record-inspector-close:focus-visible{
-  color:#fff;
-  background:#151515;
-  border-color:#fff;
-  outline:2px solid rgba(255,255,255,.25);
+  color:var(--white);
+  border-color:rgba(255,255,255,.55);
+  background:rgba(255,255,255,.035);
+  outline:1px solid rgba(255,255,255,.12);
   outline-offset:3px;
 }
-.record-inspector-close::before{content:"×";margin-right:8px;font-size:16px;line-height:1}
 @media(max-width:700px){
-  .record-inspector-panel{padding-top:78px}
-  .record-inspector-close{
-    top:12px;
-    right:12px;
-    min-width:96px;
-    min-height:44px;
-  }
+  .record-inspector-panel{padding-top:46px}
+  .record-inspector-close{top:12px;right:12px}
 }
