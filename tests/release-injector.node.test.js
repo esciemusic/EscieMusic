@@ -20,7 +20,7 @@ function run(){
     fs.copyFileSync("publishing/inject-release.js",path.join(tempDir,"inject-release.js"));
     const queue={
       tracks:[
-        {id:"bam-001-dallas-63",project:"bam-by-any-means",number:"001",title:"DALLAS '63",role:"THE MYTH",release_status:"released",published:true,visibility:"public"},
+        {id:"bam-001-dallas-63",project:"bam-by-any-means",project_title:"BAM: BY ANY MEANS",project_description:"ESCIE debut project",number:"001",title:"DALLAS '63",role:"THE MYTH",release_status:"released",published:true,visibility:"public"},
         {id:"bam-002-private",project:"bam-by-any-means",number:"002",title:"PRIVATE TITLE",role:"THE MONSTER",release_status:"locked",published:true,visibility:"public"}
       ]
     };
