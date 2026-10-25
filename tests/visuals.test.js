@@ -14,6 +14,7 @@
   assert(typeof normalizeAsset==="function","visual asset normalizer must exist");
   assert(typeof audit==="function","visual audit must exist");
   assert(window.ESCIE_VISUALS_UI&&typeof window.ESCIE_VISUALS_UI.init==="function","visual UI must exist");
+  assert(typeof window.ESCIE_VISUALS_UI.renderAsset==="function","visual UI renderer must exist");
   assert(typeof window.ESCIE_VISUALS_UI.renderAsset==="function","visual asset renderer must exist");
   const video=window.ESCIE_VISUALS_UI.renderAsset({type:"video",url:"https://example.com/visual.mp4",poster:"https://example.com/poster.jpg"});
   assert(video.includes("<video"),"video assets must render as video");
