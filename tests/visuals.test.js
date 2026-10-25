@@ -14,6 +14,9 @@
   const video=window.ESCIE_VISUALS_UI.renderAsset({type:"video",url:"https://example.com/visual.mp4",poster:"https://example.com/poster.jpg"});
   assert(video.includes("<video"),"video assets must render as video");
   assert(video.includes("muted")&&video.includes("loop")&&video.includes("playsinline"),"visual videos must be silent and inline");
+  assert(window.ESCIE_VISUALS_UI.renderAsset({type:"video",url:"javascript:alert(1)"})==="","unsafe visual URLs must fail closed");
+  assert(window.ESCIE_VISUALS_UI.renderAsset({type:"iframe",url:"https://evil.example/visual"})==="","untrusted iframe hosts must fail closed");
+  assert(window.ESCIE_VISUALS_UI.renderAsset({type:"iframe",url:"https://www.youtube.com/embed/example"})!=="","allowlisted iframe hosts must render");
   const audit=window.auditEscieVisuals&&window.auditEscieVisuals(items);
   assert(audit&&audit.ok===true,"visual registry audit must pass");
   const normalized=normalize(items);
