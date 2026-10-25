@@ -116,6 +116,10 @@
     return {ok:hard.length===0,errors:hard,warnings};
   }
 
+  function allPublicRecords(){
+    return build().records.filter(record=>releaseVisible(record)&&record.published!==false&&record.visibility!=="private"&&record.visibility!=="withheld"&&record.visibility!=="limited");
+  }
+
   function releaseVisible(record){
     if(!record) return false;
     if(record.release_status) return record.release_status==="released";
@@ -281,5 +285,5 @@
     });
     return {ok:missing.length===0,missing};
   }
-  window.ESCIE_RECORD_REGISTRY={version:"1.11.0",build,records:()=>build().records,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,releaseAudit,manifestFor,filter,contextFor,publicRelationships,relationshipTypes,relationshipCategories,relationshipsFor,relationshipCounts,releaseVisible};
+  window.ESCIE_RECORD_REGISTRY={version:"1.12.0",build,records:()=>build().records,allPublicRecords,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,releaseAudit,manifestFor,filter,contextFor,publicRelationships,relationshipTypes,relationshipCategories,relationshipsFor,relationshipCounts,releaseVisible};
 })();
