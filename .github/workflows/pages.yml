@@ -25,6 +25,9 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
+      - name: Audit public release source
+        run: node tests/release-firewall.node.test.js
+
       - name: Inject transmitted release layer
         env:
           ESCIE_RELEASE_QUEUE_JSON: ${{ secrets.ESCIE_RELEASE_QUEUE_JSON }}
@@ -34,13 +37,13 @@ jobs:
         run: |
           find . -name "*.js" -not -path "./.git/*" -print0 | xargs -0 -n1 node --check
 
-      - name: Run release firewall source audit
-        run: |
-          node tests/release-firewall.node.test.js
-
       - name: Run private release injector test
         run: |
           node tests/release-injector.node.test.js
+
+      - name: Validate generated release runtime
+        run: |
+          node tests/release-runtime.node.test.js
 
       - name: Run publishing contract tests
         run: |
