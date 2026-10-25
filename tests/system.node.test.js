@@ -41,16 +41,29 @@ const historyEntry = history.appendHistory({
 });
 assert(historyEntry.id === "history-test", "history entry should be retained");
 
+let controlAdded = false;
+let controlResolved = false;
+const offControlAdded = events.on("control:item-added", (detail) => {
+  controlAdded = detail.item && detail.item.id === "control-test";
+});
+const offControlResolved = events.on("control:item-resolved", (detail) => {
+  controlResolved = detail.item && detail.item.id === "control-test";
+});
+
 const controlItem = control.add({
   id: "control-test",
   category: "REVIEW",
   title: "Review test"
 });
 assert(control.pending().some((item) => item.id === "control-test"), "control item should be pending");
+assert(controlAdded, "control addition should emit an event");
 assert(typeof control.resolve === "function", "control should expose resolution");
 const resolved = control.resolve("control-test", "resolved", { actor: "test" });
 assert(resolved && resolved.status === "resolved", "control item should resolve");
+assert(controlResolved, "control resolution should emit an event");
 assert(!control.pending().some((item) => item.id === "control-test"), "resolved item should leave pending control");
+offControlAdded();
+offControlResolved();
 
 const proposal = proposals.addProposal({
   id: "proposal-test",
