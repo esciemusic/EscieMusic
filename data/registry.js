@@ -6,10 +6,30 @@
   "use strict";
   function collection(name){
     const value=window[name];
-    if(Array.isArray(value)) return value;
-    if(value&&Array.isArray(value.records)) return value.records;
-    if(value&&typeof value==="object") return Object.values(value);
-    return [];
+    let records=Array.isArray(value)
+      ? value
+      : (value&&Array.isArray(value.records)
+        ? value.records
+        : (value&&typeof value==="object" ? Object.values(value) : []));
+    const runtime=window.ESCIE_RELEASE_RUNTIME||{};
+    if(name==="ESCIE_MUSIC"&&Array.isArray(runtime.music)){
+      records=records.concat(runtime.music);
+    }
+    if(name==="ESCIE_RELATIONSHIPS"&&Array.isArray(runtime.relationships)){
+      records=records.concat(runtime.relationships);
+    }
+    if(name==="ESCIE_PROJECTS"&&runtime.projectStructures&&typeof runtime.projectStructures==="object"){
+      records=records.map(project=>{
+        const extra=runtime.projectStructures[project&&project.id];
+        if(!project||!Array.isArray(extra)||!extra.length) return project;
+        const existing=Array.isArray(project.structure)?project.structure:[];
+        const seen=new Set(existing.map(part=>part&&part.trackId).filter(Boolean));
+        return Object.assign({},project,{
+          structure:existing.concat(extra.filter(part=>part&&part.trackId&&!seen.has(part.trackId)))
+        });
+      });
+    }
+    return records;
   }
   const sources=[
     ["identity",()=>{const about=window.ESCIE_ABOUT; return about?[about]:[];}],
