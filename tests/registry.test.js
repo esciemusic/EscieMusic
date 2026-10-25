@@ -51,6 +51,9 @@
     assert(registry.releaseVisible(firstTrack) === true, "released BAM track must be visible");
     assert(registry.releaseVisible(secondTrack) === false, "unreleased BAM track must remain hidden");
     assert(registry.manifestFor(secondTrack.id).search === false, "locked BAM track must be excluded from search");
+    const lockedManifest = registry.manifestFor(secondTrack.id);
+    assert(lockedManifest.released === false, "locked BAM track must be marked unreleased");
+    assert(lockedManifest.appearsIn.length === 0, "locked BAM track must have no public section appearances");
 
     const counts = registry.relationshipCounts();
     assert(counts.relationships === 3 && counts.nodes === 4, "relationship counts must expose graph size");
