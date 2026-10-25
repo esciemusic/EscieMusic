@@ -35,6 +35,19 @@
     const sections = registry.sectionAudit();
     assert(sections && sections.ok === true, "section manifest audit must pass");
 
+    const publicRelationships = registry.publicRelationships();
+    assert(Array.isArray(publicRelationships) && publicRelationships.length === 8, "public relationship query must expose canonical disclosed connections");
+
+    const typeList = registry.relationshipTypes();
+    assert(typeList.includes("contains") && typeList.includes("created"), "relationship type facets must be derived from public connections");
+
+    const contained = registry.relationshipsFor("bam-by-any-means", { type: "contains" });
+    assert(contained.length === 6, "record-centric relationship query must filter by type");
+
+    const counts = registry.relationshipCounts();
+    assert(counts.relationships === 8 && counts.nodes === 8, "relationship counts must expose graph size");
+    assert(counts.byType.contains === 6, "relationship counts must aggregate connection types");
+
     return { passed: true };
   }
 
