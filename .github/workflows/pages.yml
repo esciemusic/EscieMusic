@@ -34,6 +34,10 @@ jobs:
         run: |
           find . -name "*.js" -not -path "./.git/*" -print0 | xargs -0 -n1 node --check
 
+      - name: Run release firewall source audit
+        run: |
+          node tests/release-firewall.node.test.js
+
       - name: Run publishing contract tests
         run: |
           node tests/publishing.node.test.js
