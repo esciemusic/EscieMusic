@@ -1384,3 +1384,56 @@ body[data-time="night"] .sky {
 .web-connection:last-child {
   border-bottom: 1px solid var(--line);
 }
+
+/* =========================================================
+   ESCIE CENTER / 0.2 INTERFACE
+   ========================================================= */
+.project-questions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px 18px;
+  margin:34px 0 8px;
+}
+.project-questions span{
+  color:var(--faint);
+  font-size:9px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+}
+.bam-part{
+  display:grid;
+  grid-template-columns:56px minmax(0,1fr) auto;
+  align-items:center;
+  gap:18px;
+  width:100%;
+  padding:22px 0;
+  border:0;
+  border-bottom:1px solid var(--line);
+  background:transparent;
+  color:inherit;
+  text-align:left;
+}
+.bam-part em{
+  color:var(--faint);
+  font-size:9px;
+  font-style:normal;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+.bam-part span{color:var(--faint);font-size:10px}
+.bam-part strong{font-size:clamp(14px,2vw,20px);font-weight:400;letter-spacing:.06em}
+.bam-part:hover{padding-left:10px;background:rgba(255,255,255,.025)}
+.web-connection{display:grid;grid-template-columns:minmax(100px,1fr) auto auto auto minmax(100px,1fr);align-items:center;gap:12px}
+.web-node{color:var(--white)}
+.web-type{color:var(--faint);font-size:8px;letter-spacing:.18em;text-transform:uppercase}
+.web-arrow{color:var(--faint)}
+.record-card{cursor:pointer}
+.record-action{margin-top:18px!important;color:var(--faint)!important;font-size:8px!important;letter-spacing:.22em!important;text-transform:uppercase}
+.record-card:focus-visible,.bam-part:focus-visible{outline:1px solid var(--white);outline-offset:8px}
+@media(max-width:700px){
+  .bam-part{grid-template-columns:42px 1fr}
+  .bam-part em{grid-column:2}
+  .web-connection{grid-template-columns:1fr auto 1fr;gap:8px}
+  .web-type{grid-column:1/-1;grid-row:2;text-align:center}
+  .web-arrow:last-of-type{display:none}
+}
