@@ -2468,33 +2468,26 @@ body.inspector-open{overflow:hidden}
   will-change:opacity,transform;
 }
 
-.section-visual-now{
-  animation-name:escie-visual-night;
-  animation-duration:22s;
+.section-visual-now::before{
+  animation:escie-visual-night 22s ease-in-out infinite alternate;
 }
-.section-visual-work{
-  animation-name:escie-visual-vhs;
-  animation-duration:19s;
+.section-visual-work::before{
+  animation:escie-visual-vhs 19s ease-in-out infinite alternate;
 }
-.section-visual-web{
-  animation-name:escie-visual-network;
-  animation-duration:24s;
+.section-visual-web::before{
+  animation:escie-visual-network 24s ease-in-out infinite alternate;
 }
-.section-visual-archive{
-  animation-name:escie-visual-archive;
-  animation-duration:21s;
+.section-visual-archive::before{
+  animation:escie-visual-archive 21s ease-in-out infinite alternate;
 }
-.section-visual-investigation{
-  animation-name:escie-visual-investigation;
-  animation-duration:17s;
+.section-visual-investigation::before{
+  animation:escie-visual-investigation 17s ease-in-out infinite alternate;
 }
-.section-visual-glass{
-  animation-name:escie-visual-glass;
-  animation-duration:20s;
+.section-visual-glass::before{
+  animation:escie-visual-glass 20s ease-in-out infinite alternate;
 }
-.section-visual-escie{
-  animation-name:escie-visual-presence;
-  animation-duration:26s;
+.section-visual-escie::before{
+  animation:escie-visual-presence 26s ease-in-out infinite alternate;
 }
 
 @keyframes escie-visual-night{
@@ -2540,6 +2533,7 @@ body.inspector-open{overflow:hidden}
 
 @media(prefers-reduced-motion:reduce){
   .section-visual[data-visual-section],
+  .section-visual[data-visual-section]::before,
   .section-visual[data-visual-section]::after{
     animation:none!important;
   }
