@@ -26,7 +26,7 @@ function normalizeEscieSocial(items){
     if(!item||typeof item!=="object")return null;
     const platform=String(item.platform||item.id||"").toLowerCase().trim();
     const url=String(item.url||"").trim();
-    if(!ESCIE_SOCIAL_PLATFORMS.includes(platform)||!/^https?:\\/\\//i.test(url))return null;
+    if(!ESCIE_SOCIAL_PLATFORMS.includes(platform)||!/^https?:\/\//i.test(url))return null;
     try{
       const parsed=new URL(url);
       const host=parsed.hostname.toLowerCase();
