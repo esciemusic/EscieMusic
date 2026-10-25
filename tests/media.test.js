@@ -43,6 +43,7 @@
       assert(typeof player.attach==="function"&&typeof player.load==="function","player contract must expose attach and load");
       assert(typeof player.play==="function"&&typeof player.pause==="function","player contract must expose playback controls");
       assert(typeof player.setQueue==="function"&&typeof player.advance==="function","player should expose queue controls");
+      assert(typeof player.previous==="function","player should expose previous transmission control");
       const loaded=player.load({id:"player-test",title:"PLAYER TEST",url:"https://example.com/test.mp3"});
       assert(loaded&&loaded.id==="player-test","player should load a valid transmission");
       assert(player.current&&player.current.title==="PLAYER TEST","player should retain current transmission");
@@ -56,6 +57,12 @@
       assert(advanced&&advanced.id==="queue-1","player should advance to the first queued transmission");
       player.pause();
       assert(player.current&&player.current.id==="queue-1","queue advance should load the selected transmission");
+      const next=player.next();
+      assert(next&&next.id==="queue-2","player next should advance the queue");
+      player.pause();
+      const previous=player.previous();
+      assert(previous&&previous.id==="queue-1","player previous should return to the prior transmission");
+      player.pause();
     }
     return {passed:true};
   }
