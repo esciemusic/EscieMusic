@@ -361,7 +361,13 @@
   }
 
   function getInformationNodes() {
-    return normalizeCollection(getGlobal("ESCIE_NODES", []));
+    const registry = getGlobal("ESCIE_RECORD_REGISTRY", null);
+    if (registry && typeof registry.publicNodes === "function") {
+      return registry.publicNodes();
+    }
+    return normalizeCollection(getGlobal("ESCIE_NODES", []))
+      .filter(node => node && node.public !== false)
+      .sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999));
   }
 
   function renderNavigation() {
