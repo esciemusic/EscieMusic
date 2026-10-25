@@ -12,6 +12,9 @@ const ESCIE_UI_PLAYER = {
   playing: false,
   _audioBound: false,
   _playRequest: 0,
+  queue: [],
+  queueIndex: -1,
+  autoAdvance: true,
   mounted: false,
   ui: null,
 
@@ -38,6 +41,7 @@ const ESCIE_UI_PLAYER = {
         '<div class="escie-player-track">' +
           '<span class="escie-player-label">SIGNAL</span>' +
           '<strong class="escie-player-title" data-player-title>NO TRANSMISSION LOADED</strong>' +
+          '<span class="escie-player-time" data-player-time aria-live="off">0:00 / 0:00</span>' +
           '<input class="escie-player-progress" data-player-progress type="range" min="0" max="1000" value="0" step="1" aria-label="Playback position">' +
         '</div>' +
         '<button type="button" class="escie-player-close" data-player-close aria-label="Close player">×</button>' +
@@ -49,6 +53,7 @@ const ESCIE_UI_PLAYER = {
       toggle: dock.querySelector("[data-player-toggle]"),
       title: dock.querySelector("[data-player-title]"),
       progress: dock.querySelector("[data-player-progress]"),
+      time: dock.querySelector("[data-player-time]"),
       close: dock.querySelector("[data-player-close]")
     };
 
@@ -68,7 +73,10 @@ const ESCIE_UI_PLAYER = {
 
     this.audio.addEventListener("play", () => this.sync(true));
     this.audio.addEventListener("pause", () => this.sync(false));
-    this.audio.addEventListener("ended", () => this.sync(false));
+    this.audio.addEventListener("ended", () => {
+      this.sync(false);
+      if (this.autoAdvance) this.advance();
+    });
     this.audio.addEventListener("timeupdate", () => this.syncProgress());
     this.audio.addEventListener("loadedmetadata", () => this.syncProgress());
   },
@@ -88,6 +96,9 @@ const ESCIE_UI_PLAYER = {
       url,
       sourceId: source.sourceId || null
     };
+
+    const queueIndex = this.queue.findIndex(item => item.url === url && (!source.id || item.id === source.id));
+    if (queueIndex >= 0) this.queueIndex = queueIndex;
 
     if (this.audio) {
       if (this.audio.src !== url) {
@@ -141,8 +152,49 @@ const ESCIE_UI_PLAYER = {
     if (this.ui && this.ui.dock) this.ui.dock.hidden = true;
   },
 
+  setQueue(items = [], options = {}) {
+    this.queue = Array.isArray(items)
+      ? items.filter(item => item && typeof item.url === "string" && item.url.trim())
+        .map(item => ({
+          id: item.id || null,
+          title: item.title || null,
+          url: item.url.trim(),
+          sourceId: item.sourceId || item.id || null
+        }))
+      : [];
+    this.autoAdvance = options.autoAdvance !== false;
+    this.queueIndex = -1;
+    return this.queue.slice();
+  },
+
+  enqueue(source = {}) {
+    if (!source || typeof source.url !== "string" || !source.url.trim()) return false;
+    this.queue.push({
+      id: source.id || null,
+      title: source.title || null,
+      url: source.url.trim(),
+      sourceId: source.sourceId || source.id || null
+    });
+    return true;
+  },
+
+  advance() {
+    if (!this.queue.length) return null;
+    const nextIndex = this.queueIndex + 1;
+    if (nextIndex >= this.queue.length) return null;
+    this.queueIndex = nextIndex;
+    const loaded = this.load(this.queue[this.queueIndex]);
+    if (loaded) this.play();
+    return loaded;
+  },
+
   next(source = {}) {
-    return this.load(source);
+    if (source && source.url) {
+      const index = this.queue.findIndex(item => item.id && source.id && item.id === source.id);
+      if (index >= 0) this.queueIndex = index;
+      return this.load(source);
+    }
+    return this.advance();
   },
 
   sync(isPlaying = this.playing) {
@@ -166,6 +218,15 @@ const ESCIE_UI_PLAYER = {
       return;
     }
     this.ui.progress.value = String(Math.round((this.audio.currentTime / this.audio.duration) * 1000));
+    if (this.ui.time) {
+      const format = seconds => {
+        const total = Math.max(0, Math.floor(Number(seconds) || 0));
+        const minutes = Math.floor(total / 60);
+        const secs = String(total % 60).padStart(2, "0");
+        return minutes + ":" + secs;
+      };
+      this.ui.time.textContent = format(this.audio.currentTime) + " / " + format(this.audio.duration);
+    }
   }
 };
 
