@@ -298,11 +298,11 @@
 
   function isReleaseVisible(record) {
     if (!record) return false;
-    if (record.release_status === "locked") return false;
+    if (record.release_status) return record.release_status === "released";
     if (record.type === "project" && record.release_mode === "progressive") {
       const tracks = normalizeCollection(getMusic());
       return tracks.some(track =>
-        track && track.project === record.id && track.release_status !== "locked"
+        track && track.project === record.id && track.release_status === "released"
       );
     }
     return true;
