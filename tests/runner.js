@@ -18,7 +18,8 @@
     ["permissions", "ESCIE_TEST_PERMISSIONS"],
     ["publishing", "ESCIE_TEST_PUBLISHING"],
     ["navigation", "ESCIE_TEST_NAVIGATION"],
-    ["idle-signal", "ESCIE_TEST_IDLE_SIGNAL"]
+    ["idle-signal", "ESCIE_TEST_IDLE_SIGNAL"],
+    ["media", "ESCIE_TEST_MEDIA"]
   ];
 
   function run() {
