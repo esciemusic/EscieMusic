@@ -447,8 +447,8 @@ body[data-time="night"] .sky {
   app.js toggles this through the mobile menu class.
 */
 
-.site-header:has(.index-navigation.is-open)
-.index-navigation,
+.index-navigation.is-open,
+.site-header:has(.index-navigation.is-open) .index-navigation,
 body.menu-open .index-navigation.is-open {
 
   visibility: visible;
