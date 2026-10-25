@@ -412,6 +412,7 @@
         .map(recordId)
         .filter(Boolean)
     );
+    publicIds.add("escie");
 
     const visible = relationships.filter(relationship =>
       relationship &&
