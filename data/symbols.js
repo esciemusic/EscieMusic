@@ -1,5 +1,5 @@
 /* ESCIE SYMBOL REGISTRY
- * Recurring motifs are placed by context, not scattered as decoration.
+ * Recurring motifs are contextual visual language, not scattered decoration.
  * Meanings remain open unless explicitly established by canon.
  */
 const ESCIE_SYMBOLS=[
