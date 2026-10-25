@@ -19,16 +19,9 @@ function run(){
   const runtime=read("data/release-runtime.js");
 
   assert(!music.includes('release_status:"locked"'),"public music source must not contain locked releases");
-  assert(!projects.includes("PUMPY TO THE CHEST"),"public project source must not contain unreleased track titles");
-  assert(!projects.includes("I NEED A FLEX"),"public project source must not contain unreleased track titles");
-  assert(!projects.includes("SANA, SANA, COLITA DE RANA"),"public project source must not contain unreleased track titles");
-  assert(!projects.includes("BACC 2 BASICS"),"public project source must not contain unreleased track titles");
-  assert(!projects.includes("DICHOTOMY"),"public project source must not contain unreleased track titles");
-  assert(!relationships.includes("bam-002-pumpy-to-the-chest"),"public relationship source must not contain unreleased track ids");
-  assert(!relationships.includes("bam-003-i-need-a-flex"),"public relationship source must not contain unreleased track ids");
-  assert(!relationships.includes("bam-004-sana-sana"),"public relationship source must not contain unreleased track ids");
-  assert(!relationships.includes("bam-005-bacc-2-basics"),"public relationship source must not contain unreleased track ids");
-  assert(!relationships.includes("bam-006-dichotomy"),"public relationship source must not contain unreleased track ids");
+  assert((music.match(/"id":/g)||[]).length===1,"public music source must contain only transmitted music records");
+  assert((projects.match(/trackId:/g)||[]).length===1,"public project source must contain only transmitted project structure");
+  assert((relationships.match(/type:"contains"/g)||[]).length===1,"public relationship source must contain only transmitted containment links");
   assert(runtime.includes("music:[]")&&runtime.includes("relationships:[]"),"checked-in release runtime must remain empty");
   return {passed:true};
 }
