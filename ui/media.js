@@ -17,6 +17,7 @@
 
   const AUDIO_EXT=/\.(mp3|m4a|aac|wav|ogg|oga|flac)(?:$|[?#])/i;
   const VIDEO_EXT=/\.(mp4|webm|mov|m4v|ogv)(?:$|[?#])/i;
+  const IMAGE_EXT=/\.(jpg|jpeg|png|gif|webp|avif|svg)(?:$|[?#])/i;
 
   function esc(value){
     return String(value==null?"":value)
@@ -80,10 +81,12 @@
 
   function kind(item,url){
     const declared=String(item.type||item.kind||"").toLowerCase();
+    if(declared==="image"||declared==="photo") return "image";
     if(declared==="audio"||declared==="video") return declared;
     if(declared==="iframe"||declared==="embed") return "iframe";
     if(hostAllowed(url)) return "iframe";
     if(VIDEO_EXT.test(url.href)) return "video";
+    if(IMAGE_EXT.test(url.href)) return "image";
     if(AUDIO_EXT.test(url.href)) return "audio";
     return null;
   }
@@ -100,6 +103,12 @@
     const title=esc(media.title||media.caption||"MEDIA");
     const caption=media.caption?'<p class="media-caption">'+esc(media.caption)+'</p>':"";
     const label=media.label?'<span class="media-label">'+esc(media.label)+'</span>':"";
+
+    if(mediaKind==="image"){
+      const alt=esc(media.alt||media.title||media.caption||"ESCIE IMAGE");
+      return '<figure class="escie-media escie-media-image" data-media-index="'+index+'">'+
+        label+'<img src="'+esc(url.href)+'" alt="'+alt+'" loading="lazy" decoding="async">'+caption+'</figure>';
+    }
 
     if(mediaKind==="audio"){
       return '<figure class="escie-media escie-media-audio" data-media-index="'+index+'">'+
@@ -144,9 +153,11 @@
     render:render,
     renderAll:renderAll,
     countPlayable:countPlayable,
+    kind:kind,
+    embedURL:embedURL,
     normalize:normalize,
     safeURL:safeURL,
     iframeHosts:IFRAME_HOSTS.slice()
   };
-  if(typeof module!=="undefined"&&module.exports) module.exports={render,renderAll,countPlayable,normalize,safeURL,iframeHosts:IFRAME_HOSTS.slice()};
+  if(typeof module!=="undefined"&&module.exports) module.exports={render,renderAll,countPlayable,normalize,safeURL,kind,embedURL,iframeHosts:IFRAME_HOSTS.slice()};
 })();
