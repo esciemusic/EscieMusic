@@ -17,6 +17,10 @@
   assert(window.ESCIE_VISUALS_UI.renderAsset({type:"video",url:"javascript:alert(1)"})==="","unsafe visual URLs must fail closed");
   assert(window.ESCIE_VISUALS_UI.renderAsset({type:"iframe",url:"https://evil.example/visual"})==="","untrusted iframe hosts must fail closed");
   assert(window.ESCIE_VISUALS_UI.renderAsset({type:"iframe",url:"https://www.youtube.com/embed/example"})!=="","allowlisted iframe hosts must render");
+  const normalizedAsset=window.normalizeEscieVisualAsset&&window.normalizeEscieVisualAsset({url:"https://example.com/a.webp",type:"image",alt:"test"});
+  assert(normalizedAsset&&normalizedAsset.type==="image","visual asset normalizer must accept valid assets");
+  assert(window.normalizeEscieVisualAsset({url:"javascript:alert(1)",type:"image"})!==null,"data normalizer may preserve URL for presentation-layer validation");
+  assert(window.normalizeEscieVisualAsset({url:"https://example.com/a.webp",type:"unknown"})===null,"visual asset normalizer must reject unknown types");
   const audit=window.auditEscieVisuals&&window.auditEscieVisuals(items);
   assert(audit&&audit.ok===true,"visual registry audit must pass");
   const normalized=normalize(items);
