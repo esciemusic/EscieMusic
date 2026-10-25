@@ -2180,3 +2180,25 @@ body.inspector-open{overflow:hidden}
 @media(prefers-reduced-motion:reduce){
   .section-visual,.section-visual *{animation:none!important;transition:none!important}
 }
+
+/* VIEWPORT-ACTIVATED VISUALS */
+.section-visual{
+  opacity:.28;
+  transform:translateY(12px) scale(.995);
+}
+.section-visual.visual-visible{
+  opacity:.72;
+  transform:translateY(0) scale(1);
+}
+.section-visual.visual-visible .visual-flicker,
+.section-visual.visual-visible .visual-scanline,
+.section-visual.visual-visible .visual-glass-scan{
+  animation-play-state:running;
+}
+@media(prefers-reduced-motion:reduce){
+  .section-visual,
+  .section-visual.visual-visible{
+    opacity:.72;
+    transform:none;
+  }
+}
