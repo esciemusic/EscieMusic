@@ -760,6 +760,58 @@ body[data-time="night"] .sky {
 }
 
 
+.now-state {
+  max-width: 900px;
+  padding: 42px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.now-state .eyebrow {
+  margin: 0 0 18px;
+  color: var(--faint);
+  font-size: 9px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+}
+
+.now-state h3 {
+  margin: 0;
+  font-size: clamp(30px, 6vw, 72px);
+  font-weight: 400;
+  letter-spacing: 0.05em;
+}
+
+.now-state > p:not(.eyebrow) {
+  max-width: 620px;
+  margin: 22px 0 0;
+  color: var(--muted);
+  font-size: clamp(15px, 2vw, 20px);
+  line-height: 1.8;
+}
+
+.now-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  margin-top: 38px;
+  color: var(--faint);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.now-meta span {
+  position: relative;
+}
+
+.now-meta span + span::before {
+  content: "/";
+  position: absolute;
+  left: -17px;
+  color: var(--line);
+}
+
 /* =========================================================
    MUSIC
    ========================================================= */
