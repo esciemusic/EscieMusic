@@ -25,6 +25,14 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
+      - name: Validate JavaScript contracts
+        run: |
+          node --check record.js
+          node --check relationship.js
+          node --check app.js
+          node --check publishing/build.js
+          node --check publishing/validate.js
+
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
         with:
