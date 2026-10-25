@@ -364,51 +364,6 @@
     return normalizeCollection(getGlobal("ESCIE_NODES", []));
   }
 
-  function informationNodeStats(node) {
-    const registry = getGlobal("ESCIE_RECORD_REGISTRY", null);
-    const records = getAllPublicRecords();
-    const relationships = registry && typeof registry.publicRelationships === "function"
-      ? registry.publicRelationships()
-      : [];
-    const stats = { count: 0, label: "PUBLIC RECORDS" };
-
-    if (!node) return stats;
-    if (node.metric === "connections") {
-      stats.count = relationships.length;
-      stats.label = "PUBLIC CONNECTIONS";
-    } else if (node.metric === "identity") {
-      stats.count = records.filter(record => record && record.type === "identity").length;
-      stats.label = "IDENTITY RECORDS";
-    } else if (node.metric === "work") {
-      stats.count = records.filter(record => record && ["music","project","body"].includes(record.type)).length;
-      stats.label = "PUBLIC WORK RECORDS";
-    } else if (node.metric === "archive") {
-      stats.count = records.filter(record => {
-        const manifest = registry && registry.manifestFor ? registry.manifestFor(recordId(record)) : null;
-        return manifest && manifest.archive;
-      }).length;
-      stats.label = "PUBLIC ARCHIVE RECORDS";
-    } else if (node.metric === "investigation") {
-      stats.count = records.filter(record => {
-        const manifest = registry && registry.manifestFor ? registry.manifestFor(recordId(record)) : null;
-        return manifest && manifest.investigation;
-      }).length;
-      stats.label = "INVESTIGATION RECORDS";
-    } else if (node.metric === "media") {
-      stats.count = records.filter(record => {
-        const manifest = registry && registry.manifestFor ? registry.manifestFor(recordId(record)) : null;
-        return manifest && manifest.glassEye;
-      }).length;
-      stats.label = "OBSERVATION RECORDS";
-    } else if (node.metric === "latest") {
-      stats.count = records.filter(record => record && record.type === "music").length;
-      stats.label = "RELEASED TRANSMISSIONS";
-    } else {
-      stats.count = records.length;
-    }
-    return stats;
-  }
-
   function renderNavigation() {
     const nav = byId("main-navigation");
     if (!nav) return;
@@ -417,7 +372,6 @@
     const currentRoute = (window.location.hash || "").replace(/^#/, "");
 
     nav.innerHTML =
-      '<div class="index-heading"><span>INDEX</span></div>' +
       nodes.map(node => {
         const target = node.target || "#";
         const route = target.replace(/^#/, "");
@@ -427,21 +381,6 @@
           '<span class="node-link-symbol" aria-hidden="true">' + escapeHTML(node.symbol || "·") + '</span>' +
           '</a>';
       }).join("");
-  }
-
-  function renderInformationNodes() {
-    const container = byId("entry-nodes");
-    if (!container) return;
-    const nodes = getInformationNodes();
-    container.innerHTML = nodes.map((node, index) => {
-      const stats = informationNodeStats(node);
-      return '<a class="information-node" href="' + escapeHTML(node.target || "#") + '">' +
-        '<span class="information-node-index">' + escapeHTML(String(index + 1).padStart(2, "0")) + '</span>' +
-        '<span class="information-node-body"><strong>' + escapeHTML(node.label || node.id || "NODE") + '</strong>' +
-        '<small>' + escapeHTML(node.description || "") + '</small>' +
-        '<small class="information-node-stat">' + escapeHTML(String(stats.count)) + ' ' + escapeHTML(stats.label) + '</small></span>' +
-        '<span class="information-node-arrow" aria-hidden="true">↗</span></a>';
-    }).join("");
   }
 
   function renderNow() {
