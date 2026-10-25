@@ -1,453 +1,340 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-  <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <meta
-    name="description"
-    content="ESCIE — REALITY WITH THE SIGNAL DISTORTED."
-  >
-
-  <title>ESCIE — Reality With The Signal Distorted</title>
-
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
-
-</head>
-
-
-<body id="top">
-
-  <!-- =====================================================
-       ATMOSPHERE
-       ===================================================== -->
-
-  <div
-    class="sky"
-    aria-hidden="true"
-  ></div>
-
-  <div
-    class="grain"
-    aria-hidden="true"
-  ></div>
-
-
-  <!-- =====================================================
-       HEADER
-       ===================================================== -->
-
-  <header class="site-header">
-
-    <a
-      href="#top"
-      class="site-logo"
-      aria-label="ESCIE"
-    >
-      ESCIE
-    </a>
-
-
-    <button
-      id="mobile-menu-button"
-      class="index-trigger"
-      type="button"
-      aria-label="Open index"
-      aria-controls="main-navigation"
-      aria-expanded="false"
-    >
-      INDEX
-    </button>
-
-
-    <nav
-      id="main-navigation"
-      class="index-navigation"
-      aria-label="Index"
-    ></nav>
-
-  </header>
-
-
-
-  <!-- =====================================================
-       MAIN EXPERIENCE
-       ===================================================== -->
-
-  <main>
-
-
-    <!-- ===================================================
-         ENTRY
-         =================================================== -->
-
-    <section
-      id="entry"
-      class="site-section entry-section"
-    >
-
-      <div class="section-inner">
-
-        <p class="section-label">
-          ENTRY
-        </p>
-
-        <div
-          id="entry-container"
-          class="content-container"
-        >
-
-          <div class="entry-inner">
-
-            <p class="hero-year">
-              2027
-            </p>
-
-            <h1>
-              ESCIE
-            </h1>
-
-            <p class="hero-tagline">
-              REALITY WITH THE SIGNAL DISTORTED.
-            </p>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-
-    <!-- ===================================================
-         NOW
-         =================================================== -->
-
-    <section
-      id="now"
-      class="site-section now-section"
-    >
-
-      <div class="section-inner">
-
-        <p class="section-label">
-          NOW
-        </p>
-
-        <h2>
-          NOW
-        </h2>
-
-        <div
-          id="now-container"
-          class="content-container"
-        ></div>
-
-      </div>
-
-    </section>
-
-
-
-    <!-- ===================================================
-         ART
-         =================================================== -->
-
-    <section
-      id="art"
-      class="site-section art-section"
-    >
-
-      <div class="section-inner">
-
-        <p class="section-label">
-          ART
-        </p>
-
-        <h2>
-          ART
-        </h2>
-
-        <div
-          id="art-container"
-          class="content-container"
-        >
-
-          <!-- Existing music content temporarily lives here. -->
-
-          <div
-            id="music-container"
-            class="content-container"
-          ></div>
-
-
-          <!-- Existing BAM content temporarily lives here. -->
-
-          <div
-            id="bam-container"
-            class="content-container"
-          ></div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-
-    <!-- ===================================================
-         THE WEB
-         =================================================== -->
-
-    <section
-      id="web"
-      class="site-section web-section"
-    >
-
-      <div class="section-inner">
-
-        <p class="section-label">
-          THE WEB
-        </p>
-
-        <h2>
-          THE WEB
-        </h2>
-
-        <div
-          id="web-container"
-          class="content-container"
-        >
-
-          <div class="empty-state">
-
-            <span>
-              THE WEB IS BEING CONNECTED.
-            </span>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-
-    <!-- ===================================================
-         THE ARCHIVES
-         =================================================== -->
-
-    <section
-      id="archives"
-      class="site-section archives-section"
-    >
-
-      <div class="section-inner">
-
-        <p class="section-label">
-          THE ARCHIVES
-        </p>
-
-        <h2>
-          THE ARCHIVES
-        </h2>
-
-        <div
-          id="archives-container"
-          class="content-container"
-        >
-
-          <!-- Existing archive renderer continues to use
-               #archive-container during migration. -->
-
-          <div
-            id="archive-container"
-            class="content-container"
-          ></div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-
-    <!-- ===================================================
-         INVESTIGATION
-         =================================================== -->
-
-    <section
-      id="investigation"
-      class="site-section investigation-section"
-    >
-
-      <div class="section-inner">
-
-        <p class="section-label">
-          INVESTIGATION
-        </p>
-
-        <h2>
-          INVESTIGATION
-        </h2>
-
-        <div
-          id="investigation-container"
-          class="content-container"
-        ></div>
-
-      </div>
-
-    </section>
-
-
-
-    <!-- ===================================================
-         ESCIE
-         =================================================== -->
-
-    <section
-      id="escie"
-      class="site-section escie-section"
-    >
-
-      <div class="section-inner">
-
-        <p class="section-label">
-          ESCIE
-        </p>
-
-        <h2>
-          ESCIE
-        </h2>
-
-        <div
-          id="escie-container"
-          class="content-container"
-        >
-
-          <!-- Existing About renderer continues to use
-               #about-container during migration. -->
-
-          <div
-            id="about-container"
-            class="about-content"
-          ></div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-
-    <!-- ===================================================
-         THE GLASS EYE
-         =================================================== -->
-
-    <section
-      id="glass-eye"
-      class="site-section glass-eye-section"
-    >
-
-      <div class="section-inner">
-
-        <p class="section-label">
-          THE GLASS EYE
-        </p>
-
-        <h2>
-          THE GLASS EYE
-        </h2>
-
-        <div
-          id="glass-eye-container"
-          class="content-container"
-        >
-
-          <div class="empty-state">
-
-            <span>
-              LOOKING THROUGH THE GLASS.
-            </span>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-  </main>
-
-
-
-  <!-- =====================================================
-       FOOTER
-       ===================================================== -->
-
-  <footer class="site-footer">
-
-    <p>
-      ESCIE
-    </p>
-
-    <p>
-      REALITY WITH THE SIGNAL DISTORTED.
-    </p>
-
-  </footer>
-
-
-
-  <!-- =====================================================
-       DATA
-       ===================================================== -->
-
-  <script src="data/site.js"></script>
-  <script src="data/navigation.js"></script>
-  <script src="data/projects.js"></script>
-  <script src="data/music.js"></script>
-  <script src="data/signals.js"></script>
-  <script src="data/archive.js"></script>
-  <script src="data/investigation.js"></script>
-  <script src="data/people.js"></script>
-  <script src="data/language.js"></script>
-  <script src="data/narration.js"></script>
-
-
-  <!-- =====================================================
-       CORE CONTRACTS
-       ===================================================== -->
-
-  <script src="record.js"></script>
-  <script src="relationship.js"></script>
-
-
-  <!-- =====================================================
-       APPLICATION
-       ===================================================== -->
-
-  <script src="app.js"></script>
-
-</body>
-
-</html>
+/*
+ * ESCIE APPLICATION
+ * Runtime composition layer.
+ *
+ * The application reads canonical data and system contracts, then renders
+ * the public interface. UI state is derived; it does not become canon.
+ */
+
+(function () {
+  "use strict";
+
+  const ESCIE_RUNTIME = {
+    version: "1.0.0",
+    initialized: false,
+    ready: false
+  };
+
+  function byId(id) {
+    return document.getElementById(id);
+  }
+
+  function escapeHTML(value) {
+    return String(value == null ? "" : value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function getGlobal(name, fallback) {
+    return window[name] !== undefined ? window[name] : fallback;
+  }
+
+  function getSite() {
+    return getGlobal("ESCIE_SITE", {});
+  }
+
+  function getNavigation() {
+    return getGlobal("ESCIE_NAVIGATION", []);
+  }
+
+  function getProjects() {
+    return getGlobal("ESCIE_PROJECTS", []);
+  }
+
+  function getMusic() {
+    return getGlobal("ESCIE_MUSIC", []);
+  }
+
+  function getSignals() {
+    return getGlobal("ESCIE_SIGNALS", []);
+  }
+
+  function getArchive() {
+    return getGlobal("ESCIE_ARCHIVE", []);
+  }
+
+  function getInvestigation() {
+    return getGlobal("ESCIE_INVESTIGATION", []);
+  }
+
+  function getPeople() {
+    return getGlobal("ESCIE_PEOPLE", []);
+  }
+
+  function normalizeCollection(value) {
+    if (Array.isArray(value)) return value;
+    if (value && Array.isArray(value.records)) return value.records;
+    if (value && typeof value === "object") return Object.values(value);
+    return [];
+  }
+
+  function getSiteValue(key, fallback) {
+    const site = getSite();
+    return site[key] !== undefined ? site[key] : fallback;
+  }
+
+  function isPublished(record) {
+    return !!(
+      record &&
+      (record.published === true || record.status === "published")
+    );
+  }
+
+  function isPublic(record) {
+    if (!record) return false;
+    if (record.visibility && record.visibility !== "PUBLIC" &&
+        record.visibility !== "public") return false;
+    if (record.visibility === "PRIVATE" || record.visibility === "private") return false;
+    if (record.visibility === "WITHHELD" || record.visibility === "withheld") return false;
+    return isPublished(record);
+  }
+
+  function recordId(record) {
+    return record && (record.id || record.recordId || null);
+  }
+
+  function recordTitle(record) {
+    return record && (record.title || record.name || "UNTITLED");
+  }
+
+  function renderEmpty(container, message) {
+    if (!container) return;
+    container.innerHTML =
+      '<div class="empty-state"><span>' +
+      escapeHTML(message) +
+      "</span></div>";
+  }
+
+  function renderNavigation() {
+    const nav = byId("main-navigation");
+    if (!nav) return;
+
+    const items = normalizeCollection(getNavigation())
+      .filter(item => item && item.primary !== false)
+      .sort((a, b) => Number(a.order || 0) - Number(b.order || 0));
+
+    nav.innerHTML = items.map(item => {
+      const label = item.label || item.title || item.id || "";
+      const target = item.target || item.href || ("#" + (item.id || "").toLowerCase().replace(/\s+/g, "-"));
+      return '<a class="nav-link" href="' + escapeHTML(target) + '">' +
+        escapeHTML(label) + "</a>";
+    }).join("");
+  }
+
+  function renderNow() {
+    const container = byId("now-container");
+    if (!container) return;
+
+    const site = getSite();
+    const signals = normalizeCollection(getSignals());
+    const active = signals.find(signal =>
+      signal && signal.active === true
+    );
+
+    container.innerHTML =
+      '<div class="now-state">' +
+        '<p class="eyebrow">CURRENT STATE</p>' +
+        '<h3>' + escapeHTML(active ? "ACTIVE TRANSMISSION" : "NORMAL") + "</h3>" +
+        '<p>' + escapeHTML(
+          active && active.description
+            ? active.description
+            : (site.tagline || "REALITY WITH THE SIGNAL DISTORTED.")
+        ) + "</p>" +
+      "</div>";
+  }
+
+  function renderMusic() {
+    const container = byId("music-container");
+    if (!container) return;
+
+    const music = normalizeCollection(getMusic());
+    const visible = music.filter(isPublic);
+
+    if (!visible.length) {
+      renderEmpty(container, "THE MUSIC IS STILL BEING DEVELOPED.");
+      return;
+    }
+
+    container.innerHTML = visible.map(track =>
+      '<article class="record-card" data-record-type="art" data-record-id="' +
+      escapeHTML(recordId(track)) + '">' +
+        '<p class="eyebrow">' + escapeHTML(track.number || "ART") + "</p>" +
+        '<h3>' + escapeHTML(recordTitle(track)) + "</h3>" +
+        (track.role ? "<p>" + escapeHTML(track.role) + "</p>" : "") +
+      "</article>"
+    ).join("");
+  }
+
+  function renderProjects() {
+    const container = byId("bam-container");
+    if (!container) return;
+
+    const projects = normalizeCollection(getProjects());
+    const visible = projects.filter(isPublic);
+
+    if (!visible.length) {
+      renderEmpty(container, "PROJECTS ARE BEING DEVELOPED.");
+      return;
+    }
+
+    container.innerHTML = visible.map(project =>
+      '<article class="project-card" data-record-type="body" data-record-id="' +
+      escapeHTML(recordId(project)) + '">' +
+        '<p class="eyebrow">' + escapeHTML(project.type || "BODY") + "</p>" +
+        '<h3>' + escapeHTML(recordTitle(project)) + "</h3>" +
+        (project.description ? "<p>" + escapeHTML(project.description) + "</p>" : "") +
+      "</article>"
+    ).join("");
+  }
+
+  function renderArchive() {
+    const container = byId("archive-container");
+    if (!container) return;
+
+    const archive = normalizeCollection(getArchive());
+    const visible = archive.filter(isPublic);
+
+    if (!visible.length) {
+      renderEmpty(container, "THE ARCHIVE IS QUIET.");
+      return;
+    }
+
+    container.innerHTML = visible.map(record =>
+      '<article class="archive-card" data-record-id="' +
+      escapeHTML(recordId(record)) + '">' +
+        '<h3>' + escapeHTML(recordTitle(record)) + "</h3>" +
+      "</article>"
+    ).join("");
+  }
+
+  function renderInvestigation() {
+    const container = byId("investigation-container");
+    if (!container) return;
+
+    const investigations = normalizeCollection(getInvestigation());
+    const visible = investigations.filter(isPublic);
+
+    if (!visible.length) {
+      renderEmpty(container, "NO PUBLIC INVESTIGATION IS ACTIVE.");
+      return;
+    }
+
+    container.innerHTML = visible.map(item =>
+      '<article class="investigation-card" data-record-id="' +
+      escapeHTML(recordId(item)) + '">' +
+        '<h3>' + escapeHTML(recordTitle(item)) + "</h3>" +
+      "</article>"
+    ).join("");
+  }
+
+  function renderAbout() {
+    const container = byId("about-container");
+    if (!container) return;
+
+    const site = getSite();
+    container.innerHTML =
+      '<p class="about-lead">' +
+      escapeHTML(site.philosophy || "The music does not create the universe. The universe creates the music.") +
+      "</p>" +
+      '<p>' +
+      escapeHTML(site.tagline || "REALITY WITH THE SIGNAL DISTORTED.") +
+      "</p>";
+  }
+
+  function renderEntry() {
+    const year = byId("entry-year");
+    if (year) {
+      year.textContent = getSiteValue("publicYear", new Date().getFullYear());
+    }
+
+    const tagline = document.querySelector(".hero-tagline");
+    if (tagline) {
+      tagline.textContent = getSiteValue(
+        "tagline",
+        "REALITY WITH THE SIGNAL DISTORTED."
+      );
+    }
+  }
+
+  function updateTimeState() {
+    const hour = new Date().getHours();
+    let state = "night";
+
+    if (hour >= 5 && hour < 8) state = "dawn";
+    else if (hour >= 8 && hour < 18) state = "day";
+    else if (hour >= 18 && hour < 21) state = "dusk";
+
+    document.body.dataset.time = state;
+  }
+
+  function setupMobileMenu() {
+    const button = byId("mobile-menu-button");
+    const nav = byId("main-navigation");
+    if (!button || !nav) return;
+
+    button.addEventListener("click", function () {
+      const open = document.body.classList.toggle("menu-open");
+      button.setAttribute("aria-expanded", String(open));
+      nav.classList.toggle("is-open", open);
+    });
+
+    nav.addEventListener("click", function (event) {
+      if (event.target.closest("a")) {
+        document.body.classList.remove("menu-open");
+        nav.classList.remove("is-open");
+        button.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+
+  function render() {
+    renderEntry();
+    renderNavigation();
+    renderNow();
+    renderMusic();
+    renderProjects();
+    renderArchive();
+    renderInvestigation();
+    renderAbout();
+    updateTimeState();
+  }
+
+  function initialize() {
+    if (ESCIE_RUNTIME.initialized) return ESCIE_RUNTIME;
+
+    ESCIE_RUNTIME.initialized = true;
+    render();
+    setupMobileMenu();
+
+    ESCIE_RUNTIME.ready = true;
+    window.dispatchEvent(new CustomEvent("escie:ready", {
+      detail: ESCIE_RUNTIME
+    }));
+
+    return ESCIE_RUNTIME;
+  }
+
+  ESCIE_RUNTIME.byId = byId;
+  ESCIE_RUNTIME.escapeHTML = escapeHTML;
+  ESCIE_RUNTIME.getSite = getSite;
+  ESCIE_RUNTIME.getNavigation = getNavigation;
+  ESCIE_RUNTIME.getProjects = getProjects;
+  ESCIE_RUNTIME.getMusic = getMusic;
+  ESCIE_RUNTIME.getSignals = getSignals;
+  ESCIE_RUNTIME.getArchive = getArchive;
+  ESCIE_RUNTIME.getInvestigation = getInvestigation;
+  ESCIE_RUNTIME.getPeople = getPeople;
+  ESCIE_RUNTIME.render = render;
+  ESCIE_RUNTIME.initialize = initialize;
+
+  window.ESCIE_RUNTIME = ESCIE_RUNTIME;
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initialize, { once: true });
+  } else {
+    initialize();
+  }
+})();
