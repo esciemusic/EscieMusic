@@ -9,6 +9,7 @@
  const VIDEO_TYPES=["video"];
  const HOSTS=["youtube.com","www.youtube.com","youtu.be","www.youtube-nocookie.com","youtube-nocookie.com","vimeo.com","player.vimeo.com"];
  const MEDIA_CLEANUPS=new WeakMap();
+ let SECTION_OBSERVER=null;
 
  function safeURL(value){
   if(typeof value!=="string"||!value.trim())return null;
@@ -75,7 +76,9 @@
 }
 
  function init(){
+  if(SECTION_OBSERVER){SECTION_OBSERVER.disconnect();SECTION_OBSERVER=null;}
   document.querySelectorAll(".section-visual").forEach(el=>{
+
    const cleanup=MEDIA_CLEANUPS.get(el);
    if(cleanup)cleanup();
    el.querySelectorAll(".section-visual-media").forEach(media=>media.remove());
@@ -84,6 +87,16 @@
    delete el.dataset.visualSymbols;
    el.style.removeProperty("--visual-intensity");
   });
+  const visuals=Array.from(document.querySelectorAll(".section-visual"));
+  if("IntersectionObserver" in window){
+   SECTION_OBSERVER=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>entry.target.classList.toggle("visual-active",entry.isIntersecting));
+   },{threshold:.35,rootMargin:"-12% 0px -12% 0px"});
+   visuals.forEach(el=>SECTION_OBSERVER.observe(el));
+  }else{
+   visuals.forEach(el=>el.classList.add("visual-active"));
+  }
+
   const items=window.ESCIE_VISUALS||[];
   const normalized=typeof window.normalizeEscieVisuals==="function"?window.normalizeEscieVisuals(items):items;
   normalized.forEach(v=>{
