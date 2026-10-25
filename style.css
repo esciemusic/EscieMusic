@@ -3231,6 +3231,29 @@ body.menu-open .index-navigation.is-open{
     rotate(var(--pointer-rotate,0deg))
     scale(1.045);
 }
+
+/* Visitor presence: the image wakes up when this section becomes the place
+   the visitor is actually occupying, then settles when they leave. */
+.section-visual[data-visual-section].visitor-present::before{
+  animation-duration:9s!important;
+  filter:grayscale(.08) contrast(.94) saturate(.88) brightness(1.14);
+}
+.section-visual[data-visual-section].visitor-present::after{
+  opacity:1;
+  animation-duration:5.5s!important;
+}
+@keyframes escie-visitor-breathe{
+  0%,100%{opacity:.92;filter:brightness(1.04) saturate(.78)}
+  50%{opacity:1;filter:brightness(1.13) saturate(.92)}
+}
+.section-visual[data-visual-section].visitor-present{
+  animation:escie-visitor-breathe 4.8s ease-in-out infinite;
+}
+@media(prefers-reduced-motion:reduce){
+  .section-visual[data-visual-section].visitor-present{
+    animation:none!important;
+  }
+}
 .section-visual[data-visual-section]::after{
   transform:translate3d(calc(var(--pointer-x,0px) * -.22),calc(var(--pointer-y,0px) * -.18),0);
   transition:transform 1200ms var(--slow),opacity .8s ease;
