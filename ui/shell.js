@@ -19,8 +19,8 @@ const ESCIE_UI_SHELL = {
   setState(state = {}) {
     if (!this.root) return null;
 
-    if (state.status) {
-      this.root.dataset.escieState = state.status;
+    if (state.uiState) {
+      this.root.dataset.escieState = state.uiState;
     }
 
     if (state.route) {
