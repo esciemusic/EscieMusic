@@ -155,7 +155,10 @@
    section.setAttribute("data-project-visual","active");
   };
 
-  const currentProject=cards[0];
+  const currentProject=cards.find(card=>{
+   const state=String(card.dataset.projectState||card.dataset.status||"").toLowerCase();
+   return card.dataset.current==="true"||card.dataset.featured==="true"||state==="current"||state==="active";
+  })||cards[0];
   const allVisuals=parseVisuals(currentProject);
   if(!allVisuals.length){clearSection(work);return;}
 
@@ -180,14 +183,15 @@
   }).filter(item=>item.items.length>1);
 
   if(!rotatingSections.length)return;
-  let cursor=0;
+  const cursors=rotatingSections.map(({items})=>({items,index:0}));
   const rotate=()=>{
-   rotatingSections.forEach(({section,items})=>{
-    cursor=(cursor+1)%items.length;
-    showVisual(section,items[cursor]);
+   rotatingSections.forEach(({section,items},index)=>{
+    const state=cursors[index];
+    state.index=(state.index+1)%items.length;
+    showVisual(section,items[state.index]);
    });
   };
-  const timer=window.setInterval(rotate,8500);
+  const timer=window.setInterval(rotate,9500);
   WORK_ALBUM_OBSERVER={disconnect:()=>window.clearInterval(timer)};
  }
 
