@@ -2389,6 +2389,57 @@ body.inspector-open{overflow:hidden}
 }
 
 /* =========================================================
+   VISUAL BLEND / TRANSLUCENT ATMOSPHERE
+   The atlas should feel embedded in the page, not like a card
+   placed on top of the interface.
+   ========================================================= */
+.section-visual[data-visual-section]{
+  background-image:none;
+  background-color:#08090b;
+}
+.section-visual[data-visual-section]::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  background-repeat:no-repeat;
+  background-size:200% auto;
+  opacity:.24;
+  filter:grayscale(.25) contrast(.82) saturate(.72);
+  mix-blend-mode:screen;
+  pointer-events:none;
+  transition:opacity .8s ease,filter .8s ease;
+}
+.section-visual[data-visual-section] > :not(.section-visual-media){
+  position:relative;
+  z-index:1;
+}
+.section-visual-now::before{background-position:center top}
+.section-visual-work::before{background-position:right top}
+.section-visual-web::before{background-position:left 34%}
+.section-visual-archive::before{background-position:right 34%}
+.section-visual-investigation::before{background-position:left 68%}
+.section-visual-glass::before{background-position:right 68%}
+.section-visual-escie::before{
+  background-size:100% auto;
+  background-position:center bottom;
+}
+.section-visual.visual-visible::before{
+  opacity:.29;
+}
+.section-visual:hover::before{
+  opacity:.34;
+  filter:grayscale(.18) contrast(.88) saturate(.82);
+}
+@media(max-width:700px){
+  .section-visual[data-visual-section]::before{background-size:200% auto}
+  .section-visual-escie::before{background-size:100% auto}
+}
+@media(prefers-reduced-motion:reduce){
+  .section-visual[data-visual-section]::before{transition:none}
+}
+
+/* =========================================================
    GENERATED VISUAL MOTION
    Slow cinematic movement keeps the visual alive without
    turning the page into a distraction.
