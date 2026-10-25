@@ -46,8 +46,22 @@
     assert(!!nav, "INDEX navigation container should exist");
     assert(button.getAttribute("aria-controls") === "main-navigation", "INDEX trigger should control main navigation");
     assert(button.getAttribute("aria-expanded") === "false", "INDEX should initialize closed");
+    assert(button.getAttribute("aria-label") === "Open index", "INDEX should advertise its closed state");
+    assert(nav.getAttribute("aria-hidden") === "true", "INDEX navigation should initialize hidden to assistive technology");
     assert(!nav.classList.contains("is-open"), "INDEX navigation should initialize closed");
     assert(nav.querySelectorAll("a").length === N.length, "rendered INDEX links should match navigation contract");
+
+    const menu = typeof window !== "undefined" ? window.ESCIE_RUNTIME && window.ESCIE_RUNTIME.navigationMenu : null;
+    if (menu && typeof menu.open === "function" && typeof menu.close === "function") {
+      menu.open();
+      assert(button.getAttribute("aria-expanded") === "true", "INDEX should expose expanded state when opened");
+      assert(button.getAttribute("aria-label") === "Close index", "INDEX should advertise its open state");
+      assert(nav.getAttribute("aria-hidden") === "false", "INDEX navigation should become visible to assistive technology when opened");
+      assert(nav.classList.contains("is-open"), "INDEX navigation should receive its open state");
+      menu.close(false);
+      assert(button.getAttribute("aria-expanded") === "false", "INDEX should close through its runtime controller");
+      assert(nav.getAttribute("aria-hidden") === "true", "INDEX navigation should become hidden again when closed");
+    }
 
     return { passed: true };
   }
