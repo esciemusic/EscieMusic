@@ -1,7 +1,8 @@
 /*
  * ESCIE TESTS — REGISTRY
  *
- * Contract checks for normalized record routing, facets and references.
+ * Contract checks use an isolated in-memory release fixture so the public
+ * repository can remain completely free of unreleased BAM metadata.
  */
 
 (function () {
