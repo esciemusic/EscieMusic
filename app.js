@@ -476,13 +476,18 @@
 
     container.innerHTML = visible.map(project => {
       const structure = Array.isArray(project.structure) ? project.structure : [];
+      const recordsById = new Map(getAllRecords().map(item => [recordId(item), item]));
+      const releasedStructure = structure.filter(part => {
+        const track = recordsById.get(part.trackId);
+        return track && isReleaseVisible(track);
+      });
       return '<article class="bam-project" data-record-type="body" data-record-id="' +
         escapeHTML(recordId(project)) + '"' + narrationAttributes(project) + '>' +
         '<p class="eyebrow">' + escapeHTML(project.type || "BODY") + "</p>" +
         '<h3>' + escapeHTML(recordTitle(project)) + "</h3>" +
         (project.description ? "<p>" + escapeHTML(project.description) + "</p>" : "") +
         (project.questions ? '<div class="project-questions">' + project.questions.map(q => '<span>' + escapeHTML(q) + '</span>').join("") + '</div>' : "") +
-        (structure.length ? '<div class="bam-structure">' + structure.map(part => '<button class="bam-part record-card" type="button" data-record-id="' + escapeHTML(part.trackId || "") + '"><span>' + escapeHTML(part.number) + '</span><strong>' + escapeHTML(part.title) + '</strong><em>' + escapeHTML(part.role) + '</em></button>').join("") + '</div>' : "") +
+        (releasedStructure.length ? '<div class="bam-structure">' + releasedStructure.map(part => '<button class="bam-part record-card" type="button" data-record-id="' + escapeHTML(part.trackId || "") + '"><span>' + escapeHTML(part.number) + '</span><strong>' + escapeHTML(part.title) + '</strong><em>' + escapeHTML(part.role) + '</em></button>').join("") + '</div>' : "") +
       "</article>";
     }).join("");
   }
