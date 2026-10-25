@@ -169,15 +169,23 @@
       signal && signal.active === true
     );
 
+    const location = site.location || "Montréal, Canada";
+    const status = site.status || "development";
+
     container.innerHTML =
       '<div class="now-state">' +
         '<p class="eyebrow">CURRENT STATE</p>' +
-        '<h3>' + escapeHTML(active ? "ACTIVE TRANSMISSION" : "NORMAL") + "</h3>" +
+        '<h3>' + escapeHTML(active ? "ACTIVE TRANSMISSION" : "SIGNAL QUIET") + "</h3>" +
         '<p>' + escapeHTML(
           active && active.description
             ? active.description
-            : (site.tagline || "REALITY WITH THE SIGNAL DISTORTED.")
+            : "The signal is quiet. The reality is not."
         ) + "</p>" +
+        '<div class="now-meta">' +
+          '<span>' + escapeHTML(location) + "</span>" +
+          '<span>' + escapeHTML(String(site.publicYear || new Date().getFullYear())) + "</span>" +
+          '<span>' + escapeHTML(status) + "</span>" +
+        "</div>" +
       "</div>";
   }
 
