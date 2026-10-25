@@ -10,6 +10,8 @@ const ESCIE_UI_PLAYER = {
   audio: null,
   current: null,
   playing: false,
+  _audioBound: false,
+  _playRequest: 0,
   mounted: false,
   ui: null,
 
@@ -98,21 +100,26 @@ const ESCIE_UI_PLAYER = {
 
   async play() {
     if (!this.audio || !this.current || !this.current.url) return false;
+    const request = ++this._playRequest;
 
     try {
       await this.audio.play();
+      if (request !== this._playRequest) return false;
       this.playing = true;
       this.sync(true);
       return true;
     } catch (error) {
-      this.playing = false;
-      this.sync(false);
+      if (request === this._playRequest) {
+        this.playing = false;
+        this.sync(false);
+      }
       return false;
     }
   },
 
   pause() {
     if (!this.audio) return false;
+    this._playRequest += 1;
     this.audio.pause();
     this.playing = false;
     this.sync(false);
@@ -127,6 +134,10 @@ const ESCIE_UI_PLAYER = {
   hide() {
     this.pause();
     if (this.ui && this.ui.dock) this.ui.dock.hidden = true;
+  },
+
+  next(source = {}) {
+    return this.load(source);
   },
 
   sync(isPlaying = this.playing) {
