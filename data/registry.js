@@ -13,10 +13,10 @@
         : (value&&typeof value==="object" ? Object.values(value) : []));
     const runtime=window.ESCIE_RELEASE_RUNTIME||{};
     if(name==="ESCIE_MUSIC"&&Array.isArray(runtime.music)){
-      records=records.concat(runtime.music);
+      records=Array.from(new Map(records.concat(runtime.music).filter(record=>record&&record.id).map(record=>[record.id,record])).values());
     }
     if(name==="ESCIE_RELATIONSHIPS"&&Array.isArray(runtime.relationships)){
-      records=records.concat(runtime.relationships);
+      records=Array.from(new Map(records.concat(runtime.relationships).filter(record=>record&&record.id).map(record=>[record.id,record])).values());
     }
     if(name==="ESCIE_PROJECTS"&&runtime.projectStructures&&typeof runtime.projectStructures==="object"){
       records=records.map(project=>{
