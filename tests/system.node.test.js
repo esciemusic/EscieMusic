@@ -199,3 +199,26 @@ assert(orphanProvenanceAudit.ok === false, "orphan provenance source must fail a
 assert(orphanProvenanceAudit.missing.length === 1, "missing provenance source must be reported");
 
 console.log("ESCIE provenance contracts OK");
+
+
+const history = require("../core/history.js");
+const createdHistory = history.createHistoryEntry({
+  id: "history-provenance-test",
+  recordId: "provenance-record",
+  event: history.EVENTS.CREATED,
+  actor: "test",
+  sourceIds: ["provenance-source"]
+});
+assert(history.validateHistoryEntry(createdHistory, [registeredSource], []).valid, "valid history entry should pass");
+const appendedHistory = history.appendHistory(createdHistory, { sources: [registeredSource] });
+assert(appendedHistory.valid === true, "valid history entry should append");
+const duplicateHistory = history.appendHistory(createdHistory, { sources: [registeredSource] });
+assert(duplicateHistory.valid === false, "duplicate history id must be rejected");
+const invalidHistory = history.createHistoryEntry({
+  id: "history-missing-source",
+  recordId: "provenance-record",
+  event: history.EVENTS.UPDATED,
+  sourceIds: ["missing-source"]
+});
+assert(history.validateHistoryEntry(invalidHistory, [registeredSource], []).valid === false, "history must reject unknown sources");
+assert(history.get("provenance-record").length === 1, "history lookup should return appended record history");
