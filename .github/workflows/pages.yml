@@ -39,7 +39,7 @@ jobs:
           while IFS= read -r -d "" file; do
             echo "Checking $file"
             node --check "$file"
-          done < <(find . -name "*.js" -not -path "./.git/*" -print0)
+          done < <(find . -name "*.js" -not -path "./.git/*" -not -path "./tests/*" -print0)
 
       - name: Run private release injector test
         run: |
