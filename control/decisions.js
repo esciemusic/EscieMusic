@@ -24,13 +24,40 @@ function createDecision(input = {}) {
     actor: input.actor || "ESCIE",
     timestamp: input.timestamp || new Date().toISOString(),
     outcome: input.outcome || null,
-    reviewAt: input.reviewAt || null
+    reviewAt: input.reviewAt || null,
+    sourceIds: Array.isArray(input.sourceIds) ? [...input.sourceIds] : [],
+    historyEntryId: input.historyEntryId || null
   };
 }
 
 function recordDecision(input = {}) {
   const decision = createDecision(input);
   ESCIE_DECISIONS.push(decision);
+
+  const history =
+    typeof window !== "undefined" ? window.ESCIE_HISTORY_API : null;
+
+  if (history && typeof history.append === "function") {
+    const result = history.append({
+      id: input.historyEntryId || ("history-decision-" + decision.id),
+      event: "decision_recorded",
+      recordId: decision.affectedRecords[0] || null,
+      actor: decision.actor,
+      next: decision.outcome,
+      reason: decision.reason,
+      sourceIds: decision.sourceIds,
+      metadata: {
+        decisionId: decision.id,
+        proposalId: decision.proposalId,
+        action: decision.action
+      }
+    });
+
+    if (result && result.valid !== false && result.entry) {
+      decision.historyEntryId = result.entry.id;
+    }
+  }
+
   return decision;
 }
 
