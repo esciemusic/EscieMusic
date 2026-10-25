@@ -25,6 +25,11 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
+      - name: Inject transmitted release layer
+        env:
+          ESCIE_RELEASE_QUEUE_JSON: ${{ secrets.ESCIE_RELEASE_QUEUE_JSON }}
+        run: node publishing/inject-release.js
+
       - name: Validate JavaScript contracts
         run: |
           find . -name "*.js" -not -path "./.git/*" -print0 | xargs -0 -n1 node --check
