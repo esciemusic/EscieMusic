@@ -76,10 +76,14 @@
     return normalizeCollection(getGlobal("ESCIE_SYMBOLS", []));
   }
 
-  function symbolFor(sectionId) {
-    return getSymbols().find(symbol =>
+  function symbolsForSection(sectionId) {
+    return getSymbols().filter(symbol =>
       symbol && Array.isArray(symbol.placements) && symbol.placements.includes(sectionId)
-    ) || null;
+    );
+  }
+
+  function symbolFor(sectionId) {
+    return symbolsForSection(sectionId)[0] || null;
   }
 
   function symbolGlyph(name) {
@@ -88,11 +92,32 @@
   }
 
   function motifMarkup(sectionId) {
-    const symbol = symbolFor(sectionId);
-    if (!symbol) return "";
-    return '<div class="section-motif" aria-label="Recurring motif: ' + escapeHTML(symbol.name) + '" title="' + escapeHTML(symbol.name) + '">' +
-      '<span class="section-motif-glyph" aria-hidden="true">' + escapeHTML(symbolGlyph(symbol.name)) + '</span>' +
-      '<span class="section-motif-name">' + escapeHTML(symbol.name) + '</span></div>';
+    const symbols = symbolsForSection(sectionId);
+    if (!symbols.length) return "";
+    return '<div class="section-motif" aria-label="Recurring motifs: ' + escapeHTML(symbols.map(symbol => symbol.name).join(", ")) + '">' +
+      symbols.map(symbol =>
+        '<button class="section-motif-item" type="button" data-symbol-id="' + escapeHTML(symbol.id) + '" title="' + escapeHTML(symbol.motif || symbol.name) + '">' +
+          '<span class="section-motif-glyph" aria-hidden="true">' + escapeHTML(symbolGlyph(symbol.name)) + '</span>' +
+          '<span class="section-motif-name">' + escapeHTML(symbol.name) + '</span>' +
+        '</button>'
+      ).join("") +
+      '</div>';
+  }
+
+  function getRecordSymbols(record) {
+    if (!record || !Array.isArray(record.symbols)) return [];
+    const symbols = getSymbols();
+    return record.symbols
+      .map(id => symbols.find(symbol => symbol && symbol.id === id))
+      .filter(Boolean);
+  }
+
+  function symbolTrail(symbolId) {
+    const symbol = getSymbols().find(item => item && item.id === symbolId);
+    if (!symbol) return [];
+    return getAllPublicRecords().filter(record =>
+      Array.isArray(record.symbols) && record.symbols.includes(symbolId)
+    );
   }
 
   function getRuntimeState() {
@@ -588,6 +613,7 @@
     const reality = record.reality || record.reality_level || record.knowledge || "UNSPECIFIED";
     const status = record.status || "unknown";
     const description = record.description || "No public description has been established.";
+    const symbols = getRecordSymbols(record);
     const relationships = normalizeCollection(getRelationships());
     const relatedIds = relationships
       .filter(r => r && (r.from === recordId(record) || r.to === recordId(record)))
@@ -603,6 +629,9 @@
       '<dl class="record-facts"><div><dt>REALITY</dt><dd>' + escapeHTML(reality) + '</dd></div>' +
       '<div><dt>STATUS</dt><dd>' + escapeHTML(status) + '</dd></div>' +
       '<div><dt>ID</dt><dd>' + escapeHTML(recordId(record)) + '</dd></div></dl>' +
+      (symbols.length ? '<div class="record-symbols"><p class="eyebrow">RECURRING MOTIFS</p>' +
+        symbols.map(symbol => '<button class="record-symbol-link" type="button" data-symbol-id="' + escapeHTML(symbol.id) + '">' +
+          escapeHTML(symbol.name) + '<span>' + escapeHTML(symbol.motif || "") + '</span></button>').join("") + '</div>' : '') +
       (related.length ? '<div class="record-related"><p class="eyebrow">CONNECTED RECORDS</p>' +
         related.map(item => '<button class="record-related-link" type="button" data-record-id="' + escapeHTML(recordId(item)) + '">' +
           escapeHTML(recordTitle(item)) + '</button>').join('') + '</div>' : '');
