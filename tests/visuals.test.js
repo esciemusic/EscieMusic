@@ -7,8 +7,12 @@
  function run(){
   const items=window.ESCIE_VISUALS;
   const normalize=window.normalizeEscieVisuals;
+  const normalizeAsset=window.normalizeEscieVisualAsset;
+  const audit=window.auditEscieVisuals;
   assert(Array.isArray(items),"visual registry must be an array");
   assert(typeof normalize==="function","visual normalizer must exist");
+  assert(typeof normalizeAsset==="function","visual asset normalizer must exist");
+  assert(typeof audit==="function","visual audit must exist");
   assert(window.ESCIE_VISUALS_UI&&typeof window.ESCIE_VISUALS_UI.init==="function","visual UI must exist");
   assert(typeof window.ESCIE_VISUALS_UI.renderAsset==="function","visual asset renderer must exist");
   const video=window.ESCIE_VISUALS_UI.renderAsset({type:"video",url:"https://example.com/visual.mp4",poster:"https://example.com/poster.jpg"});
@@ -17,12 +21,13 @@
   assert(window.ESCIE_VISUALS_UI.renderAsset({type:"video",url:"javascript:alert(1)"})==="","unsafe visual URLs must fail closed");
   assert(window.ESCIE_VISUALS_UI.renderAsset({type:"iframe",url:"https://evil.example/visual"})==="","untrusted iframe hosts must fail closed");
   assert(window.ESCIE_VISUALS_UI.renderAsset({type:"iframe",url:"https://www.youtube.com/embed/example"})!=="","allowlisted iframe hosts must render");
-  const normalizedAsset=window.normalizeEscieVisualAsset&&window.normalizeEscieVisualAsset({url:"https://example.com/a.webp",type:"image",alt:"test"});
+  const normalizedAsset=normalizeAsset({url:"https://example.com/a.webp",type:"image",alt:"test"});
   assert(normalizedAsset&&normalizedAsset.type==="image","visual asset normalizer must accept valid assets");
-  assert(window.normalizeEscieVisualAsset({url:"javascript:alert(1)",type:"image"})!==null,"data normalizer may preserve URL for presentation-layer validation");
-  assert(window.normalizeEscieVisualAsset({url:"https://example.com/a.webp",type:"unknown"})===null,"visual asset normalizer must reject unknown types");
-  const audit=window.auditEscieVisuals&&window.auditEscieVisuals(items);
-  assert(audit&&audit.ok===true,"visual registry audit must pass");
+  assert(normalizeAsset({url:"javascript:alert(1)",type:"image"})!==null,"data normalizer should preserve candidate URLs for presentation-layer validation");
+  assert(normalizeAsset({url:"https://example.com/a.webp",type:"unknown"})===null,"visual asset normalizer must reject unknown types");
+  assert(audit(items).ok===true,"visual registry audit must pass");
+  const malformed=[{id:"bad",section:"now",mode:"x",intensity:.5,status:"active",asset:{type:"image"}}];
+  assert(audit(malformed).invalidAssets.includes("bad"),"visual audit must identify malformed assets");
   const normalized=normalize(items);
   assert(normalized.length===7,"all seven public sections should have a visual");
   assert(new Set(normalized.map(v=>v.id)).size===normalized.length,"visual IDs must be unique");
