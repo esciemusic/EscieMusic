@@ -77,6 +77,11 @@ const ESCIE_UI_PLAYER = {
     const url = typeof source.url === "string" ? source.url.trim() : "";
     if (!url) return null;
 
+    const mediaAPI = typeof window !== "undefined" ? window.ESCIE_MEDIA : null;
+    if (mediaAPI && typeof mediaAPI.safeURL === "function" && !mediaAPI.safeURL(url)) {
+      return null;
+    }
+
     this.current = {
       id: source.id || null,
       title: source.title || null,
