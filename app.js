@@ -1456,8 +1456,11 @@
       handleFocusTrap(event);
     });
 
-    window.addEventListener("resize", function () {
-      if (window.innerWidth > 900 && state.open) closeMenu(false);
+    document.addEventListener("pointerdown", function (event) {
+      if (!state.open) return;
+      const target = event.target;
+      if (target instanceof Node && (nav.contains(target) || button.contains(target))) return;
+      closeMenu(false);
     });
 
     window.addEventListener("hashchange", function () {
