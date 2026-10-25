@@ -387,7 +387,7 @@
         '<h3>' + escapeHTML(recordTitle(project)) + "</h3>" +
         (project.description ? "<p>" + escapeHTML(project.description) + "</p>" : "") +
         (project.questions ? '<div class="project-questions">' + project.questions.map(q => '<span>' + escapeHTML(q) + '</span>').join("") + '</div>' : "") +
-        (structure.length ? '<div class="bam-structure">' + structure.map(part => '<div class="bam-part"><span>' + escapeHTML(part.number) + '</span><strong>' + escapeHTML(part.title) + '</strong><em>' + escapeHTML(part.role) + '</em></div>').join("") + '</div>' : "") +
+        (structure.length ? '<div class="bam-structure">' + structure.map(part => '<button class="bam-part record-card" type="button" data-record-id="' + escapeHTML(part.trackId || "") + '"><span>' + escapeHTML(part.number) + '</span><strong>' + escapeHTML(part.title) + '</strong><em>' + escapeHTML(part.role) + '</em></button>').join("") + '</div>' : "") +
       "</article>";
     }).join("");
   }
