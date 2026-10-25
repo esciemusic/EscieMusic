@@ -180,12 +180,20 @@ const ESCIE_UI_PLAYER = {
 
   show() {
     if (!this.ui) this.mount();
-    if (this.ui && this.ui.dock) this.ui.dock.hidden = false;
+    if (this.ui && this.ui.dock) {
+      this.ui.dock.hidden = false;
+      if (typeof document !== "undefined" && document.body) {
+        document.body.classList.add("player-visible");
+      }
+    }
   },
 
   hide() {
     this.pause();
     if (this.ui && this.ui.dock) this.ui.dock.hidden = true;
+    if (typeof document !== "undefined" && document.body) {
+      document.body.classList.remove("player-visible");
+    }
   },
 
   setQueue(items = [], options = {}) {
