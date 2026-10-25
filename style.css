@@ -3551,3 +3551,209 @@ body.player-visible{padding-bottom:clamp(88px,12vh,124px)}
     transform:none!important;
   }
 }
+
+
+/* =========================================================
+   ORGANIC VISUAL REFINEMENT
+   Images should feel discovered inside the signal, not placed
+   on top of it. Movement stays slow, uneven and subordinate.
+   ========================================================= */
+
+.section-visual[data-visual-section]{
+  overflow:hidden;
+  isolation:isolate;
+}
+
+.section-visual[data-visual-section]::before{
+  background:
+    radial-gradient(
+      ellipse at 50% 45%,
+      rgba(150,165,178,.045),
+      transparent 58%
+    );
+  opacity:.62;
+  transform:translate3d(var(--pointer-x,0),var(--pointer-y,0),0);
+  transition:opacity 1200ms ease,transform 1800ms var(--slow);
+}
+
+.section-visual[data-visual-section]::after{
+  background:
+    linear-gradient(108deg,transparent 0%,rgba(255,255,255,.018) 47%,transparent 74%),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 7px,
+      rgba(255,255,255,.018) 8px
+    );
+  opacity:.48;
+  mix-blend-mode:screen;
+}
+
+.section-visual[data-visual-section] .section-visual-album{
+  width:min(46%,520px);
+  aspect-ratio:4 / 5;
+  border-radius:18% 7% 14% 5% / 8% 16% 6% 14%;
+  opacity:0;
+  filter:
+    grayscale(.18)
+    contrast(.80)
+    saturate(.62)
+    brightness(1.04)
+    blur(.05px);
+  mix-blend-mode:screen;
+  clip-path:polygon(
+    4% 8%, 19% 3%, 42% 7%, 67% 2%, 94% 10%,
+    97% 31%, 93% 54%, 98% 79%, 83% 96%,
+    58% 92%, 35% 98%, 9% 91%, 3% 67%, 7% 39%
+  );
+  transform:
+    translate3d(
+      calc(-2% + var(--pointer-x,0)),
+      calc(1% + var(--pointer-y,0)),
+      0
+    )
+    scale(1.045)
+    rotate(-.45deg);
+  box-shadow:
+    0 0 100px rgba(0,0,0,.44),
+    0 0 42px rgba(79,134,173,.055);
+  transition:
+    opacity 1200ms ease,
+    transform 1800ms var(--slow),
+    filter 1400ms ease;
+  animation:escie-project-drift 17s ease-in-out infinite alternate;
+}
+
+.section-visual[data-visual-section] .section-visual-album.is-ready{
+  opacity:.18;
+  transform:
+    translate3d(
+      var(--pointer-x,0),
+      var(--pointer-y,0),
+      0
+    )
+    scale(1)
+    rotate(.12deg);
+}
+
+.section-visual[data-visual-section].visual-active .section-visual-album.is-ready,
+.section-visual[data-visual-section].visitor-present .section-visual-album.is-ready{
+  opacity:.29;
+  filter:
+    grayscale(.08)
+    contrast(.87)
+    saturate(.78)
+    brightness(1.08);
+}
+
+.section-visual[data-visual-section].visitor-present .section-visual-album.is-ready{
+  animation-duration:12s;
+}
+
+.section-visual-work .section-visual-album{
+  inset:7% 7% auto auto;
+}
+
+.section-visual-now .section-visual-album,
+.section-visual-glass-eye .section-visual-album{
+  inset:12% 9% auto auto;
+  width:min(37%,410px);
+}
+
+.section-visual-web .section-visual-album{
+  inset:18% auto auto 6%;
+  transform:
+    translate3d(var(--pointer-x,0),var(--pointer-y,0),0)
+    scale(1.02)
+    rotate(.7deg);
+}
+
+.section-visual-archive .section-visual-album,
+.section-visual-investigation .section-visual-album{
+  inset:auto 8% 9% auto;
+  transform:
+    translate3d(var(--pointer-x,0),var(--pointer-y,0),0)
+    scale(1.02)
+    rotate(-.8deg);
+}
+
+.section-visual-escie .section-visual-album{
+  inset:50% auto auto 50%;
+  width:min(48%,560px);
+  transform:
+    translate3d(
+      calc(-50% + var(--pointer-x,0)),
+      calc(-50% + var(--pointer-y,0)),
+      0
+    )
+    scale(1.02)
+    rotate(.15deg);
+}
+
+@keyframes escie-project-drift{
+  0%{
+    filter:
+      grayscale(.18)
+      contrast(.80)
+      saturate(.62)
+      brightness(1.04);
+  }
+  46%{
+    filter:
+      grayscale(.14)
+      contrast(.83)
+      saturate(.68)
+      brightness(1.07);
+  }
+  100%{
+    filter:
+      grayscale(.10)
+      contrast(.86)
+      saturate(.74)
+      brightness(1.05);
+  }
+}
+
+.section-visual[data-visual-section].visitor-present::before{
+  opacity:.78;
+}
+
+.section-visual[data-visual-section].visitor-present::after{
+  opacity:.68;
+}
+
+@media(max-width:700px){
+  .section-visual[data-visual-section] .section-visual-album{
+    width:min(62%,340px);
+    border-radius:14% 5% 11% 4% / 7% 13% 5% 12%;
+    opacity:0;
+    animation-duration:19s;
+  }
+
+  .section-visual[data-visual-section] .section-visual-album.is-ready{
+    opacity:.14;
+  }
+
+  .section-visual[data-visual-section].visual-active .section-visual-album.is-ready,
+  .section-visual[data-visual-section].visitor-present .section-visual-album.is-ready{
+    opacity:.23;
+  }
+
+  .section-visual-web .section-visual-album{
+    inset:22% auto auto 3%;
+  }
+
+  .section-visual-escie .section-visual-album{
+    width:min(62%,360px);
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .section-visual[data-visual-section]::before,
+  .section-visual[data-visual-section]::after,
+  .section-visual[data-visual-section] .section-visual-album{
+    animation:none!important;
+    transition:none!important;
+    transform:none!important;
+  }
+}
