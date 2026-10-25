@@ -75,7 +75,7 @@
         direction:r.from===id?"out":"in",
         record:r.from===id?r.to:r.from
       }))
-      .filter(item=>current.byId[item.record]);
+      .filter(item=>current.byId[item.record] && releaseVisible(current.byId[item.record]));
     return {
       record:current.byId[id]||null,
       connections:connected,
@@ -125,6 +125,22 @@
     return true;
   }
   function currentMusic(){ return collection("ESCIE_MUSIC"); }
+
+  function releaseAudit(){
+    const current=build();
+    const errors=[];
+    current.records.forEach(record=>{
+      if(record.type!=="project"||record.release_mode!=="progressive") return;
+      const tracks=currentMusic().filter(track=>track&&track.project===record.id);
+      if(!tracks.length) errors.push({record:record.id,error:"progressive project has no release-controlled tracks"});
+      tracks.forEach(track=>{
+        if(!["locked","released"].includes(track.release_status)){
+          errors.push({record:track.id,error:"release_status must be locked or released"});
+        }
+      });
+    });
+    return {ok:errors.length===0,errors};
+  }
 
   function publicRelationships(filters){
     const current=build();
@@ -251,5 +267,5 @@
     });
     return {ok:missing.length===0,missing};
   }
-  window.ESCIE_RECORD_REGISTRY={version:"1.8.0",build,records:()=>build().records,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,manifestFor,filter,contextFor,publicRelationships,relationshipTypes,relationshipCategories,relationshipsFor,relationshipCounts,releaseVisible};
+  window.ESCIE_RECORD_REGISTRY={version:"1.8.0",build,records:()=>build().records,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,releaseAudit,manifestFor,filter,contextFor,publicRelationships,relationshipTypes,relationshipCategories,relationshipsFor,relationshipCounts,releaseVisible};
 })();
