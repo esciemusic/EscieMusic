@@ -18,8 +18,11 @@ const ESCIE_SEARCH_INDEX = {
     const registry =
       typeof window !== "undefined" ? window.ESCIE_RECORD_REGISTRY : null;
 
-    if (registry && typeof registry.releaseVisible === "function" &&
-        !registry.releaseVisible(record)) {
+    if (registry && typeof registry.releaseVisible === "function") {
+      if (!registry.releaseVisible(record)) return null;
+    } else if (record.release_status && record.release_status !== "released") {
+      return null;
+    } else if (record.type === "project" && record.release_mode === "progressive") {
       return null;
     }
 
