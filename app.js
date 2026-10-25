@@ -746,7 +746,23 @@
       '</section>';
     document.body.appendChild(modal);
 
+    document.addEventListener("change", event => {
+      const control=event.target.closest("[data-work-filter]");
+      if(!control)return;
+      ESCIE_RUNTIME.workFilters=ESCIE_RUNTIME.workFilters||{};
+      ESCIE_RUNTIME.workFilters[control.getAttribute("data-work-filter")]=control.value||"";
+      renderWorkFilters(); renderMusic(); renderProjects();
+    });
+
     document.addEventListener("click", event => {
+      const clearFilters=event.target.closest(".record-filter-clear");
+      if(clearFilters){
+        ESCIE_RUNTIME.workFilters={};
+        renderWorkFilters(); renderMusic(); renderProjects();
+        return;
+      }
+
+
       const close = event.target.closest("[data-inspector-close]");
       if (close) {
         modal.hidden = true;
