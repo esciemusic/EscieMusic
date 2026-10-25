@@ -64,6 +64,38 @@
     return getGlobal("ESCIE_PEOPLE", []);
   }
 
+  function getRuntimeState() {
+    return getGlobal("ESCIE_STATE", {});
+  }
+
+  function getEvents() {
+    return getGlobal("ESCIE_EVENTS", null);
+  }
+
+  function getShell() {
+    return getGlobal("ESCIE_UI_SHELL", null);
+  }
+
+  function getRouter() {
+    return getGlobal("ESCIE_UI_ROUTER", null);
+  }
+
+  function getSearchIndex() {
+    return getGlobal("ESCIE_SEARCH_INDEX", null);
+  }
+
+  function getPublishBuild() {
+    return getGlobal("ESCIE_PUBLISH_BUILD", null);
+  }
+
+  function getPublishValidate() {
+    return getGlobal("ESCIE_PUBLISH_VALIDATE", null);
+  }
+
+  function getSignalEngine() {
+    return getGlobal("ESCIE_SIGNAL_ENGINE", null);
+  }
+
   function normalizeCollection(value) {
     if (Array.isArray(value)) return value;
     if (value && Array.isArray(value.records)) return value.records;
@@ -129,8 +161,11 @@
     if (!container) return;
 
     const site = getSite();
+    const signalEngine = getSignalEngine();
     const signals = normalizeCollection(getSignals());
-    const active = signals.find(signal =>
+    const activeSignal = signalEngine && signalEngine.current &&
+      signalEngine.current.active ? signalEngine.current : null;
+    const active = activeSignal || signals.find(signal =>
       signal && signal.active === true
     );
 
@@ -259,6 +294,119 @@
     }
   }
 
+  function buildSearchIndex() {
+    const index = getSearchIndex();
+    if (!index || typeof index.build !== "function") return [];
+
+    const records = [
+      ...normalizeCollection(getMusic()),
+      ...normalizeCollection(getProjects()),
+      ...normalizeCollection(getArchive()),
+      ...normalizeCollection(getInvestigation()),
+      ...normalizeCollection(getPeople())
+    ].filter(record => record && (record.id || record.recordId));
+
+    return index.build(records);
+  }
+
+  function validatePublicBuild() {
+    const build = getPublishBuild();
+    const validate = getPublishValidate();
+
+    if (!build || !validate ||
+        typeof build.createBuildPlan !== "function" ||
+        typeof validate.validateBuild !== "function") {
+      return null;
+    }
+
+    const records = [
+      ...normalizeCollection(getMusic()),
+      ...normalizeCollection(getProjects()),
+      ...normalizeCollection(getArchive()),
+      ...normalizeCollection(getInvestigation())
+    ];
+
+    const plan = build.createBuildPlan({
+      environment: "runtime",
+      records,
+      routes: getNavigation(),
+      assets: []
+    });
+
+    return validate.validateBuild(plan);
+  }
+
+  function initializeSystemContracts() {
+    const state = getRuntimeState();
+    if (state) {
+      state.status = "readying";
+      state.initializedAt = state.initializedAt || new Date().toISOString();
+    }
+
+    const shell = getShell();
+    if (shell && typeof shell.mount === "function") {
+      shell.mount("#top");
+    }
+
+    const router = getRouter();
+    const navigation = normalizeCollection(getNavigation());
+
+    if (router && typeof router.register === "function") {
+      navigation.forEach(item => {
+        const target = item && (item.target || item.href);
+        if (!target || typeof target !== "string") return;
+
+        const route = target.charAt(0) === "#"
+          ? target.slice(1)
+          : target;
+
+        router.register(route, () => {
+          if (state) state.route = route;
+          if (shell && typeof shell.setState === "function") {
+            shell.setState(state || { route });
+          }
+        });
+      });
+    }
+
+    buildSearchIndex();
+    validatePublicBuild();
+
+    const events = getEvents();
+    if (events && typeof events.on === "function") {
+      events.on("signal:emitted", signal => {
+        if (state) {
+          state.activeSignalId = signal && signal.sourceId || null;
+          state.transmissionLevel = signal && signal.level || 0;
+        }
+        renderNow();
+      });
+
+      events.on("signal:cleared", () => {
+        if (state) {
+          state.activeSignalId = null;
+          state.transmissionLevel = 0;
+        }
+        renderNow();
+      });
+    }
+  }
+
+  function bindNavigationRuntime() {
+    const router = getRouter();
+    if (!router) return;
+
+    const navigate = () => {
+      const route = window.location.hash.replace(/^#/, "") || "entry";
+      if (typeof router.navigate === "function" && router.resolve(route)) {
+        router.navigate(route);
+      }
+    };
+
+    window.addEventListener("hashchange", navigate);
+    navigate();
+  }
+
   function updateTimeState() {
     const hour = new Date().getHours();
     let state = "night";
@@ -306,8 +454,20 @@
     if (ESCIE_RUNTIME.initialized) return ESCIE_RUNTIME;
 
     ESCIE_RUNTIME.initialized = true;
+    initializeSystemContracts();
     render();
     setupMobileMenu();
+    bindNavigationRuntime();
+
+    const state = getRuntimeState();
+    if (state) {
+      state.status = "ready";
+    }
+
+    const shell = getShell();
+    if (shell && typeof shell.setState === "function") {
+      shell.setState(state || { status: "ready" });
+    }
 
     ESCIE_RUNTIME.ready = true;
     window.dispatchEvent(new CustomEvent("escie:ready", {
