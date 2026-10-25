@@ -2915,3 +2915,132 @@ body[data-route="escie"] .section-visual-escie::after{
     transition:none!important;
   }
 }
+
+
+/* =========================================================
+   INDEX DROPDOWN / GENERATED ATLAS RESTORATION
+   Keep the index as a compact doorway into the same environment.
+   The generated atlas remains behind the section visuals.
+   ========================================================= */
+
+/* Repair the atlas block's stray legacy declaration without changing
+   its visual system. */
+.section-visual[data-visual-section]{
+  background-image:
+    radial-gradient(ellipse at 50% 52%,rgba(150,190,220,.075) 0%,rgba(80,120,150,.035) 28%,transparent 64%),
+    radial-gradient(ellipse at 50% 50%,rgba(242,242,237,.035) 0%,transparent 58%);
+}
+
+/* Bring the generated imagery back into the room: visible, translucent,
+   blended and still subordinate to the interface. */
+.section-visual[data-visual-section]::before{
+  opacity:calc(.23 + (var(--visual-intensity,.7) * .16));
+  filter:grayscale(.20) contrast(.86) saturate(.68) brightness(1.04);
+  mix-blend-mode:screen;
+}
+.section-visual[data-visual-section].visual-active::before{
+  opacity:calc(.31 + (var(--visual-intensity,.7) * .18));
+  filter:grayscale(.13) contrast(.90) saturate(.76) brightness(1.09);
+}
+.section-visual[data-visual-section]:not(.visual-active)::before{
+  opacity:calc(.18 + (var(--visual-intensity,.7) * .12));
+}
+
+/* The menu opens from the INDEX control rather than covering the entire
+   screen. This keeps the control reachable and makes the navigation feel
+   like an actual drop-down/index panel. */
+.index-navigation,
+.index-navigation.is-open,
+.site-header:has(.index-navigation.is-open) .index-navigation,
+body.menu-open .index-navigation.is-open{
+  top:calc(var(--header-height) + 10px);
+  right:22px;
+  left:auto;
+  bottom:auto;
+  width:min(430px,calc(100vw - 44px));
+  max-height:calc(100vh - var(--header-height) - 28px);
+  min-height:0;
+  height:auto;
+  padding:18px 16px 20px;
+  align-items:stretch;
+  justify-content:flex-start;
+  gap:8px;
+  overflow-y:auto;
+  border:1px solid rgba(79,134,173,.24);
+  border-radius:3px;
+  background:
+    linear-gradient(180deg,rgba(7,9,12,.97),rgba(2,3,5,.94));
+  box-shadow:
+    0 22px 70px rgba(0,0,0,.62),
+    inset 0 1px 0 rgba(242,242,237,.045),
+    0 0 34px rgba(79,134,173,.055);
+  transform:translateY(-8px);
+  transition:
+    opacity 260ms var(--slow),
+    transform 360ms var(--slow),
+    visibility 260ms;
+}
+
+.index-navigation.is-open,
+.site-header:has(.index-navigation.is-open) .index-navigation,
+body.menu-open .index-navigation.is-open{
+  transform:translateY(0);
+}
+
+.index-navigation a{
+  width:100%;
+  min-height:52px;
+  flex:0 0 auto;
+  padding:12px 13px;
+  border:1px solid transparent;
+  border-bottom-color:rgba(242,242,237,.07);
+  border-radius:2px;
+  background:rgba(242,242,237,.018);
+  font-size:clamp(16px,2.1vw,23px);
+  line-height:1.15;
+  letter-spacing:.07em;
+}
+
+.index-navigation a:hover,
+.index-navigation a:focus-visible{
+  background:rgba(79,134,173,.07);
+  border-color:rgba(79,134,173,.22);
+}
+
+.index-navigation a .node-link-symbol{
+  flex:0 0 30px;
+}
+
+/* The INDEX control must remain above the open panel. */
+.index-trigger{
+  position:relative;
+  z-index:203;
+}
+
+@media(max-width:700px){
+  .index-navigation,
+  .index-navigation.is-open,
+  .site-header:has(.index-navigation.is-open) .index-navigation,
+  body.menu-open .index-navigation.is-open{
+    top:calc(var(--header-height) + 8px);
+    right:10px;
+    width:calc(100vw - 20px);
+    max-height:calc(100vh - var(--header-height) - 18px);
+    padding:14px 12px 16px;
+  }
+  .index-navigation a{
+    min-height:50px;
+    padding:11px 10px;
+    font-size:clamp(16px,6vw,25px);
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .index-navigation,
+  .index-navigation.is-open,
+  .site-header:has(.index-navigation.is-open) .index-navigation,
+  body.menu-open .index-navigation.is-open{
+    transition:none;
+    transform:none;
+  }
+}
