@@ -62,6 +62,8 @@
     const releaseAudit = registry.releaseAudit();
     assert(releaseAudit && releaseAudit.ok === true, "progressive release configuration must pass audit");
     assert(registry.manifestFor(secondTrack.id).sections.work === false, "locked BAM track must not appear in Work manifest");
+    const contractLocked = registry.contractAudit();
+    assert(contractLocked.ok === true, "canonical release metadata must satisfy the record contract");
 
     const projectContext = registry.contextFor("bam-by-any-means");
     assert(projectContext.children.length === 1 && projectContext.children[0].record === "bam-001-dallas-63", "locked BAM tracks must stay out of public record context");
