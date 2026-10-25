@@ -405,6 +405,8 @@
       });
     }, { threshold: 0.18, rootMargin: "0px 0px -8% 0px" });
     visuals.forEach(el => observer.observe(el));
+    const visualUI = getGlobal("ESCIE_VISUALS_UI", null);
+    if (visualUI && typeof visualUI.init === "function") visualUI.init();
   }
 
   function renderNow() {
