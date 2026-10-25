@@ -117,6 +117,7 @@
       ]),
 
       CREATIVE: Object.freeze([
+        "created",
         "created_by",
         "contributed_to",
         "inspired_by",
@@ -142,7 +143,8 @@
         "performed_at",
         "occurred_at",
         "depicts",
-        "references"
+        "references",
+        "anchored_in"
       ]),
 
       TIME_EVENT: Object.freeze([
@@ -196,7 +198,8 @@
       contains: "part_of",
       part_of: "contains",
 
-      created_by: "created_by",
+      created: "created_by",
+      created_by: "created",
       contributed_to: "contributed_to",
 
       inspired_by: "inspires",
@@ -235,6 +238,8 @@
       depicts: "depicted_by",
 
       references: "referenced_by",
+      anchored_in: "anchor_for",
+      anchor_for: "anchored_in",
 
       occurred_during: "contains_event",
 
