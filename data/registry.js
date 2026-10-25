@@ -116,6 +116,16 @@
     return {ok:hard.length===0,errors:hard,warnings};
   }
 
+  function releaseVisible(record){
+    if(!record) return false;
+    if(record.release_status==="locked") return false;
+    if(record.type==="project"&&record.release_mode==="progressive"){
+      return currentMusic().some(track=>track&&track.project===record.id&&track.release_status!=="locked");
+    }
+    return true;
+  }
+  function currentMusic(){ return collection("ESCIE_MUSIC"); }
+
   function publicRelationships(filters){
     const current=build();
     const relationships=collection("ESCIE_RELATIONSHIPS");
@@ -124,6 +134,7 @@
       if(!rel||rel.public_disclosure!==true) return false;
       if(rel.visibility&&["private","withheld"].includes(String(rel.visibility).toLowerCase())) return false;
       if(!rel.from||!rel.to||!current.byId[rel.from]||!current.byId[rel.to]) return false;
+      if(!releaseVisible(current.byId[rel.from])||!releaseVisible(current.byId[rel.to])) return false;
       if(f.type&&String(rel.type||"").toLowerCase()!==String(f.type).toLowerCase()) return false;
       if(f.category&&typeof window!=="undefined"&&window.ESCIE_RELATIONSHIP&&typeof window.ESCIE_RELATIONSHIP.getCategory==="function"){
         if(window.ESCIE_RELATIONSHIP.getCategory(rel.type)!==f.category) return false;
@@ -176,9 +187,10 @@
       return /image|photo|video|film|vhs|jpg|jpeg|png|webp|gif|mp4|mov/i.test([item.type,item.kind,item.mime,item.url,item.src].filter(Boolean).join(" "));
     });
     const sections={work,web:hasPublicConnection,archive,investigation,glassEye};
-    const search=record.search!==false;
+    const released=releaseVisible(record);
+    const search=record.search!==false&&released;
     return {
-      id, work, archive, investigation, glassEye, search,
+      id, work, archive, investigation, glassEye, search, released,
       sections,
       appearsIn:Object.keys(sections).filter(section=>sections[section])
     };
@@ -239,5 +251,5 @@
     });
     return {ok:missing.length===0,missing};
   }
-  window.ESCIE_RECORD_REGISTRY={version:"1.7.0",build,records:()=>build().records,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,manifestFor,filter,contextFor,publicRelationships,relationshipTypes,relationshipCategories,relationshipsFor,relationshipCounts};
+  window.ESCIE_RECORD_REGISTRY={version:"1.8.0",build,records:()=>build().records,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,manifestFor,filter,contextFor,publicRelationships,relationshipTypes,relationshipCategories,relationshipsFor,relationshipCounts,releaseVisible};
 })();
