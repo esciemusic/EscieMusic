@@ -1358,3 +1358,16 @@ body[data-time="night"] .sky {
   line-height: 1.8;
   text-transform: uppercase;
 }
+
+.web-connection {
+  padding: 22px 0;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.web-connection:last-child {
+  border-bottom: 1px solid var(--line);
+}
