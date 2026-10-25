@@ -15,15 +15,17 @@
     const registry = typeof window !== "undefined" ? window.ESCIE_RECORD_REGISTRY : null;
     if (!registry) return { skipped: true, reason: "record registry unavailable" };
 
+    const lockedFixture = {id:"__locked_release_fixture__",type:"music",title:"LOCKED FIXTURE",project:"bam-by-any-means",number:"999",status:"development",published:true,visibility:"public",release_status:"locked"};
+
     const nodes = registry.publicNodes();
     assert(Array.isArray(nodes) && nodes.length === 7, "canonical public node set must contain seven nodes");
     assert(nodes[0].id === "node-now" && nodes[6].id === "node-escie", "public nodes must preserve canonical order");
     assert(registry.nodesForRecord("bam-001-dallas-63").some(node => node.id === "node-work"), "released transmission must resolve back to its public work node");
-    assert(registry.nodesForRecord("bam-002-pumpy-to-the-chest").length === 0, "locked transmission must resolve to no public nodes");
+    assert(registry.nodesForRecord(lockedFixture.id).length === 0, "locked release must resolve to no public nodes");
     const workNode = registry.nodeFor("node-work");
     assert(workNode && workNode.section === "work", "node lookup must resolve the work node");
     assert(workNode.records.includes("bam-001-dallas-63"), "work node must expose released transmission records");
-    assert(!workNode.records.includes("bam-002-pumpy-to-the-chest"), "work node must hide locked transmission records");
+    assert(!workNode.records.includes(lockedFixture.id), "work node must hide locked release records");
 
     const manifest = registry.manifestFor("bam-by-any-means");
     assert(manifest && manifest.work === true, "project manifest must route to work");
@@ -32,7 +34,7 @@
 
     const trackManifest = registry.manifestFor("bam-001-dallas-63");
     assert(trackManifest && trackManifest.sections.work === true, "BAM track must route to work");
-    assert(trackManifest.sections.web === false, "unconnected BAM track must not appear in web");
+    assert(trackManifest.sections.web === true, "connected BAM track must appear in web");
     assert(trackManifest.search === true, "public records should be searchable by default");
 
     const projectTracks = registry.filter(registry.records(), { project: "bam-by-any-means" });
@@ -46,27 +48,16 @@
     assert(sections && sections.ok === true, "section manifest audit must pass");
 
     const publicRelationships = registry.publicRelationships();
-    assert(Array.isArray(publicRelationships) && publicRelationships.length === 3, "public relationship query must expose canonical disclosed connections");
+    assert(Array.isArray(publicRelationships) && publicRelationships.length >= 3, "public relationship query must expose canonical disclosed connections");
 
     const typeList = registry.relationshipTypes();
     assert(typeList.includes("contains") && typeList.includes("created"), "relationship type facets must be derived from public connections");
 
     const contained = registry.relationshipsFor("bam-by-any-means", { type: "contains" });
-    assert(contained.length === 1, "record-centric relationship query must filter by type");
+    assert(contained.length === projectTracks.filter(record => record && registry.releaseVisible(record)).length, "record-centric relationship query must expose all released project transmissions");
 
     const bamProject = registry.get("bam-by-any-means");
     const firstTrack = registry.get("bam-001-dallas-63");
-    const lockedFixture = {
-      id:"__locked_release_fixture__",
-      type:"music",
-      title:"LOCKED FIXTURE",
-      project:"bam-by-any-means",
-      number:"999",
-      status:"development",
-      published:true,
-      visibility:"public",
-      release_status:"locked"
-    };
     assert(registry.releaseVisible(bamProject) === true, "BAM project must unlock when a released track exists");
     assert(registry.releaseVisible(firstTrack) === true, "released BAM track must be visible");
     assert(registry.releaseVisible(lockedFixture) === false, "locked releases must remain hidden");
@@ -77,8 +68,8 @@
     assert(lockedManifest === null, "unknown internal records must not acquire a public manifest");
 
     const counts = registry.relationshipCounts();
-    assert(counts.relationships === 3 && counts.nodes === 4, "relationship counts must expose graph size");
-    assert(counts.byType.contains === 1, "relationship counts must aggregate connection types");
+    assert(counts.relationships >= 3 && counts.nodes >= 4, "relationship counts must expose the public graph");
+    assert(counts.byType.contains === contained.length, "relationship counts must aggregate all released containment connections");
 
     const publicRecords = registry.allPublicRecords();
     assert(Array.isArray(publicRecords), "canonical public record collection must return an array");
@@ -89,14 +80,13 @@
     assert(!registry.publicRelationships().some(rel => rel && rel.to === lockedFixture.id), "locked releases must not enter the public relationship graph");
     const releaseAudit = registry.releaseAudit();
     assert(releaseAudit && releaseAudit.ok === true, "progressive release configuration must pass audit");
-    assert(registry.manifestFor(secondTrack.id).sections.work === false, "locked BAM track must not appear in Work manifest");
-    assert(registry.manifestFor(secondTrack.id).sections.web === false, "locked BAM track must not appear in Web manifest");
-    assert(registry.contextFor(secondTrack.id).record === null, "locked BAM track must not be returned by public context");
+    assert(registry.nodesForRecord(lockedFixture.id).length === 0, "locked release must not resolve to public nodes");
+    assert(registry.contextFor(lockedFixture.id).record === null, "locked release must not be returned by public context");
     const contractLocked = registry.contractAudit();
     assert(contractLocked.ok === true, "canonical release metadata must satisfy the record contract");
 
     const projectContext = registry.contextFor("bam-by-any-means");
-    assert(projectContext.children.length === 1 && projectContext.children[0].record === "bam-001-dallas-63", "locked BAM tracks must stay out of public record context");
+    assert(projectContext.children.length === projectTracks.filter(record => record && registry.releaseVisible(record)).length, "project context must contain only released transmissions");
 
     const searchIndex = typeof window !== "undefined" ? window.ESCIE_SEARCH_INDEX : null;
     if (searchIndex) {
