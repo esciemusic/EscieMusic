@@ -396,11 +396,28 @@
       "</div>";
   }
 
+  function getFilteredWorkRecords(){
+    const registry=getGlobal("ESCIE_RECORD_REGISTRY",null);
+    const all=getAllPublicRecords();
+    const work=all.filter(record=>{const manifest=registry&&registry.manifestFor?registry.manifestFor(recordId(record)):null;return manifest?manifest.work:["project","music","body"].includes(record.type);});
+    return registry&&registry.filter?registry.filter(work,ESCIE_RUNTIME.workFilters||{}):work;
+  }
+
+  function renderWorkFilters(){
+    const container=byId("work-filters"); if(!container)return;
+    const work=getFilteredWorkRecords(), f=ESCIE_RUNTIME.workFilters||{};
+    const vals=k=>Array.from(new Set(work.map(r=>r&&r[k]).filter(Boolean))).sort();
+    const options=(a,v,l)=>`<option value="">${escapeHTML(l)}</option>`+a.map(x=>`<option value="${escapeHTML(x)}"${v===x?" selected":""}>${escapeHTML(x)}</option>`).join("");
+    const loc=Array.from(new Set(work.flatMap(r=>Array.isArray(r.locations)?r.locations:[]))).sort();
+    const sym=Array.from(new Set(work.flatMap(r=>Array.isArray(r.symbols)?r.symbols:[]))).sort();
+    container.innerHTML=`<div class="record-filters-heading"><span>DISCOVER BY METADATA</span><button type="button" class="record-filter-clear">CLEAR</button></div><div class="record-filter-grid"><label>TYPE<select data-work-filter="type">${options(vals("type"),f.type,"ALL TYPES")}</select></label><label>STATUS<select data-work-filter="status">${options(vals("status"),f.status,"ALL STATUS")}</select></label><label>REALITY<select data-work-filter="reality">${options(vals("reality"),f.reality,"ALL REALITY")}</select></label><label>PROJECT<select data-work-filter="project">${options(vals("project"),f.project,"ALL PROJECTS")}</select></label>${loc.length?`<label>LOCATION<select data-work-filter="location">${options(loc,f.location,"ALL LOCATIONS")}</select></label>`:""}${sym.length?`<label>MOTIF<select data-work-filter="symbol">${options(sym,f.symbol,"ALL MOTIFS")}</select></label>`:""}</div><p class="record-filter-count">${work.length} PUBLIC WORK RECORD${work.length===1?"":"S"}</p>`;
+  }
+
   function renderMusic() {
     const container = byId("music-container");
     if (!container) return;
 
-    const music = normalizeCollection(getMusic());
+    const music = getFilteredWorkRecords().filter(record => record.type === "music");
     const visible = music.filter(isPublic);
 
     if (!visible.length) {
@@ -426,7 +443,7 @@
     const container = byId("bam-container");
     if (!container) return;
 
-    const projects = normalizeCollection(getProjects());
+    const projects = getFilteredWorkRecords().filter(record => record.type === "project");
     const visible = projects.filter(isPublic);
 
     if (!visible.length) {
@@ -614,7 +631,8 @@
       ? {
           relationships: registry.relationshipAudit(),
           symbols: typeof registry.symbolAudit === "function" ? registry.symbolAudit() : null,
-          contract: typeof registry.contractAudit === "function" ? registry.contractAudit() : null
+          contract: typeof registry.contractAudit === "function" ? registry.contractAudit() : null,
+          references: typeof registry.referenceAudit === "function" ? registry.referenceAudit() : null
         }
       : null;
   }
@@ -1017,6 +1035,7 @@
   function render() {
     renderEntry();
     renderNavigation();
+    renderWorkFilters();
     renderNow();
     renderMusic();
     renderProjects();
