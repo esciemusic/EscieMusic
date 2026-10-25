@@ -2272,12 +2272,12 @@ body.inspector-open{overflow:hidden}
   .section-visual-escie::before{background-size:100% auto}
 }
 @media(prefers-reduced-motion:reduce){
+  .section-visual[data-visual-section],
   .section-visual[data-visual-section]::before,
   .section-visual[data-visual-section]::after{animation:none!important;transition:none!important}
 }
 
-/* =========================================================
-   ACTIVE VISUAL PERFORMANCE
+
    The section nearest the viewer carries the motion.
    Inactive visuals remain present but breathe more slowly.
    ========================================================= */
