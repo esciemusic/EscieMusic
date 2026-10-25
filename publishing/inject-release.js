@@ -34,8 +34,23 @@ released.forEach(track=>{
 });
 released.sort((a,b)=>String(a.number||"").localeCompare(String(b.number||""),undefined,{numeric:true}));
 const projectStructures={};
+const projects=[];
 released.forEach(track=>{
   if(!projectStructures[track.project]) projectStructures[track.project]=[];
+  if(!projects.some(project=>project.id===track.project)){
+    projects.push({
+      id:track.project,
+      artist:"ESCIE",
+      title:track.project==="bam-by-any-means"?"BAM: BY ANY MEANS":track.project,
+      type:"project",
+      status:"active",
+      published:true,
+      release_mode:"progressive",
+      visibility:"public",
+      description:track.project==="bam-by-any-means"?"ESCIE's debut project — first transmission, investigation, evidence, event, and doorway.":"",
+      structure:[]
+    });
+  }
   projectStructures[track.project].push({number:track.number,title:track.title,role:track.role,trackId:track.id});
 });
 const relationships=released.map(track=>({
