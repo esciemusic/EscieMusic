@@ -1041,12 +1041,15 @@
 
       const player = window.ESCIE_UI_PLAYER;
       if (record.type === "music" && player && typeof player.load === "function") {
-        const media = Array.isArray(record.media) ? record.media : [];
+        const mediaAPI = getGlobal("ESCIE_MEDIA", null);
+        const media = mediaAPI && typeof mediaAPI.normalizeAll === "function"
+          ? mediaAPI.normalizeAll(Array.isArray(record.media) ? record.media : [])
+          : (Array.isArray(record.media) ? record.media : []);
         const audio = media.find(item => {
           const type = item && String(item.type || item.kind || "").toLowerCase();
-          return type === "audio";
+          return type === "audio" && item.url;
         });
-        if (audio && audio.url) {
+        if (audio) {
           player.load({
             id: recordId(record),
             title: recordTitle(record),
