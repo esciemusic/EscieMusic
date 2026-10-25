@@ -296,8 +296,20 @@
     );
   }
 
-  function isPublic(record) {
+  function isReleaseVisible(record) {
     if (!record) return false;
+    if (record.release_status === "locked") return false;
+    if (record.type === "project" && record.release_mode === "progressive") {
+      const tracks = normalizeCollection(getMusic());
+      return tracks.some(track =>
+        track && track.project === record.id && track.release_status !== "locked"
+      );
+    }
+    return true;
+  }
+
+  function isPublic(record) {
+    if (!record || !isReleaseVisible(record)) return false;
     if (record.visibility && record.visibility !== "PUBLIC" &&
         record.visibility !== "public") return false;
     if (record.visibility === "PRIVATE" || record.visibility === "private") return false;
@@ -1291,6 +1303,7 @@
   ESCIE_RUNTIME.filterRecords = function(filters){ const registry=getGlobal("ESCIE_RECORD_REGISTRY",null); return registry&&registry.filter ? registry.filter(getAllPublicRecords(),filters||{}) : getAllPublicRecords(); };
   ESCIE_RUNTIME.manifestFor = function(id){ const registry=getGlobal("ESCIE_RECORD_REGISTRY",null); return registry&&registry.manifestFor ? registry.manifestFor(id) : null; };
   ESCIE_RUNTIME.referenceAudit = function(){ const registry=getGlobal("ESCIE_RECORD_REGISTRY",null); return registry&&registry.referenceAudit ? registry.referenceAudit() : null; };
+  ESCIE_RUNTIME.isReleaseVisible = isReleaseVisible;
   ESCIE_RUNTIME.publicRelationships = function(filters){ const registry=getGlobal("ESCIE_RECORD_REGISTRY",null); return registry&&registry.publicRelationships ? registry.publicRelationships(filters||{}) : getPublicRelationshipRecords(filters||{}); };
   ESCIE_RUNTIME.relationshipsFor = function(id,filters){ const registry=getGlobal("ESCIE_RECORD_REGISTRY",null); return registry&&registry.relationshipsFor ? registry.relationshipsFor(id,filters||{}) : getPublicRelationshipRecords(Object.assign({},filters||{},{record:id})); };
   ESCIE_RUNTIME.relationshipCounts = function(filters){ const registry=getGlobal("ESCIE_RECORD_REGISTRY",null); return registry&&registry.relationshipCounts ? registry.relationshipCounts(filters||{}) : null; };
