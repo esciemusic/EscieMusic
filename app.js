@@ -255,7 +255,8 @@
     if (record.visibility === "PRIVATE" || record.visibility === "private") return false;
     if (record.visibility === "WITHHELD" || record.visibility === "withheld") return false;
     if (record.visibility === "LIMITED" || record.visibility === "limited") return false;
-    return isPublished(record);
+    const site = getSite();
+    return isPublished(record) || (site.publicPreview === true && record.status === "active");
   }
 
   function recordId(record) {
@@ -378,14 +379,17 @@
       return;
     }
 
-    container.innerHTML = visible.map(project =>
-      '<article class="bam-project" data-record-type="body" data-record-id="' +
-      escapeHTML(recordId(project)) + '"' + narrationAttributes(project) + '>' +
+    container.innerHTML = visible.map(project => {
+      const structure = Array.isArray(project.structure) ? project.structure : [];
+      return '<article class="bam-project" data-record-type="body" data-record-id="' +
+        escapeHTML(recordId(project)) + '"' + narrationAttributes(project) + '>' +
         '<p class="eyebrow">' + escapeHTML(project.type || "BODY") + "</p>" +
         '<h3>' + escapeHTML(recordTitle(project)) + "</h3>" +
         (project.description ? "<p>" + escapeHTML(project.description) + "</p>" : "") +
-      "</article>"
-    ).join("");
+        (project.questions ? '<div class="project-questions">' + project.questions.map(q => '<span>' + escapeHTML(q) + '</span>').join("") + '</div>' : "") +
+        (structure.length ? '<div class="bam-structure">' + structure.map(part => '<div class="bam-part"><span>' + escapeHTML(part.number) + '</span><strong>' + escapeHTML(part.title) + '</strong><em>' + escapeHTML(part.role) + '</em></div>').join("") + '</div>' : "") +
+      "</article>";
+    }).join("");
   }
 
   function renderWeb() {
