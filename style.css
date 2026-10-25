@@ -2344,3 +2344,33 @@ body.inspector-open{overflow:hidden}
 @media(prefers-reduced-motion:reduce){
   .escie-player{transition:none}
 }
+
+
+/* Transmission navigation controls */
+.escie-player-step{
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  cursor:pointer;
+  font-size:7px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  transition:color 180ms ease,opacity 180ms ease;
+}
+.escie-player-step:hover:not(:disabled),
+.escie-player-step:focus-visible:not(:disabled){color:var(--white)}
+.escie-player-step:disabled{cursor:default;opacity:.24}
+.escie-player-time{
+  display:block;
+  margin-top:3px;
+  color:var(--faint);
+  font-size:7px;
+  letter-spacing:.12em;
+  font-variant-numeric:tabular-nums;
+}
+@media(max-width:700px){
+  .escie-player-step{font-size:6px;letter-spacing:.12em}
+}
+@media(prefers-reduced-motion:reduce){
+  .escie-player-step{transition:none}
+}
