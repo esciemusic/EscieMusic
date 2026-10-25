@@ -8,6 +8,14 @@
 function isPublicRecord(record = {}) {
   if (!record) return false;
 
+  const registry =
+    typeof window !== "undefined" ? window.ESCIE_RECORD_REGISTRY : null;
+
+  if (registry && typeof registry.releaseVisible === "function" &&
+      !registry.releaseVisible(record)) {
+    return false;
+  }
+
   const published =
     record.published === true ||
     record.status === "published";
