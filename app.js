@@ -1431,6 +1431,13 @@
   ESCIE_RUNTIME.getAllRecords = getAllRecords;
   ESCIE_RUNTIME.getAllPublicRecords = getAllPublicRecords;
   ESCIE_RUNTIME.registryAudit = registryAudit;
+  ESCIE_RUNTIME.visualAudit = function () {
+    const audit = getGlobal("auditEscieVisuals", null);
+    const items = getGlobal("ESCIE_VISUALS", []);
+    return typeof audit === "function"
+      ? audit(items)
+      : { ok: false, reason: "visual audit unavailable" };
+  };
   ESCIE_RUNTIME.filterRecords = function(filters){ const registry=getGlobal("ESCIE_RECORD_REGISTRY",null); return registry&&registry.filter ? registry.filter(getAllPublicRecords(),filters||{}) : getAllPublicRecords(); };
   ESCIE_RUNTIME.manifestFor = function(id){ const registry=getGlobal("ESCIE_RECORD_REGISTRY",null); return registry&&registry.manifestFor ? registry.manifestFor(id) : null; };
   ESCIE_RUNTIME.referenceAudit = function(){ const registry=getGlobal("ESCIE_RECORD_REGISTRY",null); return registry&&registry.referenceAudit ? registry.referenceAudit() : null; };
