@@ -58,4 +58,7 @@
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",init,{once:true});
   else init();
 })();
-if(typeof window!=="undefined") window.ESCIE_IDLE_SIGNAL={states:["SIGNAL // STANDBY","GLASS EYE // OPEN","ARCHIVE // QUIET","TRANSMISSION // PENDING"]};
+if(typeof window!=="undefined") window.ESCIE_IDLE_SIGNAL={
+  states:STATES.slice(),
+  hasPublicTransmission
+};
