@@ -201,7 +201,6 @@ assert(orphanProvenanceAudit.missing.length === 1, "missing provenance source mu
 console.log("ESCIE provenance contracts OK");
 
 
-const history = require("../core/history.js");
 const createdHistory = history.createHistoryEntry({
   id: "history-provenance-test",
   recordId: "provenance-record",
