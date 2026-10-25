@@ -31,6 +31,9 @@
     assert(audit && Array.isArray(audit.errors), "reference audit must expose errors");
     assert(audit.ok === true, "relationship reference structure must be valid");
 
+    const sections = registry.sectionAudit();
+    assert(sections && sections.ok === true, "section manifest audit must pass");
+
     return { passed: true };
   }
 
