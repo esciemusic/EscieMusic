@@ -30,7 +30,7 @@ released.forEach(track=>{
   if(track.published!==true) fail("released track must be published: "+track.id);
   if(track.visibility!=="public") fail("released track must be public: "+track.id);
   if(track.status&& !["development","active","published","archived","silence"].includes(String(track.status).toLowerCase())) fail("invalid status: "+track.id);
-  if(track.project!=="bam-by-any-means") fail("unsupported project: "+String(track.project||""));
+  if(!track.project) fail("released track requires a project: "+track.id);
 });
 released.sort((a,b)=>String(a.number||"").localeCompare(String(b.number||""),undefined,{numeric:true}));
 const projectStructures={};
@@ -40,14 +40,14 @@ released.forEach(track=>{
   if(!projects.some(project=>project.id===track.project)){
     projects.push({
       id:track.project,
-      artist:"ESCIE",
-      title:track.project==="bam-by-any-means"?"BAM: BY ANY MEANS":track.project,
+      artist:track.artist||"ESCIE",
+      title:track.project_title||track.project,
       type:"project",
       status:"active",
       published:true,
       release_mode:"progressive",
       visibility:"public",
-      description:track.project==="bam-by-any-means"?"ESCIE's debut project — first transmission, investigation, evidence, event, and doorway.":"",
+      description:track.project_description||"",
       structure:[]
     });
   }
