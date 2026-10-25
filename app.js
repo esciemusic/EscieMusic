@@ -830,6 +830,22 @@
   };
   ESCIE_RUNTIME.player = window.ESCIE_UI_PLAYER || null;
   ESCIE_RUNTIME.transmission = window.ESCIE_TRANSMISSION || null;
+  ESCIE_RUNTIME.health = function () {
+    const health = window.ESCIE_HEALTH;
+    if (!health || typeof health.check !== "function") {
+      return { ok: false, checkedAt: new Date().toISOString(), checks: [], failed: ["ESCIE_HEALTH"] };
+    }
+
+    return health.check([
+      "ESCIE_RECORD",
+      "ESCIE_RELATIONSHIP",
+      "ESCIE_STATE",
+      "ESCIE_EVENTS",
+      "ESCIE_PUBLISH_BUILD",
+      "ESCIE_PUBLISH_VALIDATE",
+      "ESCIE_SEARCH_INDEX"
+    ]);
+  };
   ESCIE_RUNTIME.render = render;
   ESCIE_RUNTIME.initialize = initialize;
 
