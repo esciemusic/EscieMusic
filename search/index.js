@@ -62,9 +62,16 @@ const ESCIE_SEARCH_INDEX = {
   build(records = []) {
     this.clear();
 
-    if (!Array.isArray(records)) return this.entries;
+    const registry =
+      typeof window !== "undefined" ? window.ESCIE_RECORD_REGISTRY : null;
+    const source =
+      registry && typeof registry.allPublicRecords === "function"
+        ? registry.allPublicRecords()
+        : records;
 
-    records.forEach((record) => this.add(record));
+    if (!Array.isArray(source)) return this.entries;
+
+    source.forEach((record) => this.add(record));
     return this.entries;
   }
 };
