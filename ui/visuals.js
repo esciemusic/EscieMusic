@@ -175,6 +175,5 @@
  }
 
  window.ESCIE_VISUALS_UI={init,renderAsset,chooseVisualFocus};
+ if(typeof module!=="undefined"&&module.exports)module.exports={chooseVisualFocus};
 })();
-
-if(typeof module!=="undefined"&&module.exports)module.exports={chooseVisualFocus};
