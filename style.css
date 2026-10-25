@@ -1924,3 +1924,23 @@ body.inspector-open{overflow:hidden}
   .escie-media-video,
   .escie-media-embed { aspect-ratio: 16 / 10; }
 }
+
+
+.escie-media-image {
+  display: block;
+  overflow: hidden;
+  background: #050505;
+}
+
+.escie-media-image img {
+  width: 100%;
+  height: auto;
+  max-height: 78vh;
+  display: block;
+  object-fit: contain;
+  filter: saturate(.72) contrast(.98);
+}
+
+.escie-media-image img:hover {
+  filter: saturate(.88) contrast(1);
+}
