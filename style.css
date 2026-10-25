@@ -2363,6 +2363,15 @@ body.inspector-open{overflow:hidden}
 .section-visual.visual-visible::before{opacity:calc(.20 + (var(--visual-intensity,.7) * .13))}
 .section-visual:hover::before{opacity:calc(.24 + (var(--visual-intensity,.7) * .14));filter:grayscale(.18) contrast(.88) saturate(.82)}
 
+/* Active visuals keep their section-specific movement while adding a restrained signal flicker. */
+.section-visual-now.visual-active::before{animation-name:escie-atlas-drift,escie-visual-night,escie-atlas-flicker;animation-duration:13s,22s,7s;animation-timing-function:var(--slow),ease-in-out,steps(1,end);animation-iteration-count:infinite,infinite,infinite;animation-direction:alternate,alternate,normal}
+.section-visual-work.visual-active::before{animation-name:escie-atlas-drift,escie-visual-vhs,escie-atlas-flicker;animation-duration:13s,19s,7s;animation-timing-function:var(--slow),ease-in-out,steps(1,end);animation-iteration-count:infinite,infinite,infinite;animation-direction:alternate,alternate,normal}
+.section-visual-web.visual-active::before{animation-name:escie-atlas-drift,escie-visual-network,escie-atlas-flicker;animation-duration:13s,24s,7s;animation-timing-function:var(--slow),ease-in-out,steps(1,end);animation-iteration-count:infinite,infinite,infinite;animation-direction:alternate,alternate,normal}
+.section-visual-archive.visual-active::before{animation-name:escie-atlas-drift,escie-visual-archive,escie-atlas-flicker;animation-duration:13s,21s,7s;animation-timing-function:var(--slow),ease-in-out,steps(1,end);animation-iteration-count:infinite,infinite,infinite;animation-direction:alternate,alternate,normal}
+.section-visual-investigation.visual-active::before{animation-name:escie-atlas-drift,escie-visual-investigation,escie-atlas-flicker;animation-duration:13s,17s,7s;animation-timing-function:var(--slow),ease-in-out,steps(1,end);animation-iteration-count:infinite,infinite,infinite;animation-direction:alternate,alternate,normal}
+.section-visual-glass.visual-active::before{animation-name:escie-atlas-drift,escie-visual-glass,escie-atlas-flicker;animation-duration:13s,20s,7s;animation-timing-function:var(--slow),ease-in-out,steps(1,end);animation-iteration-count:infinite,infinite,infinite;animation-direction:alternate,alternate,normal}
+.section-visual-escie.visual-active::before{animation-name:escie-atlas-drift,escie-visual-presence,escie-atlas-flicker;animation-duration:13s,26s,7s;animation-timing-function:var(--slow),ease-in-out,steps(1,end);animation-iteration-count:infinite,infinite,infinite;animation-direction:alternate,alternate,normal}
+
 .section-visual-media{
   mix-blend-mode:screen;
   opacity:calc(var(--visual-intensity,.7) * .30);
