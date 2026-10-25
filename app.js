@@ -480,6 +480,7 @@
         '<div class="music-card-content"><h3>' + escapeHTML(recordTitle(track)) + "</h3>" +
         (track.role ? "<p>" + escapeHTML(track.role) + "</p>" : "") +
         (parentRecord ? '<p class="music-card-section">PART OF / ' + escapeHTML(recordTitle(parentRecord)) + '</p>' : '') +
+        (window.ESCIE_MEDIA && Array.isArray(track.media) ? window.ESCIE_MEDIA.renderAll(track.media) : "") +
         "</div></article>";
     }).join("");
   }
@@ -806,7 +807,6 @@
     const media = Array.isArray(record.media) ? record.media : [];
     const evidence = Array.isArray(record.evidence) ? record.evidence : [];
     const derivedContext = recordContext(record);
-    const registry = getGlobal("ESCIE_RECORD_REGISTRY", null);
     const publicNodes = registry && typeof registry.nodesForRecord === "function"
       ? registry.nodesForRecord(recordId(record))
       : [];
@@ -841,6 +841,7 @@
         (record.certainty ? '<p><strong>CERTAINTY</strong> ' + escapeHTML(record.certainty) + '</p>' : '') +
         (record.knowledge ? '<p><strong>KNOWLEDGE</strong> ' + escapeHTML(record.knowledge) + '</p>' : '') +
         '</div>' : '') +
+      (window.ESCIE_MEDIA && media.length ? window.ESCIE_MEDIA.renderAll(media) : "") +
       (symbols.length ? '<div class="record-symbols"><p class="eyebrow">RECURRING MOTIFS</p>' +
         symbols.map(symbol => '<button class="record-symbol-link" type="button" data-symbol-id="' + escapeHTML(symbol.id) + '">' +
           escapeHTML(symbol.name) + '<span>' + escapeHTML(symbol.motif || "") + '</span></button>').join("") + '</div>' : '') +
