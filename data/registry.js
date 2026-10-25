@@ -350,5 +350,5 @@ function allPublicRecords(){
     });
     return {ok:missing.length===0,missing};
   }
-  window.ESCIE_RECORD_REGISTRY={version:"1.16.0",build,records:()=>build().records,publicNodes,nodeFor,nodesForRecord,allPublicRecords,publicRecord,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,releaseAudit,manifestFor,filter,contextFor,publicRelationships,relationshipTypes,relationshipCategories,relationshipsFor,relationshipCounts,releaseVisible};
+  window.ESCIE_RECORD_REGISTRY={version:"1.17.0",build,records:()=>build().records,publicNodes,nodeFor,nodesForRecord,allPublicRecords,publicRecord,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,releaseAudit,manifestFor,filter,contextFor,publicRelationships,relationshipTypes,relationshipCategories,relationshipsFor,relationshipCounts,releaseVisible};
 })();
