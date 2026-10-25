@@ -694,6 +694,18 @@
     ).join("");
   }
 
+  function socialIconMarkup(platform) {
+    const icons = {
+      instagram: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"></rect><circle cx="12" cy="12" r="4.1"></circle><circle cx="17.4" cy="6.7" r="1.05" class="social-icon-fill"></circle></svg>',
+      youtube: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.3 7.1a2.7 2.7 0 0 0-1.9-1.9C17.7 4.7 12 4.7 12 4.7s-5.7 0-7.4.5a2.7 2.7 0 0 0-1.9 1.9C2.2 8.8 2.2 12 2.2 12s0 3.2.5 4.9a2.7 2.7 0 0 0 1.9 1.9c1.7.5 7.4.5 7.4.5s5.7 0 7.4-.5a2.7 2.7 0 0 0 1.9-1.9c.5-1.7.5-4.9.5-4.9s0-3.2-.5-4.9Z"></path><path class="social-icon-cut" d="m10 9 5.2 3-5.2 3Z"></path></svg>',
+      spotify: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2"></circle><path class="social-icon-cut" d="M7 9.5c3.3-1 7.2-.7 10.1.7M7.6 12.4c2.8-.7 6.1-.5 8.7.7M8.5 15.1c2.2-.5 4.7-.3 6.7.5"></path></svg>',
+      tiktok: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.2 4.1v10.2a4.7 4.7 0 1 1-3.4-4.5v3.1a1.8 1.8 0 1 0 1.8 1.7V4.1h3.2c.3 1.6 1.3 2.8 2.8 3.4v3a7 7 0 0 1-4.4-2.2v5.9a4.9 4.9 0 1 1-4.9-4.9c.6 0 1.2.1 1.7.3V4.1h3.2Z"></path></svg>',
+      facebook: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.7 20v-7h2.4l.4-2.8h-2.8V8.4c0-.8.3-1.4 1.5-1.4h1.5V4.5c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2H8.3V13h2.5v7Z"></path></svg>',
+      x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.2h3.5l3.2 4.3 3.7-4.3h3.1l-5.4 6.1 6 7.5h-3.5l-3.8-4.9-4.2 4.9H4.5l5.9-6.7Z"></path></svg>'
+    };
+    return icons[String(platform || "").toLowerCase()] || '<span aria-hidden="true">↗</span>';
+  }
+
   function renderFooterSocial() {
     const container = byId("footer-social");
     if (!container) return;
@@ -703,8 +715,10 @@
       : normalizeCollection(getGlobal("ESCIE_SOCIAL", [])).filter(item => item && item.url && /^https?:\/\//i.test(String(item.url)));
     container.innerHTML = social.length
       ? '<span class="footer-social-label">EXTERNAL SIGNAL</span>' + social.map(item =>
-          '<a class="footer-social-link" href="' + escapeHTML(item.url) + '" target="_blank" rel="noopener noreferrer">' +
-          escapeHTML(item.label || item.platform || "SIGNAL") + '</a>'
+          '<a class="footer-social-link" href="' + escapeHTML(item.url) + '" target="_blank" rel="noopener noreferrer" aria-label="' + escapeHTML(item.label || item.platform || "SIGNAL") + '">' +
+          '<span class="social-icon" aria-hidden="true">' + socialIconMarkup(item.platform) + '</span>' +
+          '<span class="social-icon-label">' + escapeHTML(item.label || item.platform || "SIGNAL") + '</span>' +
+        '</a>'
         ).join("")
       : "";
   }
@@ -727,9 +741,10 @@
           '<p class="eyebrow">EXTERNAL SIGNAL</p>' +
           '<div class="about-social-list">' +
             social.map(item =>
-              '<a class="about-social-link" href="' + escapeHTML(item.url) + '" target="_blank" rel="noopener noreferrer">' +
+              '<a class="about-social-link" href="' + escapeHTML(item.url) + '" target="_blank" rel="noopener noreferrer" aria-label="' + escapeHTML(item.label || item.platform || "SOCIAL") + '">' +
+                '<span class="social-icon" aria-hidden="true">' + socialIconMarkup(item.platform) + '</span>' +
                 '<span>' + escapeHTML(item.label || item.platform || "SOCIAL") + '</span>' +
-                '<span aria-hidden="true">↗</span>' +
+                '<span class="social-icon-arrow" aria-hidden="true">↗</span>' +
               '</a>'
             ).join("") +
           '</div>' +
