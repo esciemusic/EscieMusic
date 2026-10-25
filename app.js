@@ -432,6 +432,21 @@
       }).join("");
   }
 
+  function renderInformationNodes() {
+    const container = byId("entry-nodes");
+    if (!container) return;
+    const nodes = getInformationNodes();
+    container.innerHTML = nodes.map((node, index) => {
+      const stats = informationNodeStats(node);
+      return '<a class="information-node" href="' + escapeHTML(node.target || "#") + '">' +
+        '<span class="information-node-index">' + escapeHTML(String(index + 1).padStart(2, "0")) + '</span>' +
+        '<span class="information-node-body"><strong>' + escapeHTML(node.label || node.id || "NODE") + '</strong>' +
+        '<small>' + escapeHTML(node.description || "") + '</small>' +
+        '<small class="information-node-stat">' + escapeHTML(String(stats.count)) + ' ' + escapeHTML(stats.label) + '</small></span>' +
+        '<span class="information-node-arrow" aria-hidden="true">↗</span></a>';
+    }).join("");
+  }
+
   function renderNow() {
     const container = byId("now-container");
     if (!container) return;
@@ -1305,6 +1320,7 @@
   function render() {
     renderEntry();
     renderNavigation();
+    renderInformationNodes();
     renderInformationNodes();
     renderWorkFilters();
     renderNow();
