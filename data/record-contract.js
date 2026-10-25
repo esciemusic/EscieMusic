@@ -3,10 +3,12 @@
  * Empty arrays are intentional: absence of data is not permission to invent it.
  */
 const ESCIE_RECORD_CONTRACT={
-  version:"1.1.0",
+  version:"1.2.0",
   realities:["REAL","MEMORY","DRAMATIZED","FICTIONALIZED","MYTH","HISTORICAL_REFERENCE"],
   visibilities:["public","private","withheld","limited"],
   statuses:["development","active","published","archived","silence"],
+  release_statuses:["locked","released"],
+  release_modes:["progressive"],
   fields:[
     "id","type","title","description","status","visibility","published",
     "reality","reality_level","certainty","knowledge",
@@ -65,6 +67,9 @@ function validateEscieRecord(record){
   if(!ESCIE_RECORD_CONTRACT.statuses.includes(String(record.status||"development").toLowerCase())) warnings.push("unknown status: "+record.status);
   const reality=record.reality||record.reality_level;
   if(reality && !ESCIE_RECORD_CONTRACT.realities.includes(String(reality).toUpperCase())) warnings.push("unknown reality: "+reality);
+  if(record.release_status && !ESCIE_RECORD_CONTRACT.release_statuses.includes(String(record.release_status).toLowerCase())) errors.push("unknown release_status: "+record.release_status);
+  if(record.release_mode && !ESCIE_RECORD_CONTRACT.release_modes.includes(String(record.release_mode).toLowerCase())) errors.push("unknown release_mode: "+record.release_mode);
+  if(String(record.release_mode||"").toLowerCase()==="progressive" && record.type!=="project") warnings.push("progressive release_mode is normally reserved for project records");
   ["people","locations","media","evidence","symbols","tags","relationships","related_content"].forEach(key=>{if(!Array.isArray(record[key])) errors.push(key+" must be an array");});
   return {ok:errors.length===0,errors,warnings};
 }
