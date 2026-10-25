@@ -1530,3 +1530,7 @@ body.inspector-open{overflow:hidden}
 }
 
 @media(prefers-reduced-motion:reduce){.now-state::after{animation:none}}
+
+.entry-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin-top:34px}
+.entry-actions a{display:inline-flex;align-items:center;min-height:42px;padding:0 18px;border:1px solid var(--line);color:var(--muted);font-size:8px;letter-spacing:.2em;text-transform:uppercase;transition:background 250ms ease,color 250ms ease,border-color 250ms ease}
+.entry-actions a:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.3);color:var(--white)}
