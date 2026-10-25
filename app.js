@@ -390,7 +390,8 @@
       ...normalizeCollection(getProjects()),
       ...normalizeCollection(getArchive()),
       ...normalizeCollection(getInvestigation()),
-      ...normalizeCollection(getPeople())
+      ...normalizeCollection(getPeople()),
+      ...normalizeCollection(getLocations())
     ].filter(record =>
       record &&
       (record.id || record.recordId) &&
