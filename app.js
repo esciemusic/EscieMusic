@@ -648,6 +648,23 @@
 
     const site = getSite();
     const about = getGlobal("ESCIE_ABOUT", {});
+    const social = normalizeCollection(getGlobal("ESCIE_SOCIAL", []))
+      .filter(item => item && item.url && /^https?:\\/\\//i.test(String(item.url)));
+
+    const socialMarkup = social.length
+      ? '<div class="about-social" aria-label="ESCIE social links">' +
+          '<p class="eyebrow">EXTERNAL SIGNAL</p>' +
+          '<div class="about-social-list">' +
+            social.map(item =>
+              '<a class="about-social-link" href="' + escapeHTML(item.url) + '" target="_blank" rel="noopener noreferrer">' +
+                '<span>' + escapeHTML(item.label || item.platform || "SOCIAL") + '</span>' +
+                '<span aria-hidden="true">↗</span>' +
+              '</a>'
+            ).join("") +
+          '</div>' +
+        '</div>'
+      : '';
+
     container.innerHTML =
       '<p class="about-lead">' + escapeHTML(
         about.description || "ESCIE is an interface to reality itself."
@@ -661,6 +678,7 @@
         ) + "</p>" +
         '<p><span>PRONUNCIATION</span>' + escapeHTML(about.pronunciation || site.pronunciation || "S.C.") + "</p>" +
       '</div>' +
+      socialMarkup +
       '<p class="about-location">' + escapeHTML(site.location || "Montréal, Canada") +
       " / " + escapeHTML(String(site.publicYear || new Date().getFullYear())) +
       " / " + escapeHTML(site.status || "development") + "</p>";
