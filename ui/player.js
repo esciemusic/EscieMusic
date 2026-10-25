@@ -100,6 +100,10 @@ const ESCIE_UI_PLAYER = {
       this.sync(false);
       if (this.autoAdvance) this.advance();
     });
+    this.audio.addEventListener("error", () => {
+      this.playing = false;
+      this.sync(false);
+    });
     this.audio.addEventListener("timeupdate", () => this.syncProgress());
     this.audio.addEventListener("loadedmetadata", () => this.syncProgress());
   },
@@ -253,11 +257,13 @@ const ESCIE_UI_PLAYER = {
       : "NO TRANSMISSION LOADED";
 
     this.ui.title.textContent = title;
-    this.ui.toggle.textContent = this.playing ? "PAUSE" : "PLAY";
+    this.ui.toggle.textContent = this.playing ? "PAUSE" : (this.current ? "PLAY" : "WAIT");
     this.ui.toggle.setAttribute("aria-label", this.playing ? "Pause" : "Play");
     this.ui.toggle.setAttribute("aria-pressed", String(this.playing));
+    this.ui.toggle.disabled = !this.current;
     this.ui.dock.classList.toggle("is-playing", this.playing);
     const hasQueue = this.queue.length > 0;
+    this.ui.dock.dataset.ready = String(!!(this.current && this.current.url));
     if (this.ui.previous) this.ui.previous.disabled = !hasQueue || this.queueIndex <= 0;
     if (this.ui.next) this.ui.next.disabled = !hasQueue || this.queueIndex >= this.queue.length - 1;
   },
@@ -267,7 +273,8 @@ const ESCIE_UI_PLAYER = {
       if (this.ui && this.ui.progress) this.ui.progress.value = "0";
       return;
     }
-    this.ui.progress.value = String(Math.round((this.audio.currentTime / this.audio.duration) * 1000));
+    const ratio = Math.max(0, Math.min(1, this.audio.currentTime / this.audio.duration));
+    this.ui.progress.value = String(Math.round(ratio * 1000));
     if (this.ui.time) {
       const format = seconds => {
         const total = Math.max(0, Math.floor(Number(seconds) || 0));
