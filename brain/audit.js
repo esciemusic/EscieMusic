@@ -332,6 +332,7 @@ if (typeof module !== "undefined" && module.exports) {
     addAuditEntry,
     resolveAuditEntry,
     auditRelationships,
-    auditHistory
+    auditHistory,
+    auditHistorySequence
   };
 }
