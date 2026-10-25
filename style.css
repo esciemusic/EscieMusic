@@ -2353,13 +2353,13 @@ body.inspector-open{overflow:hidden}
   will-change:opacity,transform;
 }
 .section-visual[data-visual-section] > :not(.section-visual-media){position:relative;z-index:1}
-.section-visual-now::before{background-position:center top;animation:escie-visual-night 22s ease-in-out infinite alternate}
-.section-visual-work::before{background-position:right top;animation:escie-visual-vhs 19s ease-in-out infinite alternate}
-.section-visual-web::before{background-position:left 34%;animation:escie-visual-network 24s ease-in-out infinite alternate}
-.section-visual-archive::before{background-position:right 34%;animation:escie-visual-archive 21s ease-in-out infinite alternate}
-.section-visual-investigation::before{background-position:left 68%;animation:escie-visual-investigation 17s ease-in-out infinite alternate}
-.section-visual-glass::before{background-position:right 68%;animation:escie-visual-glass 20s ease-in-out infinite alternate}
-.section-visual-escie::before{background-size:100% auto;background-position:center bottom;animation:escie-visual-presence 26s ease-in-out infinite alternate}
+.section-visual-now::before{background-position:center top;animation:escie-atlas-drift 22s var(--slow) infinite alternate,escie-visual-night 22s ease-in-out infinite alternate}
+.section-visual-work::before{background-position:right top;animation:escie-atlas-drift 19s var(--slow) infinite alternate,escie-visual-vhs 19s ease-in-out infinite alternate}
+.section-visual-web::before{background-position:left 34%;animation:escie-atlas-drift 24s var(--slow) infinite alternate,escie-visual-network 24s ease-in-out infinite alternate}
+.section-visual-archive::before{background-position:right 34%;animation:escie-atlas-drift 21s var(--slow) infinite alternate,escie-visual-archive 21s ease-in-out infinite alternate}
+.section-visual-investigation::before{background-position:left 68%;animation:escie-atlas-drift 17s var(--slow) infinite alternate,escie-visual-investigation 17s ease-in-out infinite alternate}
+.section-visual-glass::before{background-position:right 68%;animation:escie-atlas-drift 20s var(--slow) infinite alternate,escie-visual-glass 20s ease-in-out infinite alternate}
+.section-visual-escie::before{background-size:100% auto;background-position:center bottom;animation:escie-atlas-drift 26s var(--slow) infinite alternate,escie-visual-presence 26s ease-in-out infinite alternate}
 .section-visual.visual-visible::before{opacity:calc(.20 + (var(--visual-intensity,.7) * .13))}
 .section-visual:hover::before{opacity:calc(.24 + (var(--visual-intensity,.7) * .14));filter:grayscale(.18) contrast(.88) saturate(.82)}
 
@@ -3059,10 +3059,10 @@ body.menu-open .index-navigation.is-open{
    The atlas should feel filmed, not pasted onto the page.
    ========================================================= */
 @keyframes escie-atlas-drift{
-  0%{transform:scale(1.025) translate3d(-.4%,.25%,0);background-position:50% 50%}
-  35%{transform:scale(1.045) translate3d(.35%,-.3%,0);background-position:50.8% 49.2%}
-  70%{transform:scale(1.035) translate3d(-.25%,-.15%,0);background-position:49.2% 50.6%}
-  100%{transform:scale(1.025) translate3d(-.4%,.25%,0);background-position:50% 50%}
+  0%{transform:scale(1.025) translate3d(-.4%,.25%,0)}
+  35%{transform:scale(1.045) translate3d(.35%,-.3%,0)}
+  70%{transform:scale(1.035) translate3d(-.25%,-.15%,0)}
+  100%{transform:scale(1.025) translate3d(-.4%,.25%,0)}
 }
 @keyframes escie-atlas-flicker{
   0%,100%{opacity:1;filter:grayscale(.13) contrast(.90) saturate(.76) brightness(1.09)}
@@ -3070,16 +3070,14 @@ body.menu-open .index-navigation.is-open{
   52%{opacity:1;filter:grayscale(.10) contrast(.94) saturate(.82) brightness(1.14)}
 }
 .section-visual[data-visual-section]::before{
-  animation:escie-atlas-drift 18s var(--slow) infinite alternate;
   transform-origin:center center;
 }
-.section-visual[data-visual-section].visual-active::before{
-  animation:
-    escie-atlas-drift 13s var(--slow) infinite alternate,
-    escie-atlas-flicker 7s steps(1,end) infinite;
-}
 .section-visual[data-visual-section]:not(.visual-active)::before{
+  animation-name:escie-atlas-drift;
   animation-duration:24s;
+  animation-timing-function:var(--slow);
+  animation-iteration-count:infinite;
+  animation-direction:alternate;
 }
 .section-visual[data-visual-section]::after{
   animation:escie-visual-scan 9s linear infinite;
