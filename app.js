@@ -72,6 +72,29 @@
     return getGlobal("ESCIE_RELATIONSHIPS", []);
   }
 
+  function getSymbols() {
+    return normalizeCollection(getGlobal("ESCIE_SYMBOLS", []));
+  }
+
+  function symbolFor(sectionId) {
+    return getSymbols().find(symbol =>
+      symbol && Array.isArray(symbol.placements) && symbol.placements.includes(sectionId)
+    ) || null;
+  }
+
+  function symbolGlyph(name) {
+    const glyphs = {"CAMERA":"◎","DAISY":"✳","CHILD'S SHOE":"⌁","NIGHTLIGHT":"◌","KEY":"⌕","EMPTY CHAIR":"□","VHS":"▣"};
+    return glyphs[name] || "·";
+  }
+
+  function motifMarkup(sectionId) {
+    const symbol = symbolFor(sectionId);
+    if (!symbol) return "";
+    return '<div class="section-motif" aria-label="Recurring motif: ' + escapeHTML(symbol.name) + '" title="' + escapeHTML(symbol.name) + '">' +
+      '<span class="section-motif-glyph" aria-hidden="true">' + escapeHTML(symbolGlyph(symbol.name)) + '</span>' +
+      '<span class="section-motif-name">' + escapeHTML(symbol.name) + '</span></div>';
+  }
+
   function getRuntimeState() {
     return getGlobal("ESCIE_STATE", {});
   }
@@ -332,7 +355,7 @@
     const status = site.status || "development";
 
     container.innerHTML =
-      '<div class="now-state">' +
+      '<div class="now-state">' + motifMarkup("now") + '' +
         '<p class="eyebrow">CURRENT STATE</p>' +
         '<h3>' + escapeHTML(active ? "ACTIVE TRANSMISSION" : "SIGNAL QUIET") + "</h3>" +
         '<p>' + escapeHTML(
@@ -417,7 +440,7 @@
     }
 
     container.innerHTML =
-      '<div class="web-intro"><p class="eyebrow">RELATIONSHIP GRAPH</p>' +
+      '<div class="web-intro">' + motifMarkup("the-web") + '<p class="eyebrow">RELATIONSHIP GRAPH</p>' +
       '<p>Nothing here is decorative. A connection is shown because the record system says it exists.</p></div>' +
       '<div class="web-list">' +
       visible.map(relationship => {
@@ -447,7 +470,7 @@
 
     if (!visible.length) {
       container.innerHTML =
-        '<div class="archive-status">' +
+        '<div class="archive-status">' + motifMarkup("archive") + '' +
           '<p class="eyebrow">PRESERVATION STATE</p>' +
           '<h3>NOTHING PUBLIC HAS BEEN PLACED HERE YET.</h3>' +
           '<p>The archive is designed to preserve source material when it becomes available: recordings, photographs, documents, fragments, artwork and other traces. Empty is a valid state.</p>' +
@@ -474,7 +497,7 @@
 
     if (!visible.length) {
       container.innerHTML =
-        '<div class="investigation-status">' +
+        '<div class="investigation-status">' + motifMarkup("investigation") + '' +
           '<p class="eyebrow">CASE STATE / OPEN</p>' +
           '<h3>THE QUESTIONS ARE HERE BEFORE THE ANSWERS.</h3>' +
           '<p>No public case has been established yet. When one is opened, this layer will distinguish questions, evidence, contradictions, context and unresolved material rather than presenting speculation as fact.</p>' +
@@ -526,7 +549,7 @@
     const archive = normalizeCollection(getArchive()).filter(isPublic);
 
     container.innerHTML =
-      '<div class="glass-frame">' +
+      '<div class="glass-frame">' + motifMarkup("glass-eye") + '' +
         '<div class="glass-crosshair" aria-hidden="true"></div>' +
         '<div class="glass-corner glass-corner-tl"></div><div class="glass-corner glass-corner-tr"></div>' +
         '<div class="glass-corner glass-corner-bl"></div><div class="glass-corner glass-corner-br"></div>' +
