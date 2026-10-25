@@ -2404,10 +2404,6 @@ body.inspector-open{overflow:hidden}
   will-change:opacity,transform;
 }
 
-.section-visual[data-visual-section]{
-  animation:escie-visual-drift 18s ease-in-out infinite alternate;
-}
-
 .section-visual-now{
   animation-name:escie-visual-night;
   animation-duration:22s;
