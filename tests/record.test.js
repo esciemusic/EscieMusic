@@ -16,16 +16,26 @@
 
     const record = R.create({
       id: "test-art",
-      type: "ART",
+      type: R.TYPES.ART,
       title: "Test Art",
-      visibility: "PUBLIC",
-      published: true
+      visibility: R.VISIBILITY.PUBLIC,
+      public_disclosure: true
     });
 
-    assert(record.id === "test-art", "record id should be preserved");
-    assert(R.isType(record, "ART"), "record type should validate");
+    assert(record.identity.id === "test-art", "record id should be preserved");
+    assert(R.isType(record, R.TYPES.ART), "record type should validate");
     assert(R.getTitle(record) === "Test Art", "record title should be readable");
-    assert(R.isPublic(record), "published public record should be public");
+    assert(R.isPublic(record), "public record should be public");
+    assert(R.validate(record).valid, "created record should satisfy its contract");
+
+    const normalized = R.normalize({
+      id: "legacy-art",
+      type: R.TYPES.ART,
+      title: "Legacy Art"
+    });
+
+    assert(normalized.identity.id === "legacy-art", "normalize should preserve legacy id");
+    assert(R.getTitle(normalized) === "Legacy Art", "normalize should preserve title");
 
     return { passed: true };
   }
