@@ -37,6 +37,10 @@ jobs:
         run: |
           node tests/system.node.test.js
 
+      - name: Run core and security contract tests
+        run: |
+          node tests/core-security.node.test.js
+
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
         with:
