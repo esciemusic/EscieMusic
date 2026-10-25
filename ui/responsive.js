@@ -8,8 +8,8 @@
 
 const ESCIE_UI_RESPONSIVE = {
   breakpoints: Object.freeze({
-    mobile: 767,
-    desktop: 768
+    mobile: 700,
+    desktop: 701
   }),
 
   classify(width) {
