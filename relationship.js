@@ -499,6 +499,33 @@
         );
       }
 
+      if (
+        relationship.visibility !== this.VISIBILITY.PUBLIC &&
+        relationship.public_disclosure === true
+      ) {
+        errors.push(
+          "Non-public visibility cannot declare public disclosure."
+        );
+      }
+
+      if (
+        relationship.canonical_status === this.CANONICAL_STATUS.CANONICAL &&
+        relationship.status !== this.STATUS.ACTIVE
+      ) {
+        errors.push(
+          "Canonical relationships must be active."
+        );
+      }
+
+      if (
+        relationship.canonical_status === this.CANONICAL_STATUS.CANONICAL &&
+        relationship.visibility !== this.VISIBILITY.PUBLIC
+      ) {
+        errors.push(
+          "Canonical relationships must be publicly visible."
+        );
+      }
+
       return {
         valid: errors.length === 0,
         errors: errors
