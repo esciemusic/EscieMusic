@@ -15,6 +15,14 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
+assert(state.API.validate(state).valid, "initial runtime state should be valid");
+assert(state.API.setStatus("ready") === true, "valid state status should be accepted");
+assert(state.API.setStatus("invalid") === false, "invalid state status must be rejected");
+state.transmissionLevel = 9;
+assert(!state.API.validate(state).valid, "invalid transmission level must fail state validation");
+state.reset();
+assert(state.status === "initializing" && state.transmissionLevel === 0, "state reset should restore safe defaults");
+
 assert(permissions.can("read", "public") === true, "public records should be readable");
 assert(permissions.can("write", "public") === false, "public visibility must not grant write access");
 assert(permissions.can("read", "private") === true, "private records should remain internally readable");
