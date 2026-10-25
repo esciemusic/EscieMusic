@@ -3361,6 +3361,9 @@ body.player-visible{padding-bottom:clamp(88px,12vh,124px)}
    Social links live at the threshold of the universe.
    They remain quiet until real URLs are configured.
    ========================================================= */
+.entry-social:empty{
+  display:none;
+}
 .entry-social{
   position:relative;
   z-index:5;
