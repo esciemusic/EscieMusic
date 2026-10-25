@@ -13,6 +13,7 @@
  let RESIZE_HANDLER=null;
  let MEDIA_QUERY=null;
  let MEDIA_QUERY_HANDLER=null;
+ let FOCUS_REFRESH=null;
 
  
  function chooseVisualFocus(items,viewportWidth,viewportHeight){
@@ -107,6 +108,7 @@
    MEDIA_QUERY.removeEventListener ? MEDIA_QUERY.removeEventListener("change",MEDIA_QUERY_HANDLER) : MEDIA_QUERY.removeListener(MEDIA_QUERY_HANDLER);
    MEDIA_QUERY=null;MEDIA_QUERY_HANDLER=null;
   }
+  FOCUS_REFRESH=null;
   document.querySelectorAll(".section-visual").forEach(el=>{
 
    const cleanup=MEDIA_CLEANUPS.get(el);
@@ -140,6 +142,7 @@
     chooseActive();
    },{threshold:[0,.2,.35,.5,.7,1],rootMargin:"-12% 0px -12% 0px"});
    visuals.forEach(el=>SECTION_OBSERVER.observe(el));
+   FOCUS_REFRESH=chooseActive;
    RESIZE_HANDLER=chooseActive;
    window.addEventListener("resize",RESIZE_HANDLER,{passive:true});
    chooseActive();
@@ -151,7 +154,7 @@
   if(MEDIA_QUERY){
    MEDIA_QUERY_HANDLER=()=>{
     if(MEDIA_QUERY.matches) visuals.forEach(el=>el.classList.remove("visual-active"));
-    else chooseActive&&chooseActive();
+    else if(FOCUS_REFRESH) FOCUS_REFRESH();
    };
    if(MEDIA_QUERY.addEventListener) MEDIA_QUERY.addEventListener("change",MEDIA_QUERY_HANDLER);
    else if(MEDIA_QUERY.addListener) MEDIA_QUERY.addListener(MEDIA_QUERY_HANDLER);
