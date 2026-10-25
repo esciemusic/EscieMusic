@@ -2346,7 +2346,7 @@ body.inspector-open{overflow:hidden}
   background-repeat:no-repeat;
   background-size:200% auto;
   background-position:center top;
-  opacity:.24;
+  opacity:calc(.16 + (var(--visual-intensity,.7) * .14));
   filter:grayscale(.25) contrast(.82) saturate(.72);
   mix-blend-mode:screen;
   -webkit-mask-image:radial-gradient(ellipse at center,rgba(0,0,0,1) 34%,rgba(0,0,0,.82) 58%,rgba(0,0,0,.35) 78%,transparent 100%);
