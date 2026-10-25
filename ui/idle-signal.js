@@ -12,9 +12,22 @@
     "TRANSMISSION // PENDING"
   ];
 
+  function hasPublicTransmission(){
+    const registry=typeof window!=="undefined"?window.ESCIE_RECORD_REGISTRY:null;
+    if(!registry||typeof registry.allPublicRecords!=="function") return true;
+    return registry.allPublicRecords().some(record=>record&&(record.type==="music"||record.type==="project"));
+  }
+
+  function apply(){
+    document.documentElement.classList.toggle("idle-universe",!hasPublicTransmission());
+  }
+
   function init(){
     const node=document.querySelector(".signal-status");
     if(!node) return;
+    apply();
+    const reduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if(hasPublicTransmission()||reduced)return;
     let index=0;
     const reduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const set=()=>{
@@ -25,7 +38,7 @@
       index=(index+1)%STATES.length;
     };
     set();
-    if(!reduced) window.setInterval(set,5200);
+    window.setInterval(set,5200);
   }
 
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",init,{once:true});
