@@ -2875,3 +2875,43 @@ body.inspector-open{overflow:hidden}
 @media(prefers-reduced-motion:reduce){
   .index-trigger-glyph{transition:none}
 }
+
+
+/* =========================================================
+   ROUTE-SPECIFIC SIGNAL BLOOM
+   The active place gets a barely-there environmental tint.
+   It should feel like the room changed, not like a new theme loaded.
+   ========================================================= */
+body[data-route="now"] .section-visual-now::after,
+body[data-route="work"] .section-visual-work::after,
+body[data-route="web"] .section-visual-web::after,
+body[data-route="archive"] .section-visual-archive::after,
+body[data-route="investigation"] .section-visual-investigation::after,
+body[data-route="glass-eye"] .section-visual-glass::after,
+body[data-route="escie"] .section-visual-escie::after{
+  background:
+    radial-gradient(circle at 50% 52%,rgba(79,134,173,.075),transparent 34%),
+    linear-gradient(180deg,rgba(3,3,3,.14),transparent 36%,rgba(3,3,3,.28)),
+    repeating-linear-gradient(0deg,transparent 0,transparent 5px,rgba(255,255,255,.026) 6px);
+}
+
+body[data-route="investigation"] .section-visual-investigation::after,
+body[data-route="glass-eye"] .section-visual-glass::after{
+  background:
+    radial-gradient(circle at 50% 48%,rgba(79,134,173,.095),transparent 31%),
+    linear-gradient(180deg,rgba(3,3,3,.14),transparent 36%,rgba(3,3,3,.30)),
+    repeating-linear-gradient(0deg,transparent 0,transparent 5px,rgba(255,255,255,.026) 6px);
+}
+
+body[data-route="escie"] .section-visual-escie::after{
+  background:
+    radial-gradient(circle at 50% 50%,rgba(105,153,184,.085),transparent 36%),
+    linear-gradient(180deg,rgba(3,3,3,.12),transparent 40%,rgba(3,3,3,.30)),
+    repeating-linear-gradient(0deg,transparent 0,transparent 5px,rgba(255,255,255,.026) 6px);
+}
+
+@media(prefers-reduced-motion:reduce){
+  body[data-route] .section-visual[data-visual-section]::after{
+    transition:none!important;
+  }
+}
