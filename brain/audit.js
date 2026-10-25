@@ -161,7 +161,8 @@ if (typeof window !== "undefined") {
   window.ESCIE_AUDIT_API = {
     create: createAuditEntry,
     add: addAuditEntry,
-    resolve: resolveAuditEntry
+    resolve: resolveAuditEntry,
+    auditRelationships
   };
 }
 
