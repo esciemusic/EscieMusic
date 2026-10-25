@@ -56,7 +56,13 @@ function buildPublicRecords(records = []) {
 }
 
 function createBuildPlan(input = {}) {
-  const records = Array.isArray(input.records) ? input.records : [];
+  const registry =
+    typeof window !== "undefined" ? window.ESCIE_RECORD_REGISTRY : null;
+  const supplied = Array.isArray(input.records) ? input.records : [];
+  const records =
+    registry && typeof registry.allPublicRecords === "function"
+      ? registry.allPublicRecords()
+      : supplied;
   const seenIds = new Set();
 
   records.forEach((record) => {
