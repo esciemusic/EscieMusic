@@ -60,10 +60,13 @@
     assert(counts.relationships === 3 && counts.nodes === 4, "relationship counts must expose graph size");
     assert(counts.byType.contains === 1, "relationship counts must aggregate connection types");
 
-    const lockedPublicRecords = registry.allPublicRecords ? registry.allPublicRecords().filter(record => record && record.release_status === "locked") : [];
-assert(lockedPublicRecords.length === 0, "public record collection must never expose locked releases");
+    const publicRecords = registry.allPublicRecords();
+    assert(Array.isArray(publicRecords), "canonical public record collection must return an array");
+    assert(!publicRecords.some(record => record && record.release_status === "locked"), "public record collection must never expose locked releases");
+    assert(publicRecords.some(record => record && record.id === "bam-001-dallas-63"), "released BAM transmission must enter canonical public records");
+    assert(!publicRecords.some(record => record && record.id === "bam-002-pumpy-to-the-chest"), "locked BAM transmission must stay out of canonical public records");
 
-const releaseAudit = registry.releaseAudit();
+    const releaseAudit = registry.releaseAudit();
     assert(releaseAudit && releaseAudit.ok === true, "progressive release configuration must pass audit");
     assert(registry.manifestFor(secondTrack.id).sections.work === false, "locked BAM track must not appear in Work manifest");
     const contractLocked = registry.contractAudit();
