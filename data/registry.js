@@ -116,6 +116,45 @@
     return {ok:hard.length===0,errors:hard,warnings};
   }
 
+  function publicRelationships(filters){
+    const current=build();
+    const relationships=collection("ESCIE_RELATIONSHIPS");
+    const f=filters||{};
+    return relationships.filter(rel=>{
+      if(!rel||rel.public_disclosure!==true) return false;
+      if(rel.visibility&&["private","withheld"].includes(String(rel.visibility).toLowerCase())) return false;
+      if(!rel.from||!rel.to||!current.byId[rel.from]||!current.byId[rel.to]) return false;
+      if(f.type&&String(rel.type||"").toLowerCase()!==String(f.type).toLowerCase()) return false;
+      if(f.category&&typeof window!=="undefined"&&window.ESCIE_RELATIONSHIP&&typeof window.ESCIE_RELATIONSHIP.getCategory==="function"){
+        if(window.ESCIE_RELATIONSHIP.getCategory(rel.type)!==f.category) return false;
+      }
+      if(f.record&&rel.from!==f.record&&rel.to!==f.record) return false;
+      return true;
+    });
+  }
+  function relationshipTypes(filters){
+    return Array.from(new Set(publicRelationships(filters).map(rel=>rel.type).filter(Boolean))).sort();
+  }
+  function relationshipCategories(filters){
+    const helper=typeof window!=="undefined"?window.ESCIE_RELATIONSHIP:null;
+    return Array.from(new Set(publicRelationships(filters).map(rel=>helper&&typeof helper.getCategory==="function"?helper.getCategory(rel.type):null).filter(Boolean))).sort();
+  }
+  function relationshipsFor(id,filters){
+    return publicRelationships(Object.assign({},filters||{}, {record:id}));
+  }
+  function relationshipCounts(filters){
+    const list=publicRelationships(filters);
+    const byType={}; const byCategory={}; const nodes=new Set();
+    list.forEach(rel=>{
+      nodes.add(rel.from); nodes.add(rel.to);
+      byType[rel.type||"connection"]=(byType[rel.type||"connection"]||0)+1;
+      const helper=typeof window!=="undefined"?window.ESCIE_RELATIONSHIP:null;
+      const category=helper&&typeof helper.getCategory==="function"?helper.getCategory(rel.type):"UNKNOWN";
+      byCategory[category||"UNKNOWN"]=(byCategory[category||"UNKNOWN"]||0)+1;
+    });
+    return {relationships:list.length,nodes:nodes.size,byType,byCategory};
+  }
+
   function manifestFor(id){
     const current=build();
     const record=current.byId[id]||null;
@@ -200,5 +239,5 @@
     });
     return {ok:missing.length===0,missing};
   }
-  window.ESCIE_RECORD_REGISTRY={version:"1.6.1",build,records:()=>build().records,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,manifestFor,filter,contextFor};
+  window.ESCIE_RECORD_REGISTRY={version:"1.7.0",build,records:()=>build().records,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,manifestFor,filter,contextFor,publicRelationships,relationshipTypes,relationshipCategories,relationshipsFor,relationshipCounts};
 })();
