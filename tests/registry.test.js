@@ -18,6 +18,8 @@
     const nodes = registry.publicNodes();
     assert(Array.isArray(nodes) && nodes.length === 7, "canonical public node set must contain seven nodes");
     assert(nodes[0].id === "node-now" && nodes[6].id === "node-escie", "public nodes must preserve canonical order");
+    assert(registry.nodesForRecord("bam-001-dallas-63").some(node => node.id === "node-work"), "released transmission must resolve back to its public work node");
+    assert(registry.nodesForRecord("bam-002-pumpy-to-the-chest").length === 0, "locked transmission must resolve to no public nodes");
     const workNode = registry.nodeFor("node-work");
     assert(workNode && workNode.section === "work", "node lookup must resolve the work node");
     assert(workNode.records.includes("bam-001-dallas-63"), "work node must expose released transmission records");
