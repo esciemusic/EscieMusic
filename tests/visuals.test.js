@@ -15,6 +15,7 @@
   assert(typeof audit==="function","visual audit must exist");
   assert(window.ESCIE_VISUALS_UI&&typeof window.ESCIE_VISUALS_UI.init==="function","visual UI must exist");
   assert(typeof window.ESCIE_VISUALS_UI.chooseVisualFocus==="function","visual focus selector must exist");
+  assert(typeof window.ESCIE_VISUALS_UI.syncWorkAlbumVisuals==="function","project visual sync controller must exist");
   const focus=window.ESCIE_VISUALS_UI.chooseVisualFocus;
   assert(focus([],1000,800)===-1,"empty focus must return none");
   assert(focus([{top:0,bottom:800,left:0,right:1000}],1000,800)===0,"single visual must win");
