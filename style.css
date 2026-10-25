@@ -1384,6 +1384,85 @@ body[data-route="escie"] #escie {
    ========================================================= */
 
 
+.social-icon{
+  display:inline-flex;
+  width:20px;
+  height:20px;
+  flex:0 0 20px;
+  align-items:center;
+  justify-content:center;
+  color:currentColor;
+  opacity:.82;
+}
+.social-icon svg{
+  width:100%;
+  height:100%;
+  display:block;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.55;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.social-icon svg path,
+.social-icon svg circle,
+.social-icon svg rect{vector-effect:non-scaling-stroke}
+.social-icon svg .social-icon-fill,
+.social-icon svg path:not(.social-icon-cut){fill:currentColor;stroke:none}
+.social-icon svg .social-icon-cut{fill:none;stroke:var(--black);stroke-width:1.7}
+.social-icon-label{line-height:1}
+.footer-social-link{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  min-height:32px;
+  padding:4px 0;
+}
+.footer-social-link:hover .social-icon,
+.footer-social-link:focus-visible .social-icon{opacity:1;transform:translateY(-1px)}
+.footer-social-link .social-icon{transition:opacity 180ms ease,transform 180ms ease}
+.about-social-list{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:1px;
+  margin-top:14px;
+  border-top:1px solid var(--line);
+  border-left:1px solid var(--line);
+}
+.about-social-link{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-height:64px;
+  padding:16px;
+  border-right:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  color:var(--muted);
+  font-size:9px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  transition:background 180ms ease,color 180ms ease;
+}
+.about-social-link:hover,
+.about-social-link:focus-visible{
+  color:var(--white);
+  background:rgba(255,255,255,.025);
+}
+.about-social-link .social-icon{
+  width:24px;
+  height:24px;
+  flex-basis:24px;
+}
+.about-social-link .social-icon-arrow{
+  margin-left:auto;
+  opacity:.45;
+  transition:transform 180ms ease,opacity 180ms ease;
+}
+.about-social-link:hover .social-icon-arrow,
+.about-social-link:focus-visible .social-icon-arrow{
+  opacity:1;
+  transform:translate(2px,-2px);
+}
 .footer-social{
   margin-top:18px;
   display:flex;
