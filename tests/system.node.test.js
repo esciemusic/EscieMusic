@@ -240,3 +240,44 @@ const invalidHistoryChain = historyChainAudit(
   ["provenance-record"]
 );
 assert(invalidHistoryChain.ok === false, "invalid history chain must fail audit");
+
+
+const history = require("../core/history.js");
+const historyEntry = history.createHistoryEntry({
+  id: "history-test-001",
+  event: "updated",
+  recordId: "record-a",
+  actor: "ESCIE",
+  previous: { status: "draft" },
+  next: { status: "published" },
+  reason: "Test state transition",
+  sourceIds: ["provenance-source"]
+});
+assert(history.validate(historyEntry, [registeredSource]).valid, "valid history entry should pass validation");
+
+const appendedHistory = history.append(historyEntry, [registeredSource]);
+assert(appendedHistory.valid === true, "valid history entry should append");
+assert(appendedHistory.entry.id === "history-test-001", "appended history should return its entry");
+
+const duplicateHistory = history.append(historyEntry, [registeredSource]);
+assert(duplicateHistory.valid === false, "duplicate history id must be rejected");
+
+const invalidHistory = history.append({
+  id: "history-test-invalid",
+  event: "not-a-real-event",
+  actor: "ESCIE",
+  sourceIds: ["provenance-source"]
+}, [registeredSource]);
+assert(invalidHistory.valid === false, "invalid history event must be rejected");
+
+const chronologicalAudit = require("../brain/audit.js").auditHistorySequence([
+  { id: "h1", timestamp: "2026-01-02T00:00:00Z" },
+  { id: "h2", timestamp: "2026-01-03T00:00:00Z" }
+]);
+assert(chronologicalAudit.ok === true, "chronological history should pass audit");
+
+const reversedAudit = require("../brain/audit.js").auditHistorySequence([
+  { id: "h1", timestamp: "2026-01-03T00:00:00Z" },
+  { id: "h2", timestamp: "2026-01-02T00:00:00Z" }
+]);
+assert(reversedAudit.ok === false, "reversed history should be reported");
