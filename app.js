@@ -298,6 +298,10 @@
 
   function isReleaseVisible(record) {
     if (!record) return false;
+    const registry = getGlobal("ESCIE_RECORD_REGISTRY", null);
+    if (registry && typeof registry.releaseVisible === "function") {
+      return registry.releaseVisible(record);
+    }
     if (record.release_status) return record.release_status === "released";
     if (record.type === "project" && record.release_mode === "progressive") {
       const tracks = normalizeCollection(getMusic());
