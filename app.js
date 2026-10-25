@@ -625,6 +625,19 @@
   ESCIE_RUNTIME.getArchive = getArchive;
   ESCIE_RUNTIME.getInvestigation = getInvestigation;
   ESCIE_RUNTIME.getPeople = getPeople;
+  ESCIE_RUNTIME.search = function (query) {
+    const search = window.ESCIE_SEARCH;
+    const index = ESCIE_RUNTIME.searchIndex || [];
+    return search && typeof search === "function"
+      ? search(query, index)
+      : [];
+  };
+  ESCIE_RUNTIME.present = function (item) {
+    const narration = window.ESCIE_NARRATION_ENGINE;
+    return narration && typeof narration.present === "function"
+      ? narration.present(item)
+      : null;
+  };
   ESCIE_RUNTIME.render = render;
   ESCIE_RUNTIME.initialize = initialize;
 
