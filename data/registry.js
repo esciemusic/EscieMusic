@@ -38,5 +38,16 @@
   const built=build();
   window.ESCIE_RECORDS=built.records;
   window.ESCIE_RECORD_INDEX=built.byId;
-  window.ESCIE_RECORD_REGISTRY={version:"1.0.0",build,records:()=>build().records,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates};
+  function relationshipAudit(){
+    const current=build();
+    const relationships=collection("ESCIE_RELATIONSHIPS");
+    const missing=[];
+    relationships.forEach(r=>{
+      if(!r||!r.from||!r.to) return;
+      if(!current.byId[r.from]) missing.push({id:r.id||null,side:"from",record:r.from});
+      if(!current.byId[r.to]) missing.push({id:r.id||null,side:"to",record:r.to});
+    });
+    return {ok:missing.length===0&&current.duplicates.length===0,missing,duplicates:current.duplicates};
+  }
+  window.ESCIE_RECORD_REGISTRY={version:"1.1.0",build,records:()=>build().records,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit};
 })();
