@@ -2407,6 +2407,7 @@ body.inspector-open{overflow:hidden}
   position:absolute;
   inset:0;
   z-index:0;
+  background-image:url("assets/visuals/escie-visual-atlas.webp");
   background-repeat:no-repeat;
   background-size:200% auto;
   opacity:.24;
