@@ -389,6 +389,29 @@
       }).join("");
   }
 
+  function refreshNavigationState() {
+    const nav = byId("main-navigation");
+    if (!nav) return;
+    const currentRoute = (window.location.hash || "").replace(/^#/, "");
+    nav.querySelectorAll(".nav-link").forEach(link => {
+      const route = String(link.getAttribute("href") || "").replace(/^#/, "");
+      const active = route === currentRoute;
+      link.classList.toggle("is-current", active);
+      if (active) link.setAttribute("aria-current", "page");
+      else link.removeAttribute("aria-current");
+    });
+  }
+
+  function syncRouteState() {
+    const router = getRouter();
+    const raw = (window.location.hash || "#entry").replace(/^#/, "") || "entry";
+    const resolved = router && typeof router.resolve === "function" ? router.resolve(raw) : raw;
+    document.body.dataset.route = resolved || raw || "entry";
+    document.documentElement.dataset.route = document.body.dataset.route;
+    refreshNavigationState();
+    return document.body.dataset.route;
+  }
+
   function initializeSectionVisuals() {
     const visuals = Array.from(document.querySelectorAll(".section-visual"));
     if (!visuals.length) return;
@@ -1096,7 +1119,7 @@
   function renderEntry() {
     const stateLabel = byId("entry-state");
     if (stateLabel) {
-      const route = document.body && document.body.dataset ? document.body.dataset.route : "entry";
+      const route = syncRouteState();
       const nodes = getInformationNodes();
       const node = nodes.find(item => {
         const target = String(item && item.target || "").replace(/^#/, "");
