@@ -80,7 +80,8 @@
 
   function kind(item,url){
     const declared=String(item.type||item.kind||"").toLowerCase();
-    if(declared==="audio"||declared==="video"||declared==="iframe"||declared==="embed") return declared;
+    if(declared==="audio"||declared==="video") return declared;
+    if(declared==="iframe"||declared==="embed") return "iframe";
     if(hostAllowed(url)) return "iframe";
     if(VIDEO_EXT.test(url.href)) return "video";
     if(AUDIO_EXT.test(url.href)) return "audio";
