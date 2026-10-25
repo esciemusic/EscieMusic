@@ -167,16 +167,23 @@
   }
 
   if(!reducedMotion() && window.matchMedia && window.matchMedia("(pointer:fine)").matches){
-   POINTER_HANDLER=event=>{
-    const x=(event.clientX/window.innerWidth-.5);
-    const y=(event.clientY/window.innerHeight-.5);
-    visuals.forEach((el,index)=>{
+   let pointerFrame=0;
+   let pointerX=0;
+   let pointerY=0;
+   const applyPointer=()=>{
+    pointerFrame=0;
+    visuals.forEach(el=>{
      if(!el.classList.contains("visual-active") && !el.classList.contains("visual-visible")) return;
      const depth=el.classList.contains("visual-active") ? 1 : .42;
-     el.style.setProperty("--pointer-x",(x*10*depth).toFixed(3)+"px");
-     el.style.setProperty("--pointer-y",(y*7*depth).toFixed(3)+"px");
-     el.style.setProperty("--pointer-rotate",(x*0.35*depth).toFixed(3)+"deg");
+     el.style.setProperty("--pointer-x",(pointerX*10*depth).toFixed(3)+"px");
+     el.style.setProperty("--pointer-y",(pointerY*7*depth).toFixed(3)+"px");
+     el.style.setProperty("--pointer-rotate",(pointerX*0.35*depth).toFixed(3)+"deg");
     });
+   };
+   POINTER_HANDLER=event=>{
+    pointerX=event.clientX/window.innerWidth-.5;
+    pointerY=event.clientY/window.innerHeight-.5;
+    if(!pointerFrame) pointerFrame=window.requestAnimationFrame(applyPointer);
    };
    window.addEventListener("pointermove",POINTER_HANDLER,{passive:true});
   }
