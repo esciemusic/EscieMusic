@@ -1258,9 +1258,21 @@ body[data-time="night"] .sky {
       90px 30px;
   }
 
+  .index-navigation {
+    justify-content: flex-start;
+    gap: 8px;
+    padding:
+      92px 30px 44px;
+  }
+
   .index-navigation a {
+    width: min(100%, 420px);
+    padding: 5px 0;
     font-size:
-      clamp(32px, 12vw, 60px);
+      clamp(19px, 6vw, 28px);
+    line-height: 1.15;
+    letter-spacing: 0.07em;
+    text-align: left;
   }
 
   .hero {
