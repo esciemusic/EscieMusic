@@ -17,12 +17,12 @@
     const required = [
       "ENTRY",
       "NOW",
-      "ART",
-      "THE WEB",
-      "THE ARCHIVES",
-      "INVESTIGATION",
+      "WORK",
+      "WEB",
+      "ARCHIVE",
+      "CASES",
       "ESCIE",
-      "THE GLASS EYE"
+      "GLASS EYE"
     ];
 
     required.forEach(function (label) {
