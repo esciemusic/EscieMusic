@@ -484,6 +484,42 @@
     }
   }
 
+  function resolveUIState() {
+    const states = window.ESCIE_UI_STATES || {};
+    const normal = states.NORMAL || "NORMAL";
+    const transmission = states.ACTIVE_TRANSMISSION || "ACTIVE_TRANSMISSION";
+    const archival = states.ARCHIVAL_RESURFACING || "ARCHIVAL_RESURFACING";
+    const investigation = states.INVESTIGATION_ACTIVE || "INVESTIGATION_ACTIVE";
+    const silence = states.SILENCE || "SILENCE";
+
+    const runtimeState = getRuntimeState() || {};
+    const signalLevel = Number(runtimeState.transmissionLevel || 0);
+
+    if (signalLevel > 0) return transmission;
+
+    const publicInvestigations = normalizeCollection(getInvestigation()).filter(isPublic);
+    if (publicInvestigations.length) return investigation;
+
+    const publicArchive = normalizeCollection(getArchive()).filter(isPublic);
+    if (publicArchive.length) return archival;
+
+    if (getSiteValue("status", "development") === "silence") return silence;
+
+    return normal;
+  }
+
+  function applyUIState() {
+    const state = getRuntimeState() || {};
+    state.uiState = resolveUIState();
+
+    const shell = getShell();
+    if (shell && typeof shell.setState === "function") {
+      shell.setState(state);
+    }
+
+    return state.uiState;
+  }
+
   function bindNavigationRuntime() {
     const router = getRouter();
     if (!router) return;
