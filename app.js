@@ -396,22 +396,33 @@
       "</div>";
   }
 
-  function getFilteredWorkRecords(){
+  function getWorkRecords(){
     const registry=getGlobal("ESCIE_RECORD_REGISTRY",null);
     const all=getAllPublicRecords();
-    const work=all.filter(record=>{const manifest=registry&&registry.manifestFor?registry.manifestFor(recordId(record)):null;return manifest?manifest.work:["project","music","body"].includes(record.type);});
+    return all.filter(record=>{
+      const manifest=registry&&registry.manifestFor?registry.manifestFor(recordId(record)):null;
+      return manifest?manifest.work:["project","music","body"].includes(record.type);
+    });
+  }
+
+  function getFilteredWorkRecords(){
+    const registry=getGlobal("ESCIE_RECORD_REGISTRY",null);
+    const work=getWorkRecords();
     return registry&&registry.filter?registry.filter(work,ESCIE_RUNTIME.workFilters||{}):work;
   }
 
   function renderWorkFilters(){
     const container=byId("work-filters"); if(!container)return;
-    const work=getFilteredWorkRecords(), f=ESCIE_RUNTIME.workFilters||{};
+    const work=getWorkRecords(), filtered=getFilteredWorkRecords(), f=ESCIE_RUNTIME.workFilters||{};
     const vals=k=>Array.from(new Set(work.map(r=>r&&r[k]).filter(Boolean))).sort();
     const options=(a,v,l)=>`<option value="">${escapeHTML(l)}</option>`+a.map(x=>`<option value="${escapeHTML(x)}"${v===x?" selected":""}>${escapeHTML(x)}</option>`).join("");
     const loc=Array.from(new Set(work.flatMap(r=>Array.isArray(r.locations)?r.locations:[]))).sort();
     const sym=Array.from(new Set(work.flatMap(r=>Array.isArray(r.symbols)?r.symbols:[]))).sort();
-    container.innerHTML=`<div class="record-filters-heading"><span>DISCOVER BY METADATA</span><button type="button" class="record-filter-clear">CLEAR</button></div><div class="record-filter-grid"><label>TYPE<select data-work-filter="type">${options(vals("type"),f.type,"ALL TYPES")}</select></label><label>STATUS<select data-work-filter="status">${options(vals("status"),f.status,"ALL STATUS")}</select></label><label>REALITY<select data-work-filter="reality">${options(vals("reality"),f.reality,"ALL REALITY")}</select></label><label>PROJECT<select data-work-filter="project">${options(vals("project"),f.project,"ALL PROJECTS")}</select></label>${loc.length?`<label>LOCATION<select data-work-filter="location">${options(loc,f.location,"ALL LOCATIONS")}</select></label>`:""}${sym.length?`<label>MOTIF<select data-work-filter="symbol">${options(sym,f.symbol,"ALL MOTIFS")}</select></label>`:""}</div><p class="record-filter-count">${work.length} PUBLIC WORK RECORD${work.length===1?"":"S"}</p>`;
+    const projects=Array.from(new Set(work.flatMap(r=>{const p=r&&r.project; if(p)return [p]; return r&&r.type==="project"&&r.id?[r.id]:[];}))).sort();
+    const reality=Array.from(new Set(work.flatMap(r=>[r&&r.reality,r&&r.reality_level].filter(Boolean)))).sort();
+    container.innerHTML=`<div class="record-filters-heading"><span>DISCOVER BY METADATA</span><button type="button" class="record-filter-clear">CLEAR</button></div><div class="record-filter-grid"><label>TYPE<select data-work-filter="type">${options(vals("type"),f.type,"ALL TYPES")}</select></label><label>STATUS<select data-work-filter="status">${options(vals("status"),f.status,"ALL STATUS")}</select></label><label>REALITY<select data-work-filter="reality">${options(reality,f.reality,"ALL REALITY")}</select></label><label>PROJECT<select data-work-filter="project">${options(projects,f.project,"ALL PROJECTS")}</select></label>${loc.length?`<label>LOCATION<select data-work-filter="location">${options(loc,f.location,"ALL LOCATIONS")}</select></label>`:""}${sym.length?`<label>MOTIF<select data-work-filter="symbol">${options(sym,f.symbol,"ALL MOTIFS")}</select></label>`:""}</div><p class="record-filter-count">${filtered.length} OF ${work.length} PUBLIC WORK RECORD${work.length===1?"":"S"}</p>`;
   }
+
 
   function renderMusic() {
     const container = byId("music-container");
@@ -511,8 +522,12 @@
     const container = byId("archive-container");
     if (!container) return;
 
-    const archive = normalizeCollection(getArchive());
-    const visible = archive.filter(isPublic);
+    const registry=getGlobal("ESCIE_RECORD_REGISTRY",null);
+    const archive=getAllPublicRecords().filter(record=>{
+      const manifest=registry&&registry.manifestFor?registry.manifestFor(recordId(record)):null;
+      return manifest ? manifest.archive : record.type==="archive";
+    });
+    const visible=archive.filter(isPublic);
 
     if (!visible.length) {
       container.innerHTML =
@@ -538,8 +553,12 @@
     const container = byId("investigation-container");
     if (!container) return;
 
-    const investigations = normalizeCollection(getInvestigation());
-    const visible = investigations.filter(isPublic);
+    const registry=getGlobal("ESCIE_RECORD_REGISTRY",null);
+    const investigations=getAllPublicRecords().filter(record=>{
+      const manifest=registry&&registry.manifestFor?registry.manifestFor(recordId(record)):null;
+      return manifest ? manifest.investigation : record.type==="investigation";
+    });
+    const visible=investigations.filter(isPublic);
 
     if (!visible.length) {
       container.innerHTML =
@@ -590,9 +609,18 @@
     const container = byId("glass-eye-container");
     if (!container) return;
 
-    const music = normalizeCollection(getMusic()).filter(isPublic);
-    const projects = normalizeCollection(getProjects()).filter(isPublic);
-    const archive = normalizeCollection(getArchive()).filter(isPublic);
+    const registry=getGlobal("ESCIE_RECORD_REGISTRY",null);
+    const records=getAllPublicRecords();
+    const glassRecords=records.filter(record=>{
+      const manifest=registry&&registry.manifestFor?registry.manifestFor(recordId(record)):null;
+      return manifest ? manifest.glassEye : false;
+    });
+    const music=glassRecords.filter(record=>record.type==="music");
+    const projects=glassRecords.filter(record=>record.type==="project"||record.type==="body");
+    const archive=glassRecords.filter(record=>{
+      const manifest=registry&&registry.manifestFor?registry.manifestFor(recordId(record)):null;
+      return manifest&&manifest.archive;
+    });
 
     container.innerHTML =
       '<div class="glass-frame">' + motifMarkup("glass-eye") + '' +
