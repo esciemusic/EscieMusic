@@ -808,6 +808,11 @@
     const media = Array.isArray(record.media) ? record.media : [];
     const evidence = Array.isArray(record.evidence) ? record.evidence : [];
     const derivedContext = recordContext(record);
+    const registry = getGlobal("ESCIE_RECORD_REGISTRY", null);
+    const publicNodes = registry && typeof registry.nodesForRecord === "function"
+      ? registry.nodesForRecord(recordId(record))
+      : [];
+
     const relationships = normalizeCollection(getRelationships());
     const relatedIds = relationships
       .filter(r => r && (r.from === recordId(record) || r.to === recordId(record)))
@@ -820,6 +825,7 @@
       '<p class="eyebrow">' + escapeHTML(record.type || "RECORD") + '</p>' +
       '<h3>' + escapeHTML(recordTitle(record)) + '</h3>' +
       '<p>' + escapeHTML(description) + '</p>' +
+      (publicNodes.length ? '<p class="record-node-trace">APPEARS IN / ' + publicNodes.map(node => escapeHTML(node.label || node.id || "")).join(' · ') + '</p>' : '') +
       '<dl class="record-facts"><div><dt>REALITY</dt><dd>' + escapeHTML(reality) + '</dd></div>' +
       '<div><dt>STATUS</dt><dd>' + escapeHTML(status) + '</dd></div>' +
       '<div><dt>ID</dt><dd>' + escapeHTML(recordId(record)) + '</dd></div></dl>' +
