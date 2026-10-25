@@ -1498,6 +1498,7 @@
 
     ESCIE_RUNTIME.initialized = true;
     initializeSystemContracts();
+    initializeLanguage();
     render();
     setupMobileMenu();
     setupRecordInspector();
