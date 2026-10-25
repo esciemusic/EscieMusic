@@ -474,6 +474,11 @@
     }
 
     ESCIE_RUNTIME.ready = true;
+
+    if (window.ESCIE_TEST_RUNNER && typeof window.ESCIE_TEST_RUNNER.run === "function") {
+      window.ESCIE_TEST_RUNNER.run();
+    }
+
     window.dispatchEvent(new CustomEvent("escie:ready", {
       detail: ESCIE_RUNTIME
     }));
