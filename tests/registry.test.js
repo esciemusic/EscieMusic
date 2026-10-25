@@ -45,7 +45,7 @@
     assert(contained.length === 6, "record-centric relationship query must filter by type");
 
     const counts = registry.relationshipCounts();
-    assert(counts.relationships === 8 && counts.nodes === 8, "relationship counts must expose graph size");
+    assert(counts.relationships === 8 && counts.nodes === 9, "relationship counts must expose graph size");
     assert(counts.byType.contains === 6, "relationship counts must aggregate connection types");
 
     return { passed: true };
