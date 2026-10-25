@@ -285,11 +285,29 @@
       year.textContent = getSiteValue("publicYear", new Date().getFullYear());
     }
 
-    const tagline = document.querySelector(".hero-tagline");
+    const pronunciation = byId("entry-pronunciation");
+    if (pronunciation) {
+      pronunciation.textContent = getSiteValue("pronunciation", "S.C.");
+    }
+
+    const location = byId("entry-location");
+    if (location) {
+      location.textContent = getSiteValue("location", "Montréal, Canada");
+    }
+
+    const tagline = byId("entry-tagline");
     if (tagline) {
       tagline.textContent = getSiteValue(
         "tagline",
         "REALITY WITH THE SIGNAL DISTORTED."
+      );
+    }
+
+    const philosophy = byId("entry-philosophy");
+    if (philosophy) {
+      philosophy.textContent = getSiteValue(
+        "philosophy",
+        "The music does not create the universe. The universe creates the music."
       );
     }
   }
