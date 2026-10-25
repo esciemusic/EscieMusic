@@ -18,16 +18,24 @@
     if(name==="ESCIE_RELATIONSHIPS"&&Array.isArray(runtime.relationships)){
       records=Array.from(new Map(records.concat(runtime.relationships).filter(record=>record&&record.id).map(record=>[record.id,record])).values());
     }
-    if(name==="ESCIE_PROJECTS"&&runtime.projectStructures&&typeof runtime.projectStructures==="object"){
-      records=records.map(project=>{
-        const extra=runtime.projectStructures[project&&project.id];
-        if(!project||!Array.isArray(extra)||!extra.length) return project;
-        const existing=Array.isArray(project.structure)?project.structure:[];
-        const seen=new Set(existing.map(part=>part&&part.trackId).filter(Boolean));
-        return Object.assign({},project,{
-          structure:existing.concat(extra.filter(part=>part&&part.trackId&&!seen.has(part.trackId)))
-        });
+    if(name==="ESCIE_PROJECTS"){
+      const runtimeProjects=Array.isArray(runtime.projects)?runtime.projects:[];
+      const baseById=new Map(records.filter(record=>record&&record.id).map(record=>[record.id,record]));
+      runtimeProjects.forEach(project=>{
+        if(project&&project.id) baseById.set(project.id,project);
       });
+      records=Array.from(baseById.values());
+      if(runtime.projectStructures&&typeof runtime.projectStructures==="object"){
+        records=records.map(project=>{
+          const extra=runtime.projectStructures[project&&project.id];
+          if(!project||!Array.isArray(extra)||!extra.length) return project;
+          const existing=Array.isArray(project.structure)?project.structure:[];
+          const seen=new Set(existing.map(part=>part&&part.trackId).filter(Boolean));
+          return Object.assign({},project,{
+            structure:existing.concat(extra.filter(part=>part&&part.trackId&&!seen.has(part.trackId)))
+          });
+        });
+      }
     }
     return records;
   }
