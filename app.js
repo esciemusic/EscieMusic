@@ -459,6 +459,12 @@
     buildSearchIndex();
     validatePublicBuild();
 
+    const responsive = window.ESCIE_UI_RESPONSIVE;
+    if (responsive && typeof responsive.apply === "function") {
+      responsive.apply(document.documentElement);
+      window.addEventListener("resize", () => responsive.apply(document.documentElement));
+    }
+
     const events = getEvents();
     if (events && typeof events.on === "function") {
       events.on("signal:emitted", signal => {
