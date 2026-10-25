@@ -23,6 +23,7 @@
     const trackManifest = registry.manifestFor("bam-001-dallas-63");
     assert(trackManifest && trackManifest.sections.work === true, "BAM track must route to work");
     assert(trackManifest.sections.web === false, "unconnected BAM track must not appear in web");
+    assert(trackManifest.search === true, "public records should be searchable by default");
 
     const projectTracks = registry.filter(registry.records(), { project: "bam-by-any-means" });
     assert(projectTracks.some(record => record.id === "bam-001-dallas-63"), "project facet must include BAM tracks");
