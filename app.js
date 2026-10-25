@@ -400,16 +400,7 @@
     if (!container) return;
 
     const relationships = normalizeCollection(getRelationships());
-    const records = [
-      { id: "escie", type: "identity", title: "ESCIE" },
-      ...normalizeCollection(getMusic()),
-      ...normalizeCollection(getProjects()),
-      ...normalizeCollection(getArchive()),
-      ...normalizeCollection(getInvestigation()),
-      ...normalizeCollection(getPeople()),
-      ...normalizeCollection(getLocations())
-    ];
-
+    const records = getAllRecords();
     const byIdMap = new Map(records.filter(Boolean).map(record => [recordId(record), record]));
     const visible = relationships.filter(relationship =>
       relationship &&
@@ -545,7 +536,11 @@
       '</div>';
   }
 
-  function getAllPublicRecords() {
+  function getAllRecords() {
+    const registry = getGlobal("ESCIE_RECORD_REGISTRY", null);
+    if (registry && typeof registry.records === "function") {
+      return normalizeCollection(registry.records());
+    }
     return [
       { id: "escie", type: "identity", title: "ESCIE", description: "The central consciousness / interface.", status: "active", published: true, visibility: "public" },
       ...normalizeCollection(getMusic()),
@@ -554,7 +549,11 @@
       ...normalizeCollection(getInvestigation()),
       ...normalizeCollection(getPeople()),
       ...normalizeCollection(getLocations())
-    ].filter(record => record && recordId(record) && isPublic(record));
+    ].filter(record => record && recordId(record));
+  }
+
+  function getAllPublicRecords() {
+    return getAllRecords().filter(isPublic);
   }
 
   function showRecordInspector(record) {
