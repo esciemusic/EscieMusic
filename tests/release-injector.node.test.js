@@ -32,6 +32,8 @@ function run(){
     assert(result.status===0,"release injector must accept a valid queue");
     const generated=fs.readFileSync(path.join(tempDir,"data","release-runtime.js"),"utf8");
     assert(generated.includes("bam-001-dallas-63"),"released record must enter generated runtime");
+    assert(generated.includes('"projects":[{"id":"bam-by-any-means"'),"released project shell must enter generated runtime");
+    assert(generated.includes('"trackId":"bam-001-dallas-63"'),"released project structure must contain released track");
     assert(!generated.includes("bam-002-private"),"locked record must never enter generated runtime");
     assert(!generated.includes("PRIVATE TITLE"),"locked title must never enter generated runtime");
 
