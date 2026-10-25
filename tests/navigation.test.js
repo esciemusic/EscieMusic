@@ -63,6 +63,16 @@
       assert(button.getAttribute("aria-expanded") === "false", "INDEX should close through its runtime controller");
       assert(document.body.style.overflow === "", "INDEX should restore background scrolling when closed");
       assert(nav.getAttribute("aria-hidden") === "true", "INDEX navigation should become hidden again when closed");
+
+      button.click();
+      assert(button.getAttribute("aria-expanded") === "true", "INDEX trigger click should open the menu");
+      assert(nav.classList.contains("is-open"), "INDEX trigger click should add the open class");
+
+      document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+      assert(button.getAttribute("aria-expanded") === "false", "Escape should close INDEX");
+      assert(nav.getAttribute("aria-hidden") === "true", "Escape should hide INDEX from assistive technology");
+      assert(document.body.style.overflow === "", "Escape should restore background scrolling");
+      assert(document.activeElement === button, "Escape should return focus to INDEX");
     }
 
     return { passed: true };
