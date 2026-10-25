@@ -43,6 +43,16 @@
   const built=build();
   window.ESCIE_RECORDS=built.records;
   window.ESCIE_RECORD_INDEX=built.byId;
+  function contractAudit(){
+    const validator=window.validateEscieRecord;
+    const current=build();
+    if(typeof validator!=="function") return {ok:true,available:false,errors:[],warnings:[]};
+    const results=current.records.map(record=>({id:record.id,validation:validator(record)}));
+    const errors=results.flatMap(item=>item.validation.errors.map(error=>({record:item.id,error})));
+    const warnings=results.flatMap(item=>item.validation.warnings.map(warning=>({record:item.id,warning})));
+    return {ok:errors.length===0,available:true,errors,warnings};
+  }
+
   function relationshipAudit(){
     const current=build();
     const relationships=collection("ESCIE_RELATIONSHIPS");
@@ -89,5 +99,5 @@
     });
     return {ok:missing.length===0,missing};
   }
-  window.ESCIE_RECORD_REGISTRY={version:"1.2.0",build,records:()=>build().records,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,contextFor};
+  window.ESCIE_RECORD_REGISTRY={version:"1.2.0",build,records:()=>build().records,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,contractAudit,contextFor};
 })();
