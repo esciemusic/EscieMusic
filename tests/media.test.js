@@ -45,6 +45,7 @@
       const loaded=player.load({id:"player-test",title:"PLAYER TEST",url:"https://example.com/test.mp3"});
       assert(loaded&&loaded.id==="player-test","player should load a valid transmission");
       assert(player.current&&player.current.title==="PLAYER TEST","player should retain current transmission");
+      player.pause(); assert(player.playing===false,"player pause should clear playing state");
     }
     return {passed:true};
   }
