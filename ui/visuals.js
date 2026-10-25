@@ -124,16 +124,12 @@
   if("IntersectionObserver" in window){
    const visible=new Set();
    const chooseActive=()=>{
-    const candidates=visuals.map(el=>el.getBoundingClientRect()).map((rect,index)=>({
-     rect,
-     visible:visible.has(visuals[index])
-    }));
+    const visibleElements=visuals.filter(el=>visible.has(el));
     const winner=chooseVisualFocus(
-     candidates.filter(item=>item.visible).map(item=>item.rect),
+     visibleElements.map(el=>el.getBoundingClientRect()),
      window.innerWidth,
      window.innerHeight
     );
-    const visibleElements=candidates.filter(item=>item.visible).map(item=>visuals[visuals.indexOf(candidates.find(x=>x===item))]);
     setActiveVisual(winner>=0 ? visibleElements[winner] : null);
    };
    SECTION_OBSERVER=new IntersectionObserver(entries=>{
