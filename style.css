@@ -1223,6 +1223,34 @@ body[data-time="night"] .sky {
    FOOTER
    ========================================================= */
 
+
+.footer-social{
+  margin-top:18px;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:0 18px;
+}
+.footer-social-label{
+  color:var(--faint);
+  font-size:7px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  margin-right:6px;
+}
+.footer-social-link{
+  color:var(--faint);
+  font-size:8px;
+  letter-spacing:.16em;
+  text-decoration:none;
+  text-transform:uppercase;
+  transition:color 180ms ease;
+}
+.footer-social-link:hover,.footer-social-link:focus-visible{color:var(--white)}
+@media(max-width:700px){
+  .footer-social{gap:10px 14px}
+  .footer-social-label{width:100%;margin:0 0 2px}
+}
 .site-footer {
 
   display: flex;
