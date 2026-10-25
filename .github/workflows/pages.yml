@@ -38,6 +38,10 @@ jobs:
         run: |
           node tests/release-firewall.node.test.js
 
+      - name: Run private release injector test
+        run: |
+          node tests/release-injector.node.test.js
+
       - name: Run publishing contract tests
         run: |
           node tests/publishing.node.test.js
