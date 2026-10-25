@@ -1551,3 +1551,10 @@ body.inspector-open{overflow:hidden}
 .record-related{margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.12)}
 .record-related-link{display:block;width:100%;margin:.35rem 0;padding:.65rem .75rem;text-align:left;background:transparent;border:1px solid rgba(255,255,255,.14);color:inherit;font:inherit;cursor:pointer}
 .record-related-link:hover,.record-related-link:focus-visible{border-color:currentColor;outline:none}
+
+
+/* RECURRING MOTIFS */
+.section-motif{display:flex;align-items:center;gap:.65rem;margin:0 0 1.25rem;opacity:.72;letter-spacing:.12em;text-transform:uppercase;font-size:.65rem}
+.section-motif-glyph{display:inline-flex;align-items:center;justify-content:center;width:1.8rem;height:1.8rem;border:1px solid currentColor;font-size:1rem;line-height:1}
+.section-motif-name{font-size:.62rem}
+.glass-frame .section-motif{position:absolute;top:1rem;left:1rem;z-index:3;margin:0}
