@@ -1540,7 +1540,6 @@ body.inspector-open{overflow:hidden}
 .music-card:hover,.archive-entry:hover,.investigation-case:hover{background:rgba(255,255,255,.018)}
 
 @media(max-width:700px){
-  .entry-section::after{bottom:20px}
   .about-principles p{grid-template-columns:1fr;gap:8px}
   .glass-frame{min-height:430px}
   .glass-readout,.glass-footer{left:18px;right:18px;font-size:7px}
