@@ -47,6 +47,10 @@ const controlItem = control.add({
   title: "Review test"
 });
 assert(control.pending().some((item) => item.id === "control-test"), "control item should be pending");
+assert(typeof control.resolve === "function", "control should expose resolution");
+const resolved = control.resolve("control-test", "resolved", { actor: "test" });
+assert(resolved && resolved.status === "resolved", "control item should resolve");
+assert(!control.pending().some((item) => item.id === "control-test"), "resolved item should leave pending control");
 
 const proposal = proposals.addProposal({
   id: "proposal-test",
