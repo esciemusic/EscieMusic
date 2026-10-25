@@ -43,12 +43,31 @@ const ESCIE_BRAIN = {
   },
 
   propose(input = {}) {
-    return {
+    const proposal = {
       type: "proposal",
       input,
       requiresReview: true,
       timestamp: new Date().toISOString()
     };
+
+    const control = typeof window !== "undefined"
+      ? window.ESCIE_CONTROL
+      : null;
+
+    if (control && typeof control.add === "function") {
+      control.add({
+        id: input.id || null,
+        category: input.category || "REVIEW",
+        title: input.title || "Brain proposal requires attention",
+        reason: input.reason || "The Brain prepared a proposal for human review.",
+        sourceIds: Array.isArray(input.sourceIds) ? input.sourceIds : [],
+        recordIds: Array.isArray(input.recordIds) ? input.recordIds : [],
+        suggestedAction: input.suggestedAction || input.action || null,
+        urgency: input.urgency || "normal"
+      });
+    }
+
+    return proposal;
   }
 };
 
