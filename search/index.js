@@ -26,6 +26,15 @@ const ESCIE_SEARCH_INDEX = {
       return null;
     }
 
+    const published =
+      record.published === true ||
+      record.status === "published";
+    const visibility = String(record.visibility || "").toLowerCase();
+
+    if (!published || ["private", "withheld", "limited"].includes(visibility)) {
+      return null;
+    }
+
     const entry = {
       id: record.id,
       type: record.type || null,
