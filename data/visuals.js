@@ -39,4 +39,4 @@ function auditEscieVisuals(items){
  return {ok:sections.every(section=>normalized.some(v=>v.section===section))&&new Set(ids).size===ids.length&&invalidAssets.length===0,sections,configured:normalized.length,missing:sections.filter(section=>!normalized.some(v=>v.section===section)),duplicateIds:ids.filter((id,i)=>ids.indexOf(id)!==i),invalidAssets};
 }
 if(typeof window!=="undefined"){window.ESCIE_VISUALS=ESCIE_VISUALS;window.normalizeEscieVisuals=normalizeEscieVisuals;window.normalizeEscieVisualAsset=normalizeEscieVisualAsset;window.auditEscieVisuals=auditEscieVisuals;}
-if(typeof module!=="undefined"&&module.exports)module.exports={ESCIE_VISUALS,normalizeEscieVisuals,auditEscieVisuals};
+if(typeof module!=="undefined"&&module.exports)module.exports={ESCIE_VISUALS,normalizeEscieVisualAsset,normalizeEscieVisuals,auditEscieVisuals};
