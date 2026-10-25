@@ -706,21 +706,27 @@
     return icons[String(platform || "").toLowerCase()] || '<span aria-hidden="true">↗</span>';
   }
 
-  function renderFooterSocial() {
-    const container = byId("footer-social");
+  function renderSocialLinks(containerId, className, includeLabel) {
+    const container = byId(containerId);
     if (!container) return;
     const socialNormalizer = getGlobal("normalizeEscieSocial", null);
     const social = typeof socialNormalizer === "function"
       ? socialNormalizer(getGlobal("ESCIE_SOCIAL", []))
       : normalizeCollection(getGlobal("ESCIE_SOCIAL", [])).filter(item => item && item.url && /^https?:\/\//i.test(String(item.url)));
     container.innerHTML = social.length
-      ? '<span class="footer-social-label">EXTERNAL SIGNAL</span>' + social.map(item =>
-          '<a class="footer-social-link" href="' + escapeHTML(item.url) + '" target="_blank" rel="noopener noreferrer" aria-label="' + escapeHTML(item.label || item.platform || "SIGNAL") + '">' +
+      ? (includeLabel ? '<span class="footer-social-label">EXTERNAL SIGNAL</span>' : '') + social.map(item =>
+          '<a class="' + className + '" href="' + escapeHTML(item.url) + '" target="_blank" rel="noopener noreferrer" aria-label="' + escapeHTML(item.label || item.platform || "SIGNAL") + '">' +
           '<span class="social-icon" aria-hidden="true">' + socialIconMarkup(item.platform) + '</span>' +
           '<span class="social-icon-label">' + escapeHTML(item.label || item.platform || "SIGNAL") + '</span>' +
         '</a>'
         ).join("")
       : "";
+  }
+
+  function renderFooterSocial() {
+    const container = byId("footer-social");
+    if (!container) return;
+    renderSocialLinks("footer-social", "footer-social-link", true);
   }
 
   function renderAbout() {
@@ -1336,6 +1342,7 @@
         renderArchive();
         renderInvestigation();
         renderAbout();
+    renderSocialLinks("entry-social", "entry-social-link", false);
     renderFooterSocial();
       });
 
