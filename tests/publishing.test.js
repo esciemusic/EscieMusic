@@ -26,6 +26,19 @@
     assert(publicRecords.length === 1, "only public published records should enter the build");
     assert(publicRecords[0].id === "public-a", "public record should be preserved");
 
+    const locked = B.buildPublicRecords([
+      { id: "locked-a", type: "music", title: "Locked", published: true, visibility: "public", release_status: "locked" }
+    ]);
+    assert(locked.length === 0, "locked releases must never enter the public build");
+
+    const invalidLockedBuild = V.validateBuild({
+      records: [{
+        id: "locked-a",
+        data: { id: "locked-a", type: "music", title: "Locked", published: true, visibility: "public", release_status: "locked" }
+      }]
+    });
+    assert(!invalidLockedBuild.valid, "publication validation must reject locked releases");
+
     const duplicateBuild = B.createBuildPlan({
       records: [
         { id: "duplicate-a", type: "art", title: "One", published: true },
