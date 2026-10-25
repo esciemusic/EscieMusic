@@ -42,6 +42,18 @@ function buildPublicRecords(records = []) {
 
 function createBuildPlan(input = {}) {
   const records = Array.isArray(input.records) ? input.records : [];
+  const seenIds = new Set();
+
+  records.forEach((record) => {
+    const id = record && record.id;
+    if (!id) return;
+
+    if (seenIds.has(id)) {
+      throw new Error("Duplicate public record id: " + id);
+    }
+
+    seenIds.add(id);
+  });
 
   return {
     createdAt: new Date().toISOString(),
