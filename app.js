@@ -475,45 +475,54 @@
     }).join("");
   }
 
-  function getPublicRelationshipRecords(){
+  function getPublicRelationshipRecords(filters){
+    const registry=getGlobal("ESCIE_RECORD_REGISTRY",null);
     const records=getAllPublicRecords();
     const byIdMap=new Map(records.filter(Boolean).map(record=>[recordId(record),record]));
+    if(registry&&typeof registry.publicRelationships==="function"){
+      return registry.publicRelationships(filters||{}).filter(r=>byIdMap.has(r.from)&&byIdMap.has(r.to));
+    }
     return normalizeCollection(getRelationships()).filter(relationship=>
-      relationship &&
-      relationship.public_disclosure===true &&
-      relationship.visibility!=="private" &&
-      relationship.visibility!=="withheld" &&
-      byIdMap.has(relationship.from) &&
-      byIdMap.has(relationship.to)
+      relationship&&relationship.public_disclosure===true&&
+      relationship.visibility!=="private"&&relationship.visibility!=="withheld"&&
+      byIdMap.has(relationship.from)&&byIdMap.has(relationship.to)
     );
   }
 
-  function renderWeb() {
-    const container=byId("web-container");
-    if(!container)return;
-    const relationships=getPublicRelationshipRecords();
+  function renderWeb(){
+    const container=byId("web-container"); if(!container)return;
+    const registry=getGlobal("ESCIE_RECORD_REGISTRY",null);
+    const state=ESCIE_RUNTIME.webFilters||{};
+    const all=getPublicRelationshipRecords();
+    const relationships=getPublicRelationshipRecords(state);
     const records=getAllPublicRecords();
     const byIdMap=new Map(records.filter(Boolean).map(record=>[recordId(record),record]));
-    if(!relationships.length){
-      renderEmpty(container,"THE WEB EXISTS. PUBLIC CONNECTIONS WILL APPEAR WHEN THEY ARE ESTABLISHED.");
-      return;
-    }
-    const nodes=new Set();
-    relationships.forEach(r=>{nodes.add(r.from);nodes.add(r.to);});
-    const nodeRecords=Array.from(nodes).map(id=>byIdMap.get(id)).filter(Boolean);
+    const allNodes=new Set(); all.forEach(r=>{allNodes.add(r.from);allNodes.add(r.to);});
+    const nodeRecords=Array.from(allNodes).map(id=>byIdMap.get(id)).filter(Boolean);
+    const types=registry&&typeof registry.relationshipTypes==="function"?registry.relationshipTypes():Array.from(new Set(all.map(r=>r.type).filter(Boolean))).sort();
+    const categories=registry&&typeof registry.relationshipCategories==="function"?registry.relationshipCategories():[];
+    const nodeOptions=nodeRecords.sort((x,y)=>recordTitle(x).localeCompare(recordTitle(y))).map(r=>'<option value="'+escapeHTML(recordId(r))+'"'+(state.record===recordId(r)?" selected":"")+'>'+escapeHTML(recordTitle(r))+'</option>').join("");
+    const typeOptions=types.map(t=>'<option value="'+escapeHTML(t)+'"'+(state.type===t?" selected":"")+'> '+escapeHTML(t.replace(/_/g," "))+'</option>').join("");
+    const categoryOptions=categories.map(t=>'<option value="'+escapeHTML(t)+'"'+(state.category===t?" selected":"")+'> '+escapeHTML(t.replace(/_/g," "))+'</option>').join("");
+    const count=registry&&typeof registry.relationshipCounts==="function"?registry.relationshipCounts(state):{relationships:relationships.length,nodes:new Set(relationships.flatMap(r=>[r.from,r.to])).size};
+    if(!all.length){renderEmpty(container,"THE WEB EXISTS. PUBLIC CONNECTIONS WILL APPEAR WHEN THEY ARE ESTABLISHED.");return;}
     container.innerHTML=
-      '<div class="web-intro">'+motifMarkup("the-web")+'<p class="eyebrow">RELATIONSHIP GRAPH / '+escapeHTML(String(nodeRecords.length))+' NODES</p>'+
-      '<p>Nothing here is decorative. A connection is shown because the record system says it exists.</p></div>'+
-      '<div class="web-list">'+
-      relationships.map(relationship=>{
+      '<div class="web-intro">'+motifMarkup("the-web")+
+      '<p class="eyebrow">RELATIONSHIP GRAPH / '+escapeHTML(String(count.nodes))+' NODES / '+escapeHTML(String(count.relationships))+' CONNECTIONS</p>'+
+      '<p>Nothing here is decorative. A connection is shown because the record system says it exists.</p>'+
+      '<div class="record-filters web-filters"><div class="record-filters-heading"><span>EXPLORE THE WEB</span><button type="button" class="record-filter-clear" data-web-filter-clear>CLEAR</button></div>'+
+      '<div class="record-filter-grid"><label>RECORD<select data-web-filter="record"><option value="">ALL RECORDS</option>'+nodeOptions+'</select></label>'+
+      '<label>TYPE<select data-web-filter="type"><option value="">ALL TYPES</option>'+typeOptions+'</select></label>'+
+      '<label>CATEGORY<select data-web-filter="category"><option value="">ALL CATEGORIES</option>'+categoryOptions+'</select></label></div>'+
+      '<p class="record-filter-count">'+escapeHTML(String(relationships.length))+' OF '+escapeHTML(String(all.length))+' PUBLIC CONNECTION'+(all.length===1?"":"S")+'</p></div></div>'+
+      (relationships.length?'<div class="web-list">'+relationships.map(relationship=>{
         const from=byIdMap.get(relationship.from),to=byIdMap.get(relationship.to);
         return '<article class="web-connection" data-relationship-id="'+escapeHTML(relationship.id||"")+'">'+
           '<button class="web-node web-node-button" type="button" data-record-id="'+escapeHTML(relationship.from)+'"><strong>'+escapeHTML(recordTitle(from))+'</strong><span>'+escapeHTML(from.type||"record")+'</span></button>'+
-          '<span class="web-arrow" aria-hidden="true">→</span><span class="web-type">'+escapeHTML(relationship.type||"CONNECTION")+'</span><span class="web-arrow" aria-hidden="true">→</span>'+
+          '<span class="web-arrow" aria-hidden="true">→</span><span class="web-type">'+escapeHTML((relationship.type||"CONNECTION").replace(/_/g," "))+'</span><span class="web-arrow" aria-hidden="true">→</span>'+
           '<button class="web-node web-node-button" type="button" data-record-id="'+escapeHTML(relationship.to)+'"><strong>'+escapeHTML(recordTitle(to))+'</strong><span>'+escapeHTML(to.type||"record")+'</span></button>'+
-        '</article>';
-      }).join("")+
-      '</div>';
+        '</article>';}).join("")+'</div>':
+        '<div class="archive-status"><p class="eyebrow">FILTER STATE</p><h3>NO CONNECTIONS MATCH.</h3><p>Clear or change the Web filters. No new relationship is inferred by an empty result.</p></div>');
   }
 
   function renderArchive() {
@@ -831,7 +840,21 @@
       renderWorkFilters(); renderMusic(); renderProjects();
     });
 
+    document.addEventListener("change", event => {
+      const control=event.target.closest("[data-web-filter]");
+      if(!control)return;
+      ESCIE_RUNTIME.webFilters=ESCIE_RUNTIME.webFilters||{};
+      ESCIE_RUNTIME.webFilters[control.getAttribute("data-web-filter")]=control.value||"";
+      renderWeb();
+    });
+
     document.addEventListener("click", event => {
+      const webClear=event.target.closest("[data-web-filter-clear]");
+      if(webClear){ ESCIE_RUNTIME.webFilters={}; renderWeb(); return; }
+
+      const webControl=event.target.closest("[data-web-filter]");
+      if(webControl)return;
+
       const clearFilters=event.target.closest(".record-filter-clear");
       if(clearFilters){
         ESCIE_RUNTIME.workFilters={};
@@ -1268,6 +1291,9 @@
   ESCIE_RUNTIME.filterRecords = function(filters){ const registry=getGlobal("ESCIE_RECORD_REGISTRY",null); return registry&&registry.filter ? registry.filter(getAllPublicRecords(),filters||{}) : getAllPublicRecords(); };
   ESCIE_RUNTIME.manifestFor = function(id){ const registry=getGlobal("ESCIE_RECORD_REGISTRY",null); return registry&&registry.manifestFor ? registry.manifestFor(id) : null; };
   ESCIE_RUNTIME.referenceAudit = function(){ const registry=getGlobal("ESCIE_RECORD_REGISTRY",null); return registry&&registry.referenceAudit ? registry.referenceAudit() : null; };
+  ESCIE_RUNTIME.publicRelationships = function(filters){ const registry=getGlobal("ESCIE_RECORD_REGISTRY",null); return registry&&registry.publicRelationships ? registry.publicRelationships(filters||{}) : getPublicRelationshipRecords(filters||{}); };
+  ESCIE_RUNTIME.relationshipsFor = function(id,filters){ const registry=getGlobal("ESCIE_RECORD_REGISTRY",null); return registry&&registry.relationshipsFor ? registry.relationshipsFor(id,filters||{}) : getPublicRelationshipRecords(Object.assign({},filters||{},{record:id})); };
+  ESCIE_RUNTIME.relationshipCounts = function(filters){ const registry=getGlobal("ESCIE_RECORD_REGISTRY",null); return registry&&registry.relationshipCounts ? registry.relationshipCounts(filters||{}) : null; };
 
   window.ESCIE_RUNTIME = ESCIE_RUNTIME;
 
