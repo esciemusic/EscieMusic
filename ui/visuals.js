@@ -115,49 +115,82 @@
   const work=document.querySelector('.section-visual[data-visual-section="work"]');
   if(!work)return;
   if(WORK_ALBUM_OBSERVER){WORK_ALBUM_OBSERVER.disconnect();WORK_ALBUM_OBSERVER=null;}
-  const cards=Array.from(document.querySelectorAll(".bam-project[data-album-visual]"));
-  const clear=()=>{
-   const current=work.querySelector(".section-visual-album");
-   if(current){current.style.opacity="0";window.setTimeout(()=>current.remove(),260);}
-   work.removeAttribute("data-album-visual");
+
+  const cards=Array.from(document.querySelectorAll(".bam-project[data-project-visuals]"));
+  const parseVisuals=card=>{
+   try{
+    const raw=card.getAttribute("data-project-visuals")||"[]";
+    const items=JSON.parse(raw);
+    return Array.isArray(items)?items.map(item=>{
+     if(typeof item==="string")return {url:item,section:"work"};
+     if(!item||typeof item!=="object")return null;
+     const url=safeAlbumURL(item.url||item.src||item.href);
+     return url?{url,section:String(item.section||"work"),alt:String(item.alt||"").trim()}:null;
+    }).filter(Boolean):[];
+   }catch(e){return [];}
   };
-  if(!cards.length){clear();return;}
-  const apply=card=>{
-   const url=safeAlbumURL(card&&card.getAttribute("data-album-visual"));
-   if(!url)return;
-   const current=work.querySelector(".section-visual-album");
-   if(current&&current.getAttribute("src")===url)return;
+
+  const clearSection=section=>{
+   section.querySelectorAll(".section-visual-album").forEach(node=>node.remove());
+   section.removeAttribute("data-project-visual");
+  };
+
+  const showVisual=(section,item)=>{
+   if(!section||!item)return;
+   const current=section.querySelector(".section-visual-album");
+   if(current&&current.getAttribute("src")===item.url)return;
    const image=document.createElement("img");
    image.className="section-visual-album";
-   image.src=url;
+   image.src=item.url;
    image.alt="";
    image.loading="lazy";
    image.decoding="async";
    image.setAttribute("aria-hidden","true");
    image.onload=()=>{
     image.classList.add("is-ready");
-    if(current)window.setTimeout(()=>current.remove(),280);
+    if(current)window.setTimeout(()=>current.remove(),420);
    };
    image.onerror=()=>image.remove();
-   work.insertBefore(image,work.firstChild);
-   work.setAttribute("data-album-visual","active");
+   section.insertBefore(image,section.firstChild);
+   section.setAttribute("data-project-visual","active");
   };
-  if("IntersectionObserver" in window){
-   const visible=new Map();
-   const choose=()=>{
-    let winner=null,best=-1;
-    visible.forEach((ratio,card)=>{if(ratio>best){best=ratio;winner=card;}});
-    if(winner)apply(winner);
-   };
-   WORK_ALBUM_OBSERVER=new IntersectionObserver(entries=>{
-    entries.forEach(entry=>{
-     if(entry.isIntersecting)visible.set(entry.target,entry.intersectionRatio);else visible.delete(entry.target);
-    });
-    choose();
-   },{threshold:[.2,.45,.7,.9],rootMargin:"-18% 0px -18% 0px"});
-   cards.forEach(card=>WORK_ALBUM_OBSERVER.observe(card));
-  }else apply(cards[0]);
+
+  const currentProject=cards[0];
+  const allVisuals=parseVisuals(currentProject);
+  if(!allVisuals.length){clearSection(work);return;}
+
+  const sections=Array.from(document.querySelectorAll(".section-visual[data-visual-section]"));
+  const bySection=new Map();
+  allVisuals.forEach(item=>{
+   const key=item.section==="the-web"?"web":item.section;
+   if(!bySection.has(key))bySection.set(key,[]);
+   bySection.get(key).push(item);
+  });
+
+  sections.forEach(section=>{
+   const key=section.dataset.visualSection;
+   const candidates=bySection.get(key)||bySection.get("all")||[];
+   clearSection(section);
+   if(candidates.length)showVisual(section,candidates[0]);
+  });
+
+  const rotatingSections=sections.map(section=>{
+   const key=section.dataset.visualSection;
+   return {section,items:bySection.get(key)||bySection.get("all")||[]};
+  }).filter(item=>item.items.length>1);
+
+  if(!rotatingSections.length)return;
+  let cursor=0;
+  const rotate=()=>{
+   rotatingSections.forEach(({section,items})=>{
+    cursor=(cursor+1)%items.length;
+    showVisual(section,items[cursor]);
+   });
+  };
+  const timer=window.setInterval(rotate,8500);
+  WORK_ALBUM_OBSERVER={disconnect:()=>window.clearInterval(timer)};
  }
+
 
  function init(){
   if(WORK_ALBUM_OBSERVER){WORK_ALBUM_OBSERVER.disconnect();WORK_ALBUM_OBSERVER=null;}
