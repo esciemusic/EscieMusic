@@ -398,6 +398,7 @@
 
     const relationships = normalizeCollection(getRelationships());
     const records = [
+      { id: "escie", type: "identity", title: "ESCIE" },
       ...normalizeCollection(getMusic()),
       ...normalizeCollection(getProjects()),
       ...normalizeCollection(getArchive()),
@@ -406,37 +407,41 @@
       ...normalizeCollection(getLocations())
     ];
 
-    const publicIds = new Set(
-      records
-        .filter(isPublic)
-        .map(recordId)
-        .filter(Boolean)
-    );
-    publicIds.add("escie");
-
+    const byIdMap = new Map(records.filter(Boolean).map(record => [recordId(record), record]));
     const visible = relationships.filter(relationship =>
       relationship &&
       relationship.public_disclosure === true &&
       relationship.visibility !== "private" &&
       relationship.visibility !== "withheld" &&
-      publicIds.has(relationship.from) &&
-      publicIds.has(relationship.to)
+      byIdMap.has(relationship.from) &&
+      byIdMap.has(relationship.to)
     );
 
     if (!visible.length) {
-      renderEmpty(
-        container,
-        "THE WEB EXISTS. PUBLIC CONNECTIONS WILL APPEAR WHEN THEY ARE ESTABLISHED."
-      );
+      renderEmpty(container, "THE WEB EXISTS. PUBLIC CONNECTIONS WILL APPEAR WHEN THEY ARE ESTABLISHED.");
       return;
     }
 
-    container.innerHTML = visible.map(relationship =>
-      '<article class="web-connection" data-relationship-id="' +
-      escapeHTML(relationship.id || "") + '">' +
-        '<span>' + escapeHTML(relationship.type || "CONNECTION") + "</span>" +
-      "</article>"
-    ).join("");
+    container.innerHTML =
+      '<div class="web-intro"><p class="eyebrow">RELATIONSHIP GRAPH</p>' +
+      '<p>Nothing here is decorative. A connection is shown because the record system says it exists.</p></div>' +
+      '<div class="web-list">' +
+      visible.map(relationship => {
+        const from = byIdMap.get(relationship.from);
+        const to = byIdMap.get(relationship.to);
+        return '<article class="web-connection" data-relationship-id="' + escapeHTML(relationship.id || "") + '">' +
+          '<button class="web-node web-node-button" type="button" data-record-id="' + escapeHTML(relationship.from) + '">' +
+            '<strong>' + escapeHTML(recordTitle(from)) + '</strong><span>' + escapeHTML(from.type || "record") + '</span>' +
+          '</button>' +
+          '<span class="web-arrow" aria-hidden="true">→</span>' +
+          '<span class="web-type">' + escapeHTML(relationship.type || "CONNECTION") + '</span>' +
+          '<span class="web-arrow" aria-hidden="true">→</span>' +
+          '<button class="web-node web-node-button" type="button" data-record-id="' + escapeHTML(relationship.to) + '">' +
+            '<strong>' + escapeHTML(recordTitle(to)) + '</strong><span>' + escapeHTML(to.type || "record") + '</span>' +
+          '</button>' +
+        '</article>';
+      }).join("") +
+      '</div>';
   }
 
   function renderArchive() {
@@ -484,20 +489,113 @@
     if (!container) return;
 
     const site = getSite();
+    const about = getGlobal("ESCIE_ABOUT", {});
     container.innerHTML =
-      '<p class="about-lead">' +
-      escapeHTML(site.philosophy || "The music does not create the universe. The universe creates the music.") +
-      "</p>" +
-      '<p>' +
-      escapeHTML(site.tagline || "REALITY WITH THE SIGNAL DISTORTED.") +
-      "</p>" +
-      '<p class="about-location">' +
-      escapeHTML(site.location || "Montréal, Canada") +
-      " / " +
-      escapeHTML(String(site.publicYear || new Date().getFullYear())) +
-      " / " +
-      escapeHTML(site.status || "development") +
-      "</p>";
+      '<p class="about-lead">' + escapeHTML(
+        about.description || "ESCIE is an interface to reality itself."
+      ) + "</p>" +
+      '<div class="about-principles">' +
+        '<p><span>PRINCIPLE</span>' + escapeHTML(
+          about.principle || site.philosophy || "The music does not create the universe. The universe creates the music."
+        ) + "</p>" +
+        '<p><span>IDENTITY</span>' + escapeHTML(
+          Array.isArray(about.role) ? about.role.join(" / ") : (about.role || "artist / writer / narrator")
+        ) + "</p>" +
+        '<p><span>PRONUNCIATION</span>' + escapeHTML(about.pronunciation || site.pronunciation || "S.C.") + "</p>" +
+      '</div>' +
+      '<p class="about-location">' + escapeHTML(site.location || "Montréal, Canada") +
+      " / " + escapeHTML(String(site.publicYear || new Date().getFullYear())) +
+      " / " + escapeHTML(site.status || "development") + "</p>";
+  }
+
+  function renderGlassEye() {
+    const container = byId("glass-eye-container");
+    if (!container) return;
+
+    const music = normalizeCollection(getMusic()).filter(isPublic);
+    const projects = normalizeCollection(getProjects()).filter(isPublic);
+    const archive = normalizeCollection(getArchive()).filter(isPublic);
+
+    container.innerHTML =
+      '<div class="glass-frame">' +
+        '<div class="glass-crosshair" aria-hidden="true"></div>' +
+        '<div class="glass-corner glass-corner-tl"></div><div class="glass-corner glass-corner-tr"></div>' +
+        '<div class="glass-corner glass-corner-bl"></div><div class="glass-corner glass-corner-br"></div>' +
+        '<div class="glass-readout"><span>GLASS EYE // LIVE INTERFACE</span><span>REC / OBSERVE / PRESERVE</span></div>' +
+        '<div class="glass-center"><span class="glass-dot"></span><strong>NO IMAGE SUPPLIED</strong><p>The eye records what is actually available. It does not manufacture evidence.</p></div>' +
+        '<div class="glass-footer"><span>WORK ' + music.length + '</span><span>BODIES ' + projects.length + '</span><span>ARCHIVE ' + archive.length + '</span></div>' +
+      '</div>';
+  }
+
+  function getAllPublicRecords() {
+    return [
+      { id: "escie", type: "identity", title: "ESCIE", description: "The central consciousness / interface." },
+      ...normalizeCollection(getMusic()),
+      ...normalizeCollection(getProjects()),
+      ...normalizeCollection(getArchive()),
+      ...normalizeCollection(getInvestigation()),
+      ...normalizeCollection(getPeople()),
+      ...normalizeCollection(getLocations())
+    ].filter(record => record && recordId(record) && isPublic(record));
+  }
+
+  function showRecordInspector(record) {
+    const modal = byId("record-inspector");
+    if (!modal || !record) return;
+    const body = modal.querySelector(".record-inspector-body");
+    if (!body) return;
+
+    const reality = record.reality || record.reality_level || record.knowledge || "UNSPECIFIED";
+    const status = record.status || "unknown";
+    const description = record.description || "No public description has been established.";
+    body.innerHTML =
+      '<p class="eyebrow">' + escapeHTML(record.type || "RECORD") + '</p>' +
+      '<h3>' + escapeHTML(recordTitle(record)) + '</h3>' +
+      '<p>' + escapeHTML(description) + '</p>' +
+      '<dl class="record-facts"><div><dt>REALITY</dt><dd>' + escapeHTML(reality) + '</dd></div>' +
+      '<div><dt>STATUS</dt><dd>' + escapeHTML(status) + '</dd></div>' +
+      '<div><dt>ID</dt><dd>' + escapeHTML(recordId(record)) + '</dd></div></dl>';
+    modal.hidden = false;
+    document.body.classList.add("inspector-open");
+    const close = modal.querySelector("[data-inspector-close]");
+    if (close) close.focus();
+  }
+
+  function setupRecordInspector() {
+    if (byId("record-inspector")) return;
+
+    const modal = document.createElement("div");
+    modal.id = "record-inspector";
+    modal.className = "record-inspector";
+    modal.hidden = true;
+    modal.innerHTML =
+      '<div class="record-inspector-backdrop" data-inspector-close></div>' +
+      '<section class="record-inspector-panel" role="dialog" aria-modal="true" aria-labelledby="record-inspector-title">' +
+        '<button class="record-inspector-close" type="button" data-inspector-close aria-label="Close record">CLOSE</button>' +
+        '<div class="record-inspector-body"><h3 id="record-inspector-title">RECORD</h3></div>' +
+      '</section>';
+    document.body.appendChild(modal);
+
+    document.addEventListener("click", event => {
+      const close = event.target.closest("[data-inspector-close]");
+      if (close) {
+        modal.hidden = true;
+        document.body.classList.remove("inspector-open");
+        return;
+      }
+
+      const trigger = event.target.closest("[data-record-id]");
+      if (!trigger) return;
+      const record = getAllPublicRecords().find(item => recordId(item) === trigger.getAttribute("data-record-id"));
+      if (record) showRecordInspector(record);
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && !modal.hidden) {
+        modal.hidden = true;
+        document.body.classList.remove("inspector-open");
+      }
+    });
   }
 
   function renderEntry() {
@@ -766,6 +864,7 @@
     renderArchive();
     renderInvestigation();
     renderAbout();
+    renderGlassEye();
 
     const narration = getNarrationEngine();
     if (narration && typeof narration.present === "function") {
@@ -783,6 +882,7 @@
     initializeSystemContracts();
     render();
     setupMobileMenu();
+    setupRecordInspector();
     bindNavigationRuntime();
 
     const state = getRuntimeState();
