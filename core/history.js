@@ -1,10 +1,8 @@
 /*
  * ESCIE CORE HISTORY
  *
- * Append-only change history. History explains how a record changed;
- * provenance explains where information came from.
- *
- * History is not evidence, meaning, or canon.
+ * Append-only record of meaningful state changes. History explains how a
+ * record reached its current state; it does not rewrite the past.
  */
 
 const ESCIE_HISTORY = [];
@@ -12,15 +10,13 @@ const ESCIE_HISTORY = [];
 const HISTORY_EVENTS = Object.freeze({
   CREATED: "created",
   UPDATED: "updated",
+  DECISION_RECORDED: "decision_recorded",
+  DISCLOSURE_CHANGED: "disclosure_changed",
+  RELATIONSHIP_CHANGED: "relationship_changed",
+  INGESTED: "ingested",
+  PUBLISHED: "published",
   ARCHIVED: "archived",
   RESTORED: "restored",
-  DISCLOSED: "disclosed",
-  WITHHELD: "withheld",
-  RELATIONSHIP_ADDED: "relationship_added",
-  RELATIONSHIP_CHANGED: "relationship_changed",
-  DECISION: "decision",
-  CORRECTION: "correction",
-  REVIEW: "review",
   UNKNOWN: "unknown"
 });
 
@@ -35,38 +31,40 @@ function createHistoryEntry(input = {}) {
     next: input.next ?? null,
     reason: input.reason || null,
     sourceIds: Array.isArray(input.sourceIds) ? [...input.sourceIds] : [],
-    decisionId: input.decisionId || null,
-    metadata: input.metadata || {}
+    metadata: input.metadata && typeof input.metadata === "object"
+      ? { ...input.metadata }
+      : {}
   };
 }
 
-function validateHistoryEntry(entry = {}, sourceRegistry = [], existingHistory = []) {
+function validateHistoryEntry(entry = {}, sourceRegistry = []) {
   const errors = [];
-  const knownSources = new Set(
-    (Array.isArray(sourceRegistry) ? sourceRegistry : [])
-      .map((source) => source && source.id)
-      .filter(Boolean)
-  );
-  const existingIds = new Set(
-    (Array.isArray(existingHistory) ? existingHistory : [])
-      .map((item) => item && item.id)
-      .filter(Boolean)
-  );
+  const value = entry || {};
+  const sources = Array.isArray(sourceRegistry) ? sourceRegistry : [];
+  const sourceIds = new Set(sources.map((source) => source && source.id).filter(Boolean));
 
-  if (!entry || typeof entry !== "object") errors.push("History entry must be an object.");
-  if (!entry.id || typeof entry.id !== "string") errors.push("History entry must have a string id.");
-  if (entry.id && existingIds.has(entry.id)) errors.push("Duplicate history entry id.");
-  if (!entry.recordId || typeof entry.recordId !== "string") errors.push("History entry must have a recordId.");
-  if (!entry.timestamp || Number.isNaN(Date.parse(entry.timestamp))) errors.push("History entry must have a valid timestamp.");
-  if (!Object.values(HISTORY_EVENTS).includes(entry.event)) errors.push("Invalid history event.");
-  if (!Array.isArray(entry.sourceIds)) errors.push("History sourceIds must be an array.");
+  if (!value.id || typeof value.id !== "string") {
+    errors.push("History entry must have a string id.");
+  }
 
-  if (Array.isArray(entry.sourceIds)) {
-    entry.sourceIds.forEach((sourceId) => {
-      if (typeof sourceId !== "string" || !sourceId.trim()) {
-        errors.push("History sourceIds must contain non-empty strings.");
-      } else if (knownSources.size > 0 && !knownSources.has(sourceId)) {
-        errors.push("History references an unknown source id: " + sourceId);
+  if (!value.timestamp || Number.isNaN(Date.parse(value.timestamp))) {
+    errors.push("History entry must have a valid timestamp.");
+  }
+
+  if (!Object.values(HISTORY_EVENTS).includes(value.event)) {
+    errors.push("Invalid history event.");
+  }
+
+  if (!value.actor || typeof value.actor !== "string") {
+    errors.push("History entry must have a string actor.");
+  }
+
+  if (!Array.isArray(value.sourceIds)) {
+    errors.push("History sourceIds must be an array.");
+  } else if (sourceIds.size > 0) {
+    value.sourceIds.forEach((sourceId) => {
+      if (typeof sourceId !== "string" || !sourceIds.has(sourceId)) {
+        errors.push("History entry references an unknown source.");
       }
     });
   }
@@ -74,39 +72,32 @@ function validateHistoryEntry(entry = {}, sourceRegistry = [], existingHistory =
   return { valid: errors.length === 0, errors };
 }
 
-function appendHistory(input = {}, options = {}) {
+function appendHistory(input = {}, sourceRegistry = []) {
   const entry = createHistoryEntry(input);
-  const validation = validateHistoryEntry(
-    entry,
-    options.sources || [],
-    ESCIE_HISTORY
-  );
+  const validation = validateHistoryEntry(entry, sourceRegistry);
 
   if (!validation.valid) {
     return { entry, valid: false, errors: validation.errors };
   }
 
-  ESCIE_HISTORY.push(entry);
+  if (ESCIE_HISTORY.some((item) => item.id === entry.id)) {
+    return { entry, valid: false, errors: ["Duplicate history id."] };
+  }
+
+  ESCIE_HISTORY.push(Object.freeze(entry));
+
+  if (typeof window !== "undefined" && window.ESCIE_EVENTS) {
+    window.ESCIE_EVENTS.emit("history:appended", { entry });
+  }
+
   return { entry, valid: true, errors: [] };
-}
-
-function getHistory(recordId) {
-  if (!recordId) return [];
-  return ESCIE_HISTORY.filter((entry) => entry.recordId === recordId);
-}
-
-function latestHistory(recordId) {
-  const entries = getHistory(recordId);
-  return entries.length ? entries[entries.length - 1] : null;
 }
 
 const ESCIE_HISTORY_API = {
   EVENTS: HISTORY_EVENTS,
   create: createHistoryEntry,
   validate: validateHistoryEntry,
-  append: appendHistory,
-  get: getHistory,
-  latest: latestHistory
+  append: appendHistory
 };
 
 if (typeof window !== "undefined") {
@@ -120,8 +111,6 @@ if (typeof module !== "undefined" && module.exports) {
     ...ESCIE_HISTORY_API,
     createHistoryEntry,
     validateHistoryEntry,
-    appendHistory,
-    getHistory,
-    latestHistory
+    appendHistory
   };
 }
