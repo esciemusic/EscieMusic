@@ -10,6 +10,7 @@
  const HOSTS=["youtube.com","www.youtube.com","youtu.be","www.youtube-nocookie.com","youtube-nocookie.com","vimeo.com","player.vimeo.com"];
  const MEDIA_CLEANUPS=new WeakMap();
  let SECTION_OBSERVER=null;
+ let RESIZE_HANDLER=null;
 
  function safeURL(value){
   if(typeof value!=="string"||!value.trim())return null;
@@ -77,6 +78,7 @@
 
  function init(){
   if(SECTION_OBSERVER){SECTION_OBSERVER.disconnect();SECTION_OBSERVER=null;}
+  if(RESIZE_HANDLER){window.removeEventListener("resize",RESIZE_HANDLER);RESIZE_HANDLER=null;}
   document.querySelectorAll(".section-visual").forEach(el=>{
 
    const cleanup=MEDIA_CLEANUPS.get(el);
@@ -119,7 +121,8 @@
     chooseActive();
    },{threshold:[0,.2,.35,.5,.7,1],rootMargin:"-12% 0px -12% 0px"});
    visuals.forEach(el=>SECTION_OBSERVER.observe(el));
-   window.addEventListener("resize",chooseActive,{passive:true});
+   RESIZE_HANDLER=chooseActive;
+   window.addEventListener("resize",RESIZE_HANDLER,{passive:true});
   }else{
    setActiveVisual(visuals[0]||null);
   }
