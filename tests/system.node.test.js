@@ -260,13 +260,13 @@ assert(appendedHistory2.entry.id === "history-test-001", "appended history shoul
 const duplicateHistory2 = history.append(historyEntry2, [registeredSource]);
 assert(duplicateHistory2.valid === false, "duplicate history id must be rejected");
 
-const invalidHistory = history.append({
+const invalidHistory2 = history.append({
   id: "history-test-invalid",
   event: "not-a-real-event",
   actor: "ESCIE",
   sourceIds: ["provenance-source"]
 }, [registeredSource]);
-assert(invalidHistory.valid === false, "invalid history event must be rejected");
+assert(invalidHistory2.valid === false, "invalid history event must be rejected");
 
 const chronologicalAudit = require("../brain/audit.js").auditHistorySequence([
   { id: "h1", timestamp: "2026-01-02T00:00:00Z" },
