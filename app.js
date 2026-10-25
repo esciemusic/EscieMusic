@@ -520,10 +520,9 @@
     const container = byId("archive-container");
     if (!container) return;
 
-    const registry=getGlobal("ESCIE_RECORD_REGISTRY",null);
     const archive=getAllPublicRecords().filter(record=>{
-      const manifest=registry&&registry.manifestFor?registry.manifestFor(recordId(record)):null;
-      return manifest ? manifest.archive : record.type==="archive";
+      const manifest=recordManifest(record);
+      return manifest ? manifest.sections.archive : record.type==="archive";
     });
     const visible=archive.filter(isPublic);
 
@@ -551,10 +550,9 @@
     const container = byId("investigation-container");
     if (!container) return;
 
-    const registry=getGlobal("ESCIE_RECORD_REGISTRY",null);
     const investigations=getAllPublicRecords().filter(record=>{
-      const manifest=registry&&registry.manifestFor?registry.manifestFor(recordId(record)):null;
-      return manifest ? manifest.investigation : record.type==="investigation";
+      const manifest=recordManifest(record);
+      return manifest ? manifest.sections.investigation : record.type==="investigation";
     });
     const visible=investigations.filter(isPublic);
 
@@ -607,17 +605,16 @@
     const container = byId("glass-eye-container");
     if (!container) return;
 
-    const registry=getGlobal("ESCIE_RECORD_REGISTRY",null);
     const records=getAllPublicRecords();
     const glassRecords=records.filter(record=>{
-      const manifest=registry&&registry.manifestFor?registry.manifestFor(recordId(record)):null;
-      return manifest ? manifest.glassEye : false;
+      const manifest=recordManifest(record);
+      return manifest ? manifest.sections.glassEye : false;
     });
     const music=glassRecords.filter(record=>record.type==="music");
     const projects=glassRecords.filter(record=>record.type==="project"||record.type==="body");
     const archive=glassRecords.filter(record=>{
-      const manifest=registry&&registry.manifestFor?registry.manifestFor(recordId(record)):null;
-      return manifest&&manifest.archive;
+      const manifest=recordManifest(record);
+      return manifest&&manifest.sections.archive;
     });
 
     container.innerHTML =
@@ -661,6 +658,27 @@
           references: typeof registry.referenceAudit === "function" ? registry.referenceAudit() : null
         }
       : null;
+  }
+
+  function recordManifest(record) {
+    const registry = getGlobal("ESCIE_RECORD_REGISTRY", null);
+    if (!registry || typeof registry.manifestFor !== "function" || !record) return null;
+    return registry.manifestFor(recordId(record));
+  }
+
+  function recordAppearsIn(record) {
+    const manifest = recordManifest(record);
+    return manifest && Array.isArray(manifest.appearsIn) ? manifest.appearsIn : [];
+  }
+
+  function sectionLabel(section) {
+    return ({
+      work:"WORK",
+      web:"THE WEB",
+      archive:"ARCHIVE",
+      investigation:"INVESTIGATION",
+      glassEye:"GLASS EYE"
+    })[section] || String(section || "").toUpperCase();
   }
 
   function recordContext(record) {
@@ -720,6 +738,9 @@
       '<dl class="record-facts"><div><dt>REALITY</dt><dd>' + escapeHTML(reality) + '</dd></div>' +
       '<div><dt>STATUS</dt><dd>' + escapeHTML(status) + '</dd></div>' +
       '<div><dt>ID</dt><dd>' + escapeHTML(recordId(record)) + '</dd></div></dl>' +
+      (recordAppearsIn(record).length ? '<div class="record-context record-appearance"><p class="eyebrow">APPEARS IN</p><p>' +
+        recordAppearsIn(record).map(section => '<button class="record-related-link record-section-link" type="button" data-section-target="' + escapeHTML(section) + '">' + escapeHTML(sectionLabel(section)) + '</button>').join("") +
+        '</p></div>' : '') +
       ((record.project || record.parent || record.source || record.origin || record.transformation || record.archive_state || record.certainty || record.knowledge) ?
         '<div class="record-context"><p class="eyebrow">PROVENANCE / STATE</p>' +
         (record.project ? '<p><strong>PROJECT</strong> ' + declaredReferenceLink(record.project) + '</p>' : '') +
