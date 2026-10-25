@@ -1412,7 +1412,7 @@
       return { ok: false, checkedAt: new Date().toISOString(), checks: [], failed: ["ESCIE_HEALTH"] };
     }
 
-    return health.check([
+    const report = health.check([
       "ESCIE_RECORD",
       "ESCIE_RELATIONSHIP",
       "ESCIE_SOURCE",
@@ -1423,8 +1423,19 @@
       "ESCIE_EVENTS",
       "ESCIE_PUBLISH_BUILD",
       "ESCIE_PUBLISH_VALIDATE",
-      "ESCIE_SEARCH_INDEX"
+      "ESCIE_SEARCH_INDEX",
+      "ESCIE_VISUALS",
+      "ESCIE_VISUALS_UI"
     ]);
+
+    const visualAudit = ESCIE_RUNTIME.visualAudit();
+    report.visuals = visualAudit;
+    if (!visualAudit.ok) {
+      report.ok = false;
+      report.failed = report.failed.concat(["ESCIE_VISUALS_AUDIT"]);
+    }
+
+    return report;
   };
   ESCIE_RUNTIME.render = render;
   ESCIE_RUNTIME.initialize = initialize;
