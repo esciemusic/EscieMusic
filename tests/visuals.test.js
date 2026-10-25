@@ -20,6 +20,7 @@
   assert(focus([{top:0,bottom:800,left:0,right:1000}],1000,800)===0,"single visual must win");
   assert(focus([{top:0,bottom:800,left:0,right:1000},{top:700,bottom:900,left:0,right:1000}],1000,800)===0,"stronger visible area must win");
   assert(focus([{top:-200,bottom:200,left:0,right:1000},{top:300,bottom:700,left:0,right:1000}],1000,800)===1,"center proximity must resolve focus");
+  assert(focus([{top:0,bottom:800,left:0,right:1000},{top:0,bottom:800,left:0,right:1000}],1000,800)===0,"equal candidates must resolve to the first deterministically");
 
   assert(typeof window.ESCIE_VISUALS_UI.renderAsset==="function","visual UI renderer must exist");
   assert(typeof window.ESCIE_VISUALS_UI.renderAsset==="function","visual asset renderer must exist");
