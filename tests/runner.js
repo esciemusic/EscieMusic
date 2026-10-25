@@ -14,6 +14,7 @@
     ["relationship", "ESCIE_TEST_RELATIONSHIP"],
     ["brain", "ESCIE_TEST_BRAIN"],
     ["navigation", "ESCIE_TEST_NAVIGATION"],
+    ["responsive", "ESCIE_TEST_RESPONSIVE"],
     ["signal", "ESCIE_TEST_SIGNAL"]
   ];
 
