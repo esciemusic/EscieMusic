@@ -1,71 +1,48 @@
-const ESCIE_PROJECTS = [
+/*
+ * ESCIE PROJECT REGISTRY
+ *
+ * Projects are bodies of work.
+ * A project groups existing records; it does not manufacture them.
+ *
+ * Project metadata may describe presentation and editorial structure.
+ * Individual works belong in the appropriate record registry.
+ */
 
+const ESCIE_PROJECTS = [
   {
     id: "bam-by-any-means",
-
     artist: "ESCIE",
-
     title: "BAM: BY ANY MEANS",
-
     type: "project",
-
-    year: 2027,
-
-    status: "hidden",
-
+    status: "development",
     published: false,
 
-    /*
-      Hidden presentation layer.
-
-      This is never displayed to visitors.
-    */
-
-    narration: "unknown",
-
     description:
-      "ESCIE's first major transmission.",
+      "ESCIE's debut project and first transmission.",
+
+    questions: [
+      "WHO MADE HIM?",
+      "WHAT DID HE BECOME?",
+      "WHAT WILL HE MAKE?"
+    ],
 
     structure: [
-
-      {
-        number: "001",
-        title: "THE MYTH",
-        narration: "myth"
-      },
-
-      {
-        number: "002",
-        title: "THE MONSTER",
-        narration: "psychological"
-      },
-
-      {
-        number: "003",
-        title: "THE FATHER",
-        narration: "memory"
-      },
-
-      {
-        number: "004",
-        title: "THE INHERITANCE",
-        narration: "street"
-      },
-
-      {
-        number: "005",
-        title: "THE TRAP",
-        narration: "documentary"
-      },
-
-      {
-        number: "006",
-        title: "THE HUMAN",
-        narration: "unknown"
-      }
-
+      { number: "001", title: "DALLAS '63", role: "THE MYTH" },
+      { number: "002", title: "NO SHADE", role: "THE MONSTER" },
+      { number: "003", title: "I NEED A FLEX", role: "THE FATHER" },
+      { number: "004", title: "BACC 2 BASICS", role: "THE TRAP" },
+      { number: "005", title: "SANA, SANA, COLITA DE RANA", role: "THE INHERITANCE" },
+      { number: "006", title: "PUMPY TO THE CHEST", role: "THE CONSEQUENCE" },
+      { number: "007", title: "LOADING THE CLIP", role: "THE EVIDENCE" },
+      { number: "008", title: "DICHOTOMY", role: "THE HUMAN" }
     ]
-
   }
-
 ];
+
+if (typeof window !== "undefined") {
+  window.ESCIE_PROJECTS = ESCIE_PROJECTS;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = ESCIE_PROJECTS;
+}
