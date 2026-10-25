@@ -212,7 +212,7 @@ assert(history.validateHistoryEntry(createdHistory, [registeredSource], []).vali
 const appendedHistory = history.appendHistory(createdHistory, { sources: [registeredSource] });
 assert(appendedHistory.valid === true, "valid history entry should append");
 const duplicateHistory = history.appendHistory(createdHistory, { sources: [registeredSource] });
-assert(duplicateHistory2.valid === false, "duplicate history id must be rejected");
+assert(duplicateHistory.valid === false, "duplicate history id must be rejected");
 const invalidHistory = history.createHistoryEntry({
   id: "history-missing-source",
   recordId: "provenance-record",
