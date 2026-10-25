@@ -770,4 +770,10 @@ GLOBAL CONTRACT
 ============================================================
 */
 
-window.ESCIE_RECORD = ESCIE_RECORD;
+if (typeof window !== "undefined") {
+  window.ESCIE_RECORD = ESCIE_RECORD;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = ESCIE_RECORD;
+}
