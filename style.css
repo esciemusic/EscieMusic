@@ -1944,3 +1944,40 @@ body.inspector-open{overflow:hidden}
 .escie-media-image img:hover {
   filter: saturate(.88) contrast(1);
 }
+
+
+/* =========================================================
+   EXTERNAL SIGNAL / SOCIAL
+   Sparse links only — no platform-card treatment.
+   ========================================================= */
+.about-social{
+  max-width:850px;
+  margin-top:42px;
+  border-top:1px solid var(--line);
+  padding-top:22px;
+}
+.about-social .eyebrow{margin:0 0 14px;color:var(--faint);font-size:8px;letter-spacing:.2em;text-transform:uppercase}
+.about-social-list{display:flex;flex-wrap:wrap;gap:0}
+.about-social-link{
+  display:inline-flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+  min-width:150px;
+  padding:13px 0;
+  margin-right:30px;
+  border-bottom:1px solid rgba(242,242,237,.09);
+  color:var(--muted);
+  font-size:9px;
+  letter-spacing:.18em;
+  text-decoration:none;
+  text-transform:uppercase;
+  transition:color 180ms ease,border-color 180ms ease;
+}
+.about-social-link:hover,.about-social-link:focus-visible{
+  color:var(--white);
+  border-color:rgba(242,242,237,.35);
+}
+@media(max-width:700px){
+  .about-social-link{min-width:135px;margin-right:18px}
+}
