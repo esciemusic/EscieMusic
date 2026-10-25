@@ -2325,3 +2325,65 @@ body.inspector-open{overflow:hidden}
   opacity:calc(var(--visual-intensity, .7) * .52);
   filter:grayscale(.82) contrast(.96) saturate(.42);
 }
+
+/* =========================================================
+   GENERATED VISUAL ATLAS
+   The generated visual is an atmospheric presentation layer.
+   It does not create canon or publication state.
+   ========================================================= */
+.section-visual[data-visual-section]{
+  background-repeat:no-repeat;
+  background-size:200% auto;
+  background-blend-mode:screen;
+}
+.section-visual-now{
+  background-image:
+    linear-gradient(180deg,rgba(5,5,5,.20),rgba(5,5,5,.46)),
+    url("assets/visuals/escie-visual-atlas.webp");
+  background-position:center top;
+}
+.section-visual-work{
+  background-image:
+    linear-gradient(180deg,rgba(5,5,5,.20),rgba(5,5,5,.46)),
+    url("assets/visuals/escie-visual-atlas.webp");
+  background-position:right top;
+}
+.section-visual-web{
+  background-image:
+    linear-gradient(180deg,rgba(5,5,5,.20),rgba(5,5,5,.46)),
+    url("assets/visuals/escie-visual-atlas.webp");
+  background-position:left 34%;
+}
+.section-visual-archive{
+  background-image:
+    linear-gradient(180deg,rgba(5,5,5,.20),rgba(5,5,5,.46)),
+    url("assets/visuals/escie-visual-atlas.webp");
+  background-position:right 34%;
+}
+.section-visual-investigation{
+  background-image:
+    linear-gradient(180deg,rgba(5,5,5,.20),rgba(5,5,5,.46)),
+    url("assets/visuals/escie-visual-atlas.webp");
+  background-position:left 68%;
+}
+.section-visual-glass{
+  background-image:
+    linear-gradient(180deg,rgba(5,5,5,.20),rgba(5,5,5,.46)),
+    url("assets/visuals/escie-visual-atlas.webp");
+  background-position:right 68%;
+}
+.section-visual-escie{
+  background-size:100% auto;
+  background-position:center bottom;
+  background-image:
+    linear-gradient(180deg,rgba(5,5,5,.14),rgba(5,5,5,.40)),
+    url("assets/visuals/escie-visual-atlas.webp");
+}
+@media(max-width:700px){
+  .section-visual[data-visual-section]{
+    background-size:200% auto;
+  }
+  .section-visual-escie{
+    background-size:100% auto;
+  }
+}
