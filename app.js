@@ -839,6 +839,8 @@
     return health.check([
       "ESCIE_RECORD",
       "ESCIE_RELATIONSHIP",
+      "ESCIE_SOURCE",
+      "ESCIE_PROVENANCE",
       "ESCIE_STATE",
       "ESCIE_EVENTS",
       "ESCIE_PUBLISH_BUILD",
