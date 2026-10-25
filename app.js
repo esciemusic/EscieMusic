@@ -567,12 +567,15 @@
     }
 
     container.innerHTML =
-      '<div class="archive-status"><p class="eyebrow">' + visible.length + ' PUBLIC RECORD' + (visible.length === 1 ? '' : 'S') + '</p></div>' +
+      '<div class="archive-status"><p class="eyebrow">' + visible.length + ' PUBLIC RECORD' + (visible.length === 1 ? '' : 'S') + '</p><p>Preserved material is shown as it enters the public record. Nothing is filled in merely because the archive has space for it.</p></div>' +
       visible.map(record =>
       '<article class="archive-entry" data-record-id="' +
       escapeHTML(recordId(record)) + '"' + narrationAttributes(record) + '>' +
-        '<h3>' + escapeHTML(recordTitle(record)) + "</h3>" +
-      "</article>"
+        '<time>' + escapeHTML(record.date || record.date_start || record.status || "UNDATED") + '</time>' +
+        '<div><h3>' + escapeHTML(recordTitle(record)) + "</h3>" +
+        (record.description ? '<p>' + escapeHTML(record.description) + '</p>' : '') +
+        (record.reality || record.reality_level ? '<p class="record-action">' + escapeHTML(record.reality || record.reality_level) + '</p>' : '') +
+        '</div></article>'
     ).join("");
   }
 
@@ -598,11 +601,14 @@
     }
 
     container.innerHTML =
-      '<div class="investigation-status"><p class="eyebrow">' + visible.length + ' ACTIVE PUBLIC CASE' + (visible.length === 1 ? '' : 'S') + '</p></div>' +
+      '<div class="investigation-status"><p class="eyebrow">' + visible.length + ' ACTIVE PUBLIC CASE' + (visible.length === 1 ? '' : 'S') + '</p><p>Questions are separated from evidence. A public case can remain unresolved without the interface inventing an answer.</p></div>' +
       visible.map(item =>
       '<article class="investigation-case" data-record-id="' +
       escapeHTML(recordId(item)) + '"' + narrationAttributes(item) + '>' +
+        '<p class="eyebrow">' + escapeHTML(item.status || "OPEN") + '</p>' +
         '<h3>' + escapeHTML(recordTitle(item)) + "</h3>" +
+        (item.description ? '<p>' + escapeHTML(item.description) + '</p>' : '') +
+        (item.reality || item.reality_level ? '<p class="record-action">' + escapeHTML(item.reality || item.reality_level) + '</p>' : '') +
       "</article>"
     ).join("");
   }
