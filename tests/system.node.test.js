@@ -4,6 +4,8 @@ const sources = require("../core/sources.js");
 const history = require("../core/history.js");
 const control = require("../control/control.js");
 const proposals = require("../control/proposals.js");
+
+global.window = { ESCIE_EVENTS: events };
 const decisions = require("../control/decisions.js");
 const disclosure = require("../security/disclosure.js");
 const sanitize = require("../security/sanitize.js");
