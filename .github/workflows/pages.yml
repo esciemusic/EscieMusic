@@ -71,7 +71,7 @@ jobs:
           node tests/site-loads.node.test.js
 
       - name: Upload site artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: .
 
