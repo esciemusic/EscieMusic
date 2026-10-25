@@ -26,6 +26,8 @@
   assert(normalizeAsset({url:"javascript:alert(1)",type:"image"})!==null,"data normalizer should preserve candidate URLs for presentation-layer validation");
   assert(normalizeAsset({url:"https://example.com/a.webp",type:"unknown"})===null,"visual asset normalizer must reject unknown types");
   assert(audit(items).ok===true,"visual registry audit must pass");
+  assert(window.ESCIE_RUNTIME&&typeof window.ESCIE_RUNTIME.visualAudit==="function","runtime visual audit must be exposed");
+  assert(window.ESCIE_RUNTIME.visualAudit().ok===true,"runtime visual audit must pass");
   const malformed=[{id:"bad",section:"now",mode:"x",intensity:.5,status:"active",asset:{type:"image"}}];
   assert(audit(malformed).invalidAssets.includes("bad"),"visual audit must identify malformed assets");
   const normalized=normalize(items);
