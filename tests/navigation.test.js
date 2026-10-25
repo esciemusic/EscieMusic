@@ -20,9 +20,9 @@
       "WORK",
       "WEB",
       "ARCHIVE",
-      "CASES",
-      "ESCIE",
-      "GLASS EYE"
+      "INVESTIGATION",
+      "GLASS EYE",
+      "ESCIE"
     ];
 
     required.forEach(function (label) {
