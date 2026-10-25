@@ -256,7 +256,7 @@ body[data-time="night"] .sky {
 
   height: var(--header-height);
 
-  z-index: 100;
+  z-index:  200;
 
   display: flex;
 
@@ -406,7 +406,7 @@ body[data-time="night"] .sky {
 
   inset: 0;
 
-  z-index: 101;
+  z-index:  201;
 
   display: flex;
 
@@ -514,7 +514,7 @@ body.menu-open .index-navigation.is-open {
 }
 
 .index-trigger {
-  z-index: 102;
+  z-index:  202;
 }
 
 
