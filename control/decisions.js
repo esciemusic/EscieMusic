@@ -54,7 +54,9 @@ function recordDecision(input = {}) {
     });
 
     if (result && result.valid !== false && result.entry) {
-      decision.historyEntryId = result.entry.id;
+      if (result && result.valid && result.entry) {
+        decision.historyEntryId = result.entry.id;
+      }
     }
   }
 
