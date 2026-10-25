@@ -68,7 +68,10 @@
   observer.observe(el);
   const onVisibility=()=>{if(document.hidden)media.pause();else if(!reducedMotion()&&el.getBoundingClientRect().bottom>0&&el.getBoundingClientRect().top<window.innerHeight)media.play().catch(()=>{});};
   document.addEventListener("visibilitychange",onVisibility);
-  MEDIA_CLEANUPS.set(el,()=>document.removeEventListener("visibilitychange",onVisibility));
+  MEDIA_CLEANUPS.set(el,()=>{
+    observer.disconnect();
+    document.removeEventListener("visibilitychange",onVisibility);
+  });
 }
 
  function init(){
