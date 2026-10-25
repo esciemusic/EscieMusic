@@ -383,7 +383,7 @@
       return;
     }
 
-    container.innerHTML = visible.map(track =>
+    container.innerHTML = motifMarkup("work") + visible.map(track =>
       '<article class="music-card" data-record-type="art" data-record-id="' +
       escapeHTML(recordId(track)) + '"' + narrationAttributes(track) + '>' +
         '<p class="music-card-index">' + escapeHTML(track.number || "ART") + "</p>" +
