@@ -1,7 +1,7 @@
 /*
  * ESCIE TESTS — RELEASE FIREWALL SOURCE
  *
- * The public repository must contain only transmitted BAM metadata.
+ * Public source must contain no release queue material.
  * Future release metadata belongs only in the GitHub Actions secret queue.
  */
 const fs=require("fs");
@@ -26,6 +26,7 @@ function run(){
   assert((projects.match(/trackId:/g)||[]).length===0,"public project source must contain no BAM structure");
   assert(!relationships.includes("bam-001-dallas-63")&&!relationships.includes("bam-by-any-means"),"public relationships must not contain BAM metadata");
   assert(runtime.includes("music:[]")&&runtime.includes("relationships:[]"),"checked-in release runtime must remain empty");
+  assert(runtime.includes("projectStructures:{}")&&runtime.includes("projects:[]"),"checked-in release runtime must declare all generated collections");
   assert(!injector.includes("DALLAS '63")&&!injector.includes("PUMPY TO THE CHEST")&&!injector.includes("I NEED A FLEX"),"release injector source must not contain release titles");
   return {passed:true};
 }
