@@ -12,8 +12,8 @@
     "TRANSMISSION // PENDING"
   ];
 
-  function hasPublicTransmission(){
-    const registry=typeof window!=="undefined"?window.ESCIE_RECORD_REGISTRY:null;
+  function hasPublicTransmission(sourceRegistry){
+    const registry=sourceRegistry||((typeof window!=="undefined")?window.ESCIE_RECORD_REGISTRY:null);
     if(!registry||typeof registry.allPublicRecords!=="function") return true;
     return registry.allPublicRecords().some(record=>record&&(record.type==="music"||record.type==="project"));
   }
