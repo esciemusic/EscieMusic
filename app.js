@@ -846,6 +846,26 @@
         return;
       }
 
+      const sectionTrigger = event.target.closest("[data-section-target]");
+      if (sectionTrigger) {
+        const section = sectionTrigger.getAttribute("data-section-target");
+        const target = ({
+          work:"art",
+          web:"web",
+          archive:"archives",
+          investigation:"investigation",
+          glassEye:"glass-eye"
+        })[section];
+        if (target) {
+          modal.hidden = true;
+          document.body.classList.remove("inspector-open");
+          const element = byId(target);
+          if (element) element.scrollIntoView({behavior:"smooth",block:"start"});
+          window.location.hash = target;
+        }
+        return;
+      }
+
       const symbolTrigger = event.target.closest("[data-symbol-id]");
       if (symbolTrigger) {
         showSymbolInspector(symbolTrigger.getAttribute("data-symbol-id"));
