@@ -284,6 +284,13 @@
       "</p>" +
       '<p>' +
       escapeHTML(site.tagline || "REALITY WITH THE SIGNAL DISTORTED.") +
+      "</p>" +
+      '<p class="about-location">' +
+      escapeHTML(site.location || "Montréal, Canada") +
+      " / " +
+      escapeHTML(String(site.publicYear || new Date().getFullYear())) +
+      " / " +
+      escapeHTML(site.status || "development") +
       "</p>";
   }
 
