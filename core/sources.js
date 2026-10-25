@@ -114,6 +114,10 @@ if (typeof window !== "undefined") {
 if (typeof module !== "undefined" && module.exports) {
   module.exports = {
     ESCIE_SOURCES,
-    ...ESCIE_SOURCE_API
+    ...ESCIE_SOURCE_API,
+    createSource,
+    validateSource,
+    registerSource,
+    getSource
   };
 }
