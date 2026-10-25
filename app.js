@@ -472,6 +472,7 @@
           state.transmissionLevel = signal && signal.level || 0;
         }
         renderNow();
+        applyUIState();
       });
 
       events.on("signal:cleared", () => {
@@ -480,6 +481,7 @@
           state.transmissionLevel = 0;
         }
         renderNow();
+        applyUIState();
       });
     }
   }
@@ -577,6 +579,7 @@
     renderInvestigation();
     renderAbout();
     updateTimeState();
+    applyUIState();
   }
 
   function initialize() {
