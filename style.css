@@ -714,6 +714,125 @@ body.menu-open .index-navigation.is-open {
 
 
 /* =========================================================
+   ORGANIC PAGE RHYTHM
+   ========================================================= */
+
+html.route-shift .site-section {
+  animation: escie-route-breath 720ms var(--slow) both;
+}
+
+@keyframes escie-route-breath {
+  from {
+    opacity: .82;
+    transform: translateY(7px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.site-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: .42;
+  background:
+    radial-gradient(
+      ellipse at 50% 0%,
+      rgba(110, 125, 142, .055),
+      transparent 58%
+    );
+}
+
+.site-section:nth-of-type(3n + 1)::before {
+  background:
+    radial-gradient(
+      ellipse at 15% 25%,
+      rgba(115, 128, 139, .045),
+      transparent 52%
+    );
+}
+
+.site-section:nth-of-type(3n + 2)::before {
+  background:
+    radial-gradient(
+      ellipse at 82% 65%,
+      rgba(86, 99, 112, .045),
+      transparent 55%
+    );
+}
+
+.site-section:nth-of-type(3n)::before {
+  background:
+    radial-gradient(
+      ellipse at 48% 90%,
+      rgba(132, 121, 104, .035),
+      transparent 58%
+    );
+}
+
+.site-section + .site-section {
+  box-shadow: inset 0 18px 42px -42px rgba(242,242,237,.34);
+}
+
+.section-inner {
+  position: relative;
+}
+
+.section-visual {
+  will-change: opacity, transform;
+}
+
+.section-visual.visual-visible {
+  opacity: .52;
+}
+
+.section-visual.visual-active {
+  opacity: .76;
+}
+
+.section-visual.visual-active::after {
+  background:
+    linear-gradient(90deg, transparent, rgba(242,242,237,.035), transparent),
+    repeating-linear-gradient(0deg, transparent 0, transparent 5px, rgba(255,255,255,.028) 6px);
+}
+
+body[data-route="entry"] .entry-section,
+body[data-route="now"] #now,
+body[data-route="art"] #art,
+body[data-route="web"] #web,
+body[data-route="archives"] #archives,
+body[data-route="investigation"] #investigation,
+body[data-route="glass-eye"] #glass-eye,
+body[data-route="escie"] #escie {
+  scroll-margin-top: calc(var(--header-height) + 18px);
+}
+
+@media (max-width: 700px) {
+  .site-section {
+    padding-top: 104px;
+    padding-bottom: 104px;
+  }
+
+  .site-section + .site-section {
+    box-shadow: inset 0 14px 34px -38px rgba(242,242,237,.3);
+  }
+
+  .section-visual {
+    margin-bottom: 30px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.route-shift .site-section {
+    animation: none;
+  }
+}
+
+/* =========================================================
    SECTIONS
    ========================================================= */
 
