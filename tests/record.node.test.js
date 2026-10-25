@@ -1,4 +1,5 @@
 const assert = require("assert");
+global.window = {};
 const record = require("../record.js");
 
 const publicRecord = record.create({
