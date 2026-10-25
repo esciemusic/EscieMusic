@@ -161,7 +161,7 @@
   MEDIA_QUERY=window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
   if(MEDIA_QUERY){
    MEDIA_QUERY_HANDLER=()=>{
-    if(MEDIA_QUERY.matches) visuals.forEach(el=>el.classList.remove("visual-active"));
+    if(MEDIA_QUERY.matches) visuals.forEach(el=>{el.classList.remove("visual-active");el.classList.remove("visitor-present");});
     else if(FOCUS_REFRESH) FOCUS_REFRESH();
    };
    if(MEDIA_QUERY.addEventListener) MEDIA_QUERY.addEventListener("change",MEDIA_QUERY_HANDLER);
