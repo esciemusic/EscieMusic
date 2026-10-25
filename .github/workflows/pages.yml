@@ -35,7 +35,11 @@ jobs:
 
       - name: Validate JavaScript contracts
         run: |
-          find . -name "*.js" -not -path "./.git/*" -print0 | xargs -0 -n1 node --check
+          set -e
+          while IFS= read -r -d "" file; do
+            echo "Checking $file"
+            node --check "$file"
+          done < <(find . -name "*.js" -not -path "./.git/*" -print0)
 
       - name: Run private release injector test
         run: |
