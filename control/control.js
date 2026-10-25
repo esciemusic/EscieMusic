@@ -34,6 +34,30 @@ const ESCIE_CONTROL = {
     };
 
     this.items.push(item);
+
+    if (typeof window !== "undefined" &&
+        window.ESCIE_EVENTS &&
+        typeof window.ESCIE_EVENTS.emit === "function") {
+      window.ESCIE_EVENTS.emit("control:item-added", { item });
+    }
+
+    return item;
+  },
+
+  resolve(id, status = "resolved", metadata = {}) {
+    const item = this.items.find((entry) => entry.id === id);
+    if (!item) return null;
+
+    item.status = status;
+    item.resolvedAt = new Date().toISOString();
+    item.resolution = metadata || null;
+
+    if (typeof window !== "undefined" &&
+        window.ESCIE_EVENTS &&
+        typeof window.ESCIE_EVENTS.emit === "function") {
+      window.ESCIE_EVENTS.emit("control:item-resolved", { item });
+    }
+
     return item;
   },
 
