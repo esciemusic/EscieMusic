@@ -1328,9 +1328,14 @@
 
     const navigate = () => {
       const route = window.location.hash.replace(/^#/, "") || "entry";
+      const resolved = typeof router.resolve === "function" ? router.resolve(route) : null;
+      document.body.dataset.route = resolved || route || "entry";
+      document.documentElement.classList.remove("route-shift");
+      void document.documentElement.offsetWidth;
+      document.documentElement.classList.add("route-shift");
       renderNavigation();
-      if (typeof router.navigate === "function" && router.resolve(route)) {
-        router.navigate(route);
+      if (resolved && typeof router.navigate === "function") {
+        router.navigate(resolved);
       }
     };
 
