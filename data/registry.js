@@ -133,6 +133,18 @@
       if(record.type!=="project"||record.release_mode!=="progressive") return;
       const tracks=currentMusic().filter(track=>track&&track.project===record.id);
       if(!tracks.length) errors.push({record:record.id,error:"progressive project has no release-controlled tracks"});
+      const structure=Array.isArray(record.structure)?record.structure:[];
+      const structureIds=structure.map(part=>part&&part.trackId).filter(Boolean);
+      const uniqueStructureIds=new Set(structureIds);
+      if(structureIds.length!==uniqueStructureIds.size){
+        errors.push({record:record.id,error:"progressive project structure contains duplicate track ids"});
+      }
+      structureIds.forEach(trackId=>{
+        const track=current.byId[trackId];
+        if(!track) errors.push({record:record.id,track:trackId,error:"project structure references missing track"});
+        else if(track.type!=="music") errors.push({record:record.id,track:trackId,error:"project structure reference is not a music record"});
+        else if(track.project!==record.id) errors.push({record:record.id,track:trackId,error:"project structure track belongs to another project"});
+      });
       tracks.forEach(track=>{
         if(!["locked","released"].includes(track.release_status)){
           errors.push({record:track.id,error:"release_status must be locked or released"});
@@ -269,5 +281,5 @@
     });
     return {ok:missing.length===0,missing};
   }
-  window.ESCIE_RECORD_REGISTRY={version:"1.9.0",build,records:()=>build().records,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,releaseAudit,manifestFor,filter,contextFor,publicRelationships,relationshipTypes,relationshipCategories,relationshipsFor,relationshipCounts,releaseVisible};
+  window.ESCIE_RECORD_REGISTRY={version:"1.10.0",build,records:()=>build().records,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,releaseAudit,manifestFor,filter,contextFor,publicRelationships,relationshipTypes,relationshipCategories,relationshipsFor,relationshipCounts,releaseVisible};
 })();
