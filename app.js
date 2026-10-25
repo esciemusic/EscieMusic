@@ -408,14 +408,18 @@
       return;
     }
 
-    container.innerHTML = motifMarkup("work") + visible.map(track =>
-      '<article class="music-card" data-record-type="art" data-record-id="' +
+    container.innerHTML = motifMarkup("work") + visible.map(track => {
+      const context = recordContext(track);
+      const parent = context.parents[0];
+      const parentRecord = parent ? getAllRecords().find(item => recordId(item) === parent.record) : null;
+      return '<article class="music-card" data-record-type="art" data-record-id="' +
       escapeHTML(recordId(track)) + '"' + narrationAttributes(track) + '>' +
         '<p class="music-card-index">' + escapeHTML(track.number || "ART") + "</p>" +
         '<div class="music-card-content"><h3>' + escapeHTML(recordTitle(track)) + "</h3>" +
         (track.role ? "<p>" + escapeHTML(track.role) + "</p>" : "") +
-        "</div></article>"
-    ).join("");
+        (parentRecord ? '<p class="music-card-section">PART OF / ' + escapeHTML(recordTitle(parentRecord)) + '</p>' : '') +
+        "</div></article>";
+    }).join("");
   }
 
   function renderProjects() {
