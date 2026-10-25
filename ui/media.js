@@ -49,6 +49,35 @@
     return IFRAME_HOSTS.some(allowed=>host===allowed||host.endsWith("."+allowed));
   }
 
+  function embedURL(url){
+    const host=String(url.hostname||"").toLowerCase();
+    const path=url.pathname||"";
+    if(host==="youtu.be"){
+      const id=path.replace(/^\//,"").split("/")[0];
+      return id?"https://www.youtube-nocookie.com/embed/"+encodeURIComponent(id)+"?rel=0":null;
+    }
+    if(host==="youtube.com"||host==="www.youtube.com"||host==="youtube-nocookie.com"||host==="www.youtube-nocookie.com"){
+      const shorts=path.match(/^\/shorts\/([^/]+)/i);
+      const watch=url.searchParams.get("v");
+      const embedded=(path.match(/^\/embed\/([^/]+)/i)||[])[1];
+      const id=shorts?shorts[1]:(embedded||watch);
+      return id?"https://www.youtube-nocookie.com/embed/"+encodeURIComponent(id)+"?rel=0":null;
+    }
+    if(host==="vimeo.com"){
+      const id=(path.match(/\/([0-9]+)$/)||[])[1];
+      return id?"https://player.vimeo.com/video/"+id:null;
+    }
+    if(host==="player.vimeo.com") return url.href;
+    if(host==="open.spotify.com"){
+      const match=path.match(/^\/(track|album|playlist|episode|show)\/([^/]+)/i);
+      return match?"https://open.spotify.com/embed/"+match[1]+"/"+encodeURIComponent(match[2]):url.href;
+    }
+    if(host==="soundcloud.com"){
+      return "https://w.soundcloud.com/player/?url="+encodeURIComponent(url.href)+"&auto_play=false&hide_related=true&show_comments=false";
+    }
+    return url.href;
+  }
+
   function kind(item,url){
     const declared=String(item.type||item.kind||"").toLowerCase();
     if(declared==="audio"||declared==="video"||declared==="iframe"||declared==="embed") return declared;
@@ -86,9 +115,11 @@
 
     if(mediaKind==="iframe"){
       if(!hostAllowed(url)) return "";
-      const allow=String(media.allow||"autoplay; fullscreen; picture-in-picture").replace(/[^a-zA-Z0-9;= _-]/g,"");
+      const embed=embedURL(url);
+      if(!embed) return "";
+      const allow=String(media.allow||"fullscreen; picture-in-picture").replace(/[^a-zA-Z0-9;= _-]/g,"");
       return '<figure class="escie-media escie-media-embed" data-media-index="'+index+'">'+
-        label+'<iframe src="'+esc(url.href)+'" title="'+title+'" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="'+esc(allow)+'" allowfullscreen></iframe>'+
+        label+'<iframe src="'+esc(embed)+'" title="'+title+'" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="'+esc(allow)+'" allowfullscreen></iframe>'+
         caption+'</figure>';
     }
 
