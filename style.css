@@ -1621,3 +1621,48 @@ body.inspector-open{overflow:hidden}
 
 .node-link-stat{grid-column:1 / -1;color:var(--faint);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase}
 .information-node-stat{font-size:.58rem!important;letter-spacing:.14em;text-transform:uppercase}
+
+/* INSPECTOR CLOSE CONTROL — always obvious and reachable */
+.record-inspector-panel{position:relative;padding-top:72px}
+.record-inspector-close{
+  position:fixed;
+  top:18px;
+  right:18px;
+  z-index:20;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:88px;
+  min-height:42px;
+  padding:0 14px;
+  border:1px solid rgba(255,255,255,.55);
+  border-radius:2px;
+  background:#050505;
+  color:#fff;
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:.2em;
+  line-height:1;
+  text-transform:uppercase;
+  opacity:1;
+  box-shadow:0 4px 22px rgba(0,0,0,.65);
+  cursor:pointer;
+}
+.record-inspector-close:hover,
+.record-inspector-close:focus-visible{
+  color:#fff;
+  background:#151515;
+  border-color:#fff;
+  outline:2px solid rgba(255,255,255,.25);
+  outline-offset:3px;
+}
+.record-inspector-close::before{content:"×";margin-right:8px;font-size:16px;line-height:1}
+@media(max-width:700px){
+  .record-inspector-panel{padding-top:78px}
+  .record-inspector-close{
+    top:12px;
+    right:12px;
+    min-width:96px;
+    min-height:44px;
+  }
+}
