@@ -1701,6 +1701,11 @@ body.inspector-open{overflow:hidden}
   z-index: -1;
   pointer-events: none;
   overflow: hidden;
+  opacity: 0;
+  transition: opacity 900ms var(--slow);
+}
+
+.idle-universe .signal-chamber {
   opacity: .72;
 }
 
