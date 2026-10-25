@@ -393,7 +393,9 @@
       isPublic(record)
     );
 
-    return index.build(records);
+    const built = index.build(records);
+    ESCIE_RUNTIME.searchIndex = Array.isArray(built) ? built : [];
+    return ESCIE_RUNTIME.searchIndex;
   }
 
   function validatePublicBuild() {
