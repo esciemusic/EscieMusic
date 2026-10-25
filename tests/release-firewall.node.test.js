@@ -24,6 +24,7 @@ function run(){
   assert(!projects.includes("bam-by-any-means")&&!projects.includes("DALLAS '63"),"public project source must not contain BAM metadata");
   assert((projects.match(/trackId:/g)||[]).length===0,"public project source must contain no BAM structure");
   assert(!relationships.includes("bam-001-dallas-63")&&!relationships.includes("bam-by-any-means"),"public relationships must not contain BAM metadata");
+  assert(!injector.includes("bam-by-any-means"),"release injector source must not contain project-specific BAM identifiers");
   assert(!injector.includes("DALLAS '63")&&!injector.includes("PUMPY TO THE CHEST")&&!injector.includes("I NEED A FLEX"),"release injector source must not contain release titles");
   return {passed:true};
 }
