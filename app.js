@@ -1479,6 +1479,12 @@
     };
 
     button.addEventListener("click", toggleMenu);
+    button.addEventListener("pointerup", function (event) {
+      if (event.pointerType !== "mouse") {
+        event.preventDefault();
+        toggleMenu();
+      }
+    });
 
     nav.addEventListener("click", function (event) {
       const link = event.target.closest("a");
