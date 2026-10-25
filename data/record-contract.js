@@ -13,7 +13,7 @@ const ESCIE_RECORD_CONTRACT={
     "date","date_start","date_end",
     "people","locations","media","evidence","symbols","tags",
     "relationships","related_content","project","parent","source",
-    "origin","transformation","archive_state"
+    "origin","transformation","archive_state","release_status","release_mode"
   ]
 };
 
