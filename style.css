@@ -2407,6 +2407,21 @@ body.inspector-open{overflow:hidden}
   position:absolute;
   inset:0;
   z-index:0;
+.section-visual[data-visual-section]::before{
+  will-change:background-position,opacity,filter,transform;
+}
+.section-visual-media{
+  mix-blend-mode:screen;
+  opacity:calc(var(--visual-intensity, .7) * .30);
+  filter:grayscale(.9) contrast(.86) saturate(.28) brightness(.78);
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,black 14%,black 86%,transparent 100%);
+  mask-image:linear-gradient(180deg,transparent 0,black 14%,black 86%,transparent 100%);
+}
+.section-visual.has-visual-asset::after{
+  background:
+    linear-gradient(180deg,rgba(5,5,5,.24),transparent 38%,rgba(5,5,5,.34)),
+    repeating-linear-gradient(0deg,transparent 0,transparent 5px,rgba(255,255,255,.024) 6px);
+}
   background-image:url("assets/visuals/escie-visual-atlas.webp");
   background-repeat:no-repeat;
   background-size:200% auto;
