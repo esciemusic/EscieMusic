@@ -1,0 +1,52 @@
+/*
+ * ESCIE SEARCH — INDEX
+ *
+ * Search indexes are derived data. They help people find existing ESCIE
+ * records but never become the canonical source of those records.
+ */
+
+const ESCIE_SEARCH_INDEX = {
+  entries: [],
+
+  clear() {
+    this.entries.length = 0;
+  },
+
+  add(record = {}) {
+    if (!record || !record.id) return null;
+
+    const entry = {
+      id: record.id,
+      type: record.type || null,
+      title: typeof record.title === "string" ? record.title : "",
+      text: [
+        record.title,
+        record.description,
+        ...(Array.isArray(record.tags) ? record.tags : [])
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase()
+    };
+
+    this.entries.push(entry);
+    return entry;
+  },
+
+  build(records = []) {
+    this.clear();
+
+    if (!Array.isArray(records)) return this.entries;
+
+    records.forEach((record) => this.add(record));
+    return this.entries;
+  }
+};
+
+if (typeof window !== "undefined") {
+  window.ESCIE_SEARCH_INDEX = ESCIE_SEARCH_INDEX;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = ESCIE_SEARCH_INDEX;
+}
