@@ -8,6 +8,7 @@
 const fs=require("fs");
 const raw=process.env.ESCIE_RELEASE_QUEUE_JSON||"";
 const output="data/release-runtime.js";
+if(!raw.trim()) console.log("Release injector: no private queue supplied; emitting empty public release runtime.");
 function fail(message){throw new Error("Release injector: "+message);}
 let queue={tracks:[]};
 if(raw.trim()){
