@@ -110,6 +110,11 @@
     document.documentElement.lang = normalized;
     ESCIE_RUNTIME.language = normalized;
 
+    const events = getEvents();
+    if (events && typeof events.emit === "function") {
+      events.emit("language:changed", { language: normalized });
+    }
+
     return normalized;
   }
 
@@ -559,6 +564,18 @@
 
     const events = getEvents();
     if (events && typeof events.on === "function") {
+      events.on("language:changed", () => {
+        renderEntry();
+        renderNavigation();
+        renderNow();
+        renderMusic();
+        renderProjects();
+        renderWeb();
+        renderArchive();
+        renderInvestigation();
+        renderAbout();
+      });
+
       events.on("signal:emitted", signal => {
         if (state) {
           state.activeSignalId = signal && signal.sourceId || null;
