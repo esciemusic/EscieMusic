@@ -76,6 +76,55 @@
     return getGlobal("ESCIE_STATE", {});
   }
 
+  function getLanguageEngine() {
+    return getGlobal("ESCIE_LANGUAGE_ENGINE", null);
+  }
+
+  function normalizeLanguage(value) {
+    const code = String(value || "").toLowerCase().split("-")[0];
+    return ["en", "fr", "es"].includes(code) ? code : "en";
+  }
+
+  function detectLanguage() {
+    const state = getRuntimeState();
+    const saved = state && state.language;
+    if (saved && saved !== "en") {
+      return normalizeLanguage(saved);
+    }
+
+    const browser = normalizeLanguage(
+      navigator.language || navigator.userLanguage || "en"
+    );
+
+    return browser;
+  }
+
+  function setLanguage(language) {
+    const state = getRuntimeState();
+    const normalized = normalizeLanguage(language);
+
+    if (state) {
+      state.language = normalized;
+    }
+
+    document.documentElement.lang = normalized;
+    ESCIE_RUNTIME.language = normalized;
+
+    return normalized;
+  }
+
+  function initializeLanguage() {
+    const detected = detectLanguage();
+    setLanguage(detected);
+
+    const engine = getLanguageEngine();
+    if (engine && typeof engine.mode === "function") {
+      ESCIE_RUNTIME.languageEngine = engine;
+    }
+
+    return detected;
+  }
+
   function getEvents() {
     return getGlobal("ESCIE_EVENTS", null);
   }
@@ -441,6 +490,8 @@
       shell.mount("#top");
     }
 
+    initializeLanguage();
+
     const player = window.ESCIE_UI_PLAYER;
     if (player && typeof player.attach === "function") {
       let audio = document.getElementById("escie-global-audio");
@@ -621,6 +672,8 @@
     if (shell && typeof shell.setState === "function") {
       shell.setState(state || { status: "ready" });
     }
+
+    ESCIE_RUNTIME.setLanguage = setLanguage;
 
     ESCIE_RUNTIME.ready = true;
 
