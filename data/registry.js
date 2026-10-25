@@ -66,6 +66,8 @@
   }
   function contextFor(id){
     const current=build();
+    const record=current.byId[id]||null;
+    if(!record||!releaseVisible(record)) return {record:null,connections:[],parents:[],children:[]};
     const relationships=collection("ESCIE_RELATIONSHIPS");
     const connected=relationships
       .filter(r=>r&&r.public_disclosure===true&&(r.from===id||r.to===id))
