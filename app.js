@@ -159,12 +159,12 @@
     }
 
     container.innerHTML = visible.map(track =>
-      '<article class="record-card" data-record-type="art" data-record-id="' +
+      '<article class="music-card" data-record-type="art" data-record-id="' +
       escapeHTML(recordId(track)) + '">' +
-        '<p class="eyebrow">' + escapeHTML(track.number || "ART") + "</p>" +
-        '<h3>' + escapeHTML(recordTitle(track)) + "</h3>" +
+        '<p class="music-card-index">' + escapeHTML(track.number || "ART") + "</p>" +
+        '<div class="music-card-content"><h3>' + escapeHTML(recordTitle(track)) + "</h3>" +
         (track.role ? "<p>" + escapeHTML(track.role) + "</p>" : "") +
-      "</article>"
+        "</div></article>"
     ).join("");
   }
 
@@ -181,7 +181,7 @@
     }
 
     container.innerHTML = visible.map(project =>
-      '<article class="project-card" data-record-type="body" data-record-id="' +
+      '<article class="bam-project" data-record-type="body" data-record-id="' +
       escapeHTML(recordId(project)) + '">' +
         '<p class="eyebrow">' + escapeHTML(project.type || "BODY") + "</p>" +
         '<h3>' + escapeHTML(recordTitle(project)) + "</h3>" +
@@ -203,7 +203,7 @@
     }
 
     container.innerHTML = visible.map(record =>
-      '<article class="archive-card" data-record-id="' +
+      '<article class="archive-entry" data-record-id="' +
       escapeHTML(recordId(record)) + '">' +
         '<h3>' + escapeHTML(recordTitle(record)) + "</h3>" +
       "</article>"
@@ -223,7 +223,7 @@
     }
 
     container.innerHTML = visible.map(item =>
-      '<article class="investigation-card" data-record-id="' +
+      '<article class="investigation-case" data-record-id="' +
       escapeHTML(recordId(item)) + '">' +
         '<h3>' + escapeHTML(recordTitle(item)) + "</h3>" +
       "</article>"
