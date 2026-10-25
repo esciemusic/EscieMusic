@@ -28,6 +28,18 @@
     assert(R.isCanonical(relationship) === false, "provisional relationship is not canonical");
     assert(R.isPublic(relationship) === true, "default public relationship should be public");
 
+    const withheld = R.create({
+      id: "withheld-relationship",
+      type: "collaborated_with",
+      from: "person-a",
+      to: "person-b",
+      status: "withheld",
+      visibility: "withheld"
+    });
+
+    assert(R.isPublic(withheld) === false, "withheld relationship must not be public");
+    assert(R.isCanonical(withheld) === false, "withheld relationship must not be canonical");
+
     return { passed: true };
   }
 
