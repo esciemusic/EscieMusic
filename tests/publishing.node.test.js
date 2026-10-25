@@ -30,4 +30,32 @@ assert(
   "Duplicate-ID validation error was not reported."
 );
 
+let duplicateBuildRejected = false;
+try {
+  build.createBuildPlan({
+    records: [
+      { id: "duplicate-source", type: "art", title: "One", published: true, visibility: "public" },
+      { id: "duplicate-source", type: "art", title: "Two", published: true, visibility: "public" }
+    ]
+  });
+} catch (error) {
+  duplicateBuildRejected = /Duplicate public record id: duplicate-source/.test(String(error && error.message));
+}
+
+assert(duplicateBuildRejected, "Build planning must reject duplicate public record ids before deduplication.");
+
+const privateDuplicatePlan = build.createBuildPlan({
+  records: [
+    { id: "private-duplicate", type: "art", title: "Private One", published: true, visibility: "private" },
+    { id: "private-duplicate", type: "art", title: "Private Two", published: true, visibility: "private" },
+    { id: "public-a", type: "art", title: "Public A", published: true, visibility: "public" }
+  ]
+});
+
+assert(
+  privateDuplicatePlan.records.length === 1 &&
+  privateDuplicatePlan.records[0].id === "public-a",
+  "Non-public duplicate ids must not block the public build."
+);
+
 console.log("ESCIE publishing contracts OK");
