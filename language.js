@@ -213,7 +213,9 @@ const ESCIE_LANGUAGE_ENGINE = {
 
 
   /*
-    Render HTML-safe transformed text.
+    Render transformed human text without interpreting it as HTML.
+    The caller can opt into explicit HTML rendering elsewhere when
+    that is genuinely required.
   */
 
   renderText(element, text) {
@@ -222,7 +224,7 @@ const ESCIE_LANGUAGE_ENGINE = {
       return;
     }
 
-    element.innerHTML = this.speak(text);
+    element.textContent = this.speak(text);
 
   },
 
