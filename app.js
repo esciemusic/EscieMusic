@@ -635,29 +635,38 @@
     const container = byId("glass-eye-container");
     if (!container) return;
 
-    const records=getAllPublicRecords();
-    const glassRecords=records.filter(record=>{
-      const manifest=recordManifest(record);
+    const records = getAllPublicRecords();
+    const glassRecords = records.filter(record => {
+      const manifest = recordManifest(record);
       return manifest ? manifest.sections.glassEye : false;
     });
-    const music=glassRecords.filter(record=>record.type==="music");
-    const projects=glassRecords.filter(record=>record.type==="project"||record.type==="body");
-    const archive=glassRecords.filter(record=>{
-      const manifest=recordManifest(record);
-      return manifest&&manifest.sections.archive;
+    const music = glassRecords.filter(record => record.type === "music");
+    const projects = glassRecords.filter(record => record.type === "project" || record.type === "body");
+    const archive = glassRecords.filter(record => {
+      const manifest = recordManifest(record);
+      return manifest && manifest.sections.archive;
     });
+    const latest = music.slice().sort((a, b) =>
+      String(a.number || "").localeCompare(String(b.number || ""))
+    ).slice(-1)[0] || null;
+    const latestTitle = latest ? recordTitle(latest) : "NO PUBLIC TRANSMISSION";
+    const latestNumber = latest ? (latest.number || "—") : "—";
 
     container.innerHTML =
       '<div class="glass-frame">' + motifMarkup("glass-eye") + '' +
         '<div class="glass-crosshair" aria-hidden="true"></div>' +
         '<div class="glass-corner glass-corner-tl"></div><div class="glass-corner glass-corner-tr"></div>' +
         '<div class="glass-corner glass-corner-bl"></div><div class="glass-corner glass-corner-br"></div>' +
-        '<div class="glass-readout"><span>GLASS EYE // LIVE INTERFACE</span><span>REC / OBSERVE / PRESERVE</span></div>' +
-        '<div class="glass-center"><span class="glass-dot"></span><strong>NO IMAGE SUPPLIED</strong><p>The eye records what is actually available. It does not manufacture evidence.</p></div>' +
-        '<div class="glass-footer"><span>WORK ' + music.length + '</span><span>BODIES ' + projects.length + '</span><span>ARCHIVE ' + archive.length + '</span></div>' +
+        '<div class="glass-readout"><span>GLASS EYE // OBSERVATION INTERFACE</span><span>REC / OBSERVE / PRESERVE</span></div>' +
+        '<div class="glass-center">' +
+          '<span class="glass-dot"></span>' +
+          '<strong>' + escapeHTML(latest ? "SIGNAL ACQUIRED" : "NO PUBLIC SIGNAL") + '</strong>' +
+          '<p>' + escapeHTML(latest ? latestTitle : "The eye records what is actually available. It does not manufacture evidence.") + '</p>' +
+          (latest ? '<button class="record-action glass-record-action record-card" type="button" data-record-id="' + escapeHTML(recordId(latest)) + '">OPEN TRANSMISSION / ' + escapeHTML(latestNumber) + '</button>' : '') +
+        '</div>' +
+        '<div class="glass-footer"><span>WORK ' + music.length + '</span><span>BODIES ' + projects.length + '</span><span>ARCHIVE ' + archive.length + '</span><span>PUBLIC RECORDS ' + records.length + '</span></div>' +
       '</div>';
   }
-
   function getAllRecords() {
     const registry = getGlobal("ESCIE_RECORD_REGISTRY", null);
     if (registry && typeof registry.records === "function") {
