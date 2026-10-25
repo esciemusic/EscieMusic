@@ -484,6 +484,29 @@ const ESCIE_RECORD = {
 
     }
 
+    const validType = Object.values(ESCIE_RECORD.TYPES).includes(record.identity?.type);
+    if (record.identity?.type && !validType) {
+      errors.push("Invalid identity.type.");
+    }
+
+    const validVisibility = Object.values(ESCIE_RECORD.VISIBILITY).includes(record.disclosure?.visibility);
+    if (record.disclosure?.visibility && !validVisibility) {
+      errors.push("Invalid disclosure.visibility.");
+    }
+
+    if (
+      record.disclosure &&
+      record.disclosure.visibility !== ESCIE_RECORD.VISIBILITY.PUBLIC &&
+      record.disclosure.public_disclosure === true
+    ) {
+      errors.push("Non-public visibility cannot declare public disclosure.");
+    }
+
+    const validArchiveState = Object.values(ESCIE_RECORD.ARCHIVE_STATES).includes(record.archive?.state);
+    if (record.archive?.state && !validArchiveState) {
+      errors.push("Invalid archive.state.");
+    }
+
 
     return {
 
