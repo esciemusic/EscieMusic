@@ -241,7 +241,7 @@ const invalidHistoryChain = historyChainAudit(
 assert(invalidHistoryChain.ok === false, "invalid history chain must fail audit");
 
 
-const historyEntry = history.createHistoryEntry({
+const historyEntry2 = history.createHistoryEntry({
   id: "history-test-001",
   event: "updated",
   recordId: "record-a",
@@ -251,14 +251,14 @@ const historyEntry = history.createHistoryEntry({
   reason: "Test state transition",
   sourceIds: ["provenance-source"]
 });
-assert(history.validate(historyEntry, [registeredSource]).valid, "valid history entry should pass validation");
+assert(history.validate(historyEntry2, [registeredSource]).valid, "valid history entry should pass validation");
 
-const appendedHistory2 = history.append(historyEntry, [registeredSource]);
+const appendedHistory2 = history.append(historyEntry2, [registeredSource]);
 assert(appendedHistory2.valid === true, "valid history entry should append");
 assert(appendedHistory2.entry.id === "history-test-001", "appended history should return its entry");
 
-const duplicateHistory2 = history.append(historyEntry, [registeredSource]);
-assert(duplicateHistory.valid === false, "duplicate history id must be rejected");
+const duplicateHistory2 = history.append(historyEntry2, [registeredSource]);
+assert(duplicateHistory2.valid === false, "duplicate history id must be rejected");
 
 const invalidHistory = history.append({
   id: "history-test-invalid",
