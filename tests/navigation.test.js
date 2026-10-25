@@ -30,6 +30,10 @@
     });
 
     assert(N.filter(item => item.primary === true).length > 0, "primary navigation should exist");
+    assert(N.some(item => item.id === "art" && item.target === "#art"), "WORK route should target #art");
+    assert(N.some(item => item.id === "archives" && item.target === "#archives"), "ARCHIVE route should target #archives");
+    assert(N.some(item => item.id === "investigation" && item.target === "#investigation"), "INVESTIGATION route should target #investigation");
+
 
     return { passed: true };
   }
