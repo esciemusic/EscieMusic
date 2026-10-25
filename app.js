@@ -683,6 +683,14 @@
     }).join("");
   }
 
+  function declaredReferenceLink(id){
+    if(!id) return "";
+    const target=getAllPublicRecords().find(item=>recordId(item)===id);
+    return target
+      ? '<button class="record-related-link record-inline-link" type="button" data-record-id="'+escapeHTML(id)+'">'+escapeHTML(recordTitle(target))+'</button>'
+      : '<span class="inspector-note">'+escapeHTML(id)+'</span>';
+  }
+
   function showRecordInspector(record) {
     const modal = byId("record-inspector");
     if (!modal || !record) return;
@@ -714,6 +722,17 @@
       '<dl class="record-facts"><div><dt>REALITY</dt><dd>' + escapeHTML(reality) + '</dd></div>' +
       '<div><dt>STATUS</dt><dd>' + escapeHTML(status) + '</dd></div>' +
       '<div><dt>ID</dt><dd>' + escapeHTML(recordId(record)) + '</dd></div></dl>' +
+      ((record.project || record.parent || record.source || record.origin || record.transformation || record.archive_state || record.certainty || record.knowledge) ?
+        '<div class="record-context"><p class="eyebrow">PROVENANCE / STATE</p>' +
+        (record.project ? '<p><strong>PROJECT</strong> ' + declaredReferenceLink(record.project) + '</p>' : '') +
+        (record.parent ? '<p><strong>PARENT</strong> ' + declaredReferenceLink(record.parent) + '</p>' : '') +
+        (record.source ? '<p><strong>SOURCE</strong> ' + declaredReferenceLink(record.source) + '</p>' : '') +
+        (record.origin ? '<p><strong>ORIGIN</strong> ' + escapeHTML(record.origin) + '</p>' : '') +
+        (record.transformation ? '<p><strong>TRANSFORMATION</strong> ' + escapeHTML(record.transformation) + '</p>' : '') +
+        (record.archive_state ? '<p><strong>ARCHIVE STATE</strong> ' + escapeHTML(record.archive_state) + '</p>' : '') +
+        (record.certainty ? '<p><strong>CERTAINTY</strong> ' + escapeHTML(record.certainty) + '</p>' : '') +
+        (record.knowledge ? '<p><strong>KNOWLEDGE</strong> ' + escapeHTML(record.knowledge) + '</p>' : '') +
+        '</div>' : '') +
       (symbols.length ? '<div class="record-symbols"><p class="eyebrow">RECURRING MOTIFS</p>' +
         symbols.map(symbol => '<button class="record-symbol-link" type="button" data-symbol-id="' + escapeHTML(symbol.id) + '">' +
           escapeHTML(symbol.name) + '<span>' + escapeHTML(symbol.motif || "") + '</span></button>').join("") + '</div>' : '') +
