@@ -682,6 +682,7 @@
           symbols: typeof registry.symbolAudit === "function" ? registry.symbolAudit() : null,
           contract: typeof registry.contractAudit === "function" ? registry.contractAudit() : null,
           references: typeof registry.referenceAudit === "function" ? registry.referenceAudit() : null,
+          release: typeof registry.releaseAudit === "function" ? registry.releaseAudit() : null,
           sections: typeof registry.sectionAudit === "function" ? registry.sectionAudit() : null
         }
       : null;
