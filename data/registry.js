@@ -49,5 +49,20 @@
     });
     return {ok:missing.length===0&&current.duplicates.length===0,missing,duplicates:current.duplicates};
   }
-  window.ESCIE_RECORD_REGISTRY={version:"1.1.0",build,records:()=>build().records,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit};
+  function symbolAudit(){
+    const symbols=collection("ESCIE_SYMBOLS");
+    const symbolIds=new Set(symbols.map(symbol=>symbol&&symbol.id).filter(Boolean));
+    const records=build().records;
+    const missing=[];
+    records.forEach(record=>{
+      if(!Array.isArray(record.symbols)) return;
+      record.symbols.forEach(symbolId=>{
+        if(!symbolIds.has(symbolId)){
+          missing.push({record:record.id,symbol:symbolId});
+        }
+      });
+    });
+    return {ok:missing.length===0,missing};
+  }
+  window.ESCIE_RECORD_REGISTRY={version:"1.2.0",build,records:()=>build().records,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit};
 })();
