@@ -19,7 +19,8 @@
     ["publishing", "ESCIE_TEST_PUBLISHING"],
     ["navigation", "ESCIE_TEST_NAVIGATION"],
     ["idle-signal", "ESCIE_TEST_IDLE_SIGNAL"],
-    ["media", "ESCIE_TEST_MEDIA"]
+    ["media", "ESCIE_TEST_MEDIA"],
+    ["social", "ESCIE_TEST_SOCIAL"]
   ];
 
   function run() {
