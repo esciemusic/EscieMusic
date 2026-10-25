@@ -76,6 +76,7 @@
     assert(publicRecords.some(record => record && record.id === "bam-001-dallas-63"), "released BAM transmission must enter canonical public records");
     assert(!publicRecords.some(record => record && record.id === "bam-002-pumpy-to-the-chest"), "locked BAM transmission must stay out of canonical public records");
 
+    assert(!registry.publicRelationships().some(rel => rel && (rel.to === "bam-002-pumpy-to-the-chest" || rel.to === "bam-003-i-need-a-flex" || rel.to === "bam-004-sana-sana" || rel.to === "bam-005-bacc-2-basics" || rel.to === "bam-006-dichotomy")), "locked BAM transmissions must not enter the public relationship graph");
     const releaseAudit = registry.releaseAudit();
     assert(releaseAudit && releaseAudit.ok === true, "progressive release configuration must pass audit");
     assert(registry.manifestFor(secondTrack.id).sections.work === false, "locked BAM track must not appear in Work manifest");
