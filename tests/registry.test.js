@@ -69,6 +69,21 @@
     const projectContext = registry.contextFor("bam-by-any-means");
     assert(projectContext.children.length === 1 && projectContext.children[0].record === "bam-001-dallas-63", "locked BAM tracks must stay out of public record context");
 
+    const searchIndex = typeof window !== "undefined" ? window.ESCIE_SEARCH_INDEX : null;
+    if (searchIndex) {
+      searchIndex.clear();
+      searchIndex.build([firstTrack, secondTrack]);
+      assert(searchIndex.entries.some(entry => entry.id === firstTrack.id), "released BAM track must enter search index");
+      assert(!searchIndex.entries.some(entry => entry.id === secondTrack.id), "locked BAM track must not enter search index");
+    }
+
+    const publishBuild = typeof window !== "undefined" ? window.ESCIE_PUBLISH_BUILD : null;
+    if (publishBuild) {
+      const publicBuild = publishBuild.buildPublicRecords([firstTrack, secondTrack]);
+      assert(publicBuild.some(record => record.id === firstTrack.id), "released BAM track must enter public build");
+      assert(!publicBuild.some(record => record.id === secondTrack.id), "locked BAM track must stay out of public build");
+    }
+
     return { passed: true };
   }
 
