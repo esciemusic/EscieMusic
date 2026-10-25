@@ -40,6 +40,37 @@
     assert(R.isPublic(withheld) === false, "withheld relationship must not be public");
     assert(R.isCanonical(withheld) === false, "withheld relationship must not be canonical");
 
+    const invalidDisclosure = R.create({
+      id: "invalid-disclosure",
+      type: "collaborated_with",
+      from: "person-a",
+      to: "person-b",
+      visibility: "private",
+      public_disclosure: true
+    });
+    assert(invalidDisclosure.valid === false, "non-public relationships cannot declare public disclosure");
+
+    const invalidCanonical = R.create({
+      id: "invalid-canonical",
+      type: "collaborated_with",
+      from: "person-a",
+      to: "person-b",
+      canonical_status: "canonical",
+      status: "proposed"
+    });
+    assert(invalidCanonical.valid === false, "canonical relationships must be active");
+
+    const invalidCanonicalVisibility = R.create({
+      id: "invalid-canonical-visibility",
+      type: "collaborated_with",
+      from: "person-a",
+      to: "person-b",
+      canonical_status: "canonical",
+      status: "active",
+      visibility: "limited"
+    });
+    assert(invalidCanonicalVisibility.valid === false, "canonical relationships must be public");
+
     return { passed: true };
   }
 
