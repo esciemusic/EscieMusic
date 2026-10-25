@@ -2328,228 +2328,76 @@ body.inspector-open{overflow:hidden}
 
 /* =========================================================
    GENERATED VISUAL ATLAS
-   The generated visual is an atmospheric presentation layer.
-   It does not create canon or publication state.
+   Atmospheric presentation layer only.
    ========================================================= */
-.section-visual[data-visual-section]{
-  background-repeat:no-repeat;
-  background-size:200% auto;
-  background-blend-mode:screen;
-}
-.section-visual-now{
-  background-image:
-    linear-gradient(180deg,rgba(5,5,5,.20),rgba(5,5,5,.46)),
-    url("assets/visuals/escie-visual-atlas.webp");
-  background-position:center top;
-}
-.section-visual-work{
-  background-image:
-    linear-gradient(180deg,rgba(5,5,5,.20),rgba(5,5,5,.46)),
-    url("assets/visuals/escie-visual-atlas.webp");
-  background-position:right top;
-}
-.section-visual-web{
-  background-image:
-    linear-gradient(180deg,rgba(5,5,5,.20),rgba(5,5,5,.46)),
-    url("assets/visuals/escie-visual-atlas.webp");
-  background-position:left 34%;
-}
-.section-visual-archive{
-  background-image:
-    linear-gradient(180deg,rgba(5,5,5,.20),rgba(5,5,5,.46)),
-    url("assets/visuals/escie-visual-atlas.webp");
-  background-position:right 34%;
-}
-.section-visual-investigation{
-  background-image:
-    linear-gradient(180deg,rgba(5,5,5,.20),rgba(5,5,5,.46)),
-    url("assets/visuals/escie-visual-atlas.webp");
-  background-position:left 68%;
-}
-.section-visual-glass{
-  background-image:
-    linear-gradient(180deg,rgba(5,5,5,.20),rgba(5,5,5,.46)),
-    url("assets/visuals/escie-visual-atlas.webp");
-  background-position:right 68%;
-}
-.section-visual-escie{
-  background-size:100% auto;
-  background-position:center bottom;
-  background-image:
-    linear-gradient(180deg,rgba(5,5,5,.14),rgba(5,5,5,.40)),
-    url("assets/visuals/escie-visual-atlas.webp");
-}
-@media(max-width:700px){
-  .section-visual[data-visual-section]{
-    background-size:200% auto;
-  }
-  .section-visual-escie{
-    background-size:100% auto;
-  }
-}
 
-/* =========================================================
-   VISUAL BLEND / TRANSLUCENT ATMOSPHERE
-   The atlas should feel embedded in the page, not like a card
-   placed on top of the interface.
-   ========================================================= */
 .section-visual[data-visual-section]{
-  background-image:none;
+  position:relative;
+  overflow:hidden;
   background-color:#08090b;
-}
-.section-visual[data-visual-section]{
-  box-shadow:
-    inset 0 28px 42px rgba(5,5,5,.62),
-    inset 0 -28px 42px rgba(5,5,5,.68);
+  box-shadow:inset 0 28px 42px rgba(5,5,5,.62),inset 0 -28px 42px rgba(5,5,5,.68);
 }
 .section-visual[data-visual-section]::before{
   content:"";
   position:absolute;
   inset:0;
   z-index:0;
-.section-visual[data-visual-section]::before{
-  will-change:background-position,opacity,filter,transform;
-}
-.section-visual-media{
-  mix-blend-mode:screen;
-  opacity:calc(var(--visual-intensity, .7) * .30);
-  filter:grayscale(.9) contrast(.86) saturate(.28) brightness(.78);
-  -webkit-mask-image:linear-gradient(180deg,transparent 0,black 14%,black 86%,transparent 100%);
-  mask-image:linear-gradient(180deg,transparent 0,black 14%,black 86%,transparent 100%);
-}
-.section-visual.has-visual-asset::after{
-  background:
-    linear-gradient(180deg,rgba(5,5,5,.24),transparent 38%,rgba(5,5,5,.34)),
-    repeating-linear-gradient(0deg,transparent 0,transparent 5px,rgba(255,255,255,.024) 6px);
-}
   background-image:url("assets/visuals/escie-visual-atlas.webp");
   background-repeat:no-repeat;
   background-size:200% auto;
+  background-position:center top;
   opacity:.24;
   filter:grayscale(.25) contrast(.82) saturate(.72);
   mix-blend-mode:screen;
   -webkit-mask-image:radial-gradient(ellipse at center,rgba(0,0,0,1) 34%,rgba(0,0,0,.82) 58%,rgba(0,0,0,.35) 78%,transparent 100%);
   mask-image:radial-gradient(ellipse at center,rgba(0,0,0,1) 34%,rgba(0,0,0,.82) 58%,rgba(0,0,0,.35) 78%,transparent 100%);
   pointer-events:none;
+  will-change:background-position,opacity,filter;
   transition:opacity .8s ease,filter .8s ease;
 }
-.section-visual[data-visual-section] > :not(.section-visual-media){
-  position:relative;
-  z-index:1;
+.section-visual[data-visual-section]::after{
+  animation:escie-visual-breathe 8s ease-in-out infinite alternate;
+  background:linear-gradient(180deg,rgba(5,5,5,.24),transparent 38%,rgba(5,5,5,.34)),repeating-linear-gradient(0deg,transparent 0,transparent 5px,rgba(255,255,255,.024) 6px);
+  pointer-events:none;
+  will-change:opacity,transform;
 }
-.section-visual-now::before{background-position:center top}
-.section-visual-work::before{background-position:right top}
-.section-visual-web::before{background-position:left 34%}
-.section-visual-archive::before{background-position:right 34%}
-.section-visual-investigation::before{background-position:left 68%}
-.section-visual-glass::before{background-position:right 68%}
-.section-visual-escie::before{
-  background-size:100% auto;
-  background-position:center bottom;
+.section-visual[data-visual-section] > :not(.section-visual-media){position:relative;z-index:1}
+.section-visual-now::before{background-position:center top;animation:escie-visual-night 22s ease-in-out infinite alternate}
+.section-visual-work::before{background-position:right top;animation:escie-visual-vhs 19s ease-in-out infinite alternate}
+.section-visual-web::before{background-position:left 34%;animation:escie-visual-network 24s ease-in-out infinite alternate}
+.section-visual-archive::before{background-position:right 34%;animation:escie-visual-archive 21s ease-in-out infinite alternate}
+.section-visual-investigation::before{background-position:left 68%;animation:escie-visual-investigation 17s ease-in-out infinite alternate}
+.section-visual-glass::before{background-position:right 68%;animation:escie-visual-glass 20s ease-in-out infinite alternate}
+.section-visual-escie::before{background-size:100% auto;background-position:center bottom;animation:escie-visual-presence 26s ease-in-out infinite alternate}
+.section-visual.visual-visible::before{opacity:.29}
+.section-visual:hover::before{opacity:.34;filter:grayscale(.18) contrast(.88) saturate(.82)}
+
+.section-visual-media{
+  mix-blend-mode:screen;
+  opacity:calc(var(--visual-intensity,.7) * .30);
+  filter:grayscale(.9) contrast(.86) saturate(.28) brightness(.78);
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,black 14%,black 86%,transparent 100%);
+  mask-image:linear-gradient(180deg,transparent 0,black 14%,black 86%,transparent 100%);
 }
-.section-visual.visual-visible::before{
-  opacity:.29;
+.section-visual.has-visual-asset::after{
+  background:linear-gradient(180deg,rgba(5,5,5,.24),transparent 38%,rgba(5,5,5,.34)),repeating-linear-gradient(0deg,transparent 0,transparent 5px,rgba(255,255,255,.024) 6px);
 }
-.section-visual:hover::before{
-  opacity:.34;
-  filter:grayscale(.18) contrast(.88) saturate(.82);
-}
+
+@keyframes escie-visual-night{0%{background-position:center top}50%{background-position:51% 2%}100%{background-position:49% -1%}}
+@keyframes escie-visual-vhs{0%{background-position:right top}45%{background-position:97% 2%}100%{background-position:103% -2%}}
+@keyframes escie-visual-network{0%{background-position:left 34%}50%{background-position:2% 35%}100%{background-position:-1% 33%}}
+@keyframes escie-visual-archive{0%{background-position:right 34%}50%{background-position:98% 32%}100%{background-position:102% 36%}}
+@keyframes escie-visual-investigation{0%{background-position:left 68%}50%{background-position:2% 66%}100%{background-position:-1% 69%}}
+@keyframes escie-visual-glass{0%{background-position:right 68%}50%{background-position:97% 70%}100%{background-position:103% 67%}}
+@keyframes escie-visual-presence{0%{background-position:center bottom}50%{background-position:51% 98%}100%{background-position:49% 100%}}
+@keyframes escie-visual-breathe{0%{opacity:.72;transform:scale(1)}100%{opacity:.94;transform:scale(1.012)}}
+
 @media(max-width:700px){
-  .section-visual[data-visual-section]{
-    box-shadow:
-      inset 0 18px 30px rgba(5,5,5,.62),
-      inset 0 -18px 30px rgba(5,5,5,.68);
-  }
+  .section-visual[data-visual-section]{box-shadow:inset 0 18px 30px rgba(5,5,5,.62),inset 0 -18px 30px rgba(5,5,5,.68)}
   .section-visual[data-visual-section]::before{background-size:200% auto}
   .section-visual-escie::before{background-size:100% auto}
 }
 @media(prefers-reduced-motion:reduce){
-  .section-visual[data-visual-section]::before{transition:none}
-}
-
-/* =========================================================
-   GENERATED VISUAL MOTION
-   Slow cinematic movement keeps the visual alive without
-   turning the page into a distraction.
-   ========================================================= */
-
-.section-visual[data-visual-section]{
-  overflow:hidden;
-  will-change:transform,opacity;
-}
-
-.section-visual[data-visual-section]::after{
-  animation:escie-visual-breathe 8s ease-in-out infinite alternate;
-  will-change:opacity,transform;
-}
-
-.section-visual-now::before{
-  animation:escie-visual-night 22s ease-in-out infinite alternate;
-}
-.section-visual-work::before{
-  animation:escie-visual-vhs 19s ease-in-out infinite alternate;
-}
-.section-visual-web::before{
-  animation:escie-visual-network 24s ease-in-out infinite alternate;
-}
-.section-visual-archive::before{
-  animation:escie-visual-archive 21s ease-in-out infinite alternate;
-}
-.section-visual-investigation::before{
-  animation:escie-visual-investigation 17s ease-in-out infinite alternate;
-}
-.section-visual-glass::before{
-  animation:escie-visual-glass 20s ease-in-out infinite alternate;
-}
-.section-visual-escie::before{
-  animation:escie-visual-presence 26s ease-in-out infinite alternate;
-}
-
-@keyframes escie-visual-night{
-  0%{background-position:center top;}
-  50%{background-position:51% 2%;}
-  100%{background-position:49% -1%;}
-}
-@keyframes escie-visual-vhs{
-  0%{background-position:right top;}
-  45%{background-position:97% 2%;}
-  100%{background-position:103% -2%;}
-}
-@keyframes escie-visual-network{
-  0%{background-position:left 34%;}
-  50%{background-position:2% 35%;}
-  100%{background-position:-1% 33%;}
-}
-@keyframes escie-visual-archive{
-  0%{background-position:right 34%;}
-  50%{background-position:98% 32%;}
-  100%{background-position:102% 36%;}
-}
-@keyframes escie-visual-investigation{
-  0%{background-position:left 68%;}
-  50%{background-position:2% 66%;}
-  100%{background-position:-1% 69%;}
-}
-@keyframes escie-visual-glass{
-  0%{background-position:right 68%;}
-  50%{background-position:97% 70%;}
-  100%{background-position:103% 67%;}
-}
-@keyframes escie-visual-presence{
-  0%{background-position:center bottom;}
-  50%{background-position:51% 98%;}
-  100%{background-position:49% 100%;}
-}
-
-@keyframes escie-visual-breathe{
-  0%{opacity:.72;transform:scale(1);}
-  100%{opacity:.94;transform:scale(1.012);}
-}
-
-@media(prefers-reduced-motion:reduce){
-  .section-visual[data-visual-section],
   .section-visual[data-visual-section]::before,
-  .section-visual[data-visual-section]::after{
-    animation:none!important;
-  }
+  .section-visual[data-visual-section]::after{animation:none!important;transition:none!important}
 }
