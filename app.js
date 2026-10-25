@@ -603,6 +603,7 @@
         '<div><h3>' + escapeHTML(recordTitle(record)) + "</h3>" +
         (record.description ? '<p>' + escapeHTML(record.description) + '</p>' : '') +
         (record.reality || record.reality_level ? '<p class="record-action">' + escapeHTML(record.reality || record.reality_level) + '</p>' : '') +
+        (window.ESCIE_MEDIA && Array.isArray(record.media) ? window.ESCIE_MEDIA.renderAll(record.media) : '') +
         '</div></article>'
     ).join("");
   }
