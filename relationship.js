@@ -1180,11 +1180,13 @@
    * ---------------------------------------------------------
    */
 
-  window.ESCIE_RELATIONSHIP =
-    ESCIE_RELATIONSHIP;
+  if (typeof window !== "undefined") {
+    window.ESCIE_RELATIONSHIP =
+      ESCIE_RELATIONSHIP;
+  }
+
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports = ESCIE_RELATIONSHIP;
+  }
 
 })();
-
-if (typeof module !== "undefined" && module.exports) {
-  module.exports = ESCIE_RELATIONSHIP;
-}
