@@ -71,6 +71,25 @@ function validateEscieRecord(record){
   if(record.release_mode && !ESCIE_RECORD_CONTRACT.release_modes.includes(String(record.release_mode).toLowerCase())) errors.push("unknown release_mode: "+record.release_mode);
   if(String(record.release_mode||"").toLowerCase()==="progressive" && record.type!=="project") warnings.push("progressive release_mode is normally reserved for project records");
   ["people","locations","media","evidence","symbols","tags","relationships","related_content"].forEach(key=>{if(!Array.isArray(record[key])) errors.push(key+" must be an array");});
+  if(Array.isArray(record.media)){
+    record.media.forEach((item,index)=>{
+      if(typeof item==="string"){
+        if(!item.trim()) warnings.push("media["+index+"] is empty");
+        return;
+      }
+      if(!item||typeof item!=="object"){
+        errors.push("media["+index+"] must be an object or URL string");
+        return;
+      }
+      const url=item.url||item.src||item.href||item.embed;
+      if(!url) errors.push("media["+index+"] is missing a URL");
+      const type=String(item.type||item.kind||"").toLowerCase();
+      if(type&&!["audio","video","image","photo","iframe","embed"].includes(type)){
+        errors.push("media["+index+"] has unsupported type: "+type);
+      }
+    });
+  }
+
   return {ok:errors.length===0,errors,warnings};
 }
 
