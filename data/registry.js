@@ -137,8 +137,9 @@
       return /image|photo|video|film|vhs|jpg|jpeg|png|webp|gif|mp4|mov/i.test([item.type,item.kind,item.mime,item.url,item.src].filter(Boolean).join(" "));
     });
     const sections={work,web:hasPublicConnection,archive,investigation,glassEye};
+    const search=record.search!==false;
     return {
-      id, work, archive, investigation, glassEye, search:true,
+      id, work, archive, investigation, glassEye, search,
       sections,
       appearsIn:Object.keys(sections).filter(section=>sections[section])
     };
@@ -199,5 +200,5 @@
     });
     return {ok:missing.length===0,missing};
   }
-  window.ESCIE_RECORD_REGISTRY={version:"1.6.0",build,records:()=>build().records,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,manifestFor,filter,contextFor};
+  window.ESCIE_RECORD_REGISTRY={version:"1.6.1",build,records:()=>build().records,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,manifestFor,filter,contextFor};
 })();
