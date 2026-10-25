@@ -640,6 +640,8 @@
       ? narration.present(item)
       : null;
   };
+  ESCIE_RUNTIME.player = window.ESCIE_UI_PLAYER || null;
+  ESCIE_RUNTIME.transmission = window.ESCIE_TRANSMISSION || null;
   ESCIE_RUNTIME.render = render;
   ESCIE_RUNTIME.initialize = initialize;
 
