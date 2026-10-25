@@ -9,6 +9,8 @@
   const normalize=window.normalizeEscieVisuals;
   assert(Array.isArray(items),"visual registry must be an array");
   assert(typeof normalize==="function","visual normalizer must exist");
+  assert(window.ESCIE_VISUALS_UI&&typeof window.ESCIE_VISUALS_UI.init==="function","visual UI must exist");
+  assert(typeof window.ESCIE_VISUALS_UI.renderAsset==="function","visual asset renderer must exist");
   const normalized=normalize(items);
   assert(normalized.length===7,"all seven public sections should have a visual");
   assert(new Set(normalized.map(v=>v.id)).size===normalized.length,"visual IDs must be unique");
