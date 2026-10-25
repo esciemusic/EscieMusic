@@ -412,12 +412,16 @@
       ...normalizeCollection(getMusic()),
       ...normalizeCollection(getProjects()),
       ...normalizeCollection(getArchive()),
-      ...normalizeCollection(getInvestigation())
+      ...normalizeCollection(getInvestigation()),
+      ...normalizeCollection(getPeople()),
+      ...normalizeCollection(getLocations())
     ];
+
+    const publicRecords = records.filter(isPublic);
 
     const plan = build.createBuildPlan({
       environment: "runtime",
-      records,
+      records: publicRecords,
       routes: getNavigation(),
       assets: []
     });
