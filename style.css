@@ -2287,7 +2287,7 @@ body.inspector-open{overflow:hidden}
 .escie-player[hidden]{display:none}
 .escie-player-main{
   display:grid;
-  grid-template-columns:auto minmax(0,1fr) auto;
+  grid-template-columns:auto auto minmax(0,1fr) auto auto;
   gap:14px;
   align-items:center;
 }
@@ -2338,7 +2338,7 @@ body.inspector-open{overflow:hidden}
 }
 @media(max-width:700px){
   .escie-player{left:10px;right:10px;bottom:10px}
-  .escie-player-main{gap:10px}
+  .escie-player-main{gap:8px;grid-template-columns:auto auto minmax(0,1fr) auto auto}
   .escie-player-title{font-size:9px}
 }
 @media(prefers-reduced-motion:reduce){
