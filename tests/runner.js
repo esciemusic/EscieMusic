@@ -15,7 +15,8 @@
     ["brain", "ESCIE_TEST_BRAIN"],
     ["navigation", "ESCIE_TEST_NAVIGATION"],
     ["responsive", "ESCIE_TEST_RESPONSIVE"],
-    ["signal", "ESCIE_TEST_SIGNAL"]
+    ["signal", "ESCIE_TEST_SIGNAL"],
+    ["publishing", "ESCIE_TEST_PUBLISHING"]
   ];
 
   function run() {
