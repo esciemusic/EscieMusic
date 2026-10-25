@@ -117,29 +117,30 @@
   }
 
   function manifestFor(id){
-    const record=build().byId[id]||null;
+    const current=build();
+    const record=current.byId[id]||null;
     if(!record) return null;
     const media=Array.isArray(record.media)?record.media:[];
     const evidence=Array.isArray(record.evidence)?record.evidence:[];
-    const relationships=Array.isArray(record.relationships)?record.relationships:[];
+    const relationships=collection("ESCIE_RELATIONSHIPS");
+    const hasPublicConnection=relationships.some(rel =>
+      rel && rel.public_disclosure===true &&
+      (rel.from===id || rel.to===id) &&
+      current.byId[rel.from] && current.byId[rel.to]
+    );
+    const work=record.type==="project"||record.type==="music"||record.type==="body"||!!record.project;
+    const archive=record.type==="archive"||media.length>0||evidence.length>0||record.archive_state==="active";
+    const investigation=record.type==="investigation"||hasPublicConnection||record.type==="moment"||record.type==="fragment"||evidence.length>0;
+    const glassEye=media.some(item=>{
+      if(typeof item==="string") return /image|photo|video|film|vhs|jpg|jpeg|png|webp|gif|mp4|mov/i.test(item);
+      if(!item) return false;
+      return /image|photo|video|film|vhs|jpg|jpeg|png|webp|gif|mp4|mov/i.test([item.type,item.kind,item.mime,item.url,item.src].filter(Boolean).join(" "));
+    });
+    const sections={work,web:hasPublicConnection,archive,investigation,glassEye};
     return {
-      id,
-      work:record.type==="project"||record.type==="music"||record.type==="body"||!!record.project,
-      archive:record.type==="archive"||media.length>0||evidence.length>0||record.archive_state==="active",
-      investigation:record.type==="investigation"||relationships.length>0||record.type==="moment"||record.type==="fragment"||Array.isArray(record.evidence)&&record.evidence.length>0,
-      glassEye:media.some(item=>{
-        if(typeof item==="string") return /image|photo|video|film|vhs|jpg|jpeg|png|webp|gif|mp4|mov/i.test(item);
-        if(!item) return false;
-        return /image|photo|video|film|vhs|jpg|jpeg|png|webp|gif|mp4|mov/i.test([item.type,item.kind,item.mime,item.url,item.src].filter(Boolean).join(" "));
-      }),
-      search:true,
-      sections: {
-        work: record.type==="project"||record.type==="music"||record.type==="body"||!!record.project,
-        web: relationships.length>0,
-        archive: record.type==="archive"||media.length>0||evidence.length>0||record.archive_state==="active",
-        investigation: record.type==="investigation"||relationships.length>0||record.type==="moment"||record.type==="fragment"||evidence.length>0,
-        glassEye: media.length>0
-      }
+      id, work, archive, investigation, glassEye, search:true,
+      sections,
+      appearsIn:Object.keys(sections).filter(section=>sections[section])
     };
   }
 
@@ -176,5 +177,5 @@
     });
     return {ok:missing.length===0,missing};
   }
-  window.ESCIE_RECORD_REGISTRY={version:"1.5.0",build,records:()=>build().records,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,contractAudit,referenceAudit,manifestFor,filter,contextFor};
+  window.ESCIE_RECORD_REGISTRY={version:"1.6.0",build,records:()=>build().records,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,contractAudit,referenceAudit,manifestFor,filter,contextFor};
 })();
