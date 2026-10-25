@@ -54,6 +54,26 @@
     });
     return {ok:missing.length===0&&current.duplicates.length===0,missing,duplicates:current.duplicates};
   }
+  function contextFor(id){
+    const current=build();
+    const relationships=collection("ESCIE_RELATIONSHIPS");
+    const connected=relationships
+      .filter(r=>r&&r.public_disclosure===true&&(r.from===id||r.to===id))
+      .map(r=>({
+        id:r.id||null,
+        type:r.type||"connection",
+        direction:r.from===id?"out":"in",
+        record:r.from===id?r.to:r.from
+      }))
+      .filter(item=>current.byId[item.record]);
+    return {
+      record:current.byId[id]||null,
+      connections:connected,
+      parents:connected.filter(item=>item.direction==="in"&&["contains","parent","part-of","includes"].includes(item.type)),
+      children:connected.filter(item=>item.direction==="out"&&["contains","includes","has-part"].includes(item.type))
+    };
+  }
+
   function symbolAudit(){
     const symbols=collection("ESCIE_SYMBOLS");
     const symbolIds=new Set(symbols.map(symbol=>symbol&&symbol.id).filter(Boolean));
@@ -69,5 +89,5 @@
     });
     return {ok:missing.length===0,missing};
   }
-  window.ESCIE_RECORD_REGISTRY={version:"1.2.0",build,records:()=>build().records,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit};
+  window.ESCIE_RECORD_REGISTRY={version:"1.2.0",build,records:()=>build().records,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,contextFor};
 })();
