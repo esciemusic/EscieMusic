@@ -40,7 +40,7 @@ const ESCIE_UI_PLAYER = {
         '<button type="button" class="escie-player-step" data-player-prev aria-label="Previous transmission">PREV</button>' +
         '<button type="button" class="escie-player-toggle" data-player-toggle aria-label="Play" aria-pressed="false">PLAY</button>' +
         '<div class="escie-player-track">' +
-          '<span class="escie-player-label">SIGNAL</span>' +
+          '<span class="escie-player-label">TRANSMISSION PLAYER</span>' +
           '<strong class="escie-player-title" data-player-title>NO TRANSMISSION LOADED</strong>' +
           '<span class="escie-player-time" data-player-time aria-live="off">0:00 / 0:00</span>' +
           '<input class="escie-player-progress" data-player-progress type="range" min="0" max="1000" value="0" step="1" aria-label="Playback position">' +
