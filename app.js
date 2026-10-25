@@ -641,6 +641,31 @@
     if (close) close.focus();
   }
 
+  function showSymbolInspector(symbolId) {
+    const modal = byId("record-inspector");
+    if (!modal) return;
+    const symbol = getSymbols().find(item => item && item.id === symbolId);
+    if (!symbol) return;
+    const body = modal.querySelector(".record-inspector-body");
+    if (!body) return;
+    const records = symbolTrail(symbolId);
+    body.innerHTML =
+      '<p class="eyebrow">RECURRING MOTIF</p>' +
+      '<h3>' + escapeHTML(symbol.name) + '</h3>' +
+      '<p>' + escapeHTML(symbol.motif || "Meaning intentionally left open.") + '</p>' +
+      '<dl class="record-facts"><div><dt>STATUS</dt><dd>' + escapeHTML(symbol.status || "recurring") + '</dd></div>' +
+      '<div><dt>SECTIONS</dt><dd>' + escapeHTML((symbol.placements || []).join(" / ") || "UNPLACED") + '</dd></div>' +
+      '<div><dt>RECORD LINKS</dt><dd>' + escapeHTML(String(records.length)) + '</dd></div></dl>' +
+      (records.length ? '<div class="record-related"><p class="eyebrow">PUBLIC RECORDS CARRYING THIS MOTIF</p>' +
+        records.map(item => '<button class="record-related-link" type="button" data-record-id="' + escapeHTML(recordId(item)) + '">' +
+          escapeHTML(recordTitle(item)) + '</button>').join("") + '</div>' :
+        '<p class="inspector-note">No public record has been explicitly assigned this motif yet. The motif can exist visually without becoming canonically attached to a record.</p>');
+    modal.hidden = false;
+    document.body.classList.add("inspector-open");
+    const close = modal.querySelector("[data-inspector-close]");
+    if (close) close.focus();
+  }
+
   function setupRecordInspector() {
     if (byId("record-inspector")) return;
 
@@ -661,6 +686,12 @@
       if (close) {
         modal.hidden = true;
         document.body.classList.remove("inspector-open");
+        return;
+      }
+
+      const symbolTrigger = event.target.closest("[data-symbol-id]");
+      if (symbolTrigger) {
+        showSymbolInspector(symbolTrigger.getAttribute("data-symbol-id"));
         return;
       }
 
