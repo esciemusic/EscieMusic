@@ -736,6 +736,7 @@
   }
 
   function showRecordInspector(record) {
+    if (!record || !isPublic(record)) return;
     const modal = byId("record-inspector");
     if (!modal || !record) return;
     const body = modal.querySelector(".record-inspector-body");
