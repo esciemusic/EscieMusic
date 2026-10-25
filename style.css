@@ -1861,3 +1861,66 @@ body.inspector-open{overflow:hidden}
   35% { opacity: .42; }
   100% { opacity: .28; letter-spacing: .42em; transform: translateX(-50%) translateY(0); }
 }
+
+
+/* =========================================================
+   MEDIA EMBEDS
+   ========================================================= */
+
+.escie-media-stack {
+  display: grid;
+  gap: 24px;
+  margin-top: 28px;
+  max-width: 980px;
+}
+
+.escie-media {
+  margin: 0;
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+}
+
+.escie-media audio {
+  width: 100%;
+  display: block;
+  filter: grayscale(1) contrast(.92);
+}
+
+.escie-media-video,
+.escie-media-embed {
+  position: relative;
+  overflow: hidden;
+  background: #000;
+  aspect-ratio: 16 / 9;
+}
+
+.escie-media video,
+.escie-media iframe {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: 0;
+}
+
+.media-label {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--faint);
+  font-size: 8px;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+}
+
+.media-caption {
+  margin: 10px 0 0;
+  color: var(--faint);
+  font-size: 10px;
+  line-height: 1.7;
+  letter-spacing: .08em;
+}
+
+@media (max-width:700px) {
+  .escie-media-stack { gap: 18px; }
+  .escie-media-video,
+  .escie-media-embed { aspect-ratio: 16 / 10; }
+}
