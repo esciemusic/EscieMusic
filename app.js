@@ -375,7 +375,11 @@
     if (!nav) return;
 
     const nodes = getInformationNodes();
-    const currentRoute = (window.location.hash || "").replace(/^#/, "");
+    const rawRoute = (window.location.hash || "").replace(/^#/, "");
+    const router = getRouter();
+    const currentRoute = router && typeof router.resolve === "function"
+      ? (router.resolve(rawRoute) || rawRoute)
+      : rawRoute;
 
     nav.innerHTML =
       nodes.map(node => {
@@ -392,7 +396,11 @@
   function refreshNavigationState() {
     const nav = byId("main-navigation");
     if (!nav) return;
-    const currentRoute = (window.location.hash || "").replace(/^#/, "");
+    const rawRoute = (window.location.hash || "").replace(/^#/, "");
+    const router = getRouter();
+    const currentRoute = router && typeof router.resolve === "function"
+      ? (router.resolve(rawRoute) || rawRoute)
+      : rawRoute;
     nav.querySelectorAll(".nav-link").forEach(link => {
       const route = String(link.getAttribute("href") || "").replace(/^#/, "");
       const active = route === currentRoute;
