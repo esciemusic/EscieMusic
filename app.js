@@ -64,6 +64,14 @@
     return getGlobal("ESCIE_PEOPLE", []);
   }
 
+  function getLocations() {
+    return getGlobal("ESCIE_LOCATIONS", []);
+  }
+
+  function getRelationships() {
+    return getGlobal("ESCIE_RELATIONSHIPS", []);
+  }
+
   function getRuntimeState() {
     return getGlobal("ESCIE_STATE", {});
   }
@@ -229,6 +237,52 @@
         '<p class="eyebrow">' + escapeHTML(project.type || "BODY") + "</p>" +
         '<h3>' + escapeHTML(recordTitle(project)) + "</h3>" +
         (project.description ? "<p>" + escapeHTML(project.description) + "</p>" : "") +
+      "</article>"
+    ).join("");
+  }
+
+  function renderWeb() {
+    const container = byId("web-container");
+    if (!container) return;
+
+    const relationships = normalizeCollection(getRelationships());
+    const records = [
+      ...normalizeCollection(getMusic()),
+      ...normalizeCollection(getProjects()),
+      ...normalizeCollection(getArchive()),
+      ...normalizeCollection(getInvestigation()),
+      ...normalizeCollection(getPeople()),
+      ...normalizeCollection(getLocations())
+    ];
+
+    const publicIds = new Set(
+      records
+        .filter(isPublic)
+        .map(recordId)
+        .filter(Boolean)
+    );
+
+    const visible = relationships.filter(relationship =>
+      relationship &&
+      relationship.public_disclosure === true &&
+      relationship.visibility !== "private" &&
+      relationship.visibility !== "withheld" &&
+      publicIds.has(relationship.from) &&
+      publicIds.has(relationship.to)
+    );
+
+    if (!visible.length) {
+      renderEmpty(
+        container,
+        "THE WEB EXISTS. PUBLIC CONNECTIONS WILL APPEAR WHEN THEY ARE ESTABLISHED."
+      );
+      return;
+    }
+
+    container.innerHTML = visible.map(relationship =>
+      '<article class="web-connection" data-relationship-id="' +
+      escapeHTML(relationship.id || "") + '">' +
+        '<span>' + escapeHTML(relationship.type || "CONNECTION") + "</span>" +
       "</article>"
     ).join("");
   }
@@ -481,6 +535,7 @@
     renderNow();
     renderMusic();
     renderProjects();
+    renderWeb();
     renderArchive();
     renderInvestigation();
     renderAbout();
