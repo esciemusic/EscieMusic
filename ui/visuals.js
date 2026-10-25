@@ -47,14 +47,18 @@
   return String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
  }
 
+ function reducedMotion(){return window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;}
+
  function observeMedia(el){
   const media=el.querySelector(".section-visual-media");
   if(!media||media.tagName!=="VIDEO")return;
+  if(reducedMotion())return;
   if(!("IntersectionObserver" in window)){return;}
   const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
     if(entry.isIntersecting&&!document.hidden){media.play().catch(()=>{});}else{media.pause();}
   }),{threshold:.15});
   observer.observe(el);
+  document.addEventListener("visibilitychange",()=>{if(document.hidden)media.pause();});
 }
 
  function init(){
