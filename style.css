@@ -3184,3 +3184,51 @@ body.menu-open .index-navigation.is-open{
   .section-visual[data-visual-section]::after,
   .escie-player::before{animation:none!important;transition:none!important}
 }
+
+/* =========================================================
+   FINAL SYSTEM POLISH — PLAYER / INTERACTION / PERFORMANCE
+   ========================================================= */
+.escie-player{
+  position:fixed;
+  left:50%;
+  bottom:max(14px,env(safe-area-inset-bottom));
+  transform:translateX(-50%);
+  z-index:240;
+  width:min(940px,calc(100vw - 28px));
+  box-sizing:border-box;
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+.escie-player[hidden]{display:none!important}
+.escie-player button:disabled{
+  opacity:.28;
+  pointer-events:none;
+}
+.escie-player-progress{
+  accent-color:var(--signal-blue,#4f86ad);
+}
+@media(max-width:700px){
+  .escie-player{
+    width:calc(100vw - 16px);
+    bottom:max(8px,env(safe-area-inset-bottom));
+  }
+  .escie-player-main{
+    gap:6px;
+  }
+  .escie-player-step{
+    min-width:42px;
+    padding-inline:6px;
+  }
+  .escie-player-toggle{
+    min-width:48px;
+    padding-inline:7px;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .escie-player,
+  .escie-player::before,
+  .escie-player .escie-player-title{
+    animation:none!important;
+    transition:none!important;
+  }
+}
