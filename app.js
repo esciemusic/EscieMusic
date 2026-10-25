@@ -648,8 +648,12 @@
 
     const site = getSite();
     const about = getGlobal("ESCIE_ABOUT", {});
-    const social = normalizeCollection(getGlobal("ESCIE_SOCIAL", []))
-      .filter(item => item && item.url && /^https?:\\/\\//i.test(String(item.url)));
+    const socialNormalizer = getGlobal("normalizeEscieSocial", null);
+    const social = typeof socialNormalizer === "function"
+      ? socialNormalizer(getGlobal("ESCIE_SOCIAL", []))
+      : normalizeCollection(getGlobal("ESCIE_SOCIAL", [])).filter(
+          item => item && item.url && /^https?:\\/\\//i.test(String(item.url))
+        );
 
     const socialMarkup = social.length
       ? '<div class="about-social" aria-label="ESCIE social links">' +
