@@ -1094,6 +1094,19 @@
   }
 
   function renderEntry() {
+    const stateLabel = byId("entry-state");
+    if (stateLabel) {
+      const route = document.body && document.body.dataset ? document.body.dataset.route : "entry";
+      const nodes = getInformationNodes();
+      const node = nodes.find(item => {
+        const target = String(item && item.target || "").replace(/^#/, "");
+        return target === route;
+      });
+      stateLabel.textContent = node && node.role
+        ? String(node.role)
+        : (route === "entry" ? "CURRENT SIGNAL" : String(route || "CURRENT SIGNAL").replace(/-/g, " ").toUpperCase());
+    }
+
     const year = byId("entry-year");
     if (year) {
       year.textContent = getSiteValue("publicYear", new Date().getFullYear());
@@ -1330,6 +1343,7 @@
       const route = window.location.hash.replace(/^#/, "") || "entry";
       const resolved = typeof router.resolve === "function" ? router.resolve(route) : null;
       document.body.dataset.route = resolved || route || "entry";
+      renderEntry();
       document.documentElement.classList.remove("route-shift");
       void document.documentElement.offsetWidth;
       document.documentElement.classList.add("route-shift");
