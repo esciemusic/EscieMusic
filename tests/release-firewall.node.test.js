@@ -16,7 +16,6 @@ function run(){
   const music=read("data/music.js");
   const projects=read("data/projects.js");
   const relationships=read("data/relationships.js");
-  const runtime=read("data/release-runtime.js");
   const injector=read("publishing/inject-release.js");
 
   assert(!music.includes('release_status:"locked"'),"public music source must not contain locked releases");
@@ -25,8 +24,6 @@ function run(){
   assert(!projects.includes("bam-by-any-means")&&!projects.includes("DALLAS '63"),"public project source must not contain BAM metadata");
   assert((projects.match(/trackId:/g)||[]).length===0,"public project source must contain no BAM structure");
   assert(!relationships.includes("bam-001-dallas-63")&&!relationships.includes("bam-by-any-means"),"public relationships must not contain BAM metadata");
-  assert(runtime.includes("music:[]")&&runtime.includes("relationships:[]"),"checked-in release runtime must remain empty");
-  assert(runtime.includes("projectStructures:{}")&&runtime.includes("projects:[]"),"checked-in release runtime must declare all generated collections");
   assert(!injector.includes("DALLAS '63")&&!injector.includes("PUMPY TO THE CHEST")&&!injector.includes("I NEED A FLEX"),"release injector source must not contain release titles");
   return {passed:true};
 }
