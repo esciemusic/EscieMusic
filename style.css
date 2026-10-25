@@ -3064,3 +3064,80 @@ body.menu-open .index-navigation.is-open{
 .entry-inner h1{
   margin:0;
 }
+
+
+/* =========================================================
+   LIVING IMAGE MOTION
+   The atlas should feel filmed, not pasted onto the page.
+   ========================================================= */
+@keyframes escie-atlas-drift{
+  0%{transform:scale(1.025) translate3d(-.4%,.25%,0);background-position:50% 50%}
+  35%{transform:scale(1.045) translate3d(.35%,-.3%,0);background-position:50.8% 49.2%}
+  70%{transform:scale(1.035) translate3d(-.25%,-.15%,0);background-position:49.2% 50.6%}
+  100%{transform:scale(1.025) translate3d(-.4%,.25%,0);background-position:50% 50%}
+}
+@keyframes escie-atlas-flicker{
+  0%,100%{opacity:1;filter:grayscale(.13) contrast(.90) saturate(.76) brightness(1.09)}
+  48%{opacity:.93;filter:grayscale(.18) contrast(.86) saturate(.72) brightness(1.03)}
+  52%{opacity:1;filter:grayscale(.10) contrast(.94) saturate(.82) brightness(1.14)}
+}
+.section-visual[data-visual-section]::before{
+  animation:escie-atlas-drift 18s var(--slow) infinite alternate;
+  transform-origin:center center;
+}
+.section-visual[data-visual-section].visual-active::before{
+  animation:
+    escie-atlas-drift 13s var(--slow) infinite alternate,
+    escie-atlas-flicker 7s steps(1,end) infinite;
+}
+.section-visual[data-visual-section]:not(.visual-active)::before{
+  animation-duration:24s;
+}
+.section-visual[data-visual-section]::after{
+  animation:escie-visual-scan 9s linear infinite;
+}
+@keyframes escie-visual-scan{
+  0%{background-position:0 0,0 0}
+  100%{background-position:0 100%,0 0}
+}
+
+/* =========================================================
+   ROBUST INDEX STATE
+   Use the JS state directly so the menu cannot get trapped
+   between CSS selector states.
+   ========================================================= */
+.index-navigation[data-open="true"]{
+  visibility:visible!important;
+  opacity:1!important;
+  pointer-events:auto!important;
+  transform:translateY(0)!important;
+}
+.index-navigation[data-open="false"]{
+  visibility:hidden!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+.escie-player-toggle:disabled{
+  opacity:.28;
+  cursor:default;
+}
+.escie-player[data-ready="false"]{
+  border-color:rgba(79,134,173,.16);
+}
+.escie-player[data-ready="true"]{
+  border-color:rgba(79,134,173,.28);
+}
+.escie-player.is-playing .escie-player-title{
+  animation:escie-player-pulse 2.8s ease-in-out infinite;
+}
+@keyframes escie-player-pulse{
+  0%,100%{opacity:.76}
+  50%{opacity:1}
+}
+@media(prefers-reduced-motion:reduce){
+  .section-visual[data-visual-section]::before,
+  .section-visual[data-visual-section]::after,
+  .escie-player.is-playing .escie-player-title{
+    animation:none!important;
+  }
+}
