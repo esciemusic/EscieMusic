@@ -1353,47 +1353,73 @@
   function setupMobileMenu() {
     const button = byId("mobile-menu-button");
     const nav = byId("main-navigation");
-    if (!button || !nav) return;
+    if (!button || !nav) return null;
+
+    const state = {
+      button,
+      nav,
+      open: false,
+      lastFocused: null
+    };
+
+    const sync = function (open) {
+      state.open = !!open;
+      document.body.classList.toggle("menu-open", state.open);
+      nav.classList.toggle("is-open", state.open);
+      button.setAttribute("aria-expanded", String(state.open));
+      button.setAttribute("aria-label", state.open ? "Close index" : "Open index");
+      nav.setAttribute("aria-hidden", String(!state.open));
+    };
 
     const closeMenu = function (restoreFocus = false) {
-      document.body.classList.remove("menu-open");
-      nav.classList.remove("is-open");
-      button.setAttribute("aria-expanded", "false");
-      button.setAttribute("aria-label", "Open index");
-      if (restoreFocus) button.focus();
+      const wasOpen = state.open;
+      sync(false);
+      if (restoreFocus && wasOpen) button.focus();
     };
 
     const openMenu = function () {
-      document.body.classList.add("menu-open");
-      nav.classList.add("is-open");
-      button.setAttribute("aria-expanded", "true");
-      button.setAttribute("aria-label", "Close index");
+      state.lastFocused = document.activeElement;
+      sync(true);
     };
 
-    button.addEventListener("click", function () {
-      const open = button.getAttribute("aria-expanded") === "true";
-      if (open) closeMenu(true);
+    const toggleMenu = function () {
+      if (state.open) closeMenu(true);
       else openMenu();
-    });
+      return state.open;
+    };
+
+    button.addEventListener("click", toggleMenu);
 
     nav.addEventListener("click", function (event) {
-      if (event.target.closest("a")) closeMenu(false);
+      const link = event.target.closest("a");
+      if (link) closeMenu(false);
     });
 
     document.addEventListener("keydown", function (event) {
-      if (event.key === "Escape" && nav.classList.contains("is-open")) {
+      if (event.key === "Escape" && state.open) {
         event.preventDefault();
         closeMenu(true);
       }
     });
 
     window.addEventListener("resize", function () {
-      if (window.innerWidth > 900 && nav.classList.contains("is-open")) {
-        closeMenu(false);
-      }
+      if (window.innerWidth > 900 && state.open) closeMenu(false);
     });
 
-    closeMenu(false);
+    window.addEventListener("hashchange", function () {
+      if (state.open) closeMenu(false);
+    });
+
+    sync(false);
+
+    ESCIE_RUNTIME.navigationMenu = {
+      open: openMenu,
+      close: closeMenu,
+      toggle: toggleMenu,
+      isOpen: function () { return state.open; }
+    };
+
+    return ESCIE_RUNTIME.navigationMenu;
   }
 
   function render() {
