@@ -613,7 +613,8 @@
     return registry && typeof registry.relationshipAudit === "function"
       ? {
           relationships: registry.relationshipAudit(),
-          symbols: typeof registry.symbolAudit === "function" ? registry.symbolAudit() : null
+          symbols: typeof registry.symbolAudit === "function" ? registry.symbolAudit() : null,
+          contract: typeof registry.contractAudit === "function" ? registry.contractAudit() : null
         }
       : null;
   }
