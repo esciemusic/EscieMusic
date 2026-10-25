@@ -304,10 +304,13 @@
       .filter(item => item && item.primary !== false)
       .sort((a, b) => Number(a.order || 0) - Number(b.order || 0));
 
+    const currentRoute = (window.location.hash || "#entry").replace(/^#/, "");
     nav.innerHTML = items.map(item => {
       const label = item.label || item.title || item.id || "";
       const target = item.target || item.href || ("#" + (item.id || "").toLowerCase().replace(/\s+/g, "-"));
-      return '<a class="nav-link" href="' + escapeHTML(target) + '">' +
+      const route = target.replace(/^#/, "");
+      return '<a class="nav-link' + (route === currentRoute ? ' is-current' : '') + '" href="' + escapeHTML(target) + '"' +
+        (route === currentRoute ? ' aria-current="page"' : '') + '>' +
         escapeHTML(label) + "</a>";
     }).join("");
   }
@@ -452,11 +455,18 @@
     const visible = archive.filter(isPublic);
 
     if (!visible.length) {
-      renderEmpty(container, "THE ARCHIVE IS QUIET.");
+      container.innerHTML =
+        '<div class="archive-status">' +
+          '<p class="eyebrow">PRESERVATION STATE</p>' +
+          '<h3>NOTHING PUBLIC HAS BEEN PLACED HERE YET.</h3>' +
+          '<p>The archive is designed to preserve source material when it becomes available: recordings, photographs, documents, fragments, artwork and other traces. Empty is a valid state.</p>' +
+        '</div>';
       return;
     }
 
-    container.innerHTML = visible.map(record =>
+    container.innerHTML =
+      '<div class="archive-status"><p class="eyebrow">' + visible.length + ' PUBLIC RECORD' + (visible.length === 1 ? '' : 'S') + '</p></div>' +
+      visible.map(record =>
       '<article class="archive-entry" data-record-id="' +
       escapeHTML(recordId(record)) + '"' + narrationAttributes(record) + '>' +
         '<h3>' + escapeHTML(recordTitle(record)) + "</h3>" +
@@ -472,11 +482,19 @@
     const visible = investigations.filter(isPublic);
 
     if (!visible.length) {
-      renderEmpty(container, "NO PUBLIC INVESTIGATION IS ACTIVE.");
+      container.innerHTML =
+        '<div class="investigation-status">' +
+          '<p class="eyebrow">CASE STATE / OPEN</p>' +
+          '<h3>THE QUESTIONS ARE HERE BEFORE THE ANSWERS.</h3>' +
+          '<p>No public case has been established yet. When one is opened, this layer will distinguish questions, evidence, contradictions, context and unresolved material rather than presenting speculation as fact.</p>' +
+          '<div class="reality-legend"><span>REAL</span><span>MEMORY</span><span>DRAMATIZED</span><span>FICTIONALIZED</span><span>MYTH</span></div>' +
+        '</div>';
       return;
     }
 
-    container.innerHTML = visible.map(item =>
+    container.innerHTML =
+      '<div class="investigation-status"><p class="eyebrow">' + visible.length + ' ACTIVE PUBLIC CASE' + (visible.length === 1 ? '' : 'S') + '</p></div>' +
+      visible.map(item =>
       '<article class="investigation-case" data-record-id="' +
       escapeHTML(recordId(item)) + '"' + narrationAttributes(item) + '>' +
         '<h3>' + escapeHTML(recordTitle(item)) + "</h3>" +
@@ -631,6 +649,7 @@
     if (!index || typeof index.build !== "function") return [];
 
     const records = [
+      { id: "escie", type: "identity", title: "ESCIE", description: "The central consciousness / interface.", status: "active", published: true, visibility: "public" },
       ...normalizeCollection(getMusic()),
       ...normalizeCollection(getProjects()),
       ...normalizeCollection(getArchive()),
@@ -814,6 +833,7 @@
 
     const navigate = () => {
       const route = window.location.hash.replace(/^#/, "") || "entry";
+      renderNavigation();
       if (typeof router.navigate === "function" && router.resolve(route)) {
         router.navigate(route);
       }
