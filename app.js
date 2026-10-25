@@ -604,6 +604,16 @@
     return getAllRecords().filter(isPublic);
   }
 
+  function registryAudit() {
+    const registry = getGlobal("ESCIE_RECORD_REGISTRY", null);
+    return registry && typeof registry.relationshipAudit === "function"
+      ? {
+          relationships: registry.relationshipAudit(),
+          symbols: typeof registry.symbolAudit === "function" ? registry.symbolAudit() : null
+        }
+      : null;
+  }
+
   function showRecordInspector(record) {
     const modal = byId("record-inspector");
     if (!modal || !record) return;
@@ -1070,6 +1080,9 @@
   };
   ESCIE_RUNTIME.render = render;
   ESCIE_RUNTIME.initialize = initialize;
+  ESCIE_RUNTIME.getAllRecords = getAllRecords;
+  ESCIE_RUNTIME.getAllPublicRecords = getAllPublicRecords;
+  ESCIE_RUNTIME.registryAudit = registryAudit;
 
   window.ESCIE_RUNTIME = ESCIE_RUNTIME;
 
