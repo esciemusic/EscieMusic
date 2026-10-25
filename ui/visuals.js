@@ -14,6 +14,7 @@
  let MEDIA_QUERY=null;
  let MEDIA_QUERY_HANDLER=null;
  let FOCUS_REFRESH=null;
+ let POINTER_HANDLER=null;
 
  
  function chooseVisualFocus(items,viewportWidth,viewportHeight){
@@ -109,6 +110,10 @@
    MEDIA_QUERY=null;MEDIA_QUERY_HANDLER=null;
   }
   FOCUS_REFRESH=null;
+  if(POINTER_HANDLER){
+   window.removeEventListener("pointermove",POINTER_HANDLER);
+   POINTER_HANDLER=null;
+  }
   document.querySelectorAll(".section-visual").forEach(el=>{
 
    const cleanup=MEDIA_CLEANUPS.get(el);
@@ -121,6 +126,7 @@
   });
   const visuals=Array.from(document.querySelectorAll(".section-visual"));
   const setActiveVisual=active=>{
+
    visuals.forEach(el=>el.classList.toggle("visual-active",el===active));
   };
   if("IntersectionObserver" in window){
@@ -158,6 +164,21 @@
    };
    if(MEDIA_QUERY.addEventListener) MEDIA_QUERY.addEventListener("change",MEDIA_QUERY_HANDLER);
    else if(MEDIA_QUERY.addListener) MEDIA_QUERY.addListener(MEDIA_QUERY_HANDLER);
+  }
+
+  if(!reducedMotion() && window.matchMedia && window.matchMedia("(pointer:fine)").matches){
+   POINTER_HANDLER=event=>{
+    const x=(event.clientX/window.innerWidth-.5);
+    const y=(event.clientY/window.innerHeight-.5);
+    visuals.forEach((el,index)=>{
+     if(!el.classList.contains("visual-active") && !el.classList.contains("visual-visible")) return;
+     const depth=el.classList.contains("visual-active") ? 1 : .42;
+     el.style.setProperty("--pointer-x",(x*10*depth).toFixed(3)+"px");
+     el.style.setProperty("--pointer-y",(y*7*depth).toFixed(3)+"px");
+     el.style.setProperty("--pointer-rotate",(x*0.35*depth).toFixed(3)+"deg");
+    });
+   };
+   window.addEventListener("pointermove",POINTER_HANDLER,{passive:true});
   }
 
   const items=window.ESCIE_VISUALS||[];
