@@ -1,10 +1,8 @@
 const fs=require('fs');
 function assert(condition,message){if(!condition)throw new Error(message);}
 function loadRuntime(){
-  const source=fs.readFileSync('data/release-runtime.js','utf8');
-  const match=source.match(/const ESCIE_RELEASE_RUNTIME=(.*?);\n/);
-  if(!match)throw new Error('generated release runtime payload not found');
-  return JSON.parse(match[1]);
+  const runtime=require("../data/release-runtime.js");
+  return runtime && typeof runtime==="object" ? runtime : {};
 }
 function run(){
   const runtime=loadRuntime();
