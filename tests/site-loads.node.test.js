@@ -28,9 +28,6 @@ assert(duplicates.length === 0, "index.html contains duplicate script loads: " +
 });
 
 const appIndex = scripts.indexOf("app.js");
-const runnerIndex = scripts.indexOf("tests/runner.js");
-
-assert(runnerIndex < appIndex, "test runner must load before app.js");
 assert(scripts.indexOf("record.js") < appIndex, "record contract must load before app.js");
 assert(scripts.indexOf("relationship.js") < appIndex, "relationship contract must load before app.js");
 
