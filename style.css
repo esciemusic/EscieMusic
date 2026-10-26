@@ -1737,7 +1737,7 @@ body.inspector-open{overflow:hidden}
 .entry-inner{position:relative}
 
 .now-section{min-height:62vh}
-.now-state{position:relative;overflow:hidden}
+.now-state{position:relative;position:relative;overflow:hidden}
 .now-state::after{
   content:"";
   position:absolute;
@@ -1792,7 +1792,7 @@ body.inspector-open{overflow:hidden}
 .record-inspector-body{padding-top:35px}.record-inspector-body h3{margin:0;font-size:clamp(30px,6vw,62px);font-weight:400;letter-spacing:.04em}.record-inspector-body>p:not(.eyebrow){max-width:540px;color:var(--muted);font-size:14px;line-height:1.9}
 .record-facts{margin-top:45px;border-top:1px solid var(--line)}.record-facts div{display:grid;grid-template-columns:120px 1fr;gap:20px;padding:16px 0;border-bottom:1px solid var(--line)}.record-facts dt{color:var(--faint);font-size:8px;letter-spacing:.2em}.record-facts dd{margin:0;color:var(--muted);font-size:10px;letter-spacing:.12em;text-transform:uppercase}
 
-.music-card,.archive-entry,.investigation-case{cursor:pointer}
+.music-card,.archive-entry,.investigation-case{position:relative;cursor:pointer}
 .music-card:hover,.archive-entry:hover,.investigation-case:hover{background:rgba(255,255,255,.018)}
 
 @media(max-width:700px){
