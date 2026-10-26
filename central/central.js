@@ -57,7 +57,7 @@ function analyze(){
 document.querySelectorAll(".nav-item").forEach(btn=>btn.addEventListener("click",()=>{state.view=btn.dataset.view;document.querySelectorAll(".nav-item").forEach(b=>b.classList.toggle("is-active",b===btn));render()}));
 document.getElementById("new-post").addEventListener("click",openComposer);
 document.getElementById("analyze-post").addEventListener("click",analyze);
-document.getElementById("home-post").addEventListener("click",openComposer);
+document.getElementById("view").addEventListener("click",e=>{if(e.target&&e.target.id==="home-post")openComposer()});
 document.getElementById("post-dialog").addEventListener("click",e=>{if(e.target===e.currentTarget)e.currentTarget.close()});
 render();
 if("serviceWorker" in navigator){navigator.serviceWorker.register("./sw.js").catch(()=>{})}
