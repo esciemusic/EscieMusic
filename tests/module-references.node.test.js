@@ -15,7 +15,7 @@ const providers = new Map();
 scripts.forEach((src, index) => {
   const content = fs.readFileSync(src, "utf8");
   const exports = [
-    ...[...content.matchAll(/window\\.(ESCIE_[A-Z0-9_]+)\s*=/g)].map((match) => match[1]),
+    ...[...content.matchAll(/window\.(ESCIE_[A-Z0-9_]+)\s*=/g)].map((match) => match[1]),
     ...[...content.matchAll(/(?:^|\n)\s*(?:function\s+|(?:const|let|var)\s+)(normalizeEscieSocial|auditEscieSocial|normalizeEscieVisuals|auditEscieVisuals)\b/g)].map((match) => match[1])
   ];
 
