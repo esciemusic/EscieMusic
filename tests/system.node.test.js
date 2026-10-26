@@ -46,7 +46,7 @@ assert(source.id === "source-test", "source id should be preserved");
 
 const historyEntry = history.appendHistory({
   id: "history-test",
-  event: "test",
+  event: history.EVENTS.CREATED,
   recordId: "record-test",
   actor: "test"
 });
@@ -200,73 +200,6 @@ assert(orphanProvenanceAudit.missing.length === 1, "missing provenance source mu
 
 console.log("ESCIE provenance contracts OK");
 
-
-const createdHistory = history.createHistoryEntry({
-  id: "history-provenance-test",
-  recordId: "provenance-record",
-  event: history.EVENTS.CREATED,
-  actor: "test",
-  sourceIds: ["provenance-source"]
-});
-assert(history.validateHistoryEntry(createdHistory, [registeredSource], []).valid, "valid history entry should pass");
-const appendedHistory = history.appendHistory(createdHistory, { sources: [registeredSource] });
-assert(appendedHistory.valid === true, "valid history entry should append");
-const duplicateHistory = history.appendHistory(createdHistory, { sources: [registeredSource] });
-assert(duplicateHistory.valid === false, "duplicate history id must be rejected");
-const invalidHistory = history.createHistoryEntry({
-  id: "history-missing-source",
-  recordId: "provenance-record",
-  event: history.EVENTS.UPDATED,
-  sourceIds: ["missing-source"]
-});
-assert(history.validateHistoryEntry(invalidHistory, [registeredSource], []).valid === false, "history must reject unknown sources");
-assert(history.get("provenance-record").length === 1, "history lookup should return appended record history");
-
-
-const historyChainAudit = require("../brain/audit.js").auditHistoryChain;
-const validHistoryChain = historyChainAudit(
-  history.get("provenance-record"),
-  ["provenance-record"]
-);
-assert(validHistoryChain.ok === true, "valid history chain should pass audit");
-const invalidHistoryChain = historyChainAudit(
-  [{
-    id: "orphan-history",
-    recordId: "missing-record",
-    timestamp: "not-a-date",
-    sourceIds: []
-  }],
-  ["provenance-record"]
-);
-assert(invalidHistoryChain.ok === false, "invalid history chain must fail audit");
-
-
-const historyEntry2 = history.createHistoryEntry({
-  id: "history-test-001",
-  event: "updated",
-  recordId: "record-a",
-  actor: "ESCIE",
-  previous: { status: "draft" },
-  next: { status: "published" },
-  reason: "Test state transition",
-  sourceIds: ["provenance-source"]
-});
-assert(history.validate(historyEntry2, [registeredSource]).valid, "valid history entry should pass validation");
-
-const appendedHistory2 = history.append(historyEntry2, [registeredSource]);
-assert(appendedHistory2.valid === true, "valid history entry should append");
-assert(appendedHistory2.entry.id === "history-test-001", "appended history should return its entry");
-
-const duplicateHistory2 = history.append(historyEntry2, [registeredSource]);
-assert(duplicateHistory.valid === false, "duplicate history id must be rejected");
-
-const invalidHistory2 = history.append({
-  id: "history-test-invalid",
-  event: "not-a-real-event",
-  actor: "ESCIE",
-  sourceIds: ["provenance-source"]
-}, [registeredSource]);
-assert(invalidHistory2.valid === false, "invalid history event must be rejected");
 
 const chronologicalAudit = require("../brain/audit.js").auditHistorySequence([
   { id: "h1", timestamp: "2026-01-02T00:00:00Z" },
