@@ -114,8 +114,10 @@ assert(invalidRelationship.valid === false, "relationship disclosure invariant s
 
 const audit = require("../brain/audit.js");
 const relationshipRecords = [
+  { id: "escie" },
   ...require("../data/projects.js"),
-  ...require("../data/music.js")
+  ...require("../data/music.js"),
+  ...require("../data/locations.js")
 ];
 const relationships = require("../data/relationships.js");
 const relationshipAPI = require("../relationship.js");
