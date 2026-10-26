@@ -50,7 +50,7 @@ const historyEntry = history.appendHistory({
   recordId: "record-test",
   actor: "test"
 });
-assert(historyEntry.id === "history-test", "history entry should be retained");
+assert(historyEntry && historyEntry.entry && historyEntry.entry.id === "history-test" && historyEntry.valid === true, "history entry should be retained");
 
 let controlAdded = false;
 let controlResolved = false;
