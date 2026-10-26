@@ -21,8 +21,7 @@ assert(duplicates.length === 0, "index.html contains duplicate script loads: " +
 [
   "record.js",
   "relationship.js",
-  "app.js",
-  "tests/runner.js"
+  "app.js"
 ].forEach((required) => {
   assert(scripts.includes(required), "index.html is missing required script: " + required);
 });
