@@ -66,6 +66,6 @@ const relationships=released.map(track=>({
 }));
 const payload="/* GENERATED — public released subset only. */\n"+
 "const ESCIE_RELEASE_RUNTIME="+JSON.stringify({music:released,relationships,projectStructures,projects})+";\n"+
-"if(typeof window!==\"undefined\")window.ESCIE_RELEASE_RUNTIME=ESCIE_RELEASE_RUNTIME;\n";
+"if(typeof window!==\"undefined\")window.ESCIE_RELEASE_RUNTIME=ESCIE_RELEASE_RUNTIME;\n"+\n"if(typeof module!==\"undefined\"&&module.exports)module.exports=ESCIE_RELEASE_RUNTIME;\n";
 fs.writeFileSync(output,payload,{encoding:"utf8"});
 console.log("Release injector: "+released.length+" transmitted record(s) emitted.");
