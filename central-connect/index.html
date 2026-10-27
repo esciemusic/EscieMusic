@@ -95,7 +95,8 @@ async function ensureWorkspace(session){
  await rest("/workspace_members",{method:"POST",headers:{"Prefer":"return=minimal"},body:JSON.stringify({workspace_id:ws[0].id,user_id:session.user.id,role:"owner"})},session.access_token);
  step(2,"done");log("WORKSPACE","Created owner workspace");return ws[0].id
 }
-async function updatePassword(token,password){return await jsonFetch(AUTH+"/user",{method:"PUT",headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify({password:password})})}\nasync function boot(){
+async function updatePassword(token,password){return await jsonFetch(AUTH+"/user",{method:"PUT",headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify({password:password})})}
+async function boot(){
  if(!IS_PRODUCTION){status("This connection page only runs from the published ESCIE Central link.","error");return}
  const s=await getSession();
  if(s){show($("connect"));hide($("login"));step(1,"done");status("CENTRAL AUTHENTICATED · "+(s.user.email||"owner"),"ok");log("AUTH","Authenticated session restored");}
@@ -129,7 +130,13 @@ $("copy").onclick=async function(){try{await navigator.clipboard.writeText(diag.
 const params=new URLSearchParams(location.search);
 if(params.get("status")==="CONNECTED"&&params.get("connector")==="INSTAGRAM"){step(5,"done");step(6,"done");status("Instagram connected successfully. @officialescie is now linked to ESCIE Central.","ok");log("CALLBACK","Server confirmed Instagram connection")}
 if(params.get("status")==="ERROR"){step(5,"fail");status("Instagram connection failed safely: "+(params.get("error_code")||"CONNECTOR_ERROR")+".","error");log("CALLBACK",params.get("error_code")||"CONNECTOR_ERROR")}
-boot();
+const hash=new URLSearchParams(location.hash.replace(/^#/,""));
+const recoveryToken=hash.get("access_token"),recoveryType=hash.get("type");
+if(recoveryToken&&recoveryType==="recovery"){
+ hide($("login"));hide($("connect"));show($("recovery"));step(1,"active");status("Password recovery link verified. Set a new password.","ok");log("AUTH","Recovery session detected from Supabase.");
+ $("save-password").onclick=async function(){const p=$("new-password").value,q=$("new-password-confirm").value;if(!p||p.length<8)return status("Use a password with at least 8 characters.","error");if(p!==q)return status("Passwords do not match.","error");this.disabled=true;try{await updatePassword(recoveryToken,p);history.replaceState(null,"",location.pathname+location.search);sessionStorage.removeItem("escie_central_session");status("Password updated. You can now sign in.","ok");hide($("recovery"));show($("login"));$("password").value="";}catch(e){status(e.message||"Password update failed.","error")}finally{this.disabled=false}};
+ $("cancel-recovery").onclick=()=>{history.replaceState(null,"",location.pathname);location.reload()};
+}else boot();
 })();
 </script>
 </body>
