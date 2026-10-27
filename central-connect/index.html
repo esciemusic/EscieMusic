@@ -46,17 +46,10 @@ const supabase=createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 const status=(msg,kind="")=>{const el=$("status");el.textContent=msg;el.className="status "+kind};
 const show=el=>el.classList.remove("hidden"),hide=el=>el.classList.add("hidden");
-let mode="signin";
-function setMode(next){
-  mode=next;
-  $("signinTab").classList.toggle("active",mode==="signin");
-  $("signupTab").classList.toggle("active",mode==="signup");
-  $("signinTab").classList.toggle("secondary",mode!=="signin");
-  $("signupTab").classList.toggle("secondary",mode!=="signup");
-  $("password").autocomplete=mode==="signup"?"new-password":"current-password";
-  $("authSubmit").textContent=mode==="signup"?"CREATE ACCOUNT":"SIGN IN";
-  $("reset").classList.toggle("hidden",mode==="signup");
-  $("signupNote").classList.toggle("hidden",mode!=="signup");
+function setMode(){
+  $("password").autocomplete="current-password";
+  $("authSubmit").textContent="SIGN IN";
+  $("reset").classList.remove("hidden");
 }
 async function ensureWorkspace(user){
   const {data:members,error}=await supabase.from("workspace_members").select("workspace_id").eq("user_id",user.id).limit(1);
