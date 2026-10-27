@@ -107,7 +107,7 @@ $("instagram").onclick=async()=>{
 $("logout").onclick=async()=>{await supabase.auth.signOut();location.reload()};
 supabase.auth.onAuthStateChange(()=>boot());
 const params=new URLSearchParams(location.search);
-if(params.get("status")==="CONNECTED"&&params.get("connector")==="INSTAGRAM")status("Instagram connected successfully. @officialescie is now linked to ESCIE Central.","ok");
+if(params.get("status")==="CONNECTED"&&params.get("connector")==="INSTAGRAM")status("Instagram connected successfully. @officialescie is now linked to ESCIE Central.","ok");\nif(params.get("status")==="ERROR"){const code=params.get("error_code")||"CONNECTOR_ERROR";status("Instagram connection failed safely: "+code+". Start a new connection and try again.","error");}
 setMode();
 boot();
 </script>
