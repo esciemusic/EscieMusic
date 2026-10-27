@@ -84,7 +84,7 @@ $("authSubmit").onclick=async()=>{
   try{
     if(mode==="signup"){
       status("Creating your Central account…");
-      const {data,error}=await supabase.auth.signUp({email,password});
+      const {data,error}=await supabase.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname}});
       if(error)throw error;
       if(data.session){await boot();return;}
       status("Account created. Check your email to confirm it, then return here and sign in.","ok");
