@@ -90,9 +90,9 @@ async function ensureWorkspace(session){
  const members=await rest("/workspace_members?select=workspace_id&user_id=eq."+encodeURIComponent(session.user.id)+"&limit=1",session.access_token);
  if(members&&members[0]){step(2,"done");log("WORKSPACE","Existing workspace found");return members[0].workspace_id}
  const slug="escie-"+session.user.id.slice(0,8);
- const ws=await rest("/workspaces",{method:"POST",headers:{"Prefer":"return=representation"},body:JSON.stringify({name:"ESCIE",slug:slug,kind:"artist"})},session.access_token);
+ const ws=await rest("/workspaces",session.access_token,{method:"POST",headers:{"Prefer":"return=representation"},body:JSON.stringify({name:"ESCIE",slug:slug,kind:"artist"})});
  if(!ws||!ws[0])throw new Error("Workspace creation returned no workspace.");
- await rest("/workspace_members",{method:"POST",headers:{"Prefer":"return=minimal"},body:JSON.stringify({workspace_id:ws[0].id,user_id:session.user.id,role:"owner"})},session.access_token);
+ await rest("/workspace_members",session.access_token,{method:"POST",headers:{"Prefer":"return=minimal"},body:JSON.stringify({workspace_id:ws[0].id,user_id:session.user.id,role:"owner"})});
  step(2,"done");log("WORKSPACE","Created owner workspace");return ws[0].id
 }
 async function updatePassword(token,password){return await jsonFetch(AUTH+"/user",{method:"PUT",headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify({password:password})})}
@@ -108,10 +108,12 @@ $("authSubmit").onclick=async function(){
  this.disabled=true;step(1,"active");status("Signing in…");log("AUTH","Password sign-in requested");
  try{const s=await signIn(email,password);if(!s.access_token)throw new Error("Authentication returned no access token.");saveSession(s);step(1,"done");status("Central authenticated.","ok");await boot()}catch(e){fail(1,e.message||"Authentication failed.")}finally{this.disabled=false}
 };
+let resetBlockedUntil=0;
 $("reset").onclick=async function(){
  const email=$("email").value.trim();if(!email)return status("Enter your Central email first.","error");
+ if(Date.now()<resetBlockedUntil)return status("Please wait before requesting another reset email.","error");
  this.disabled=true;status("Sending password reset…");
- try{await resetPassword(email);status("Password reset email sent. Check your inbox.","ok");log("AUTH","Password reset requested")}catch(e){status(e.message||"Password reset failed.","error");log("AUTH","Reset failed — "+e.message)}finally{this.disabled=false}
+ try{await resetPassword(email);resetBlockedUntil=Date.now()+10000;status("Password reset email sent. Check your inbox.","ok");log("AUTH","Password reset requested")}catch(e){resetBlockedUntil=Date.now()+10000;status(e.message||"Password reset failed.","error");log("AUTH","Reset failed — "+e.message)}finally{this.disabled=false}
 };
 $("instagram").onclick=async function(){
  this.disabled=true;diag=[];$("diag").textContent="";show($("details"));step(1,"done");
