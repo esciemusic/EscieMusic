@@ -34,6 +34,11 @@ details{margin-top:14px;border-top:1px solid #222;padding-top:12px}summary{curso
 <button id="reset" class="linkButton" type="button">Forgot password?</button>
 <p class="small">Private owner access only. Account creation is intentionally not exposed here.</p>
 </section>
+<section id="recovery" class="hidden">
+<p class="eyebrow">PASSWORD RECOVERY</p><p>Set a new password for ESCIE Central.</p>
+<label class="small" for="new-password">NEW PASSWORD</label><input id="new-password" type="password" autocomplete="new-password" placeholder="New password">
+<label class="small" for="new-password-confirm" style="display:block;margin-top:12px">CONFIRM PASSWORD</label><input id="new-password-confirm" type="password" autocomplete="new-password" placeholder="Confirm password">
+<div class="row" style="margin-top:14px"><button id="save-password">SET NEW PASSWORD</button><button id="cancel-recovery" class="secondary" type="button">CANCEL</button></div></section>
 <section id="connect" class="hidden">
 <p>Central is authenticated. Your workspace will be checked automatically.</p>
 <div class="row"><button id="instagram">CONNECT @officialescie</button><button id="logout" class="secondary">LOG OUT</button></div>
@@ -90,7 +95,7 @@ async function ensureWorkspace(session){
  await rest("/workspace_members",{method:"POST",headers:{"Prefer":"return=minimal"},body:JSON.stringify({workspace_id:ws[0].id,user_id:session.user.id,role:"owner"})},session.access_token);
  step(2,"done");log("WORKSPACE","Created owner workspace");return ws[0].id
 }
-async function boot(){
+async function updatePassword(token,password){return await jsonFetch(AUTH+"/user",{method:"PUT",headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify({password:password})})}\nasync function boot(){
  if(!IS_PRODUCTION){status("This connection page only runs from the published ESCIE Central link.","error");return}
  const s=await getSession();
  if(s){show($("connect"));hide($("login"));step(1,"done");status("CENTRAL AUTHENTICATED · "+(s.user.email||"owner"),"ok");log("AUTH","Authenticated session restored");}
