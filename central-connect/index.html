@@ -20,7 +20,7 @@ main{width:min(620px,100%);border:1px solid var(--line);background:rgba(17,17,17
 <p>This is the secure bridge into ESCIE Central. Your Instagram credential never enters this page; Meta authorization and token exchange happen server-side.</p>
 <div id="status" class="status">Checking Central authentication…</div>
 <section id="login">
-<div class="tabs"><button id="signinTab" class="tab active" type="button">SIGN IN</button><button id="signupTab" class="tab secondary" type="button">CREATE ACCOUNT</button></div>
+<div class="tabs"><button id="signinTab" class="tab active" type="button">CENTRAL ACCESS</button></div>
 <div id="authForm">
 <label class="small" for="email">CENTRAL EMAIL</label>
 <input id="email" type="email" autocomplete="email" placeholder="your email">
@@ -29,7 +29,7 @@ main{width:min(620px,100%);border:1px solid var(--line);background:rgba(17,17,17
 <div class="row" style="margin-top:14px"><button id="authSubmit">SIGN IN</button></div>
 <button id="reset" class="linkButton" type="button">Forgot password?</button>
 </div>
-<p id="signupNote" class="small hidden" style="margin-top:14px">Create your private ESCIE Central account. You'll use this account to manage connected platforms and your Central workspace.</p>
+<p class="small" style="margin-top:14px">Private owner access only. Account creation is intentionally not exposed here.</p>
 </section>
 <section id="connect" class="hidden">
 <p>Central is authenticated. The workspace will be created automatically if this is your first visit.</p>
@@ -72,29 +72,19 @@ async function ensureWorkspace(user){
 async function boot(){
   const {data:{session}}=await supabase.auth.getSession();
   if(session){show($("connect"));hide($("login"));status("CENTRAL AUTHENTICATED · "+(session.user.email||"account"),"ok");}
-  else {show($("login"));hide($("connect"));status("Sign in to ESCIE Central, or create your Central account.");setMode(mode);}
+  else {show($("login"));hide($("connect"));status("Private Central access. Sign in to continue.");setMode();}
 }
-$("signinTab").onclick=()=>setMode("signin");
-$("signupTab").onclick=()=>setMode("signup");
 $("authSubmit").onclick=async()=>{
   const email=$("email").value.trim(),password=$("password").value;
   if(!email||!password)return status("Enter your email and password.","error");
   if(password.length<6)return status("Password must be at least 6 characters.","error");
   $("authSubmit").disabled=true;
   try{
-    if(mode==="signup"){
-      status("Creating your Central account…");
-      const {data,error}=await supabase.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname}});
-      if(error)throw error;
-      if(data.session){await boot();return;}
-      status("Account created. Check your email to confirm it, then return here and sign in.","ok");
-    }else{
-      status("Signing in…");
-      const {error}=await supabase.auth.signInWithPassword({email,password});
-      if(error)throw error;
-      await boot();
-    }
-  }catch(e){status(e.message||"Authentication failed.","error")}
+    status("Signing in…");
+    const {error}=await supabase.auth.signInWithPassword({email,password});
+    if(error)throw error;
+    await boot();
+  }catch(e){status(e.message||"Authentication failed. If this is your first setup, the Central owner account must be initialized once in Supabase.","error")}
   finally{$("authSubmit").disabled=false}
 };
 $("reset").onclick=async()=>{
@@ -122,7 +112,7 @@ $("logout").onclick=async()=>{await supabase.auth.signOut();location.reload()};
 supabase.auth.onAuthStateChange(()=>boot());
 const params=new URLSearchParams(location.search);
 if(params.get("status")==="CONNECTED"&&params.get("connector")==="INSTAGRAM")status("Instagram connected successfully. @officialescie is now linked to ESCIE Central.","ok");
-setMode("signin");
+setMode();
 boot();
 </script>
 </body>
