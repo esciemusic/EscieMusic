@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@v6
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
@@ -77,12 +77,22 @@ jobs:
         run: |
           node tests/site-loads.node.test.js
 
+      - name: Verify Pages entry points
+        run: |
+          set -e
+          test -f index.html
+          test -f central-connect/index.html
+          test -f data/release-runtime.js
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v4
         with:
           path: .
 
   deploy:
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
