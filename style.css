@@ -3898,3 +3898,10 @@ body.player-visible{padding-bottom:clamp(88px,12vh,124px)}
 .world-path>div{margin-top:7px;font-size:10px;line-height:1.8;color:rgba(242,242,237,.55)}
 .world-path button{border:0;background:transparent;color:#91b9d0;padding:0;cursor:pointer;font:inherit;text-decoration:underline;text-underline-offset:3px}
 .world-detail-actions{display:flex;flex-wrap:wrap;gap:7px}
+
+/* GLASS EYE AUDIENCE LAYER */
+.glass-eye-panel{margin-top:18px;padding:22px;border:1px solid rgba(142,183,209,.22);border-radius:14px;background:radial-gradient(circle at 50% 0%,rgba(79,134,173,.10),rgba(0,0,0,.16) 55%);box-shadow:0 24px 70px rgba(0,0,0,.24)}
+.glass-eye-panel h3{margin:6px 0 10px;font-size:clamp(25px,5vw,48px);line-height:.98}.glass-eye-panel p{max-width:720px;color:rgba(242,242,237,.62);line-height:1.7}
+.glass-eye-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:20px 0}.glass-eye-stats div{padding:13px;border:1px solid rgba(255,255,255,.07);border-radius:9px;background:rgba(0,0,0,.18)}.glass-eye-stats strong{display:block;font-size:24px;font-weight:400}.glass-eye-stats span{font-size:8px;letter-spacing:.13em;color:rgba(242,242,237,.4)}
+.glass-eye-last{padding:13px;border-top:1px solid rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.07)}.glass-eye-last button{display:block;margin-top:5px;border:0;background:none;color:#91b9d0;padding:0;font:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px}.glass-eye-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.glass-eye-actions button{border:1px solid rgba(255,255,255,.1);background:transparent;color:rgba(242,242,237,.62);border-radius:8px;padding:9px 11px;font-size:8px;letter-spacing:.11em;cursor:pointer}
+@media(max-width:520px){.glass-eye-stats{grid-template-columns:1fr}.glass-eye-panel{padding:16px}}
