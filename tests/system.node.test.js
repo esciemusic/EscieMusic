@@ -232,6 +232,7 @@ const nodesRuntime=fs.readFileSync("data/nodes.js","utf8");
 assert(!nodesRuntime.includes("ARTIST / AUTHOR"),"identity node must not expose artist/author framing");
 assert(nodesRuntime.includes('label:"THE FATHER / THE MAN"'),"identity node must use Father / Man framing");
 assert(nodesRuntime.includes('role:"CENTRAL PRESENCE"'),"identity node must use central-presence framing");
+const clothingRuntime=fs.readFileSync("data/clothing.js","utf8");assert(clothingRuntime.includes("production_packet"),"clothing records need production packets");assert(clothingRuntime.includes('approval_gate:"HUMAN"'),"clothing production must remain human-gated");assert(clothingRuntime.includes('quantity_decision:"POST-SAMPLE"'),"clothing quantities must wait until after sample approval");
 
 const appRuntime=fs.readFileSync("app.js","utf8");
 assert(!appRuntime.includes("The central consciousness / interface."),"app fallback identity must not use central-consciousness wording");
