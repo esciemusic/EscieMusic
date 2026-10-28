@@ -189,3 +189,10 @@ body[data-world-text="large"] .world-shell button{font-size:calc(100% + .08rem)}
 .dream-cell.object{background:rgba(57,255,136,.55)}
 .dream-map-help{text-align:center;padding:10px 0 2px;font:600 .52rem monospace;letter-spacing:.08em;opacity:.55}
 @media(max-width:600px){.dream-map{width:96vw;padding:8px}.dream-map-help{font-size:.45rem}}
+
+/* DREAM TOUCH CONTROLS */
+.dream-touch-controls{display:flex;flex-direction:column;align-items:center;gap:6px;padding-top:10px}
+.dream-touch-controls>div{display:flex;gap:6px}
+.dream-touch-controls button{width:48px;height:38px;border:1px solid var(--world-green);background:#07100b;color:var(--world-green);font:700 1rem monospace;border-radius:6px;touch-action:manipulation}
+.dream-touch-controls button:active{background:var(--world-green);color:#020402}
+@media(min-width:800px){.dream-touch-controls{opacity:.55}.dream-touch-controls button{width:40px;height:30px}}
