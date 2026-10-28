@@ -1,15 +1,24 @@
 (function(){
-function phoneApp(tab="calls"){
+const PHONE_CONTACTS=[
+ {id:"witness",name:"THE WITNESS",type:"NPC"},
+ {id:"unknown",name:"UNKNOWN NUMBER",type:"UNKNOWN"},
+ {id:"emergency",name:"EMERGENCY",type:"SYSTEM"}
+];
+const phoneContacts=()=>PHONE_CONTACTS;
+const phoneNotify=(text,type="INFO")=>{const m=JSON.parse(localStorage.getItem("escie_phone_v1")||"{}");m.notifications=m.notifications||[];m.notifications.unshift({text,type,time:new Date().toLocaleTimeString()});m.notifications=m.notifications.slice(0,50);localStorage.setItem("escie_phone_v1",JSON.stringify(m));};
+const phoneMap=()=>{const s=window.ESCIE_WORLD_SIMULATION?.state||{};return {neighbourhood:s.neighbourhood||"PARC-EXTENSION",day:s.day||1,hour:s.hour||12,minute:s.minute||0,transport:s.transport||"FOOT"}};
+
  const root=document.getElementById("world-phone"),out=document.getElementById("phone-content"); if(!root||!out)return;
  root.hidden=false;
  const s=window.ESCIE_WORLD_SIMULATION?.state||{};
  const mem=JSON.parse(localStorage.getItem("escie_phone_v1")||'{"notes":[],"photos":[],"calls":[],"notifications":[],"qr":[],"tracks":[]}');
  const save=()=>localStorage.setItem("escie_phone_v1",JSON.stringify(mem));
- if(tab==="calls") out.innerHTML='<div class="phone-card"><strong>CALLS</strong><p>Contacts and in-world calls will appear here.</p><button data-phone-call="witness">CALL THE WITNESS</button></div>'+((mem.calls||[]).map(x=>'<div class="phone-card">'+x+'</div>').join("")||'<p class="phone-empty">No recent calls.</p>');
+ if(tab==="calls") out.innerHTML='<div class="phone-card"><strong>CONTACTS</strong>'+phoneContacts().map(x=>'<button data-phone-call="'+x.id+'">'+x.name+'</button>').join("")+'</div>'+'<div class="phone-card"><strong>CALLS</strong><p>Contacts and in-world calls will appear here.</p><button data-phone-call="witness">CALL THE WITNESS</button></div>'+((mem.calls||[]).map(x=>'<div class="phone-card">'+x+'</div>').join("")||'<p class="phone-empty">No recent calls.</p>');
  if(tab==="photos") out.innerHTML='<div class="phone-card"><strong>CAMERA</strong><p>Take photos of the current game state and discoveries.</p><button data-phone-photo>TAKE PHOTO</button></div>'+((mem.photos||[]).map(x=>'<div class="phone-card">'+x+'</div>').join("")||'<p class="phone-empty">No photos.</p>');
  if(tab==="notes") out.innerHTML='<div class="phone-card"><strong>NOTES</strong><textarea id="phone-note" class="phone-input" rows="5" placeholder="Write something..."></textarea><button data-phone-save-note>SAVE NOTE</button></div>'+((mem.notes||[]).map(x=>'<div class="phone-card">'+x+'</div>').join("")||'<p class="phone-empty">No notes.</p>');
- if(tab==="notifications") out.innerHTML='<div class="phone-card"><strong>NOTIFICATIONS</strong></div>'+((mem.notifications||[]).map(x=>'<div class="phone-card">'+x+'</div>').join("")||'<p class="phone-empty">No notifications.</p>');
+ if(tab==="notifications") out.innerHTML='<div class="phone-card"><strong>SYSTEM STATUS</strong><p>'+phoneMap().neighbourhood+' · DAY '+phoneMap().day+' · '+String(phoneMap().hour).padStart(2,"0")+':'+String(phoneMap().minute).padStart(2,"0")+' · '+phoneMap().transport+'</p></div>'+'<div class="phone-card"><strong>NOTIFICATIONS</strong></div>'+((mem.notifications||[]).map(x=>'<div class="phone-card">'+x+'</div>').join("")||'<p class="phone-empty">No notifications.</p>');
  if(tab==="qr") out.innerHTML='<div class="phone-card"><strong>QR SCANNER</strong><p>Use the device camera to scan physical ESCIE discoveries. Camera permission is requested only when scanning is activated.</p><button data-phone-qr>SCAN QR</button><input id="phone-qr-input" class="phone-input" placeholder="Paste QR/deep-link code" /></div>';
+ if(tab==="map") out.innerHTML='<div class="phone-card"><strong>CITY MAP</strong><p>'+phoneMap().neighbourhood+'</p><p>Available districts are activated through gameplay and transit.</p></div>';
  if(tab==="music") out.innerHTML='<div class="phone-card"><strong>ESCIE MUSIC PLAYER</strong><p>Integrated game music and your own device audio files.</p><audio id="phone-audio" class="phone-player" controls></audio><input id="phone-audio-file" type="file" accept="audio/*" multiple /><div id="phone-tracks"></div></div>';
  save();
 }
