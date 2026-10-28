@@ -5,7 +5,7 @@
 (function(){
   "use strict";
   const KEY="escie_central_wardrobe_v2";
-  const SAMPLE_STATES=["REQUESTED","RECEIVED","FIT_REVIEW","WASH_TEST","APPROVED","REJECTED"];
+  const SAMPLE_STATES=["REQUESTED","RECEIVED","FIT_REVIEW","WASH_TEST","QC_REVIEW","APPROVED","REJECTED"];
   const STAGES=["DESIGN_READY","SAMPLE_REQUESTED","SAMPLE_RECEIVED","FIT_REVIEW","WASH_TEST","PHOTO_READY","PREORDER_READY","PRODUCTION","RELEASED"];
   const CHECKS=[
     ["spec","Confirm garment, fabric, GSM target, fit and decoration."],
@@ -70,7 +70,7 @@
     return "";
   }
   function latestSample(item){const list=item&&item.workflow&&Array.isArray(item.workflow.samples)?item.workflow.samples:[];return list.length?list[list.length-1]:null;}
-  function hasApprovedSample(item){return item.workflow.samples.some(s=>s&&s.state==="APPROVED");}
+  function hasApprovedSample(item){return item.workflow.samples.some(s=>s&&s.state==="APPROVED"&&qcReady(s));}
   function canAdvance(item,next){return !gate(item,next);}
   function samples(id){
     const state=read(), current=state[id]||{};
@@ -89,6 +89,7 @@
       size:"",
       notes:"",
       outcome:"",
+      qc:{fit:"",fabric:"",shrinkage:"",print:"",embroidery:"",seams:"",measurements:"",defects:"",decision:"PENDING",approved_by:""},
       created_at:new Date().toISOString(),
       updated_at:new Date().toISOString()
     },patch||{});
@@ -100,6 +101,11 @@
     write(state);
     render();
     return sample;
+  }
+  function qcFor(sample){return Object.assign({fit:"",fabric:"",shrinkage:"",print:"",embroidery:"",seams:"",measurements:"",defects:"",decision:"PENDING",approved_by:""},sample&&sample.qc||{});}
+  function qcReady(sample){
+    const q=qcFor(sample);
+    return ["fit","fabric","shrinkage","print","seams","measurements","defects"].every(k=>String(q[k]||"").trim())&&["PASS","FAIL"].includes(q.decision)&&String(q.approved_by||"").trim();
   }
   function updateSample(id,sampleId,patch){
     const state=read(), current=state[id]||{};
@@ -239,10 +245,24 @@
             const inp=document.createElement("input"); inp.value=s[key]||""; inp.placeholder=label; inp.addEventListener("change",()=>updateSample(item.id,s.id,{[key]:inp.value.trim()})); sampleFields.append(inp);
           });
           line.append(sampleFields);
+          const q=qcFor(s);
+          const qcWrap=el("div",{class:"sample-qc"});
+          qcWrap.append(el("div",{class:"kicker"},"QC INSPECTION"));
+          [["fit","FIT"],["fabric","FABRIC / HAND FEEL"],["shrinkage","SHRINKAGE"],["print","PRINT"],["embroidery","EMBROIDERY"],["seams","SEAMS"],["measurements","MEASUREMENTS"],["defects","DEFECTS / NOTES"]].forEach(([key,label])=>{
+            const inp=document.createElement("input"); inp.value=q[key]||""; inp.placeholder=label; inp.addEventListener("change",()=>updateSample(item.id,s.id,{qc:Object.assign({},q,{[key]:inp.value.trim()})})); qcWrap.append(inp);
+          });
+          const decision=document.createElement("select");
+          ["PENDING","PASS","FAIL"].forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;o.selected=q.decision===v;decision.append(o);});
+          decision.addEventListener("change",()=>updateSample(item.id,s.id,{qc:Object.assign({},q,{decision:decision.value})}));
+          qcWrap.append(decision);
+          const approver=document.createElement("input");approver.value=q.approved_by||"";approver.placeholder="APPROVED BY";approver.addEventListener("change",()=>updateSample(item.id,s.id,{qc:Object.assign({},q,{approved_by:approver.value.trim()})}));qcWrap.append(approver);
+          const qcStatus=el("div",{class:"rowmeta"},qcReady(s)?"QC COMPLETE — SAMPLE ELIGIBLE FOR APPROVAL.":"QC INCOMPLETE — COMPLETE INSPECTION BEFORE APPROVAL.");
+          qcWrap.append(qcStatus);
+          line.append(qcWrap);
           const controls=el("div",{class:"sample-controls"});
           SAMPLE_STATES.forEach(stateName=>{
             const b=el("button",{class:"btn small "+(s.state===stateName?"primary":"ghost"),type:"button"},stateName);
-            b.addEventListener("click",()=>updateSample(item.id,s.id,{state:stateName}));
+            b.addEventListener("click",()=>{if(stateName==="APPROVED"&&!qcReady(s)){return;}updateSample(item.id,s.id,{state:stateName});});
             controls.append(b);
           });
           line.append(controls);
