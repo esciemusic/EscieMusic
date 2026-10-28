@@ -4,7 +4,8 @@
  */
 (function(){
   "use strict";
-  const KEY="escie_central_wardrobe_v1";
+  const KEY="escie_central_wardrobe_v2";
+  const SAMPLE_STATES=["REQUESTED","RECEIVED","FIT_REVIEW","WASH_TEST","APPROVED","REJECTED"];
   const STAGES=["DESIGN_READY","SAMPLE_REQUESTED","SAMPLE_RECEIVED","FIT_REVIEW","WASH_TEST","PHOTO_READY","PREORDER_READY","PRODUCTION","RELEASED"];
   const CHECKS=[
     ["spec","Confirm garment, fabric, GSM target, fit and decoration."],
@@ -43,6 +44,7 @@
         production_notes:saved.production_notes||"",
         release_notes:saved.release_notes||"",
         history:Array.isArray(saved.history)?saved.history.slice():[],
+        samples:Array.isArray(saved.samples)?saved.samples.slice():[],
         updated_at:saved.updated_at||""
       }}); 
     });
@@ -63,6 +65,44 @@
     return "";
   }
   function canAdvance(item,next){return !gate(item,next);}
+  function samples(id){
+    const state=read(), current=state[id]||{};
+    return Array.isArray(current.samples)?current.samples.slice():[];
+  }
+  function addSample(id,patch){
+    const state=read(), current=state[id]||{};
+    const samples=Array.isArray(current.samples)?current.samples.slice():[];
+    const n=samples.length+1;
+    const sample=Object.assign({
+      id:id+"-S"+String(n).padStart(3,"0"),
+      number:n,
+      state:"REQUESTED",
+      created_at:new Date().toISOString(),
+      updated_at:new Date().toISOString()
+    },patch||{});
+    samples.push(sample);
+    state[id]=Object.assign({},current,{samples:samples.slice(-25),updated_at:new Date().toISOString()});
+    const h=Array.isArray(current.history)?current.history.slice():[];
+    h.push({at:state[id].updated_at,action:"SAMPLE_CREATED",sample_id:sample.id});
+    state[id].history=h.slice(-100);
+    write(state);
+    render();
+    return sample;
+  }
+  function updateSample(id,sampleId,patch){
+    const state=read(), current=state[id]||{};
+    const samples=Array.isArray(current.samples)?current.samples.slice():[];
+    const index=samples.findIndex(s=>s&&s.id===sampleId);
+    if(index<0)return null;
+    samples[index]=Object.assign({},samples[index],patch||{},{updated_at:new Date().toISOString()});
+    state[id]=Object.assign({},current,{samples:samples.slice(-25),updated_at:new Date().toISOString()});
+    const h=Array.isArray(current.history)?current.history.slice():[];
+    h.push({at:state[id].updated_at,action:"SAMPLE_UPDATED",sample_id:sampleId,patch:Object.keys(patch||{})});
+    state[id].history=h.slice(-100);
+    write(state);
+    render();
+    return samples[index];
+  }
   function history(id){
     const state=read(), current=state[id]||{};
     return Array.isArray(current.history)?current.history.slice():[];
@@ -169,6 +209,30 @@
       });
       card.append(actions);
       if(item.workflow.updated_at)card.append(el("div",{class:"rowmeta"},"LAST UPDATED · "+item.workflow.updated_at));
+      const sampleWrap=el("div",{class:"wardrobe-samples"});
+      sampleWrap.append(el("div",{class:"kicker"},"PHYSICAL SAMPLES"));
+      const sampleList=samples(item.id);
+      if(!sampleList.length){
+        const add=el("button",{class:"btn small",type:"button"},"CREATE SAMPLE #001");
+        add.addEventListener("click",()=>addSample(item.id,{}));
+        sampleWrap.append(add);
+      }else{
+        sampleList.slice().reverse().forEach(s=>{
+          const line=el("div",{class:"sample-line"});
+          line.append(el("strong",{},s.id+" · "+s.state));
+          const meta=el("span",{},(s.supplier||"No supplier recorded")+" · "+(s.created_at||""));
+          line.append(meta);
+          const controls=el("div",{class:"sample-controls"});
+          SAMPLE_STATES.forEach(stateName=>{
+            const b=el("button",{class:"btn small "+(s.state===stateName?"primary":"ghost"),type:"button"},stateName);
+            b.addEventListener("click",()=>updateSample(item.id,s.id,{state:stateName}));
+            controls.append(b);
+          });
+          line.append(controls);
+          sampleWrap.append(line);
+        });
+      }
+      card.append(sampleWrap);
       const historyWrap=el("div",{class:"wardrobe-history"});
       historyWrap.append(el("div",{class:"kicker"},"GARMENT HISTORY"));
       const hist=history(item.id);
@@ -200,6 +264,10 @@
     checklist:Object.freeze(CHECKS.map(x=>Object.freeze(x.slice()))),
     records:items,
     history,
+    samples,
+    addSample,
+    updateSample,
+    sampleStates:Object.freeze(SAMPLE_STATES.slice()),
     save:(id,patch)=>saveItem(id,patch),
     record,
     render
