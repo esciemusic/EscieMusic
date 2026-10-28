@@ -2,7 +2,7 @@
 "use strict";
 const root=typeof window!=="undefined"?window:globalThis;
 const KEY="escie_game_state_v1";
-const defaults={version:2,player_id:null,screen:"gateway",scene:"threshold",visited:[],inventory:[],signals:0,entered:false};
+const defaults={version:3,player_id:null,screen:"gateway",scene:"threshold",visited:[],inventory:[],signals:0,entered:false,entry_source:"site",entry_payload:null};
 const scenes=[
  {id:"threshold",label:"THE THRESHOLD",title:"THE FIRST DOOR",text:"You are not entering another universe. You are entering another layer of the same one.",item:null,next:"laneway"},
  {id:"laneway",label:"PARC-EXTENSION",title:"THE LANEWAY",text:"Concrete. Winter air. A camera where there should not be one. Something has been left behind.",item:"game-item-baby-shoe",next:"signal"},
@@ -19,6 +19,26 @@ function esc(v){return String(v??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt
 function current(s){return scenes.find(x=>x.id===s.scene)||scenes[0]}
 function item(id){return items.find(x=>x.id===id)}
 function ensurePlayer(s){if(!s.player_id)s.player_id="visitor-"+Math.random().toString(36).slice(2,10);return s}
+function getEntry(){
+ try{
+  const p=new URLSearchParams(location.search);
+  const raw=(p.get("game")||p.get("entry")||"").trim().toLowerCase();
+  const hash=(location.hash||"").replace(/^#/, "").trim().toLowerCase();
+  const code=raw||hash.replace(/^game[/:]?/,"");
+  if(!code)return null;
+  const allowed=scenes.some(x=>x.id===code)||items.some(x=>x.id===code);
+  return allowed?code:null;
+ }catch(e){return null}
+}
+function applyEntry(s){
+ const code=getEntry();if(!code||s.entry_payload===code)return s;
+ const targetScene=scenes.find(x=>x.id===code);
+ const targetItem=items.find(x=>x.id===code);
+ s.entered=true;s.entry_source="link";s.entry_payload=code;
+ if(targetScene){s.scene=targetScene.id;visit(s,targetScene.id);}
+ if(targetItem){if(!s.inventory.includes(targetItem.id))s.inventory.push(targetItem.id);s.screen="discovery";}
+ return s;
+}
 function visit(s,id){if(!s.visited.includes(id))s.visited.push(id)}
 function collect(s,id){
  if(!s.inventory.includes(id)){
@@ -30,7 +50,7 @@ function collect(s,id){
 }
 function render(){
  const el=document.getElementById("game-container");if(!el)return;
- let s=ensurePlayer(load()),c=current(s);save(s);
+ let s=ensurePlayer(load());s=applyEntry(s);let c=current(s);save(s);
  if(!s.entered){
   el.innerHTML=`<div class="game-gateway game-entry-gateway"><div class="game-gateway-head"><span class="game-kicker">ESCIE / THE WORLD</span><span class="game-status">SIGNAL DETECTED</span></div><div class="game-entry-main"><span class="game-kicker">THE GLASS EYE</span><h3>YOU ARE ALREADY HERE.</h3><p>This is not a separate world. It is another layer of the same one. Enter when you are ready.</p><div class="game-entry-route"><span>ESCIE</span><i>→</i><span>THE WORLD</span><i>→</i><strong>THE SIGNAL</strong></div><button type="button" class="game-enter-button" data-game-enter>ENTER THE WORLD</button></div></div>`;
   const b=el.querySelector("[data-game-enter]");if(b)b.onclick=()=>{s.entered=true;visit(s,"threshold");save(s);render()};
@@ -56,5 +76,5 @@ function init(){
  const s=load();ensurePlayer(s);save(s);render();
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
-root.ESCIE_GAME_GATEWAY={version:"1.1.0",scenes,items,enter(){const s=ensurePlayer(load());s.entered=true;visit(s,"threshold");save(s);render()},reset(){localStorage.removeItem(KEY);render()},getState(){return load()}};
+root.ESCIE_GAME_GATEWAY={version:"1.2.0",scenes,items,enter(){const s=ensurePlayer(load());s.entered=true;visit(s,"threshold");save(s);render()},route(code){if(!scenes.some(x=>x.id===code)&&!items.some(x=>x.id===code))return false;history.replaceState(null,"","?game="+encodeURIComponent(code));const s=ensurePlayer(load());s.entered=true;s.entry_source="api";s.entry_payload=code;if(scenes.some(x=>x.id===code)){s.scene=code;visit(s,code)}else if(!s.inventory.includes(code))s.inventory.push(code);save(s);render();return true},reset(){localStorage.removeItem(KEY);render()},getState(){return load()}};
 })();
