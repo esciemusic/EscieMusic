@@ -3910,3 +3910,13 @@ body.player-visible{padding-bottom:clamp(88px,12vh,124px)}
 @media(max-width:700px){.glass-eye-discovery{grid-template-columns:1fr}}
 
 .glass-eye-discovery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0 16px}.glass-eye-discovery button{display:flex;flex-direction:column;gap:5px;text-align:left;padding:12px;border:1px solid rgba(255,255,255,.08);border-radius:9px;background:rgba(255,255,255,.025);color:inherit;cursor:pointer}.glass-eye-discovery strong{font-size:12px;font-weight:500}.glass-eye-discovery small{font-size:8px;letter-spacing:.08em;color:rgba(242,242,237,.4)}@media(max-width:650px){.glass-eye-discovery{grid-template-columns:1fr}}
+
+
+/* EXPERIENCE HIERARCHY — GATEWAY ENTRY */
+.hero-identity{margin:18px 0 0;color:var(--muted);font-size:9px;letter-spacing:.42em;line-height:1.4;text-transform:uppercase}
+.hero-gateway{margin:12px 0 0;color:var(--white);font-size:clamp(17px,3.2vw,28px);font-weight:400;letter-spacing:.12em;line-height:1.25;text-transform:uppercase}
+.hero-work{margin:10px 0 0;color:var(--faint);font-size:8px;letter-spacing:.28em;line-height:1.6;text-transform:uppercase}
+.entry-route{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:7px 10px;margin:28px auto 0;color:var(--faint);font-size:7px;letter-spacing:.22em;line-height:1.7;text-transform:uppercase}
+.entry-route i{font-style:normal;opacity:.55}
+.entry-route span:nth-of-type(2),.entry-route span:nth-of-type(4){color:var(--muted)}
+@media (max-width:600px){.hero-identity{letter-spacing:.30em}.hero-gateway{font-size:18px;letter-spacing:.09em}.hero-work{letter-spacing:.20em}.entry-route{max-width:300px;gap:5px 7px}}
