@@ -196,4 +196,31 @@ document.addEventListener("fullscreenchange",()=>{document.body.classList.toggle
 const boot=state();if(boot.world_room==="trace"){room="trace";roomSetup();}else if(boot.world_room==="room02"){room="room02";roomSetup();}else if(boot.world_room==="room01"){room="room01";roomSetup();}drawMap();render();stage.focus();poll();
 
 })();
-(function(){function openSimulation(){const a=window.ESCIE_WORLD_SIMULATION,e=document.getElementById("world-simulation");if(!a||!e)return;const r=()=>{const s=a.state(),v={MONEY:"$"+s.money,HUNGER:Math.round(s.hunger)+"%",ENERGY:Math.round(s.energy)+"%",HEALTH:Math.round(s.health)+"%",STRESS:Math.round(s.stress)+"%",SOCIAL:Math.round(s.social)+"%",REPUTATION:s.reputation,STATUS:s.status,PATH:s.path,TRANSPORT:s.transport,SEASON:s.season,WEATHER:s.weather,TIME:String(s.hour).padStart(2,"0")+":"+String(s.minute).padStart(2,"0"),WANTED:s.wanted,SENTENCE:s.sentence_minutes+" MIN"};e.querySelector("[data-sim-grid]").innerHTML=Object.entries(v).map(x=>"<div class='sim-card'><strong>"+x[0]+"</strong><span>"+x[1]+"</span></div>").join("")};e.hidden=false;r();e.querySelector("[data-sim-close]").onclick=()=>e.hidden=true;e.querySelectorAll("[data-sim-transport]").forEach(b=>b.onclick=()=>{a.setTransport(b.dataset.simTransport);r()});e.querySelector("[data-sim-time]").onclick=()=>{a.advance(30);r()};e.querySelector("[data-sim-train]").onclick=()=>{a.train("fitness",5);r()};e.querySelector("[data-sim-graffiti]").onclick=()=>{a.graffiti("PLAYER",a.state().neighbourhood||"MONTRÉAL");r()}}document.querySelector("[data-life-systems]")?.addEventListener("click",openSimulation)})();
+(function(){
+function openSimulation(){
+ const a=window.ESCIE_WORLD_SIMULATION,e=document.getElementById("world-simulation");
+ if(!a||!e)return;
+ const r=()=>{
+  const s=a.state(),v={MONEY:"$"+s.money,HUNGER:Math.round(s.hunger)+"%",ENERGY:Math.round(s.energy)+"%",HEALTH:Math.round(s.health)+"%",STRESS:Math.round(s.stress)+"%",SOCIAL:Math.round(s.social)+"%",REPUTATION:s.reputation,STATUS:s.status,PATH:s.path,TRANSPORT:s.transport,SEASON:s.season,WEATHER:s.weather,TIME:String(s.hour).padStart(2,"0")+":"+String(s.minute).padStart(2,"0"),LOCATION:s.neighbourhood,WANTED:s.wanted,SENTENCE:s.sentence_minutes+" MIN"};
+  e.querySelector("[data-sim-grid]").innerHTML=Object.entries(v).map(x=>"<div class='sim-card'><strong>"+x[0]+"</strong><span>"+x[1]+"</span></div>").join("");
+  const t=e.querySelector("[data-transit-panel]");
+  if(t){
+   const routes=a.transitRoutes||{},here=String(s.neighbourhood||"PARC-EXTENSION").toUpperCase();
+   t.innerHTML="<div class='transit-head'><strong>PUBLIC TRANSIT</strong><span>SKIPPABLE JOURNEYS · FARE REQUIRED</span></div><div class='transit-mode'><button type='button' data-transit-mode='METRO' class='active'>METRO</button><button type='button' data-transit-mode='BUS'>BUS</button></div><div class='transit-routes'>"+Object.keys(routes).filter(d=>d!==here).map(d=>"<button type='button' data-transit-destination='"+d+"'><b>"+d+"</b><small>METRO / BUS · $"+Number(routes[d].baseFare).toFixed(2)+"</small></button>").join("")+"</div>";
+   t.querySelectorAll("[data-transit-mode]").forEach(b=>b.onclick=()=>{window.__escieTransitMode=b.dataset.transitMode;t.querySelectorAll("[data-transit-mode]").forEach(x=>x.classList.toggle("active",x===b))});
+   t.querySelectorAll("[data-transit-destination]").forEach(b=>b.onclick=()=>{
+    const result=a.publicTransit(window.__escieTransitMode||"METRO",b.dataset.transitDestination);
+    if(!result.ok){say?.(result.reason==="INSUFFICIENT_FUNDS"?"TRANSIT · NOT ENOUGH MONEY FOR THE FARE.":result.reason==="ALREADY_THERE"?"TRANSIT · YOU ARE ALREADY THERE.":"TRANSIT · ROUTE UNAVAILABLE.");r();return}
+    feedback?.("select");say?.(result.mode+" · "+result.destination+" · "+result.minutes+" MINUTES SKIPPED · $"+result.fare.toFixed(2));r();render?.();
+   });
+  }
+ };
+ e.hidden=false;r();
+ e.querySelector("[data-sim-close]").onclick=()=>e.hidden=true;
+ e.querySelectorAll("[data-sim-transport]").forEach(b=>b.onclick=()=>{a.setTransport(b.dataset.simTransport);r()});
+ e.querySelector("[data-sim-time]").onclick=()=>{a.advance(30);r()};
+ e.querySelector("[data-sim-train]").onclick=()=>{a.train("fitness",5);r()};
+ e.querySelector("[data-sim-graffiti]").onclick=()=>{a.graffiti("PLAYER",a.state().neighbourhood||"MONTRÉAL");r()};
+}
+document.querySelector("[data-life-systems]")?.addEventListener("click",openSimulation)
+})();
