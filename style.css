@@ -3933,3 +3933,17 @@ body.player-visible{padding-bottom:clamp(88px,12vh,124px)}
 
 /* ESCIE CLOTHING */
 .clothing-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}.clothing-card{border:1px solid rgba(255,255,255,.09);background:rgba(10,10,10,.72);padding:18px;min-height:220px}.clothing-card-head{display:flex;justify-content:space-between;gap:10px;align-items:center}.clothing-card h3{margin:12px 0 8px}.clothing-card p{color:#a7a7a1;line-height:1.6}.clothing-specs{display:flex;flex-direction:column;gap:5px;margin-top:18px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#777771}.clothing-markup{display:flex;justify-content:space-between;gap:12px;border-top:1px solid rgba(255,255,255,.08);margin-top:18px;padding-top:12px;font-size:10px;letter-spacing:.12em}.clothing-markup span:last-child{text-align:right}.clothing-intro{border-left:2px solid rgba(255,255,255,.22);padding:4px 0 4px 16px}.clothing-intro h3{margin:8px 0}.clothing-intro p{max-width:680px;color:#999991}@media(max-width:700px){.clothing-grid{grid-template-columns:1fr}.clothing-card{min-height:0}}
+
+
+.glass-memory-panel{margin:1.5rem 0;padding:1rem;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.22)}
+.glass-memory-head{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;text-transform:uppercase;letter-spacing:.12em;font-size:.7rem}
+.glass-memory-head span{opacity:.55}
+.glass-memory-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem;margin:1rem 0}
+.glass-memory-grid span{border:1px solid rgba(255,255,255,.1);padding:.7rem;font-size:.68rem;letter-spacing:.08em}
+.glass-memory-grid b{display:block;font-size:1.2rem;margin-top:.25rem}
+.glass-memory-path{border-top:1px solid rgba(255,255,255,.1);padding-top:.8rem;font-family:monospace;font-size:.7rem}
+.glass-memory-path>span{display:block;opacity:.55;margin-bottom:.5rem}
+.glass-memory-path div{padding:.25rem 0;opacity:.8}
+.glass-memory-clear{margin-top:1rem;background:none;color:inherit;border:1px solid currentColor;padding:.55rem .8rem;font:inherit;font-size:.68rem;letter-spacing:.08em;cursor:pointer}
+@media(max-width:600px){.glass-memory-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.glass-memory-head{display:block}.glass-memory-head span{display:block;margin-top:.35rem}}
+@media(prefers-reduced-motion:reduce){.glass-memory-panel *{scroll-behavior:auto}}
