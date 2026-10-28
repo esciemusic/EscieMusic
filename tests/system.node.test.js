@@ -234,3 +234,8 @@ assert(appRuntime.includes('window.setTimeout(focusFirst, 0)'),"mobile navigatio
 const playerRuntime=fs.readFileSync("ui/player.js","utf8");
 assert(playerRuntime.includes("const safe = mediaAPI && typeof mediaAPI.safeURL === \"function\""),"player must have a self-contained URL safety fallback");
 assert(playerRuntime.includes('[\"http:\", \"https:\"].includes(parsed.protocol)'),"player URL fallback must allow only HTTP(S)");
+
+const worldEngineRuntime=fs.readFileSync("world-engine.js","utf8");
+assert(worldEngineRuntime.includes('value="'+esc(state.q)+'"'),"world search query must be HTML-escaped");
+assert(worldEngineRuntime.includes('value="'+esc(t)+'"'),"world type options must be HTML-escaped");
+assert(worldEngineRuntime.includes('esc(n.id)'),"world path node ids must be HTML-escaped");
