@@ -11,8 +11,13 @@ const objects=[
 ];
 const walls=new Set(["0,0","1,0","2,0","3,0","4,0","5,0","6,0","7,0","8,0","9,0","10,0","11,0","12,0","13,0","14,0","15,0","0,1","15,1","0,2","15,2","0,3","4,3","5,3","15,3","0,4","4,4","5,4","15,4","0,5","4,5","15,5","0,6","15,6","0,7","15,7","0,8","15,8","0,9","1,9","2,9","3,9","4,9","5,9","6,9","7,9","8,9","9,9","10,9","11,9","12,9","13,9","14,9","15,9"]);
 let pos={...start},target=null,gamepadPrev={},dialogue=null,room="lane",roomObjects=[],roomState={};
+const MARKET=[
+ {id:"game-item-green-pass",title:"GREEN PASS",description:"A future access token for deeper layers of THE WORLD.",price:3,currency:"SIGNAL",type:"EARNED"},
+ {id:"game-item-vhs-tape",title:"VHS TAPE",description:"A found recording from ROOM 01. It is also evidence.",price:0,currency:"SIGNAL",type:"FOUND"},
+ {id:"game-item-baby-shoe",title:"BABY SHOE",description:"A found object. Meaning unresolved.",price:0,currency:"SIGNAL",type:"FOUND"}
+];
 const stage=document.getElementById("world-stage"),player=document.getElementById("world-player"),map=document.getElementById("world-map"),log=document.getElementById("world-log"),interact=document.getElementById("world-interact");
-function state(){try{return JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){return {}}}
+function esc(v){return String(v??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",\"":"&quot;"}[m]))}\nfunction state(){try{return JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){return {}}}
 function save(s){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}}
 function say(t){log.textContent=t}
 function openDialogue(n){dialogue=n;const choices=n.choices||[];say(n.label+" · "+n.lines[0]+(choices.length?" · CHOOSE: "+choices.map((c,i)=>(i+1)+" "+c.label).join(" / "):""));}
@@ -38,7 +43,7 @@ document.addEventListener("keydown",key);
 document.querySelectorAll("[data-dir]").forEach(b=>b.addEventListener("click",()=>{const d=b.dataset.dir;move(d==="left"?-1:d==="right"?1:0,d==="up"?-1:d==="down"?1:0)}));
 document.querySelectorAll("[data-action]").forEach(b=>b.addEventListener("click",interactNow));
 document.querySelector("[data-inventory]").addEventListener("click",inventory);
-document.querySelector("[data-glass]").addEventListener("click",glass);document.querySelector("[data-investigation]").addEventListener("click",investigation);document.querySelector("[data-close-investigation]").addEventListener("click",()=>{document.getElementById("world-investigation").hidden=true});
+document.querySelector("[data-glass]").addEventListener("click",glass);document.querySelector("[data-investigation]").addEventListener("click",investigation);document.querySelector("[data-close-investigation]").addEventListener("click",()=>{document.getElementById("world-investigation").hidden=true});document.querySelector("[data-market]").addEventListener("click",market);document.querySelector("[data-close-market]").addEventListener("click",()=>{document.getElementById("world-market").hidden=true});
 function poll(){try{const p=Array.from(navigator.getGamepads?navigator.getGamepads():[]).find(Boolean);if(p){const a=i=>!!(p.buttons[i]&&p.buttons[i].pressed),x=p.axes[0]||0,y=p.axes[1]||0,l=x<-.65,r=x>.65,u=y<-.65,d=y>.65;if((l&&!gamepadPrev.l)||(r&&!gamepadPrev.r))move(r?1:-1,0);if((u&&!gamepadPrev.u)||(d&&!gamepadPrev.d))move(0,d?1:-1);if(a(0)&&!gamepadPrev.a)interactNow();if(a(1)&&!gamepadPrev.b)glass();gamepadPrev={l,r,u,d,a:a(0),b:a(1)}}}catch(e){}requestAnimationFrame(poll)}
-drawMap();render();stage.focus();poll();
+const boot=state();if(boot.world_room==="room01"){room="room01";roomSetup();}drawMap();render();stage.focus();poll();
 })();
