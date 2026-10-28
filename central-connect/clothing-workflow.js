@@ -45,7 +45,8 @@
         release_notes:saved.release_notes||"",
         history:Array.isArray(saved.history)?saved.history.slice():[],
         samples:Array.isArray(saved.samples)?saved.samples.slice():[],
-        updated_at:saved.updated_at||""
+        updated_at:saved.updated_at||"",
+        specification:saved.specification||item.specification||{}
       }}); 
     });
   }
@@ -70,7 +71,7 @@
     return "";
   }
   function latestSample(item){const list=item&&item.workflow&&Array.isArray(item.workflow.samples)?item.workflow.samples:[];return list.length?list[list.length-1]:null;}
-  function hasApprovedSample(item){return item.workflow.samples.some(s=>s&&s.state==="APPROVED"&&qcReady(s));}
+  function hasApprovedSample(item){return item.workflow.samples.some(s=>s&&s.state==="APPROVED"&&qcReady(s)&&measurementReady(item,s));}
   function canAdvance(item,next){return !gate(item,next);}
   function samples(id){
     const state=read(), current=state[id]||{};
@@ -89,6 +90,9 @@
       size:"",
       notes:"",
       outcome:"",
+      measurements:{chest:"",length:"",shoulder:"",sleeve:""},
+      measurement_result:"PENDING",
+      measurement_notes:"",
       qc:{fit:"",fabric:"",shrinkage:"",print:"",embroidery:"",seams:"",measurements:"",defects:"",decision:"PENDING",approved_by:""},
       created_at:new Date().toISOString(),
       updated_at:new Date().toISOString()
@@ -101,6 +105,12 @@
     write(state);
     render();
     return sample;
+  }
+  function measurementFor(sample){return Object.assign({chest:"",length:"",shoulder:"",sleeve:""},sample&&sample.measurements||{});}
+  function measurementReady(item,sample){
+    const spec=Object.assign({tolerance:"±1 cm"},item.specification||{});
+    const actual=measurementFor(sample);
+    return ["chest","length","shoulder","sleeve"].every(k=>String(actual[k]||"").trim())&&String(sample.measurement_result||"").toUpperCase()==="PASS";
   }
   function qcFor(sample){return Object.assign({fit:"",fabric:"",shrinkage:"",print:"",embroidery:"",seams:"",measurements:"",defects:"",decision:"PENDING",approved_by:""},sample&&sample.qc||{});}
   function qcReady(sample){
@@ -245,6 +255,16 @@
             const inp=document.createElement("input"); inp.value=s[key]||""; inp.placeholder=label; inp.addEventListener("change",()=>updateSample(item.id,s.id,{[key]:inp.value.trim()})); sampleFields.append(inp);
           });
           line.append(sampleFields);
+          const m=measurementFor(s);
+          const measureWrap=el("div",{class:"sample-qc"});
+          measureWrap.append(el("div",{class:"kicker"},"MEASUREMENT CHECK"));
+          [["chest","CHEST"],["length","LENGTH"],["shoulder","SHOULDER"],["sleeve","SLEEVE"]].forEach(([key,label])=>{
+            const inp=document.createElement("input"); inp.value=m[key]||""; inp.placeholder=label; inp.addEventListener("change",()=>updateSample(item.id,s.id,{measurements:Object.assign({},m,{[key]:inp.value.trim()})})); measureWrap.append(inp);
+          });
+          const mr=document.createElement("select");["PENDING","PASS","FAIL"].forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;o.selected=String(s.measurement_result||"PENDING")===v;mr.append(o);});mr.addEventListener("change",()=>updateSample(item.id,s.id,{measurement_result:mr.value}));measureWrap.append(mr);
+          measureWrap.append(el("div",{class:"rowmeta"},"SPEC TOLERANCE · "+((item.specification&&item.specification.tolerance)||"±1 cm")));
+          const mn=document.createElement("input");mn.value=s.measurement_notes||"";mn.placeholder="MEASUREMENT NOTES / DEVIATIONS";mn.addEventListener("change",()=>updateSample(item.id,s.id,{measurement_notes:mn.value.trim()}));measureWrap.append(mn);
+          line.append(measureWrap);
           const q=qcFor(s);
           const qcWrap=el("div",{class:"sample-qc"});
           qcWrap.append(el("div",{class:"kicker"},"QC INSPECTION"));
