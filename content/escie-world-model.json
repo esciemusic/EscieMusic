@@ -1,35 +1,96 @@
 {
-  "format":"ESCIE-WORLD-MODEL-V1",
-  "principles":[
+  "format": "ESCIE-WORLD-MODEL-V1",
+  "principles": [
     "CREATE ONCE. CLASSIFY ONCE. APPROVE ONCE. DISTRIBUTE MANY.",
     "The music does not create the universe. The universe creates the music.",
-    "Reality level and certainty are separate dimensions.",
     "Unknown is valid data.",
     "No agent can silently make canon."
   ],
-  "node_types":[
-    "WORLD","WORK","PERSON","PLACE","MOMENT","FRAGMENT","EVIDENCE","ART","PROJECT","STORY","ASSET","SYMBOL","OBJECT","SOURCE","QUESTION","TERM"
+  "node_types": [
+    "WORLD",
+    "WORK",
+    "PERSON",
+    "PLACE",
+    "MOMENT",
+    "FRAGMENT",
+    "EVIDENCE",
+    "ART",
+    "PROJECT",
+    "STORY",
+    "ASSET",
+    "SYMBOL",
+    "OBJECT",
+    "SOURCE",
+    "QUESTION",
+    "TERM"
   ],
-  "canonical_fields":[
-    "id","workspace_id","type","title","description","project","reality_level","certainty","status",
-    "visibility","approval","publication_state","tags","people","places","moments","related_records",
-    "evidence","media","source","audit_history","created_at","updated_at"
+  "canonical_fields": [
+    "id",
+    "workspace_id",
+    "type",
+    "title",
+    "description",
+    "project",
+    "certainty",
+    "status",
+    "visibility",
+    "approval",
+    "publication_state",
+    "tags",
+    "people",
+    "places",
+    "moments",
+    "related_records",
+    "evidence",
+    "media",
+    "source",
+    "audit_history",
+    "created_at",
+    "updated_at"
   ],
-  "reality_levels":["REAL","MEMORY","DRAMATIZED","FICTIONALIZED","MYTH","UNKNOWN"],
-  "certainty_levels":["CONFIRMED","SUPPORTED","UNCERTAIN","DISPUTED","UNRESOLVED","UNKNOWN"],
-  "relationship_types":[
-    "RELATED","DERIVED_FROM","LOCATED_AT","INVOLVES","PART_OF","EVIDENCE_FOR","CONTRADICTS",
-    "INSPIRED_BY","APPEARS_IN","MENTIONS","PRECEDES","FOLLOWS","SAME_PERSON_CANDIDATE",
-    "SAME_PLACE_CANDIDATE","SAME_EVENT_CANDIDATE"
+  "certainty_levels": [
+    "CONFIRMED",
+    "SUPPORTED",
+    "UNCERTAIN",
+    "DISPUTED",
+    "UNRESOLVED",
+    "UNKNOWN"
   ],
-  "explorer_surfaces":[
-    "ATLAS","TIMELINE","RELATIONSHIP_GRAPH","REALITY_FILTER","EVIDENCE","QUESTIONS",
-    "SYMBOL_LIBRARY","GLOSSARY","EXPLORATION_TRAILS","CONTRADICTIONS","TIME_MACHINE","GLASS_EYE"
+  "relationship_types": [
+    "RELATED",
+    "DERIVED_FROM",
+    "LOCATED_AT",
+    "INVOLVES",
+    "PART_OF",
+    "EVIDENCE_FOR",
+    "CONTRADICTS",
+    "INSPIRED_BY",
+    "APPEARS_IN",
+    "MENTIONS",
+    "PRECEDES",
+    "FOLLOWS",
+    "SAME_PERSON_CANDIDATE",
+    "SAME_PLACE_CANDIDATE",
+    "SAME_EVENT_CANDIDATE"
   ],
-  "three_layers":{
-    "WORLD":"Public exploration surface. A doorway into the universe.",
-    "ARCHIVE":"Evidence, provenance, versions, contradictions and historical state.",
-    "CENTRAL":"Private creation, classification, relationship analysis, approval and distribution."
+  "explorer_surfaces": [
+    "ATLAS",
+    "TIMELINE",
+    "RELATIONSHIP_GRAPH",
+    "DISCOVERY_FILTER",
+    "EVIDENCE",
+    "QUESTIONS",
+    "SYMBOL_LIBRARY",
+    "GLOSSARY",
+    "EXPLORATION_TRAILS",
+    "CONTRADICTIONS",
+    "TIME_MACHINE",
+    "GLASS_EYE"
+  ],
+  "three_layers": {
+    "WORLD": "Public exploration surface. A doorway into the universe.",
+    "ARCHIVE": "Evidence, provenance, versions, contradictions and historical state.",
+    "CENTRAL": "Private creation, relationship analysis, approval and distribution."
   },
-  "future_distribution_rule":"Destinations consume approved canonical records; they never become the source of truth."
+  "future_distribution_rule": "Destinations consume approved canonical records; they never become the source of truth."
 }
