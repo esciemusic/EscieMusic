@@ -82,6 +82,7 @@
     const input=document.createElement(type==="textarea"?"textarea":"input");
     input.value=item.workflow[key]||"";
     input.placeholder=label;
+    if((key==="quantity"||key==="size_curve")&&stageIndex(item.workflow.stage)<stageIndex("PREORDER_READY"))input.disabled=true;
     if(type==="textarea"){input.rows=3;input.style.resize="vertical";}
     input.addEventListener("change",()=>saveItem(item.id,{[key]:input.value.trim()}));
     wrap.append(input);
