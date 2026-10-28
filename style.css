@@ -1410,7 +1410,10 @@ body[data-route="escie"] #escie {
 .social-icon svg .social-icon-fill,
 .social-icon svg path:not(.social-icon-cut){fill:currentColor;stroke:none}
 .social-icon svg .social-icon-cut{fill:none;stroke:var(--black);stroke-width:1.7}
-.social-icon-label{line-height:1}
+.social-icon-label{display:none!important}
+.about-social-link .social-icon-arrow{display:none!important}
+.about-social-link{justify-content:center;min-width:64px}
+
 .footer-social-link{
   display:inline-flex;
   align-items:center;
