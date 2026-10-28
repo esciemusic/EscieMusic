@@ -16,4 +16,6 @@ assert(/world-detail.*focus\(\)/.test(src),"node navigation must restore keyboar
 assert(/role="tablist".*aria-label="ESCIE World navigation"/.test(src),"world navigation needs tab semantics");
 assert(/aria-selected="/.test(src)&&/state\.tab===t\[0\]/.test(src),"world tabs need selected-state semantics");
 assert(/id="glass-eye-panel" role="region" aria-label="The Glass Eye"/.test(src),"Glass Eye needs an accessible region");
+assert(/const reduceMotion=\(\)=>typeof window\.matchMedia==="function"/.test(src),"World Engine needs reduced-motion detection");
+assert(/behavior:reduceMotion\(\)\?"auto":"smooth"/.test(src),"World Engine must respect reduced motion");
 console.log("ESCIE world-engine contracts OK");
