@@ -117,7 +117,11 @@
     if(Number.isFinite(calculated)&&(!Number.isFinite(recorded)||Math.abs(calculated-recorded)>0.25))return false;
     return String(sample.shrinkage.result||"").toUpperCase()==="PASS";
   }
-  function decorationReady(sample){return sample&&sample.decoration_check&&String(sample.decoration_check.result||"").toUpperCase()==="PASS";}
+  function decorationReady(sample){
+    if(!sample||!sample.decoration_check)return false;
+    const d=sample.decoration_check;
+    return ["placement","scale","color"].every(k=>String(d[k]||"").trim())&&String(d.result||"").toUpperCase()==="PASS";
+  }
   function measurementReady(item,sample){
     const spec=Object.assign({tolerance:"±1 cm"},item.specification||{});
     const actual=measurementFor(sample);
