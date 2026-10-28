@@ -3,7 +3,7 @@
  * Empty arrays are intentional: absence of data is not permission to invent it.
  */
 const ESCIE_RECORD_CONTRACT={
-  version:"1.2.0",
+  version:"1.3.0",
   visibilities:["public","private","withheld","limited"],
   statuses:["development","active","published","archived","silence"],
   release_statuses:["locked","released"],
@@ -15,7 +15,8 @@ const ESCIE_RECORD_CONTRACT={
     "people","locations","media","evidence","symbols","tags",
     "relationships","related_content","project","parent","source",
     "origin","transformation","archive_state","release_status","release_mode",
-    "episode","scene","conditions","interactions","discoveries","questions","player_state","provenance"
+    "episode","scene","conditions","interactions","discoveries","questions","player_state","provenance",
+    "game_id","game_version","player_visible","canonical_write"
   ]
 };
 
@@ -52,6 +53,10 @@ function normalizeEscieRecord(record,type){
   normalized.questions=Array.isArray(record.questions)?record.questions:[];
   normalized.player_state=record.player_state||null;
   normalized.provenance=record.provenance||null;
+  normalized.game_id=record.game_id||null;
+  normalized.game_version=record.game_version||null;
+  normalized.player_visible=record.player_visible!==false;
+  normalized.canonical_write=record.canonical_write===true;
   normalized.people=Array.isArray(record.people)?record.people:[];
   normalized.locations=Array.isArray(record.locations)?record.locations:[];
   normalized.media=Array.isArray(record.media)?record.media:[];
