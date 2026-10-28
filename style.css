@@ -1818,7 +1818,7 @@ body.inspector-open{overflow:hidden}
 .archive-status,.investigation-status{max-width:900px;padding:42px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .archive-status h3,.investigation-status h3{margin:0;font-size:clamp(24px,5vw,54px);font-weight:400;letter-spacing:.04em;line-height:1.05}
 .archive-status p:not(.eyebrow),.investigation-status p:not(.eyebrow){max-width:680px;color:var(--muted);line-height:1.9}
-.reality-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:34px}
+
 .reality-legend span{padding:7px 9px;border:1px solid var(--line);color:var(--faint);font-size:7px;letter-spacing:.18em;text-transform:uppercase}
 .nav-link.is-current{opacity:1;letter-spacing:.14em}
 .nav-link.is-current::before{content:"/ ";color:var(--faint)}
