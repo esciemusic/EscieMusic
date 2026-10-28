@@ -75,6 +75,8 @@ function gameMemory(){
  if(!api||typeof api.getMemory!=="function")return null;
  try{return api.getMemory()}catch(e){return null}
 }
+function gameUnlockedNodes(){const m=gameMemory();if(!m)return [];const keys=Array.isArray(m.world_unlocks)?m.world_unlocks.map(String).filter(x=>x.indexOf("query:")===0).map(x=>x.slice(6).toLowerCase()):[];if(!keys.length)return [];return records().map(r=>{const text=searchText(r);let score=0;keys.forEach(q=>{if(text.includes(q))score+=q.length>=6?3:1;if(String(title(r)).toLowerCase()===q)score+=8});return {r,score}}).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,12).map(x=>x.r)}
+function realityLevel(r){return String(r.reality_level||r.realityLevel||r.level||r.certainty||"UNKNOWN").replace(/_/g," ").toUpperCase()}
 function playableLayer(){
  const m=gameMemory();
  if(!m)return "";
@@ -83,8 +85,10 @@ function playableLayer(){
  const items=Array.isArray(m.inventory)?m.inventory:[];
  const active=String(m.visited&&m.visited.length?m.visited[m.visited.length-1]:"");
  const parts=[];
+ const unlocked=gameUnlockedNodes();
  parts.push('<div class="glass-eye-game-layer"><div><span class="world-kicker">PLAYABLE LAYER</span><h3>WHAT YOU FOUND IN THE GAME</h3><p>Your game memory can point back into the public world. It does not create canon; it only records your route and unresolved threads on this device.</p></div><div class="glass-eye-stats"><div><strong>'+esc(String(m.signals||0))+'</strong><span>SIGNAL</span></div><div><strong>'+esc(String(items.length))+'</strong><span>ITEMS</span></div><div><strong>'+esc(String(discoveries.length))+'</strong><span>DISCOVERIES</span></div><div><strong>'+esc(String(unresolved.length))+'</strong><span>UNRESOLVED</span></div></div>');
  if(active)parts.push('<div class="glass-eye-last"><span class="world-kicker">CURRENT GAME SCENE</span><button type="button" data-game-route="'+esc(active)+'">'+esc(active.replace(/-/g," ").toUpperCase())+' ↗</button></div>');
+ if(unlocked.length)parts.push('<div class="world-kicker">UNLOCKED WORLD THREADS</div><div class="glass-eye-discovery">'+unlocked.map(r=>'<button type="button" data-node="'+esc(r.id)+'"><strong>'+esc(title(r))+'</strong><small>GAME UNLOCK · '+esc(type(r))+' · '+esc(realityLevel(r))+'</small></button>').join("")+'</div><p class="world-kicker">These are existing public-world records surfaced by your playable path. The game does not create or alter them.</p>');
  if(discoveries.length)parts.push('<div class="world-kicker">DISCOVERED THREADS</div><div class="glass-eye-discovery">'+discoveries.slice(-6).map(id=>'<button type="button" data-game-route="'+esc(id)+'"><strong>'+esc(String(id).replace(/^game-discovery-/,"").replace(/-/g," ").toUpperCase())+'</strong><small>PLAYER DISCOVERY · NOT CANONICAL PROOF</small></button>').join("")+'</div>');
  parts.push('<div class="glass-eye-actions"><button type="button" data-game-open>RETURN TO PLAYABLE LAYER</button></div></div>');
  return parts.join("");
