@@ -320,3 +320,20 @@ document.addEventListener("change",e=>{if(e.target.id==="phone-audio-file"){cons
    return s;
  }};
 })();
+
+/* DREAM RENDERER + CONSEQUENCE LOOP */
+(function(){
+ const q=s=>document.querySelector(s), esc=v=>String(v??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+ function overlay(){let el=q("#dream-play-layer");if(!el){el=document.createElement("div");el.id="dream-play-layer";el.className="dream-play-layer";el.innerHTML='<div class="dream-map"><div class="dream-map-head"><span id="dream-map-title">NIGHT SIGNAL</span><span id="dream-map-state">ACTIVE</span></div><div id="dream-map-grid"></div><div class="dream-map-help">MOVE · REACH THE EXIT · AVOID WHAT SEES YOU</div></div>';document.body.appendChild(el)}return el}
+ function render(s){const el=overlay(),grid=el.querySelector("#dream-map-grid"),L=s.level;let html="";
+  for(let y=0;y<10;y++)for(let x=0;x<16;x++){let cls="dream-cell";if(x===s.player.x&&y===s.player.y)cls+=" player";if(x===L.exit.x&&y===L.exit.y)cls+=" exit";if(x===s.threat.x&&y===s.threat.y)cls+=" threat";(L.objects||[]).forEach(o=>{if(o.x===x&&o.y===y)cls+=" object"});html+='<i class="'+cls+'" data-x="'+x+'" data-y="'+y+'"></i>'}
+  grid.innerHTML=html;el.querySelector("#dream-map-title").textContent=L.label||"THE DREAM";el.querySelector("#dream-map-state").textContent=s.detected?"DETECTED":"ACTIVE";el.hidden=false;
+ }
+ function finish(s){const sim=window.ESCIE_WORLD_SIMULATION;if(sim?.choice)sim.choice("dream:"+s.level.id,s.result||"WAKE",{stress:s.detected?8:-5,health:s.detected?-5:0});window.ESCIE_WORLD_DREAM_STATE=null;const el=q("#dream-play-layer");if(el)el.hidden=true}
+ document.addEventListener("escie-dream-play-start",e=>render(e.detail));
+ document.addEventListener("escie-dream-complete",e=>{render(e.detail);setTimeout(()=>finish(e.detail),450)});
+ document.addEventListener("escie-dream-detected",e=>render(e.detail));
+ document.addEventListener("keydown",e=>{const m={ArrowUp:[0,-1],w:[0,-1],ArrowDown:[0,1],s:[0,1],ArrowLeft:[-1,0],a:[-1,0],ArrowRight:[1,0],d:[1,0]};const v=m[e.key];if(v&&window.ESCIE_WORLD_DREAM_PLAY){e.preventDefault();const s=window.ESCIE_WORLD_DREAM_PLAY.move(...v);if(s)render(s)}});
+ document.addEventListener("pointerdown",e=>{const b=e.target.closest("[data-dream-move]");if(!b)return;const v=b.dataset.dreamMove.split(",").map(Number);const s=window.ESCIE_WORLD_DREAM_PLAY?.move(...v);if(s)render(s)});
+ window.ESCIE_WORLD_DREAM_RENDER={render};
+})();
