@@ -277,7 +277,7 @@ footer{padding:30px 2px;color:#5f5f5a}
   function show(target){
     ["home","work","brain","tasks","suggestions","review","archive","agents","insights","destinations","settings"].forEach(id=>{const e=$(id);if(e)e.classList.toggle("hidden",id!==target)});
     document.querySelectorAll("#mainNav button").forEach(b=>b.classList.toggle("active",b.dataset.target===target));
-    window.scrollTo({top:0,behavior:"smooth"});
+    window.scrollTo({top:0,left:0,behavior:"auto"});if(document.scrollingElement)document.scrollingElement.scrollTop=0;document.documentElement.scrollTop=0;document.body.scrollTop=0;
   }
   document.querySelectorAll("#mainNav button[data-target]").forEach(b=>b.addEventListener("click",()=>show(b.dataset.target)));
   // Agent routing is owned by agent-ui.js; keep one authoritative runtime.\n  document.querySelectorAll("[data-target]").forEach(b=>{if(!b.closest("#mainNav"))b.addEventListener("click",()=>show(b.dataset.target))});
