@@ -3974,3 +3974,9 @@ body.player-visible{padding-bottom:clamp(88px,12vh,124px)}
 .game-enter-button:hover{background:rgba(100,255,80,.1);border-color:rgba(160,255,120,.75);transform:translateY(-1px)}
 @media(max-width:600px){.game-entry-main{padding:2rem .2rem}.game-entry-main h3{font-size:clamp(2rem,12vw,3.5rem)}}
 @media(prefers-reduced-motion:reduce){.game-enter-button{transition:none}}
+
+/* GAME ENTRY ROUTES */
+.game-entry-gateway{isolation:isolate}
+.game-entry-gateway[data-entry-source="link"]{border-color:rgba(160,255,120,.5)}
+.game-entry-main .game-entry-route{opacity:.85}
+.game-entry-main .game-kicker:first-child{color:rgba(170,255,145,.75)}
