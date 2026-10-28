@@ -3,7 +3,7 @@
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
 const coll=(name,fallback=[])=>{const v=window[name];return Array.isArray(v)?v:(v&&Array.isArray(v.records)?v.records:fallback)};
-const state={tab:"atlas",q:"",reality:"ALL",type:"ALL",selected:null,trail:[],visited:[]};
+const state={tab:"atlas",q:"",reality:"ALL",type:"ALL",selected:null,trail:[],visited:[],eyeOpen:false};
 const tabs=[["atlas","ATLAS"],["timeline","TIMELINE"],["reality","REALITY"],["symbols","SYMBOLS"],["trails","TRAILS"]];
 function records(){
  const sources=[coll("ESCIE_MUSIC"),coll("ESCIE_PEOPLE"),coll("ESCIE_LOCATIONS"),coll("ESCIE_MOMENTS"),coll("ESCIE_FRAGMENTS"),coll("ESCIE_BODIES"),coll("ESCIE_PATHS"),coll("ESCIE_NODES"),coll("ESCIE_PROJECTS"),coll("ESCIE_ARCHIVE"),coll("ESCIE_INVESTIGATION"),coll("ESCIE_SYMBOLS")];
@@ -51,6 +51,7 @@ function trails(rows){
  const starts=rows.filter(r=>(adj.get(String(r.id))||[]).length).slice(0,6);
  return '<div class="world-list">'+(starts.length?starts.map(s=>{const ns=(adj.get(String(s.id))||[]).map(id=>map.get(String(id))).filter(Boolean).slice(0,3);return '<article class="world-card"><div class="world-card-main"><span class="world-kicker">TRAILHEAD</span><h3>'+esc(title(s))+'</h3><p>'+ns.map(n=>'<button type="button" class="inline-node" data-node="'+esc(n.id)+'">'+esc(title(n))+'</button>').join(" · ")+'</p></div><span class="world-arrow">→</span></article>'}).join(""):'<div class="world-intro"><p>Trails appear as public relationships accumulate.</p></div>')+'</div>';
 }
+function eyePanel(){const rows=filtered(),explored=state.visited.length,connected=state.selected?related(state.selected).length:0,last=state.trail.length?records().find(r=>String(r.id)===String(state.trail[state.trail.length-1])):null;return "<div class=\"glass-eye-panel\"><div><span class=\"world-kicker\">THE GLASS EYE</span><h3>YOU ARE INSIDE THE SIGNAL.</h3><p>This is the audience layer. It remembers your route on this device, not who you are. Nothing you discover becomes canon because you discovered it.</p></div><div class=\"glass-eye-stats\"><div><strong>"+explored+"</strong><span>VISITED</span></div><div><strong>"+connected+"</strong><span>CONNECTIONS HERE</span></div><div><strong>"+rows.length+"</strong><span>VISIBLE NODES</span></div></div>"+(last?"<div class=\"glass-eye-last\"><span class=\"world-kicker\">LAST SIGNAL</span><button type=\"button\" data-node=\""+esc(last.id)+"\">"+esc(title(last))+"</button></div>":"")+"<div class=\"glass-eye-actions\"><button type=\"button\" data-eye-clear>CLEAR MY PATH</button><button type=\"button\" data-eye-close>CLOSE EYE</button></div></div>";}
 function render(){
  const root=$("world-container");if(!root)return;
  const all=records(),rows=filtered(),types=[...new Set(all.map(type))].sort();
@@ -60,11 +61,15 @@ function render(){
  if(state.tab==="reality"){const counts={};rows.forEach(r=>counts[reality(r)]=(counts[reality(r)]||0)+1);body='<div class="world-intro"><span class="world-kicker">REALITY IS NOT ONE THING.</span><h3>REAL / MEMORY / MYTH.</h3><p>A record can be real and uncertain, remembered and supported, dramatized without becoming a lie. The category describes the layer—not a verdict on existence.</p></div><div class="world-states">'+Object.entries(counts).map(([k,v])=>'<button class="world-state '+(state.reality===k?"active":"")+'" data-reality="'+esc(k)+'"><strong>'+esc(k)+'</strong><span>'+v+'</span></button>').join("")+'</div><div class="world-list">'+rows.slice(0,80).map(card).join("")+'</div>';
  if(state.tab==="symbols"){const syms=coll("ESCIE_SYMBOLS",[..."CAMERA|DAISY|CHILD'S SHOE|NIGHTLIGHT|KEY|EMPTY CHAIR|VHS".split("|")].map((name,i)=>({id:"symbol-"+i,name})));body='<div class="world-intro"><span class="world-kicker">RECURRING VISUAL LANGUAGE</span><h3>NOT DECORATION.</h3><p>Symbols become doors when they recur. Their meaning can evolve, contradict itself or remain unknown.</p></div><div class="world-symbols">'+syms.map(s=>'<button type="button" class="world-symbol" data-node="'+esc(s.id)+'"><span class="symbol-glyph">·</span><strong>'+esc(s.name||s.title)+'</strong><small>'+esc(s.motif||"Appearances and connections will accumulate here.")+'</small></button>').join("")+'</div>';
  if(state.tab==="trails")body='<div class="world-intro"><span class="world-kicker">EXPLORATION TRAILS</span><h3>NO WRONG DOOR.</h3><p>Every entry point can lead somewhere else. The audience builds its own route through the public graph.</p></div>'+trails(rows);
- const nav='<div class="world-tabs">'+tabs.map(t=>'<button class="'+(state.tab===t[0]?"active":"")+'" data-world-tab="'+t[0]+'">'+t[1]+'</button>').join("")+'</div>';
+ const nav='<div class="world-tabs"><button class="'+(state.eyeOpen?"active":"")+'" data-glass-eye>GLASS EYE</button>'+tabs.map(t=>'<button class="'+(state.tab===t[0]?"active":"")+'" data-world-tab="'+t[0]+'">'+t[1]+'</button>').join("")+'</div>';
  root.innerHTML='<div class="world-engine"><div class="world-header"><div><span class="world-kicker">ESCIE WORLD ENGINE</span><h3>THE WORLD BEHIND THE WORK.</h3><p>Explore the universe. Follow the signal. Decide what you believe.</p></div></div>'+nav+'<div class="world-controls"><input id="world-public-search" value="'+esc(state.q)+'" placeholder="SEARCH THE WORLD…" aria-label="Search the ESCIE world"><select id="world-public-type"><option value="ALL">ALL TYPES</option>'+types.map(t=>'<option value="'+esc(t)+'" '+(state.type===t?"selected":"")+'>'+esc(t)+'</option>').join("")+'</select></div>'+body+(state.selected?((()=>{const r=all.find(x=>String(x.id)===String(state.selected));return r?detail(r):""})()):"")+'</div>';
+ if(state.eyeOpen)root.insertAdjacentHTML("beforeend",eyePanel());
  bind(root);
 }
 function bind(root){
+ root.querySelectorAll("[data-glass-eye]").forEach(b=>b.onclick=()=>{state.eyeOpen=!state.eyeOpen;render()});
+ root.querySelectorAll("[data-eye-clear]").forEach(b=>b.onclick=()=>{state.trail=[];state.visited=[];try{sessionStorage.removeItem("escie_world_trail");sessionStorage.removeItem("escie_world_visited")}catch(e){}render()});
+ root.querySelectorAll("[data-eye-close]").forEach(b=>b.onclick=()=>{state.eyeOpen=false;render()});
  root.querySelectorAll("[data-world-tab]").forEach(b=>b.onclick=()=>{state.tab=b.dataset.worldTab;render()});
  const search=$("world-public-search");if(search)search.oninput=e=>{state.q=e.target.value;render();const x=$("world-public-search");if(x){x.focus();x.setSelectionRange(state.q.length,state.q.length)}};
  const select=$("world-public-type");if(select)select.onchange=e=>{state.type=e.target.value;render()};
