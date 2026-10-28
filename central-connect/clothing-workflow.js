@@ -57,13 +57,20 @@
     if(i>=stageIndex("SAMPLE_REQUESTED")&&!w.supplier) return "Add a supplier/printer candidate before requesting a sample.";
     if(i>=stageIndex("SAMPLE_REQUESTED")&&!w.quote) return "Record a quote before requesting a sample.";
     if(i>=stageIndex("SAMPLE_RECEIVED")&&!w.sample_request) return "Record the sample request before marking it received.";
+    if(i>=stageIndex("SAMPLE_RECEIVED")&&!w.samples.some(s=>s&&["RECEIVED","FIT_REVIEW","WASH_TEST","APPROVED"].includes(s.state))) return "Create and receive a physical sample before advancing.";
+    if(i>=stageIndex("FIT_REVIEW")&&!w.samples.some(s=>s&&["FIT_REVIEW","WASH_TEST","APPROVED"].includes(s.state))) return "Move a physical sample into FIT REVIEW before advancing.";
+    if(i>=stageIndex("WASH_TEST")&&!w.samples.some(s=>s&&["WASH_TEST","APPROVED"].includes(s.state))) return "Move a physical sample into WASH TEST before advancing.";
+
     if(i>=stageIndex("FIT_REVIEW")&&!w.sample_received) return "Record the received sample before fit review.";
     if(i>=stageIndex("WASH_TEST")&&!checks.fit) return "Complete fit review before wash testing.";
     if(i>=stageIndex("PHOTO_READY")&&!checks.wash) return "Complete wash testing before photo readiness.";
-    if(i>=stageIndex("PREORDER_READY")&&(!checks.photo||!checks.preorder)) return "Approve sample photography and preorder review first.";
+    if(i>=stageIndex("PREORDER_READY")&&(!hasApprovedSample(item)||!checks.photo||!checks.preorder)) return "An approved physical sample, approved photography and preorder review are required.";
+    if(i>=stageIndex("PRODUCTION")&&!hasApprovedSample(item)) return "Production requires an explicitly approved physical sample.";
     if(i>=stageIndex("PRODUCTION")&&(!w.quantity||!w.size_curve)) return "Quantity and size curve stay locked until sample approval and must be entered before production.";
     return "";
   }
+  function latestSample(item){const list=item&&item.workflow&&Array.isArray(item.workflow.samples)?item.workflow.samples:[];return list.length?list[list.length-1]:null;}
+  function hasApprovedSample(item){return item.workflow.samples.some(s=>s&&s.state==="APPROVED");}
   function canAdvance(item,next){return !gate(item,next);}
   function samples(id){
     const state=read(), current=state[id]||{};
@@ -77,6 +84,11 @@
       id:id+"-S"+String(n).padStart(3,"0"),
       number:n,
       state:"REQUESTED",
+      supplier:current.supplier||"",
+      quote:current.quote||"",
+      size:"",
+      notes:"",
+      outcome:"",
       created_at:new Date().toISOString(),
       updated_at:new Date().toISOString()
     },patch||{});
@@ -140,7 +152,7 @@
     const input=document.createElement(type==="textarea"?"textarea":"input");
     input.value=item.workflow[key]||"";
     input.placeholder=label;
-    if((key==="quantity"||key==="size_curve")&&stageIndex(item.workflow.stage)<stageIndex("PREORDER_READY"))input.disabled=true;
+    if((key==="quantity"||key==="size_curve")&&!hasApprovedSample(item))input.disabled=true;
     if(type==="textarea"){input.rows=3;input.style.resize="vertical";}
     input.addEventListener("change",()=>saveItem(item.id,{[key]:input.value.trim()}));
     wrap.append(input);
@@ -220,8 +232,13 @@
         sampleList.slice().reverse().forEach(s=>{
           const line=el("div",{class:"sample-line"});
           line.append(el("strong",{},s.id+" · "+s.state));
-          const meta=el("span",{},(s.supplier||"No supplier recorded")+" · "+(s.created_at||""));
+          const meta=el("span",{},(s.supplier||"No supplier recorded")+" · "+(s.size||"Size not recorded")+" · "+(s.created_at||""));
           line.append(meta);
+          const sampleFields=el("div",{class:"sample-fields"});
+          [["size","SIZE / VARIANT"],["notes","SAMPLE NOTES"],["outcome","OUTCOME / DEFECTS"]].forEach(([key,label])=>{
+            const inp=document.createElement("input"); inp.value=s[key]||""; inp.placeholder=label; inp.addEventListener("change",()=>updateSample(item.id,s.id,{[key]:inp.value.trim()})); sampleFields.append(inp);
+          });
+          line.append(sampleFields);
           const controls=el("div",{class:"sample-controls"});
           SAMPLE_STATES.forEach(stateName=>{
             const b=el("button",{class:"btn small "+(s.state===stateName?"primary":"ghost"),type:"button"},stateName);
