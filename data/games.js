@@ -263,6 +263,8 @@
       if(!record.id) errors.push("missing id");
       if(!GAME_TYPES.includes(record.type)) errors.push("unsupported game type: "+record.type);
       if(record.release_status&&!["locked","released"].includes(record.release_status)) errors.push("invalid release_status");
+      if(record.canonical_write===true) errors.push("player/game records cannot write canonical truth directly");
+      if(record.type==="player_state"&&record.visibility==="public"&&record.player_visible===false) errors.push("hidden player state cannot be public");
       if(!Array.isArray(record.conditions)) errors.push("conditions must be an array");
       return {ok:errors.length===0,errors};
     }
