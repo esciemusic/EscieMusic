@@ -81,7 +81,8 @@ function render(){
  if(state.eyeOpen)root.insertAdjacentHTML("beforeend",eyePanel());
  bind(root);
 }
-function syncNodeHash(id){try{if(id)history.replaceState(null,"","#world-node="+encodeURIComponent(String(id)));else history.replaceState(null,"",location.pathname+location.search)}catch(e){}}\nfunction bind(root){
+function syncNodeHash(id){try{if(id)history.replaceState(null,"","#world-node="+encodeURIComponent(String(id)));else history.replaceState(null,"",location.pathname+location.search)}catch(e){}}
+function bind(root){
  root.querySelectorAll("[data-glass-eye]").forEach(b=>b.onclick=()=>{state.eyeOpen=!state.eyeOpen;render()});
  root.querySelectorAll("[data-eye-clear]").forEach(b=>b.onclick=()=>{state.trail=[];state.visited=[];try{sessionStorage.removeItem("escie_world_trail");sessionStorage.removeItem("escie_world_visited")}catch(e){}render()});
  root.querySelectorAll("[data-eye-close]").forEach(b=>b.onclick=()=>{state.eyeOpen=false;render()});
