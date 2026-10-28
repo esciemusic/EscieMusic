@@ -48,6 +48,7 @@ function unlockWorldThread(s,id){
  unique(s.discoveries,d.id);
  if(Array.isArray(d.world_queries))d.world_queries.forEach(q=>unique(s.world_unlocks,"query:"+String(q).toLowerCase()));
 }
+function unlockWorldThread(s,id){const d=discovery(id);if(!d)return;unique(s.discoveries,d.id);if(Array.isArray(d.world_queries))d.world_queries.forEach(q=>unique(s.world_unlocks,"query:"+String(q).toLowerCase()))}
 function visit(s,id){
  if(!s.visited.includes(id)){s.visited.push(id);const scene=scenes.find(x=>x.id===id);if(scene&&scene.signal)awardSignal(s,scene.signal);memoryEvent(s,"ENTERED",id,{location_id:scene&&scene.location,signal_id:scene&&scene.signal?"signal-"+id:null})}
 }
@@ -62,7 +63,7 @@ function applyEntry(s){
  const code=getEntry();if(!code||s.entry_payload===code)return s;s.entered=true;s.entry_source="link";s.entry_payload=code;
  const targetScene=scenes.find(x=>x.id===code),targetItem=items.find(x=>x.id===code),targetDiscovery=discoveries.find(x=>x.id===code);
  if(targetScene){s.scene=targetScene.id;visit(s,targetScene.id)}
- if(targetItem){unique(s.inventory,targetItem.id);memoryEvent(s,"DISCOVERED",targetItem.id);if(targetItem.id==="game-item-baby-shoe")unlockWorldThread(s,"game-discovery-shoe")}
+ if(targetItem){unique(s.inventory,targetItem.id);memoryEvent(s,"DISCOVERED",targetItem.id);if(targetItem.id==="game-item-baby-shoe")unlockWorldThread(s,"game-discovery-shoe");if(targetItem.id==="game-item-baby-shoe")unlockWorldThread(s,"game-discovery-shoe")}
  if(targetDiscovery){unlockWorldThread(s,targetDiscovery.id);memoryEvent(s,"DISCOVERED",targetDiscovery.id,{unknown:targetDiscovery.unresolved,unresolved:targetDiscovery.unresolved})}
  return s;
 }
