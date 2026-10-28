@@ -52,7 +52,18 @@
     ["investigation",()=>collection("ESCIE_INVESTIGATION")],
     ["archive",()=>collection("ESCIE_ARCHIVE")],
     ["signal",()=>collection("ESCIE_SIGNALS")],
-    ["clothing",()=>collection("ESCIE_CLOTHING")]
+    ["clothing",()=>collection("ESCIE_CLOTHING")],
+    ["game",()=>collection("ESCIE_GAMES")],
+    ["game_episode",()=>collection("ESCIE_GAME_EPISODES")],
+    ["game_scene",()=>collection("ESCIE_GAME_SCENES")],
+    ["game_event",()=>collection("ESCIE_GAME_EVENTS")],
+    ["game_interaction",()=>collection("ESCIE_GAME_INTERACTIONS")],
+    ["game_dialogue",()=>collection("ESCIE_GAME_DIALOGUE")],
+    ["game_clue",()=>collection("ESCIE_GAME_CLUES")],
+    ["game_discovery",()=>collection("ESCIE_GAME_DISCOVERIES")],
+    ["player_path",()=>collection("ESCIE_PLAYER_PATHS")],
+    ["player_state",()=>collection("ESCIE_PLAYER_STATES")],
+    ["game_ending",()=>collection("ESCIE_GAME_ENDINGS")]
   ];
   function build(){
     const records=[]; const seen=new Set(); const duplicates=[];
@@ -350,5 +361,5 @@ function allPublicRecords(){
     });
     return {ok:missing.length===0,missing};
   }
-  window.ESCIE_RECORD_REGISTRY={version:"1.17.0",build,records:()=>build().records,publicNodes,nodeFor,nodesForRecord,allPublicRecords,publicRecord,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,releaseAudit,manifestFor,filter,contextFor,publicRelationships,relationshipTypes,relationshipCategories,relationshipsFor,relationshipCounts,releaseVisible};
+  window.ESCIE_RECORD_REGISTRY={version:"1.18.0",build,records:()=>build().records,publicNodes,nodeFor,nodesForRecord,allPublicRecords,publicRecord,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,releaseAudit,manifestFor,filter,contextFor,publicRelationships,relationshipTypes,relationshipCategories,relationshipsFor,relationshipCounts,releaseVisible};
 })();
