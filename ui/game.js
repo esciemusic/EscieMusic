@@ -2,7 +2,7 @@
 "use strict";
 const root=typeof window!=="undefined"?window:globalThis;
 const KEY="escie_game_state_v1";
-const defaults={version:5,player_id:null,screen:"gateway",scene:"threshold",visited:[],inventory:[],signals:0,entered:false,entry_source:"site",entry_payload:null,discoveries:[],path:[],unresolved:[],world_unlocks:[]};
+const defaults={version:6,control_mode:"AUTO",player_id:null,screen:"gateway",scene:"threshold",visited:[],inventory:[],signals:0,entered:false,entry_source:"site",entry_payload:null,discoveries:[],path:[],unresolved:[],world_unlocks:[]};
 
 const scenes=[
  {id:"threshold",label:"THE THRESHOLD",title:"THE FIRST DOOR",text:"You are not entering another universe. You are entering another layer of the same one.",item:null,next:"laneway",signal:1,location:"the-world"},
@@ -81,6 +81,10 @@ function choose(s,id){
  }
  return true;
 }
+function controlMode(s){return String(s.control_mode||"AUTO").toUpperCase()}
+function setControlMode(s,mode){const m=["AUTO","TOUCH","KEYBOARD","GAMEPAD"].includes(String(mode||"").toUpperCase())?String(mode).toUpperCase():"AUTO";s.control_mode=m;save(s);render()}
+function gamepadConnected(){try{return !!(navigator.getGamepads&&Array.from(navigator.getGamepads()).some(Boolean))}catch(e){return false}}
+function inputPanel(s){const m=controlMode(s);return '<div class="game-input-panel"><div class="game-input-head"><span class="game-kicker">CONTROL LAYER</span><span>'+esc(m)+' · '+(gamepadConnected()?"BLUETOOTH GAMEPAD DETECTED":"TOUCH / KEYBOARD READY")+'</span></div><div class="game-input-modes">'+["AUTO","TOUCH","KEYBOARD","GAMEPAD"].map(x=>'<button type="button" class="'+(m===x?"active":"")+'" data-game-mode="'+x+'">'+x+'</button>').join("")+'</div><div class="game-input-help">'+(m==="GAMEPAD"?"A / CROSS = SELECT · B / CIRCLE = BACK · DPAD / STICK = MOVE":m==="KEYBOARD"?"ENTER / SPACE = SELECT · ESC = BACK · ARROWS / WASD = MOVE":"ON-SCREEN CONTROLS AVAILABLE · TAP TO SELECT")+'</div><div class="game-virtual-controls"><button type="button" data-game-nav="up">▲</button><div><button type="button" data-game-nav="left">◀</button><button type="button" data-game-action>●</button><button type="button" data-game-nav="right">▶</button></div><button type="button" data-game-nav="down">▼</button></div></div>}
 function render(){
  const el=document.getElementById("game-container");if(!el)return;let s=ensurePlayer(load());s=applyEntry(s);const c=current(s);save(s);
  if(!s.entered){
@@ -97,12 +101,15 @@ function render(){
  bind(el,s);
 }
 function bind(el,s){
+ el.querySelectorAll("[data-game-mode]").forEach(b=>b.onclick=()=>setControlMode(s,b.dataset.gameMode));
+ el.querySelectorAll("[data-game-action]").forEach(b=>b.onclick=()=>{const x=el.querySelector("[data-game-next], [data-game-collect], [data-game-choice], [data-game-enter]");if(x)x.click()});
  el.querySelectorAll("[data-game-next]").forEach(b=>b.onclick=()=>{const c=current(s);if(c.next){s.scene=c.next;visit(s,s.scene);save(s);render()}});
  el.querySelectorAll("[data-game-collect]").forEach(b=>b.onclick=()=>{const ok=collect(s,b.dataset.gameCollect);if(ok){save(s);render()}else{b.textContent="NEED MORE SIGNAL"}});
  el.querySelectorAll("[data-game-choice]").forEach(b=>b.onclick=()=>{choose(s,b.dataset.gameChoice);save(s);render()});
  el.querySelectorAll("[data-game-reset]").forEach(b=>b.onclick=()=>{localStorage.removeItem(KEY);render()});
  el.querySelectorAll("[data-game-inventory]").forEach(b=>b.onclick=()=>{const inv=s.inventory.map(item).filter(Boolean);alert(inv.length?inv.map(x=>x.title).join("\n"):"INVENTORY EMPTY")});
 }
+if(!root.__ESCIE_GAME_INPUT_BOUND){document.addEventListener("keydown",e=>{if(["INPUT","TEXTAREA","SELECT"].includes(document.activeElement&&document.activeElement.tagName))return;if(e.key==="Enter"||e.key===" "){const x=document.querySelector("[data-game-next], [data-game-collect], [data-game-choice], [data-game-enter]");if(x)x.click()}});root.__ESCIE_GAME_INPUT_BOUND=true}
 function init(){const el=document.getElementById("game-container");if(!el)return;const s=load();ensurePlayer(s);save(s);render()}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
 
