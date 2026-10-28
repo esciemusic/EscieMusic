@@ -222,6 +222,7 @@ assert(gameRuntime.includes('"CONNECTED"'),"player memory must record connection
 assert(gameRuntime.includes('"MISSED"'),"player memory must preserve missed discoveries");
 assert(gameRuntime.includes('"UNKNOWN"'),"player memory must preserve unknown state");
 assert(gameRuntime.includes("canonical_write:false"),"player state must never become canonical by default");
+assert(gameRuntime.includes("player/game records cannot write canonical truth directly"),"game registry must enforce canonical write boundary");
 assert(gameRuntime.includes("function applyPlayerEvent"),"game registry must expose player event application");
 assert(gameRuntime.includes("function playerMemory"),"game registry must expose player memory projection");
 
