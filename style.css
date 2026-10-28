@@ -3947,3 +3947,15 @@ body.player-visible{padding-bottom:clamp(88px,12vh,124px)}
 .glass-memory-clear{margin-top:1rem;background:none;color:inherit;border:1px solid currentColor;padding:.55rem .8rem;font:inherit;font-size:.68rem;letter-spacing:.08em;cursor:pointer}
 @media(max-width:600px){.glass-memory-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.glass-memory-head{display:block}.glass-memory-head span{display:block;margin-top:.35rem}}
 @media(prefers-reduced-motion:reduce){.glass-memory-panel *{scroll-behavior:auto}}
+
+.game-shop-section{border-top:1px solid rgba(255,255,255,.12)}
+.game-shop-container{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:1.5rem}
+.game-item-card{border:1px solid rgba(255,255,255,.14);padding:1.25rem;background:rgba(0,0,0,.18)}
+.game-item-type{font-size:.65rem;letter-spacing:.18em;opacity:.65}
+.game-item-card h3{margin:.55rem 0 .4rem}
+.game-item-card p{opacity:.75;line-height:1.5}
+.game-item-price{margin:1rem 0;font-family:monospace}
+.game-item-action{display:inline-block;border:1px solid rgba(255,255,255,.35);padding:.65rem .8rem;font-size:.7rem;letter-spacing:.12em;text-decoration:none}
+.game-item-action.is-muted{opacity:.55;border-style:dashed}
+.game-shop-empty{opacity:.55;padding:1rem 0}
+@media(max-width:600px){.game-shop-container{grid-template-columns:1fr}}
