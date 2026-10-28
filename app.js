@@ -167,9 +167,7 @@
     return normalized;
   }
 
-  function initialize(){
-    renderGameShop();
-function initializeLanguage() {
+  function initializeLanguage() {
     const detected = detectLanguage();
     setLanguage(detected);
 
@@ -1661,6 +1659,7 @@ function renderClothing(){
   }
 
   function initialize() {
+    renderGameShop();
     if (ESCIE_RUNTIME.initialized) return ESCIE_RUNTIME;
 
     ESCIE_RUNTIME.initialized = true;
