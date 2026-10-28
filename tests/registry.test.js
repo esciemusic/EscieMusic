@@ -20,7 +20,7 @@
       projects:Array.isArray(runtime.projects)?runtime.projects.slice():[]
     };
 
-    const project={id:"__test-project__",type:"project",title:"TEST PROJECT",artist:"ESCIE",status:"active",published:true,visibility:"public",release_mode:"progressive"};
+    const project={id:"__test-project__",type:"project",title:"TEST PROJECT",status:"active",published:true,visibility:"public",release_mode:"progressive"};
     const track={id:"__test-track__",type:"music",project:project.id,number:"001",title:"TEST TRANSMISSION",role:"THE TEST",status:"active",published:true,visibility:"public",release_status:"released"};
     const locked={id:"__locked-release-fixture__",type:"music",project:project.id,number:"999",title:"LOCKED FIXTURE",role:"LOCKED",status:"development",published:true,visibility:"public",release_status:"locked"};
     const relationship={id:"__test-contains__",from:project.id,type:"contains",to:track.id,status:"active",confidence:"verified",canonical_status:"canonical",visibility:"public",public_disclosure:true};
