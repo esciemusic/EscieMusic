@@ -10,6 +10,7 @@ assert(/function investigationSummary\(\)/.test(src),"world-engine missing inves
 assert(/YOUR INVESTIGATION/.test(src),"Glass Eye investigation context missing");
 assert(/NEXT SIGNALS/.test(src),"Glass Eye discovery surface missing");
 assert(!/\beval\s*\(|new Function\s*\(/.test(src),"dynamic code execution is forbidden");
-assert(/requestAnimationFrame\(\(\)=>\{render\(\)/.test(src),"search rendering must be frame-scheduled");
+assert(/const raf=typeof requestAnimationFrame==="function"\?requestAnimationFrame:fn=>setTimeout\(fn,0\)/.test(src),"world-engine needs a requestAnimationFrame fallback");
+assert(/caf\(searchFrame\);searchFrame=raf\(\(\)=>\{render\(\)/.test(src),"search rendering must use the compatibility scheduler");
 assert(/world-detail.*focus\(\)/.test(src),"node navigation must restore keyboard focus");
 console.log("ESCIE world-engine contracts OK");
