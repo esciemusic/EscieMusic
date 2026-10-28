@@ -118,3 +118,14 @@ body[data-world-text="large"] .world-shell button{font-size:calc(100% + .08rem)}
 
 .world-save-indicator{position:fixed;right:1rem;bottom:1rem;z-index:900;padding:.45rem .65rem;border:1px solid rgba(168,255,145,.25);background:rgba(3,6,3,.88);font:700 .55rem monospace;letter-spacing:.1em;opacity:0;transform:translateY(8px);transition:.2s}
 .world-save-indicator.visible{opacity:1;transform:none}
+
+.world-profile{position:fixed;inset:0;z-index:1600;display:grid;place-items:center;background:rgba(0,0,0,.88);backdrop-filter:blur(14px);padding:1rem}
+.world-profile[hidden]{display:none}
+.profile-panel{width:min(560px,100%);border:1px solid rgba(168,255,145,.32);background:#030603;padding:1.2rem;box-shadow:0 30px 100px rgba(0,0,0,.9)}
+.profile-panel h2{font-size:clamp(2.2rem,9vw,4.5rem);line-height:.8;margin:.35rem 0 1rem}
+.profile-id{font:700 .62rem monospace;opacity:.7;word-break:break-all;padding:.7rem;border:1px solid rgba(168,255,145,.12);background:rgba(168,255,145,.02)}
+.profile-form{display:grid;gap:.8rem;margin-top:1rem}
+.profile-form label{font:700 .6rem monospace;letter-spacing:.1em;color:var(--world-green)}
+.profile-form input{width:100%;box-sizing:border-box;background:#070b07;border:1px solid rgba(168,255,145,.25);color:inherit;padding:.8rem;font:600 .7rem monospace}
+.profile-actions{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}
+.profile-actions button{border:1px solid rgba(168,255,145,.25);background:rgba(168,255,145,.04);color:inherit;padding:.7rem .85rem;font:700 .6rem monospace}
