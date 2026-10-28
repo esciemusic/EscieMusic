@@ -3,7 +3,7 @@
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
 const coll=(name,fallback=[])=>{const v=window[name];return Array.isArray(v)?v:(v&&Array.isArray(v.records)?v.records:fallback)};
-const state={tab:"atlas",q:"",reality:"ALL",type:"ALL",selected:null};
+const state={tab:"atlas",q:"",reality:"ALL",type:"ALL",selected:null,trail:[],visited:[]};
 const tabs=[["atlas","ATLAS"],["timeline","TIMELINE"],["reality","REALITY"],["symbols","SYMBOLS"],["trails","TRAILS"]];
 function records(){
  const sources=[coll("ESCIE_MUSIC"),coll("ESCIE_PEOPLE"),coll("ESCIE_LOCATIONS"),coll("ESCIE_MOMENTS"),coll("ESCIE_FRAGMENTS"),coll("ESCIE_BODIES"),coll("ESCIE_PATHS"),coll("ESCIE_NODES"),coll("ESCIE_PROJECTS"),coll("ESCIE_ARCHIVE"),coll("ESCIE_INVESTIGATION"),coll("ESCIE_SYMBOLS")];
@@ -36,9 +36,9 @@ function filtered(){
 function card(r){
  return '<button type="button" class="world-card world-node-card" data-node="'+esc(r.id)+'"><div class="world-card-main"><span class="world-kicker">'+esc(type(r))+" · "+esc(reality(r))+'</span><h3>'+esc(title(r))+'</h3><p>'+esc(String(r.description||r.summary||r.story||"A doorway into the ESCIE universe.").slice(0,220))+'</p></div><span class="world-arrow" aria-hidden="true">↗</span></button>';
 }
-function detail(r){
+function remember(id){if(!id)return;if(!state.visited.includes(String(id)))state.visited.push(String(id));if(state.trail[state.trail.length-1]!==String(id))state.trail.push(String(id));state.trail=state.trail.slice(-12);try{sessionStorage.setItem("escie_world_trail",JSON.stringify(state.trail));sessionStorage.setItem("escie_world_visited",JSON.stringify(state.visited.slice(-100)))}catch(e){}}\nfunction loadTrail(){try{const a=JSON.parse(sessionStorage.getItem("escie_world_trail")||"[]");const b=JSON.parse(sessionStorage.getItem("escie_world_visited")||"[]");if(Array.isArray(a))state.trail=a;if(Array.isArray(b))state.visited=b}catch(e){}}\nfunction detail(r){
  const links=related(r.id);
- return '<aside class="world-detail" aria-live="polite"><div class="world-detail-head"><div><span class="world-kicker">NODE // '+esc(type(r))+'</span><h3>'+esc(title(r))+'</h3></div><button type="button" class="world-close" data-close-node aria-label="Close node">×</button></div><div class="world-detail-meta"><span>'+esc(reality(r))+'</span><span>'+esc(String(r.certainty||"UNKNOWN").toUpperCase())+'</span><span>'+esc(String(r.status||"UNKNOWN").toUpperCase())+'</span></div><p>'+esc(r.description||r.summary||r.story||"No public description yet.")+'</p><div class="world-kicker">CONNECTIONS · '+links.length+'</div><div class="world-connections">'+(links.length?links.map(x=>'<button type="button" data-node="'+esc(x.node.id)+'"><strong>'+esc(title(x.node))+'</strong><small>'+esc(x.r.type||"related")+'</small></button>').join(""):'<span class="world-empty">No public connection recorded yet.</span>')+'</div><div class="world-detail-actions"><button type="button" data-focus-search>SEARCH THIS NODE</button></div></aside>';
+ return '<aside class="world-detail" aria-live="polite"><div class="world-detail-head"><div><span class="world-kicker">NODE // '+esc(type(r))+'</span><h3>'+esc(title(r))+'</h3></div><button type="button" class="world-close" data-close-node aria-label="Close node">×</button></div><div class="world-detail-meta"><span>'+esc(reality(r))+'</span><span>'+esc(String(r.certainty||"UNKNOWN").toUpperCase())+'</span><span>'+esc(String(r.status||"UNKNOWN").toUpperCase())+'</span></div><p>'+esc(r.description||r.summary||r.story||"No public description yet.")+'</p><div class="world-kicker">CONNECTIONS · '+links.length+'</div><div class="world-connections">'+(links.length?links.map(x=>'<button type="button" data-node="'+esc(x.node.id)+'"><strong>'+esc(title(x.node))+'</strong><small>'+esc(x.r.type||"related")+'</small></button>').join(""):'<span class="world-empty">No public connection recorded yet.</span>')+'</div><div class="world-detail-actions"><button type="button" data-focus-search>SEARCH THIS NODE</button><button type="button" data-copy-node>COPY NODE LINK</button></div><div class="world-path"><span class="world-kicker">YOUR PATH</span><div id="world-path-items">START HERE</div></div></aside>';
 }
 function graphView(rows){
  const map=new Map(rows.map(r=>[String(r.id),r])),edges=[];
@@ -69,11 +69,11 @@ function bind(root){
  const search=$("world-public-search");if(search)search.oninput=e=>{state.q=e.target.value;render();const x=$("world-public-search");if(x){x.focus();x.setSelectionRange(state.q.length,state.q.length)}};
  const select=$("world-public-type");if(select)select.onchange=e=>{state.type=e.target.value;render()};
  root.querySelectorAll("[data-reality]").forEach(b=>b.onclick=()=>{state.reality=b.dataset.reality;state.tab="atlas";render()});
- root.querySelectorAll("[data-node]").forEach(b=>b.onclick=e=>{e.preventDefault();state.selected=b.dataset.node;render();setTimeout(()=>document.querySelector(".world-detail")?.scrollIntoView({behavior:"smooth",block:"nearest"}),0)});
- root.querySelectorAll("[data-close-node]").forEach(b=>b.onclick=()=>{state.selected=null;render()});
+ root.querySelectorAll("[data-node]").forEach(b=>b.onclick=e=>{e.preventDefault();remember(b.dataset.node);state.selected=b.dataset.node;render();setTimeout(()=>document.querySelector(".world-detail")?.scrollIntoView({behavior:"smooth",block:"nearest"}),0)});
+ const path=$("world-path-items");if(path){const map=new Map(records().map(r=>[String(r.id),r]));path.innerHTML=state.trail.map(id=>map.get(String(id))).filter(Boolean).map(n=>"<button type=\"button\" data-node=\""+esc(n.id)+"\">"+esc(title(n))+"</button>").join(" → ")||"START HERE";path.querySelectorAll("[data-node]").forEach(b=>b.onclick=e=>{e.preventDefault();remember(b.dataset.node);state.selected=b.dataset.node;render()})}\n root.querySelectorAll("[data-copy-node]").forEach(b=>b.onclick=async()=>{const u=location.href.split("#")[0]+"#world-node="+encodeURIComponent(state.selected||"");try{await navigator.clipboard.writeText(u);b.textContent="COPIED";setTimeout(()=>b.textContent="COPY NODE LINK",1200)}catch(e){}});\n root.querySelectorAll("[data-close-node]").forEach(b=>b.onclick=()=>{state.selected=null;render()});
  root.querySelectorAll("[data-focus-search]").forEach(b=>b.onclick=()=>{const s=$("world-public-search");if(s){s.value=title(records().find(r=>String(r.id)===String(state.selected))||{});s.dispatchEvent(new Event("input"));s.focus()}});
 }
-function init(){
+function init(){\n loadTrail();\n const hash=location.hash.match(/^#world-node=(.+)$/);if(hash){try{state.selected=decodeURIComponent(hash[1]);remember(state.selected)}catch(e){}}
  const nav=document.getElementById("main-navigation"),root=$("world-container");if(!nav||!root)return;
  if(!nav.querySelector('a[href="#world"]')){const a=document.createElement("a");a.href="#world";a.textContent="THE WORLD";a.dataset.route="world";nav.appendChild(a)}
  render();
