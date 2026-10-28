@@ -6,7 +6,7 @@
  * through the ESCIE archive.
  *
  * IMPORTANT:
- * - A path is a presentation/editorial structure, not a new reality.
+ * - A path is a presentation/editorial structure, not a new world.
  * - Ordering records does not establish causation or chronology unless
  *   explicitly established elsewhere.
  * - A path may contain unresolved or non-canonical material without making
