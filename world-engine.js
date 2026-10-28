@@ -91,10 +91,10 @@ function render(){
  }
 function syncNodeHash(id){try{if(id)history.replaceState(null,"","#world-node="+encodeURIComponent(String(id)));else history.replaceState(null,"",location.pathname+location.search)}catch(e){}}
 function bind(root){
- root.querySelectorAll("[data-glass-eye]").forEach(b=>b.onclick=()=>{state.eyeOpen=!state.eyeOpen;render()});
+ root.querySelectorAll("[data-glass-eye]").forEach(b=>{b.setAttribute("aria-expanded",state.eyeOpen?"true":"false");b.onclick=()=>{state.eyeOpen=!state.eyeOpen;render()}});
  root.querySelectorAll("[data-eye-clear]").forEach(b=>b.onclick=()=>{state.trail=[];state.visited=[];try{sessionStorage.removeItem("escie_world_trail");sessionStorage.removeItem("escie_world_visited")}catch(e){}render()});
- root.querySelectorAll("[data-eye-close]").forEach(b=>b.onclick=()=>{state.eyeOpen=false;render()});
- root.querySelectorAll("[data-world-tab]").forEach(b=>b.onclick=()=>{state.tab=b.dataset.worldTab;render()});
+ root.querySelectorAll("[data-eye-close]").forEach(b=>b.onclick=()=>{state.eyeOpen=false;render();setTimeout(()=>{const trigger=document.querySelector("[data-glass-eye]");if(trigger)trigger.focus()},0)});
+ root.querySelectorAll("[data-world-tab]").forEach(b=>b.onclick=()=>{state.tab=b.dataset.worldTab;render();setTimeout(()=>{const active=document.querySelector("[data-world-tab][aria-selected=\"true\"]");if(active)active.focus()},0)});
  let searchFrame=0;const search=$("world-public-search");if(search)search.oninput=e=>{state.q=e.target.value;caf(searchFrame);searchFrame=raf(()=>{render();const x=$("world-public-search");if(x){x.focus();x.setSelectionRange(state.q.length,state.q.length)}})};
  const select=$("world-public-type");if(select)select.onchange=e=>{state.type=e.target.value;render()};
  root.querySelectorAll("[data-node]").forEach(b=>b.onclick=e=>{e.preventDefault();remember(b.dataset.node);state.selected=b.dataset.node;syncNodeHash(state.selected);render();setTimeout(()=>{const detail=document.querySelector(".world-detail");if(detail)detail.scrollIntoView({behavior:"smooth",block:"nearest"});const close=document.querySelector(".world-close");if(close)close.focus()},0)});
