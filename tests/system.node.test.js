@@ -226,3 +226,4 @@ const appRuntime=fs.readFileSync("app.js","utf8");
 assert(!appRuntime.includes("The central consciousness / interface."),"app fallback identity must not use central-consciousness wording");
 assert(appRuntime.includes('function reduceMotion()'),"app runtime needs reduced-motion detection");
 assert(appRuntime.includes('behavior:reduceMotion()?"auto":"smooth"'),"app section navigation must respect reduced motion");
+assert(appRuntime.includes('reduceMotion() || !("IntersectionObserver" in window)'),"app visual observer must respect reduced motion");
