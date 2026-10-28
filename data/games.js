@@ -97,6 +97,26 @@
     else acquisition=discovered?"CLAIMABLE":"FREE";
     return {ok:true,item:source,acquisition,owned,discovered,requirements_satisfied:satisfied};
   }
+  function acquireGameItem(seed,item,event){
+    const source=gameItem(item);
+    const state=createGameEconomy(seed);
+    if(!source)return {ok:false,reason:"item unavailable",economy:state,action:null};
+    const inspection=inspectGameItem(source,{owned:state.owned,discovered:state.claimed,unlocked:[]});
+    if(inspection.owned)return {ok:true,reason:"already owned",economy:state,action:"OWNED"};
+    if(inspection.acquisition==="LOCKED")return {ok:false,reason:"item locked",economy:state,action:"LOCKED"};
+    const type=source.price_type||"FREE";
+    if(type==="REAL_MONEY")return {ok:false,reason:"external checkout required",economy:state,action:"CHECKOUT",url:safePurchaseURL(source)};
+    if(type==="EARNED"&&!canAfford(state,source))return {ok:false,reason:"insufficient signal",economy:state,action:"EARN"};
+    const eventType=type==="EARNED"?"PURCHASE_CONFIRMED":"CLAIM";
+    const next=applyEconomyEvent(state,Object.assign({},event||{},{
+      type:eventType,
+      item_id:source.id,
+      amount:type==="EARNED"?Number(source.price||0):0,
+      currency:source.currency||"SIGNAL"
+    }));
+    return {ok:true,reason:"acquired",economy:next,action:type==="EARNED"?"PURCHASED":"CLAIMED"};
+  }
+
   function safePurchaseURL(item){
     if(!item||typeof item.external_purchase_url!=="string"||!item.external_purchase_url.trim())return null;
     try{
@@ -347,6 +367,7 @@
     validateItem,
     inspectGameItem,
     safePurchaseURL,
+    acquireGameItem,
     playerEventTypes:()=>PLAYER_EVENT_TYPES.slice(),
     playerStateSchema:()=>clone(PLAYER_STATE_SCHEMA),
     createPlayerState,
