@@ -466,7 +466,7 @@
       : (active ? "ACTIVE SIGNAL" : "SIGNAL QUIET");
     const transmissionText = publicMusic
       ? recordTitle(publicMusic)
-      : (active && active.description ? active.description : "The signal is quiet. The reality is not.");
+      : (active && active.description ? active.description : "The signal is quiet. The record remains.");
 
     container.innerHTML =
       '<div class="now-state">' + motifMarkup("now") + '' +
@@ -505,8 +505,7 @@
     const loc=Array.from(new Set(work.flatMap(r=>Array.isArray(r.locations)?r.locations:[]))).sort();
     const sym=Array.from(new Set(work.flatMap(r=>Array.isArray(r.symbols)?r.symbols:[]))).sort();
     const projects=Array.from(new Set(work.flatMap(r=>{const p=r&&r.project; if(p)return [p]; return r&&r.type==="project"&&r.id?[r.id]:[];}))).sort();
-    const reality=Array.from(new Set(work.flatMap(r=>[r&&r.reality,r&&r.reality_level].filter(Boolean)))).sort();
-    container.innerHTML=`<div class="record-filters-heading"><span>DISCOVER BY METADATA</span><button type="button" class="record-filter-clear">CLEAR</button></div><div class="record-filter-grid"><label>TYPE<select data-work-filter="type">${options(vals("type"),f.type,"ALL TYPES")}</select></label><label>STATUS<select data-work-filter="status">${options(vals("status"),f.status,"ALL STATUS")}</select></label><label>REALITY<select data-work-filter="reality">${options(reality,f.reality,"ALL REALITY")}</select></label><label>PROJECT<select data-work-filter="project">${options(projects,f.project,"ALL PROJECTS")}</select></label>${loc.length?`<label>LOCATION<select data-work-filter="location">${options(loc,f.location,"ALL LOCATIONS")}</select></label>`:""}${sym.length?`<label>MOTIF<select data-work-filter="symbol">${options(sym,f.symbol,"ALL MOTIFS")}</select></label>`:""}</div><p class="record-filter-count">${filtered.length} OF ${work.length} PUBLIC WORK RECORD${work.length===1?"":"S"}</p>`;
+        container.innerHTML=`<div class="record-filters-heading"><span>DISCOVER BY METADATA</span><button type="button" class="record-filter-clear">CLEAR</button></div><div class="record-filter-grid"><label>TYPE<select data-work-filter="type">${options(vals("type"),f.type,"ALL TYPES")}</select></label><label>STATUS<select data-work-filter="status">${options(vals("status"),f.status,"ALL STATUS")}</select></label><label>PROJECT<select data-work-filter="project">${options(projects,f.project,"ALL PROJECTS")}</select></label>${loc.length?`<label>LOCATION<select data-work-filter="location">${options(loc,f.location,"ALL LOCATIONS")}</select></label>`:""}${sym.length?`<label>MOTIF<select data-work-filter="symbol">${options(sym,f.symbol,"ALL MOTIFS")}</select></label>`:""}</div><p class="record-filter-count">${filtered.length} OF ${work.length} PUBLIC WORK RECORD${work.length===1?"":"S"}</p>`;
   }
 
 
@@ -657,8 +656,7 @@
         '<time>' + escapeHTML(record.date || record.date_start || record.status || "UNDATED") + '</time>' +
         '<div><h3>' + escapeHTML(recordTitle(record)) + "</h3>" +
         (record.description ? '<p>' + escapeHTML(record.description) + '</p>' : '') +
-        (record.reality || record.reality_level ? '<p class="record-action">' + escapeHTML(record.reality || record.reality_level) + '</p>' : '') +
-        (window.ESCIE_MEDIA && Array.isArray(record.media) ? window.ESCIE_MEDIA.renderAll(record.media) : '') +
+                (window.ESCIE_MEDIA && Array.isArray(record.media) ? window.ESCIE_MEDIA.renderAll(record.media) : '') +
         '</div></article>'
     ).join("");
   }
@@ -679,7 +677,7 @@
           '<p class="eyebrow">CASE STATE / OPEN</p>' +
           '<h3>THE QUESTIONS ARE HERE BEFORE THE ANSWERS.</h3>' +
           '<p>No public case has been established yet. When one is opened, this layer will distinguish questions, evidence, contradictions, context and unresolved material rather than presenting speculation as fact.</p>' +
-          '<div class="reality-legend"><span>REAL</span><span>MEMORY</span><span>DRAMATIZED</span><span>FICTIONALIZED</span><span>MYTH</span></div>' +
+          '' +
         '</div>';
       return;
     }
