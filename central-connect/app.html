@@ -299,6 +299,9 @@ footer{padding:30px 2px;color:#5f5f5a}
   function openAudit(){menu?.classList.add("hidden");const d=$("auditDrawer");if(d){d.classList.remove("hidden");d.setAttribute("aria-hidden","false")}}
   function closeAudit(){const d=$("auditDrawer");if(d){d.classList.add("hidden");d.setAttribute("aria-hidden","true")}}
   document.querySelectorAll("[data-utility='audit']").forEach(b=>b.addEventListener("click",openAudit));
+  document.querySelectorAll("[data-utility='command']").forEach(b=>b.addEventListener("click",()=>{menu?.classList.add("hidden");openSearch();setTimeout(()=>{if(searchInput)searchInput.value="";searchInput?.focus()},30)}));
+  document.querySelectorAll("[data-utility='activity']").forEach(b=>b.addEventListener("click",()=>{menu?.classList.add("hidden");document.querySelector("#diag")?.scrollIntoView({behavior:"smooth",block:"center"});}));
+  document.querySelectorAll("[data-utility='shortcuts']").forEach(b=>b.addEventListener("click",()=>{menu?.classList.add("hidden");openSearch();setTimeout(()=>{if(searchInput){searchInput.value="shortcut";doSearch("shortcut")}},30)}));
   $("auditClose")?.addEventListener("click",closeAudit);
   $("auditDrawer")?.addEventListener("click",e=>{if(e.target.id==="auditDrawer")closeAudit()});
   $("runAudit")?.addEventListener("click",()=>{
