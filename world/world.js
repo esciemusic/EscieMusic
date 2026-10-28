@@ -1,4 +1,19 @@
 (function(){
+function phoneApp(tab="calls"){
+ const root=document.getElementById("world-phone"),out=document.getElementById("phone-content"); if(!root||!out)return;
+ root.hidden=false;
+ const s=window.ESCIE_WORLD_SIMULATION?.state||{};
+ const mem=JSON.parse(localStorage.getItem("escie_phone_v1")||'{"notes":[],"photos":[],"calls":[],"notifications":[],"qr":[],"tracks":[]}');
+ const save=()=>localStorage.setItem("escie_phone_v1",JSON.stringify(mem));
+ if(tab==="calls") out.innerHTML='<div class="phone-card"><strong>CALLS</strong><p>Contacts and in-world calls will appear here.</p><button data-phone-call="witness">CALL THE WITNESS</button></div>'+((mem.calls||[]).map(x=>'<div class="phone-card">'+x+'</div>').join("")||'<p class="phone-empty">No recent calls.</p>');
+ if(tab==="photos") out.innerHTML='<div class="phone-card"><strong>CAMERA</strong><p>Take photos of the current game state and discoveries.</p><button data-phone-photo>TAKE PHOTO</button></div>'+((mem.photos||[]).map(x=>'<div class="phone-card">'+x+'</div>').join("")||'<p class="phone-empty">No photos.</p>');
+ if(tab==="notes") out.innerHTML='<div class="phone-card"><strong>NOTES</strong><textarea id="phone-note" class="phone-input" rows="5" placeholder="Write something..."></textarea><button data-phone-save-note>SAVE NOTE</button></div>'+((mem.notes||[]).map(x=>'<div class="phone-card">'+x+'</div>').join("")||'<p class="phone-empty">No notes.</p>');
+ if(tab==="notifications") out.innerHTML='<div class="phone-card"><strong>NOTIFICATIONS</strong></div>'+((mem.notifications||[]).map(x=>'<div class="phone-card">'+x+'</div>').join("")||'<p class="phone-empty">No notifications.</p>');
+ if(tab==="qr") out.innerHTML='<div class="phone-card"><strong>QR SCANNER</strong><p>Use the device camera to scan physical ESCIE discoveries. Camera permission is requested only when scanning is activated.</p><button data-phone-qr>SCAN QR</button><input id="phone-qr-input" class="phone-input" placeholder="Paste QR/deep-link code" /></div>';
+ if(tab==="music") out.innerHTML='<div class="phone-card"><strong>ESCIE MUSIC PLAYER</strong><p>Integrated game music and your own device audio files.</p><audio id="phone-audio" class="phone-player" controls></audio><input id="phone-audio-file" type="file" accept="audio/*" multiple /><div id="phone-tracks"></div></div>';
+ save();
+}
+
 "use strict";
 const KEY="escie_game_state_v1",W=16,H=10,start={x:2,y:7};
 const npcs=[{id:"witness",x:8,y:3,label:"THE WITNESS",lines:["You came through the signal. I have seen that before.","Do not confuse what you find with what is proven."],choices:[{label:"WHO ARE YOU?",text:"Someone who stayed long enough to notice the pattern."},{label:"WHAT IS THIS PLACE?",text:"A real street. Everything after that is interpretation."},{label:"I NEED THE KEY.",text:"Then find the thing that responds to the distortion.",discovery:"game-discovery-witness",queries:["query:witness","query:key"]}]}];
@@ -224,3 +239,11 @@ function openSimulation(){
 }
 document.querySelector("[data-life-systems]")?.addEventListener("click",openSimulation)
 })();
+document.addEventListener("click",e=>{
+ const tab=e.target.closest("[data-phone-tab]")?.dataset.phoneTab;if(tab)phoneApp(tab);
+ if(e.target.closest("[data-phone-open]"))phoneApp("calls");
+ if(e.target.closest("[data-phone-close]"))document.getElementById("world-phone").hidden=true;
+ if(e.target.closest("[data-phone-save-note]")){const v=document.getElementById("phone-note")?.value.trim();if(v){const m=JSON.parse(localStorage.getItem("escie_phone_v1")||'{"notes":[]}');m.notes=m.notes||[];m.notes.unshift(v.replace(/[<>&"]/g,""));localStorage.setItem("escie_phone_v1",JSON.stringify(m));phoneApp("notes");}}
+ if(e.target.closest("[data-phone-photo]")){const m=JSON.parse(localStorage.getItem("escie_phone_v1")||'{}');m.photos=m.photos||[];m.photos.unshift("PHOTO · "+new Date().toLocaleString());localStorage.setItem("escie_phone_v1",JSON.stringify(m));phoneApp("photos");}
+});
+document.addEventListener("change",e=>{if(e.target.id==="phone-audio-file"){const box=document.getElementById("phone-tracks");[...e.target.files].forEach(f=>{const u=URL.createObjectURL(f),a=document.createElement("button");a.textContent=f.name;a.onclick=()=>{document.getElementById("phone-audio").src=u;document.getElementById("phone-audio").play();};box.appendChild(a);});}});
