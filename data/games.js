@@ -21,6 +21,25 @@
     "game_ending"
   ];
 
+
+  const GAME_ITEM_TYPES=["game_item","game_inventory","game_purchase","game_reward"];
+  const GAME_ITEM_STATES=["AVAILABLE","LOCKED","DISCOVERED","PURCHASABLE","PURCHASED","OWNED","CLAIMED"];
+  function gameItem(record){
+    if(!record||typeof record!=="object")return null;
+    return Object.assign({id:null,type:"game_item",title:"UNTITLED",description:"",price:null,currency:"CAD",availability:"AVAILABLE",visibility:"public",requires:[],unlocks:[],inventory_key:null,external_purchase_url:null,physical_item_id:null,digital:false,canonical_write:false},record);
+  }
+  function validateItem(item){
+    const errors=[];
+    if(!item||typeof item!=="object")return {ok:false,errors:["item must be an object"]};
+    if(!item.id)errors.push("missing id");
+    if(!GAME_ITEM_TYPES.includes(item.type))errors.push("unsupported item type");
+    if(item.canonical_write===true)errors.push("game commerce cannot write canonical truth directly");
+    if(item.price!==null&&item.price!==undefined&&(!Number.isFinite(Number(item.price))||Number(item.price)<0))errors.push("invalid price");
+    if(item.external_purchase_url&&typeof item.external_purchase_url!=="string")errors.push("invalid purchase url");
+    if(!Array.isArray(item.requires)||!Array.isArray(item.unlocks))errors.push("requires and unlocks must be arrays");
+    return {ok:errors.length===0,errors};
+  }
+
   const GAME_RELATIONSHIPS=[
     "APPEARS_IN",
     "LOCATED_AT",
@@ -233,6 +252,10 @@
 
   const API={
     version:"1.1.0",
+    itemTypes:()=>GAME_ITEM_TYPES.slice(),
+    itemStates:()=>GAME_ITEM_STATES.slice(),
+    gameItem,
+    validateItem,
     playerEventTypes:()=>PLAYER_EVENT_TYPES.slice(),
     playerStateSchema:()=>clone(PLAYER_STATE_SCHEMA),
     createPlayerState,
