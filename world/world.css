@@ -164,3 +164,7 @@ body[data-world-text="large"] .world-shell button{font-size:calc(100% + .08rem)}
 .transit-routes b{font:700 .58rem monospace;letter-spacing:.08em}
 .transit-routes small{font:.5rem monospace;opacity:.58}
 @media(max-width:520px){.transit-head{display:grid}.transit-routes{grid-template-columns:1fr}}
+
+.world-phone{position:fixed;inset:6vh 5vw;z-index:1000;background:#07100b;border:2px solid rgba(100,255,150,.55);border-radius:28px;box-shadow:0 25px 80px #000;display:flex;flex-direction:column;overflow:hidden;color:#d8ffe4}
+.world-phone[hidden]{display:none}.phone-top,.phone-tabs{display:flex;align-items:center;gap:8px;padding:12px;border-bottom:1px solid rgba(100,255,150,.2)}
+.phone-top{justify-content:space-between}.phone-tabs{overflow:auto}.phone-tabs button,.phone-top button{background:#0c1b12;color:inherit;border:1px solid rgba(100,255,150,.3);padding:10px;border-radius:10px}.phone-content{padding:18px;overflow:auto;flex:1}.phone-card{border:1px solid rgba(100,255,150,.25);padding:14px;border-radius:14px;margin-bottom:12px;background:rgba(10,30,18,.75)}.phone-card button{margin:5px;padding:9px}.phone-empty{opacity:.65}.phone-input{width:100%;box-sizing:border-box;background:#020604;color:inherit;border:1px solid rgba(100,255,150,.3);padding:12px;border-radius:10px}.phone-player{width:100%}@media(max-width:700px){.world-phone{inset:0;border-radius:0}.phone-tabs button{min-width:max-content}}
