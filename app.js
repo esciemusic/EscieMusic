@@ -167,7 +167,9 @@
     return normalized;
   }
 
-  function initializeLanguage() {
+  function initialize(){
+    renderGameShop();
+function initializeLanguage() {
     const detected = detectLanguage();
     setLanguage(detected);
 
@@ -1772,8 +1774,7 @@ function renderClothing(){
   window.ESCIE_RUNTIME = ESCIE_RUNTIME;
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initialize, { once: true   renderGameShop();
-});
+    document.addEventListener("DOMContentLoaded", initialize, { once: true });
   } else {
     initialize();
   }
