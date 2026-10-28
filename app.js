@@ -633,7 +633,27 @@
   }
 
 
-  function renderClothing(){
+  function renderGameShop(){
+  const root=document.getElementById("game-shop-container");
+  if(!root)return;
+  const api=window.ESCIE_GAME_REGISTRY;
+  const items=api&&typeof api.items==="function"?api.items():[];
+  const esc=v=>typeof escapeHTML==="function"?escapeHTML(String(v??"")):String(v??"");
+  if(!items.length){
+    root.innerHTML='<div class="game-shop-empty">NO ITEMS AVAILABLE.</div>';
+    return;
+  }
+  root.innerHTML=items.map(item=>{
+    const type=String(item.price_type||"FREE").toUpperCase();
+    const price=type==="REAL_MONEY"&&item.price!==null?("CAD "+esc(item.price)):type==="EARNED"?(esc(item.price||0)+" "+esc(item.currency||"SIGNAL")):"FREE";
+    const action=type==="REAL_MONEY"&&item.external_purchase_url
+      ? '<a class="game-item-action" href="'+esc(item.external_purchase_url)+'" target="_blank" rel="noopener noreferrer">ENTER CHECKOUT</a>'
+      : type==="EARNED" ? '<span class="game-item-action is-muted">EARN IN THE SIGNAL</span>'
+      : '<span class="game-item-action is-muted">FOUND / CLAIMED IN GAME</span>';
+    return '<article class="game-item-card"><div class="game-item-type">'+esc(type)+'</div><h3>'+esc(item.title)+'</h3><p>'+esc(item.description)+'</p><div class="game-item-price">'+price+'</div>'+action+'</article>';
+  }).join("");
+}
+function renderClothing(){
     const container=byId("clothing-container");
     if(!container)return;
     const clothing=normalizeCollection(getGlobal("ESCIE_CLOTHING",[]));
@@ -1752,7 +1772,8 @@
   window.ESCIE_RUNTIME = ESCIE_RUNTIME;
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initialize, { once: true });
+    document.addEventListener("DOMContentLoaded", initialize, { once: true   renderGameShop();
+});
   } else {
     initialize();
   }
