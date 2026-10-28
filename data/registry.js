@@ -51,7 +51,8 @@
     ["path",()=>collection("ESCIE_PATHS")],
     ["investigation",()=>collection("ESCIE_INVESTIGATION")],
     ["archive",()=>collection("ESCIE_ARCHIVE")],
-    ["signal",()=>collection("ESCIE_SIGNALS")]
+    ["signal",()=>collection("ESCIE_SIGNALS")],
+    ["clothing",()=>collection("ESCIE_CLOTHING")]
   ];
   function build(){
     const records=[]; const seen=new Set(); const duplicates=[];
