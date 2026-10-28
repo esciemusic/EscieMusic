@@ -302,7 +302,6 @@ function allPublicRecords(){
     return list.filter(record=>{
       if(f.type&&!match(record.type,f.type)) return false;
       if(f.status&&!match(record.status,f.status)) return false;
-      if(f.reality&&!match(record.reality||record.reality_level,f.reality)) return false;
       if(f.location&&!(Array.isArray(record.locations)&&record.locations.includes(f.location))) return false;
       if(f.symbol&&!(Array.isArray(record.symbols)&&record.symbols.includes(f.symbol))) return false;
       if(f.project){
