@@ -56,6 +56,10 @@
   ];
 
   const ESCIE_GAMES=[];
+  const ESCIE_GAME_ITEMS=[];
+  const ESCIE_GAME_INVENTORIES=[];
+  const ESCIE_GAME_PURCHASES=[];
+  const ESCIE_GAME_REWARDS=[];
   const ESCIE_GAME_EPISODES=[];
   const ESCIE_GAME_SCENES=[];
   const ESCIE_GAME_EVENTS=[];
@@ -264,6 +268,10 @@
 
     types:()=>GAME_TYPES.slice(),
     relationshipTypes:()=>GAME_RELATIONSHIPS.slice(),
+    items:()=>list(ESCIE_GAME_ITEMS).map(gameItem),
+    inventories:()=>list(ESCIE_GAME_INVENTORIES).map(r=>gameRecord(r,"game_inventory")),
+    purchases:()=>list(ESCIE_GAME_PURCHASES).map(r=>gameRecord(r,"game_purchase")),
+    rewards:()=>list(ESCIE_GAME_REWARDS).map(r=>gameRecord(r,"game_reward")),
     records:()=>list(ESCIE_GAMES).map(r=>gameRecord(r,"game")),
     episodes:()=>list(ESCIE_GAME_EPISODES).map(r=>gameRecord(r,"game_episode")),
     scenes:()=>list(ESCIE_GAME_SCENES).map(r=>gameRecord(r,"game_scene")),
@@ -276,7 +284,7 @@
     playerStates:()=>list(ESCIE_PLAYER_STATES).map(r=>gameRecord(r,"player_state")),
     endings:()=>list(ESCIE_GAME_ENDINGS).map(r=>gameRecord(r,"game_ending")),
     all:()=>[
-      ...API.records(),...API.episodes(),...API.scenes(),...API.events(),...API.interactions(),
+      ...API.records(),...API.items(),...API.inventories(),...API.purchases(),...API.rewards(),...API.episodes(),...API.scenes(),...API.events(),...API.interactions(),
       ...API.dialogue(),...API.clues(),...API.discoveries(),...API.playerPaths(),
       ...API.playerStates(),...API.endings()
     ],
@@ -294,6 +302,10 @@
   };
 
   root.ESCIE_GAMES=ESCIE_GAMES;
+  root.ESCIE_GAME_ITEMS=ESCIE_GAME_ITEMS;
+  root.ESCIE_GAME_INVENTORIES=ESCIE_GAME_INVENTORIES;
+  root.ESCIE_GAME_PURCHASES=ESCIE_GAME_PURCHASES;
+  root.ESCIE_GAME_REWARDS=ESCIE_GAME_REWARDS;
   root.ESCIE_GAME_EPISODES=ESCIE_GAME_EPISODES;
   root.ESCIE_GAME_SCENES=ESCIE_GAME_SCENES;
   root.ESCIE_GAME_EVENTS=ESCIE_GAME_EVENTS;
