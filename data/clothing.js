@@ -26,7 +26,14 @@
       decoration:{sample:"DTF or DTG",production:"SCREEN PRINT TARGET"},
       digital_connection:false,
       priority:"HIGHEST",
-      production_packet:{sample_priority:1,quote_required:true,approval_gate:"HUMAN",qc:["fit","fabric","print","wash","shrinkage","seams"],photo_required:true,quantity_decision:"POST-SAMPLE"},
+      specification:{
+      measurements:{chest:"",length:"",shoulder:"",sleeve:""},
+      tolerance:"±1 cm",
+      shrinkage_max:"3%",
+      decoration_placement:"",
+      fit_reference:"",
+    },
+    production_packet:{sample_priority:1,quote_required:true,approval_gate:"HUMAN",qc:["fit","fabric","print","wash","shrinkage","seams"],photo_required:true,quantity_decision:"POST-SAMPLE"},
       notes:"Master garment for ESCIE clothing system."
     },
     {
