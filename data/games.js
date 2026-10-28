@@ -98,8 +98,147 @@
     });
   }
 
+  const PLAYER_EVENT_TYPES=[
+    "ENTERED","OBSERVED","INTERACTED","HEARD","SEEN","COLLECTED",
+    "CONNECTED","DISCONNECTED","MISSED","RETURNED","DISCOVERED","LEFT"
+  ];
+
+  const PLAYER_STATE_SCHEMA={
+    version:1,
+    session_id:null,
+    player_id:null,
+    episode_id:null,
+    current_scene:null,
+    current_location:null,
+    entered_at:null,
+    last_seen_at:null,
+    observed:[],
+    interacted:[],
+    heard:[],
+    seen:[],
+    collected:[],
+    connections:[],
+    discoveries:[],
+    missed:[],
+    visited_scenes:[],
+    visited_locations:[],
+    signals:[],
+    unknown:[],
+    unresolved:[],
+    path:[],
+    event_count:0,
+    canonical_write:false
+  };
+
+  function clone(value){
+    if(value===undefined||value===null) return value;
+    if(typeof structuredClone==="function") return structuredClone(value);
+    return JSON.parse(JSON.stringify(value));
+  }
+
+  function cleanIds(value){
+    return list(value).filter(v=>typeof v==="string"&&v.trim()).map(v=>v.trim());
+  }
+
+  function createPlayerState(seed){
+    const input=seed&&typeof seed==="object"?seed:{};
+    const state=Object.assign({},clone(PLAYER_STATE_SCHEMA),input);
+    state.observed=cleanIds(input.observed);
+    state.interacted=cleanIds(input.interacted);
+    state.heard=cleanIds(input.heard);
+    state.seen=cleanIds(input.seen);
+    state.collected=cleanIds(input.collected);
+    state.connections=cleanIds(input.connections);
+    state.discoveries=cleanIds(input.discoveries);
+    state.missed=cleanIds(input.missed);
+    state.visited_scenes=cleanIds(input.visited_scenes);
+    state.visited_locations=cleanIds(input.visited_locations);
+    state.signals=cleanIds(input.signals);
+    state.unknown=cleanIds(input.unknown);
+    state.unresolved=cleanIds(input.unresolved);
+    state.path=Array.isArray(input.path)?input.path.slice(-500):[];
+    state.event_count=Number.isFinite(Number(input.event_count))?Number(input.event_count):0;
+    state.canonical_write=false;
+    return state;
+  }
+
+  function hasId(array,id){
+    return Array.isArray(array)&&array.includes(id);
+  }
+
+  function addUnique(array,id){
+    if(typeof id!=="string"||!id.trim()) return;
+    if(!hasId(array,id)) array.push(id);
+  }
+
+  function applyPlayerEvent(seed,event){
+    const state=createPlayerState(seed);
+    if(!event||typeof event!=="object") return state;
+    const type=String(event.type||"").toUpperCase();
+    const id=typeof event.target_id==="string"?event.target_id.trim():"";
+    const timestamp=event.timestamp||new Date().toISOString();
+    if(!PLAYER_EVENT_TYPES.includes(type)) return state;
+    state.last_seen_at=timestamp;
+    state.event_count+=1;
+    if(id) state.path.push({type,target_id:id,timestamp});
+    if(type==="ENTERED"){
+      addUnique(state.visited_scenes,event.scene_id);
+      addUnique(state.visited_locations,event.location_id);
+      state.current_scene=event.scene_id||state.current_scene;
+      state.current_location=event.location_id||state.current_location;
+    }
+    if(type==="OBSERVED") addUnique(state.observed,id);
+    if(type==="INTERACTED") addUnique(state.interacted,id);
+    if(type==="HEARD") addUnique(state.heard,id);
+    if(type==="SEEN") addUnique(state.seen,id);
+    if(type==="COLLECTED") addUnique(state.collected,id);
+    if(type==="CONNECTED") addUnique(state.connections,id);
+    if(type==="DISCOVERED") addUnique(state.discoveries,id);
+    if(type==="MISSED") addUnique(state.missed,id);
+    if(type==="RETURNED"){
+      addUnique(state.visited_scenes,event.scene_id);
+      addUnique(state.visited_locations,event.location_id);
+      state.current_scene=event.scene_id||state.current_scene;
+      state.current_location=event.location_id||state.current_location;
+    }
+    if(type==="LEFT"){
+      state.current_scene=null;
+      state.current_location=null;
+    }
+    if(event.unknown===true) addUnique(state.unknown,id);
+    if(event.unresolved===true) addUnique(state.unresolved,id);
+    if(event.signal_id) addUnique(state.signals,event.signal_id);
+    return state;
+  }
+
+  function playerMemory(state){
+    const source=createPlayerState(state);
+    return {
+      observed:source.observed.slice(),
+      interacted:source.interacted.slice(),
+      heard:source.heard.slice(),
+      seen:source.seen.slice(),
+      collected:source.collected.slice(),
+      connections:source.connections.slice(),
+      discoveries:source.discoveries.slice(),
+      missed:source.missed.slice(),
+      visited_scenes:source.visited_scenes.slice(),
+      visited_locations:source.visited_locations.slice(),
+      signals:source.signals.slice(),
+      unknown:source.unknown.slice(),
+      unresolved:source.unresolved.slice(),
+      path:source.path.slice()
+    };
+  }
+
   const API={
-    version:"1.0.0",
+    version:"1.1.0",
+    playerEventTypes:()=>PLAYER_EVENT_TYPES.slice(),
+    playerStateSchema:()=>clone(PLAYER_STATE_SCHEMA),
+    createPlayerState,
+    applyPlayerEvent,
+    playerMemory,
+
     types:()=>GAME_TYPES.slice(),
     relationshipTypes:()=>GAME_RELATIONSHIPS.slice(),
     records:()=>list(ESCIE_GAMES).map(r=>gameRecord(r,"game")),
