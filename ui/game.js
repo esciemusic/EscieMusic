@@ -63,7 +63,7 @@ function applyEntry(s){
  const code=getEntry();if(!code||s.entry_payload===code)return s;s.entered=true;s.entry_source="link";s.entry_payload=code;
  const targetScene=scenes.find(x=>x.id===code),targetItem=items.find(x=>x.id===code),targetDiscovery=discoveries.find(x=>x.id===code);
  if(targetScene){s.scene=targetScene.id;visit(s,targetScene.id)}
- if(targetItem){unique(s.inventory,targetItem.id);memoryEvent(s,"DISCOVERED",targetItem.id);if(targetItem.id==="game-item-baby-shoe")unlockWorldThread(s,"game-discovery-shoe");if(targetItem.id==="game-item-baby-shoe")unlockWorldThread(s,"game-discovery-shoe")}
+ if(targetItem){unique(s.inventory,targetItem.id);memoryEvent(s,"DISCOVERED",targetItem.id);if(targetItem.id==="game-item-baby-shoe")unlockWorldThread(s,"game-discovery-shoe")}
  if(targetDiscovery){unlockWorldThread(s,targetDiscovery.id);memoryEvent(s,"DISCOVERED",targetDiscovery.id,{unknown:targetDiscovery.unresolved,unresolved:targetDiscovery.unresolved})}
  return s;
 }
@@ -84,7 +84,7 @@ function choose(s,id){
 function controlMode(s){return String(s.control_mode||"AUTO").toUpperCase()}
 function setControlMode(s,mode){const m=["AUTO","TOUCH","KEYBOARD","GAMEPAD"].includes(String(mode||"").toUpperCase())?String(mode).toUpperCase():"AUTO";s.control_mode=m;save(s);render()}
 function gamepadConnected(){try{return !!(navigator.getGamepads&&Array.from(navigator.getGamepads()).some(Boolean))}catch(e){return false}}
-function inputPanel(s){const m=controlMode(s);return '<div class="game-input-panel"><div class="game-input-head"><span class="game-kicker">CONTROL LAYER</span><span>'+esc(m)+' · '+(gamepadConnected()?"BLUETOOTH GAMEPAD DETECTED":"TOUCH / KEYBOARD READY")+'</span></div><div class="game-input-modes">'+["AUTO","TOUCH","KEYBOARD","GAMEPAD"].map(x=>'<button type="button" class="'+(m===x?"active":"")+'" data-game-mode="'+x+'">'+x+'</button>').join("")+'</div><div class="game-input-help">'+(m==="GAMEPAD"?"A / CROSS = SELECT · B / CIRCLE = BACK · DPAD / STICK = MOVE":m==="KEYBOARD"?"ENTER / SPACE = SELECT · ESC = BACK · ARROWS / WASD = MOVE":"ON-SCREEN CONTROLS AVAILABLE · TAP TO SELECT")+'</div><div class="game-virtual-controls"><button type="button" data-game-nav="up">▲</button><div><button type="button" data-game-nav="left">◀</button><button type="button" data-game-action>●</button><button type="button" data-game-nav="right">▶</button></div><button type="button" data-game-nav="down">▼</button></div></div>}
+function inputPanel(s){const m=controlMode(s);return '<div class="game-input-panel"><div class="game-input-head"><span class="game-kicker">CONTROL LAYER</span><span>'+esc(m)+' · '+(gamepadConnected()?"BLUETOOTH GAMEPAD DETECTED":"TOUCH / KEYBOARD READY")+'</span></div><div class="game-input-modes">'+["AUTO","TOUCH","KEYBOARD","GAMEPAD"].map(x=>'<button type="button" class="'+(m===x?"active":"")+'" data-game-mode="'+x+'">'+x+'</button>').join("")+'</div><div class="game-input-help">'+(m==="GAMEPAD"?"A / CROSS = SELECT · B / CIRCLE = BACK · DPAD / STICK = MOVE":m==="KEYBOARD"?"ENTER / SPACE = SELECT · ESC = BACK · ARROWS / WASD = MOVE":"ON-SCREEN CONTROLS AVAILABLE · TAP TO SELECT")+'</div><div class="game-virtual-controls"><button type="button" data-game-nav="up">▲</button><div><button type="button" data-game-nav="left">◀</button><button type="button" data-game-action>●</button><button type="button" data-game-nav="right">▶</button></div><button type="button" data-game-nav="down">▼</button></div></div>'}
 function render(){
  const el=document.getElementById("game-container");if(!el)return;let s=ensurePlayer(load());s=applyEntry(s);const c=current(s);save(s);
  if(!s.entered){
@@ -103,6 +103,7 @@ function render(){
 function bind(el,s){
  el.querySelectorAll("[data-game-mode]").forEach(b=>b.onclick=()=>setControlMode(s,b.dataset.gameMode));
  el.querySelectorAll("[data-game-action]").forEach(b=>b.onclick=()=>{const x=el.querySelector("[data-game-next], [data-game-collect], [data-game-choice], [data-game-enter]");if(x)x.click()});
+ el.querySelectorAll("[data-game-nav]").forEach(b=>b.onclick=()=>{b.classList.add("pressed");setTimeout(()=>b.classList.remove("pressed"),120)});
  el.querySelectorAll("[data-game-next]").forEach(b=>b.onclick=()=>{const c=current(s);if(c.next){s.scene=c.next;visit(s,s.scene);save(s);render()}});
  el.querySelectorAll("[data-game-collect]").forEach(b=>b.onclick=()=>{const ok=collect(s,b.dataset.gameCollect);if(ok){save(s);render()}else{b.textContent="NEED MORE SIGNAL"}});
  el.querySelectorAll("[data-game-choice]").forEach(b=>b.onclick=()=>{choose(s,b.dataset.gameChoice);save(s);render()});
