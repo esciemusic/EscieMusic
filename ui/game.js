@@ -2,7 +2,7 @@
 "use strict";
 const root=typeof window!=="undefined"?window:globalThis;
 const KEY="escie_game_state_v1";
-const defaults={version:6,control_mode:"AUTO",player_id:null,screen:"gateway",scene:"threshold",visited:[],inventory:[],signals:0,entered:false,entry_source:"site",entry_payload:null,discoveries:[],path:[],unresolved:[],world_unlocks:[]};
+const defaults={version:6,control_mode:"AUTO",control_cursor:0,player_id:null,screen:"gateway",scene:"threshold",visited:[],inventory:[],signals:0,entered:false,entry_source:"site",entry_payload:null,discoveries:[],path:[],unresolved:[],world_unlocks:[]};
 
 const scenes=[
  {id:"threshold",label:"THE THRESHOLD",title:"THE FIRST DOOR",text:"You are not entering another universe. You are entering another layer of the same one.",item:null,next:"laneway",signal:1,location:"the-world"},
@@ -81,6 +81,10 @@ function choose(s,id){
  }
  return true;
 }
+function actionable(el){return Array.from(el.querySelectorAll("[data-game-choice],[data-game-next],[data-game-collect],[data-game-enter],[data-game-inventory],[data-game-reset]"))}
+function moveCursor(s,dir,el){const a=actionable(el);if(!a.length)return; s.control_cursor=(Number(s.control_cursor||0)+dir+a.length)%a.length; a.forEach((b,i)=>b.classList.toggle("game-focus",i===s.control_cursor)); save(s)}
+function activateCursor(s,el){const a=actionable(el);const b=a[Number(s.control_cursor||0)%Math.max(1,a.length)];if(b)b.click()}
+function pollGamepad(){if(root.__ESCIE_GAMEPAD_LOOP)return;root.__ESCIE_GAMEPAD_LOOP=true;let prev={};const tick=()=>{try{const p=Array.from(navigator.getGamepads?navigator.getGamepads():[]).find(Boolean);if(p){const press=i=>!!(p.buttons[i]&&p.buttons[i].pressed);const x=p.axes[0]||0,y=p.axes[1]||0;const left=x<-.65,right=x>.65,up=y<-.65,down=y>.65,a=press(0),b=press(1);const el=document.getElementById("game-container"),s=load();if(el&&controlMode(s)==="GAMEPAD"){if((left&&!prev.left)||(right&&!prev.right))moveCursor(s,right?1:-1,el);if((up&&!prev.up)||(down&&!prev.down))moveCursor(s,down?1:-1,el);if(a&&!prev.a)activateCursor(s,el);if(b&&!prev.b){const r=el.querySelector("[data-game-reset]");if(r)r.focus()}save(s)}prev={left,right,up,down,a,b}}}catch(e){}requestAnimationFrame(tick)};requestAnimationFrame(tick)}
 function controlMode(s){return String(s.control_mode||"AUTO").toUpperCase()}
 function setControlMode(s,mode){const m=["AUTO","TOUCH","KEYBOARD","GAMEPAD"].includes(String(mode||"").toUpperCase())?String(mode).toUpperCase():"AUTO";s.control_mode=m;save(s);render()}
 function gamepadConnected(){try{return !!(navigator.getGamepads&&Array.from(navigator.getGamepads()).some(Boolean))}catch(e){return false}}
@@ -110,7 +114,8 @@ function bind(el,s){
  el.querySelectorAll("[data-game-reset]").forEach(b=>b.onclick=()=>{localStorage.removeItem(KEY);render()});
  el.querySelectorAll("[data-game-inventory]").forEach(b=>b.onclick=()=>{const inv=s.inventory.map(item).filter(Boolean);alert(inv.length?inv.map(x=>x.title).join("\n"):"INVENTORY EMPTY")});
 }
-if(!root.__ESCIE_GAME_INPUT_BOUND){document.addEventListener("keydown",e=>{if(["INPUT","TEXTAREA","SELECT"].includes(document.activeElement&&document.activeElement.tagName))return;if(e.key==="Enter"||e.key===" "){const x=document.querySelector("[data-game-next], [data-game-collect], [data-game-choice], [data-game-enter]");if(x)x.click()}});root.__ESCIE_GAME_INPUT_BOUND=true}
+pollGamepad();
+if(!root.__ESCIE_GAME_INPUT_BOUND){document.addEventListener("keydown",e=>{if(["INPUT","TEXTAREA","SELECT"].includes(document.activeElement&&document.activeElement.tagName))return;if(e.key==="ArrowDown"||e.key==="ArrowRight"||e.key==="s"||e.key==="d"){const el=document.getElementById("game-container"),s=load();moveCursor(s,1,el)}else if(e.key==="ArrowUp"||e.key==="ArrowLeft"||e.key==="w"||e.key==="a"){const el=document.getElementById("game-container"),s=load();moveCursor(s,-1,el)}else if(e.key==="Enter"||e.key===" "){const el=document.getElementById("game-container"),s=load();activateCursor(s,el)}});root.__ESCIE_GAME_INPUT_BOUND=true}
 function init(){const el=document.getElementById("game-container");if(!el)return;const s=load();ensurePlayer(s);save(s);render()}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
 
