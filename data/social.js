@@ -13,7 +13,7 @@ const ESCIE_SOCIAL_HOSTS={
 };
 const ESCIE_SOCIAL_PLATFORMS=Object.keys(ESCIE_SOCIAL_HOSTS);
 const ESCIE_SOCIAL=[
-  {id:"instagram",label:"INSTAGRAM",platform:"instagram",url:"https://www.instagram.com/esciemusic",status:"active"},
+  {id:"instagram",label:"INSTAGRAM",platform:"instagram",url:"https://www.instagram.com/officialescie",status:"active"},
   {id:"youtube",label:"YOUTUBE",platform:"youtube",url:"",status:"unconfigured"},
   {id:"spotify",label:"SPOTIFY",platform:"spotify",url:"",status:"unconfigured"},
   {id:"tiktok",label:"TIKTOK",platform:"tiktok",url:"",status:"unconfigured"},
