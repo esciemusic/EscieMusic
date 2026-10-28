@@ -63,3 +63,20 @@ body.escie-world-page{overscroll-behavior:none}
 .handheld-mode{border-radius:0!important;position:fixed!important;inset:0!important;z-index:1000!important;padding:clamp(10px,2vw,24px)!important}
 .handheld-mode .world-shell{max-width:none!important;border-radius:0!important;border:0!important;box-shadow:none!important}
 @media(max-width:700px){.world-device{padding:0}.world-device-top{padding:.4rem .7rem}.world-device .world-shell{border-radius:0;border-left:0;border-right:0}.world-device .world-header{border-radius:0}}
+
+.world-preferences{position:fixed;inset:0;z-index:1200;display:grid;place-items:center;padding:1rem;background:rgba(0,0,0,.78);backdrop-filter:blur(10px)}
+.world-preferences[hidden]{display:none}
+.preferences-panel{width:min(620px,100%);max-height:min(88dvh,760px);overflow:auto;border:1px solid rgba(168,255,145,.3);background:#050905;box-shadow:0 25px 90px rgba(0,0,0,.8);padding:1rem}
+.preferences-head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid var(--world-line);padding-bottom:.8rem}
+.preferences-head h2{margin:.3rem 0;font-size:clamp(1.8rem,7vw,3.5rem);line-height:.9}
+.preferences-close{border:1px solid var(--world-line);background:transparent;color:inherit;padding:.6rem;font:600 .55rem monospace}
+.preference-group{padding:1rem 0;border-bottom:1px solid rgba(168,255,145,.1)}
+.preference-group:last-of-type{border-bottom:0}
+.preference-group h3{margin:0 0 .7rem;color:var(--world-green);font:700 .62rem monospace;letter-spacing:.14em}
+.preference-row{display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:center;padding:.55rem 0}
+.preference-row label{font-size:.72rem;line-height:1.35}.preference-row small{display:block;opacity:.5;margin-top:.15rem}
+.preference-row select,.preference-row input{accent-color:var(--world-green)}
+.preference-row select{min-height:40px;min-width:140px;background:#080d08;color:inherit;border:1px solid rgba(168,255,145,.25);padding:.45rem;font:600 .58rem monospace}
+.preference-actions{display:flex;gap:.5rem;flex-wrap:wrap;padding-top:1rem}
+.preference-actions button{border:1px solid rgba(168,255,145,.3);background:rgba(168,255,145,.03);color:inherit;padding:.7rem .85rem;font:600 .58rem monospace;letter-spacing:.08em}
+@media(max-width:560px){.preference-row{grid-template-columns:1fr}.preference-row select{width:100%}}
