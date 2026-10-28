@@ -196,7 +196,7 @@ pre,.diag,.code{max-width:100%;overflow-x:auto}
 
 <section id="preview" class="hidden">
   <nav class="nav" id="previewNav"><button class="active">OVERVIEW</button><button>WORK</button><button>BRAIN</button><button>ARCHIVE</button><button>DESTINATIONS</button></nav>
-  <div class="hero"><div class="panel heroMain"><div><div class="kicker">PREVIEW / CENTRAL OS</div><h1>THE CONTROL<br>SURFACE.</h1><p class="heroCopy">See the architecture before you connect anything. This is the place where the universe becomes organized without becoming flattened.</p></div><div class="heroMeta"><span class="chip">READ ONLY</span><span class="chip">NO PROVIDER ACCESS</span><span class="chip">NO PUBLISHING</span></div></div>
+  <div class="hero"><div class="panel heroMain"><div><div class="kicker">PREVIEW / CENTRAL OS</div><h1>THE CONTROL<br>SURFACE.</h1><p class="heroCopy">See the architecture before you connect anything. This is the place where the universe becomes organized without becoming flattened.</p></div><div class="heroMeta"><span class="chip">READ ONLY</span><span class="chip">NO PROVIDER ACCESS</span><span class="chip">NO PUBLISHING</span></div><div class="status" style="margin-top:12px"><strong>PREVIEW ACCESS</strong><span id="previewExpiry">Not active</span></div></div>
   <div class="panel pulse"><div><div class="kicker">SIGNAL</div><h2>System idle.</h2><p>Connections can come later. The operating surface comes first.</p></div><div class="signal"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="ey">AESTHETIC → FUNCTION → CONNECTION</div></div></div>
   <div class="sectionTitle"><div><h2>Central at a glance</h2><p>One place to see the state of the universe.</p></div></div>
   <div class="dashboard">
@@ -383,7 +383,7 @@ pre,.diag,.code{max-width:100%;overflow-x:auto}
     const acct=$("acct"),sa=$("settingsAccount");
     if(acct&&sa&&acct.textContent&&sa.textContent!==acct.textContent)sa.textContent=acct.textContent;
   }
-  window.addEventListener("escie:central-ready",syncOperatorIdentity);
+  window.addEventListener("escie:central-ready",syncOperatorIdentity);\n  window.addEventListener("error",e=>{const msg=e?.error?.message||e?.message||"Unexpected browser error";L("BROWSER_ERROR",msg);if(!load())st("CENTRAL ENCOUNTERED A BROWSER ERROR — SEE ACTIVITY","bad")});\n  window.addEventListener("unhandledrejection",e=>{const msg=e?.reason?.message||String(e?.reason||"Unhandled promise rejection");L("PROMISE_ERROR",msg);if(!load())st("CENTRAL ENCOUNTERED AN ASYNC ERROR — SEE ACTIVITY","bad")});
   setTimeout(syncOperatorIdentity,500);
 })();
 </script>
