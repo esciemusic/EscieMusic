@@ -4,14 +4,13 @@
  */
 const ESCIE_RECORD_CONTRACT={
   version:"1.2.0",
-  realities:["REAL","MEMORY","DRAMATIZED","FICTIONALIZED","MYTH","HISTORICAL_REFERENCE"],
   visibilities:["public","private","withheld","limited"],
   statuses:["development","active","published","archived","silence"],
   release_statuses:["locked","released"],
   release_modes:["progressive"],
   fields:[
     "id","type","title","description","status","visibility","published",
-    "reality","reality_level","certainty","knowledge",
+    "certainty","knowledge",
     "date","date_start","date_end",
     "people","locations","media","evidence","symbols","tags",
     "relationships","related_content","project","parent","source",
@@ -31,8 +30,6 @@ function normalizeEscieRecord(record,type){
   normalized.published=record.published===true;
   normalized.visibility=String(normalized.visibility).toLowerCase();
   normalized.status=String(normalized.status).toLowerCase();
-  normalized.reality=record.reality||record.reality_level||null;
-  normalized.reality_level=record.reality_level||record.reality||null;
   normalized.certainty=record.certainty||null;
   normalized.knowledge=record.knowledge||null;
   normalized.date=record.date||null;
@@ -65,8 +62,6 @@ function validateEscieRecord(record){
   if(!record.title||record.title==="UNTITLED") warnings.push("missing title");
   if(!ESCIE_RECORD_CONTRACT.visibilities.includes(String(record.visibility||"public").toLowerCase())) warnings.push("unknown visibility: "+record.visibility);
   if(!ESCIE_RECORD_CONTRACT.statuses.includes(String(record.status||"development").toLowerCase())) warnings.push("unknown status: "+record.status);
-  const reality=record.reality||record.reality_level;
-  if(reality && !ESCIE_RECORD_CONTRACT.realities.includes(String(reality).toUpperCase())) warnings.push("unknown reality: "+reality);
   if(record.release_status && !ESCIE_RECORD_CONTRACT.release_statuses.includes(String(record.release_status).toLowerCase())) errors.push("unknown release_status: "+record.release_status);
   if(record.release_mode && !ESCIE_RECORD_CONTRACT.release_modes.includes(String(record.release_mode).toLowerCase())) errors.push("unknown release_mode: "+record.release_mode);
   if(String(record.release_mode||"").toLowerCase()==="progressive" && record.type!=="project") warnings.push("progressive release_mode is normally reserved for project records");
