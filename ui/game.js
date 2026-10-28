@@ -2,7 +2,7 @@
 "use strict";
 const root=typeof window!=="undefined"?window:globalThis;
 const KEY="escie_game_state_v1";
-const defaults={version:4,player_id:null,screen:"gateway",scene:"threshold",visited:[],inventory:[],signals:0,entered:false,entry_source:"site",entry_payload:null,discoveries:[],path:[],unresolved:[]};
+const defaults={version:5,player_id:null,screen:"gateway",scene:"threshold",visited:[],inventory:[],signals:0,entered:false,entry_source:"site",entry_payload:null,discoveries:[],path:[],unresolved:[],world_unlocks:[]};
 
 const scenes=[
  {id:"threshold",label:"THE THRESHOLD",title:"THE FIRST DOOR",text:"You are not entering another universe. You are entering another layer of the same one.",item:null,next:"laneway",signal:1,location:"the-world"},
@@ -18,14 +18,15 @@ const items=[
 ];
 
 const discoveries=[
- {id:"game-discovery-camera",title:"CAMERA FRAME",description:"The camera is pointed somewhere specific. The reason is unknown.",unresolved:true},
- {id:"game-discovery-whisper",title:"UNSTABLE AUDIO",description:"There is a voice beneath the distortion. You cannot yet identify it.",unresolved:true},
- {id:"game-discovery-trail",title:"THE TRAIL",description:"The distortion points beyond the current scene.",unresolved:true}
+ {id:"game-discovery-camera",title:"CAMERA FRAME",description:"The camera is pointed somewhere specific. The reason is unknown.",unresolved:true,world_queries:["camera","surveillance"]},
+ {id:"game-discovery-whisper",title:"UNSTABLE AUDIO",description:"There is a voice beneath the distortion. You cannot yet identify it.",unresolved:true,world_queries:["whisper","audio","voice","signal"]},
+ {id:"game-discovery-trail",title:"THE TRAIL",description:"The distortion points beyond the current scene.",unresolved:true,world_queries:["trail","path","signal","distortion"]},
+ {id:"game-discovery-shoe",title:"CHILDHOOD OBJECT",description:"The found shoe is now a thread connecting the playable layer to the public world.",unresolved:true,world_queries:["baby shoe","child's shoe","shoe","childhood"]}
 ];
 
 const aliases={threshold:"threshold",door:"threshold",world:"threshold",enter:"threshold",laneway:"laneway",lane:"laneway",parc:"laneway","parc-extension":"laneway",signal:"signal",distortion:"signal",key:"game-item-signal-key",shoe:"game-item-baby-shoe","baby-shoe":"game-item-baby-shoe",camera:"game-discovery-camera",whisper:"game-discovery-whisper",trail:"game-discovery-trail"};
 
-function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||"null");return Object.assign({},defaults,s||{})}catch(e){return Object.assign({},defaults)}}
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||"null");return Object.assign({},defaults,s||{}, {world_unlocks:Array.isArray(s&&s.world_unlocks)?s.world_unlocks:[]})}catch(e){return Object.assign({},defaults)}}
 function save(s){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}}
 function esc(v){return String(v??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]))}
 function current(s){return scenes.find(x=>x.id===s.scene)||scenes[0]}
@@ -42,6 +43,11 @@ function memoryEvent(s,type,target,extra){
   s.path=state.path||s.path;s.discoveries=state.discoveries||s.discoveries;s.unresolved=state.unresolved||s.unresolved;
  }
 }
+function unlockWorldThread(s,id){
+ const d=discovery(id);if(!d)return;
+ unique(s.discoveries,d.id);
+ if(Array.isArray(d.world_queries))d.world_queries.forEach(q=>unique(s.world_unlocks,"query:"+String(q).toLowerCase()));
+}
 function visit(s,id){
  if(!s.visited.includes(id)){s.visited.push(id);const scene=scenes.find(x=>x.id===id);if(scene&&scene.signal)awardSignal(s,scene.signal);memoryEvent(s,"ENTERED",id,{location_id:scene&&scene.location,signal_id:scene&&scene.signal?"signal-"+id:null})}
 }
@@ -56,18 +62,22 @@ function applyEntry(s){
  const code=getEntry();if(!code||s.entry_payload===code)return s;s.entered=true;s.entry_source="link";s.entry_payload=code;
  const targetScene=scenes.find(x=>x.id===code),targetItem=items.find(x=>x.id===code),targetDiscovery=discoveries.find(x=>x.id===code);
  if(targetScene){s.scene=targetScene.id;visit(s,targetScene.id)}
- if(targetItem){unique(s.inventory,targetItem.id);memoryEvent(s,"DISCOVERED",targetItem.id)}
- if(targetDiscovery){unique(s.discoveries,targetDiscovery.id);memoryEvent(s,"DISCOVERED",targetDiscovery.id,{unknown:targetDiscovery.unresolved,unresolved:targetDiscovery.unresolved})}
+ if(targetItem){unique(s.inventory,targetItem.id);memoryEvent(s,"DISCOVERED",targetItem.id);if(targetItem.id==="game-item-baby-shoe")unlockWorldThread(s,"game-discovery-shoe")}
+ if(targetDiscovery){unlockWorldThread(s,targetDiscovery.id);memoryEvent(s,"DISCOVERED",targetDiscovery.id,{unknown:targetDiscovery.unresolved,unresolved:targetDiscovery.unresolved})}
  return s;
 }
 function collect(s,id){
  if(s.inventory.includes(id))return true;const it=item(id);if(!it||it.availability==="LOCKED")return false;
  if(it.price_type==="EARNED"){if(s.signals<Number(it.price||0))return false;s.signals-=Number(it.price||0)}
- s.inventory.push(id);memoryEvent(s,"COLLECTED",id);return true;
+ s.inventory.push(id);memoryEvent(s,"COLLECTED",id);if(id==="game-item-baby-shoe")unlockWorldThread(s,"game-discovery-shoe");return true;
 }
 function choose(s,id){
  const c=current(s),choice=(c.choices||[]).find(x=>x.id===id);if(!choice)return false;
- if(choice.discovery&&!s.discoveries.includes(choice.discovery)){unique(s.discoveries,choice.discovery);const d=discovery(choice.discovery);memoryEvent(s,"DISCOVERED",choice.discovery,{unknown:!!(d&&d.unresolved),unresolved:!!(d&&d.unresolved)});awardSignal(s,1)}
+ if(choice.discovery){
+  const d=discovery(choice.discovery);
+  if(d){unlockWorldThread(s,d.id);memoryEvent(s,"DISCOVERED",choice.discovery,{unknown:!!d.unresolved,unresolved:!!d.unresolved});awardSignal(s,1)}
+  else if(choice.discovery==="game-item-baby-shoe")unlockWorldThread(s,"game-discovery-shoe");
+ }
  return true;
 }
 function render(){
@@ -96,10 +106,13 @@ function init(){const el=document.getElementById("game-container");if(!el)return
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
 
 root.ESCIE_GAME_GATEWAY={
- version:"1.3.0",scenes,items,discoveries,
+ version:"1.4.0",scenes,items,discoveries,
  enter(){const s=ensurePlayer(load());s.entered=true;visit(s,"threshold");save(s);render();return true},
- route(code){const resolved=aliases[String(code||"").trim().toLowerCase()]||String(code||"").trim().toLowerCase();if(!scenes.some(x=>x.id===resolved)&&!items.some(x=>x.id===resolved)&&!discoveries.some(x=>x.id===resolved))return false;history.replaceState(null,"","?game="+encodeURIComponent(resolved));const s=ensurePlayer(load());s.entered=true;s.entry_source="api";s.entry_payload=resolved;if(scenes.some(x=>x.id===resolved)){s.scene=resolved;visit(s,resolved)}else if(items.some(x=>x.id===resolved))unique(s.inventory,resolved);else unique(s.discoveries,resolved);save(s);render();return true},
- discover(id){const s=ensurePlayer(load()),d=discovery(id);if(!d)return false;unique(s.discoveries,d.id);memoryEvent(s,"DISCOVERED",d.id,{unknown:d.unresolved,unresolved:d.unresolved});awardSignal(s,1);save(s);render();return true},
- reset(){localStorage.removeItem(KEY);render()},getState(){return load()},getMemory(){const s=load();return {player_id:s.player_id,visited:s.visited.slice(),inventory:s.inventory.slice(),signals:s.signals,discoveries:s.discoveries.slice(),path:s.path.slice(),unresolved:s.unresolved.slice()}}
+ route(code){const resolved=aliases[String(code||"").trim().toLowerCase()]||String(code||"").trim().toLowerCase();if(!scenes.some(x=>x.id===resolved)&&!items.some(x=>x.id===resolved)&&!discoveries.some(x=>x.id===resolved))return false;history.replaceState(null,"","?game="+encodeURIComponent(resolved));const s=ensurePlayer(load());s.entered=true;s.entry_source="api";s.entry_payload=resolved;if(scenes.some(x=>x.id===resolved)){s.scene=resolved;visit(s,resolved)}else if(items.some(x=>x.id===resolved)){unique(s.inventory,resolved);if(resolved==="game-item-baby-shoe")unlockWorldThread(s,"game-discovery-shoe")}else {unlockWorldThread(s,resolved);memoryEvent(s,"DISCOVERED",resolved)}save(s);render();return true},
+ discover(id){const s=ensurePlayer(load()),d=discovery(id);if(!d)return false;unlockWorldThread(s,d.id);memoryEvent(s,"DISCOVERED",d.id,{unknown:d.unresolved,unresolved:d.unresolved});awardSignal(s,1);save(s);render();return true},
+ reset(){localStorage.removeItem(KEY);render()},
+ getState(){return load()},
+ getMemory(){const s=load();return {player_id:s.player_id,visited:s.visited.slice(),inventory:s.inventory.slice(),signals:s.signals,discoveries:s.discoveries.slice(),path:s.path.slice(),unresolved:s.unresolved.slice(),world_unlocks:s.world_unlocks.slice()}},
+ getWorldUnlocks(){const s=load();return s.world_unlocks.slice()}
 };
 })();
