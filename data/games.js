@@ -24,9 +24,61 @@
 
   const GAME_ITEM_TYPES=["game_item","game_inventory","game_purchase","game_reward"];
   const GAME_ITEM_STATES=["AVAILABLE","LOCKED","DISCOVERED","PURCHASABLE","PURCHASED","OWNED","CLAIMED"];
+  const GAME_PRICE_TYPES=["FREE","EARNED","REAL_MONEY"];
+  const GAME_CURRENCIES=["SIGNAL","CAD"];
+  const GAME_ECONOMY_SCHEMA={
+    version:1,
+    balances:{SIGNAL:0},
+    owned:[],
+    claimed:[],
+    purchases:[],
+    rewards:[],
+    canonical_write:false
+  };
+  function createGameEconomy(seed){
+    const input=seed&&typeof seed==="object"?seed:{};
+    const economy=Object.assign({},cloneEconomy(GAME_ECONOMY_SCHEMA),input);
+    economy.balances=Object.assign({SIGNAL:0},input.balances||{});
+    economy.owned=cleanIds(input.owned);
+    economy.claimed=cleanIds(input.claimed);
+    economy.purchases=Array.isArray(input.purchases)?input.purchases.slice(-250):[];
+    economy.rewards=Array.isArray(input.rewards)?input.rewards.slice(-250):[];
+    economy.canonical_write=false;
+    return economy;
+  }
+  function cloneEconomy(value){return JSON.parse(JSON.stringify(value));}
+  function canAfford(economy,item){
+    if(!item||item.price_type==="FREE"||item.price===null||item.price===undefined)return true;
+    if(item.price_type!=="EARNED")return false;
+    const currency=item.currency||"SIGNAL";
+    return Number(economy.balances[currency]||0)>=Number(item.price);
+  }
+  function applyEconomyEvent(seed,event){
+    const economy=createGameEconomy(seed);
+    if(!event||typeof event!=="object")return economy;
+    const type=String(event.type||"").toUpperCase();
+    const amount=Number(event.amount);
+    const currency=event.currency||"SIGNAL";
+    const itemId=typeof event.item_id==="string"?event.item_id.trim():"";
+    if(type==="EARN"&&Number.isFinite(amount)&&amount>0){
+      economy.balances[currency]=Number(economy.balances[currency]||0)+amount;
+      economy.rewards.push({type:"EARN",amount,currency,reason:event.reason||"",timestamp:event.timestamp||null});
+    }
+    if(type==="CLAIM"&&itemId){
+      addUnique(economy.claimed,itemId);
+      addUnique(economy.owned,itemId);
+    }
+    if(type==="PURCHASE_CONFIRMED"&&itemId){
+      addUnique(economy.purchases,itemId);
+      addUnique(economy.owned,itemId);
+      if(Number.isFinite(amount)&&amount>0)economy.balances[currency]=Math.max(0,Number(economy.balances[currency]||0)-amount);
+    }
+    economy.canonical_write=false;
+    return economy;
+  }
   function gameItem(record){
     if(!record||typeof record!=="object")return null;
-    return Object.assign({id:null,type:"game_item",title:"UNTITLED",description:"",price:null,currency:"CAD",availability:"AVAILABLE",visibility:"public",requires:[],unlocks:[],inventory_key:null,external_purchase_url:null,physical_item_id:null,digital:false,canonical_write:false},record);
+    return Object.assign({id:null,type:"game_item",title:"UNTITLED",description:"",price:null,price_type:"FREE",currency:"SIGNAL",availability:"AVAILABLE",visibility:"public",requires:[],unlocks:[],inventory_key:null,external_purchase_url:null,physical_item_id:null,digital:false,canonical_write:false},record);
   }
   function validateItem(item){
     const errors=[];
@@ -34,7 +86,10 @@
     if(!item.id)errors.push("missing id");
     if(!GAME_ITEM_TYPES.includes(item.type))errors.push("unsupported item type");
     if(item.canonical_write===true)errors.push("game commerce cannot write canonical truth directly");
+    if(!GAME_PRICE_TYPES.includes(item.price_type||"FREE"))errors.push("invalid price type");
     if(item.price!==null&&item.price!==undefined&&(!Number.isFinite(Number(item.price))||Number(item.price)<0))errors.push("invalid price");
+    if((item.price_type==="REAL_MONEY")&&(item.currency||"CAD")!=="CAD")errors.push("real-money items must use CAD");
+    if(item.price_type==="EARNED"&&!GAME_CURRENCIES.includes(item.currency||"SIGNAL"))errors.push("invalid earned currency");
     if(item.external_purchase_url&&typeof item.external_purchase_url!=="string")errors.push("invalid purchase url");
     if(!Array.isArray(item.requires)||!Array.isArray(item.unlocks))errors.push("requires and unlocks must be arrays");
     return {ok:errors.length===0,errors};
@@ -257,6 +312,11 @@
   const API={
     version:"1.1.0",
     itemTypes:()=>GAME_ITEM_TYPES.slice(),
+    priceTypes:()=>GAME_PRICE_TYPES.slice(),
+    economySchema:()=>cloneEconomy(GAME_ECONOMY_SCHEMA),
+    createGameEconomy,
+    canAfford,
+    applyEconomyEvent,
     itemStates:()=>GAME_ITEM_STATES.slice(),
     gameItem,
     validateItem,
