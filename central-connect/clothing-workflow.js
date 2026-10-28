@@ -271,7 +271,9 @@
             const inp=document.createElement("input"); inp.value=m[key]||""; inp.placeholder=label; inp.addEventListener("change",()=>updateSample(item.id,s.id,{measurements:Object.assign({},m,{[key]:inp.value.trim()})})); measureWrap.append(inp);
           });
           const mr=document.createElement("select");["PENDING","PASS","FAIL"].forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;o.selected=String(s.measurement_result||"PENDING")===v;mr.append(o);});mr.addEventListener("change",()=>updateSample(item.id,s.id,{measurement_result:mr.value}));measureWrap.append(mr);
+          const targets=(item.specification&&item.specification.measurements)||{};
           measureWrap.append(el("div",{class:"rowmeta"},"SPEC TOLERANCE · "+((item.specification&&item.specification.tolerance)||"±1 cm")));
+          measureWrap.append(el("div",{class:"rowmeta"},"TARGET · CHEST "+(targets.chest||"—")+" · LENGTH "+(targets.length||"—")+" · SHOULDER "+(targets.shoulder||"—")+" · SLEEVE "+(targets.sleeve||"—")));
           const mn=document.createElement("input");mn.value=s.measurement_notes||"";mn.placeholder="MEASUREMENT NOTES / DEVIATIONS";mn.addEventListener("change",()=>updateSample(item.id,s.id,{measurement_notes:mn.value.trim()}));measureWrap.append(mn);
           line.append(measureWrap);
           const sh=Object.assign({pre_wash:"",post_wash:"",percent:"",result:"PENDING"},s.shrinkage||{});
