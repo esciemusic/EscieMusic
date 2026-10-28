@@ -109,7 +109,14 @@
     return sample;
   }
   function measurementFor(sample){return Object.assign({chest:"",length:"",shoulder:"",sleeve:""},sample&&sample.measurements||{});}
-  function shrinkageReady(sample){return sample&&sample.shrinkage&&String(sample.shrinkage.result||"").toUpperCase()==="PASS";}
+  function shrinkageReady(sample){
+    if(!sample||!sample.shrinkage)return false;
+    const pre=parseFloat(sample.shrinkage.pre_wash),post=parseFloat(sample.shrinkage.post_wash);
+    const calculated=Number.isFinite(pre)&&pre>0&&Number.isFinite(post)?Math.abs((post-pre)/pre*100):NaN;
+    const recorded=parseFloat(sample.shrinkage.percent);
+    if(Number.isFinite(calculated)&&(!Number.isFinite(recorded)||Math.abs(calculated-recorded)>0.25))return false;
+    return String(sample.shrinkage.result||"").toUpperCase()==="PASS";
+  }
   function decorationReady(sample){return sample&&sample.decoration_check&&String(sample.decoration_check.result||"").toUpperCase()==="PASS";}
   function measurementReady(item,sample){
     const spec=Object.assign({tolerance:"±1 cm"},item.specification||{});
