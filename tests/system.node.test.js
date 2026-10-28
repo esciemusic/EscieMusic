@@ -222,6 +222,12 @@ const centralConnect=fs.readFileSync("central-connect/app.html","utf8");
 assert(!centralConnect.includes('e.innerHTML="<div><strong>"+p+"'),"Central connector provider detail must not interpolate provider data into HTML");
 assert(!centralConnect.includes('n.innerHTML="<strong>OAuth readiness'),"Central OAuth readiness must not interpolate HTML");
 
+const centralWorldRuntime=fs.readFileSync("central-connect/central-world-engine.js","utf8");
+assert(!centralWorldRuntime.includes("reality_level"),"Central World Engine must not restore reality-level classification");
+assert(!centralWorldRuntime.includes("REAL / MEMORY / MYTH"),"Central World Engine must not present reality classification");
+assert(!centralWorldRuntime.includes("[\"reality\",\"REALITY\"]"),"Central World Engine must not expose a reality tab");
+assert(centralWorldRuntime.includes("without telling the audience what is real"),"Central World Engine must preserve audience interpretation");
+
 const nodesRuntime=fs.readFileSync("data/nodes.js","utf8");
 assert(!nodesRuntime.includes("ARTIST / AUTHOR"),"identity node must not expose artist/author framing");
 assert(nodesRuntime.includes('label:"THE FATHER / THE MAN"'),"identity node must use Father / Man framing");
