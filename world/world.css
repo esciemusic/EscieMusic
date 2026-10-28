@@ -115,3 +115,6 @@ body[data-world-text="large"] .world-shell button{font-size:calc(100% + .08rem)}
 .system-actions{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem}
 .system-actions button,.system-close{border:1px solid rgba(168,255,145,.25);background:rgba(168,255,145,.04);color:inherit;padding:.7rem .85rem;font:700 .6rem monospace;letter-spacing:.08em}
 @media(max-width:600px){.system-grid{grid-template-columns:1fr}}
+
+.world-save-indicator{position:fixed;right:1rem;bottom:1rem;z-index:900;padding:.45rem .65rem;border:1px solid rgba(168,255,145,.25);background:rgba(3,6,3,.88);font:700 .55rem monospace;letter-spacing:.1em;opacity:0;transform:translateY(8px);transition:.2s}
+.world-save-indicator.visible{opacity:1;transform:none}
