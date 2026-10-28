@@ -70,3 +70,46 @@ document.addEventListener("click",e=>{
 });
 document.addEventListener("escie-dream-play-start",ensureControls);
 })();
+/* DREAM INTERACTION / STEALTH / PERSISTENCE */
+(function(){
+ const original=window.ESCIE_WORLD_DREAM_PLAY;
+ if(!original)return;
+ const originalStart=original.start;
+ const originalMove=original.move;
+ original.start=function(level){
+  const s=originalStart(level); if(!s)return s;
+  s.hidden=false;s.clues=[];s.lastDetection=0;
+  return s;
+ };
+ original.move=function(dx,dy){
+  const s=window.ESCIE_WORLD_DREAM_STATE;if(!s?.active)return null;
+  const out=originalMove(dx,dy);if(!out)return out;
+  if(out.detected)out.lastDetection=out.turns;
+  return out;
+ };
+ window.ESCIE_WORLD_DREAM_PLAY.hide=function(){
+  const s=window.ESCIE_WORLD_DREAM_STATE;if(!s?.active)return null;
+  s.hidden=!s.hidden;
+  window.ESCIE_PHONE_GAMEPLAY?.notify?.(s.hidden?"DREAM · YOU ARE HIDING":"DREAM · YOU STEP OUT OF COVER","DREAM");
+  window.ESCIE_WORLD_DREAM_RENDER?.render?.(s);return s;
+ };
+ function persistWake(s){
+  try{
+   const key="escie_world_simulation_v1",data=JSON.parse(localStorage.getItem(key)||"{}");
+   data.dream_history=Array.isArray(data.dream_history)?data.dream_history:[];
+   data.dream_history.unshift({level:s.level?.label||"DREAM",result:s.result||"WAKE",detected:!!s.detected,clue:s.found||null,turns:s.turns||0,day:data.day||1});
+   data.dream_history=data.dream_history.slice(0,30);
+   if(s.found){data.dream_clues=Array.isArray(data.dream_clues)?data.dream_clues:[];if(!data.dream_clues.includes(s.found))data.dream_clues.push(s.found);}
+   localStorage.setItem(key,JSON.stringify(data));
+  }catch(e){}
+ }
+ document.addEventListener("escie-dream-complete",e=>persistWake(e.detail));
+ document.addEventListener("keydown",e=>{
+  if(e.key===" "||e.key==="Shift"){
+   const s=window.ESCIE_WORLD_DREAM_STATE;if(s?.active){e.preventDefault();window.ESCIE_WORLD_DREAM_PLAY.hide();}
+  }
+ });
+ document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-dream-hide]");if(b)window.ESCIE_WORLD_DREAM_PLAY.hide();
+ });
+})();
