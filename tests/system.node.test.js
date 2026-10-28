@@ -323,3 +323,4 @@ assert(gameShopRuntime.includes("renderGameShop"),"public game item doorway must
 assert(gameShopRuntime.includes("ENTER CHECKOUT"),"real-money game items must route to checkout");
 assert(gameShopRuntime.includes("EARN IN THE SIGNAL"),"earned game items must remain in-game");
 assert(gameShopRuntime.includes("FOUND / CLAIMED IN GAME"),"free game items must remain game-native");
+assert(gameShopRuntime.includes("renderGameItemInspector"),"public game doorway must expose acquisition state");
