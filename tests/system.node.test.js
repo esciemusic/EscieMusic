@@ -214,3 +214,7 @@ const reversedAudit = require("../brain/audit.js").auditHistorySequence([
   { id: "h2", timestamp: "2026-01-02T00:00:00Z" }
 ]);
 assert(reversedAudit.ok === false, "reversed history should be reported");
+
+const centralConnect=fs.readFileSync("central-connect/app.html","utf8");
+assert(!/e\\.innerHTML=\"<div><strong>\"\\+p\\+\"<\\/strong>/.test(centralConnect),"Central connector provider detail must not interpolate unescaped HTML");
+assert(!/n\\.innerHTML=\"<strong>OAuth readiness/.test(centralConnect),"Central OAuth readiness must use safe DOM text rendering");
