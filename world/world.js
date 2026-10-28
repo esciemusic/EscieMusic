@@ -241,7 +241,7 @@ document.addEventListener("change",e=>{if(e.target.id==="phone-audio-file"){cons
  const message=(contact,text)=>{const m=read();m.messages=m.messages||[];m.messages.unshift({contact,text,day:window.ESCIE_WORLD_SIMULATION?.state?.().day||1,time:new Date().toLocaleTimeString(),unread:true});m.messages=m.messages.slice(0,100);write(m);notify("MESSAGE · "+contact,"MESSAGE");};const relationshipMessage=(id,text)=>{const n=window.ESCIE_WORLD_NPC?.state?.().npcs?.[id]||{};const contact=n.name||id;message(contact,text);};
  window.ESCIE_PHONE_GAMEPLAY={notify,call,message,relationshipMessage};
  document.addEventListener("click",e=>{
-   const b=e.target.closest("[data-phone-call]"); if(b){const id=b.dataset.phoneCall;call(id==="witness"?"THE WITNESS":"UNKNOWN CONTACT","Connection established.");}
+   const b=e.target.closest("[data-phone-call]"); if(b){const id=b.dataset.phoneCall;const contact=id==="witness"?"THE WITNESS":"UNKNOWN CONTACT";call(contact,"Connection established.");if(id==="witness"){window.ESCIE_WORLD_NPC?.rememberInteraction?.("witness",{channel:"PHONE",text:"Called the Witness."});const rel=window.ESCIE_WORLD_NPC?.relationship?.("witness",1,"PHONE CALL");message(contact,rel>=40?"You can call me again.":rel<=-40?"Do not call me again.":"I know. I am listening.");}}
    const q=e.target.closest("[data-phone-qr]"); if(q){notify("QR SCANNER READY · ENTER OR SCAN A CODE","QR");}
  });
 })();
