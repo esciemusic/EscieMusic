@@ -3891,3 +3891,10 @@ body.player-visible{padding-bottom:clamp(88px,12vh,124px)}
 .inline-node{border:0;background:transparent;color:#91b9d0;text-decoration:underline;text-underline-offset:3px;cursor:pointer;font:inherit;padding:0}
 @media(max-width:700px){.world-graph-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.world-connections{grid-template-columns:1fr}.world-detail{padding:16px}}
 @media(prefers-reduced-motion:reduce){.world-graph-node,.world-connections button{transition:none}}
+
+
+/* WORLD DISCOVERY TRAIL */
+.world-path{margin-top:16px;padding-top:13px;border-top:1px solid rgba(255,255,255,.07)}
+.world-path>div{margin-top:7px;font-size:10px;line-height:1.8;color:rgba(242,242,237,.55)}
+.world-path button{border:0;background:transparent;color:#91b9d0;padding:0;cursor:pointer;font:inherit;text-decoration:underline;text-underline-offset:3px}
+.world-detail-actions{display:flex;flex-wrap:wrap;gap:7px}
