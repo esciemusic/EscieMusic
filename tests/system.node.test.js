@@ -243,3 +243,4 @@ assert(worldEngineRuntime.includes('esc(n.id)'),"world path node ids must be HTM
 const visualsRuntime=fs.readFileSync("ui/visuals.js","utf8");
 assert(visualsRuntime.includes('const raf=typeof window.requestAnimationFrame==="function"?window.requestAnimationFrame.bind(window):fn=>window.setTimeout(fn,0)'),"visual pointer scheduler needs a requestAnimationFrame fallback");
 assert(visualsRuntime.includes("pointerFrame=raf(applyPointer)"),"visual pointer updates must use the compatibility scheduler");
+assert(visualsRuntime.includes("if(!rotatingSections.length || reducedMotion())return;"),"project visual rotation must stop when reduced motion is requested");
