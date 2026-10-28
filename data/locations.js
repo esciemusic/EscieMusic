@@ -1,7 +1,7 @@
 /*
  * ESCIE LOCATION REGISTRY
  *
- * Places are records in ESCIE's reality.
+ * Places are records in ESCIE's world.
  *
  * A place can be physical, remembered, documented, depicted, or
  * referenced. A location record does not imply that every associated
