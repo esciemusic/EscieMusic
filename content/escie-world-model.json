@@ -22,7 +22,18 @@
     "OBJECT",
     "SOURCE",
     "QUESTION",
-    "TERM"
+    "TERM",
+    "GAME",
+    "GAME_EPISODE",
+    "GAME_SCENE",
+    "GAME_EVENT",
+    "GAME_INTERACTION",
+    "GAME_DIALOGUE",
+    "GAME_CLUE",
+    "GAME_DISCOVERY",
+    "PLAYER_PATH",
+    "PLAYER_STATE",
+    "GAME_ENDING"
   ],
   "canonical_fields": [
     "id",
@@ -71,7 +82,15 @@
     "FOLLOWS",
     "SAME_PERSON_CANDIDATE",
     "SAME_PLACE_CANDIDATE",
-    "SAME_EVENT_CANDIDATE"
+    "SAME_EVENT_CANDIDATE",
+    "APPEARS_IN",
+    "BELONGS_TO",
+    "REFERENCES",
+    "HEARD_IN",
+    "SEEN_IN",
+    "DISCOVERED_BY",
+    "UNLOCKS",
+    "POINTS_TO"
   ],
   "explorer_surfaces": [
     "ATLAS",
@@ -85,12 +104,14 @@
     "EXPLORATION_TRAILS",
     "CONTRADICTIONS",
     "TIME_MACHINE",
-    "GLASS_EYE"
+    "GLASS_EYE",
+    "GAME_EXPLORATION"
   ],
   "three_layers": {
     "WORLD": "Public exploration surface. A doorway into the universe.",
     "ARCHIVE": "Evidence, provenance, versions, contradictions and historical state.",
-    "CENTRAL": "Private creation, relationship analysis, approval and distribution."
+    "CENTRAL": "Private creation, relationship analysis, approval and distribution.",
+    "GAME": "Playable exploration surface. Game state records observations and paths without becoming canonical truth."
   },
   "future_distribution_rule": "Destinations consume approved canonical records; they never become the source of truth."
 }
