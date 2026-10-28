@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="ESCIE — THE WORLD. A playable layer of the same reality.">
+<title>ESCIE — THE WORLD</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="world.css">
+</head>
+<body class="escie-world-page">
+<div class="world-shell">
+<header class="world-header">
+<a href="../" class="world-back">← ESCIE</a>
+<div><span class="world-kicker">THE WORLD</span><strong>PLAYABLE LAYER</strong></div>
+<div id="world-state" class="world-state">LOCAL STATE</div>
+</header>
+<main>
+<section class="world-intro">
+<span class="world-kicker">REALITY WITH THE SIGNAL DISTORTED</span>
+<h1>THE WORLD</h1>
+<p>You are not entering another universe. You are entering another layer of the same one.</p>
+</section>
+<section class="world-game" aria-label="ESCIE World game">
+<div class="world-hud"><span id="world-location">PARC-EXTENSION</span><span id="world-coordinates">03 · 03</span><span id="world-signal">0 SIGNAL</span></div>
+<div id="world-stage" class="world-stage" tabindex="0" aria-label="Playable Montréal laneway">
+<div id="world-map" class="world-map"></div>
+<div id="world-player" class="world-player" aria-label="Player"></div>
+<div id="world-interact" class="world-interact" hidden></div>
+</div>
+<div class="world-controls">
+<div class="world-dpad"><button data-dir="up">▲</button><div><button data-dir="left">◀</button><button data-action>●</button><button data-dir="right">▶</button></div><button data-dir="down">▼</button></div>
+<div class="world-actions"><button data-action>INTERACT</button><button data-inventory>INVENTORY</button><button data-glass>GLASS EYE</button></div>
+</div>
+<div id="world-log" class="world-log" aria-live="polite">The signal is weak. The street is real.</div>
+</section>
+</main>
+<footer><span>ESCIE</span><span>THE SIGNAL REMAINS DISTORTED.</span><a href="../">RETURN TO THE WORLD ABOVE</a></footer>
+</div>
+<script src="world.js"></script>
+</body>
+</html>
