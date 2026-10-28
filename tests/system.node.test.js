@@ -234,6 +234,8 @@ assert(appRuntime.includes('window.setTimeout(focusFirst, 0)'),"mobile navigatio
 const playerRuntime=fs.readFileSync("ui/player.js","utf8");
 assert(playerRuntime.includes("const safe = mediaAPI && typeof mediaAPI.safeURL === \"function\""),"player must have a self-contained URL safety fallback");
 assert(playerRuntime.includes('[\"http:\", \"https:\"].includes(parsed.protocol)'),"player URL fallback must allow only HTTP(S)");
+assert(playerRuntime.includes("lastFocusedBeforeShow"),"player must remember focus before opening");
+assert(playerRuntime.includes("document.contains(restore)"),"player must restore focus only to an attached element");
 
 const worldEngineRuntime=fs.readFileSync("world-engine.js","utf8");
 assert(worldEngineRuntime.includes('esc(state.q)'),"world search query must be HTML-escaped");
