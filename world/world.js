@@ -145,12 +145,14 @@ function investigation(){
  document.getElementById("world-investigation").hidden=false;
 }
 
+function deviceMode(){const d=document.getElementById("world-device");const game=document.querySelector(".world-game");if(!d||!game)return;const on=d.classList.toggle("device-immersive");game.classList.toggle("handheld-mode",on);try{sessionStorage.setItem("escie_device_mode",on?"1":"0")}catch(e){}if(on)requestFullscreen();render()}
+document.querySelector("[data-device]")?.addEventListener("click",deviceMode);
 function setHandheld(on){const game=document.querySelector(".world-game");if(!game)return;game.classList.toggle("handheld-mode",on);try{sessionStorage.setItem("escie_handheld_mode",on?"1":"0")}catch(e){}if(on)requestFullscreen();render()}
 async function requestFullscreen(){const el=document.documentElement;try{if(!document.fullscreenElement&&el.requestFullscreen)await el.requestFullscreen({navigationUI:"hide"});if(screen.orientation&&screen.orientation.lock)await screen.orientation.lock("landscape").catch(()=>{});}catch(e){}}
 function toggleFullscreen(){if(document.fullscreenElement){document.exitFullscreen?.();}else requestFullscreen();}
 function rotateGame(){requestFullscreen();say("ROTATION REQUESTED · TURN DEVICE SIDEWAYS FOR THE FULL GAME VIEW.");}
 document.querySelector("[data-fullscreen]")?.addEventListener("click",toggleFullscreen);document.querySelector("[data-rotate]")?.addEventListener("click",rotateGame);
-try{if(sessionStorage.getItem("escie_handheld_mode")==="1")setHandheld(true)}catch(e){}
+try{if(sessionStorage.getItem("escie_handheld_mode")==="1")setHandheld(true);if(sessionStorage.getItem("escie_device_mode")==="1")document.getElementById("world-device")?.classList.add("device-immersive")}catch(e){}
 document.addEventListener("fullscreenchange",()=>{document.body.classList.toggle("fullscreen-active",!!document.fullscreenElement)});
 const boot=state();if(boot.world_room==="trace"){room="trace";roomSetup();}else if(boot.world_room==="room02"){room="room02";roomSetup();}else if(boot.world_room==="room01"){room="room01";roomSetup();}drawMap();render();stage.focus();poll();
 
