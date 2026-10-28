@@ -242,7 +242,7 @@ function openSimulation(){
  e.hidden=false;r();
  e.querySelector("[data-sim-close]").onclick=()=>e.hidden=true;
  e.querySelectorAll("[data-sim-transport]").forEach(b=>b.onclick=()=>{a.setTransport(b.dataset.simTransport);r()});
- e.querySelector("[data-sim-time]").onclick=()=>{a.advance(30);r()};
+ e.querySelector("[data-sim-eat]").onclick=()=>{const x=a.activity("EAT");say?.(x.ok?"FOOD · HUNGER RECOVERED.":"FOOD · NOT ENOUGH MONEY.");r()};e.querySelector("[data-sim-sleep]").onclick=()=>{a.activity("SLEEP");say?.("SLEEP · TIME ADVANCED.");r()};e.querySelector("[data-sim-rest]").onclick=()=>{a.activity("REST");r()};e.querySelector("[data-sim-work]").onclick=()=>{const x=a.activity("WORK",{id:"LOCAL SHIFT",pay:25});say?.(x.ok?"WORK · $25 EARNED.":"WORK · UNAVAILABLE.");r()};e.querySelector("[data-sim-social]").onclick=()=>{a.activity("SOCIAL");r()};e.querySelector("[data-sim-time]").onclick=()=>{a.advance(30);r()};
  e.querySelector("[data-sim-train]").onclick=()=>{a.train("fitness",5);r()};
  e.querySelector("[data-sim-graffiti]").onclick=()=>{a.graffiti("PLAYER",a.state().neighbourhood||"MONTRÉAL");r()};
 }
