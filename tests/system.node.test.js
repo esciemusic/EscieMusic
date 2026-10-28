@@ -301,3 +301,11 @@ assert(gameCommerceRuntime.includes("game_purchase"),"game purchases must be sup
 assert(gameCommerceRuntime.includes("validateItem"),"game item validation must exist");
 assert(gameCommerceRuntime.includes("canonical truth directly"),"game commerce must not write canonical truth directly");
 assert(gameCommerceRuntime.includes("external_purchase_url"),"game items must support external purchase routing");
+
+assert(gameCommerceRuntime.includes("GAME_PRICE_TYPES"),"game economy must define price types");
+assert(gameCommerceRuntime.includes("REAL_MONEY"),"game economy must distinguish real-money purchases");
+assert(gameCommerceRuntime.includes("EARNED"),"game economy must support earned items");
+assert(gameCommerceRuntime.includes("createGameEconomy"),"game economy must have isolated player economy state");
+assert(gameCommerceRuntime.includes("canAfford"),"game economy must have affordability checks");
+assert(gameCommerceRuntime.includes("PURCHASE_CONFIRMED"),"game economy must support confirmed purchases");
+assert(gameCommerceRuntime.includes("canonical_write=false"),"game economy must remain non-canonical");
