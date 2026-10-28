@@ -147,7 +147,7 @@ footer{padding:30px 2px;color:#5f5f5a}
 
 <section id="app" class="hidden">
   <nav class="nav" id="mainNav">
-    <button class="active" data-target="home">OVERVIEW</button><button data-target="work">WORK</button><button data-target="brain">BRAIN</button><button data-target="review">REVIEW</button><button data-target="archive">ARCHIVE</button><button data-target="destinations">DESTINATIONS</button><button data-target="settings">SETTINGS</button>
+    <button class="active" data-target="home">OVERVIEW</button><button data-target="work">WORK</button><button data-target="brain">BRAIN</button><button data-target="review">REVIEW</button><button data-target="archive">ARCHIVE</button><button data-target="agents">AGENTS</button><button data-target="destinations">DESTINATIONS</button><button data-target="settings">SETTINGS</button>
   </nav>
   <div id="home">
     <div class="hero"><div class="panel heroMain"><div><div class="kicker">ESCIE / OWNER WORKSPACE</div><h1>CONTROL<br>THE SIGNAL.</h1><p id="acct" class="heroCopy"></p><div class="heroMeta"><span class="chip">CANONICAL SOURCE</span><span class="chip">HUMAN APPROVAL</span><span class="chip">PRIVATE BY DEFAULT</span></div></div><div class="heroMeta"><span class="chip">CREATE ONCE</span><span class="chip">APPROVE ONCE</span><span class="chip">DISTRIBUTE MANY</span></div></div>
@@ -176,7 +176,59 @@ footer{padding:30px 2px;color:#5f5f5a}
 
   <div id="archive" class="section hidden"><div class="sectionTitle"><div><div class="kicker">MEMORY</div><h2>ARCHIVE</h2><p>History, evidence, source material and decisions remain connected.</p></div></div><div class="panel"><h2>Archive system</h2><p>Versions, source references, audit events, quarantine states and unknown gaps will be accessible without leaving Central.</p></div></div>
 
-  <div id="destinations" class="section hidden"><div class="sectionTitle"><div><div class="kicker">ADAPTER LAYER</div><h2>DESTINATIONS</h2><p>Central is the source of truth. Platforms are destinations.</p></div></div><div class="panel"><div id="connectors"></div></div></div>
+  <div id="agents" class="section hidden">
+  <div class="sectionTitle"><div><div class="kicker">INTELLIGENCE NETWORK</div><h2>AGENTS</h2><p>Speak to one agent. Central routes the work to the right specialist. Specialists communicate through Central—not through hidden side channels.</p></div><span class="pill ok">ORCHESTRATOR ONLINE</span></div>
+
+  <div class="hero" style="margin-top:10px">
+    <div class="panel heroMain">
+      <div>
+        <div class="kicker">CONVERSATION ENTRY</div>
+        <h2 style="font-size:32px;margin-top:10px">Talk to Central.</h2>
+        <p class="heroCopy">You do not need to know which agent handles a task. Tell Central what you want. The Orchestrator identifies the job, selects the specialist, passes only the required context, collects the result and brings the decision back to you.</p>
+      </div>
+      <div class="authActions">
+        <span class="chip">ONE VOICE</span><span class="chip">SPECIALISTS</span><span class="chip">SHARED CONTEXT</span><span class="chip">HUMAN AUTHORITY</span>
+      </div>
+    </div>
+    <div class="panel pulse">
+      <div><div class="kicker">ROUTING SIGNAL</div><h2 id="agentRouteState">READY</h2><p id="agentRouteHint">Waiting for an instruction.</p></div>
+      <div class="signal"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="ey">USER → CENTRAL → SPECIALIST → CENTRAL → USER</div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <label for="agentMessage">WHAT DO YOU WANT CENTRAL TO DO?</label>
+    <textarea id="agentMessage" rows="5" placeholder="Example: Analyze this song concept, find the strongest connections to the existing universe, then ask the Archive Agent to identify what evidence is missing."></textarea>
+    <div class="authActions">
+      <button id="agentSend" class="btn primary">SEND TO CENTRAL</button>
+      <button id="agentClear" class="btn ghost">CLEAR</button>
+    </div>
+  </div>
+
+  <div class="sectionTitle"><div><h2>Agent network</h2><p>Agents are roles, not separate tools you need to operate.</p></div></div>
+  <div class="stack" id="agentRoster">
+    <div class="rowcard"><div class="rowleft"><div class="rowtitle">CENTRAL ORCHESTRATOR</div><div class="rowmeta">Receives your request, plans the route, delegates, merges responses and controls permissions.</div></div><span class="pill ok">PRIMARY</span></div>
+    <div class="rowcard"><div class="rowleft"><div class="rowtitle">CREATIVE / WORK AGENT</div><div class="rowmeta">Music, lyrics, artwork, stories, records and creative structure.</div></div><span class="pill">SPECIALIST</span></div>
+    <div class="rowcard"><div class="rowleft"><div class="rowtitle">BRAIN / RELATIONSHIP AGENT</div><div class="rowmeta">Correlations, entities, patterns, contradictions and missing links.</div></div><span class="pill">SPECIALIST</span></div>
+    <div class="rowcard"><div class="rowleft"><div class="rowtitle">ARCHIVE / EVIDENCE AGENT</div><div class="rowmeta">Sources, proof, provenance, versions, uncertainty and quarantine.</div></div><span class="pill">SPECIALIST</span></div>
+    <div class="rowcard"><div class="rowleft"><div class="rowtitle">RELEASE / DISTRIBUTION AGENT</div><div class="rowmeta">Packaging, metadata, schedules and destination preparation. Publishing remains gated.</div></div><span class="pill lock">LOCKED</span></div>
+    <div class="rowcard"><div class="rowleft"><div class="rowtitle">AUDIT / GUARDIAN AGENT</div><div class="rowmeta">Checks permissions, conflicts, unsafe automation, provenance and proposed changes.</div></div><span class="pill">GUARDIAN</span></div>
+  </div>
+
+  <div class="sectionTitle"><div><h2>Live conversation bus</h2><p>Every handoff becomes visible instead of disappearing inside the system.</p></div></div>
+  <div class="stack" id="agentBus">
+    <div class="rowcard"><div class="rowleft"><div class="rowtitle">NO ACTIVE CONVERSATION</div><div class="rowmeta">Central will show each handoff, response and decision here.</div></div><span class="pill">IDLE</span></div>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <div class="kicker">CONTROL RULE</div>
+    <h2>Agents can collaborate. They cannot silently become canon.</h2>
+    <p>The network may reason, research, classify, correlate and prepare actions. Central records the proposed change. You approve, reject or quarantine it.</p>
+  </div>
+</div>
+
+<div id="destinations" class="section hidden"><div class="sectionTitle"><div><div class="kicker">ADAPTER LAYER</div><h2>DESTINATIONS</h2><p>Central is the source of truth. Platforms are destinations.</p></div></div><div class="panel"><div id="connectors"></div></div></div>
 
   <div id="settings" class="section hidden"><div class="sectionTitle"><div><div class="kicker">CONTROL</div><h2>SETTINGS</h2><p>Workspace identity, security and future connector configuration.</p></div></div><div class="panel"><h2>Operator</h2><p>Account: <strong id="settingsAccount">—</strong></p><p>Publishing remains fail-closed until provider authorization and execution are fully configured.</p></div></div>
 
@@ -196,6 +248,43 @@ footer{padding:30px 2px;color:#5f5f5a}
     window.scrollTo({top:0,behavior:"smooth"});
   }
   document.querySelectorAll("#mainNav button[data-target]").forEach(b=>b.addEventListener("click",()=>show(b.dataset.target)));
+  const agentMessage=$("agentMessage"), agentSend=$("agentSend"), agentClear=$("agentClear"), agentBus=$("agentBus"), routeState=$("agentRouteState"), routeHint=$("agentRouteHint");
+  const agentLog=[];
+  function agentEvent(agent,state,text){
+    agentLog.push({time:new Date().toISOString(),agent,state,text});
+    if(agentBus){
+      agentBus.innerHTML=agentLog.map(x=>'<div class="rowcard"><div class="rowleft"><div class="rowtitle">'+x.agent+' · '+x.state+'</div><div class="rowmeta">'+x.text+'</div></div><span class="pill">'+new Date(x.time).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})+'</span></div>').join("");
+    }
+  }
+  function classifyAgent(message){
+    const m=message.toLowerCase();
+    if(/archive|evidence|proof|source|provenance|version|history/.test(m)) return "ARCHIVE / EVIDENCE AGENT";
+    if(/release|publish|post|instagram|tiktok|youtube|schedule|distribution/.test(m)) return "RELEASE / DISTRIBUTION AGENT";
+    if(/relationship|connect|correlat|pattern|contradict|missing|people|place|moment/.test(m)) return "BRAIN / RELATIONSHIP AGENT";
+    if(/audit|security|permission|conflict|guard|risk/.test(m)) return "AUDIT / GUARDIAN AGENT";
+    return "CREATIVE / WORK AGENT";
+  }
+  agentSend&&agentSend.addEventListener("click",()=>{
+    const message=(agentMessage?.value||"").trim();
+    if(!message){routeState.textContent="NEED INPUT";routeHint.textContent="Tell Central what you want done.";agentMessage?.focus();return}
+    agentSend.disabled=true; routeState.textContent="ROUTING"; routeHint.textContent="Central is identifying the right specialist.";
+    agentEvent("YOU","REQUEST",message);
+    const specialist=classifyAgent(message);
+    setTimeout(()=>{
+      agentEvent("CENTRAL ORCHESTRATOR","DELEGATE","Request routed to "+specialist+". Required context is attached; unrelated private data stays out.");
+      routeState.textContent="SPECIALIST";
+      routeHint.textContent=specialist+" is assigned.";
+      setTimeout(()=>{
+        agentEvent(specialist,"RECEIVED","Specialist received the task from Central and can return findings or request another specialist.");
+        setTimeout(()=>{
+          agentEvent("CENTRAL ORCHESTRATOR","HANDOFF","Result returns to Central for validation, conflict checking and human approval.");
+          routeState.textContent="AWAITING DECISION"; routeHint.textContent="The final action stays under your control.";
+          agentSend.disabled=false;
+        },500);
+      },500);
+    },400);
+  });
+  agentClear&&agentClear.addEventListener("click",()=>{if(agentMessage)agentMessage.value="";agentLog.length=0;if(agentBus)agentBus.innerHTML='<div class="rowcard"><div class="rowleft"><div class="rowtitle">NO ACTIVE CONVERSATION</div><div class="rowmeta">Central will show each handoff, response and decision here.</div></div><span class="pill">IDLE</span></div>';routeState.textContent="READY";routeHint.textContent="Waiting for an instruction."});
   document.querySelectorAll("[data-target]").forEach(b=>{if(!b.closest("#mainNav"))b.addEventListener("click",()=>show(b.dataset.target))});
   const theme=$("themeToggle");
   theme&&theme.addEventListener("click",()=>{
