@@ -248,44 +248,7 @@ footer{padding:30px 2px;color:#5f5f5a}
     window.scrollTo({top:0,behavior:"smooth"});
   }
   document.querySelectorAll("#mainNav button[data-target]").forEach(b=>b.addEventListener("click",()=>show(b.dataset.target)));
-  const agentMessage=$("agentMessage"), agentSend=$("agentSend"), agentClear=$("agentClear"), agentBus=$("agentBus"), routeState=$("agentRouteState"), routeHint=$("agentRouteHint");
-  const agentLog=[];
-  function agentEvent(agent,state,text){
-    agentLog.push({time:new Date().toISOString(),agent,state,text});
-    if(agentBus){
-      agentBus.innerHTML=agentLog.map(x=>'<div class="rowcard"><div class="rowleft"><div class="rowtitle">'+x.agent+' · '+x.state+'</div><div class="rowmeta">'+x.text+'</div></div><span class="pill">'+new Date(x.time).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})+'</span></div>').join("");
-    }
-  }
-  function classifyAgent(message){
-    const m=message.toLowerCase();
-    if(/archive|evidence|proof|source|provenance|version|history/.test(m)) return "ARCHIVE / EVIDENCE AGENT";
-    if(/release|publish|post|instagram|tiktok|youtube|schedule|distribution/.test(m)) return "RELEASE / DISTRIBUTION AGENT";
-    if(/relationship|connect|correlat|pattern|contradict|missing|people|place|moment/.test(m)) return "BRAIN / RELATIONSHIP AGENT";
-    if(/audit|security|permission|conflict|guard|risk/.test(m)) return "AUDIT / GUARDIAN AGENT";
-    return "CREATIVE / WORK AGENT";
-  }
-  agentSend&&agentSend.addEventListener("click",()=>{
-    const message=(agentMessage?.value||"").trim();
-    if(!message){routeState.textContent="NEED INPUT";routeHint.textContent="Tell Central what you want done.";agentMessage?.focus();return}
-    agentSend.disabled=true; routeState.textContent="ROUTING"; routeHint.textContent="Central is identifying the right specialist.";
-    agentEvent("YOU","REQUEST",message);
-    const specialist=classifyAgent(message);
-    setTimeout(()=>{
-      agentEvent("CENTRAL ORCHESTRATOR","DELEGATE","Request routed to "+specialist+". Required context is attached; unrelated private data stays out.");
-      routeState.textContent="SPECIALIST";
-      routeHint.textContent=specialist+" is assigned.";
-      setTimeout(()=>{
-        agentEvent(specialist,"RECEIVED","Specialist received the task from Central and can return findings or request another specialist.");
-        setTimeout(()=>{
-          agentEvent("CENTRAL ORCHESTRATOR","HANDOFF","Result returns to Central for validation, conflict checking and human approval.");
-          routeState.textContent="AWAITING DECISION"; routeHint.textContent="The final action stays under your control.";
-          agentSend.disabled=false;
-        },500);
-      },500);
-    },400);
-  });
-  agentClear&&agentClear.addEventListener("click",()=>{if(agentMessage)agentMessage.value="";agentLog.length=0;if(agentBus)agentBus.innerHTML='<div class="rowcard"><div class="rowleft"><div class="rowtitle">NO ACTIVE CONVERSATION</div><div class="rowmeta">Central will show each handoff, response and decision here.</div></div><span class="pill">IDLE</span></div>';routeState.textContent="READY";routeHint.textContent="Waiting for an instruction."});
-  document.querySelectorAll("[data-target]").forEach(b=>{if(!b.closest("#mainNav"))b.addEventListener("click",()=>show(b.dataset.target))});
+  // Agent routing is owned by agent-ui.js; keep one authoritative runtime.\n  document.querySelectorAll("[data-target]").forEach(b=>{if(!b.closest("#mainNav"))b.addEventListener("click",()=>show(b.dataset.target))});
   const theme=$("themeToggle");
   theme&&theme.addEventListener("click",()=>{
     const light=document.body.dataset.light==="1";
