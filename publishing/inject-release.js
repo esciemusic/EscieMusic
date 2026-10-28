@@ -38,7 +38,7 @@ const projects=[];
 released.forEach(track=>{
   if(!projectStructures[track.project]) projectStructures[track.project]=[];
   if(!projects.some(project=>project.id===track.project)){
-    projects.push({id:track.project,artist:track.artist||"ESCIE",title:track.project_title||track.project,type:"project",status:"active",published:true,release_mode:"progressive",visibility:"public",description:track.project_description||"",structure:[]});
+    projects.push({id:track.project,title:track.project_title||track.project,type:"project",status:"active",published:true,release_mode:"progressive",visibility:"public",description:track.project_description||"",structure:[]});
   }
   projectStructures[track.project].push({number:track.number,title:track.title,role:track.role,trackId:track.id});
 });
