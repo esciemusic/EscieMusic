@@ -1596,6 +1596,8 @@
     renderArchive();
     renderInvestigation();
     renderAbout();
+    renderSocialLinks("entry-social", "entry-social-link", false);
+    renderFooterSocial();
     renderGlassEye();
     const narration = getNarrationEngine();
     if (narration && typeof narration.present === "function") {
