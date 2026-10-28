@@ -14,6 +14,7 @@
     ["fit","Wear-test fit, construction, print placement and comfort."],
     ["wash","Wash-test and inspect shrinkage, print, seams and hand feel."],
     ["photo","Photograph the actual approved sample."],
+    ["compare","Record final specification comparison, deviations and approval decision before preorder."],
     ["preorder","Only open preorder after sample approval and cost review."],
     ["production","Confirm quantity, size curve, decoration and QC plan."],
     ["release","Release only the approved physical version."]
