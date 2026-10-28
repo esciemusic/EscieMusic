@@ -11,11 +11,20 @@ function records(){
  sources.flat().forEach(r=>{if(!r||typeof r!=="object")return;const id=r.id||r.recordId||r.slug||r.title;if(id&&!seen.has(id)){seen.add(id);out.push({...r,id})}});
  return out;
 }
-function type(r){return String(r.type||r.kind||r.category||"WORK").toUpperCase()}
-function title(r){return r.title||r.name||r.label||"UNTITLED"}
+function type(r){return String(r.type||r.kind||r.category||"WORK").trim().toUpperCase()||"WORK"}
+function title(r){return String(r.title||r.name||r.label||"UNTITLED").trim()||"UNTITLED"}
+function searchText(r){return [r.id,r.type,r.kind,r.category,r.title,r.name,r.label,r.description,r.summary,r.story,r.date,r.release_date,r.moment_date,r.created_at,Array.isArray(r.tags)?r.tags.join(" "):""] .map(v=>String(v??"")).join(" ").toLowerCase()}
 function rels(){
  const local=coll("ESCIE_RELATIONSHIPS");
- return local.concat(coll("ESCIE_RELATIONSHIPS_PUBLIC")).map(r=>r&&({...r,from:r.from||r.source_id||r.sourceId,to:r.to||r.target_id||r.targetId})).filter(r=>r&&r.from&&r.to&&(r.visibility===undefined||String(r.visibility).toLowerCase()==="public")&&(r.status===undefined||!["withheld","archived","inactive"].includes(String(r.status).toLowerCase())));
+ const seen=new Set();
+ return local.concat(coll("ESCIE_RELATIONSHIPS_PUBLIC")).map(r=>r&&({...r,from:r.from||r.source_id||r.sourceId,to:r.to||r.target_id||r.targetId})).filter(r=>{
+   if(!r||!r.from||!r.to)return false;
+   if(r.visibility!==undefined&&String(r.visibility).toLowerCase()!=="public")return false;
+   if(r.status!==undefined&&["withheld","archived","inactive"].includes(String(r.status).toLowerCase()))return false;
+   const key=[String(r.from),String(r.type||"related"),String(r.to)].join("|");
+   if(seen.has(key))return false;
+   seen.add(key);return true;
+ });
 }
 function related(id){
  const map=new Map(records().map(r=>[String(r.id),r])),out=[];
@@ -30,7 +39,7 @@ function related(id){
 function inverse(t){const inv={created_by:"created",part_of:"contains",located_at:"location_of",recorded_at:"recording_location_of",performed_at:"performance_location_of",inspired_by:"inspires",supports:"supported_by",contradicts:"contradicted_by"};return inv[t]||t||"related"}
 function filtered(){
  const q=state.q.toLowerCase().trim();
- return records().filter(r=>(state.type==="ALL"||type(r)===state.type)&&(!q||JSON.stringify(r).toLowerCase().includes(q)));
+ return records().filter(r=>(state.type==="ALL"||type(r)===state.type)&&(!q||searchText(r).includes(q)));
 }
 function card(r){
  return '<button type="button" class="world-card world-node-card" data-node="'+esc(r.id)+'"><div class="world-card-main"><span class="world-kicker">'+esc(type(r))+'</span><h3>'+esc(title(r))+'</h3><p>'+esc(String(r.description||r.summary||r.story||"A doorway into the ESCIE universe.").slice(0,220))+'</p></div><span class="world-arrow" aria-hidden="true">↗</span></button>';
