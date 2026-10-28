@@ -7,5 +7,5 @@ assert(/function pathContext\(\)/.test(src),"world-engine missing pathContext");
 assert(/function investigationSummary\(\)/.test(src),"world-engine missing investigationSummary");
 assert(/YOUR INVESTIGATION/.test(src),"Glass Eye investigation context missing");
 assert(/NEXT SIGNALS/.test(src),"Glass Eye discovery surface missing");
-assert(!/\\beval\\s*\\(|new Function\\s*\\(/.test(src),"dynamic code execution is forbidden");
+assert(!/\beval\s*\(|new Function\s*\(/.test(src),"dynamic code execution is forbidden");
 console.log("ESCIE world-engine contracts OK");
