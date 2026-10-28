@@ -101,5 +101,6 @@ function init(){
  if(!nav.querySelector('a[href="#world"]')){const a=document.createElement("a");a.href="#world";a.textContent="THE WORLD";a.dataset.route="world";nav.appendChild(a)}
  render();
 }
-window.addEventListener("hashchange",handleWorldHash);\nif(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
+window.addEventListener("hashchange",handleWorldHash);
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
 })();
