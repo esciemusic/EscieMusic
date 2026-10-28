@@ -232,6 +232,7 @@ document.addEventListener("click",e=>{
 });
 document.addEventListener("change",e=>{if(e.target.id==="phone-audio-file"){const box=document.getElementById("phone-tracks");[...e.target.files].forEach(f=>{const u=URL.createObjectURL(f),a=document.createElement("button");a.textContent=f.name;a.onclick=()=>{document.getElementById("phone-audio").src=u;document.getElementById("phone-audio").play();};box.appendChild(a);});}});
 
+window.addEventListener("escie:financial-event",e=>{const d=e.detail||{};if(window.ESCIE_PHONE_GAMEPLAY?.notify)window.ESCIE_PHONE_GAMEPLAY.notify((d.type==="INCOME"?"+$":"-$")+Number(d.amount||0)+" · "+(d.reason||"FINANCE"),"FINANCE");});
 (function phoneGameplayBridge(){
  const KEY="escie_phone_v1";
  const read=()=>{try{return JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){return {}}};
