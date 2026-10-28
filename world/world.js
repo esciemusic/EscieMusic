@@ -1,28 +1,3 @@
-(function(){
-const PHONE_CONTACTS=[
- {id:"witness",name:"THE WITNESS",type:"NPC"},
- {id:"unknown",name:"UNKNOWN NUMBER",type:"UNKNOWN"},
- {id:"emergency",name:"EMERGENCY",type:"SYSTEM"}
-];
-const phoneContacts=()=>PHONE_CONTACTS;
-const phoneNotify=(text,type="INFO")=>{const m=JSON.parse(localStorage.getItem("escie_phone_v1")||"{}");m.notifications=m.notifications||[];m.notifications.unshift({text,type,time:new Date().toLocaleTimeString()});m.notifications=m.notifications.slice(0,50);localStorage.setItem("escie_phone_v1",JSON.stringify(m));};
-const phoneMap=()=>{const s=window.ESCIE_WORLD_SIMULATION?.state||{};return {neighbourhood:s.neighbourhood||"PARC-EXTENSION",day:s.day||1,hour:s.hour||12,minute:s.minute||0,transport:s.transport||"FOOT"}};
-
- const root=document.getElementById("world-phone"),out=document.getElementById("phone-content"); if(!root||!out)return;
- root.hidden=false;
- const s=window.ESCIE_WORLD_SIMULATION?.state||{};
- const mem=JSON.parse(localStorage.getItem("escie_phone_v1")||'{"notes":[],"photos":[],"calls":[],"notifications":[],"qr":[],"tracks":[]}');
- const save=()=>localStorage.setItem("escie_phone_v1",JSON.stringify(mem));
- if(tab==="calls") out.innerHTML='<div class="phone-card"><strong>CONTACTS</strong>'+phoneContacts().map(x=>'<button data-phone-call="'+x.id+'">'+x.name+'</button>').join("")+'</div>'+'<div class="phone-card"><strong>CALLS</strong><p>Contacts and in-world calls will appear here.</p><button data-phone-call="witness">CALL THE WITNESS</button></div>'+((mem.calls||[]).map(x=>'<div class="phone-card">'+x+'</div>').join("")||'<p class="phone-empty">No recent calls.</p>');
- if(tab==="photos") out.innerHTML='<div class="phone-card"><strong>CAMERA</strong><p>Take photos of the current game state and discoveries.</p><button data-phone-photo>TAKE PHOTO</button></div>'+((mem.photos||[]).map(x=>'<div class="phone-card">'+x+'</div>').join("")||'<p class="phone-empty">No photos.</p>');
- if(tab==="notes") out.innerHTML='<div class="phone-card"><strong>NOTES</strong><textarea id="phone-note" class="phone-input" rows="5" placeholder="Write something..."></textarea><button data-phone-save-note>SAVE NOTE</button></div>'+((mem.notes||[]).map(x=>'<div class="phone-card">'+x+'</div>').join("")||'<p class="phone-empty">No notes.</p>');
- if(tab==="notifications") out.innerHTML='<div class="phone-card"><strong>SYSTEM STATUS</strong><p>'+phoneMap().neighbourhood+' · DAY '+phoneMap().day+' · '+String(phoneMap().hour).padStart(2,"0")+':'+String(phoneMap().minute).padStart(2,"0")+' · '+phoneMap().transport+'</p></div>'+'<div class="phone-card"><strong>NOTIFICATIONS</strong></div>'+((mem.notifications||[]).map(x=>'<div class="phone-card">'+x+'</div>').join("")||'<p class="phone-empty">No notifications.</p>');
- if(tab==="qr") out.innerHTML='<div class="phone-card"><strong>QR SCANNER</strong><p>Use the device camera to scan physical ESCIE discoveries. Camera permission is requested only when scanning is activated.</p><button data-phone-qr>SCAN QR</button><input id="phone-qr-input" class="phone-input" placeholder="Paste QR/deep-link code" /></div>';
- if(tab==="map") out.innerHTML='<div class="phone-card"><strong>CITY MAP</strong><p>'+phoneMap().neighbourhood+'</p><p>Available districts are activated through gameplay and transit.</p></div>';
- if(tab==="music") out.innerHTML='<div class="phone-card"><strong>ESCIE MUSIC PLAYER</strong><p>Integrated game music and your own device audio files.</p><audio id="phone-audio" class="phone-player" controls></audio><input id="phone-audio-file" type="file" accept="audio/*" multiple /><div id="phone-tracks"></div></div>';
- save();
-}
-
 "use strict";
 const KEY="escie_game_state_v1",W=16,H=10,start={x:2,y:7};
 const npcs=[{id:"witness",x:8,y:3,label:"THE WITNESS",lines:["You came through the signal. I have seen that before.","Do not confuse what you find with what is proven."],choices:[{label:"WHO ARE YOU?",text:"Someone who stayed long enough to notice the pattern."},{label:"WHAT IS THIS PLACE?",text:"A real street. Everything after that is interpretation."},{label:"I NEED THE KEY.",text:"Then find the thing that responds to the distortion.",discovery:"game-discovery-witness",queries:["query:witness","query:key"]}]}];
@@ -175,9 +150,7 @@ function prefs(){try{return JSON.parse(localStorage.getItem(PREF_KEY)||"{}")}cat
 function savePrefs(p){try{localStorage.setItem(PREF_KEY,JSON.stringify(p))}catch(e){}}
 function applyPrefs(){const p=prefs();document.body.dataset.worldMotion=p.motion||"full";document.body.dataset.worldGraphics=p.graphics||"standard";document.body.dataset.worldText=p.text||"standard";if(p.controls){try{localStorage.setItem("escie_world_control_mode",p.controls)}catch(e){}}if(p.display==="handheld"&&typeof setHandheld==="function")setHandheld(true);else if(p.display==="device"&&typeof deviceMode==="function")deviceMode();if(p.orientation==="landscape"&&screen.orientation?.lock)screen.orientation.lock("landscape").catch(()=>{});if(p.orientation==="portrait"&&screen.orientation?.lock)screen.orientation.lock("portrait").catch(()=>{});}
 function feedback(kind){const p=prefs();if(p.vibration==="off")return;if(kind==="select"||kind==="discover"){try{navigator.vibrate?.(kind==="discover"?[18,25,28]:10)}catch(e){}}}
-const LIFE_KEY="escie_world_life_v1";
-const LIFE_DEFAULT={hunger:82,energy:78,health:100,stress:12,social:35,money:40,reputation:0,status:"UNKNOWN",path:"UNDEFINED",time_minutes:720,day:1,neighbourhood:"PARC-EXTENSION"};
-function getLife(){try{return Object.assign({},LIFE_DEFAULT,JSON.parse(localStorage.getItem(LIFE_KEY)||"{}"))}catch(e){return Object.assign({},LIFE_DEFAULT)}}
+// LIFE STATE IS DERIVED FROM THE CANONICAL WORLD SIMULATION.\nconst getLife=()=>{const sim=window.ESCIE_WORLD_SIMULATION;const s=sim?.state?sim.state():{};return {hunger:Number(s.hunger??82),energy:Number(s.energy??78),health:Number(s.health??100),stress:Number(s.stress??12),social:Number(s.social??35),money:Number(s.money??40),reputation:Number(s.reputation??0),status:s.status||"UNKNOWN",path:s.path||"UNDEFINED",time_minutes:(Number(s.hour||12)*60)+Number(s.minute||0),day:Number(s.day||1),neighbourhood:s.neighbourhood||"PARC-EXTENSION"};};\nfunction getLife(){try{return Object.assign({},LIFE_DEFAULT,JSON.parse(localStorage.getItem(LIFE_KEY)||"{}"))}catch(e){return Object.assign({},LIFE_DEFAULT)}}
 function saveLife(l){try{localStorage.setItem(LIFE_KEY,JSON.stringify(l))}catch(e){}}
 function lifeLabel(v){return Math.max(0,Math.min(100,Math.round(v)))}
 function updateLife(delta={}){const l=getLife();Object.keys(delta).forEach(k=>{if(typeof l[k]==="number")l[k]+=delta[k]});l.hunger=lifeLabel(l.hunger);l.energy=lifeLabel(l.energy);l.health=lifeLabel(l.health);l.stress=lifeLabel(l.stress);l.social=lifeLabel(l.social);l.money=Math.max(0,Math.round(l.money));saveLife(l);return l}
