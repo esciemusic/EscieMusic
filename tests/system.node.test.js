@@ -222,6 +222,11 @@ const centralConnect=fs.readFileSync("central-connect/app.html","utf8");
 assert(!centralConnect.includes('e.innerHTML="<div><strong>"+p+"'),"Central connector provider detail must not interpolate provider data into HTML");
 assert(!centralConnect.includes('n.innerHTML="<strong>OAuth readiness'),"Central OAuth readiness must not interpolate HTML");
 
+const nodesRuntime=fs.readFileSync("data/nodes.js","utf8");
+assert(!nodesRuntime.includes("ARTIST / AUTHOR"),"identity node must not expose artist/author framing");
+assert(nodesRuntime.includes('label:"THE FATHER / THE MAN"'),"identity node must use Father / Man framing");
+assert(nodesRuntime.includes('role:"CENTRAL PRESENCE"'),"identity node must use central-presence framing");
+
 const appRuntime=fs.readFileSync("app.js","utf8");
 assert(!appRuntime.includes("The central consciousness / interface."),"app fallback identity must not use central-consciousness wording");
 assert(appRuntime.includes('function reduceMotion()'),"app runtime needs reduced-motion detection");
