@@ -217,6 +217,14 @@ assert(gameRuntime.includes("conditions"),"game records must support unlock/inte
 assert(gameRuntime.includes("discoveries"),"game records must support discoveries");
 assert(gameRuntime.includes("root=typeof window"),"game registry must be Node/browser compatible");
 assert(gameRuntime.includes("ESCIE_GAME_REGISTRY"),"game registry API must be exposed");
+assert(gameRuntime.includes('"OBSERVED"'),"player memory must record observations");
+assert(gameRuntime.includes('"CONNECTED"'),"player memory must record connections");
+assert(gameRuntime.includes('"MISSED"'),"player memory must preserve missed discoveries");
+assert(gameRuntime.includes('"UNKNOWN"'),"player memory must preserve unknown state");
+assert(gameRuntime.includes("canonical_write:false"),"player state must never become canonical by default");
+assert(gameRuntime.includes("function applyPlayerEvent"),"game registry must expose player event application");
+assert(gameRuntime.includes("function playerMemory"),"game registry must expose player memory projection");
+
 assert(fs.readFileSync("data/registry.js","utf8").includes('["game",()=>collection("ESCIE_GAMES")]'),"canonical registry must ingest game records");
 assert(fs.readFileSync("index.html","utf8").includes('<script src="data/games.js"></script>'),"public runtime must load the game registry");
 
