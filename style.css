@@ -3988,3 +3988,5 @@ body.player-visible{padding-bottom:clamp(88px,12vh,124px)}
 .game-input-help{font-size:.62rem;letter-spacing:.08em;opacity:.5;line-height:1.5}.game-virtual-controls{display:flex;flex-direction:column;align-items:center;gap:.2rem;margin-top:.8rem}.game-virtual-controls>div{display:flex;gap:.2rem}.game-virtual-controls button{width:44px;height:38px;border:1px solid rgba(160,255,120,.25);background:rgba(100,255,80,.035);color:inherit;cursor:pointer;touch-action:manipulation}.game-virtual-controls button:active,.game-virtual-controls button.pressed{background:rgba(100,255,80,.14);transform:scale(.96)}
 @media(min-width:800px){.game-virtual-controls{display:none}}
 @media(max-width:600px){.game-input-head{font-size:.55rem}.game-input-modes button{flex:1;min-width:70px}.game-virtual-controls button{width:52px;height:44px}}
+
+.game-actions button.game-focus,.game-choices button.game-focus,.game-discovery button.game-focus,.game-input-modes button.game-focus{outline:2px solid rgba(160,255,120,.85);outline-offset:2px;background:rgba(100,255,80,.10)}
