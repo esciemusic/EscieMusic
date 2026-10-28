@@ -296,3 +296,27 @@ document.addEventListener("change",e=>{if(e.target.id==="phone-audio-file"){cons
 (function dreamLevelBridge(){
  window.ESCIE_WORLD_DREAM_LEVEL={enter:()=>{const sim=window.ESCIE_WORLD_SIMULATION;if(!sim?.buildDreamLevel)return null;const level=sim.buildDreamLevel();window.ESCIE_WORLD_DREAM={active:true,event:level.scenario,level};return level;}};
 })();
+
+/* PLAYABLE DREAM SPACE */
+(function(){
+ const levels={
+  "PARC-EXTENSION-DREAM":{size:[16,10],player:{x:2,y:7},exit:{x:14,y:2},threat:{id:"WATCHER",x:12,y:3,vision:4},objects:[{id:"REPEATING_SHOE",x:6,y:5,label:"THE SHOE"}]},
+  "PLATEAU-DREAM":{size:[16,10],player:{x:2,y:7},exit:{x:2,y:7},threat:{id:"DOOR",x:10,y:4,vision:3},objects:[{id:"LOOP_DOOR",x:10,y:4,label:"THE DOOR"}]},
+  "DOWNTOWN-DREAM":{size:[16,10],player:{x:8,y:8},exit:{x:8,y:1},threat:{id:"EMPTY_WITNESS",x:8,y:3,vision:5},objects:[{id:"SIGNAL_SCREEN",x:4,y:4,label:"THE SCREEN"}]},
+  "UNKNOWN-DREAM":{size:[16,10],player:{x:2,y:7},exit:{x:14,y:7},threat:{id:"UNKNOWN",x:10,y:5,vision:4},objects:[]}
+ };
+ window.ESCIE_WORLD_DREAM_PLAY={start:function(level){
+   const l=levels[level?.location?.id||level?.id||"UNKNOWN-DREAM"]||levels["UNKNOWN-DREAM"];
+   const state={active:true,level:l,player:{...l.player},threat:{...l.threat},found:false,turns:0};
+   window.ESCIE_WORLD_DREAM_STATE=state;
+   document.dispatchEvent(new CustomEvent("escie-dream-play-start",{detail:state}));
+   return state;
+ },move:function(dx,dy){
+   const s=window.ESCIE_WORLD_DREAM_STATE;if(!s?.active)return null;
+   s.player.x=Math.max(0,Math.min(15,s.player.x+dx));s.player.y=Math.max(0,Math.min(9,s.player.y+dy));s.turns++;
+   const t=s.threat,dist=Math.abs(s.player.x-t.x)+Math.abs(s.player.y-t.y);
+   if(dist<=t.vision){s.detected=true;document.dispatchEvent(new CustomEvent("escie-dream-detected",{detail:s}));}
+   if(s.player.x===s.level.exit.x&&s.player.y===s.level.exit.y){s.active=false;s.result="WAKE";document.dispatchEvent(new CustomEvent("escie-dream-complete",{detail:s}));}
+   return s;
+ }};
+})();
