@@ -114,7 +114,12 @@
   function measurementReady(item,sample){
     const spec=Object.assign({tolerance:"±1 cm"},item.specification||{});
     const actual=measurementFor(sample);
-    return ["chest","length","shoulder","sleeve"].every(k=>String(actual[k]||"").trim())&&String(sample.measurement_result||"").toUpperCase()==="PASS";
+    const tolerance=parseFloat(String(spec.tolerance).replace(",","." ).replace("±","").replace("cm","").trim())||1;
+    return ["chest","length","shoulder","sleeve"].every(k=>{
+      const a=parseFloat(actual[k]);
+      const target=parseFloat(spec.measurements&&spec.measurements[k]);
+      return Number.isFinite(a)&&Number.isFinite(target)&&Math.abs(a-target)<=tolerance;
+    })&&String(sample.measurement_result||"").toUpperCase()==="PASS";
   }
   function qcFor(sample){return Object.assign({fit:"",fabric:"",shrinkage:"",print:"",embroidery:"",seams:"",measurements:"",defects:"",decision:"PENDING",approved_by:""},sample&&sample.qc||{});}
   function qcReady(sample){
