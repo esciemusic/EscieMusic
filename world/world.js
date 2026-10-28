@@ -282,3 +282,9 @@ document.addEventListener("change",e=>{if(e.target.id==="phone-audio-file"){cons
  document.addEventListener("click",ev=>{const b=ev.target.closest("[data-dream]");if(!b)return;if(b.dataset.dream==="wake"){if(o)o.hidden=true;if(window.ESCIE_WORLD_DREAM)window.ESCIE_WORLD_DREAM.active=false;}else{show(state?.event);}});
  if(state?.active&&state.event)show(state.event);
 })();
+
+(function dreamChoices(){
+ const choice=(id)=>{const sim=window.ESCIE_WORLD_SIMULATION;if(!sim)return;sim.choice?.("DREAM_"+id,"DREAM");const s=sim.state;s.stress=Math.max(0,Number(s.stress)+(id==="FOLLOW"?8:-4));s.sleep=0;localStorage.setItem("escie_world_simulation_v1",JSON.stringify(s));if(window.ESCIE_PHONE_GAMEPLAY?.notify)window.ESCIE_PHONE_GAMEPLAY.notify("DREAM CHOICE · "+id,"DREAM");};
+ window.ESCIE_WORLD_DREAM_CHOICE={choice};
+ document.addEventListener("click",e=>{const b=e.target.closest("[data-dream-choice]");if(b)choice(b.dataset.dreamChoice);});
+})();
