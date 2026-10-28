@@ -50,6 +50,7 @@
       label:"ESCIE / THE SIGNAL REMAINS DISTORTED.",
       digital_connection:false,
       priority:"HIGHEST",
+      production_packet:{sample_priority:2,quote_required:true,approval_gate:"HUMAN",qc:["fit","fabric","print","embroidery","wash","shrinkage","seams"],photo_required:true,quantity_decision:"POST-SAMPLE"},
       notes:"Flagship ESCIE garment."
     },
     {
