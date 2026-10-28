@@ -690,7 +690,6 @@
         '<p class="eyebrow">' + escapeHTML(item.status || "OPEN") + '</p>' +
         '<h3>' + escapeHTML(recordTitle(item)) + "</h3>" +
         (item.description ? '<p>' + escapeHTML(item.description) + '</p>' : '') +
-        (item.reality || item.reality_level ? '<p class="record-action">' + escapeHTML(item.reality || item.reality_level) + '</p>' : '') +
       "</article>"
     ).join("");
   }
@@ -757,14 +756,14 @@
 
     container.innerHTML =
       '<p class="about-lead">' + escapeHTML(
-        about.description || "ESCIE is an interface to reality itself."
+        about.description || "ESCIE is the Father / the Man."
       ) + "</p>" +
       '<div class="about-principles">' +
         '<p><span>PRINCIPLE</span>' + escapeHTML(
           about.principle || site.philosophy || "The music does not create the universe. The universe creates the music."
         ) + "</p>" +
         '<p><span>IDENTITY</span>' + escapeHTML(
-          Array.isArray(about.role) ? about.role.join(" / ") : (about.role || "artist / writer / narrator")
+          Array.isArray(about.role) ? about.role.join(" / ") : (about.role || "father / man / central presence")
         ) + "</p>" +
       '</div>' +
       socialMarkup +
@@ -905,7 +904,6 @@
     const body = modal.querySelector(".record-inspector-body");
     if (!body) return;
 
-    const reality = record.reality || record.reality_level || record.knowledge || "UNSPECIFIED";
     const status = record.status || "unknown";
     const description = record.description || "No public description has been established.";
     const symbols = getRecordSymbols(record);
@@ -932,8 +930,7 @@
       '<h3>' + escapeHTML(recordTitle(record)) + '</h3>' +
       '<p>' + escapeHTML(description) + '</p>' +
       (publicNodes.length ? '<p class="record-node-trace">APPEARS IN / ' + publicNodes.map(node => escapeHTML(node.label || node.id || "")).join(' · ') + '</p>' : '') +
-      '<dl class="record-facts"><div><dt>REALITY</dt><dd>' + escapeHTML(reality) + '</dd></div>' +
-      '<div><dt>STATUS</dt><dd>' + escapeHTML(status) + '</dd></div>' +
+      '<dl class="record-facts"><div><dt>STATUS</dt><dd>' + escapeHTML(status) + '</dd></div>' +
       '<div><dt>ID</dt><dd>' + escapeHTML(recordId(record)) + '</dd></div></dl>' +
       (recordAppearsIn(record).length ? '<div class="record-context record-appearance"><p class="eyebrow">APPEARS IN</p><p>' +
         recordAppearsIn(record).map(section => '<button class="record-related-link record-section-link" type="button" data-section-target="' + escapeHTML(section) + '">' + escapeHTML(sectionLabel(section)) + '</button>').join("") +
@@ -1173,7 +1170,7 @@
     if (tagline) {
       tagline.textContent = getSiteValue(
         "tagline",
-        "REALITY WITH THE SIGNAL DISTORTED."
+        "THE SIGNAL REMAINS DISTORTED."
       );
     }
 
