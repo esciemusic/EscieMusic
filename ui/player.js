@@ -114,14 +114,22 @@ const ESCIE_UI_PLAYER = {
     if (!url) return null;
 
     const mediaAPI = typeof window !== "undefined" ? window.ESCIE_MEDIA : null;
-    if (mediaAPI && typeof mediaAPI.safeURL === "function" && !mediaAPI.safeURL(url)) {
-      return null;
-    }
+    const safe = mediaAPI && typeof mediaAPI.safeURL === "function"
+      ? mediaAPI.safeURL(url)
+      : (() => {
+          try {
+            const parsed = new URL(url, window.location.href);
+            return ["http:", "https:"].includes(parsed.protocol) ? parsed.href : null;
+          } catch (error) {
+            return null;
+          }
+        })();
+    if (!safe) return null;
 
     this.current = {
       id: source.id || null,
       title: source.title || null,
-      url,
+      url: safe.href,
       sourceId: source.sourceId || null
     };
 
