@@ -211,7 +211,7 @@ function openSimulation(){
    t.querySelectorAll("[data-transit-destination]").forEach(b=>b.onclick=()=>{
     const result=a.publicTransit(window.__escieTransitMode||"METRO",b.dataset.transitDestination);
     if(!result.ok){say?.(result.reason==="INSUFFICIENT_FUNDS"?"TRANSIT · NOT ENOUGH MONEY FOR THE FARE.":result.reason==="ALREADY_THERE"?"TRANSIT · YOU ARE ALREADY THERE.":"TRANSIT · ROUTE UNAVAILABLE.");r();return}
-    feedback?.("select");say?.(result.mode+" · "+result.destination+" · "+result.minutes+" MINUTES SKIPPED · $"+result.fare.toFixed(2));r();render?.();
+    feedback?.("select");say?.(result.mode+" · "+result.destination+" · "+result.minutes+" MINUTES SKIPPED · $"+result.fare.toFixed(2)+" · ARRIVED");r();render?.();
    });
   }
  };
