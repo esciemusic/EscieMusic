@@ -35,10 +35,10 @@ function filtered(){
 function card(r){
  return '<button type="button" class="world-card world-node-card" data-node="'+esc(r.id)+'"><div class="world-card-main"><span class="world-kicker">'+esc(type(r))+'</span><h3>'+esc(title(r))+'</h3><p>'+esc(String(r.description||r.summary||r.story||"A doorway into the ESCIE universe.").slice(0,220))+'</p></div><span class="world-arrow" aria-hidden="true">↗</span></button>';
 }
-function remember(id){if(!id)return;if(!state.visited.includes(String(id)))state.visited.push(String(id));if(state.trail[state.trail.length-1]!==String(id))state.trail.push(String(id));state.trail=state.trail.slice(-12);try{sessionStorage.setItem("escie_world_trail",JSON.stringify(state.trail));sessionStorage.setItem("escie_world_visited",JSON.stringify(state.visited.slice(-100)))}catch(e){}}
+function remember(id){if(id==null)return;const value=String(id).trim();if(!value)return;if(!state.visited.includes(value))state.visited.push(value);if(state.trail[state.trail.length-1]!==value)state.trail.push(value);state.trail=state.trail.slice(-12);state.visited=state.visited.slice(-100);try{sessionStorage.setItem("escie_world_trail",JSON.stringify(state.trail));sessionStorage.setItem("escie_world_visited",JSON.stringify(state.visited))}catch(e){}}
 function pathContext(){const rs=records(),out=[];for(let i=1;i<state.trail.length;i++){const from=rs.find(r=>String(r.id)===String(state.trail[i-1])),to=rs.find(r=>String(r.id)===String(state.trail[i]));if(!from||!to)continue;const link=related(from.id).find(x=>String(x.node.id)===String(to.id));out.push({from,to,relationship:link&&link.r&&link.r.type?String(link.r.type).replace(/_/g," "):"UNLINKED THREAD"});}return out;}
 function investigationSummary(){const p=pathContext();const unknowns=state.visited.map(id=>records().find(r=>String(r.id)===String(id))).filter(Boolean).filter(r=>String(r.certainty||"").toUpperCase()==="UNKNOWN").length;return {steps:p.length,unknowns};}
-function loadTrail(){try{const a=JSON.parse(sessionStorage.getItem("escie_world_trail")||"[]");const b=JSON.parse(sessionStorage.getItem("escie_world_visited")||"[]");if(Array.isArray(a))state.trail=a;if(Array.isArray(b))state.visited=b}catch(e){}}
+function loadTrail(){try{const a=JSON.parse(sessionStorage.getItem("escie_world_trail")||"[]");const b=JSON.parse(sessionStorage.getItem("escie_world_visited")||"[]");if(Array.isArray(a))state.trail=a.filter(v=>typeof v==="string"&&v.trim()).slice(-12);if(Array.isArray(b))state.visited=b.filter(v=>typeof v==="string"&&v.trim()).slice(-100)}catch(e){state.trail=[];state.visited=[]}}
 function detail(r){
  const links=related(r.id);
  const connections=links.length?links.map(x=>'<button type="button" data-node="'+esc(x.node.id)+'"><strong>'+esc(title(x.node))+'</strong><small>'+esc(x.r.type||"related")+'</small></button>').join(""):'<span class="world-empty">No public connection recorded yet.</span>';
@@ -95,7 +95,7 @@ function bind(root){
 function handleWorldHash(){const hash=location.hash.match(/^#world-node=(.+)$/);if(!hash){state.selected=null;render();return}try{const id=decodeURIComponent(hash[1]);if(records().some(r=>String(r.id)===String(id))){state.selected=id;remember(id);render();}}catch(e){}}
 function init(){
  loadTrail();
- const hash=location.hash.match(/^#world-node=(.+)$/);if(hash){try{state.selected=decodeURIComponent(hash[1]);remember(state.selected)}catch(e){}}
+ const hash=location.hash.match(/^#world-node=(.+)$/);if(hash){try{const id=decodeURIComponent(hash[1]);if(records().some(r=>String(r.id)===String(id))){state.selected=id;remember(id)}}catch(e){state.selected=null}}
  const nav=document.getElementById("main-navigation"),root=$("world-container");if(!nav||!root)return;
  if(!nav.querySelector('a[href="#world"]')){const a=document.createElement("a");a.href="#world";a.textContent="THE WORLD";a.dataset.route="world";nav.appendChild(a)}
  render();
