@@ -1,0 +1,21 @@
+name: ESCIE CENTRAL AUDIT
+on:
+  push:
+    paths:
+      - "central-connect/**"
+      - "tests/central.node.test.js"
+      - ".github/workflows/central.yml"
+  pull_request:
+    paths:
+      - "central-connect/**"
+      - "tests/central.node.test.js"
+      - ".github/workflows/central.yml"
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node tests/central.node.test.js
