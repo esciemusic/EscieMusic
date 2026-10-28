@@ -294,3 +294,10 @@ assert(glassMemoryRuntime.includes("canonical_write=false"),"Glass Eye memory mu
 assert(glassMemoryRuntime.includes("CLEAR MY MEMORY"),"Glass Eye memory must provide local reset");
 assert(glassMemoryRuntime.includes("LOCAL / PRIVATE / NON-CANONICAL"),"Glass Eye memory must disclose its local non-canonical status");
 assert(fs.readFileSync("index.html","utf8").includes('id="glass-eye-memory"'),"public site must expose Glass Eye memory surface");
+
+const gameCommerceRuntime=fs.readFileSync("data/games.js","utf8");
+assert(gameCommerceRuntime.includes("game_item"),"game items must be supported");
+assert(gameCommerceRuntime.includes("game_purchase"),"game purchases must be supported");
+assert(gameCommerceRuntime.includes("validateItem"),"game item validation must exist");
+assert(gameCommerceRuntime.includes("canonical truth directly"),"game commerce must not write canonical truth directly");
+assert(gameCommerceRuntime.includes("external_purchase_url"),"game items must support external purchase routing");
