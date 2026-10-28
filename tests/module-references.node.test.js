@@ -8,7 +8,9 @@ function assert(condition, message) {
 }
 
 const appIndex = scripts.indexOf("app.js");
+const gameIndex = scripts.indexOf("data/games.js");
 assert(appIndex >= 0, "app.js must be loaded");
+assert(gameIndex >= 0, "data/games.js must be loaded");
 
 const providers = new Map();
 
@@ -47,6 +49,11 @@ referenced.forEach((name) => {
 
   if (!provider) {
     missing.push(name);
+    return;
+  }
+
+  if (name === "ESCIE_GAME_REGISTRY" && provider.index >= appIndex) {
+    late.push(name + " <- " + provider.src);
     return;
   }
 
