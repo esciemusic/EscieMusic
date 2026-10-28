@@ -84,6 +84,7 @@
   return String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
  }
 
+ const raf=typeof window.requestAnimationFrame==="function"?window.requestAnimationFrame.bind(window):fn=>window.setTimeout(fn,0);
  function reducedMotion(){return window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;}
 
  function observeMedia(el){
@@ -280,7 +281,7 @@
    POINTER_HANDLER=event=>{
     pointerX=event.clientX/window.innerWidth-.5;
     pointerY=event.clientY/window.innerHeight-.5;
-    if(!pointerFrame) pointerFrame=window.requestAnimationFrame(applyPointer);
+    if(!pointerFrame) pointerFrame=raf(applyPointer);
    };
    window.addEventListener("pointermove",POINTER_HANDLER,{passive:true});
   }
