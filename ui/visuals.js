@@ -183,7 +183,7 @@
    return {section,items:bySection.get(key)||bySection.get("all")||[]};
   }).filter(item=>item.items.length>1);
 
-  if(!rotatingSections.length)return;
+  if(!rotatingSections.length || reducedMotion())return;
   const cursors=rotatingSections.map(({items})=>({items,index:0}));
   const rotate=()=>{
    rotatingSections.forEach(({section,items},index)=>{
