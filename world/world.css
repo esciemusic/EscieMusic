@@ -80,3 +80,9 @@ body.escie-world-page{overscroll-behavior:none}
 .preference-actions{display:flex;gap:.5rem;flex-wrap:wrap;padding-top:1rem}
 .preference-actions button{border:1px solid rgba(168,255,145,.3);background:rgba(168,255,145,.03);color:inherit;padding:.7rem .85rem;font:600 .58rem monospace;letter-spacing:.08em}
 @media(max-width:560px){.preference-row{grid-template-columns:1fr}.preference-row select{width:100%}}
+
+body[data-world-motion="reduced"] *{animation-duration:.001ms!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+body[data-world-graphics="low"] .world-device .world-shell{box-shadow:none!important;backdrop-filter:none!important}
+body[data-world-graphics="low"] .world-glow,.world-device.device-immersive[data-world-graphics="low"] .world-shell{filter:none!important}
+body[data-world-text="large"] .world-shell{font-size:112%}
+body[data-world-text="large"] .world-shell button{font-size:calc(100% + .08rem)}
