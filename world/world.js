@@ -9,7 +9,7 @@ const objects=[
 {id:"door",x:3,y:2,label:"DOOR",text:"Locked. Behind it: fluorescent light and something that sounds like a television.",discovery:null},
 {id:"chair",x:9,y:7,label:"CHAIR",text:"An empty chair faces the wall. There is nothing on it.",discovery:null}
 ];
-if(window.ESCIE_WORLD_NPC){window.ESCIE_WORLD_NPC.registerNPC({id:"witness",x:8,y:3,role:"WITNESS",status:"UNKNOWN",awareness:78,social_context:"LOCAL"});window.ESCIE_WORLD_NPC.registerSurveillance({id:"lane-camera",x:12,y:2,type:"CAMERA",radius:5,awareness:95});}
+if(window.ESCIE_WORLD_NPC){window.ESCIE_WORLD_NPC.registerNPC({id:"witness",x:8,y:3,role:"WITNESS",status:"UNKNOWN",awareness:78,social_context:"LOCAL",facing:"S",peripheral:true});window.ESCIE_WORLD_NPC.registerSurveillance({id:"lane-camera",x:12,y:2,type:"CAMERA",radius:5,awareness:95,facing:"S",peripheral:false});}
 const walls=new Set(["0,0","1,0","2,0","3,0","4,0","5,0","6,0","7,0","8,0","9,0","10,0","11,0","12,0","13,0","14,0","15,0","0,1","15,1","0,2","15,2","0,3","4,3","5,3","15,3","0,4","4,4","5,4","15,4","0,5","4,5","15,5","0,6","15,6","0,7","15,7","0,8","15,8","0,9","1,9","2,9","3,9","4,9","5,9","6,9","7,9","8,9","9,9","10,9","11,9","12,9","13,9","14,9","15,9"]);
 let pos={...start},target=null,gamepadPrev={},dialogue=null,room="lane",roomObjects=[],roomState={};
 const MARKET=[
