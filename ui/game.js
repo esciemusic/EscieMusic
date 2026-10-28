@@ -2,79 +2,104 @@
 "use strict";
 const root=typeof window!=="undefined"?window:globalThis;
 const KEY="escie_game_state_v1";
-const defaults={version:3,player_id:null,screen:"gateway",scene:"threshold",visited:[],inventory:[],signals:0,entered:false,entry_source:"site",entry_payload:null};
+const defaults={version:4,player_id:null,screen:"gateway",scene:"threshold",visited:[],inventory:[],signals:0,entered:false,entry_source:"site",entry_payload:null,discoveries:[],path:[],unresolved:[]};
+
 const scenes=[
- {id:"threshold",label:"THE THRESHOLD",title:"THE FIRST DOOR",text:"You are not entering another universe. You are entering another layer of the same one.",item:null,next:"laneway"},
- {id:"laneway",label:"PARC-EXTENSION",title:"THE LANEWAY",text:"Concrete. Winter air. A camera where there should not be one. Something has been left behind.",item:"game-item-baby-shoe",next:"signal"},
- {id:"signal",label:"THE SIGNAL",title:"FOLLOW THE DISTORTION",text:"The signal is weak, but it is not random. Look closer. Listen longer.",item:"game-item-signal-key",next:"return"},
- {id:"return",label:"RETURN",title:"NOTHING STAYS IN THE SCREEN",text:"What you find here can become part of your route through ESCIE. The world remains grounded in reality.",item:null,next:null}
+ {id:"threshold",label:"THE THRESHOLD",title:"THE FIRST DOOR",text:"You are not entering another universe. You are entering another layer of the same one.",item:null,next:"laneway",signal:1,location:"the-world"},
+ {id:"laneway",label:"PARC-EXTENSION",title:"THE LANEWAY",text:"Concrete. Winter air. A camera where there should not be one. Something has been left behind.",item:"game-item-baby-shoe",next:"signal",signal:1,location:"parc-extension",choices:[{id:"observe-camera",label:"WATCH THE CAMERA",discovery:"game-discovery-camera"},{id:"inspect-object",label:"INSPECT THE OBJECT",discovery:"game-item-baby-shoe"}]},
+ {id:"signal",label:"THE SIGNAL",title:"FOLLOW THE DISTORTION",text:"The signal is weak, but it is not random. Look closer. Listen longer.",item:"game-item-signal-key",next:"return",signal:1,location:"signal-thread",choices:[{id:"listen",label:"LISTEN LONGER",discovery:"game-discovery-whisper"},{id:"follow",label:"FOLLOW THE DISTORTION",discovery:"game-discovery-trail"}]},
+ {id:"return",label:"RETURN",title:"NOTHING STAYS IN THE SCREEN",text:"What you find here can become part of your route through ESCIE. The world remains grounded in reality.",item:null,next:null,signal:0,location:"the-world"}
 ];
+
 const items=[
- {id:"game-item-baby-shoe",title:"BABY SHOE",description:"A found object. Meaning unresolved.",price_type:"FREE",availability:"AVAILABLE"},
- {id:"game-item-signal-key",title:"SIGNAL KEY",description:"A digital key that marks a discovered thread.",price_type:"EARNED",price:1,currency:"SIGNAL",availability:"AVAILABLE"}
+ {id:"game-item-baby-shoe",title:"BABY SHOE",description:"A found object. Meaning unresolved.",price_type:"FREE",availability:"AVAILABLE",digital:false},
+ {id:"game-item-signal-key",title:"SIGNAL KEY",description:"A digital key that marks a discovered thread.",price_type:"EARNED",price:1,currency:"SIGNAL",availability:"AVAILABLE",digital:true},
+ {id:"game-item-green-pass",title:"GREEN PASS",description:"A future access token. Not yet redeemable.",price_type:"EARNED",price:3,currency:"SIGNAL",availability:"LOCKED",digital:true}
 ];
+
+const discoveries=[
+ {id:"game-discovery-camera",title:"CAMERA FRAME",description:"The camera is pointed somewhere specific. The reason is unknown.",unresolved:true},
+ {id:"game-discovery-whisper",title:"UNSTABLE AUDIO",description:"There is a voice beneath the distortion. You cannot yet identify it.",unresolved:true},
+ {id:"game-discovery-trail",title:"THE TRAIL",description:"The distortion points beyond the current scene.",unresolved:true}
+];
+
+const aliases={threshold:"threshold",door:"threshold",world:"threshold",enter:"threshold",laneway:"laneway",lane:"laneway",parc:"laneway","parc-extension":"laneway",signal:"signal",distortion:"signal",key:"game-item-signal-key",shoe:"game-item-baby-shoe","baby-shoe":"game-item-baby-shoe",camera:"game-discovery-camera",whisper:"game-discovery-whisper",trail:"game-discovery-trail"};
+
 function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||"null");return Object.assign({},defaults,s||{})}catch(e){return Object.assign({},defaults)}}
 function save(s){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}}
 function esc(v){return String(v??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]))}
 function current(s){return scenes.find(x=>x.id===s.scene)||scenes[0]}
 function item(id){return items.find(x=>x.id===id)}
+function discovery(id){return discoveries.find(x=>x.id===id)}
 function ensurePlayer(s){if(!s.player_id)s.player_id="visitor-"+Math.random().toString(36).slice(2,10);return s}
+function unique(a,v){if(v&&!a.includes(v))a.push(v)}
+function awardSignal(s,n){s.signals=Math.max(0,Number(s.signals||0)+Number(n||0))}
+function memoryEvent(s,type,target,extra){
+ const entry={type,target_id:target,timestamp:new Date().toISOString()};s.path.push(entry);s.path=s.path.slice(-500);
+ const api=root.ESCIE_GAME_REGISTRY;
+ if(api&&typeof api.applyPlayerEvent==="function"){
+  const state=api.applyPlayerEvent({player_id:s.player_id,visited_scenes:s.visited,collected:s.inventory,discoveries:s.discoveries,path:s.path},Object.assign({type,target_id:target,scene_id:s.scene},extra||{}));
+  s.path=state.path||s.path;s.discoveries=state.discoveries||s.discoveries;s.unresolved=state.unresolved||s.unresolved;
+ }
+}
+function visit(s,id){
+ if(!s.visited.includes(id)){s.visited.push(id);const scene=scenes.find(x=>x.id===id);if(scene&&scene.signal)awardSignal(s,scene.signal);memoryEvent(s,"ENTERED",id,{location_id:scene&&scene.location,signal_id:scene&&scene.signal?"signal-"+id:null})}
+}
 function getEntry(){
  try{
-  const p=new URLSearchParams(location.search);
-  const raw=(p.get("game")||p.get("entry")||"").trim().toLowerCase();
-  const hash=(location.hash||"").replace(/^#/, "").trim().toLowerCase();
-  const code=raw||hash.replace(/^game[/:]?/,"");
-  if(!code)return null;
-  const allowed=scenes.some(x=>x.id===code)||items.some(x=>x.id===code);
-  return allowed?code:null;
+  const p=new URLSearchParams(location.search);const raw=(p.get("game")||p.get("entry")||"").trim().toLowerCase();const hash=(location.hash||"").replace(/^#/,"").trim().toLowerCase();
+  const code=(raw||hash.replace(/^game[/:]?/,"")).replace(/^escie[/:]?/,"");if(!code)return null;const resolved=aliases[code]||code;
+  return scenes.some(x=>x.id===resolved)||items.some(x=>x.id===resolved)||discoveries.some(x=>x.id===resolved)?resolved:null;
  }catch(e){return null}
 }
 function applyEntry(s){
- const code=getEntry();if(!code||s.entry_payload===code)return s;
- const targetScene=scenes.find(x=>x.id===code);
- const targetItem=items.find(x=>x.id===code);
- s.entered=true;s.entry_source="link";s.entry_payload=code;
- if(targetScene){s.scene=targetScene.id;visit(s,targetScene.id);}
- if(targetItem){if(!s.inventory.includes(targetItem.id))s.inventory.push(targetItem.id);s.screen="discovery";}
+ const code=getEntry();if(!code||s.entry_payload===code)return s;s.entered=true;s.entry_source="link";s.entry_payload=code;
+ const targetScene=scenes.find(x=>x.id===code),targetItem=items.find(x=>x.id===code),targetDiscovery=discoveries.find(x=>x.id===code);
+ if(targetScene){s.scene=targetScene.id;visit(s,targetScene.id)}
+ if(targetItem){unique(s.inventory,targetItem.id);memoryEvent(s,"DISCOVERED",targetItem.id)}
+ if(targetDiscovery){unique(s.discoveries,targetDiscovery.id);memoryEvent(s,"DISCOVERED",targetDiscovery.id,{unknown:targetDiscovery.unresolved,unresolved:targetDiscovery.unresolved})}
  return s;
 }
-function visit(s,id){if(!s.visited.includes(id))s.visited.push(id)}
 function collect(s,id){
- if(!s.inventory.includes(id)){
-  const it=item(id);
-  if(it&&it.price_type==="EARNED"){if(s.signals<Number(it.price||0))return false;s.signals-=Number(it.price||0)}
-  s.inventory.push(id);
- }
- return true
+ if(s.inventory.includes(id))return true;const it=item(id);if(!it||it.availability==="LOCKED")return false;
+ if(it.price_type==="EARNED"){if(s.signals<Number(it.price||0))return false;s.signals-=Number(it.price||0)}
+ s.inventory.push(id);memoryEvent(s,"COLLECTED",id);return true;
+}
+function choose(s,id){
+ const c=current(s),choice=(c.choices||[]).find(x=>x.id===id);if(!choice)return false;
+ if(choice.discovery&&!s.discoveries.includes(choice.discovery)){unique(s.discoveries,choice.discovery);const d=discovery(choice.discovery);memoryEvent(s,"DISCOVERED",choice.discovery,{unknown:!!(d&&d.unresolved),unresolved:!!(d&&d.unresolved)});awardSignal(s,1)}
+ return true;
 }
 function render(){
- const el=document.getElementById("game-container");if(!el)return;
- let s=ensurePlayer(load());s=applyEntry(s);let c=current(s);save(s);
+ const el=document.getElementById("game-container");if(!el)return;let s=ensurePlayer(load());s=applyEntry(s);const c=current(s);save(s);
  if(!s.entered){
   el.innerHTML=`<div class="game-gateway game-entry-gateway"><div class="game-gateway-head"><span class="game-kicker">ESCIE / THE WORLD</span><span class="game-status">SIGNAL DETECTED</span></div><div class="game-entry-main"><span class="game-kicker">THE GLASS EYE</span><h3>YOU ARE ALREADY HERE.</h3><p>This is not a separate world. It is another layer of the same one. Enter when you are ready.</p><div class="game-entry-route"><span>ESCIE</span><i>→</i><span>THE WORLD</span><i>→</i><strong>THE SIGNAL</strong></div><button type="button" class="game-enter-button" data-game-enter>ENTER THE WORLD</button></div></div>`;
-  const b=el.querySelector("[data-game-enter]");if(b)b.onclick=()=>{s.entered=true;visit(s,"threshold");save(s);render()};
-  return;
+  const b=el.querySelector("[data-game-enter]");if(b)b.onclick=()=>{s.entered=true;visit(s,"threshold");save(s);render()};return;
  }
- const inv=s.inventory.map(id=>item(id)).filter(Boolean);
- const found=c.item?item(c.item):null;
- el.innerHTML='<div class="game-gateway"><div class="game-gateway-head"><span class="game-kicker">ESCIE / PLAYABLE LAYER</span><span class="game-status">LOCAL PLAYER STATE</span></div>'+
- '<div class="game-gateway-main"><div class="game-signal-mark" aria-hidden="true"><span></span></div><div class="game-copy"><span class="game-kicker">'+esc(c.label)+'</span><h3>'+esc(c.title)+'</h3><p>'+esc(c.text)+'</p>'+
- (found?'<div class="game-discovery"><span class="game-kicker">OBJECT IN FRAME</span><strong>'+esc(found.title)+'</strong><small>'+esc(found.description)+'</small><button type="button" data-game-collect="'+esc(found.id)+'">'+(s.inventory.includes(found.id)?"COLLECTED":"TAKE IT")+'</button></div>':"")+
- '<div class="game-actions">'+(c.next?'<button type="button" data-game-next>CONTINUE →</button>': '<button type="button" data-game-reset>RESTART EXPERIENCE</button>')+'<button type="button" data-game-inventory>INVENTORY ('+inv.length+')</button></div></div></div>'+
- '<div class="game-progress"><span>'+esc(String(s.visited.length))+' LOCATIONS VISITED</span><span>'+esc(String(s.signals))+' SIGNAL</span><span>'+esc(String(inv.length))+' ITEMS</span></div></div>';
- bind(el,s)
+ const inv=s.inventory.map(item).filter(Boolean),found=c.item?item(c.item):null;
+ const choices=(c.choices||[]).map(x=>'<button type="button" data-game-choice="'+esc(x.id)+'">'+esc(x.label)+'</button>').join("");
+ const foundMarkup=found?'<div class="game-discovery"><span class="game-kicker">OBJECT IN FRAME</span><strong>'+esc(found.title)+'</strong><small>'+esc(found.description)+'</small><button type="button" data-game-collect="'+esc(found.id)+'">'+(s.inventory.includes(found.id)?"COLLECTED":"TAKE IT")+'</button></div>':"";
+ const choiceMarkup=choices?'<div class="game-choices"><span class="game-kicker">WHAT DO YOU DO?</span>'+choices+'</div>':"";
+ const discovered=s.discoveries.map(discovery).filter(Boolean);
+ const memory=discovered.length?'<div class="game-memory"><span class="game-kicker">GLASS EYE / DISCOVERIES</span>'+discovered.map(d=>'<span>'+esc(d.title)+'</span>').join("")+'</div>':"";
+ el.innerHTML='<div class="game-gateway"><div class="game-gateway-head"><span class="game-kicker">ESCIE / PLAYABLE LAYER</span><span class="game-status">LOCAL PLAYER STATE</span></div><div class="game-gateway-main"><div class="game-signal-mark" aria-hidden="true"><span></span></div><div class="game-copy"><span class="game-kicker">'+esc(c.label)+'</span><h3>'+esc(c.title)+'</h3><p>'+esc(c.text)+'</p>'+foundMarkup+choiceMarkup+memory+'<div class="game-actions">'+(c.next?'<button type="button" data-game-next>CONTINUE →</button>':'<button type="button" data-game-reset>RESTART EXPERIENCE</button>')+'<button type="button" data-game-inventory>INVENTORY ('+inv.length+')</button></div></div></div><div class="game-progress"><span>'+esc(String(s.visited.length))+' LOCATIONS VISITED</span><span>'+esc(String(s.signals))+' SIGNAL</span><span>'+esc(String(inv.length))+' ITEMS</span></div></div>';
+ bind(el,s);
 }
 function bind(el,s){
- el.querySelectorAll("[data-game-next]").forEach(b=>b.onclick=()=>{const c=current(s);if(c.next){s.scene=c.next;visit(s,s.scene);save(s);render();}});
- el.querySelectorAll("[data-game-collect]").forEach(b=>b.onclick=()=>{const ok=collect(s,b.dataset.gameCollect);if(ok){visit(s,s.scene);save(s);render()}else{b.textContent="NEED 1 SIGNAL";}});
+ el.querySelectorAll("[data-game-next]").forEach(b=>b.onclick=()=>{const c=current(s);if(c.next){s.scene=c.next;visit(s,s.scene);save(s);render()}});
+ el.querySelectorAll("[data-game-collect]").forEach(b=>b.onclick=()=>{const ok=collect(s,b.dataset.gameCollect);if(ok){save(s);render()}else{b.textContent="NEED MORE SIGNAL"}});
+ el.querySelectorAll("[data-game-choice]").forEach(b=>b.onclick=()=>{choose(s,b.dataset.gameChoice);save(s);render()});
  el.querySelectorAll("[data-game-reset]").forEach(b=>b.onclick=()=>{localStorage.removeItem(KEY);render()});
- el.querySelectorAll("[data-game-inventory]").forEach(b=>b.onclick=()=>{const inv=s.inventory.map(id=>item(id)).filter(Boolean);alert(inv.length?inv.map(x=>x.title).join("\n"):"INVENTORY EMPTY")});
+ el.querySelectorAll("[data-game-inventory]").forEach(b=>b.onclick=()=>{const inv=s.inventory.map(item).filter(Boolean);alert(inv.length?inv.map(x=>x.title).join("\n"):"INVENTORY EMPTY")});
 }
-function init(){
- const el=document.getElementById("game-container");if(!el)return;
- const s=load();ensurePlayer(s);save(s);render();
-}
+function init(){const el=document.getElementById("game-container");if(!el)return;const s=load();ensurePlayer(s);save(s);render()}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
-root.ESCIE_GAME_GATEWAY={version:"1.2.0",scenes,items,enter(){const s=ensurePlayer(load());s.entered=true;visit(s,"threshold");save(s);render()},route(code){if(!scenes.some(x=>x.id===code)&&!items.some(x=>x.id===code))return false;history.replaceState(null,"","?game="+encodeURIComponent(code));const s=ensurePlayer(load());s.entered=true;s.entry_source="api";s.entry_payload=code;if(scenes.some(x=>x.id===code)){s.scene=code;visit(s,code)}else if(!s.inventory.includes(code))s.inventory.push(code);save(s);render();return true},reset(){localStorage.removeItem(KEY);render()},getState(){return load()}};
+
+root.ESCIE_GAME_GATEWAY={
+ version:"1.3.0",scenes,items,discoveries,
+ enter(){const s=ensurePlayer(load());s.entered=true;visit(s,"threshold");save(s);render();return true},
+ route(code){const resolved=aliases[String(code||"").trim().toLowerCase()]||String(code||"").trim().toLowerCase();if(!scenes.some(x=>x.id===resolved)&&!items.some(x=>x.id===resolved)&&!discoveries.some(x=>x.id===resolved))return false;history.replaceState(null,"","?game="+encodeURIComponent(resolved));const s=ensurePlayer(load());s.entered=true;s.entry_source="api";s.entry_payload=resolved;if(scenes.some(x=>x.id===resolved)){s.scene=resolved;visit(s,resolved)}else if(items.some(x=>x.id===resolved))unique(s.inventory,resolved);else unique(s.discoveries,resolved);save(s);render();return true},
+ discover(id){const s=ensurePlayer(load()),d=discovery(id);if(!d)return false;unique(s.discoveries,d.id);memoryEvent(s,"DISCOVERED",d.id,{unknown:d.unresolved,unresolved:d.unresolved});awardSignal(s,1);save(s);render();return true},
+ reset(){localStorage.removeItem(KEY);render()},getState(){return load()},getMemory(){const s=load();return {player_id:s.player_id,visited:s.visited.slice(),inventory:s.inventory.slice(),signals:s.signals,discoveries:s.discoveries.slice(),path:s.path.slice(),unresolved:s.unresolved.slice()}}
+};
 })();
