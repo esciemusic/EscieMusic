@@ -227,3 +227,6 @@ assert(!appRuntime.includes("The central consciousness / interface."),"app fallb
 assert(appRuntime.includes('function reduceMotion()'),"app runtime needs reduced-motion detection");
 assert(appRuntime.includes('behavior:reduceMotion()?"auto":"smooth"'),"app section navigation must respect reduced motion");
 assert(appRuntime.includes('reduceMotion() || !("IntersectionObserver" in window)'),"app visual observer must respect reduced motion");
+
+assert(appRuntime.includes('if (!reduceMotion()) {'),"app route transitions must be skipped when reduced motion is requested");
+assert(appRuntime.includes('window.setTimeout(focusFirst, 0)'),"mobile navigation focus needs a scheduler fallback");
