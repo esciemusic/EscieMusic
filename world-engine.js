@@ -79,7 +79,7 @@ function render(){
  if(state.eyeOpen)root.insertAdjacentHTML("beforeend",eyePanel());
  bind(root);
 }
-function bind(root){
+function syncNodeHash(id){try{if(id)history.replaceState(null,"","#world-node="+encodeURIComponent(String(id)));else history.replaceState(null,"",location.pathname+location.search)}catch(e){}}\nfunction bind(root){
  root.querySelectorAll("[data-glass-eye]").forEach(b=>b.onclick=()=>{state.eyeOpen=!state.eyeOpen;render()});
  root.querySelectorAll("[data-eye-clear]").forEach(b=>b.onclick=()=>{state.trail=[];state.visited=[];try{sessionStorage.removeItem("escie_world_trail");sessionStorage.removeItem("escie_world_visited")}catch(e){}render()});
  root.querySelectorAll("[data-eye-close]").forEach(b=>b.onclick=()=>{state.eyeOpen=false;render()});
@@ -87,10 +87,10 @@ function bind(root){
  const search=$("world-public-search");if(search)search.oninput=e=>{state.q=e.target.value;render();const x=$("world-public-search");if(x){x.focus();x.setSelectionRange(state.q.length,state.q.length)}};
  const select=$("world-public-type");if(select)select.onchange=e=>{state.type=e.target.value;render()};
  root.querySelectorAll("[data-reality]").forEach(b=>b.onclick=()=>{state.reality=b.dataset.reality;state.tab="atlas";render()});
- root.querySelectorAll("[data-node]").forEach(b=>b.onclick=e=>{e.preventDefault();remember(b.dataset.node);state.selected=b.dataset.node;render();setTimeout(()=>document.querySelector(".world-detail")?.scrollIntoView({behavior:"smooth",block:"nearest"}),0)});
- const path=$("world-path-items");if(path){const map=new Map(records().map(r=>[String(r.id),r]));path.innerHTML=state.trail.map(id=>map.get(String(id))).filter(Boolean).map(n=>"<button type=\"button\" data-node=\""+esc(n.id)+"\">"+esc(title(n))+"</button>").join(" → ")||"START HERE";path.querySelectorAll("[data-node]").forEach(b=>b.onclick=e=>{e.preventDefault();remember(b.dataset.node);state.selected=b.dataset.node;render()})}
+ root.querySelectorAll("[data-node]").forEach(b=>b.onclick=e=>{e.preventDefault();remember(b.dataset.node);state.selected=b.dataset.node;syncNodeHash(state.selected);render();setTimeout(()=>document.querySelector(".world-detail")?.scrollIntoView({behavior:"smooth",block:"nearest"}),0)});
+ const path=$("world-path-items");if(path){const map=new Map(records().map(r=>[String(r.id),r]));path.innerHTML=state.trail.map(id=>map.get(String(id))).filter(Boolean).map(n=>"<button type=\"button\" data-node=\""+esc(n.id)+"\">"+esc(title(n))+"</button>").join(" → ")||"START HERE";path.querySelectorAll("[data-node]").forEach(b=>b.onclick=e=>{e.preventDefault();remember(b.dataset.node);state.selected=b.dataset.node;syncNodeHash(state.selected);render()})}
  root.querySelectorAll("[data-copy-node]").forEach(b=>b.onclick=async()=>{const u=location.href.split("#")[0]+"#world-node="+encodeURIComponent(state.selected||"");try{await navigator.clipboard.writeText(u);b.textContent="COPIED";setTimeout(()=>b.textContent="COPY NODE LINK",1200)}catch(e){}});
- root.querySelectorAll("[data-close-node]").forEach(b=>b.onclick=()=>{state.selected=null;render()});
+ root.querySelectorAll("[data-close-node]").forEach(b=>b.onclick=()=>{state.selected=null;syncNodeHash(null);render()});
  root.querySelectorAll("[data-focus-search]").forEach(b=>b.onclick=()=>{const s=$("world-public-search");if(s){s.value=title(records().find(r=>String(r.id)===String(state.selected))||{});s.dispatchEvent(new Event("input"));s.focus()}});
 }
 function init(){
