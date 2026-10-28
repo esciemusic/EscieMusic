@@ -84,9 +84,9 @@ function render(){
  }
  if(state.tab==="trails")body='<div class="world-intro"><span class="world-kicker">EXPLORATION TRAILS</span><h3>NO WRONG DOOR.</h3><p>Every entry point can lead somewhere else. The audience builds its own route through the public graph.</p></div>'+trails(rows);
 
- const nav='<div class="world-tabs"><button class="'+(state.eyeOpen?"active":"")+'" data-glass-eye>GLASS EYE</button>'+tabs.map(t=>'<button class="'+(state.tab===t[0]?"active":"")+'" data-world-tab="'+t[0]+'">'+t[1]+'</button>').join("")+'</div>';
+ const nav='<div class="world-tabs" role="tablist" aria-label="ESCIE World navigation"><button type="button" class="'+(state.eyeOpen?"active":"")+'" data-glass-eye aria-expanded="'+(state.eyeOpen?"true":"false")+'" aria-controls="glass-eye-panel">GLASS EYE</button>'+tabs.map(t=>'<button type="button" role="tab" class="'+(state.tab===t[0]?"active":"")+'" aria-selected="'+(state.tab===t[0]?"true":"false")+'" data-world-tab="'+t[0]+'">'+t[1]+'</button>').join("")+'</div>';
  root.innerHTML='<div class="world-engine"><div class="world-header"><div><span class="world-kicker">ESCIE WORLD ENGINE</span><h3>THE WORLD BEHIND THE WORK.</h3><p>Explore the universe. Follow the signal. Decide what you believe.</p></div></div>'+nav+'<div class="world-controls"><input id="world-public-search" value="'+esc(state.q)+'" placeholder="SEARCH THE WORLD…" aria-label="Search the ESCIE world"><select id="world-public-type"><option value="ALL">ALL TYPES</option>'+types.map(t=>'<option value="'+esc(t)+'" '+(state.type===t?"selected":"")+'>'+esc(t)+'</option>').join("")+'</select></div>'+body+(state.selected?((()=>{const r=all.find(x=>String(x.id)===String(state.selected));return r?detail(r):""})()):"")+'</div>';
- if(state.eyeOpen)root.insertAdjacentHTML("beforeend",eyePanel());
+ if(state.eyeOpen)root.insertAdjacentHTML("beforeend",eyePanel().replace('class="glass-eye"','class="glass-eye" id="glass-eye-panel" role="region" aria-label="The Glass Eye"'));
  bind(root);
  }
 function syncNodeHash(id){try{if(id)history.replaceState(null,"","#world-node="+encodeURIComponent(String(id)));else history.replaceState(null,"",location.pathname+location.search)}catch(e){}}
