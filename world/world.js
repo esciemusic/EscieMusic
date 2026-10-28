@@ -206,12 +206,12 @@ function openSimulation(){
   const t=e.querySelector("[data-transit-panel]");
   if(t){
    const routes=a.transitRoutes||{},here=String(s.neighbourhood||"PARC-EXTENSION").toUpperCase();
-   t.innerHTML="<div class='transit-head'><strong>PUBLIC TRANSIT</strong><span>SKIPPABLE JOURNEYS · FARE REQUIRED</span></div><div class='transit-mode'><button type='button' data-transit-mode='METRO' class='active'>METRO</button><button type='button' data-transit-mode='BUS'>BUS</button></div><div class='transit-routes'>"+Object.keys(routes).filter(d=>d!==here).map(d=>"<button type='button' data-transit-destination='"+d+"'><b>"+d+"</b><small>METRO / BUS · $"+Number(routes[d].baseFare).toFixed(2)+"</small></button>").join("")+"</div>";
+   t.innerHTML="<div class='transit-head'><strong>PUBLIC TRANSIT</strong><span>SKIPPABLE JOURNEYS · FARE REQUIRED</span></div><div class='transit-mode'><button type='button' data-transit-mode='METRO' class='active'>METRO</button><button type='button' data-transit-mode='BUS'>BUS</button></div><div class='transit-routes'>"+Object.keys(routes).filter(d=>d!==here).map(d=>"<button type='button' data-transit-destination='"+d+"'><b>"+d+"</b><small>"+(routes[d].lines||[]).join(" / ")+" · METRO / BUS · $"+Number(routes[d].baseFare).toFixed(2)+"</small></button>").join("")+"</div>";
    t.querySelectorAll("[data-transit-mode]").forEach(b=>b.onclick=()=>{window.__escieTransitMode=b.dataset.transitMode;t.querySelectorAll("[data-transit-mode]").forEach(x=>x.classList.toggle("active",x===b))});
    t.querySelectorAll("[data-transit-destination]").forEach(b=>b.onclick=()=>{
     const result=a.publicTransit(window.__escieTransitMode||"METRO",b.dataset.transitDestination);
-    if(!result.ok){say?.(result.reason==="INSUFFICIENT_FUNDS"?"TRANSIT · NOT ENOUGH MONEY FOR THE FARE.":result.reason==="ALREADY_THERE"?"TRANSIT · YOU ARE ALREADY THERE.":"TRANSIT · ROUTE UNAVAILABLE.");r();return}
-    feedback?.("select");say?.(result.mode+" · "+result.destination+" · "+result.minutes+" MINUTES SKIPPED · $"+result.fare.toFixed(2)+" · ARRIVED");r();render?.();
+    if(!result.ok){say?.(result.reason==="INSUFFICIENT_FUNDS"?"TRANSIT · NOT ENOUGH MONEY FOR THE FARE.":result.reason==="ALREADY_THERE"?"TRANSIT · YOU ARE ALREADY THERE.":result.reason==="SERVICE_CLOSED"?"TRANSIT · METRO SERVICE IS CLOSED. TRY A BUS.":"TRANSIT · ROUTE UNAVAILABLE.");r();return}
+    feedback?.("select");say?.(result.mode+" · "+result.destination+" · "+result.minutes+" MINUTES SKIPPED · $"+result.fare.toFixed(2)+" · "+(result.lines||[]).join(" / ")+" · ARRIVED");r();render?.();
    });
   }
  };
