@@ -309,3 +309,9 @@ assert(gameCommerceRuntime.includes("createGameEconomy"),"game economy must have
 assert(gameCommerceRuntime.includes("canAfford"),"game economy must have affordability checks");
 assert(gameCommerceRuntime.includes("PURCHASE_CONFIRMED"),"game economy must support confirmed purchases");
 assert(gameCommerceRuntime.includes("canonical_write=false"),"game economy must remain non-canonical");
+
+const gameShopRuntime=fs.readFileSync("app.js","utf8");
+assert(gameShopRuntime.includes("renderGameShop"),"public game item doorway must render");
+assert(gameShopRuntime.includes("ENTER CHECKOUT"),"real-money game items must route to checkout");
+assert(gameShopRuntime.includes("EARN IN THE SIGNAL"),"earned game items must remain in-game");
+assert(gameShopRuntime.includes("FOUND / CLAIMED IN GAME"),"free game items must remain game-native");
