@@ -28,15 +28,46 @@
     const state=read();
     return list.map(item=>{
       const saved=state[item.id]||{};
-      const checks=Object.assign({},saved.checks||{});
       return Object.assign({},item,{workflow:{
         stage:saved.stage||item.production_stage||"DESIGN_READY",
-        checks,
+        checks:Object.assign({},saved.checks||{}),
         supplier:saved.supplier||"",
         quote:saved.quote||"",
-        note:saved.note||""
-      }});
+        sample_request:saved.sample_request||"",
+        sample_received:saved.sample_received||"",
+        fit_notes:saved.fit_notes||"",
+        wash_notes:saved.wash_notes||"",
+        photo:saved.photo||"",
+        quantity:saved.quantity||"",
+        size_curve:saved.size_curve||"",
+        production_notes:saved.production_notes||"",
+        release_notes:saved.release_notes||"",
+        updated_at:saved.updated_at||""
+      }}); 
     });
+  }
+  function stageIndex(stage){const i=STAGES.indexOf(stage);return i<0?0:i;}
+  function gate(item,stage){
+    const w=item.workflow, i=stageIndex(stage);
+    const checks=w.checks||{};
+    if(i>=stageIndex("PREORDER_READY")&&!checks.spec) return "Complete the spec check first.";
+    if(i>=stageIndex("SAMPLE_REQUESTED")&&!w.supplier) return "Add a supplier/printer candidate before requesting a sample.";
+    if(i>=stageIndex("SAMPLE_REQUESTED")&&!w.quote) return "Record a quote before requesting a sample.";
+    if(i>=stageIndex("SAMPLE_RECEIVED")&&!w.sample_request) return "Record the sample request before marking it received.";
+    if(i>=stageIndex("FIT_REVIEW")&&!w.sample_received) return "Record the received sample before fit review.";
+    if(i>=stageIndex("WASH_TEST")&&!checks.fit) return "Complete fit review before wash testing.";
+    if(i>=stageIndex("PHOTO_READY")&&!checks.wash) return "Complete wash testing before photo readiness.";
+    if(i>=stageIndex("PREORDER_READY")&&(!checks.photo||!checks.preorder)) return "Approve sample photography and preorder review first.";
+    if(i>=stageIndex("PRODUCTION")&&(!w.quantity||!w.size_curve)) return "Quantity and size curve stay locked until sample approval and must be entered before production.";
+    return "";
+  }
+  function canAdvance(item,next){return !gate(item,next);}
+  function update(id,patch){
+    const state=read(), current=state[id]||{};
+    state[id]=Object.assign({},current,patch,{updated_at:new Date().toISOString()});
+    write(state);
+    render();
+    return state[id];
   }
   function stageIndex(stage){const i=STAGES.indexOf(stage);return i<0?0:i;}
   function pct(item){
