@@ -27,3 +27,28 @@ footer{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;paddin
 .evidence-node-button{appearance:none;width:100%;text-align:left;color:inherit;font:inherit}.evidence-node-button:focus-visible{outline:1px solid var(--world-green);outline-offset:2px}.evidence-detail-actions{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.7rem}.evidence-detail-actions button{border:1px solid rgba(168,255,145,.25);background:transparent;color:inherit;padding:.5rem .65rem;font:600 .52rem monospace;letter-spacing:.08em}
 @media(max-width:700px){.world-market{width:calc(100% - 2rem);box-sizing:border-box}}
 \n.world-quests,.quest-board{display:block}.quest-board{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}.world-quest{border:1px solid rgba(93,255,125,.22);padding:14px;background:rgba(0,20,8,.55)}.world-quest span{font-size:.68rem;letter-spacing:.14em}.world-quest h3{margin:.45rem 0}.world-quest p{opacity:.78}.world-quest small{opacity:.62}.world-quest.complete{border-color:rgba(93,255,125,.6)}.world-quest.ready{border-color:rgba(93,255,125,.4)}.world-quest.locked{opacity:.72}
+/* HANDHELD GAME MODE */
+body.escie-world-page{overscroll-behavior:none}
+.world-game{position:relative}
+.world-game.handheld-mode{position:fixed;inset:0;z-index:1000;width:100vw;height:100dvh;margin:0;max-width:none;border:0;background:#020402;display:flex;flex-direction:column;justify-content:center;padding:clamp(8px,2vw,20px);box-sizing:border-box}
+.handheld-mode .world-hud{flex:0 0 auto;margin:0 auto;width:min(1100px,100%);box-sizing:border-box}
+.handheld-mode .world-stage{width:min(1100px,100%);height:auto;aspect-ratio:16/9;min-height:0;margin:0 auto;box-shadow:0 0 0 1px rgba(168,255,145,.2),0 0 70px rgba(80,255,100,.08);border-radius:10px}
+.handheld-mode .world-controls{width:min(1100px,100%);box-sizing:border-box;margin:0 auto;border:0;padding:.65rem 0 0}
+.handheld-mode .world-log{width:min(1100px,100%);box-sizing:border-box;margin:0 auto;border:0}
+.handheld-mode~*{display:none}
+.world-handheld-top{display:none}
+.handheld-mode .world-handheld-top{display:flex;position:absolute;top:8px;left:50%;transform:translateX(-50%);z-index:20;gap:.5rem}
+.handheld-mode .world-handheld-top button{min-width:44px;min-height:34px}
+.world-controls button:focus-visible,.world-back:focus-visible{outline:2px solid var(--world-green);outline-offset:3px}
+@media (orientation:portrait) and (max-width:900px){
+ body.escie-world-page:has(.handheld-mode) .world-shell{min-height:100dvh}
+ body.escie-world-page:has(.handheld-mode) .world-intro,
+ body.escie-world-page:has(.handheld-mode) footer{display:none}
+ body.escie-world-page:has(.handheld-mode) .world-game{justify-content:center}
+ body.escie-world-page:has(.handheld-mode) .world-stage{aspect-ratio:16/9;width:calc(100vw - 16px);max-height:58dvh}
+}
+@media (max-width:700px){
+ .world-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
+ .world-actions button{min-height:46px}
+ .world-dpad button{min-width:54px;min-height:48px}
+}
