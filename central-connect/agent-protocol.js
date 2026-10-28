@@ -5,7 +5,8 @@
  * No specialist writes canonical state directly.
  */
 window.ESCIE_AGENT_PROTOCOL = Object.freeze({
-  version: "1.0",
+  version: "1.1",
+  messageTypes: Object.freeze(["READ","ANALYZE","SUGGEST","RESEARCH","TASK","HANDOFF","RESULT","APPROVAL_REQUEST"]),
   roles: Object.freeze({
     ORCHESTRATOR: "central-orchestrator",
     CREATIVE: "creative-work",
@@ -38,5 +39,9 @@ window.ESCIE_AGENT_PROTOCOL = Object.freeze({
   },
   requiresHumanApproval(type) {
     return !["READ","ANALYZE","SUGGEST","RESEARCH"].includes(type);
+  },
+  nextState(current, event) {
+    const map={REQUEST:["REQUESTED","ROUTED"],RECEIVE:["ROUTED","RECEIVED"],START:["RECEIVED","WORKING"],HANDOFF:["WORKING","HANDOFF"],PROPOSE:["WORKING","PROPOSED"],APPROVAL:["PROPOSED","APPROVAL_REQUIRED"],APPROVE:["APPROVAL_REQUIRED","APPROVED"],REJECT:["APPROVAL_REQUIRED","REJECTED"],QUARANTINE:["PROPOSED","QUARANTINED"],COMPLETE:["APPROVED","COMPLETED"],FAIL:["WORKING","FAILED"]};
+    const pair=map[event]; return pair&&pair[0]===current?pair[1]:null;
   }
 });
