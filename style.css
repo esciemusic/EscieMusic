@@ -3990,3 +3990,7 @@ body.player-visible{padding-bottom:clamp(88px,12vh,124px)}
 @media(max-width:600px){.game-input-head{font-size:.55rem}.game-input-modes button{flex:1;min-width:70px}.game-virtual-controls button{width:52px;height:44px}}
 
 .game-actions button.game-focus,.game-choices button.game-focus,.game-discovery button.game-focus,.game-input-modes button.game-focus{outline:2px solid rgba(160,255,120,.85);outline-offset:2px;background:rgba(100,255,80,.10)}
+
+.escie-player-profile{position:fixed;top:1rem;right:1rem;z-index:999;padding:.45rem .7rem;border:1px solid rgba(168,255,145,.25);background:rgba(0,0,0,.72);backdrop-filter:blur(8px);font-family:monospace;pointer-events:none}
+.escie-player-profile .escie-player-label{display:block;font-size:.45rem;letter-spacing:.12em;opacity:.55}
+.escie-player-profile strong{display:block;margin-top:.12rem;font-size:.7rem;letter-spacing:.06em}
