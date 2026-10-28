@@ -243,7 +243,7 @@ footer{padding:30px 2px;color:#5f5f5a}
 (function(){
   const $=id=>document.getElementById(id);
   function show(target){
-    ["home","work","brain","review","archive","destinations","settings"].forEach(id=>{const e=$(id);if(e)e.classList.toggle("hidden",id!==target)});
+    ["home","work","brain","tasks","suggestions","review","archive","agents","insights","destinations","settings"].forEach(id=>{const e=$(id);if(e)e.classList.toggle("hidden",id!==target)});
     document.querySelectorAll("#mainNav button").forEach(b=>b.classList.toggle("active",b.dataset.target===target));
     window.scrollTo({top:0,behavior:"smooth"});
   }
