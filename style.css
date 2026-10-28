@@ -3283,6 +3283,73 @@ body.menu-open .index-navigation.is-open{
 }
 
 /* =========================================================
+   CROSS-VIEWPORT SAFETY — PHONE / TABLET / DESKTOP
+   Keep the same experience while preventing accidental overflow,
+   clipped controls, and media wider than the viewport.
+   ========================================================= */
+html,body{
+  max-width:100%;
+  min-width:0;
+}
+img,video,svg,canvas,iframe{
+  max-width:100%;
+}
+button,a,input,select,textarea{
+  -webkit-tap-highlight-color:transparent;
+}
+main,section,article,header,footer,nav,.container,.section-inner,
+.entry-inner,.record-grid,.work-grid,.about-grid,.glass-eye-grid{
+  min-width:0;
+}
+pre,code{
+  max-width:100%;
+  overflow-x:auto;
+}
+@media(max-width:700px){
+  html,body{
+    width:100%;
+    overflow-x:hidden;
+  }
+  button,input,select,textarea{
+    max-width:100%;
+  }
+  .section-inner,.entry-inner{
+    width:100%;
+    box-sizing:border-box;
+  }
+}
+@media(min-width:701px){
+  .entry-inner,.section-inner{
+    max-width:min(1400px,calc(100vw - 48px));
+    margin-inline:auto;
+  }
+}
+@media(max-width:360px){
+  .entry-inner,.section-inner{
+    padding-inline:14px;
+  }
+  .entry-social{
+    border-radius:16px;
+  }
+  .entry-social-link{
+    max-width:100%;
+  }
+}
+@media(orientation:landscape) and (max-height:520px){
+  .index-navigation{
+    max-height:78svh;
+  }
+  .section-visual{
+    min-height:min(92svh,720px);
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  html{
+    scroll-behavior:auto!important;
+  }
+}
+
+/* =========================================================
    FINAL SYSTEM POLISH — PLAYER / INTERACTION / PERFORMANCE
    ========================================================= */
 .escie-player{
