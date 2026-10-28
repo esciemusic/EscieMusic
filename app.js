@@ -662,7 +662,7 @@
       ? '<a class="game-item-action" href="'+esc(item.external_purchase_url)+'" target="_blank" rel="noopener noreferrer">ENTER CHECKOUT</a>'
       : type==="EARNED" ? '<span class="game-item-action is-muted">EARN IN THE SIGNAL</span>'
       : '<span class="game-item-action is-muted">FOUND / CLAIMED IN GAME</span>';
-    return '<article class="game-item-card"><div class="game-item-type">'+esc(type)+'</div><h3>'+esc(item.title)+'</h3><p>'+esc(item.description)+'</p><div class="game-item-price">'+price+'</div>+renderGameItemInspector(item)+'+action+'</article>';
+    return '<article class="game-item-card"><div class="game-item-type">'+esc(type)+'</div><h3>'+esc(item.title)+'</h3><p>'+esc(item.description)+'</p><div class="game-item-price">'+price+'</div>'+renderGameItemInspector(item)+action+'</article>';
   }).join("");
 }
 function renderClothing(){
