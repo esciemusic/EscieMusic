@@ -430,7 +430,7 @@
     if (!visuals.length) return;
     const visualUI = getGlobal("ESCIE_VISUALS_UI", null);
     if (visualUI && typeof visualUI.init === "function") visualUI.init();
-    if (!("IntersectionObserver" in window)) {
+    if (reduceMotion() || !("IntersectionObserver" in window)) {
       visuals.forEach(el => el.classList.add("visual-visible"));
       return;
     }
