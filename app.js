@@ -421,6 +421,10 @@
     return document.body.dataset.route;
   }
 
+  function reduceMotion() {
+    return typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+
   function initializeSectionVisuals() {
     const visuals = Array.from(document.querySelectorAll(".section-visual"));
     if (!visuals.length) return;
@@ -814,7 +818,7 @@
       return normalizeCollection(registry.records());
     }
     return [
-      { id: "escie", type: "identity", title: "ESCIE", description: "The central consciousness / interface.", status: "active", published: true, visibility: "public" },
+      { id: "escie", type: "identity", title: "ESCIE", description: "The Father / the Man.", status: "active", published: true, visibility: "public" },
       ...normalizeCollection(getMusic()),
       ...normalizeCollection(getProjects()),
       ...normalizeCollection(getArchive()),
@@ -1069,7 +1073,7 @@
           modal.hidden = true;
           document.body.classList.remove("inspector-open");
           const element = byId(target);
-          if (element) element.scrollIntoView({behavior:"smooth",block:"start"});
+          if (element) element.scrollIntoView({behavior:reduceMotion()?"auto":"smooth",block:"start"});
           window.location.hash = target;
         }
         return;
@@ -1210,7 +1214,7 @@
     const records = (registry && typeof registry.records === "function"
       ? registry.records()
       : [
-          { id: "escie", type: "identity", title: "ESCIE", description: "The central consciousness / interface.", status: "active", published: true, visibility: "public" },
+          { id: "escie", type: "identity", title: "ESCIE", description: "The Father / the Man.", status: "active", published: true, visibility: "public" },
           ...normalizeCollection(getMusic()),
           ...normalizeCollection(getProjects()),
           ...normalizeCollection(getArchive()),
