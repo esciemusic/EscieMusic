@@ -17,7 +17,9 @@ const observe=(action,pos,opts={})=>{
  else save(s);
  return {observed:!!visible,source:visible?.source||null,candidates};
 };
+const scheduleFor=(n,minute)=>{const s=n.schedule||[];if(!s.length)return null;return s.find(v=>minute>=v.start&&minute<v.end)||s[s.length-1]};
+const tick=(day,hour,minute,blocked)=>{const st=read(),sim=window.ESCIE_WORLD_SIMULATION,now=Number(hour)*60+Number(minute);Object.values(st.npcs||{}).forEach(n=>{if(typeof n.x!=="number"||typeof n.y!=="number")return;const a=scheduleFor(n,now);if(!a||!a.target)return;const dx=Math.sign(a.target.x-n.x),dy=Math.sign(a.target.y-n.y);let nx=n.x,ny=n.y;if(dx&&!(blocked&&blocked(n.x+dx,n.y)))nx+=dx;else if(dy&&!(blocked&&blocked(n.x,n.y+dy)))ny+=dy;if(nx!==n.x||ny!==n.y){n.x=nx;n.y=ny;n.facing=dx?dx>0?"E":"W":dy?dy>0?"S":"N":n.facing||"S";}n.activity=a.activity||n.activity||"IDLE";n.schedule_day=day;n.schedule_minute=now;});save(st);return st.npcs};
 const memory=(id,data={})=>{const sim=window.ESCIE_WORLD_SIMULATION;return sim?.npcMemory?sim.npcMemory(id,data):null};
-window.ESCIE_WORLD_NPC={state:read,registerNPC,registerSurveillance,observe,memory};
+window.ESCIE_WORLD_NPC={state:read,registerNPC,registerSurveillance,observe,tick,memory};
 if(!localStorage.getItem(KEY))save(DEFAULT);
 })();
