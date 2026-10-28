@@ -304,6 +304,10 @@ assert(gameCommerceRuntime.includes("external_purchase_url"),"game items must su
 assert(gameCommerceRuntime.includes("function inspectGameItem"),"game items must support in-world inspection");
 assert(gameCommerceRuntime.includes("function safePurchaseURL"),"game purchase URLs must be protocol-safe");
 assert(gameCommerceRuntime.includes('["http:","https:"]'),"game checkout routing must allow only HTTP(S)");
+assert(gameCommerceRuntime.includes("function acquireGameItem"),"game items must support controlled acquisition");
+assert(gameCommerceRuntime.includes('reason:"external checkout required"'),"real-money game items must remain external checkout");
+assert(gameCommerceRuntime.includes('reason:"insufficient signal"'),"earned items must enforce affordability");
+
 
 
 assert(gameCommerceRuntime.includes("GAME_PRICE_TYPES"),"game economy must define price types");
