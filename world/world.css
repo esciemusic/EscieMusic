@@ -175,3 +175,17 @@ body[data-world-text="large"] .world-shell button{font-size:calc(100% + .08rem)}
 [data-graphics="low"] .dream-overlay{animation:none}[data-reduced-motion="true"] .dream-overlay{animation:none}
 
 :root{--escie-green:#39ff88;--escie-green-dim:#126b3b;--escie-green-soft:rgba(57,255,136,.18)}
+
+/* PLAYABLE DREAM MAP */
+.dream-play-layer{position:fixed;inset:0;z-index:2100;display:grid;place-items:center;background:rgba(0,0,0,.96);padding:12px}
+.dream-play-layer[hidden]{display:none}
+.dream-map{width:min(92vw,900px);border:1px solid var(--world-green);background:#050807;box-shadow:0 0 70px rgba(57,255,136,.18);padding:12px}
+.dream-map-head{display:flex;justify-content:space-between;font:700 .62rem monospace;letter-spacing:.12em;color:var(--world-green);margin-bottom:10px}
+#dream-map-grid{display:grid;grid-template-columns:repeat(16,1fr);aspect-ratio:16/10;border:1px solid rgba(57,255,136,.2)}
+.dream-cell{display:block;border-right:1px solid rgba(57,255,136,.035);border-bottom:1px solid rgba(57,255,136,.035);background:rgba(255,255,255,.012)}
+.dream-cell.player{background:var(--world-green);box-shadow:0 0 12px var(--world-green)}
+.dream-cell.exit{outline:1px solid var(--world-green);background:rgba(57,255,136,.12)}
+.dream-cell.threat{background:#fff;box-shadow:0 0 18px rgba(255,255,255,.7)}
+.dream-cell.object{background:rgba(57,255,136,.55)}
+.dream-map-help{text-align:center;padding:10px 0 2px;font:600 .52rem monospace;letter-spacing:.08em;opacity:.55}
+@media(max-width:600px){.dream-map{width:96vw;padding:8px}.dream-map-help{font-size:.45rem}}
