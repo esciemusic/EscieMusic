@@ -15,7 +15,7 @@
  *
  * A → RELATIONSHIP → B
  *
- * The Web is the connective tissue of the ESCIE reality.
+ * The Web is the connective tissue of the ESCIE world.
  */
 
 (function () {
