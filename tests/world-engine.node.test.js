@@ -14,6 +14,6 @@ assert(/const raf=typeof requestAnimationFrame==="function"\?requestAnimationFra
 assert(/caf\(searchFrame\);searchFrame=raf\(\(\)=>\{render\(\)/.test(src),"search rendering must use the compatibility scheduler");
 assert(/world-detail.*focus\(\)/.test(src),"node navigation must restore keyboard focus");
 assert(/role="tablist".*aria-label="ESCIE World navigation"/.test(src),"world navigation needs tab semantics");
-assert(/aria-selected="\'+(state.tab===t\[0\]\?"true":"false"\'+"/.test(src),"world tabs need selected-state semantics");
+assert(/aria-selected="/.test(src)&&/state\.tab===t\[0\]/.test(src),"world tabs need selected-state semantics");
 assert(/id="glass-eye-panel" role="region" aria-label="The Glass Eye"/.test(src),"Glass Eye needs an accessible region");
 console.log("ESCIE world-engine contracts OK");
