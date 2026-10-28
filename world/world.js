@@ -292,3 +292,7 @@ document.addEventListener("change",e=>{if(e.target.id==="phone-audio-file"){cons
 (function runDreamDirector(){
  window.ESCIE_WORLD_DREAM_DIRECTOR={generate:()=>{const sim=window.ESCIE_WORLD_SIMULATION;if(!sim?.dreamDirector)return null;const d=sim.dreamDirector.choose(sim.state);window.ESCIE_WORLD_DREAM_CONTEXT={scenario:d};return d;}};
 })();
+
+(function dreamLevelBridge(){
+ window.ESCIE_WORLD_DREAM_LEVEL={enter:()=>{const sim=window.ESCIE_WORLD_SIMULATION;if(!sim?.buildDreamLevel)return null;const level=sim.buildDreamLevel();window.ESCIE_WORLD_DREAM={active:true,event:level.scenario,level};return level;}};
+})();
