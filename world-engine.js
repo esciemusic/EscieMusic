@@ -5,6 +5,8 @@ const esc=v=>String(v??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&g
 const coll=(name,fallback=[])=>{const v=window[name];return Array.isArray(v)?v:(v&&Array.isArray(v.records)?v.records:fallback)};
 const state={tab:"atlas",q:"",type:"ALL",selected:null,trail:[],visited:[],eyeOpen:false};
 const tabs=[["atlas","ATLAS"],["timeline","TIMELINE"],["symbols","SYMBOLS"],["trails","TRAILS"]];
+const raf=typeof requestAnimationFrame==="function"?requestAnimationFrame:fn=>setTimeout(fn,0);
+const caf=typeof cancelAnimationFrame==="function"?cancelAnimationFrame:clearTimeout;
 function records(){
  const sources=[coll("ESCIE_MUSIC"),coll("ESCIE_PEOPLE"),coll("ESCIE_LOCATIONS"),coll("ESCIE_MOMENTS"),coll("ESCIE_FRAGMENTS"),coll("ESCIE_BODIES"),coll("ESCIE_PATHS"),coll("ESCIE_NODES"),coll("ESCIE_PROJECTS"),coll("ESCIE_ARCHIVE"),coll("ESCIE_INVESTIGATION"),coll("ESCIE_SYMBOLS")];
  const seen=new Set(),out=[];
@@ -93,7 +95,7 @@ function bind(root){
  root.querySelectorAll("[data-eye-clear]").forEach(b=>b.onclick=()=>{state.trail=[];state.visited=[];try{sessionStorage.removeItem("escie_world_trail");sessionStorage.removeItem("escie_world_visited")}catch(e){}render()});
  root.querySelectorAll("[data-eye-close]").forEach(b=>b.onclick=()=>{state.eyeOpen=false;render()});
  root.querySelectorAll("[data-world-tab]").forEach(b=>b.onclick=()=>{state.tab=b.dataset.worldTab;render()});
- let searchFrame=0;const search=$("world-public-search");if(search)search.oninput=e=>{state.q=e.target.value;cancelAnimationFrame(searchFrame);searchFrame=requestAnimationFrame(()=>{render();const x=$("world-public-search");if(x){x.focus();x.setSelectionRange(state.q.length,state.q.length)}})};
+ let searchFrame=0;const search=$("world-public-search");if(search)search.oninput=e=>{state.q=e.target.value;caf(searchFrame);searchFrame=raf(()=>{render();const x=$("world-public-search");if(x){x.focus();x.setSelectionRange(state.q.length,state.q.length)}})};
  const select=$("world-public-type");if(select)select.onchange=e=>{state.type=e.target.value;render()};
  root.querySelectorAll("[data-node]").forEach(b=>b.onclick=e=>{e.preventDefault();remember(b.dataset.node);state.selected=b.dataset.node;syncNodeHash(state.selected);render();setTimeout(()=>{const detail=document.querySelector(".world-detail");if(detail)detail.scrollIntoView({behavior:"smooth",block:"nearest"});const close=document.querySelector(".world-close");if(close)close.focus()},0)});
  const path=$("world-path-items");if(path){const map=new Map(records().map(r=>[String(r.id),r]));path.innerHTML=state.trail.map(id=>map.get(String(id))).filter(Boolean).map(n=>"<button type=\"button\" data-node=\""+esc(n.id)+"\">"+esc(title(n))+"</button>").join(" → ")||"START HERE";path.querySelectorAll("[data-node]").forEach(b=>b.onclick=e=>{e.preventDefault();remember(b.dataset.node);state.selected=b.dataset.node;syncNodeHash(state.selected);render()})}
