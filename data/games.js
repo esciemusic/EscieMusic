@@ -36,6 +36,7 @@
   ];
 
   const ESCIE_GAMES=[];
+  const ESCIE_GAME_EPISODES=[];
   const ESCIE_GAME_SCENES=[];
   const ESCIE_GAME_EVENTS=[];
   const ESCIE_GAME_INTERACTIONS=[];
@@ -101,6 +102,7 @@
     types:()=>GAME_TYPES.slice(),
     relationshipTypes:()=>GAME_RELATIONSHIPS.slice(),
     records:()=>list(ESCIE_GAMES).map(r=>gameRecord(r,"game")),
+    episodes:()=>list(ESCIE_GAME_EPISODES).map(r=>gameRecord(r,"game_episode")),
     scenes:()=>list(ESCIE_GAME_SCENES).map(r=>gameRecord(r,"game_scene")),
     events:()=>list(ESCIE_GAME_EVENTS).map(r=>gameRecord(r,"game_event")),
     interactions:()=>list(ESCIE_GAME_INTERACTIONS).map(r=>gameRecord(r,"game_interaction")),
@@ -111,7 +113,7 @@
     playerStates:()=>list(ESCIE_PLAYER_STATES).map(r=>gameRecord(r,"player_state")),
     endings:()=>list(ESCIE_GAME_ENDINGS).map(r=>gameRecord(r,"game_ending")),
     all:()=>[
-      ...API.records(),...API.scenes(),...API.events(),...API.interactions(),
+      ...API.records(),...API.episodes(),...API.scenes(),...API.events(),...API.interactions(),
       ...API.dialogue(),...API.clues(),...API.discoveries(),...API.playerPaths(),
       ...API.playerStates(),...API.endings()
     ],
@@ -127,6 +129,7 @@
   };
 
   window.ESCIE_GAMES=ESCIE_GAMES;
+  window.ESCIE_GAME_EPISODES=ESCIE_GAME_EPISODES;
   window.ESCIE_GAME_SCENES=ESCIE_GAME_SCENES;
   window.ESCIE_GAME_EVENTS=ESCIE_GAME_EVENTS;
   window.ESCIE_GAME_INTERACTIONS=ESCIE_GAME_INTERACTIONS;
