@@ -72,7 +72,16 @@
     return "";
   }
   function latestSample(item){const list=item&&item.workflow&&Array.isArray(item.workflow.samples)?item.workflow.samples:[];return list.length?list[list.length-1]:null;}
-  function hasApprovedSample(item){return item.workflow.samples.some(s=>s&&s.state==="APPROVED"&&qcReady(s)&&measurementReady(item,s)&&shrinkageReady(s)&&decorationReady(s));}
+  function finalComparisonReady(item,sample){
+    if(!item||!sample)return false;
+    const spec=item.specification||{}, d=sample.decoration_check||{}, sh=sample.shrinkage||{};
+    return measurementReady(item,sample)&&shrinkageReady(sample)&&decorationReady(sample)&&
+      String(sample.measurement_notes||"").trim()!==""&&
+      String(sample.outcome||"").trim()!==""&&
+      String(d.placement||"").trim()!==""&&
+      String(sh.percent||"").trim()!=="";
+  }
+  function hasApprovedSample(item){return item.workflow.samples.some(s=>s&&s.state==="APPROVED"&&qcReady(s)&&finalComparisonReady(item,s));}
   function canAdvance(item,next){return !gate(item,next);}
   function samples(id){
     const state=read(), current=state[id]||{};
