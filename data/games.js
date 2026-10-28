@@ -80,6 +80,31 @@
     if(!record||typeof record!=="object")return null;
     return Object.assign({id:null,type:"game_item",title:"UNTITLED",description:"",price:null,price_type:"FREE",currency:"SIGNAL",availability:"AVAILABLE",visibility:"public",requires:[],unlocks:[],inventory_key:null,external_purchase_url:null,physical_item_id:null,digital:false,canonical_write:false},record);
   }
+  function inspectGameItem(item, playerState){
+    const source=gameItem(item);
+    if(!source)return {ok:false,reason:"item unavailable",item:null,acquisition:null};
+    const state=playerState&&typeof playerState==="object"?playerState:{};
+    const owned=Array.isArray(state.owned)&&state.owned.includes(source.id);
+    const discovered=Array.isArray(state.discovered)&&state.discovered.includes(source.id);
+    const locked=source.availability==="LOCKED";
+    const requirements=Array.isArray(source.requires)?source.requires:[];
+    const satisfied=requirements.every(id=>Array.isArray(state.unlocked)&&state.unlocked.includes(id));
+    let acquisition="DISCOVERED";
+    if(owned) acquisition="OWNED";
+    else if(locked||!satisfied) acquisition="LOCKED";
+    else if(source.price_type==="REAL_MONEY") acquisition="REAL_MONEY";
+    else if(source.price_type==="EARNED") acquisition="EARNED";
+    else acquisition=discovered?"CLAIMABLE":"FREE";
+    return {ok:true,item:source,acquisition,owned,discovered,requirements_satisfied:satisfied};
+  }
+  function safePurchaseURL(item){
+    if(!item||typeof item.external_purchase_url!=="string"||!item.external_purchase_url.trim())return null;
+    try{
+      const parsed=new URL(item.external_purchase_url, typeof window!=="undefined"?window.location.href:"https://escie.local/");
+      return ["http:","https:"].includes(parsed.protocol)?parsed.href:null;
+    }catch(error){return null;}
+  }
+
   function validateItem(item){
     const errors=[];
     if(!item||typeof item!=="object")return {ok:false,errors:["item must be an object"]};
@@ -320,6 +345,8 @@
     itemStates:()=>GAME_ITEM_STATES.slice(),
     gameItem,
     validateItem,
+    inspectGameItem,
+    safePurchaseURL,
     playerEventTypes:()=>PLAYER_EVENT_TYPES.slice(),
     playerStateSchema:()=>clone(PLAYER_STATE_SCHEMA),
     createPlayerState,
