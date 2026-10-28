@@ -69,27 +69,24 @@
     render();
     return state[id];
   }
-  function stageIndex(stage){const i=STAGES.indexOf(stage);return i<0?0:i;}
   function pct(item){
     const done=CHECKS.filter(([id])=>item.workflow.checks[id]).length;
     return Math.round(done/CHECKS.length*100);
   }
   function saveItem(id,patch){
-    const state=read(), current=state[id]||{};
-    state[id]=Object.assign({},current,patch);
-    write(state);
-    render();
-    return state[id];
+    return update(id,patch);
   }
-  function el(tag,attrs,text){
-    const node=document.createElement(tag);
-    Object.keys(attrs||{}).forEach(k=>{
-      if(k==="class") node.className=attrs[k];
-      else if(k==="value") node.value=attrs[k];
-      else node.setAttribute(k,attrs[k]);
-    });
-    if(text!=null) node.textContent=text;
-    return node;
+  function field(card,item,key,label,type){
+    const wrap=el("div",{class:"wardrobe-field"});
+    wrap.append(el("label",{},label));
+    const input=document.createElement(type==="textarea"?"textarea":"input");
+    input.value=item.workflow[key]||"";
+    input.placeholder=label;
+    if(type==="textarea"){input.rows=3;input.style.resize="vertical";}
+    input.addEventListener("change",()=>saveItem(item.id,{[key]:input.value.trim()}));
+    wrap.append(input);
+    card.append(wrap);
+    return input;
   }
   function render(){
     const host=document.getElementById("wardrobe-workflow");
@@ -100,30 +97,51 @@
     const title=el("div",{});
     title.append(el("div",{class:"kicker"},"PHYSICAL PRODUCTION"));
     title.append(el("h2",{},"WARDROBE"));
-    title.append(el("p",{},"One excellent sample first. Every quantity decision stays behind the human gate."));
+    title.append(el("p",{},"DESIGN → SAMPLE → TEST → APPROVE → PHOTOGRAPH → PREORDER → PRODUCE → RELEASE."));
     head.append(title); wrap.append(head);
     const grid=el("div",{class:"stack"});
     items().forEach(item=>{
-      const card=el("div",{class:"rowcard"});
+      const card=el("div",{class:"rowcard wardrobe-card"});
       const left=el("div",{class:"rowleft"});
       left.append(el("div",{class:"rowtitle"},item.title));
       left.append(el("div",{class:"rowmeta"},item.id+" · "+item.workflow.stage+" · "+pct(item)+"% checklist"));
       card.append(left);
-      const select=document.createElement("select");
-      select.className="pill";
-      STAGES.forEach(stage=>{const o=el("option",{value:stage},stage);o.selected=stage===item.workflow.stage;select.append(o);});
-      select.addEventListener("change",()=>saveItem(item.id,{stage:select.value}));
-      card.append(select);
-      const details=el("div",{class:"ey"});
-      details.style.width="100%";
-      details.style.marginTop="10px";
-      details.textContent=CHECKS.map(([id,label])=>(item.workflow.checks[id]?"✓ ":"□ ")+label).join("  ");
-      card.append(details);
+      const gateMsg=gate(item,item.workflow.stage);
+      const stage=el("select",{class:"pill"});
+      STAGES.forEach(s=>{const o=el("option",{value:s},s);o.selected=s===item.workflow.stage;stage.append(o);});
+      stage.addEventListener("change",()=>{
+        const next=stage.value;
+        if(!canAdvance(item,next)){stage.value=item.workflow.stage;notice.textContent=gate(item,next);return;}
+        saveItem(item.id,{stage:next});
+      });
+      card.append(stage);
+      const notice=el("div",{class:"wardrobe-gate "+(gateMsg?"warn":"ok")},gateMsg||"GATE CLEAR — current stage requirements satisfied.");
+      card.append(notice);
+      const meta=el("div",{class:"wardrobe-meta"});
+      meta.append(el("div",{},item.color+" · "+item.gsm_target+" · "+item.fit));
+      meta.append(el("div",{},Array.isArray(item.sizes)?item.sizes.join(" / "):""));
+      card.append(meta);
+      const fields=el("div",{class:"wardrobe-fields"});
+      card.append(fields);
+      const addField=(key,label,type)=>{const old=card.querySelectorAll(".wardrobe-field").length;const input=field(fields,item,key,label,type);return input;};
+      addField("supplier","SUPPLIER / PRINTER","input");
+      addField("quote","QUOTE / COST NOTE","input");
+      addField("sample_request","SAMPLE REQUEST / REFERENCE","input");
+      addField("sample_received","SAMPLE RECEIVED / DATE","input");
+      addField("fit_notes","FIT REVIEW NOTES","textarea");
+      addField("wash_notes","WASH TEST / SHRINKAGE / QC","textarea");
+      addField("photo","APPROVED SAMPLE PHOTO / REFERENCE","input");
+      addField("quantity","QUANTITY (LOCKED UNTIL PRODUCTION GATE)","input");
+      addField("size_curve","SIZE CURVE","input");
+      addField("production_notes","PRODUCTION NOTES","textarea");
+      addField("release_notes","RELEASE NOTES","textarea");
       const actions=el("div",{class:"quickgrid"});
       CHECKS.forEach(([id,label])=>{
+        const locked=id==="preorder"&&!item.workflow.checks.photo;
         const b=el("button",{class:"quick",type:"button"},(item.workflow.checks[id]?"✓ ":"□ ")+id.toUpperCase());
         b.setAttribute("aria-pressed",String(!!item.workflow.checks[id]));
-        b.title=label;
+        b.disabled=locked;
+        b.title=locked?"Approve the actual sample photo first.":label;
         b.addEventListener("click",()=>{
           const checks=Object.assign({},item.workflow.checks,{[id]:!item.workflow.checks[id]});
           saveItem(item.id,{checks});
@@ -131,6 +149,7 @@
         actions.append(b);
       });
       card.append(actions);
+      if(item.workflow.updated_at)card.append(el("div",{class:"rowmeta"},"LAST UPDATED · "+item.workflow.updated_at));
       grid.append(card);
     });
     wrap.append(grid);
