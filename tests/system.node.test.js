@@ -1,3 +1,4 @@
+const fs = require("fs");
 const state = require("../core/state.js");
 const permissions = require("../core/permissions.js");
 const events = require("../core/events.js");
