@@ -71,7 +71,7 @@
     return "";
   }
   function latestSample(item){const list=item&&item.workflow&&Array.isArray(item.workflow.samples)?item.workflow.samples:[];return list.length?list[list.length-1]:null;}
-  function hasApprovedSample(item){return item.workflow.samples.some(s=>s&&s.state==="APPROVED"&&qcReady(s)&&measurementReady(item,s));}
+  function hasApprovedSample(item){return item.workflow.samples.some(s=>s&&s.state==="APPROVED"&&qcReady(s)&&measurementReady(item,s)&&shrinkageReady(s)&&decorationReady(s));}
   function canAdvance(item,next){return !gate(item,next);}
   function samples(id){
     const state=read(), current=state[id]||{};
@@ -93,6 +93,8 @@
       measurements:{chest:"",length:"",shoulder:"",sleeve:""},
       measurement_result:"PENDING",
       measurement_notes:"",
+      shrinkage:{pre_wash:"",post_wash:"",percent:"",result:"PENDING"},
+      decoration_check:{placement:"",scale:"",color:"",result:"PENDING"},
       qc:{fit:"",fabric:"",shrinkage:"",print:"",embroidery:"",seams:"",measurements:"",defects:"",decision:"PENDING",approved_by:""},
       created_at:new Date().toISOString(),
       updated_at:new Date().toISOString()
@@ -107,6 +109,8 @@
     return sample;
   }
   function measurementFor(sample){return Object.assign({chest:"",length:"",shoulder:"",sleeve:""},sample&&sample.measurements||{});}
+  function shrinkageReady(sample){return sample&&sample.shrinkage&&String(sample.shrinkage.result||"").toUpperCase()==="PASS";}
+  function decorationReady(sample){return sample&&sample.decoration_check&&String(sample.decoration_check.result||"").toUpperCase()==="PASS";}
   function measurementReady(item,sample){
     const spec=Object.assign({tolerance:"±1 cm"},item.specification||{});
     const actual=measurementFor(sample);
@@ -265,6 +269,15 @@
           measureWrap.append(el("div",{class:"rowmeta"},"SPEC TOLERANCE · "+((item.specification&&item.specification.tolerance)||"±1 cm")));
           const mn=document.createElement("input");mn.value=s.measurement_notes||"";mn.placeholder="MEASUREMENT NOTES / DEVIATIONS";mn.addEventListener("change",()=>updateSample(item.id,s.id,{measurement_notes:mn.value.trim()}));measureWrap.append(mn);
           line.append(measureWrap);
+          const sh=Object.assign({pre_wash:"",post_wash:"",percent:"",result:"PENDING"},s.shrinkage||{});
+          const shrinkWrap=el("div",{class:"sample-qc"});
+          shrinkWrap.append(el("div",{class:"kicker"},"SHRINKAGE CHECK"));
+          ["pre_wash","post_wash","percent"].forEach(key=>{const inp=document.createElement("input");inp.value=sh[key]||"";inp.placeholder=key.replace("_"," ").toUpperCase();inp.addEventListener("change",()=>updateSample(item.id,s.id,{shrinkage:Object.assign({},sh,{[key]:inp.value.trim()})}));shrinkWrap.append(inp);});
+          const sr=document.createElement("select");["PENDING","PASS","FAIL"].forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;o.selected=String(sh.result||"PENDING")===v;sr.append(o);});sr.addEventListener("change",()=>updateSample(item.id,s.id,{shrinkage:Object.assign({},sh,{result:sr.value})}));shrinkWrap.append(sr);line.append(shrinkWrap);
+          const dc=Object.assign({placement:"",scale:"",color:"",result:"PENDING"},s.decoration_check||{});
+          const decWrap=el("div",{class:"sample-qc"});decWrap.append(el("div",{class:"kicker"},"DECORATION CHECK"));
+          ["placement","scale","color"].forEach(key=>{const inp=document.createElement("input");inp.value=dc[key]||"";inp.placeholder=key.toUpperCase();inp.addEventListener("change",()=>updateSample(item.id,s.id,{decoration_check:Object.assign({},dc,{[key]:inp.value.trim()})}));decWrap.append(inp);});
+          const dr=document.createElement("select");["PENDING","PASS","FAIL"].forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;o.selected=String(dc.result||"PENDING")===v;dr.append(o);});dr.addEventListener("change",()=>updateSample(item.id,s.id,{decoration_check:Object.assign({},dc,{result:dr.value})}));decWrap.append(dr);line.append(decWrap);
           const q=qcFor(s);
           const qcWrap=el("div",{class:"sample-qc"});
           qcWrap.append(el("div",{class:"kicker"},"QC INSPECTION"));
