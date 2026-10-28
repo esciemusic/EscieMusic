@@ -196,3 +196,7 @@ body[data-world-text="large"] .world-shell button{font-size:calc(100% + .08rem)}
 .dream-touch-controls button{width:48px;height:38px;border:1px solid var(--world-green);background:#07100b;color:var(--world-green);font:700 1rem monospace;border-radius:6px;touch-action:manipulation}
 .dream-touch-controls button:active{background:var(--world-green);color:#020402}
 @media(min-width:800px){.dream-touch-controls{opacity:.55}.dream-touch-controls button{width:40px;height:30px}}
+
+.dream-touch-controls .dream-hide{width:auto;padding:0 12px;font-size:.62rem;letter-spacing:.08em}
+.dream-touch-controls .dream-hide.active{background:var(--world-green);color:#020402}
+.dream-map-help{white-space:normal}
