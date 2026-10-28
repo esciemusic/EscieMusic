@@ -288,3 +288,7 @@ document.addEventListener("change",e=>{if(e.target.id==="phone-audio-file"){cons
  window.ESCIE_WORLD_DREAM_CHOICE={choice};
  document.addEventListener("click",e=>{const b=e.target.closest("[data-dream-choice]");if(b)choice(b.dataset.dreamChoice);});
 })();
+
+(function runDreamDirector(){
+ window.ESCIE_WORLD_DREAM_DIRECTOR={generate:()=>{const sim=window.ESCIE_WORLD_SIMULATION;if(!sim?.dreamDirector)return null;const d=sim.dreamDirector.choose(sim.state);window.ESCIE_WORLD_DREAM_CONTEXT={scenario:d};return d;}};
+})();
