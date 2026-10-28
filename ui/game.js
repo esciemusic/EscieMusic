@@ -2,7 +2,7 @@
 "use strict";
 const root=typeof window!=="undefined"?window:globalThis;
 const KEY="escie_game_state_v1";
-const defaults={version:6,control_mode:"AUTO",control_cursor:0,player_id:null,screen:"gateway",scene:"threshold",visited:[],inventory:[],signals:0,entered:false,entry_source:"site",entry_payload:null,discoveries:[],path:[],unresolved:[],world_unlocks:[]};
+const defaults={version:7,control_mode:"AUTO",control_cursor:0,player_id:null,screen:"gateway",scene:"threshold",history:[],visited:[],inventory:[],signals:0,entered:false,entry_source:"site",entry_payload:null,discoveries:[],path:[],unresolved:[],world_unlocks:[]};
 
 const scenes=[
  {id:"threshold",label:"THE THRESHOLD",title:"THE FIRST DOOR",text:"You are not entering another universe. You are entering another layer of the same one.",item:null,next:"laneway",signal:1,location:"the-world"},
@@ -48,7 +48,6 @@ function unlockWorldThread(s,id){
  unique(s.discoveries,d.id);
  if(Array.isArray(d.world_queries))d.world_queries.forEach(q=>unique(s.world_unlocks,"query:"+String(q).toLowerCase()));
 }
-function unlockWorldThread(s,id){const d=discovery(id);if(!d)return;unique(s.discoveries,d.id);if(Array.isArray(d.world_queries))d.world_queries.forEach(q=>unique(s.world_unlocks,"query:"+String(q).toLowerCase()))}
 function visit(s,id){
  if(!s.visited.includes(id)){s.visited.push(id);const scene=scenes.find(x=>x.id===id);if(scene&&scene.signal)awardSignal(s,scene.signal);memoryEvent(s,"ENTERED",id,{location_id:scene&&scene.location,signal_id:scene&&scene.signal?"signal-"+id:null})}
 }
@@ -106,9 +105,9 @@ function render(){
 }
 function bind(el,s){
  el.querySelectorAll("[data-game-mode]").forEach(b=>b.onclick=()=>setControlMode(s,b.dataset.gameMode));
- el.querySelectorAll("[data-game-action]").forEach(b=>b.onclick=()=>{const x=el.querySelector("[data-game-next], [data-game-collect], [data-game-choice], [data-game-enter]");if(x)x.click()});
- el.querySelectorAll("[data-game-nav]").forEach(b=>b.onclick=()=>{b.classList.add("pressed");setTimeout(()=>b.classList.remove("pressed"),120)});
- el.querySelectorAll("[data-game-next]").forEach(b=>b.onclick=()=>{const c=current(s);if(c.next){s.scene=c.next;visit(s,s.scene);save(s);render()}});
+ el.querySelectorAll("[data-game-action]").forEach(b=>b.onclick=()=>activateCursor(s,el));
+ el.querySelectorAll("[data-game-nav]").forEach(b=>b.onclick=()=>{const d=b.dataset.gameNav;moveCursor(s,(d==="down"||d==="right")?1:-1,el);b.classList.add("pressed");setTimeout(()=>b.classList.remove("pressed"),120)});
+ el.querySelectorAll("[data-game-next]").forEach(b=>b.onclick=()=>{const c=current(s);if(c.next){if(!Array.isArray(s.history))s.history=[];s.history.push(s.scene);s.scene=c.next;s.control_cursor=0;visit(s,s.scene);save(s);render()}});
  el.querySelectorAll("[data-game-collect]").forEach(b=>b.onclick=()=>{const ok=collect(s,b.dataset.gameCollect);if(ok){save(s);render()}else{b.textContent="NEED MORE SIGNAL"}});
  el.querySelectorAll("[data-game-choice]").forEach(b=>b.onclick=()=>{choose(s,b.dataset.gameChoice);save(s);render()});
  el.querySelectorAll("[data-game-reset]").forEach(b=>b.onclick=()=>{localStorage.removeItem(KEY);render()});
@@ -120,13 +119,13 @@ function init(){const el=document.getElementById("game-container");if(!el)return
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
 
 root.ESCIE_GAME_GATEWAY={
- version:"1.4.0",scenes,items,discoveries,
+ version:"1.5.0",scenes,items,discoveries,
  enter(){const s=ensurePlayer(load());s.entered=true;visit(s,"threshold");save(s);render();return true},
  route(code){const resolved=aliases[String(code||"").trim().toLowerCase()]||String(code||"").trim().toLowerCase();if(!scenes.some(x=>x.id===resolved)&&!items.some(x=>x.id===resolved)&&!discoveries.some(x=>x.id===resolved))return false;history.replaceState(null,"","?game="+encodeURIComponent(resolved));const s=ensurePlayer(load());s.entered=true;s.entry_source="api";s.entry_payload=resolved;if(scenes.some(x=>x.id===resolved)){s.scene=resolved;visit(s,resolved)}else if(items.some(x=>x.id===resolved)){unique(s.inventory,resolved);if(resolved==="game-item-baby-shoe")unlockWorldThread(s,"game-discovery-shoe")}else {unlockWorldThread(s,resolved);memoryEvent(s,"DISCOVERED",resolved)}save(s);render();return true},
  discover(id){const s=ensurePlayer(load()),d=discovery(id);if(!d)return false;unlockWorldThread(s,d.id);memoryEvent(s,"DISCOVERED",d.id,{unknown:d.unresolved,unresolved:d.unresolved});awardSignal(s,1);save(s);render();return true},
  reset(){localStorage.removeItem(KEY);render()},
  getState(){return load()},
- getMemory(){const s=load();return {player_id:s.player_id,visited:s.visited.slice(),inventory:s.inventory.slice(),signals:s.signals,discoveries:s.discoveries.slice(),path:s.path.slice(),unresolved:s.unresolved.slice(),world_unlocks:s.world_unlocks.slice()}},
+ getMemory(){const s=load();return {player_id:s.player_id,visited:s.visited.slice(),inventory:s.inventory.slice(),signals:s.signals,discoveries:s.discoveries.slice(),path:s.path.slice(),unresolved:s.unresolved.slice(),world_unlocks:s.world_unlocks.slice(),history:Array.isArray(s.history)?s.history.slice():[]}},
  getWorldUnlocks(){const s=load();return s.world_unlocks.slice()}
 };
 })();
