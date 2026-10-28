@@ -274,3 +274,11 @@ document.addEventListener("change",e=>{if(e.target.id==="phone-audio-file"){cons
  const trigger=()=>{const sim=window.ESCIE_WORLD_SIMULATION;if(!sim?.evaluateDream)return;const d=sim.evaluateDream(sim.state);if(!d)return;const e=sim.enterDream(d.id)||d;window.ESCIE_PHONE_GAMEPLAY?.notify?.("DREAM EVENT · "+e.title,e.horror?"HORROR":"MEMORY");window.ESCIE_WORLD_DREAM={active:true,event:e};};
  window.ESCIE_WORLD_DREAM={active:false,trigger};
 })();
+
+(function renderDreamOverlay(){
+ const o=document.getElementById("dream-overlay"),t=document.getElementById("dream-title"),p=document.getElementById("dream-text");
+ const state=window.ESCIE_WORLD_DREAM;
+ const show=e=>{if(!o||!e)return;t.textContent=e.title||"NIGHT SIGNAL";p.textContent=(e.reasons||[]).join(" · ")+" · THE CITY IS NOT WHERE YOU LEFT IT.";o.hidden=false};
+ document.addEventListener("click",ev=>{const b=ev.target.closest("[data-dream]");if(!b)return;if(b.dataset.dream==="wake"){if(o)o.hidden=true;if(window.ESCIE_WORLD_DREAM)window.ESCIE_WORLD_DREAM.active=false;}else{show(state?.event);}});
+ if(state?.active&&state.event)show(state.event);
+})();
