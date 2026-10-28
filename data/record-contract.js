@@ -14,7 +14,8 @@ const ESCIE_RECORD_CONTRACT={
     "date","date_start","date_end",
     "people","locations","media","evidence","symbols","tags",
     "relationships","related_content","project","parent","source",
-    "origin","transformation","archive_state","release_status","release_mode"
+    "origin","transformation","archive_state","release_status","release_mode",
+    "episode","scene","conditions","interactions","discoveries","questions","player_state","provenance"
   ]
 };
 
@@ -43,6 +44,14 @@ function normalizeEscieRecord(record,type){
   normalized.archive_state=record.archive_state||null;
   normalized.release_status=record.release_status ? String(record.release_status).toLowerCase() : null;
   normalized.release_mode=record.release_mode ? String(record.release_mode).toLowerCase() : null;
+  normalized.episode=record.episode||null;
+  normalized.scene=record.scene||null;
+  normalized.conditions=Array.isArray(record.conditions)?record.conditions:[];
+  normalized.interactions=Array.isArray(record.interactions)?record.interactions:[];
+  normalized.discoveries=Array.isArray(record.discoveries)?record.discoveries:[];
+  normalized.questions=Array.isArray(record.questions)?record.questions:[];
+  normalized.player_state=record.player_state||null;
+  normalized.provenance=record.provenance||null;
   normalized.people=Array.isArray(record.people)?record.people:[];
   normalized.locations=Array.isArray(record.locations)?record.locations:[];
   normalized.media=Array.isArray(record.media)?record.media:[];
@@ -65,7 +74,7 @@ function validateEscieRecord(record){
   if(record.release_status && !ESCIE_RECORD_CONTRACT.release_statuses.includes(String(record.release_status).toLowerCase())) errors.push("unknown release_status: "+record.release_status);
   if(record.release_mode && !ESCIE_RECORD_CONTRACT.release_modes.includes(String(record.release_mode).toLowerCase())) errors.push("unknown release_mode: "+record.release_mode);
   if(String(record.release_mode||"").toLowerCase()==="progressive" && record.type!=="project") warnings.push("progressive release_mode is normally reserved for project records");
-  ["people","locations","media","evidence","symbols","tags","relationships","related_content"].forEach(key=>{if(!Array.isArray(record[key])) errors.push(key+" must be an array");});
+  ["people","locations","media","evidence","symbols","tags","relationships","related_content","conditions","interactions","discoveries","questions"].forEach(key=>{if(!Array.isArray(record[key])) errors.push(key+" must be an array");});
   if(Array.isArray(record.media)){
     record.media.forEach((item,index)=>{
       if(typeof item==="string"){
