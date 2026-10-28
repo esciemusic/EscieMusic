@@ -301,6 +301,10 @@ assert(gameCommerceRuntime.includes("game_purchase"),"game purchases must be sup
 assert(gameCommerceRuntime.includes("validateItem"),"game item validation must exist");
 assert(gameCommerceRuntime.includes("canonical truth directly"),"game commerce must not write canonical truth directly");
 assert(gameCommerceRuntime.includes("external_purchase_url"),"game items must support external purchase routing");
+assert(gameCommerceRuntime.includes("function inspectGameItem"),"game items must support in-world inspection");
+assert(gameCommerceRuntime.includes("function safePurchaseURL"),"game purchase URLs must be protocol-safe");
+assert(gameCommerceRuntime.includes('["http:","https:"]'),"game checkout routing must allow only HTTP(S)");
+
 
 assert(gameCommerceRuntime.includes("GAME_PRICE_TYPES"),"game economy must define price types");
 assert(gameCommerceRuntime.includes("REAL_MONEY"),"game economy must distinguish real-money purchases");
