@@ -42,6 +42,7 @@
         size_curve:saved.size_curve||"",
         production_notes:saved.production_notes||"",
         release_notes:saved.release_notes||"",
+        history:Array.isArray(saved.history)?saved.history.slice():[],
         updated_at:saved.updated_at||""
       }}); 
     });
@@ -62,9 +63,26 @@
     return "";
   }
   function canAdvance(item,next){return !gate(item,next);}
+  function history(id){
+    const state=read(), current=state[id]||{};
+    return Array.isArray(current.history)?current.history.slice():[];
+  }
+  function record(id,event){
+    const state=read(), current=state[id]||{};
+    const next=Object.assign({},current);
+    const history=Array.isArray(current.history)?current.history.slice():[];
+    history.push(Object.assign({at:new Date().toISOString()},event||{}));
+    next.history=history.slice(-100);
+    state[id]=next;
+    write(state);
+    return next;
+  }
   function update(id,patch){
     const state=read(), current=state[id]||{};
     state[id]=Object.assign({},current,patch,{updated_at:new Date().toISOString()});
+    const history=Array.isArray(current.history)?current.history.slice():[];
+    history.push({at:state[id].updated_at,action:"UPDATE",patch:Object.keys(patch||{})});
+    state[id].history=history.slice(-100);
     write(state);
     render();
     return state[id];
@@ -151,6 +169,17 @@
       });
       card.append(actions);
       if(item.workflow.updated_at)card.append(el("div",{class:"rowmeta"},"LAST UPDATED · "+item.workflow.updated_at));
+      const historyWrap=el("div",{class:"wardrobe-history"});
+      historyWrap.append(el("div",{class:"kicker"},"GARMENT HISTORY"));
+      const hist=history(item.id);
+      if(!hist.length) historyWrap.append(el("div",{class:"rowmeta"},"No changes recorded yet."));
+      else hist.slice().reverse().slice(0,8).forEach(h=>{
+        const action=h.action||"EVENT";
+        const keys=Array.isArray(h.patch)?h.patch.join(", "):"";
+        historyWrap.append(el("div",{class:"history-line"},(h.at||"")+" · "+action+(keys?" · "+keys:"")));
+      });
+      card.append(historyWrap);
+
       grid.append(card);
     });
     wrap.append(grid);
@@ -170,7 +199,9 @@
     stages:Object.freeze(STAGES.slice()),
     checklist:Object.freeze(CHECKS.map(x=>Object.freeze(x.slice()))),
     records:items,
+    history,
     save:(id,patch)=>saveItem(id,patch),
+    record,
     render
   });
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",mount,{once:true});
