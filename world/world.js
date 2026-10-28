@@ -116,3 +116,6 @@ function investigation(){
 }
 
 })();
+// scope bridge
+window.ESCIE_WORLD_STATE=window.ESCIE_WORLD_STATE||null;
+window.ESCIE_WORLD_SAY=window.ESCIE_WORLD_SAY||null;
