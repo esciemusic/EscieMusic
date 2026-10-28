@@ -1421,8 +1421,10 @@
       updateEntryState(activeRoute);
       renderEntry();
       document.documentElement.classList.remove("route-shift");
-      void document.documentElement.offsetWidth;
-      document.documentElement.classList.add("route-shift");
+      if (!reduceMotion()) {
+        void document.documentElement.offsetWidth;
+        document.documentElement.classList.add("route-shift");
+      }
       renderNavigation();
       refreshNavigationState();
       if (resolved && typeof router.navigate === "function") {
@@ -1499,10 +1501,12 @@
       sync(true);
 
       const firstLink = nav.querySelector("a");
-      if (firstLink && typeof window.requestAnimationFrame === "function") {
-        window.requestAnimationFrame(function () {
+      if (firstLink) {
+        const focusFirst = function () {
           if (state.open) firstLink.focus();
-        });
+        };
+        if (typeof window.requestAnimationFrame === "function") window.requestAnimationFrame(focusFirst);
+        else window.setTimeout(focusFirst, 0);
       }
     };
 
