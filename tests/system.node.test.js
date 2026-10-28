@@ -286,3 +286,11 @@ const visualsRuntime=fs.readFileSync("ui/visuals.js","utf8");
 assert(visualsRuntime.includes('const raf=typeof window.requestAnimationFrame==="function"?window.requestAnimationFrame.bind(window):fn=>window.setTimeout(fn,0)'),"visual pointer scheduler needs a requestAnimationFrame fallback");
 assert(visualsRuntime.includes("pointerFrame=raf(applyPointer)"),"visual pointer updates must use the compatibility scheduler");
 assert(visualsRuntime.includes("if(!rotatingSections.length || reducedMotion())return;"),"project visual rotation must stop when reduced motion is requested");
+
+
+const glassMemoryRuntime=fs.readFileSync("data/glass-eye-memory.js","utf8");
+assert(glassMemoryRuntime.includes("escie_glass_eye_memory_v1"),"Glass Eye memory must use a versioned local store");
+assert(glassMemoryRuntime.includes("canonical_write=false"),"Glass Eye memory must never become canonical");
+assert(glassMemoryRuntime.includes("CLEAR MY MEMORY"),"Glass Eye memory must provide local reset");
+assert(glassMemoryRuntime.includes("LOCAL / PRIVATE / NON-CANONICAL"),"Glass Eye memory must disclose its local non-canonical status");
+assert(fs.readFileSync("index.html","utf8").includes('id="glass-eye-memory"'),"public site must expose Glass Eye memory surface");
