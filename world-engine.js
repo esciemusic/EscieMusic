@@ -93,6 +93,7 @@ function syncNodeHash(id){try{if(id)history.replaceState(null,"","#world-node="+
  root.querySelectorAll("[data-close-node]").forEach(b=>b.onclick=()=>{state.selected=null;syncNodeHash(null);render()});
  root.querySelectorAll("[data-focus-search]").forEach(b=>b.onclick=()=>{const s=$("world-public-search");if(s){s.value=title(records().find(r=>String(r.id)===String(state.selected))||{});s.dispatchEvent(new Event("input"));s.focus()}});
 }
+function handleWorldHash(){const hash=location.hash.match(/^#world-node=(.+)$/);if(!hash){state.selected=null;render();return}try{const id=decodeURIComponent(hash[1]);if(records().some(r=>String(r.id)===String(id))){state.selected=id;remember(id);render();}}catch(e){}}
 function init(){
  loadTrail();
  const hash=location.hash.match(/^#world-node=(.+)$/);if(hash){try{state.selected=decodeURIComponent(hash[1]);remember(state.selected)}catch(e){}}
@@ -100,5 +101,5 @@ function init(){
  if(!nav.querySelector('a[href="#world"]')){const a=document.createElement("a");a.href="#world";a.textContent="THE WORLD";a.dataset.route="world";nav.appendChild(a)}
  render();
 }
-if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
+window.addEventListener("hashchange",handleWorldHash);\nif(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
 })();
