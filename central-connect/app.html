@@ -335,12 +335,12 @@ footer{padding:30px 2px;color:#5f5f5a}
   function escSearch(x){return String(x).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]))}
   searchInput?.addEventListener("input",()=>doSearch(searchInput.value));
   document.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();openSearch()}if(e.key==="Escape"){closeSearch();closeAudit()}});
-  const oldBoot=document.getElementById("app");
-  const observer=new MutationObserver(()=>{
-    const acct=$("acct"), sa=$("settingsAccount");
-    if(acct&&sa&&acct.textContent)sa.textContent=acct.textContent;
-  });
-  observer.observe(oldBoot||document.body,{subtree:true,childList:true,characterData:true});
+  function syncOperatorIdentity(){
+    const acct=$("acct"),sa=$("settingsAccount");
+    if(acct&&sa&&acct.textContent&&sa.textContent!==acct.textContent)sa.textContent=acct.textContent;
+  }
+  window.addEventListener("escie:central-ready",syncOperatorIdentity);
+  setTimeout(syncOperatorIdentity,500);
 })();
 </script>
 <script src="./agent-protocol.js"></script><script src="./agent-runtime.js"></script><script src="./agent-ui.js"></script><script src="./operator.js"></script>
