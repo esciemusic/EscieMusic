@@ -76,6 +76,9 @@ jobs:
       - name: Run site script-load contract test
         run: |
           node tests/site-loads.node.test.js
+      - name: Run world-engine contract test
+        run: |
+          node tests/world-engine.node.test.js
 
       - name: Verify Pages entry points
         run: |
