@@ -2,7 +2,7 @@
 "use strict";
 const root=typeof window!=="undefined"?window:globalThis;
 const KEY="escie_game_state_v1";
-const defaults={version:1,player_id:null,screen:"gateway",scene:"threshold",visited:[],inventory:[],signals:0};
+const defaults={version:2,player_id:null,screen:"gateway",scene:"threshold",visited:[],inventory:[],signals:0,entered:false};
 const scenes=[
  {id:"threshold",label:"THE THRESHOLD",title:"THE FIRST DOOR",text:"You are not entering another universe. You are entering another layer of the same one.",item:null,next:"laneway"},
  {id:"laneway",label:"PARC-EXTENSION",title:"THE LANEWAY",text:"Concrete. Winter air. A camera where there should not be one. Something has been left behind.",item:"game-item-baby-shoe",next:"signal"},
@@ -31,6 +31,11 @@ function collect(s,id){
 function render(){
  const el=document.getElementById("game-container");if(!el)return;
  let s=ensurePlayer(load()),c=current(s);save(s);
+ if(!s.entered){
+  el.innerHTML=`<div class="game-gateway game-entry-gateway"><div class="game-gateway-head"><span class="game-kicker">ESCIE / THE WORLD</span><span class="game-status">SIGNAL DETECTED</span></div><div class="game-entry-main"><span class="game-kicker">THE GLASS EYE</span><h3>YOU ARE ALREADY HERE.</h3><p>This is not a separate world. It is another layer of the same one. Enter when you are ready.</p><div class="game-entry-route"><span>ESCIE</span><i>→</i><span>THE WORLD</span><i>→</i><strong>THE SIGNAL</strong></div><button type="button" class="game-enter-button" data-game-enter>ENTER THE WORLD</button></div></div>`;
+  const b=el.querySelector("[data-game-enter]");if(b)b.onclick=()=>{s.entered=true;visit(s,"threshold");save(s);render()};
+  return;
+ }
  const inv=s.inventory.map(id=>item(id)).filter(Boolean);
  const found=c.item?item(c.item):null;
  el.innerHTML='<div class="game-gateway"><div class="game-gateway-head"><span class="game-kicker">ESCIE / PLAYABLE LAYER</span><span class="game-status">LOCAL PLAYER STATE</span></div>'+
@@ -48,8 +53,8 @@ function bind(el,s){
 }
 function init(){
  const el=document.getElementById("game-container");if(!el)return;
- const s=load();if(!s.visited.includes("threshold"))s.visited.push("threshold");save(s);render();
+ const s=load();ensurePlayer(s);save(s);render();
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
-root.ESCIE_GAME_GATEWAY={version:"1.0.0",scenes,items,reset(){localStorage.removeItem(KEY);render()}};
+root.ESCIE_GAME_GATEWAY={version:"1.1.0",scenes,items,enter(){const s=ensurePlayer(load());s.entered=true;visit(s,"threshold");save(s);render()},reset(){localStorage.removeItem(KEY);render()},getState(){return load()}};
 })();
