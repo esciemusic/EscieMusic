@@ -8,7 +8,7 @@ const registerNPC=n=>{const s=read();s.npcs[n.id]=Object.assign({},s.npcs[n.id]|
 const registerSurveillance=n=>{const s=read();s.surveillance=s.surveillance||{};s.surveillance[n.id]=Object.assign({},n);save(s);return n};
 const observe=(action,pos,opts={})=>{
  const s=read(),sim=window.ESCIE_WORLD_SIMULATION;
- const radius=Number(opts.radius||4),candidates=[];
+ const radius=Number.isFinite(Number(opts.radius))?Number(opts.radius):4,candidates=[];
  Object.values(s.npcs||{}).forEach(n=>{if(typeof n.x!=="number"||typeof n.y!=="number")return;const d=dist(pos,n);if(d<=radius)candidates.push({source:"NPC:"+n.id,distance:d,awareness:Number(n.awareness??50)})});
  Object.values(s.surveillance||{}).forEach(c=>{if(typeof c.x!=="number"||typeof c.y!=="number")return;const d=dist(pos,c);if(d<=Number(c.radius||5))candidates.push({source:"CAMERA:"+c.id,distance:d,awareness:Number(c.awareness??90)})});
  const visible=candidates.find(v=>v.awareness>=Math.max(20,60-v.distance*10));
