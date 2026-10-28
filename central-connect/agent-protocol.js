@@ -22,7 +22,7 @@ window.ESCIE_AGENT_PROTOCOL = Object.freeze({
   ]),
   createEnvelope({conversationId, parentId=null, from, to, type="TASK", payload={}, contextRefs=[]}) {
     return {
-      id: crypto.randomUUID(),
+      id: (globalThis.crypto&&typeof globalThis.crypto.randomUUID==="function")?globalThis.crypto.randomUUID():("env-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2)),
       conversation_id: conversationId,
       parent_id: parentId,
       from,
