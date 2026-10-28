@@ -52,3 +52,14 @@ body.escie-world-page{overscroll-behavior:none}
  .world-actions button{min-height:46px}
  .world-dpad button{min-width:54px;min-height:48px}
 }
+
+/* DEVICE FRAME / CONSOLE PRESENTATION */
+.world-device{min-height:100vh;background:#010201;padding:clamp(8px,2vw,24px);box-sizing:border-box}
+.world-device-top{display:flex;justify-content:space-between;max-width:1120px;margin:0 auto .4rem;padding:0 .35rem;color:rgba(168,255,145,.55);font:700 .5rem monospace;letter-spacing:.16em}
+.world-device-top span:last-child{color:var(--world-green)}
+.world-device .world-shell{border:1px solid rgba(168,255,145,.16);border-radius:18px;overflow:hidden;max-width:1120px;margin:auto;box-shadow:0 0 0 5px #050805,0 25px 100px rgba(0,0,0,.8),inset 0 0 50px rgba(80,255,100,.025)}
+.world-device .world-header{border-radius:18px 18px 0 0}
+.world-device .world-game{border-left:0;border-right:0}
+.handheld-mode{border-radius:0!important;position:fixed!important;inset:0!important;z-index:1000!important;padding:clamp(10px,2vw,24px)!important}
+.handheld-mode .world-shell{max-width:none!important;border-radius:0!important;border:0!important;box-shadow:none!important}
+@media(max-width:700px){.world-device{padding:0}.world-device-top{padding:.4rem .7rem}.world-device .world-shell{border-radius:0;border-left:0;border-right:0}.world-device .world-header{border-radius:0}}
