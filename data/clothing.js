@@ -106,5 +106,20 @@
       notes:"Statement project garment; eventually suitable for custom production."
     }
   ];
-  window.ESCIE_CLOTHING=ESCIE_CLOTHING;
+  window.ESCIE_CLOTHING_AUDIT={
+  version:"1.0",
+  validate:function(item){
+    if(!item||item.type!=="CLOTHING")return {ok:false,errors:["not a clothing record"]};
+    const p=item.production_packet||{};
+    const errors=[];
+    if(p.approval_gate!=="HUMAN")errors.push("production approval must remain human-gated");
+    if(p.quantity_decision!=="POST-SAMPLE")errors.push("quantity decision must wait until after sample");
+    if(p.quote_required!==true)errors.push("quote required");
+    if(p.photo_required!==true)errors.push("approved sample photography required");
+    if(!Array.isArray(p.qc)||!p.qc.length)errors.push("physical QC checklist required");
+    return {ok:errors.length===0,errors};
+  },
+  all:function(){return ESCIE_CLOTHING.map(this.validate);}
+};
+window.ESCIE_CLOTHING=ESCIE_CLOTHING;
 })();
