@@ -17,6 +17,7 @@ const ESCIE_UI_PLAYER = {
   autoAdvance: true,
   mounted: false,
   ui: null,
+  lastFocusedBeforeShow: null,
 
   attach(audioElement) {
     this.audio = audioElement || null;
@@ -189,6 +190,10 @@ const ESCIE_UI_PLAYER = {
   show() {
     if (!this.ui) this.mount();
     if (this.ui && this.ui.dock) {
+      if (this.ui.dock.hidden && typeof document !== "undefined") {
+        const active = document.activeElement;
+        this.lastFocusedBeforeShow = active && active !== document.body ? active : null;
+      }
       this.ui.dock.hidden = false;
       if (typeof document !== "undefined" && document.body) {
         document.body.classList.add("player-visible");
@@ -198,9 +203,14 @@ const ESCIE_UI_PLAYER = {
 
   hide() {
     this.pause();
+    const restore = this.lastFocusedBeforeShow;
     if (this.ui && this.ui.dock) this.ui.dock.hidden = true;
     if (typeof document !== "undefined" && document.body) {
       document.body.classList.remove("player-visible");
+    }
+    this.lastFocusedBeforeShow = null;
+    if (restore && typeof restore.focus === "function" && document.contains(restore)) {
+      try { restore.focus(); } catch (error) {}
     }
   },
 
