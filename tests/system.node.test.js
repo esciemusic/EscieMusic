@@ -221,3 +221,8 @@ assert(reversedAudit.ok === false, "reversed history should be reported");
 const centralConnect=fs.readFileSync("central-connect/app.html","utf8");
 assert(!centralConnect.includes('e.innerHTML="<div><strong>"+p+"'),"Central connector provider detail must not interpolate provider data into HTML");
 assert(!centralConnect.includes('n.innerHTML="<strong>OAuth readiness'),"Central OAuth readiness must not interpolate HTML");
+
+const appRuntime=fs.readFileSync("app.js","utf8");
+assert(!appRuntime.includes("The central consciousness / interface."),"app fallback identity must not use central-consciousness wording");
+assert(appRuntime.includes('function reduceMotion()'),"app runtime needs reduced-motion detection");
+assert(appRuntime.includes('behavior:reduceMotion()?"auto":"smooth"'),"app section navigation must respect reduced motion");
