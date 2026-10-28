@@ -80,7 +80,7 @@ function render(){
  }
  if(state.tab==="symbols"){const syms=coll("ESCIE_SYMBOLS",[..."CAMERA|DAISY|CHILD'S SHOE|NIGHTLIGHT|KEY|EMPTY CHAIR|VHS".split("|")].map((name,i)=>({id:"symbol-"+i,name})));body='<div class="world-intro"><span class="world-kicker">RECURRING VISUAL LANGUAGE</span><h3>NOT DECORATION.</h3><p>Symbols become doors when they recur. Their meaning can evolve, contradict itself or remain unknown.</p></div><div class="world-symbols">'+syms.map(s=>'<button type="button" class="world-symbol" data-node="'+esc(s.id)+'"><span class="symbol-glyph">·</span><strong>'+esc(s.name||s.title)+'</strong><small>'+esc(s.motif||"Appearances and connections will accumulate here.")+'</small></button>').join("")+'</div>';
  }
- if(state.tab==="trails")body='<div class="world-intro"><span class="world-kicker">EXPLORATION TRAILS</span><h3>NO WRONG DOOR.</h3><p>Every entry point can lead somewhere else. The audience builds its own route through the public graph.</p></div>'+trails(rows);;
+ if(state.tab==="trails")body='<div class="world-intro"><span class="world-kicker">EXPLORATION TRAILS</span><h3>NO WRONG DOOR.</h3><p>Every entry point can lead somewhere else. The audience builds its own route through the public graph.</p></div>'+trails(rows);
 
  const nav='<div class="world-tabs"><button class="'+(state.eyeOpen?"active":"")+'" data-glass-eye>GLASS EYE</button>'+tabs.map(t=>'<button class="'+(state.tab===t[0]?"active":"")+'" data-world-tab="'+t[0]+'">'+t[1]+'</button>').join("")+'</div>';
  root.innerHTML='<div class="world-engine"><div class="world-header"><div><span class="world-kicker">ESCIE WORLD ENGINE</span><h3>THE WORLD BEHIND THE WORK.</h3><p>Explore the universe. Follow the signal. Decide what you believe.</p></div></div>'+nav+'<div class="world-controls"><input id="world-public-search" value="'+esc(state.q)+'" placeholder="SEARCH THE WORLD…" aria-label="Search the ESCIE world"><select id="world-public-type"><option value="ALL">ALL TYPES</option>'+types.map(t=>'<option value="'+esc(t)+'" '+(state.type===t?"selected":"")+'>'+esc(t)+'</option>').join("")+'</select></div>'+body+(state.selected?((()=>{const r=all.find(x=>String(x.id)===String(state.selected));return r?detail(r):""})()):"")+'</div>';
@@ -101,7 +101,7 @@ function bind(root){
  root.querySelectorAll("[data-close-node]").forEach(b=>b.onclick=()=>{state.selected=null;syncNodeHash(null);render()});
  root.querySelectorAll("[data-focus-search]").forEach(b=>b.onclick=()=>{const s=$("world-public-search");if(s){s.value=title(records().find(r=>String(r.id)===String(state.selected))||{});s.dispatchEvent(new Event("input"));s.focus()}});
 }
-function handleWorldHash(){const hash=location.hash.match(/^#world-node=(.+)$/);if(!hash){state.selected=null;render();return}try{const id=decodeURIComponent(hash[1]);if(records().some(r=>String(r.id)===String(id))){state.selected=id;remember(id);render();}}catch(e){}}
+function handleWorldHash(){const hash=location.hash.match(/^#world-node=(.+)$/);if(!hash){state.selected=null;render();return}try{const id=decodeURIComponent(hash[1]);if(records().some(r=>String(r.id)===String(id))){state.selected=id;remember(id);render();return}state.selected=null;render();}catch(e){state.selected=null;render();}}
 function init(){
  loadTrail();
  const hash=location.hash.match(/^#world-node=(.+)$/);if(hash){try{const id=decodeURIComponent(hash[1]);if(records().some(r=>String(r.id)===String(id))){state.selected=id;remember(id)}}catch(e){state.selected=null}}
