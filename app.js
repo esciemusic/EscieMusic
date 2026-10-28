@@ -632,6 +632,35 @@
         '<div class="archive-status"><p class="eyebrow">FILTER STATE</p><h3>NO CONNECTIONS MATCH.</h3><p>Clear or change the Web filters. No new relationship is inferred by an empty result.</p></div>');
   }
 
+
+  function renderClothing(){
+    const container=byId("clothing-container");
+    if(!container)return;
+    const clothing=normalizeCollection(getGlobal("ESCIE_CLOTHING",[]));
+    if(!clothing.length){
+      container.innerHTML='<div class="archive-status"><p class="eyebrow">WARDROBE STATE</p><h3>THE CLOTHING LAYER IS READY.</h3><p>The first wardrobe will appear here as garments are approved for public release.</p></div>';
+      return;
+    }
+    const cards=clothing.map(item=>{
+      const category=String(item.category||"CORE");
+      const stage=String(item.production_stage||"DESIGN");
+      const front=item.front&&item.front.text?item.front.text:"";
+      const back=item.back&&item.back.text?item.back.text:"";
+      const details=[item.color,item.gsm_target,item.fit].filter(Boolean).join(" · ");
+      return '<article class="clothing-card" data-clothing-id="'+escapeHTML(item.id)+'">'+
+        '<div class="clothing-card-head"><span class="eyebrow">'+escapeHTML(category)+'</span><span class="pill">'+escapeHTML(stage)+'</span></div>'+
+        '<h3>'+escapeHTML(item.title||"UNTITLED")+'</h3>'+
+        '<p>'+escapeHTML(item.notes||"Clothing from the ESCIE world.")+'</p>'+
+        '<div class="clothing-specs"><span>'+escapeHTML(details)+'</span><span>'+escapeHTML((item.sizes||[]).join(" / "))+'</span></div>'+
+        '<div class="clothing-markup"><span>'+escapeHTML(front)+'</span><span>'+escapeHTML(back)+'</span></div>'+
+      '</article>';
+    }).join("");
+    container.innerHTML='<div class="clothing-intro"><p class="eyebrow">DROP 001 / THE FIRST WARDROBE</p><h3>THE GARMENT STANDS ON ITS OWN.</h3><p>Clothing is part of the world, not a requirement for understanding it. Digital connections remain secondary.</p></div><div class="clothing-grid">'+cards+'</div>';
+  }
+
+
+  .clothing-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}.clothing-card{border:1px solid rgba(255,255,255,.09);background:rgba(10,10,10,.72);padding:18px;min-height:220px}.clothing-card-head{display:flex;justify-content:space-between;gap:10px;align-items:center}.clothing-card h3{margin:12px 0 8px}.clothing-card p{color:#a7a7a1;line-height:1.6}.clothing-specs{display:flex;flex-direction:column;gap:5px;margin-top:18px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#777771}.clothing-markup{display:flex;justify-content:space-between;gap:12px;border-top:1px solid rgba(255,255,255,.08);margin-top:18px;padding-top:12px;font-size:10px;letter-spacing:.12em}.clothing-markup span:last-child{text-align:right}.clothing-intro{border-left:2px solid rgba(255,255,255,.22);padding:4px 0 4px 16px}.clothing-intro h3{margin:8px 0}.clothing-intro p{max-width:680px;color:#999991}@media(max-width:700px){.clothing-grid{grid-template-columns:1fr}.clothing-card{min-height:0}}
+
   function renderArchive() {
     const container = byId("archive-container");
     if (!container) return;
@@ -1337,6 +1366,7 @@
         renderNow();
         renderMusic();
         renderProjects();
+        renderClothing();
         renderWeb();
         renderArchive();
         renderInvestigation();
@@ -1592,6 +1622,7 @@
     renderNow();
     renderMusic();
     renderProjects();
+    renderClothing();
     renderWeb();
     renderArchive();
     renderInvestigation();
