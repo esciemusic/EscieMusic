@@ -75,6 +75,7 @@
       decoration:{sample:"DTF or DTG",production:"SCREEN PRINT TARGET"},
       digital_connection:false,
       priority:"SECOND WAVE",
+      production_packet:{sample_priority:3,quote_required:true,approval_gate:"HUMAN",qc:["fit","fabric","print","wash","shrinkage","seams"],photo_required:true,quantity_decision:"POST-SAMPLE"},
       notes:"First project-specific ESCIE garment; not a separate brand."
     },
     {
@@ -101,6 +102,7 @@
       decoration:{sample:"DTF or DTG",production:"SCREEN PRINT + EMBROIDERY TARGET"},
       digital_connection:false,
       priority:"FLAGSHIP BAM",
+      production_packet:{sample_priority:4,quote_required:true,approval_gate:"HUMAN",qc:["fit","fabric","print","embroidery","wash","shrinkage","seams"],photo_required:true,quantity_decision:"POST-SAMPLE"},
       notes:"Statement project garment; eventually suitable for custom production."
     }
   ];
