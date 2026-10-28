@@ -633,6 +633,18 @@
   }
 
 
+  function renderGameItemInspector(item){
+    const api=window.ESCIE_GAME_REGISTRY;
+    if(!api||typeof api.inspectGameItem!=="function")return "";
+    const inspected=api.inspectGameItem(item,{owned:[],discovered:[],unlocked:[]});
+    if(!inspected.ok)return "";
+    const action=inspected.acquisition==="REAL_MONEY"?"ENTER CHECKOUT":
+      inspected.acquisition==="EARNED"?"EARN IN THE SIGNAL":
+      inspected.acquisition==="FREE"||inspected.acquisition==="CLAIMABLE"?"FOUND / CLAIM IN GAME":
+      inspected.acquisition==="OWNED"?"OWNED":"LOCKED";
+    return '<div class="game-item-inspection"><span>ACQUISITION</span><strong>'+escapeHTML(action)+'</strong></div>';
+  }
+
   function renderGameShop(){
   const root=document.getElementById("game-shop-container");
   if(!root)return;
@@ -650,7 +662,7 @@
       ? '<a class="game-item-action" href="'+esc(item.external_purchase_url)+'" target="_blank" rel="noopener noreferrer">ENTER CHECKOUT</a>'
       : type==="EARNED" ? '<span class="game-item-action is-muted">EARN IN THE SIGNAL</span>'
       : '<span class="game-item-action is-muted">FOUND / CLAIMED IN GAME</span>';
-    return '<article class="game-item-card"><div class="game-item-type">'+esc(type)+'</div><h3>'+esc(item.title)+'</h3><p>'+esc(item.description)+'</p><div class="game-item-price">'+price+'</div>'+action+'</article>';
+    return '<article class="game-item-card"><div class="game-item-type">'+esc(type)+'</div><h3>'+esc(item.title)+'</h3><p>'+esc(item.description)+'</p><div class="game-item-price">'+price+'</div>+renderGameItemInspector(item)+'+action+'</article>';
   }).join("");
 }
 function renderClothing(){
