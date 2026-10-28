@@ -203,6 +203,24 @@ assert(orphanProvenanceAudit.missing.length === 1, "missing provenance source mu
 
 console.log("ESCIE provenance contracts OK");
 
+const gameRuntime=fs.readFileSync("data/games.js","utf8");
+assert(gameRuntime.includes('"game_episode"'),"game registry must support game episodes");
+assert(gameRuntime.includes('"game_scene"'),"game registry must support game scenes");
+assert(gameRuntime.includes('"game_event"'),"game registry must support game events");
+assert(gameRuntime.includes('"game_interaction"'),"game registry must support game interactions");
+assert(gameRuntime.includes('"game_clue"'),"game registry must support game clues");
+assert(gameRuntime.includes('"game_discovery"'),"game registry must support game discoveries");
+assert(gameRuntime.includes('"player_path"'),"game registry must support player paths");
+assert(gameRuntime.includes('"player_state"'),"game registry must support player state");
+assert(gameRuntime.includes('"game_ending"'),"game registry must support game endings");
+assert(gameRuntime.includes("conditions"),"game records must support unlock/interaction conditions");
+assert(gameRuntime.includes("discoveries"),"game records must support discoveries");
+assert(gameRuntime.includes("root=typeof window"),"game registry must be Node/browser compatible");
+assert(gameRuntime.includes("ESCIE_GAME_REGISTRY"),"game registry API must be exposed");
+assert(fs.readFileSync("data/registry.js","utf8").includes('["game",()=>collection("ESCIE_GAMES")]'),"canonical registry must ingest game records");
+assert(fs.readFileSync("index.html","utf8").includes('<script src="data/games.js"></script>'),"public runtime must load the game registry");
+
+
 
 const chronologicalAudit = require("../brain/audit.js").auditHistorySequence([
   { id: "h1", timestamp: "2026-01-02T00:00:00Z" },
