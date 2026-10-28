@@ -269,3 +269,8 @@ document.addEventListener("change",e=>{if(e.target.id==="phone-audio-file"){cons
    const q=e.target.closest("[data-phone-qr]"); if(q){notify("QR SCANNER READY · ENTER OR SCAN A CODE","QR");}
  });
 })();
+
+(function dreamState(){
+ const trigger=()=>{const sim=window.ESCIE_WORLD_SIMULATION;if(!sim?.evaluateDream)return;const d=sim.evaluateDream(sim.state);if(!d)return;const e=sim.enterDream(d.id)||d;window.ESCIE_PHONE_GAMEPLAY?.notify?.("DREAM EVENT · "+e.title,e.horror?"HORROR":"MEMORY");window.ESCIE_WORLD_DREAM={active:true,event:e};};
+ window.ESCIE_WORLD_DREAM={active:false,trigger};
+})();
