@@ -1,6 +1,8 @@
 const fs=require("fs");
 const path="world-engine.js";
 const src=fs.readFileSync(path,"utf8");
+const vm=require("vm");
+try{new vm.Script(src,{filename:path});}catch(e){throw new Error("world-engine must remain valid JavaScript: "+e.message)}
 function assert(c,m){if(!c)throw new Error(m)}
 assert(!/\\nfunction/.test(src),"world-engine contains an escaped newline regression");
 assert(/function pathContext\(\)/.test(src),"world-engine missing pathContext");
