@@ -247,3 +247,16 @@ document.addEventListener("click",e=>{
  if(e.target.closest("[data-phone-photo]")){const m=JSON.parse(localStorage.getItem("escie_phone_v1")||'{}');m.photos=m.photos||[];m.photos.unshift("PHOTO · "+new Date().toLocaleString());localStorage.setItem("escie_phone_v1",JSON.stringify(m));phoneApp("photos");}
 });
 document.addEventListener("change",e=>{if(e.target.id==="phone-audio-file"){const box=document.getElementById("phone-tracks");[...e.target.files].forEach(f=>{const u=URL.createObjectURL(f),a=document.createElement("button");a.textContent=f.name;a.onclick=()=>{document.getElementById("phone-audio").src=u;document.getElementById("phone-audio").play();};box.appendChild(a);});}});
+
+(function phoneGameplayBridge(){
+ const KEY="escie_phone_v1";
+ const read=()=>{try{return JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){return {}}};
+ const write=x=>localStorage.setItem(KEY,JSON.stringify(x));
+ const notify=(text,type="INFO")=>{const m=read();m.notifications=m.notifications||[];m.notifications.unshift({text,type,day:window.ESCIE_WORLD_SIMULATION?.state?.day||1,time:new Date().toLocaleTimeString()});m.notifications=m.notifications.slice(0,50);write(m);};
+ const call=(contact,text)=>{const m=read();m.calls=m.calls||[];m.calls.unshift({contact,text,time:new Date().toLocaleTimeString()});m.calls=m.calls.slice(0,50);write(m);notify("CALL · "+contact,"CALL");};
+ window.ESCIE_PHONE_GAMEPLAY={notify,call};
+ document.addEventListener("click",e=>{
+   const b=e.target.closest("[data-phone-call]"); if(b){const id=b.dataset.phoneCall;call(id==="witness"?"THE WITNESS":"UNKNOWN CONTACT","Connection established.");}
+   const q=e.target.closest("[data-phone-qr]"); if(q){notify("QR SCANNER READY · ENTER OR SCAN A CODE","QR");}
+ });
+})();
