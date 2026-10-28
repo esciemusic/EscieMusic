@@ -46,4 +46,73 @@ document.querySelector("[data-inventory]").addEventListener("click",inventory);
 document.querySelector("[data-glass]").addEventListener("click",glass);document.querySelector("[data-investigation]").addEventListener("click",investigation);document.querySelector("[data-close-investigation]").addEventListener("click",()=>{document.getElementById("world-investigation").hidden=true});document.querySelector("[data-market]").addEventListener("click",market);document.querySelector("[data-close-market]").addEventListener("click",()=>{document.getElementById("world-market").hidden=true});
 function poll(){try{const p=Array.from(navigator.getGamepads?navigator.getGamepads():[]).find(Boolean);if(p){const a=i=>!!(p.buttons[i]&&p.buttons[i].pressed),x=p.axes[0]||0,y=p.axes[1]||0,l=x<-.65,r=x>.65,u=y<-.65,d=y>.65;if((l&&!gamepadPrev.l)||(r&&!gamepadPrev.r))move(r?1:-1,0);if((u&&!gamepadPrev.u)||(d&&!gamepadPrev.d))move(0,d?1:-1);if(a(0)&&!gamepadPrev.a)interactNow();if(a(1)&&!gamepadPrev.b)glass();gamepadPrev={l,r,u,d,a:a(0),b:a(1)}}}catch(e){}requestAnimationFrame(poll)}
 const boot=state();if(boot.world_room==="room01"){room="room01";roomSetup();}drawMap();render();stage.focus();poll();
+
+// --- WORLD HARDENING / MARKET / EVIDENCE ACCESSIBILITY ---
+function esc(v){return String(v??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[m]))}
+const MARKET_ITEMS=[
+ {id:"game-item-green-pass",title:"GREEN PASS",description:"A future access token for deeper layers of THE WORLD.",price:3,currency:"SIGNAL",type:"EARNED"},
+ {id:"game-item-vhs-tape",title:"VHS TAPE",description:"A found recording from ROOM 01. It is also evidence.",price:0,currency:"SIGNAL",type:"FOUND"},
+ {id:"game-item-baby-shoe",title:"BABY SHOE",description:"A found object. Meaning unresolved.",price:0,currency:"SIGNAL",type:"FOUND"}
+];
+function openEvidence(title,d){
+ const panel=document.getElementById("investigation-detail");if(!panel)return;
+ panel.hidden=false;
+ panel.innerHTML="<span>"+esc(d[0])+"</span><strong>"+esc(title)+"</strong><p>"+esc(d[1])+"</p><p>"+esc(d[2])+"</p><small>"+esc(d[3])+"</small><div class=\"evidence-detail-actions\"><button type=\"button\" data-close-evidence>CLOSE DETAIL</button><button type=\"button\" data-pin-evidence>PIN TO LOG</button></div>";
+ panel.querySelector("[data-close-evidence]").onclick=()=>{panel.hidden=true};
+ panel.querySelector("[data-pin-evidence]").onclick=()=>say("EVIDENCE PINNED · "+title);
+ panel.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function market(){
+ const s=state(),inv=Array.isArray(s.inventory)?s.inventory:[],board=document.getElementById("market-board");if(!board)return;
+ board.innerHTML="";
+ MARKET_ITEMS.forEach(it=>{
+   const owned=inv.includes(it.id),card=document.createElement("article");card.className="market-item "+(owned?"owned":"");
+   card.innerHTML="<span class=\"world-kicker\">"+it.type+"</span><h3>"+esc(it.title)+"</h3><p>"+esc(it.description)+"</p><span class=\"market-price\">"+esc(it.type==="EARNED"?it.price+" "+it.currency:"FOUND IN WORLD")+"</span><span class=\"market-status\">"+(owned?"OWNED":"AVAILABLE")+"</span>";
+   if(it.type==="EARNED"){
+     const b=document.createElement("button");b.type="button";b.textContent=owned?"OWNED":"BUY · "+it.price+" SIGNAL";b.disabled=owned||Number(s.signals||0)<it.price;
+     b.onclick=()=>{const cur=state();if(Number(cur.signals||0)<it.price){say("NOT ENOUGH SIGNAL.");return}cur.signals=Number(cur.signals||0)-it.price;cur.inventory=Array.isArray(cur.inventory)?cur.inventory:[];if(!cur.inventory.includes(it.id))cur.inventory.push(it.id);cur.purchases=Array.isArray(cur.purchases)?cur.purchases:[];cur.purchases.push({item_id:it.id,currency:it.currency,price:it.price,timestamp:new Date().toISOString()});save(cur);say("PURCHASE COMPLETE · "+it.title);market();render()};
+     card.appendChild(b);
+   }
+   board.appendChild(card);
+ });
+ document.getElementById("world-market").hidden=false;
+}
+function investigation(){
+ const s=state(),d=Array.isArray(s.discoveries)?s.discoveries:[],u=Array.isArray(s.unresolved)?s.unresolved:[],inv=Array.isArray(s.inventory)?s.inventory:[];
+ const found=id=>d.includes(id)||inv.includes(id);
+ const nodes=[
+  ["CAMERA","game-discovery-camera","OBSERVATION","A camera watches the lane.","What was recorded, and why?"],
+  ["BABY SHOE","game-discovery-shoe","OBJECT","A small shoe was found near the curb.","Personal, symbolic, or coincidence?"],
+  ["WITNESS","game-discovery-witness","PERSON","The Witness claims to have noticed a pattern.","How reliable is the Witness?"],
+  ["TELEVISION","game-discovery-tv","RECORDING","A television produced low street-noise audio.","What does the recording establish?"],
+  ["VHS TAPE","game-discovery-tape","OBJECT / RECORDING","A dated tape has no name.","Whose tape is it, and what does the date mean?"],
+  ["SIGNAL TRAIL","game-discovery-trail","ANOMALY","Distortion is strongest along a specific path.","Signal, pattern, or interpretation?"],
+  ["SIGNAL KEY","game-item-signal-key","GAME OBJECT","The key responds to distortion and opens ROOM 01.","Game-state connection, not origin proof."],
+  ["ROOM 01","room01","LOCATION","An unknown address reached through the locked door.","Why does this room connect the archive thread?"]
+ ];
+ const details={
+  "CAMERA":["OBSERVATION","A camera watches the lane.","The surveillance thread is connected.","The game records the discovery; it does not establish who operated the camera."],
+  "BABY SHOE":["OBJECT","A small shoe sits near the curb.","The childhood thread is connected.","The object has meaning only as far as the evidence supports."],
+  "WITNESS":["PERSON","The Witness warns against confusing discovery with proof.","The witness/key thread is connected.","Treat the Witness as an observation, not automatic truth."],
+  "TELEVISION":["RECORDING","The television has no picture but carries street noise.","The audio thread is connected.","The recording may be evidence, but its origin remains unresolved."],
+  "VHS TAPE":["OBJECT / RECORDING","A dated tape has no name.","The archive thread is connected.","The date is a clue, not a conclusion."],
+  "SIGNAL TRAIL":["ANOMALY","Distortion is strongest here.","The path/distortion thread is connected.","The player decides whether the pattern means anything beyond the game."],
+  "SIGNAL KEY":["GAME OBJECT","The key responds to distortion and opens ROOM 01.","The game-state thread is connected.","Opening a game door does not prove the key's origin."],
+  "ROOM 01":["LOCATION","An unknown address reached through the locked door.","The archive thread is connected.","The room links key, television, tape, and unresolved questions."]
+ };
+ const board=document.getElementById("investigation-board");if(!board)return;board.innerHTML="";
+ nodes.forEach(n=>{
+   const ok=found(n[1]),el=document.createElement(ok?"button":"article");el.className="investigation-node "+(ok?"found evidence-node-button":"unknown");el.innerHTML="<span>"+(ok?"FOUND":"UNKNOWN")+"</span><strong>"+esc(n[0])+"</strong><small>"+esc(n[2])+"</small>"+(!ok?"<small>LOCKED · DISCOVER IT IN THE WORLD</small>":"");
+   if(ok){el.type="button";el.title="Open evidence";el.addEventListener("click",()=>openEvidence(n[0],details[n[0]]))}
+   board.appendChild(el);
+ });
+ const rel=[["CAMERA","TELEVISION","Both are observation/recording devices."],["TELEVISION","VHS TAPE","Both create a media trail."],["VHS TAPE","ROOM 01","The tape is found in Room 01."],["BABY SHOE","WITNESS","Both touch the childhood/memory thread."],["WITNESS","SIGNAL KEY","The Witness points toward the responding object."],["SIGNAL KEY","ROOM 01","The key opens the room."],["SIGNAL TRAIL","CAMERA","Both belong to the lane investigation."]];
+ const wrap=document.createElement("div");wrap.className="investigation-links";
+ rel.forEach(([a,b,why])=>{const an=nodes.find(n=>n[0]===a),bn=nodes.find(n=>n[0]===b),ok=found(an[1])&&found(bn[1]),btn=document.createElement("button");btn.type="button";btn.className="investigation-link "+(ok?"active":"");btn.disabled=!ok;btn.innerHTML="<span>"+a+"</span><b>↔</b><span>"+b+"</span><small>"+(ok?"EXAMINE CONNECTION":"LOCKED · FIND BOTH")+"</small>";if(ok)btn.onclick=()=>openEvidence(a+" ↔ "+b,["RELATIONSHIP",why,"CONNECTED IN THE GAME · NOT CONFIRMED AS CANONICAL PROOF","Connections are suggestions. The player decides what the evidence means."]);wrap.appendChild(btn)});
+ board.appendChild(wrap);
+ if(u.length){const un=document.createElement("article");un.className="investigation-node unresolved";un.innerHTML="<span>UNRESOLVED</span><strong>"+esc(u.join(" · ").toUpperCase())+"</strong><small>DO NOT ASSUME · INVESTIGATE</small>";board.appendChild(un)}
+ const panel=document.createElement("div");panel.id="investigation-detail";panel.className="investigation-detail";panel.hidden=true;board.appendChild(panel);
+ document.getElementById("world-investigation").hidden=false;
+}
+
 })();
