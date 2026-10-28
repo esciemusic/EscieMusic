@@ -86,3 +86,10 @@ body[data-world-graphics="low"] .world-device .world-shell{box-shadow:none!impor
 body[data-world-graphics="low"] .world-glow,.world-device.device-immersive[data-world-graphics="low"] .world-shell{filter:none!important}
 body[data-world-text="large"] .world-shell{font-size:112%}
 body[data-world-text="large"] .world-shell button{font-size:calc(100% + .08rem)}
+
+.world-rotate-overlay{position:fixed;inset:0;z-index:2000;display:none;place-items:center;text-align:center;background:#020402;color:var(--world-green);padding:2rem}
+.world-rotate-overlay .rotate-card{border:1px solid rgba(168,255,145,.3);padding:2rem;max-width:360px;background:#050905}
+.world-rotate-overlay .rotate-icon{font-size:3rem;margin-bottom:1rem}
+@media (orientation:portrait) and (max-width:700px){
+ body[data-world-orientation="landscape"] .world-rotate-overlay{display:grid}
+}
