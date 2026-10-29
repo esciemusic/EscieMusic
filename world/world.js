@@ -256,9 +256,14 @@ function saveWorldState(){let previousSlotRaw=null,previousKeyRaw=null,previousA
   const snapshot={version:SAVE_VERSION,saved_at:new Date().toISOString(),slot,world_state:current,simulation_state:sim&&typeof sim==="object"?sim:null,input_mode:controlScheme(),stores};
   const invalid=validateSaveSnapshot(snapshot,slot);if(invalid)throw new Error(invalid);
   const serialized=JSON.stringify(snapshot);
-  localStorage.setItem(KEY,JSON.stringify(current));
+  const worldSerialized=JSON.stringify(current);
+  localStorage.setItem(KEY,worldSerialized);
+  if(localStorage.getItem(KEY)!==worldSerialized)throw new Error("SAVE_WORLD_STATE_VERIFY_FAILED");
   localStorage.setItem(saveSlotKey(slot),serialized);
-  localStorage.setItem(ACTIVE_SLOT_KEY,String(slot));
+  if(localStorage.getItem(saveSlotKey(slot))!==serialized)throw new Error("SAVE_SLOT_VERIFY_FAILED");
+  const activeSerialized=String(slot);
+  localStorage.setItem(ACTIVE_SLOT_KEY,activeSerialized);
+  if(localStorage.getItem(ACTIVE_SLOT_KEY)!==activeSerialized)throw new Error("SAVE_ACTIVE_SLOT_VERIFY_FAILED");
   saveIndicator("SLOT "+slot+" SAVED");
   return true;
 }catch(e){try{
@@ -281,9 +286,13 @@ function initializeEmptySave(slot=activeSaveSlot()){let previousSlotRaw=null,pre
   if(localStorage.getItem(saveSlotKey(n))!==freshSerialized)throw new Error("FRESH_SLOT_WRITE_FAILED");
   if(wasActive){
     if(!clearRuntimeStores())throw new Error("FRESH_CLEAR_FAILED");
-    localStorage.setItem(KEY,JSON.stringify(fresh.world_state));
+    const freshWorldSerialized=JSON.stringify(fresh.world_state);
+    localStorage.setItem(KEY,freshWorldSerialized);
+    if(localStorage.getItem(KEY)!==freshWorldSerialized)throw new Error("FRESH_WORLD_WRITE_FAILED");
     if(!restoreSaveStores(fresh.stores))throw new Error("FRESH_STORE_RESTORE_FAILED");
-    localStorage.setItem(ACTIVE_SLOT_KEY,String(n));
+    const freshActiveSerialized=String(n);
+    localStorage.setItem(ACTIVE_SLOT_KEY,freshActiveSerialized);
+    if(localStorage.getItem(ACTIVE_SLOT_KEY)!==freshActiveSerialized)throw new Error("FRESH_ACTIVE_WRITE_FAILED");
     if(!saveWorldState())throw new Error("FRESH_SAVE_FAILED");
   }
   saveIndicator("SLOT "+n+" · NEW GAME");
@@ -317,7 +326,9 @@ function deleteSaveSlot(slot){let removed=false,previous=null,quarantineKeys=[];
     if(removed&&Number.isInteger(Number(slot))){
       const n=Number(slot),key=saveSlotKey(n);
       if(localStorage.getItem(key)===null&&typeof previous!=="undefined"&&previous!==null)localStorage.setItem(key,previous);
+      if(previous!==null&&localStorage.getItem(key)!==previous)throw new Error("DELETE_SLOT_ROLLBACK_FAILED");
       for(const [k,v] of quarantineKeys)if(v!==null&&localStorage.getItem(k)===null)localStorage.setItem(k,v);
+      for(const [k,v] of quarantineKeys)if(v!==null&&localStorage.getItem(k)!==v)throw new Error("DELETE_QUARANTINE_ROLLBACK_FAILED");
     }
   }catch(_e){}
   saveIndicator("SLOT "+Number(slot)+" · DELETE FAILED");return false;
