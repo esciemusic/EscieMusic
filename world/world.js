@@ -35,22 +35,31 @@ function rpgState(s){
  return current.rpg;
 }
 const WORLD_LOOT_TABLE=[
- {id:"POCKET_KNIFE",kind:"EQUIPMENT",weight:35,reason:"FIELD FIND"},
- {id:"HOODIE",kind:"EQUIPMENT",weight:25,reason:"FIELD FIND"},
- {id:"JACKET",kind:"EQUIPMENT",weight:12,reason:"RARE FIND"},
- {id:"BAT",kind:"EQUIPMENT",weight:6,reason:"RARE FIND"},
- {id:"SIGNAL",kind:"SIGNAL",weight:22,amount:1,reason:"SIGNAL FRAGMENT"}
+ {id:"POCKET_KNIFE",kind:"EQUIPMENT",weight:35,reason:"FIELD FIND",contexts:["lane","room01"]},
+ {id:"HOODIE",kind:"EQUIPMENT",weight:25,reason:"FIELD FIND",contexts:["lane","room01","room02"]},
+ {id:"JACKET",kind:"EQUIPMENT",weight:12,reason:"RARE FIND",contexts:["room01","room02"]},
+ {id:"BAT",kind:"EQUIPMENT",weight:6,reason:"RARE FIND",contexts:["room02","trace"]},
+ {id:"SIGNAL",kind:"SIGNAL",weight:22,amount:1,reason:"SIGNAL FRAGMENT",contexts:["lane","room01","room02","trace"]}
 ];
+function contextualLootTable(source,reason){
+ const s=state(),room=String(s.world_room||roomState.room||"lane"),skill=Number(rpgState(s)?.skills?.INVESTIGATION||0);
+ const sourceText=String(source||"").toLowerCase(),reasonText=String(reason||"").toLowerCase();
+ let table=WORLD_LOOT_TABLE.filter(x=>Array.isArray(x.contexts)&&x.contexts.includes(room));
+ if(!table.length)table=WORLD_LOOT_TABLE;
+ if(sourceText.includes("camera")||sourceText.includes("terminal")||reasonText.includes("evidence"))table=table.map(x=>Object.assign({},x,{weight:x.kind==="SIGNAL"?x.weight+12:x.weight}));
+ if(skill>=3)table=table.map(x=>Object.assign({},x,{weight:x.kind==="EQUIPMENT"?x.weight+4:x.weight}));
+ return table;
+}
 function lootRoll(table=WORLD_LOOT_TABLE){
  const total=table.reduce((n,x)=>n+Math.max(0,Number(x.weight)||0),0);let roll=Math.random()*total;
  for(const x of table){roll-=Math.max(0,Number(x.weight)||0);if(roll<=0)return x}
  return table[table.length-1];
 }
-function grantLoot(reason,source="",opts={}){
- const s=state(),r=rpgState(s),key=String(source||reason||"LOOT"),once=opts.once!==false;
+function grantLoot(reason="",source="",opts={}){
+ const s=state(),r=rpgState(s),key=String(source||reason||"LOOT");
  r.loot=Array.isArray(r.loot)?r.loot:[];
- if(once&&r.loot.some(x=>x&&x.source===key))return {ok:false,reason:"ALREADY_CLAIMED"};
- const drop=opts.drop||lootRoll(opts.table||WORLD_LOOT_TABLE);if(!drop)return {ok:false,reason:"NO_LOOT"};
+ if(opts.once!==false&&r.loot.some(x=>x&&x.source===key))return {ok:false,reason:"ALREADY_CLAIMED"};
+ const drop=opts.drop||lootRoll(opts.table||contextualLootTable(source,reason));if(!drop)return {ok:false,reason:"NO_LOOT"};
  let reward={id:drop.id,kind:drop.kind,reason:String(reason||drop.reason||"LOOT"),source:key,timestamp:new Date().toISOString()};
  if(drop.kind==="EQUIPMENT"){
    const eq=window.ESCIE_WORLD_EQUIPMENT;if(!eq)return {ok:false,reason:"EQUIPMENT_UNAVAILABLE"};
