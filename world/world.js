@@ -298,7 +298,26 @@ function initializeEmptySave(slot=activeSaveSlot()){let previousSlotRaw=null,pre
   saveIndicator("SLOT "+Number(slot)+" · NEW GAME FAILED");
   return false;
 }}
-function deleteSaveSlot(slot){try{const n=Number(slot);if(!Number.isInteger(n)||n<1||n>SAVE_SLOT_COUNT)return false;if(n===activeSaveSlot()){resetLocalGame();return true}localStorage.removeItem(saveSlotKey(n));for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k&&k.startsWith("escie_world_quarantine_v1_"+n+"_"))localStorage.removeItem(k)}saveIndicator("SLOT "+n+" · DELETED");return true}catch(e){return false}}
+function deleteSaveSlot(slot){let removed=false,quarantineKeys=[];try{
+  const n=Number(slot);if(!Number.isInteger(n)||n<1||n>SAVE_SLOT_COUNT)return false;
+  if(n===activeSaveSlot()){resetLocalGame();return true}
+  const key=saveSlotKey(n),previous=localStorage.getItem(key);
+  for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k&&k.startsWith("escie_world_quarantine_v1_"+n+"_"))quarantineKeys.push([k,localStorage.getItem(k)])}
+  localStorage.removeItem(key);removed=true;
+  if(localStorage.getItem(key)!==null)throw new Error("DELETE_SLOT_FAILED");
+  for(const [k] of quarantineKeys)localStorage.removeItem(k);
+  for(const [k] of quarantineKeys)if(localStorage.getItem(k)!==null)throw new Error("DELETE_QUARANTINE_FAILED");
+  saveIndicator("SLOT "+n+" · DELETED");return true;
+}catch(e){
+  try{
+    if(removed&&Number.isInteger(Number(slot))){
+      const n=Number(slot),key=saveSlotKey(n);
+      if(localStorage.getItem(key)===null&&typeof previous!=="undefined"&&previous!==null)localStorage.setItem(key,previous);
+      for(const [k,v] of quarantineKeys)if(v!==null&&localStorage.getItem(k)===null)localStorage.setItem(k,v);
+    }
+  }catch(_e){}
+  saveIndicator("SLOT "+Number(slot)+" · DELETE FAILED");return false;
+}}
 function saveSlotStatus(slot){try{const n=Number(slot);if(!Number.isInteger(n)||n<1||n>SAVE_SLOT_COUNT)return "INVALID";const raw=localStorage.getItem(saveSlotKey(n));if(!raw)return "EMPTY";let p;try{p=JSON.parse(raw)}catch(e){return "CORRUPT"}const staged=p&&typeof p==="object"&&!Array.isArray(p)&&p.world_state?Object.assign({},p,{stores:normalizeSaveStores(p)}):{version:1,slot:n,world_state:p,stores:normalizeSaveStores({world_state:p})};const invalid=validateSaveSnapshot(staged,n);if(invalid)return "CORRUPT";const w=staged.world_state||{};const legacy=p?.stores==null;return (legacy?"SAVED · LEGACY":"SAVED")+" · "+String(w.world_room||"LANE").toUpperCase()+" · "+Number(w.signals||0)+" SIGNAL"}catch(e){return "CORRUPT"}}
 function loadWorldSave(slot=activeSaveSlot()){let backup=null,previousKeyRaw=null,previousActiveRaw=null,previousSlotRaw=null;try{
   migrateLegacySave();
