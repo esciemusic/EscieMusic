@@ -325,3 +325,46 @@ body.escie-world-page,.world-device,.world-device .world-shell{background:#05070
 .entry-actions button:hover,.entry-actions button:focus-visible{background:rgba(143,175,114,.09);outline:1px solid var(--world-green);outline-offset:2px}
 @media(max-width:700px){.world-entry-gate{padding:.75rem}.entry-panel{min-height:100%;display:flex;flex-direction:column;justify-content:center}.entry-actions{margin-top:1.2rem}}
 @media(prefers-reduced-motion:reduce){.world-entry-gate *{scroll-behavior:auto}}
+
+
+/* CONFIRMED MASTER PALETTE — FINAL ENFORCEMENT */
+:root{
+  --world-foundation:var(--escie-void);
+  --world-blue:var(--escie-blue);
+  --world-blue-bright:var(--escie-blue-bright);
+  --world-purple:var(--escie-purple);
+  --world-purple-bright:var(--escie-ultraviolet);
+  --world-reality:var(--escie-paper);
+  --world-grey:var(--escie-cold-grey);
+  --world-danger:var(--escie-red);
+  --world-damage:var(--escie-rust);
+  --world-warning:var(--escie-amber);
+  --world-environment:var(--escie-green);
+
+  /* Legacy world-green controls previously represented the signal.
+     Keep the selector API stable while moving signal semantics to blue. */
+  --world-green:var(--escie-blue);
+  --world-green-dim:var(--escie-blue-soft);
+  --world-green-soft:var(--escie-blue-soft);
+}
+
+/* Blue is the interface signal; green is reserved for environmental/incidental content. */
+.world-entry-gate,
+.entry-panel h2,
+.entry-status,
+.entry-actions button:first-child,
+.world-hud,
+.world-save-indicator,
+.preference-group h3,
+.system-card strong,
+.transit-head strong,
+.world-device-top span:last-child{
+  color:var(--world-blue);
+}
+.entry-status{border-left-color:var(--world-blue)}
+.entry-actions button:first-child{border-color:var(--world-blue)}
+.entry-actions button:hover,
+.entry-actions button:focus-visible{
+  background:var(--escie-blue-soft);
+  outline-color:var(--world-blue);
+}
