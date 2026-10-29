@@ -377,6 +377,12 @@ assert(worldRuntime.includes('entry_source:"new-game"'),"new game initialization
 assert(worldRuntime.includes('world_room:"lane"'),"new game initialization must start in the lane");
 assert(worldRuntime.includes('inventory:[],discoveries:[],world_unlocks:[],signals:0'),"new game initialization must clear progression state");
 assert(worldRuntime.includes("if(!raw)return initializeEmptySave(n)"),"missing save slots must initialize instead of remaining undefined");
+assert(worldRuntime.includes("function saveSlotStatus"),"world save manager must expose explicit slot status");
+assert(worldRuntime.includes("function deleteSaveSlot"),"world save manager must support slot deletion");
+assert(worldRuntime.includes("data-slot-load"),"world system must expose LOAD controls for save slots");
+assert(worldRuntime.includes("data-slot-new"),"world system must expose NEW controls for save slots");
+assert(worldRuntime.includes("data-slot-delete"),"world system must expose DELETE controls for save slots");
+assert(worldRuntime.includes("SAVE / LOAD"),"world system must expose save/load management");
 assert(worldRuntime.includes("JSON_PARSE_FAILED"),"world save system must classify malformed JSON");
 assert(worldRuntime.includes("SLOT_MISMATCH"),"world save system must reject cross-slot snapshots");
 assert(worldRuntime.includes("INVALID_POSITION"),"world save system must reject malformed saved positions");
