@@ -8,7 +8,7 @@ const root=window;
 let renderer,scene,camera,clock,avatar,worldGroup,thirdPerson=false,started=false,raf=0,dayLight,ambientLight,resizeObserver,visibilityHandler;
 const obstacles=[],actors=[],doors=[],lights=[],evidence=[]; const perf={quality:"auto",frameMs:16,lowFrames:0,last:performance.now(),hud:0};
 const keys=new Set();
-const player={x:0,z:8,y:1.7,yaw:0,pitch:0,speed:4.2,sprint:7.5,lastSync:0,lastGridX:null,lastGridY:null,inVehicle:false,vehicleId:null,npcSync:0};
+const player={x:0,z:8,y:1.7,yaw:0,pitch:0,speed:4.2,sprint:7.5,lastSync:0,lastGridX:null,lastGridY:null,inVehicle:false,vehicleId:null,npcSync:0,lawSync:0};
 const bounds=54;
 const stage=()=>document.getElementById("world-stage");
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -172,9 +172,10 @@ function updateVehicles(t){
  const active=vs.current;updateVehicles.car.visible=!!active;
  if(player.inVehicle){updateVehicles.car.position.set(player.x,0,player.z);updateVehicles.car.rotation.y=player.yaw;updateVehicles.car.visible=true}else if(active){updateVehicles.car.position.x=-4+Math.sin(t*.12)*7;updateVehicles.car.position.z=-10+Math.cos(t*.12)*18;updateVehicles.car.rotation.y=t*.12;}
 }
+function updateLaw(){if(performance.now()-player.lawSync<1800)return;root.ESCIE_WORLD_LAW?.tick?.();player.lawSync=performance.now()}
 function updateEnvironment(t){
  const st=root.ESCIE_WORLD_SIMULATION?.state?.()||{},cycle=((Number(st.hour||12)*60+Number(st.minute||0))/1440),angle=cycle*Math.PI*2;
- const daylight=Math.max(.08,Math.sin(angle-Math.PI/2)*.5+.5);
+ const daylight=Math.max(.08,Math.sin(angle-Math.PI/2)*.5+.5);const weather=String(st.weather||"COLD").toUpperCase();const snow=worldGroup?.children.find(o=>o.isPoints);if(snow)snow.visible=weather.includes("SNOW")||weather.includes("COLD");
  if(dayLight){dayLight.intensity=.35+daylight*1.25;dayLight.position.set(Math.cos(angle)*25,8+daylight*28,Math.sin(angle)*25);}
  if(ambientLight)ambientLight.intensity=.25+daylight*.6;
  if(scene?.fog)scene.fog.density=.014+(1-daylight)*.012;
@@ -189,7 +190,7 @@ function updateActors(t){
  actors.forEach(a=>{a.position.x=a.userData.base+Math.sin(t*.35+a.userData.phase)*.8;a.rotation.y=Math.sin(t*.35+a.userData.phase)*.25;});
 }
 function render(){
- const dt=Math.min(clock.getDelta(),.05);updateQuality(dt);move(dt);updateActors(clock.elapsedTime);syncCanonicalNPCs(clock.elapsedTime);updateVehicles(clock.elapsedTime);updateEnvironment(clock.elapsedTime);if(performance.now()-perf.hud>120){updateHud();perf.hud=performance.now();}
+ const dt=Math.min(clock.getDelta(),.05);updateQuality(dt);move(dt);updateLaw();updateActors(clock.elapsedTime);syncCanonicalNPCs(clock.elapsedTime);updateVehicles(clock.elapsedTime);updateEnvironment(clock.elapsedTime);if(performance.now()-perf.hud>120){updateHud();perf.hud=performance.now();}
  if(thirdPerson){
    const back=new THREE.Vector3(Math.sin(player.yaw)*4.2,2.4,Math.cos(player.yaw)*4.2);
    camera.position.set(player.x+back.x,back.y,player.z+back.z);camera.lookAt(player.x,1.1,player.z);
