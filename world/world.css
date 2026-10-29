@@ -238,3 +238,10 @@ body.escie-world-page,.world-device,.world-device .world-shell{background:#05070
 .world-save-indicator{background:rgba(5,7,10,.92)}
 .dream-overlay{background:radial-gradient(circle at center,rgba(77,163,255,.10),rgba(0,0,0,.94))}
 .dream-frame{background:rgba(5,7,10,.92);box-shadow:0 0 80px rgba(77,163,255,.12)}
+
+/* GTA / RPG CONTROL FOUNDATION — blue signal */
+.world-controls{display:grid;grid-template-columns:minmax(180px,1fr) minmax(300px,2fr);align-items:end;gap:1rem}
+.world-dpad{justify-self:start}.world-action-cluster{display:grid;grid-template-columns:repeat(4,minmax(72px,1fr));gap:.5rem;justify-self:end;width:100%}
+.world-action-cluster [data-control-action]{min-height:48px;font-weight:700;letter-spacing:.08em}
+.world-action-cluster [data-control-action="FIGHT"]{border-style:dashed}.world-action-cluster [data-control-action="STEAL"]{border-style:dotted}
+@media(max-width:700px){.world-controls{grid-template-columns:1fr;align-items:stretch}.world-dpad{justify-self:center}.world-action-cluster{justify-self:stretch;grid-template-columns:repeat(2,1fr)}.world-action-cluster [data-control-action]{min-height:52px}.world-actions{width:100%;justify-content:center}}
