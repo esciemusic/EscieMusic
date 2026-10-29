@@ -298,10 +298,10 @@ function initializeEmptySave(slot=activeSaveSlot()){let previousSlotRaw=null,pre
   saveIndicator("SLOT "+Number(slot)+" · NEW GAME FAILED");
   return false;
 }}
-function deleteSaveSlot(slot){let removed=false,quarantineKeys=[];try{
+function deleteSaveSlot(slot){let removed=false,previous=null,quarantineKeys=[];try{
   const n=Number(slot);if(!Number.isInteger(n)||n<1||n>SAVE_SLOT_COUNT)return false;
   if(n===activeSaveSlot()){resetLocalGame();return true}
-  const key=saveSlotKey(n),previous=localStorage.getItem(key);
+  const key=saveSlotKey(n);previous=localStorage.getItem(key);
   for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k&&k.startsWith("escie_world_quarantine_v1_"+n+"_"))quarantineKeys.push([k,localStorage.getItem(k)])}
   localStorage.removeItem(key);removed=true;
   if(localStorage.getItem(key)!==null)throw new Error("DELETE_SLOT_FAILED");
