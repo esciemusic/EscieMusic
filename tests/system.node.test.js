@@ -356,7 +356,8 @@ assert(worldRuntime.includes('"escie_world_vehicles_v1"'),"world reset/save bund
 assert(worldRuntime.includes('"escie_world_law_v1"'),"world reset/save bundle must include law state");
 assert(worldRuntime.includes('"escie_phone_v1"'),"world reset/save bundle must include phone state");
 assert(worldRuntime.includes("if(!resetPending())saveWorldState()"),"reset must prevent visibility/pagehide from recreating a deleted save");
-assert(worldRuntime.includes("This clears gameplay, simulation, NPC, equipment, vehicle and law state. Profile and preferences remain."),"reset must preserve profile and preferences");
+assert(worldRuntime.includes("const keys=[KEY,SAVE_KEY,saveSlotKey(active),...SAVE_STORE_KEYS]"),"reset must clear only active gameplay stores");
+assert(!worldRuntime.includes("keys=[KEY,SAVE_KEY,saveSlotKey(active),...SAVE_STORE_KEYS,PROFILE_KEY,PREF_KEY"),"reset must not include profile or preference stores");
 assert(worldRuntime.includes("syncSimulationPosition()"),"world boot must resync simulation position after loading");
 assert(worldRuntime.includes("SAVE_SLOT_COUNT=3"),"world save system must expose three local save slots");
 assert(worldRuntime.includes("ACTIVE_SLOT_KEY"),"world save system must persist the active slot");
