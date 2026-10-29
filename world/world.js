@@ -509,7 +509,6 @@ if(boot.world_position&&Number.isFinite(Number(boot.world_position.x))&&Number.i
 if(boot.world_room==="trace"){room="trace";roomSetup();}else if(boot.world_room==="room02"){room="room02";roomSetup();}else if(boot.world_room==="room01"){room="room01";roomSetup();}
 syncSimulationPosition();drawMap();render();stage.focus();poll();
 
-})();
 (function(){
 function openSimulation(){
  const a=window.ESCIE_WORLD_SIMULATION,e=document.getElementById("world-simulation");
