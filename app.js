@@ -874,36 +874,52 @@ function renderClothing(){
     if (!container) return;
 
     const records = getAllPublicRecords();
-    const glassRecords = records.filter(record => {
-      const manifest = recordManifest(record);
-      return manifest ? manifest.sections.glassEye : false;
-    });
-    const music = glassRecords.filter(record => record.type === "music");
-    const projects = glassRecords.filter(record => record.type === "project" || record.type === "body");
-    const archive = glassRecords.filter(record => {
-      const manifest = recordManifest(record);
-      return manifest && manifest.sections.archive;
-    });
-    const latest = music.slice().sort((a, b) =>
-      String(a.number || "").localeCompare(String(b.number || ""))
-    ).slice(-1)[0] || null;
-    const latestTitle = latest ? recordTitle(latest) : "NO PUBLIC TRANSMISSION";
-    const latestNumber = latest ? (latest.number || "—") : "—";
+    const latest = records
+      .filter(record => record && record.type === "music")
+      .sort((a, b) => String(a.number || "").localeCompare(String(b.number || ""), undefined, { numeric: true }))
+      .slice(-1)[0] || null;
+    const memory = getGlobal("ESCIE_GLASS_EYE_MEMORY", null);
 
     container.innerHTML =
-      '<div class="glass-frame">' + motifMarkup("glass-eye") + '' +
-        '<div class="glass-crosshair" aria-hidden="true"></div>' +
-        '<div class="glass-corner glass-corner-tl"></div><div class="glass-corner glass-corner-tr"></div>' +
-        '<div class="glass-corner glass-corner-bl"></div><div class="glass-corner glass-corner-br"></div>' +
-        '<div class="glass-readout"><span>GLASS EYE // OBSERVATION INTERFACE</span><span>REC / OBSERVE / PRESERVE</span></div>' +
+      '<div class="glass-frame glass-eye-interface">' +
+        '<div class="glass-readout"><span>THE GLASS EYE</span><span>YOUR SIDE OF THE SCREEN</span></div>' +
         '<div class="glass-center">' +
           '<span class="glass-dot"></span>' +
-          '<strong>' + escapeHTML(latest ? "SIGNAL ACQUIRED" : "NO PUBLIC SIGNAL") + '</strong>' +
-          '<p>' + escapeHTML(latest ? latestTitle : "The eye records what is actually available. It does not manufacture evidence.") + '</p>' +
-          (latest ? '<button class="record-action glass-record-action record-card" type="button" data-record-id="' + escapeHTML(recordId(latest)) + '">OPEN TRANSMISSION / ' + escapeHTML(latestNumber) + '</button>' : '') +
+          '<strong>LOOK. LISTEN. FOLLOW. RETURN.</strong>' +
+          '<p>The world is not finished when you arrive. What you notice becomes part of your path.</p>' +
+          '<div class="glass-eye-actions" role="group" aria-label="Glass Eye actions">' +
+            '<button type="button" data-glass-eye-action="observe">OBSERVE</button>' +
+            '<button type="button" data-glass-eye-action="listen">LISTEN</button>' +
+            '<button type="button" data-glass-eye-action="follow">FOLLOW</button>' +
+            '<button type="button" data-glass-eye-action="return">RETURN</button>' +
+          '</div>' +
+          '<p class="glass-eye-response" aria-live="polite">' +
+            escapeHTML(latest ? "A signal is waiting." : "The signal is quiet. Look closer.") +
+          '</p>' +
         '</div>' +
-        '<div class="glass-footer"><span>WORK ' + music.length + '</span><span>BODIES ' + projects.length + '</span><span>ARCHIVE ' + archive.length + '</span><span>PUBLIC RECORDS ' + records.length + '</span></div>' +
+        '<div class="glass-footer"><span>YOUR PATH</span><span>LOCAL MEMORY</span><span>NO CANON</span></div>' +
       '</div>';
+
+    const response = container.querySelector(".glass-eye-response");
+    container.querySelectorAll("[data-glass-eye-action]").forEach(button => {
+      button.addEventListener("click", () => {
+        const action = button.getAttribute("data-glass-eye-action");
+        const messages = {
+          observe: "OBSERVING · notice what is actually here.",
+          listen: latest ? "LISTENING · the current signal is open." : "LISTENING · waiting for a signal.",
+          follow: "FOLLOWING · threads lead deeper into the record.",
+          return: "RETURNING · your path remains yours."
+        };
+        if (response) response.textContent = messages[action] || "THE GLASS EYE IS OPEN.";
+        if (memory && typeof memory.record === "function") {
+          memory.record({
+            type: "GLASS_EYE_" + String(action || "").toUpperCase(),
+            target_id: latest ? recordId(latest) : "glass-eye",
+            timestamp: new Date().toISOString()
+          });
+        }
+      });
+    });
   }
   function getAllRecords() {
     const registry = getGlobal("ESCIE_RECORD_REGISTRY", null);
