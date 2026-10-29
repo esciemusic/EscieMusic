@@ -1,6 +1,7 @@
 (()=>{"use strict";
 const REF={
- version:1,
+ version:2,
+ network:{major_corridors:["Jean-Talon","Parc","Acadie","Saint-Viateur","Mont-Royal","Saint-Denis","Saint-Laurent","Sherbrooke","Rosemont","Beaubien","Notre-Dame","Wellington"],transit_hubs:["Parc","Acadie","Jean-Talon","Laurier","Mont-Royal","Berri-UQAM","McGill","Peel","Guy-Concordia","Champ-de-Mars","Place-d’Armes","Saint-Henri","Vendôme","De l’Église","Verdun"]},
  source:"MONTRÉAL_REFERENCE_LAYER",
  method:"OFFICIAL_CITY_REFERENCE",
  accuracy:"REFERENCE_SCALE_NOT_SURVEY_GRADE",
