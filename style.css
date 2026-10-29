@@ -501,6 +501,8 @@ body.menu-open .index-navigation.is-open {
   opacity: 1;
 
   pointer-events: auto;
+
+  transform: translate3d(0,0,0) scale(1);
 }
 
 
