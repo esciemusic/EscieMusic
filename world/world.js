@@ -239,7 +239,7 @@ function normalizeSaveStores(snapshot){const source=snapshot?.stores&&typeof sna
 function captureRuntimeStores(){const simRaw=localStorage.getItem("escie_world_simulation_v1");let sim=null;try{sim=simRaw?JSON.parse(simRaw):null}catch(e){}const stores=defaultStoreBundle(sim);for(const k of SAVE_STORE_KEYS){const raw=localStorage.getItem(k);if(raw!==null){try{stores[k]=JSON.parse(raw)}catch(e){}}}stores["escie_world_simulation_v1"]=simulationDefaults(stores["escie_world_simulation_v1"]);return stores}
 function validateSaveSnapshot(snapshot,slot){if(!snapshot||typeof snapshot!=="object"||Array.isArray(snapshot))return "NOT_OBJECT";if(snapshot.version!==1&&snapshot.version!==SAVE_VERSION)return "UNSUPPORTED_VERSION";if(snapshot.slot!=null&&Number(snapshot.slot)!==Number(slot))return "SLOT_MISMATCH";const w=snapshot.world_state;if(!w||typeof w!=="object"||Array.isArray(w))return "INVALID_WORLD_STATE";if(w.world_position&&(!Number.isFinite(Number(w.world_position.x))||!Number.isFinite(Number(w.world_position.y))))return "INVALID_POSITION";const storeError=validateStoreBundle(snapshot.stores);if(storeError)return storeError;const sim=snapshot.stores?.["escie_world_simulation_v1"]||snapshot.simulation_state;if(sim&&w.world_position&&sim.position){if(Math.abs(Number(sim.position.x)-Number(w.world_position.x))>1||Math.abs(Number(sim.position.y)-Number(w.world_position.y))>1)return "STATE_POSITION_DIVERGENCE"}if(snapshot.input_mode!=null&&!["AUTO","KEYBOARD","TOUCH","GAMEPAD"].includes(String(snapshot.input_mode).toUpperCase()))return "INVALID_INPUT_MODE";return ""} 
 function clearRuntimeStores(){[KEY,"escie_world_simulation_v1","escie_world_npc_v1","escie_world_npc_life_v1","escie_world_equipment_v1","escie_world_vehicles_v1","escie_world_law_v1"].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}})}
-function migrateLegacySave(){try{if(localStorage.getItem(saveSlotKey()))return;const raw=localStorage.getItem(SAVE_KEY);if(!raw)return;let parsed;try{parsed=JSON.parse(raw)}catch(e){return}const legacy=parsed&&typeof parsed==="object"&&!Array.isArray(parsed)&&parsed.world_state?parsed:{version:1,slot:1,world_state:parsed};const staged=Object.assign({},legacy,{version:legacy.version||1,slot:1,stores:normalizeSaveStores(legacy)});if(validateSaveSnapshot(staged,1))return;localStorage.setItem(saveSlotKey(1),JSON.stringify(staged));localStorage.setItem(ACTIVE_SLOT_KEY,"1")}catch(e){}}
+function migrateLegacySave(){let previousSlotRaw=null,previousActiveRaw=null,wroteSlot=false;try{if(localStorage.getItem(saveSlotKey()))return;const raw=localStorage.getItem(SAVE_KEY);if(!raw)return;let parsed;try{parsed=JSON.parse(raw)}catch(e){return}const legacy=parsed&&typeof parsed==="object"&&!Array.isArray(parsed)&&parsed.world_state?parsed:{version:1,slot:1,world_state:parsed};const staged=Object.assign({},legacy,{version:legacy.version||1,slot:1,stores:normalizeSaveStores(legacy)});if(validateSaveSnapshot(staged,1))return;previousSlotRaw=localStorage.getItem(saveSlotKey(1));previousActiveRaw=localStorage.getItem(ACTIVE_SLOT_KEY);localStorage.setItem(saveSlotKey(1),JSON.stringify(staged));wroteSlot=true;localStorage.setItem(ACTIVE_SLOT_KEY,"1");if(localStorage.getItem(saveSlotKey(1))===null||localStorage.getItem(ACTIVE_SLOT_KEY)!=="1")throw new Error("LEGACY_MIGRATION_COMMIT_FAILED")}catch(e){try{if(wroteSlot){if(previousSlotRaw===null)localStorage.removeItem(saveSlotKey(1));else localStorage.setItem(saveSlotKey(1),previousSlotRaw)}if(previousActiveRaw===null)localStorage.removeItem(ACTIVE_SLOT_KEY);else localStorage.setItem(ACTIVE_SLOT_KEY,previousActiveRaw)}catch(_e){}}}
 function saveIndicator(msg="GAME SAVED"){let el=document.getElementById("world-save-indicator");if(!el){el=document.createElement("div");el.id="world-save-indicator";el.className="world-save-indicator";document.body.appendChild(el)}el.textContent=msg;el.classList.add("visible");clearTimeout(window.__saveTimer);window.__saveTimer=setTimeout(()=>el.classList.remove("visible"),1400)}
 function saveWorldState(){let previousSlotRaw=null,previousKeyRaw=null,previousActiveRaw=null,slot=null;try{
   migrateLegacySave();
@@ -346,15 +346,23 @@ function loadWorldSave(slot=activeSaveSlot()){let backup=null,previousKeyRaw=nul
 function switchSaveSlot(slot){const n=Number(slot);if(!Number.isInteger(n)||n<1||n>SAVE_SLOT_COUNT)return false;if(n===activeSaveSlot())return true;try{if(!saveWorldState()){saveIndicator("SLOT SWITCH BLOCKED · SAVE FAILED");return false}if(!loadWorldSave(n)){saveIndicator("SLOT SWITCH BLOCKED · LOAD FAILED");return false}location.reload();return true}catch(e){saveIndicator("SLOT SWITCH BLOCKED");return false}}
 const RESET_FLAG="escie_world_reset_pending_v1";
 function resetLocalGame(){
+  const removed=[];
   try{
     localStorage.setItem(RESET_FLAG,"1");
     const active=activeSaveSlot();
-    [KEY,SAVE_KEY,saveSlotKey(active),"escie_world_simulation_v1","escie_world_npc_v1","escie_world_npc_life_v1","escie_world_equipment_v1","escie_world_vehicles_v1","escie_world_law_v1"].forEach(k=>localStorage.removeItem(k));
-    for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k&&k.startsWith("escie_world_quarantine_v1_"+active+"_"))localStorage.removeItem(k)}
+    const keys=[KEY,SAVE_KEY,saveSlotKey(active),"escie_world_simulation_v1","escie_world_npc_v1","escie_world_npc_life_v1","escie_world_equipment_v1","escie_world_vehicles_v1","escie_world_law_v1"];
+    for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k&&k.startsWith("escie_world_quarantine_v1_"+active+"_"))keys.push(k)}
+    keys.forEach(k=>{localStorage.removeItem(k);removed.push(k)});
+    if(keys.some(k=>localStorage.getItem(k)!==null))throw new Error("RESET_INCOMPLETE");
     sessionStorage.removeItem("escie_handheld_mode");
     sessionStorage.removeItem("escie_device_mode");
-  }catch(e){}
-  location.reload();
+    location.reload();
+  }catch(e){
+    try{localStorage.removeItem(RESET_FLAG)}catch(_e){}
+    saveIndicator("RESET FAILED · NOTHING RELOADED");
+    return false;
+  }
+  return true;
 }
 function resetPending(){try{return localStorage.getItem(RESET_FLAG)==="1"}catch(e){return false}}
 function clearResetFlag(){try{localStorage.removeItem(RESET_FLAG)}catch(e){}}
