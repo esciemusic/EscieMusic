@@ -185,11 +185,20 @@ function enter3DInterior(building){
  say3D("ENTERED · "+String(building?.name||"INTERIOR")+" · 3D");
 }
 function exit3DInterior(){
- if(!interiorMode)return false;root.ESCIE_WORLD_SIMULATION?.leaveBuilding?.();
- if(interiorGroup){worldGroup.remove(interiorGroup);interiorGroup=null}worldGroup.children.forEach(o=>o.visible=true);
- interiorMode=false;interiorBuilding=null;obstacles.splice(0,obstacles.length,...(interiorSaved?.obstacles||[]));
- player.x=interiorSaved?.x??player.x;player.z=interiorSaved?.z??player.z;player.yaw=interiorSaved?.yaw??player.yaw;avatar.position.set(player.x,0,player.z);
- say3D("EXITED · BACK ON THE STREET");return true;
+ if(!interiorMode)return false;
+ root.ESCIE_WORLD_SIMULATION?.leaveBuilding?.();
+ if(interiorGroup){worldGroup.remove(interiorGroup);interiorGroup=null}
+ worldGroup.children.forEach(o=>o.visible=true);
+ doors.forEach(d=>{d.open=false;d.mesh.rotation.y=0;});
+ interiorMode=false;
+ interiorBuilding=null;
+ obstacles.splice(0,obstacles.length,...(interiorSaved?.obstacles||[]));
+ player.x=interiorSaved?.x??player.x;
+ player.z=interiorSaved?.z??player.z;
+ player.yaw=interiorSaved?.yaw??player.yaw;
+ avatar.position.set(player.x,0,player.z);
+ say3D("EXITED · BACK ON THE STREET");
+ return true;
 }
 function blocked(x,z){
  if(interiorMode)return Math.abs(x)>7.3||Math.abs(z)>5.3;
