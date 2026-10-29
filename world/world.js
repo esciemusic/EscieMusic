@@ -289,6 +289,30 @@ function clearResetFlag(){try{localStorage.removeItem(RESET_FLAG)}catch(e){}}
 document.addEventListener("visibilitychange",()=>{if(document.hidden&&!resetPending())saveWorldState()});
 window.addEventListener("pagehide",()=>{if(!resetPending())saveWorldState()});
 document.querySelector("[data-save]")?.addEventListener("click",saveWorldState);
+const WORLD_BOOT_DEPENDENCIES=[
+  ["GAME_REGISTRY","ESCIE_GAME_REGISTRY",true],
+  ["SIMULATION","ESCIE_WORLD_SIMULATION",true],
+  ["CITY","ESCIE_CITY_REFERENCE",false],
+  ["NPC","ESCIE_WORLD_NPC",true],
+  ["NPC_LIFE","ESCIE_WORLD_NPC_LIFE",false],
+  ["EQUIPMENT","ESCIE_WORLD_EQUIPMENT",false],
+  ["VEHICLES","ESCIE_WORLD_VEHICLES",false],
+  ["LAW","ESCIE_WORLD_LAW",false],
+  ["LANGUAGE","ESCIE_WORLD_LANGUAGE",false],
+  ["DIALOGUE","ESCIE_WORLD_DIALOGUE",false],
+  ["INTERIOR","ESCIE_WORLD_INTERIOR",false]
+];
+function worldBootAudit(){
+  const missing=WORLD_BOOT_DEPENDENCIES.filter(d=>d[2]&&!window[d[1]]).map(d=>d[0]);
+  const optionalMissing=WORLD_BOOT_DEPENDENCIES.filter(d=>!d[2]&&!window[d[1]]).map(d=>d[0]);
+  const status={ready:missing.length===0,missing,optionalMissing,timestamp:new Date().toISOString()};
+  window.ESCIE_WORLD_BOOT=status;
+  if(missing.length)saveIndicator("BOOT BLOCKED · "+missing.join(", "));
+  else if(optionalMissing.length)say("WORLD READY · OPTIONAL SYSTEMS PENDING: "+optionalMissing.join(", "));
+  return status;
+}
+const bootStatus=worldBootAudit();
+if(!bootStatus.ready)throw new Error("ESCIE WORLD BOOT DEPENDENCY FAILURE: "+bootStatus.missing.join(", "));
 migrateLegacySave();
 loadWorldSave(activeSaveSlot());
 (function restoreWorldRuntime(){
