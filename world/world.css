@@ -305,3 +305,9 @@ body.escie-world-page,.world-device,.world-device .world-shell{background:#05070
 .market-item[data-state="PURCHASABLE"]{border-color:rgba(184,135,58,.45)}
 @keyframes world-signal-pulse{0%,100%{opacity:.72}50%{opacity:1;filter:drop-shadow(0 0 7px rgba(111,63,175,.35))}}
 @media(prefers-reduced-motion:reduce){.world-object[data-entity="signal"]{animation:none}}
+
+/* LIVE ENTITY STATES */
+.world-object[data-entity="camera"][data-state="ACTIVE"]{color:var(--world-entity-danger);border-color:var(--world-entity-danger);animation:world-camera-alert 1.2s steps(2,end) infinite}
+.world-object[data-entity="npc"][data-state="SOCIAL"]{color:var(--world-entity-npc);border-color:rgba(240,237,228,.38)}
+.world-object[data-entity="signal"][data-state="DISTORTION"]{color:var(--world-entity-signal);border-color:var(--world-entity-signal)}
+@keyframes world-camera-alert{50%{opacity:.45}100%{opacity:1}}
