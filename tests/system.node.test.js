@@ -345,6 +345,15 @@ assert(worldRuntime.includes("snapshot.world_state"),"world load must restore th
 assert(worldRuntime.includes('localStorage.setItem("escie_world_simulation_v1",JSON.stringify(snapshot.simulation_state))'),"world load must restore simulation state");
 assert(worldRuntime.includes('setControlScheme(String(snapshot.input_mode||saved.input_mode).toUpperCase())'),"world load must restore input mode");
 assert(worldRuntime.includes("boot.world_position"),"world boot must restore the saved playable position");
+assert(worldRuntime.includes('const RESET_FLAG="escie_world_reset_pending_v1"'),"world reset must use a reset guard");
+assert(worldRuntime.includes('localStorage.removeItem("escie_world_simulation_v1")'),"world reset must clear simulation state");
+assert(worldRuntime.includes('localStorage.removeItem("escie_world_npc_v1")'),"world reset must clear NPC state");
+assert(worldRuntime.includes('localStorage.removeItem("escie_world_npc_life_v1")'),"world reset must clear NPC life state");
+assert(worldRuntime.includes('localStorage.removeItem("escie_world_equipment_v1")'),"world reset must clear equipment state");
+assert(worldRuntime.includes('localStorage.removeItem("escie_world_vehicles_v1")'),"world reset must clear vehicle state");
+assert(worldRuntime.includes('localStorage.removeItem("escie_world_law_v1")'),"world reset must clear law state");
+assert(worldRuntime.includes("if(!resetPending())saveWorldState()"),"reset must prevent visibility/pagehide from recreating a deleted save");
+assert(worldRuntime.includes("This clears gameplay, simulation, NPC, equipment, vehicle and law state. Profile and preferences remain."),"reset must preserve profile and preferences");
 assert(worldRuntime.includes("syncSimulationPosition()"),"world boot must resync simulation position after loading");
 assert(worldRuntime.includes('function activeInputDevice(kind)'),"world runtime must track the active input device");
 assert(worldRuntime.includes('activeInputDevice("KEYBOARD")'),"keyboard input must register as active");
