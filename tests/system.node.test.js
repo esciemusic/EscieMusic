@@ -472,7 +472,7 @@ console.log("ESCIE NPC time-scale contracts OK");
 
 
 /* INTERIOR LIFECYCLE CONTRACTS */
-assert(worldRuntime.includes("function enter3DInterior(building)"),"3D gameplay must own interior transitions");
+assert(world3dRuntime.includes("function enter3DInterior(building)"),"3D gameplay must own interior transitions");
 assert(world3dRuntime.includes("interiorMode=true"),"3D interiors must enter through the 3D gameplay layer");
 assert(world3dRuntime.includes("interiorMode)return exit3DInterior()"),"3D interior state must return to the outdoor world through the 3D layer");
 assert(!worldIndex.includes('<script src="interior-system.js"></script>'),"legacy 2D interior renderer must not be loaded into playable gameplay");
