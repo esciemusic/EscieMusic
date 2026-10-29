@@ -17,11 +17,12 @@ const ensureDurability=s=>{s.durability=s.durability&&typeof s.durability==="obj
 const equip=id=>{const s=ensureDurability(read()),i=item(id);if(!i||!s.owned.includes(i.id))return {ok:false,reason:"NOT_OWNED"};
  if(i.durability!==Infinity&&Number(s.durability[i.id]||0)<=0)return {ok:false,reason:"BROKEN"};s.equipped[i.slot]=i.id;if(!save(s))return {ok:false,reason:"SAVE_FAILED"};return {ok:true,item:i,state:s}};
 const acquire=(id)=>{const s=ensureDurability(read()),i=item(id);if(!i)return {ok:false,reason:"UNKNOWN_ITEM"};if(!s.owned.includes(i.id))s.owned.push(i.id);s.durability[i.id]=i.durability===Infinity?Infinity:Number(i.durability||100);if(!save(s))return {ok:false,reason:"SAVE_FAILED"};return {ok:true,item:i,state:s}};
+const unequip=id=>{const s=ensureDurability(read()),i=item(id);if(!i||!s.owned.includes(i.id))return {ok:false,reason:"NOT_OWNED"};if(i.slot==="HAND")s.equipped.HAND="FISTS";else if(i.slot==="BODY")s.equipped.BODY=null;else return {ok:false,reason:"UNSUPPORTED_SLOT"};if(!save(s))return {ok:false,reason:"SAVE_FAILED"};return {ok:true,item:i,state:s}};
 const weapon=()=>item(read().equipped.HAND)||ITEMS.FISTS;
 const armor=()=>{const s=ensureDurability(read()),i=item(s.equipped.BODY);return i&&Number(s.durability[i.id]||0)>0?Number(i.armor||0):0};
 const consume=(id,amount=1)=>{const s=ensureDurability(read()),i=item(id);if(!i||i.durability===Infinity)return {ok:true,remaining:Infinity};s.durability[i.id]=Math.max(0,Number(s.durability[i.id]||0)-Math.max(0,Number(amount)||0));if(s.durability[i.id]<=0&&s.equipped[i.slot]===i.id)s.equipped[i.slot]=i.slot==="HAND"?"FISTS":null;if(!save(s))return {ok:false,reason:"SAVE_FAILED"};return {ok:true,remaining:s.durability[i.id],broken:s.durability[i.id]<=0,item:i}};
 const durability=(id)=>{const s=ensureDurability(read()),i=item(id);return i?(i.durability===Infinity?Infinity:Number(s.durability[i.id]??i.durability??0)):0};
 const damage=(targetArmor=0)=>Math.max(1,Math.round(Number(weapon().damage||9)*(1-Math.min(.6,Number(targetArmor||0)/100))));
 const describe=()=>{const s=ensureDurability(read());return {owned:s.owned.map(id=>item(id)).filter(Boolean).map(i=>Object.assign({},i,{current_durability:durability(i.id)})),equipped:{hand:item(s.equipped.HAND),body:item(s.equipped.BODY)},durability:s.durability}};
-window.ESCIE_WORLD_EQUIPMENT={state:read,items:ITEMS,item,owned,equip,acquire,weapon,armor,damage,consume,durability,describe};
+window.ESCIE_WORLD_EQUIPMENT={state:read,items:ITEMS,item,owned,equip,unequip,acquire,weapon,armor,damage,consume,durability,describe};
 })();
