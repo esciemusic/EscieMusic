@@ -96,7 +96,8 @@ const streetContext=(district,nodeId)=>{
  const type=n.type==="METRO"?"TRANSIT":label.includes("SIGNAL")?"LANEWAY":["JEAN-TALON","SAINT-DENIS","SAINT-LAURENT","SHERBROOKE","NOTRE-DAME","WELLINGTON"].some(x=>label.includes(x))?"ARTERIAL":"LOCAL";
  return Object.assign({district:String(district||"").toUpperCase(),node:n.id,label:n.label},STREET_REALISM[type],{classification:type});
 };
-\nconst nearestStreetNode=(neighbourhood,position)=>{
+
+const nearestStreetNode=(neighbourhood,position)=>{
   const nodes=WORLD_STREETS[String(neighbourhood||"").toUpperCase()]||[];
   if(!nodes.length)return null;
   const p=position||{x:2,y:7};
