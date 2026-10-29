@@ -75,6 +75,6 @@ const promote=(id,reason="PLAYER_INTERACTION")=>{const s=read(),n=s.npcs?.[id];i
 const feature=(id,reason="STORY_IMPORTANCE")=>{const s=read(),n=s.npcs?.[id];if(!n)return null;n.simulation_tier="FEATURED";n.engagement=Object.assign({score:0,reasons:[]},n.engagement||{});n.engagement.score+=5;n.engagement.reasons=(n.engagement.reasons||[]).concat(reason).slice(-20);save(s);ensure(n);return s.npcs[id];};
 const engage=(id,reason="INTERACTION")=>{const s=read(),n=s.npcs?.[id];if(!n)return null;n.engagement=Object.assign({score:0,reasons:[]},n.engagement||{});n.engagement.score+=1;n.engagement.reasons=(n.engagement.reasons||[]).concat(reason).slice(-20);if((n.simulation_tier||tiers(id))==="GENERIC"&&n.engagement.score>=2)n.simulation_tier="SIMULATED";save(s);if(n.simulation_tier!=="GENERIC")ensure(n);return s.npcs[id];};
 const goalFor=id=>profile(id)?.goal||null;
-window.ESCIE_WORLD_NPC_LIFE={state:read,ensure,profile,tick,remember,relationship,syncRelationships,goalFor,goals:GOALS,tiers,featureLevels:["GENERIC","SIMULATED","FEATURED"]};
+window.ESCIE_WORLD_NPC_LIFE={state:read,ensure,profile,tick,remember,relationship,syncRelationships,goalFor,goals:GOALS,tiers,featureLevels:["GENERIC","SIMULATED","FEATURED"],promote,feature,engage};
 if(!localStorage.getItem(KEY))save(DEFAULT);
 })();
