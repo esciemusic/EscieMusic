@@ -214,7 +214,7 @@ function bind(){
  document.addEventListener("click",e=>{const control=e.target.closest("[data-control-action]");if(control){const type=control.dataset.controlAction;if(type==="SPRINT"){move._touchSprint=true;setTimeout(()=>move._touchSprint=false,500)}else if(type==="OPEN")interact();else if(type==="FIGHT"){fight3D()||root.ESCIE_WORLD_ACTIONS?.performControlAction?.(type)}else if(type==="STEAL")root.ESCIE_WORLD_ACTIONS?.performControlAction?.(type);}});
  document.addEventListener("click",e=>{
    const b=e.target.closest("[data-3d-camera]");if(b){setMode(!thirdPerson);b.textContent=thirdPerson?"FIRST PERSON":"THIRD PERSON";}
-   const t=e.target.closest("[data-3d-toggle]");if(t){const s=stage();s?.classList.toggle("three-active");t.textContent=s?.classList.contains("three-active")?"2D MAP":"3D REALITY";resize();}
+   const p=e.target.closest("[data-pause]");if(p)togglePause();\n   const r=e.target.closest("[data-world-resume]");if(r)togglePause(false);
  });
  document.querySelectorAll("[data-dir]").forEach(b=>{
    const map={up:"w",down:"s",left:"a",right:"d"};const k=map[b.dataset.dir];
