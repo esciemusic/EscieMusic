@@ -3,7 +3,7 @@
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
 const coll=(name,fallback=[])=>{const v=window[name];return Array.isArray(v)?v:(v&&Array.isArray(v.records)?v.records:fallback)};
-const state={tab:"atlas",q:"",type:"ALL",selected:null,trail:[],visited:[],eyeOpen:false};
+const state={tab:"atlas",q:"",type:"ALL",reality:"ALL",selected:null,trail:[],visited:[],eyeOpen:false};
 const tabs=[["atlas","ATLAS"],["timeline","TIMELINE"],["symbols","SYMBOLS"],["trails","TRAILS"]];
 const raf=typeof requestAnimationFrame==="function"?requestAnimationFrame:fn=>setTimeout(fn,0);
 const caf=typeof cancelAnimationFrame==="function"?cancelAnimationFrame:clearTimeout;
@@ -42,7 +42,7 @@ function related(id){
 function inverse(t){const inv={created_by:"created",part_of:"contains",located_at:"location_of",recorded_at:"recording_location_of",performed_at:"performance_location_of",inspired_by:"inspires",supports:"supported_by",contradicts:"contradicted_by"};return inv[t]||t||"related"}
 function filtered(){
  const q=state.q.toLowerCase().trim();
- return records().filter(r=>(state.type==="ALL"||type(r)===state.type)&&(!q||searchText(r).includes(q)));
+ return records().filter(r=>(state.type==="ALL"||type(r)===state.type)&&(state.reality==="ALL"||realityLevel(r)===state.reality)&&(!q||searchText(r).includes(q)));
 }
 function card(r){
  return '<button type="button" class="world-card world-node-card" data-node="'+esc(r.id)+'"><div class="world-card-main"><span class="world-kicker">'+esc(type(r))+'</span><h3>'+esc(title(r))+'</h3><p>'+esc(String(r.description||r.summary||r.story||"A doorway into the ESCIE universe.").slice(0,220))+'</p></div><span class="world-arrow" aria-hidden="true">↗</span></button>';
@@ -109,7 +109,7 @@ function render(){
  if(state.tab==="trails")body='<div class="world-intro"><span class="world-kicker">EXPLORATION TRAILS</span><h3>NO WRONG DOOR.</h3><p>Every entry point can lead somewhere else. The audience builds its own route through the public graph.</p></div>'+trails(rows);
 
  const nav='<div class="world-tabs" role="tablist" aria-label="ESCIE World navigation"><button type="button" class="'+(state.eyeOpen?"active":"")+'" data-glass-eye aria-expanded="'+(state.eyeOpen?"true":"false")+'" aria-controls="glass-eye-panel">GLASS EYE</button>'+tabs.map(t=>'<button type="button" role="tab" class="'+(state.tab===t[0]?"active":"")+'" aria-selected="'+(state.tab===t[0]?"true":"false")+'" data-world-tab="'+t[0]+'">'+t[1]+'</button>').join("")+'</div>';
- root.innerHTML='<div class="world-engine"><div class="world-header"><div><span class="world-kicker">ESCIE WORLD ENGINE</span><h3>THE WORLD BEHIND THE WORK.</h3><p>Explore the universe. Follow the signal. Decide what you believe.</p></div></div>'+nav+'<div class="world-controls"><input id="world-public-search" value="'+esc(state.q)+'" placeholder="SEARCH THE WORLD…" aria-label="Search the ESCIE world"><select id="world-public-type"><option value="ALL">ALL TYPES</option>'+types.map(t=>'<option value="'+esc(t)+'" '+(state.type===t?"selected":"")+'>'+esc(t)+'</option>').join("")+'</select></div>'+body+(state.selected?((()=>{const r=all.find(x=>String(x.id)===String(state.selected));return r?detail(r):""})()):"")+'</div>';
+ root.innerHTML='<div class="world-engine"><div class="world-header"><div><span class="world-kicker">ESCIE WORLD ENGINE</span><h3>THE WORLD BEHIND THE WORK.</h3><p>Explore the universe. Follow the signal. Decide what you believe.</p></div></div>'+nav+'<div class="world-controls"><input id="world-public-search" value="'+esc(state.q)+'" placeholder="SEARCH THE WORLD…" aria-label="Search the ESCIE world"><select id="world-public-type"><option value="ALL">ALL TYPES</option>'+types.map(t=>'<option value="'+esc(t)+'" '+(state.type===t?"selected":"")+'>'+esc(t)+'</option>').join("")+'</select><select id="world-public-reality"><option value="ALL">ALL REALITY LEVELS</option><option value="REAL">REAL</option><option value="MEMORY">MEMORY</option><option value="DRAMATIZED">DRAMATIZED</option><option value="FICTIONALIZED">FICTIONALIZED</option><option value="MYTH">MYTH</option><option value="UNKNOWN">UNKNOWN</option></select></div>'+body+(state.selected?((()=>{const r=all.find(x=>String(x.id)===String(state.selected));return r?detail(r):""})()):"")+'</div>';
  if(state.eyeOpen)root.insertAdjacentHTML("beforeend",eyePanel().replace('class="glass-eye"','class="glass-eye" id="glass-eye-panel" role="region" aria-label="The Glass Eye"'));
  bind(root);
  }
@@ -120,7 +120,7 @@ function bind(root){
  root.querySelectorAll("[data-eye-close]").forEach(b=>b.onclick=()=>{state.eyeOpen=false;render();setTimeout(()=>{const trigger=document.querySelector("[data-glass-eye]");if(trigger)trigger.focus()},0)});
  root.querySelectorAll("[data-world-tab]").forEach(b=>b.onclick=()=>{state.tab=b.dataset.worldTab;render();setTimeout(()=>{const active=document.querySelector("[data-world-tab][aria-selected=\"true\"]");if(active)active.focus()},0)});
  let searchFrame=0;const search=$("world-public-search");if(search)search.oninput=e=>{state.q=e.target.value;caf(searchFrame);searchFrame=raf(()=>{render();const x=$("world-public-search");if(x){x.focus();x.setSelectionRange(state.q.length,state.q.length)}})};
- const select=$("world-public-type");if(select)select.onchange=e=>{state.type=e.target.value;render()};
+ const select=$("world-public-type");if(select)select.onchange=e=>{state.type=e.target.value;render()}; const reality=$("world-public-reality");if(reality){reality.value=state.reality;reality.onchange=e=>{state.reality=e.target.value;render()};}
  root.querySelectorAll("[data-node]").forEach(b=>b.onclick=e=>{e.preventDefault();remember(b.dataset.node);state.selected=b.dataset.node;syncNodeHash(state.selected);render();setTimeout(()=>{const detail=document.querySelector(".world-detail");if(detail)detail.scrollIntoView({behavior:reduceMotion()?"auto":"smooth",block:"nearest"});const close=document.querySelector(".world-close");if(close)close.focus()},0)});
  const path=$("world-path-items");if(path){const map=new Map(records().map(r=>[String(r.id),r]));path.innerHTML=state.trail.map(id=>map.get(String(id))).filter(Boolean).map(n=>"<button type=\"button\" data-node=\""+esc(n.id)+"\">"+esc(title(n))+"</button>").join(" → ")||"START HERE";path.querySelectorAll("[data-node]").forEach(b=>b.onclick=e=>{e.preventDefault();remember(b.dataset.node);state.selected=b.dataset.node;syncNodeHash(state.selected);render()})}
  root.querySelectorAll("[data-copy-node]").forEach(b=>b.onclick=async()=>{const u=location.href.split("#")[0]+"#world-node="+encodeURIComponent(state.selected||"");try{await navigator.clipboard.writeText(u);b.textContent="COPIED";setTimeout(()=>b.textContent="COPY NODE LINK",1200)}catch(e){}});
