@@ -132,11 +132,16 @@ function move(dt){
  const sim=root.ESCIE_WORLD_SIMULATION,st=sim?.state?.();if(st&&st.position){st.position.x=player.x;st.position.y=player.z;}
  avatar.position.set(player.x,0,player.z);avatar.rotation.y=player.yaw;
 }
+function updateHud(){
+ const coord=document.getElementById("world-coordinates"),sig=document.getElementById("world-signal");
+ if(coord)coord.textContent=Math.round(player.x+54).toString().padStart(2,"0")+" · "+Math.round(player.z+54).toString().padStart(2,"0");
+ if(sig){const distance=Math.hypot(player.x,player.z);sig.textContent=Math.max(0,100-Math.round(distance)).toString()+" SIGNAL";}
+}
 function updateActors(t){
  actors.forEach(a=>{a.position.x=a.userData.base+Math.sin(t*.35+a.userData.phase)*.8;a.rotation.y=Math.sin(t*.35+a.userData.phase)*.25;});
 }
 function render(){
- const dt=Math.min(clock.getDelta(),.05);move(dt);updateActors(clock.elapsedTime);
+ const dt=Math.min(clock.getDelta(),.05);move(dt);updateActors(clock.elapsedTime);updateHud();
  if(thirdPerson){
    const back=new THREE.Vector3(Math.sin(player.yaw)*4.2,2.4,Math.cos(player.yaw)*4.2);
    camera.position.set(player.x+back.x,back.y,player.z+back.z);camera.lookAt(player.x,1.1,player.z);
