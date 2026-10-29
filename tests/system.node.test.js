@@ -301,6 +301,10 @@ assert(glassMemoryRuntime.includes("canonical_write=false"),"Glass Eye memory mu
 assert(glassMemoryRuntime.includes("CLEAR MY MEMORY"),"Glass Eye memory must provide local reset");
 assert(glassMemoryRuntime.includes("LOCAL / PRIVATE / NON-CANONICAL"),"Glass Eye memory must disclose its local non-canonical status");
 assert(fs.readFileSync("index.html","utf8").includes('id="glass-eye-memory"'),"public site must expose Glass Eye memory surface");
+const glassAppRuntime=fs.readFileSync("app.js","utf8");
+assert(glassAppRuntime.includes("LOOK. LISTEN. FOLLOW. RETURN."),"Glass Eye must retain its audience-facing core function");
+assert(glassAppRuntime.includes("data-glass-eye-action"),"Glass Eye must expose audience interaction controls");
+assert(glassAppRuntime.includes("YOUR SIDE OF THE SCREEN"),"Glass Eye must remain the audience side of the screen");
 
 const gameCommerceRuntime=fs.readFileSync("data/games.js","utf8");
 assert(gameCommerceRuntime.includes("game_item"),"game items must be supported");
