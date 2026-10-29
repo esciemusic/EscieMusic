@@ -8,7 +8,7 @@ const root=window;
 let renderer,scene,camera,clock,avatar,worldGroup,thirdPerson=false,started=false,raf=0,dayLight,ambientLight,resizeObserver,visibilityHandler;
 const obstacles=[],actors=[],doors=[],lights=[]; const perf={quality:"auto",frameMs:16,lowFrames:0,last:performance.now(),hud:0};
 const keys=new Set();
-const player={x:0,z:8,y:1.7,yaw:0,pitch:0,speed:4.2,sprint:7.5,lastSync:0,lastGridX:null,lastGridY:null};
+const player={x:0,z:8,y:1.7,yaw:0,pitch:0,speed:4.2,sprint:7.5,lastSync:0,lastGridX:null,lastGridY:null,inVehicle:false,vehicleId:null};
 const bounds=54;
 const stage=()=>document.getElementById("world-stage");
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -126,7 +126,8 @@ function gamepadInput(){
  const pads=navigator.getGamepads?.()||[];const p=[...pads].find(Boolean);if(!p)return {f:0,str:0,lookX:0,lookY:0,sprint:false,action:false};
  const dz=v=>Math.abs(v)<.14?0:v;return {f:-dz(Number(p.axes?.[1]||0)),str:dz(Number(p.axes?.[0]||0)),lookX:dz(Number(p.axes?.[2]||0)),lookY:dz(Number(p.axes?.[3]||0)),sprint:!!p.buttons?.[10]?.pressed,action:!!p.buttons?.[0]?.pressed};
 }
-function interact(){
+function vehicleInteract(){const vs=root.ESCIE_WORLD_VEHICLES;if(!vs)return false;if(player.inVehicle){const r=vs.exit?.();if(r?.ok){player.inVehicle=false;player.vehicleId=null;say3D("VEHICLE · EXITED");return true}return true}const d=updateVehicles.car;if(!d||Math.hypot(player.x-d.position.x,player.z-d.position.z)>3)return false;const r=vs.enter?.("COMPACT");if(r?.ok){player.inVehicle=true;player.vehicleId="COMPACT";say3D("VEHICLE · DRIVE");return true}say3D("VEHICLE · "+String(r?.reason||"UNAVAILABLE"));return true}
+function interact(){if(vehicleInteract())return true;
  const near=doors.find(d=>Math.hypot(player.x-d.x,player.z-d.z)<2.4);
  if(near){if(near.open){root.ESCIE_WORLD_INTERIOR?.exit?.();near.open=false;near.mesh.rotation.y=0;say3D("EXITED · BACK ON THE STREET");return true}const st=root.ESCIE_WORLD_SIMULATION?.state?.(),b=near.building;if(b){const result=root.ESCIE_WORLD_SIMULATION?.enterBuilding?.(st?.neighbourhood,b.id);if(!result?.ok){say3D("ACCESS · "+String(result?.reason||"DENIED"));return true}root.dispatchEvent(new CustomEvent("escie:world-interior-enter",{detail:result}));}near.open=true;near.mesh.rotation.y=Math.PI/2;say3D(b?"ENTERED · "+b.name:"DOOR OPEN · INTERIOR LAYER AVAILABLE");return true}
  return false;
@@ -145,7 +146,7 @@ function move(dt){
  let f=(keys.has("w")||keys.has("arrowup")?1:0)-(keys.has("s")||keys.has("arrowdown")?1:0);
  let str=(keys.has("d")||keys.has("arrowright")?1:0)-(keys.has("a")||keys.has("arrowleft")?1:0);f+=gp.f;str+=gp.str;
  const len=Math.hypot(f,str)||1;f/=len;str/=len;
- const speed=((keys.has("shift")||gp.sprint||move._touchSprint)?player.speed*1.75:player.speed)*dt;
+ const base=player.inVehicle?9.5:player.speed;const speed=((keys.has("shift")||gp.sprint||move._touchSprint)?base*1.45:base)*dt;
  const c=Math.cos(player.yaw),si=Math.sin(player.yaw);
  const nx=player.x+(-si*f+c*str)*speed,nz=player.z+(-c*f-si*str)*speed;
  if(!blocked(nx,player.z))player.x=nx;if(!blocked(player.x,nz))player.z=nz;
@@ -156,12 +157,12 @@ function move(dt){
 function updateVehicles(t){
  const vs=root.ESCIE_WORLD_VEHICLES?.state?.(); if(!vs)return;
  if(!updateVehicles.car){
-  updateVehicles.car=new THREE.Group();const body=new THREE.Mesh(new THREE.BoxGeometry(1.7,.55,3.4),makeMat(0x101114,.65,.35));body.position.y=.55;updateVehicles.car.add(body);
+  updateVehicles.car=new THREE.Group();updateVehicles.car.userData.escieVehicle=true;const body=new THREE.Mesh(new THREE.BoxGeometry(1.7,.55,3.4),makeMat(0x101114,.65,.35));body.position.y=.55;updateVehicles.car.add(body);
   const roof=new THREE.Mesh(new THREE.BoxGeometry(1.2,.35,1.6),makeMat(0x111615,.6));roof.position.y=.98;updateVehicles.car.add(roof);
   updateVehicles.car.position.set(-4,.0,-10);worldGroup.add(updateVehicles.car);
  }
  const active=vs.current;updateVehicles.car.visible=!!active;
- if(active){updateVehicles.car.position.x=-4+Math.sin(t*.12)*7;updateVehicles.car.position.z=-10+Math.cos(t*.12)*18;updateVehicles.car.rotation.y=t*.12;}
+ if(player.inVehicle){updateVehicles.car.position.set(player.x,0,player.z);updateVehicles.car.rotation.y=player.yaw;updateVehicles.car.visible=true}else if(active){updateVehicles.car.position.x=-4+Math.sin(t*.12)*7;updateVehicles.car.position.z=-10+Math.cos(t*.12)*18;updateVehicles.car.rotation.y=t*.12;}
 }
 function updateEnvironment(t){
  const st=root.ESCIE_WORLD_SIMULATION?.state?.()||{},cycle=((Number(st.hour||12)*60+Number(st.minute||0))/1440),angle=cycle*Math.PI*2;
