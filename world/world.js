@@ -34,6 +34,37 @@ function rpgState(s){
  if(!current.rpg&&typeof current==="object")current.rpg={version:1,class_id:"DRIFTER",level:1,xp:0,unspent_points:0,attributes:{BODY:1,MIND:1,NERVE:1,SOCIAL:1},skills:{ATHLETICS:0,PARKOUR:0,STREETWISE:0,INVESTIGATION:0,TECH:0,CHARISMA:0,COMBAT:0,STEALTH:0},perks:[],quests:{active:[],completed:[],failed:[]},rewards:[],loot:[],equipment:{head:null,body:null,hands:null,feet:null,weapon:null,accessory:null},combat:{kills:0,knockouts:0,damage_dealt:0,damage_taken:0},dialogue:{choices:0,successes:0},discoveries:0};
  return current.rpg;
 }
+const WORLD_LOOT_TABLE=[
+ {id:"POCKET_KNIFE",kind:"EQUIPMENT",weight:35,reason:"FIELD FIND"},
+ {id:"HOODIE",kind:"EQUIPMENT",weight:25,reason:"FIELD FIND"},
+ {id:"JACKET",kind:"EQUIPMENT",weight:12,reason:"RARE FIND"},
+ {id:"BAT",kind:"EQUIPMENT",weight:6,reason:"RARE FIND"},
+ {id:"SIGNAL",kind:"SIGNAL",weight:22,amount:1,reason:"SIGNAL FRAGMENT"}
+];
+function lootRoll(table=WORLD_LOOT_TABLE){
+ const total=table.reduce((n,x)=>n+Math.max(0,Number(x.weight)||0),0);let roll=Math.random()*total;
+ for(const x of table){roll-=Math.max(0,Number(x.weight)||0);if(roll<=0)return x}
+ return table[table.length-1];
+}
+function grantLoot(reason,source="",opts={}){
+ const s=state(),r=rpgState(s),key=String(source||reason||"LOOT"),once=opts.once!==false;
+ r.loot=Array.isArray(r.loot)?r.loot:[];
+ if(once&&r.loot.some(x=>x&&x.source===key))return {ok:false,reason:"ALREADY_CLAIMED"};
+ const drop=opts.drop||lootRoll(opts.table||WORLD_LOOT_TABLE);if(!drop)return {ok:false,reason:"NO_LOOT"};
+ let reward={id:drop.id,kind:drop.kind,reason:String(reason||drop.reason||"LOOT"),source:key,timestamp:new Date().toISOString()};
+ if(drop.kind==="EQUIPMENT"){
+   const eq=window.ESCIE_WORLD_EQUIPMENT;if(!eq)return {ok:false,reason:"EQUIPMENT_UNAVAILABLE"};
+   const got=eq.acquire(drop.id);if(!got.ok)return {ok:false,reason:String(got.reason||"ACQUIRE_FAILED")};
+   reward.label=got.item.label;reward.amount=1;
+ }else if(drop.kind==="SIGNAL"){
+   const amount=Math.max(1,Number(drop.amount)||1);s.signals=Number(s.signals||0)+amount;reward.amount=amount;reward.label="SIGNAL";
+ }
+ r.loot.push(reward);s.rpg=r;
+ if(!save(s))return {ok:false,reason:"SAVE_FAILED"};
+ say("LOOT · "+reward.label+(reward.amount>1?" ×"+reward.amount:"")+" · "+String(reward.reason).toUpperCase());
+ worldPulse("is-loot",900);
+ return {ok:true,reward,state:s};
+}
 function awardRPGXP(amount,reason){
  const s=state(),r=rpgState(s),result=window.ESCIE_RPG?.gainXP?.(r,amount,reason);
  if(!result)return false;
@@ -95,7 +126,7 @@ if(enBar)enBar.style.transform="scaleX("+energy/100+")";
 if(xpBar)xpBar.style.transform="scaleX("+Math.min(1,xp/next)+")"}
 function move(dx,dy){const sim=window.ESCIE_WORLD_SIMULATION;if(room==="room01"||room==="room02"||room==="trace"){const nx=Math.max(0,Math.min(7,pos.x+dx)),ny=Math.max(0,Math.min(7,pos.y+dy));if(nx===pos.x&&ny===pos.y)return;pos={x:nx,y:ny};if(sim)sim.advance(2);const rs=sim?.state?.();if(rs)window.ESCIE_WORLD_NPC?.tick?.(rs.day,rs.hour,rs.minute,(x,y)=>false,2);window.ESCIE_WORLD_NPC_LIFE?.syncRelationships?.();persistRoom();say("The room hums. The television is on, but there is no picture.");render();return}const nx=Math.max(0,Math.min(W-1,pos.x+dx)),ny=Math.max(0,Math.min(H-1,pos.y+dy));if(isWall(nx,ny)){if(sim)sim.change({stress:1});say("Concrete. Locked space. Find another route.");return}if(nx===pos.x&&ny===pos.y)return;let movement=null;if(sim?.movePlayer){movement=sim.movePlayer(nx-pos.x,ny-pos.y,{mode:sim.state().transport||"FOOT"});if(!movement?.ok)return;}else{pos={x:nx,y:ny};sim?.setPosition?.(pos.x,pos.y);sim?.advance?.(1)}pos={x:nx,y:ny};if(sim){sim.advance(1);if(sim.state().transport==="RUN"||sim.state().transport==="PARKOUR")sim.change({hunger:-1});sim.decayWanted?.(0.02);window.ESCIE_WORLD_NPC?.tick?.(sim.state().day,sim.state().hour,sim.state().minute,(x,y)=>isWall(x,y),1);window.ESCIE_WORLD_NPC?.observe?.("MOVEMENT",pos,{radius:sim?.state?.().transport==="RUN"||sim?.state?.().transport==="PARKOUR"?5:4,speed:sim?.state?.().transport||"WALK",blocked:(x,y)=>isWall(x,y)});}say(movement?.to_node?("The street is real. SIGNAL ROUTE · "+movement.to_node+"."): "The street is real. The signal moves with you.");render()}
 function registryDiscovery(id,queries){const registry=window.ESCIE_GAME_REGISTRY;if(!registry?.applyGameEvent)return true;const current=registryState(state());const next=registry.applyGameEvent(current,{type:"DISCOVER",target_id:id,queries:queries||[],timestamp:new Date().toISOString()});const local=state();syncRegistryState(Object.assign(local,next,{world_room:local.world_room,inventory:local.inventory,signals:local.signals,world_unlocks:local.world_unlocks}));return !!save(local);}
-function discover(o){if(o.id==="tv")roomState.tvHeard=true;if(o.id==="tape")roomState.tapeTaken=true;const s=state();s.discoveries=Array.isArray(s.discoveries)?s.discoveries:[];s.world_unlocks=Array.isArray(s.world_unlocks)?s.world_unlocks:[];if(o.discovery&&!s.discoveries.includes(o.discovery)){s.discoveries.push(o.discovery);awardRPGXP(15,"DISCOVERY");(o.queries||[]).forEach(q=>{if(!s.world_unlocks.includes(q))s.world_unlocks.push(q)});s.signals=(Number(s.signals)||0)+1;if(!registryDiscovery(o.discovery,o.queries))return false}if(o.item){s.inventory=Array.isArray(s.inventory)?s.inventory:[];if(!s.inventory.includes(o.item))s.inventory.push(o.item)}s.entered=true;s.entry_source="world";if(!save(s))return false;return persistRoom()}
+function discover(o){if(o.id==="tv")roomState.tvHeard=true;if(o.id==="tape")roomState.tapeTaken=true;const s=state();s.discoveries=Array.isArray(s.discoveries)?s.discoveries:[];s.world_unlocks=Array.isArray(s.world_unlocks)?s.world_unlocks:[];if(o.discovery&&!s.discoveries.includes(o.discovery)){s.discoveries.push(o.discovery);awardRPGXP(15,"DISCOVERY");(o.queries||[]).forEach(q=>{if(!s.world_unlocks.includes(q))s.world_unlocks.push(q)});s.signals=(Number(s.signals)||0)+1;if(!registryDiscovery(o.discovery,o.queries))return false}if(o.item){s.inventory=Array.isArray(s.inventory)?s.inventory:[];if(!s.inventory.includes(o.item))s.inventory.push(o.item)}s.entered=true;s.entry_source="world";if(!save(s))return false;const loot=grantLoot("DISCOVERY REWARD",o.discovery,{once:true});return persistRoom()}
 function unlockFromEvidence(){const s=state();s.world_unlocks=Array.isArray(s.world_unlocks)?s.world_unlocks:[];["query:tape","query:television","query:archive","query:audio","query:date"].forEach(q=>{if(!s.world_unlocks.includes(q))s.world_unlocks.push(q)});s.signals=(Number(s.signals)||0)+1;s.unresolved=Array.isArray(s.unresolved)?s.unresolved:[];if(!s.unresolved.includes("room01-date"))s.unresolved.push("room01-date");return !!save(s)}
 function npcDialogue(n){const rel=Number(window.ESCIE_WORLD_NPC?.state?.().npcs?.[n.id]?.relationship||0),role=n.role||"LOCAL",lang=window.ESCIE_WORLD_LANGUAGE?.profile?.(n)||{};return {id:n.id,label:n.label||role,lines:[role+" · "+(n.activity||"IDLE")+" · "+String(lang.community||"LOCAL")],choices:[{label:"TALK",text:rel>=40?"You seem familiar. We can talk.":rel<=-40?"I don't have much to say to you.":"What's up?"},{label:"HELP",text:"You offer to help."},{label:"JOB",text:"Ask if they have work."},{label:"FAVOR",text:"Ask if there's something useful to do."},{label:"INSULT",text:"The mood changes immediately."},{label:"GIVE",text:"You offer something without explaining why."}]};}
 function chooseDialogueLegacy(i){if(!dialogue)return;const c=(dialogue.choices||[])[i];if(!c)return;const sim=window.ESCIE_WORLD_SIMULATION;
