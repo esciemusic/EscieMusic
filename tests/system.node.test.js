@@ -558,4 +558,7 @@ assert(!musicRenderer.includes("packet.quantity_decision"),"public music rendere
 assert(musicRenderer.includes("data-record-id"),"public music renderer must expose record targets for playback/inspection");
 console.log("ESCIE public music renderer contracts OK");
 
+assert(fs.readFileSync("world/3d-reality.js","utf8").includes("doors.forEach(d=>{d.open=false;d.mesh.rotation.y=0;});"),"3D interior exit must close street doors before restoring street play");
+assert(fs.readFileSync("world/3d-reality.js","utf8").includes('say3D("EXITED · BACK ON THE STREET")'),"3D interior exit must return the player to the street layer");
+console.log("ESCIE 3D interior door lifecycle contracts OK");
 console.log("ESCIE public index hierarchy and compact accordion contracts OK");
