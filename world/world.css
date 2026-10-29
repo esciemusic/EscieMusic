@@ -245,3 +245,4 @@ body.escie-world-page,.world-device,.world-device .world-shell{background:#05070
 .world-action-cluster [data-control-action]{min-height:48px;font-weight:700;letter-spacing:.08em}
 .world-action-cluster [data-control-action="FIGHT"]{border-style:dashed}.world-action-cluster [data-control-action="STEAL"]{border-style:dotted}
 @media(max-width:700px){.world-controls{grid-template-columns:1fr;align-items:stretch}.world-dpad{justify-self:center}.world-action-cluster{justify-self:stretch;grid-template-columns:repeat(2,1fr)}.world-action-cluster [data-control-action]{min-height:52px}.world-actions{width:100%;justify-content:center}}
+\n/* MULTILINGUAL WORLD UI */\n.world-language-control{display:inline-flex;align-items:center;gap:.45rem;margin:.35rem 0;font:600 .55rem monospace;letter-spacing:.08em}.world-language-control select{border:1px solid var(--world-line);background:#05070a;color:#dceeff;padding:.35rem .5rem;font:inherit}\n
