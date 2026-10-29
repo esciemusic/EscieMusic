@@ -232,24 +232,32 @@ function saveSlotStores(){const stores={};for(const k of SAVE_STORE_KEYS){const 
 function restoreSaveStores(stores){if(!stores||typeof stores!=="object"||Array.isArray(stores))return false;const payload={};for(const k of SAVE_STORE_KEYS){if(!Object.prototype.hasOwnProperty.call(stores,k))return false;payload[k]=JSON.stringify(stores[k])}const previous={};try{for(const k of SAVE_STORE_KEYS)previous[k]=localStorage.getItem(k);for(const k of SAVE_STORE_KEYS)localStorage.setItem(k,payload[k]);return true}catch(e){try{for(const k of SAVE_STORE_KEYS){if(previous[k]===null)localStorage.removeItem(k);else localStorage.setItem(k,previous[k])}}catch(_e){}return false}}
 function quarantineSave(slot,raw,reason="INVALID_SAVE"){try{const key="escie_world_quarantine_v1_"+Number(slot)+"_"+Date.now();localStorage.setItem(key,JSON.stringify({version:1,slot:Number(slot),reason:String(reason),quarantined_at:new Date().toISOString(),raw:String(raw||"")}));localStorage.removeItem(saveSlotKey(slot));return true}catch(e){return false}}
 function validateStoreBundle(stores){if(stores==null)return "";if(typeof stores!=="object"||Array.isArray(stores))return "INVALID_STORES";const checks={"escie_world_simulation_v1":v=>v&&typeof v==="object"&&!Array.isArray(v)&&v.position&&Number.isFinite(Number(v.position.x))&&Number.isFinite(Number(v.position.y)),"escie_world_npc_v1":v=>v&&typeof v==="object"&&!Array.isArray(v)&&v.npcs&&typeof v.npcs==="object"&&!Array.isArray(v.npcs),"escie_world_npc_life_v1":v=>v&&typeof v==="object"&&!Array.isArray(v)&&v.npcs&&typeof v.npcs==="object"&&!Array.isArray(v.npcs),"escie_world_equipment_v1":v=>v&&typeof v==="object"&&!Array.isArray(v)&&Array.isArray(v.owned)&&v.equipped&&typeof v.equipped==="object"&&!Array.isArray(v.equipped),"escie_world_vehicles_v1":v=>v&&typeof v==="object"&&!Array.isArray(v)&&Array.isArray(v.owned),"escie_world_law_v1":v=>v&&typeof v==="object"&&!Array.isArray(v)&&Array.isArray(v.units)};for(const k of Object.keys(stores)){if(checks[k]&&!checks[k](stores[k]))return "INVALID_STORE_"+k.replace(/^escie_world_/,"").replace(/_v1$/,"").toUpperCase()}return ""}
+const defaultStoreBundle=sim=>({"escie_world_simulation_v1":sim&&typeof sim==="object"&&!Array.isArray(sim)?sim:{money:40,stamina:100,neighbourhood:"PARC-EXTENSION",position:{x:start.x,y:start.y}},"escie_world_npc_v1":{npcs:{witness:{id:"witness",role:"WITNESS",status:"UNKNOWN",awareness:78,social_context:"LOCAL"}},observations:[],detections:[]},"escie_world_npc_life_v1":{npcs:{},events:[]},"escie_world_equipment_v1":{owned:["FISTS"],equipped:{HAND:"FISTS",BODY:null}},"escie_world_vehicles_v1":{owned:["BIKE","SKATEBOARD","ROLLERBLADES"],current:null,radio:true,condition:{},history:[]},"escie_world_law_v1":{units:[],active:false,level:0,lastDispatch:null,arrests:0,escapes:0}});
+function normalizeSaveStores(snapshot){const base=defaultStoreBundle(snapshot?.simulation_state);const source=snapshot?.stores&&typeof snapshot.stores==="object"&&!Array.isArray(snapshot.stores)?snapshot.stores:{};const stores=Object.assign(base,source);if(!stores["escie_world_simulation_v1"]&&snapshot?.simulation_state)stores["escie_world_simulation_v1"]=snapshot.simulation_state;return stores}
 function validateSaveSnapshot(snapshot,slot){if(!snapshot||typeof snapshot!=="object"||Array.isArray(snapshot))return "NOT_OBJECT";if(snapshot.version!==1&&snapshot.version!==SAVE_VERSION)return "UNSUPPORTED_VERSION";if(snapshot.slot!=null&&Number(snapshot.slot)!==Number(slot))return "SLOT_MISMATCH";const w=snapshot.world_state;if(!w||typeof w!=="object"||Array.isArray(w))return "INVALID_WORLD_STATE";if(w.world_position&&(!Number.isFinite(Number(w.world_position.x))||!Number.isFinite(Number(w.world_position.y))))return "INVALID_POSITION";const storeError=validateStoreBundle(snapshot.stores);if(storeError)return storeError;const sim=snapshot.stores?.["escie_world_simulation_v1"]||snapshot.simulation_state;if(sim&&w.world_position&&sim.position){if(Math.abs(Number(sim.position.x)-Number(w.world_position.x))>1||Math.abs(Number(sim.position.y)-Number(w.world_position.y))>1)return "STATE_POSITION_DIVERGENCE"}if(snapshot.input_mode!=null&&!["AUTO","KEYBOARD","TOUCH","GAMEPAD"].includes(String(snapshot.input_mode).toUpperCase()))return "INVALID_INPUT_MODE";return ""} 
 function clearRuntimeStores(){[KEY,"escie_world_simulation_v1","escie_world_npc_v1","escie_world_npc_life_v1","escie_world_equipment_v1","escie_world_vehicles_v1","escie_world_law_v1"].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}})}
 function migrateLegacySave(){try{if(localStorage.getItem(saveSlotKey()))return;const raw=localStorage.getItem(SAVE_KEY);if(!raw)return;localStorage.setItem(saveSlotKey(1),raw);localStorage.setItem(ACTIVE_SLOT_KEY,"1")}catch(e){}}
 function saveIndicator(msg="GAME SAVED"){let el=document.getElementById("world-save-indicator");if(!el){el=document.createElement("div");el.id="world-save-indicator";el.className="world-save-indicator";document.body.appendChild(el)}el.textContent=msg;el.classList.add("visible");clearTimeout(window.__saveTimer);window.__saveTimer=setTimeout(()=>el.classList.remove("visible"),1400)}
-function saveWorldState(){try{
+function saveWorldState(){let previousSlotRaw=null;try{
   migrateLegacySave();
+  const slot=activeSaveSlot();
+  previousSlotRaw=localStorage.getItem(saveSlotKey(slot));
   const current=state();
   current.world_room=room;
   current.world_position={x:Number(pos.x)||0,y:Number(pos.y)||0};
   current.input_mode=controlScheme();
-  save(current);
   const sim=window.ESCIE_WORLD_SIMULATION?.state?.();
-  const snapshot={version:SAVE_VERSION,saved_at:new Date().toISOString(),slot:activeSaveSlot(),world_state:current,simulation_state:sim&&typeof sim==="object"?sim:null,input_mode:controlScheme(),stores:saveSlotStores()};
-  localStorage.setItem(saveSlotKey(),JSON.stringify(snapshot));
-  localStorage.setItem(ACTIVE_SLOT_KEY,String(activeSaveSlot()));
-  saveIndicator("SLOT "+activeSaveSlot()+" SAVED");
-}catch(e){saveIndicator("SAVE FAILED")}}
-function createFreshSnapshot(slot){const n=Number(slot);return {version:SAVE_VERSION,saved_at:new Date().toISOString(),slot:n,world_state:{version:1,session_id:"local-world",player_id:window.ESCIE_GAME_PROFILE?.id||null,episode_id:"the-world",world_room:"lane",world_position:{x:start.x,y:start.y},inventory:[],discoveries:[],world_unlocks:[],signals:0,entered:false,entry_source:"new-game",unresolved:[],unknown:[],completed_quests:[],input_mode:"AUTO",created_at:new Date().toISOString()},simulation_state:null,input_mode:"AUTO",stores:{}}}
+  const stores=saveSlotStores();
+  const snapshot={version:SAVE_VERSION,saved_at:new Date().toISOString(),slot,world_state:current,simulation_state:sim&&typeof sim==="object"?sim:null,input_mode:controlScheme(),stores};
+  const invalid=validateSaveSnapshot(snapshot,slot);if(invalid)throw new Error(invalid);
+  const serialized=JSON.stringify(snapshot);
+  localStorage.setItem(KEY,JSON.stringify(current));
+  localStorage.setItem(saveSlotKey(slot),serialized);
+  localStorage.setItem(ACTIVE_SLOT_KEY,String(slot));
+  saveIndicator("SLOT "+slot+" SAVED");
+  return true;
+}catch(e){try{const slot=activeSaveSlot();if(previousSlotRaw===null)localStorage.removeItem(saveSlotKey(slot));else localStorage.setItem(saveSlotKey(slot),previousSlotRaw)}catch(_e){}saveIndicator("SAVE FAILED · "+String(e?.message||"STORAGE"));return false}}
+function createFreshSnapshot(slot){const n=Number(slot);const simulation=defaultStoreBundle(null)["escie_world_simulation_v1"];simulation.position={x:start.x,y:start.y};return {version:SAVE_VERSION,saved_at:new Date().toISOString(),slot:n,world_state:{version:1,session_id:"local-world",player_id:window.ESCIE_GAME_PROFILE?.id||null,episode_id:"the-world",world_room:"lane",world_position:{x:start.x,y:start.y},inventory:[],discoveries:[],world_unlocks:[],signals:0,entered:false,entry_source:"new-game",unresolved:[],unknown:[],completed_quests:[],input_mode:"AUTO",created_at:new Date().toISOString()},simulation_state:simulation,input_mode:"AUTO",stores:defaultStoreBundle(simulation)}}
 function initializeEmptySave(slot=activeSaveSlot()){try{
   const n=Number(slot);if(!Number.isInteger(n)||n<1||n>SAVE_SLOT_COUNT)return false;
   if(n===activeSaveSlot())clearRuntimeStores();
@@ -261,23 +269,26 @@ function initializeEmptySave(slot=activeSaveSlot()){try{
 }catch(e){return false}}
 function deleteSaveSlot(slot){try{const n=Number(slot);if(!Number.isInteger(n)||n<1||n>SAVE_SLOT_COUNT)return false;if(n===activeSaveSlot()){resetLocalGame();return true}localStorage.removeItem(saveSlotKey(n));for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k&&k.startsWith("escie_world_quarantine_v1_"+n+"_"))localStorage.removeItem(k)}saveIndicator("SLOT "+n+" · DELETED");return true}catch(e){return false}}
 function saveSlotStatus(slot){try{const n=Number(slot);if(!Number.isInteger(n)||n<1||n>SAVE_SLOT_COUNT)return "INVALID";const raw=localStorage.getItem(saveSlotKey(n));if(!raw)return "EMPTY";let p;try{p=JSON.parse(raw)}catch(e){return "CORRUPT"}const invalid=validateSaveSnapshot(p,n);if(invalid)return "CORRUPT";const w=p.world_state||{};return "SAVED · "+String(w.world_room||"LANE").toUpperCase()+" · "+Number(w.signals||0)+" SIGNAL"}catch(e){return "CORRUPT"}}
-function loadWorldSave(slot=activeSaveSlot()){try{
+function loadWorldSave(slot=activeSaveSlot()){let backup=null;try{
   migrateLegacySave();
   const n=Number(slot);if(!Number.isInteger(n)||n<1||n>SAVE_SLOT_COUNT)return false;
   const raw=localStorage.getItem(saveSlotKey(n));
   if(!raw)return initializeEmptySave(n);
   let parsed;try{parsed=JSON.parse(raw)}catch(e){quarantineSave(n,raw,"JSON_PARSE_FAILED");saveIndicator("SLOT "+n+" QUARANTINED");return false}
   const snapshot=parsed&&typeof parsed==="object"&&!Array.isArray(parsed)&&parsed.world_state?parsed:{version:1,slot:n,world_state:parsed};
-  const invalid=validateSaveSnapshot(snapshot,n);if(invalid){quarantineSave(n,raw,invalid);saveIndicator("SLOT "+n+" QUARANTINED");return false}
+  const stores=normalizeSaveStores(snapshot);
+  const staged=Object.assign({},snapshot,{stores});
+  const invalid=validateSaveSnapshot(staged,n);if(invalid){quarantineSave(n,raw,invalid);saveIndicator("SLOT "+n+" QUARANTINED");return false}
+  backup=saveSlotStores();
   clearRuntimeStores();
-  localStorage.setItem(KEY,JSON.stringify(snapshot.world_state));
-  if(snapshot.stores&&typeof snapshot.stores==="object"&&!Array.isArray(snapshot.stores)){if(!restoreSaveStores(snapshot.stores))return false;}
-  else if(snapshot.simulation_state&&typeof snapshot.simulation_state==="object"&&!Array.isArray(snapshot.simulation_state))localStorage.setItem("escie_world_simulation_v1",JSON.stringify(snapshot.simulation_state));
-  if(["AUTO","KEYBOARD","TOUCH","GAMEPAD"].includes(String(snapshot.input_mode||snapshot.world_state.input_mode||"").toUpperCase()))setControlScheme(String(snapshot.input_mode||snapshot.world_state.input_mode).toUpperCase());
+  localStorage.setItem(KEY,JSON.stringify(staged.world_state));
+  if(!restoreSaveStores(stores))throw new Error("RESTORE_FAILED");
+  if(["AUTO","KEYBOARD","TOUCH","GAMEPAD"].includes(String(staged.input_mode||staged.world_state.input_mode||"").toUpperCase()))setControlScheme(String(staged.input_mode||staged.world_state.input_mode).toUpperCase());
   localStorage.setItem(ACTIVE_SLOT_KEY,String(n));
+  if(snapshot.stores==null){localStorage.setItem(saveSlotKey(n),JSON.stringify(Object.assign({},staged,{saved_at:new Date().toISOString()})));}
   return true;
-}catch(e){return false}}
-function switchSaveSlot(slot){const n=Number(slot);if(!Number.isInteger(n)||n<1||n>SAVE_SLOT_COUNT)return false;if(n===activeSaveSlot())return true;try{saveWorldState();localStorage.setItem(ACTIVE_SLOT_KEY,String(n));clearRuntimeStores();loadWorldSave(n);location.reload();return true}catch(e){return false}}
+}catch(e){if(backup){try{clearRuntimeStores();restoreSaveStores(backup)}catch(_e){}}saveIndicator("LOAD FAILED · "+String(e?.message||"RESTORE"));return false}}
+function switchSaveSlot(slot){const n=Number(slot);if(!Number.isInteger(n)||n<1||n>SAVE_SLOT_COUNT)return false;if(n===activeSaveSlot())return true;try{if(!saveWorldState()){saveIndicator("SLOT SWITCH BLOCKED · SAVE FAILED");return false}if(!loadWorldSave(n)){saveIndicator("SLOT SWITCH BLOCKED · LOAD FAILED");return false}location.reload();return true}catch(e){saveIndicator("SLOT SWITCH BLOCKED");return false}}
 const RESET_FLAG="escie_world_reset_pending_v1";
 function resetLocalGame(){
   try{
