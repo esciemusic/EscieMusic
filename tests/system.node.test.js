@@ -484,6 +484,6 @@ console.log("ESCIE NPC relationship persistence contract OK");
 
 /* SAVE STORE INTEGRITY CONTRACTS */
 assert(worldRuntime.includes("function validateStoreBundle(stores)"),"save validation must validate auxiliary runtime stores");
-assert(worldRuntime.includes("INVALID_STORE_"+'"),"save validation must produce store-specific corruption reasons");
+assert(worldRuntime.includes("INVALID_STORE_"),"save validation must produce store-specific corruption reasons");
 assert(worldRuntime.includes("const storeError=validateStoreBundle(snapshot.stores)"),"snapshot validation must reject malformed auxiliary stores");
 console.log("ESCIE save-store integrity contracts OK");
