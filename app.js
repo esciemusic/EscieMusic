@@ -720,45 +720,13 @@ function renderClothing(){
         </article>`;
     }).join("");
     const storeAction=storeUrl?'<a class="merch-store-link" href="'+escapeHTML(storeUrl)+'" target="_blank" rel="noopener noreferrer">'+escapeHTML(storeLabel)+' ↗</a>':'<span class="merch-store-link is-disabled">STORE LAYER / NOT CONNECTED</span>';
-    container.innerHTML='<div class="merch-statusbar"><div><span class="eyebrow">DROP 001 / THE FIRST WARDROBE</span><strong>'+visible.length+" PHYSICAL RECORD"+(visible.length===1?"":"S")+"</strong></div><p>Checkout, inventory, shipping and taxes stay outside the ESCIE site. This shell remains the archive and presentation layer.</p>"+storeAction+"</div><div class="merch-grid-list">"+cards+"</div>';
-  }
-
-  function bindMerchFilters(){
-    document.querySelectorAll("[data-merch-filter]").forEach(button=>{
-      if(button.dataset.bound==="true")return;
-      button.dataset.bound="true";
-      button.addEventListener("click",()=>{
-        const value=String(button.dataset.merchFilter||"ALL").toUpperCase();
-        const container=byId("merch-container");
-        if(container)container.dataset.filter=value;
-        document.querySelectorAll("[data-merch-filter]").forEach(item=>item.classList.toggle("is-active",item===button));
-        renderMerch();
-      });
-    });
-  }
-
-
-
-  function renderArchive() {
-    const container = byId("archive-container");
-    if (!container) return;
-
-    const archive=getAllPublicRecords().filter(record=>{
-      const manifest=recordManifest(record);
-      return manifest ? manifest.sections.archive : record.type==="archive";
-    });
-    const visible=archive.filter(isPublic);
-
-    if (!visible.length) {
-      container.innerHTML =
-        '<div class="archive-status">' + motifMarkup("archive") + '' +
-          '<p class="eyebrow">PRESERVATION STATE</p>' +
-          '<h3>NOTHING PUBLIC HAS BEEN PLACED HERE YET.</h3>' +
-          '<p>The archive is designed to preserve source material when it becomes available: recordings, photographs, documents, fragments, artwork and other traces. Empty is a valid state.</p>' +
-        '</div>';
-      return;
-    }
-
+    container.innerHTML=`
+      <div class="merch-statusbar">
+        <div><span class="eyebrow">DROP 001 / THE FIRST WARDROBE</span><strong>${visible.length} PHYSICAL RECORD${visible.length===1?"":"S"}</strong></div>
+        <p>Checkout, inventory, shipping and taxes stay outside the ESCIE site. This shell remains the archive and presentation layer.</p>
+        ${storeAction}
+      </div>
+      <div class="merch-grid-list">${cards}</div>`;
     container.innerHTML =
       '<div class="archive-status"><p class="eyebrow">' + visible.length + ' PUBLIC RECORD' + (visible.length === 1 ? '' : 'S') + '</p><p>Preserved material is shown as it enters the public record. Nothing is filled in merely because the archive has space for it.</p></div>' +
       visible.map(record =>
