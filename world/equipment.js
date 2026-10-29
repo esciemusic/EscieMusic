@@ -10,7 +10,7 @@ const ITEMS={
 };
 const DEFAULT={owned:["FISTS"],equipped:{HAND:"FISTS",BODY:null}};
 const read=()=>{try{const v=JSON.parse(localStorage.getItem(KEY)||"null");return v&&Array.isArray(v.owned)?v:structuredClone(DEFAULT)}catch(e){return structuredClone(DEFAULT)}};
-const save=s=>{localStorage.setItem(KEY,JSON.stringify(s));return s};
+const save=s=>{try{localStorage.setItem(KEY,JSON.stringify(s));return s}catch(e){return s}};
 const item=id=>ITEMS[String(id||"").toUpperCase()]||null;
 const owned=id=>read().owned.includes(String(id).toUpperCase());
 const equip=id=>{const s=read(),i=item(id);if(!i||!s.owned.includes(i.id))return {ok:false,reason:"NOT_OWNED"};s.equipped[i.slot]=i.id;save(s);return {ok:true,item:i,state:s}};
