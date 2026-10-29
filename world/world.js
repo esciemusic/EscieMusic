@@ -236,7 +236,7 @@ function validateStoreBundle(stores){if(stores==null)return "";if(typeof stores!
 const SIMULATION_DEFAULTS={money:40,stamina:100,neighbourhood:"PARC-EXTENSION",hunger:82,energy:78,health:100,stress:12,social:35,reputation:0,status:"UNKNOWN",path:"UNDEFINED",transport:"FOOT",season:"AUTUMN",weather:"COLD",day:1,hour:12,minute:0,wanted:0,legal_status:"CLEAR",sentence_minutes:0,damage:0,sleep:0,drug_effect:0,alcohol_effect:0,position:{x:start.x,y:start.y},access:[],skills:{fitness:0,skate:0,parkour:0},jobs:[],clubs:[],events:[],relationships:{},inventory:[],property:[],graffiti:[],dreams:[],choice_history:[],npc_memory:{},jobs_history:[],financial_history:[],health_history:[],surveillance:[],transport_history:[],access_history:[]};
 function simulationDefaults(seed){const source=seed&&typeof seed==="object"&&!Array.isArray(seed)?seed:{};return Object.assign({},SIMULATION_DEFAULTS,source,{position:Object.assign({},SIMULATION_DEFAULTS.position,source.position||{}),access:Array.isArray(source.access)?source.access.slice():[],skills:Object.assign({},SIMULATION_DEFAULTS.skills,source.skills||{}),jobs:Array.isArray(source.jobs)?source.jobs.slice():[],clubs:Array.isArray(source.clubs)?source.clubs.slice():[],events:Array.isArray(source.events)?source.events.slice():[],relationships:Object.assign({},source.relationships||{}),inventory:Array.isArray(source.inventory)?source.inventory.slice():[],property:Array.isArray(source.property)?source.property.slice():[],graffiti:Array.isArray(source.graffiti)?source.graffiti.slice():[],dreams:Array.isArray(source.dreams)?source.dreams.slice():[],choice_history:Array.isArray(source.choice_history)?source.choice_history.slice():[],npc_memory:Object.assign({},source.npc_memory||{}),jobs_history:Array.isArray(source.jobs_history)?source.jobs_history.slice():[],financial_history:Array.isArray(source.financial_history)?source.financial_history.slice():[],health_history:Array.isArray(source.health_history)?source.health_history.slice():[],surveillance:Array.isArray(source.surveillance)?source.surveillance.slice():[],transport_history:Array.isArray(source.transport_history)?source.transport_history.slice():[],access_history:Array.isArray(source.access_history)?source.access_history.slice():[]})}
 const defaultStoreBundle=sim=>({"escie_world_simulation_v1":simulationDefaults(sim),"escie_world_npc_v1":{npcs:{witness:{id:"witness",role:"WITNESS",status:"UNKNOWN",awareness:78,social_context:"LOCAL"}},observations:[],detections:[]},"escie_world_npc_life_v1":{npcs:{},events:[]},"escie_world_equipment_v1":{owned:["FISTS"],equipped:{HAND:"FISTS",BODY:null}},"escie_world_vehicles_v1":{owned:["BIKE","SKATEBOARD","ROLLERBLADES"],current:null,radio:true,condition:{},history:[]},"escie_world_law_v1":{units:[],active:false,level:0,lastDispatch:null,arrests:0,escapes:0},[PHONE_STORE_KEY]:{}});
-function normalizeSaveStores(snapshot){const source=snapshot?.stores&&typeof snapshot.stores==="object"&&!Array.isArray(snapshot.stores)?snapshot.stores:{};const sim=simulationDefaults(source["escie_world_simulation_v1"]||snapshot?.simulation_state);const base=defaultStoreBundle(sim);const stores=Object.assign(base,source);stores["escie_world_simulation_v1"]=simulationDefaults(stores["escie_world_simulation_v1"]);return stores}
+function normalizeSaveStores(snapshot){const source=snapshot?.stores&&typeof snapshot.stores==="object"&&!Array.isArray(snapshot.stores)?snapshot.stores:{};const sim=simulationDefaults(source["escie_world_simulation_v1"]||snapshot?.simulation_state);const base=defaultStoreBundle(sim);if(!Object.prototype.hasOwnProperty.call(source,PHONE_STORE_KEY))base[PHONE_STORE_KEY]=readStorageJSON(PHONE_STORE_KEY,{});const stores=Object.assign(base,source);stores["escie_world_simulation_v1"]=simulationDefaults(stores["escie_world_simulation_v1"]);return stores}
 function captureRuntimeStores(){ensurePhoneStore();const stores={};for(const k of SAVE_STORE_KEYS){const raw=localStorage.getItem(k);if(raw===null)throw new Error("MISSING_RUNTIME_STORE:"+k);try{stores[k]=JSON.parse(raw)}catch(e){throw new Error("INVALID_RUNTIME_STORE:"+k)}}const invalid=validateStoreBundle(stores);if(invalid)throw new Error(invalid);stores["escie_world_simulation_v1"]=simulationDefaults(stores["escie_world_simulation_v1"]);return stores}
 function validateSaveSnapshot(snapshot,slot){if(!snapshot||typeof snapshot!=="object"||Array.isArray(snapshot))return "NOT_OBJECT";if(snapshot.version!==1&&snapshot.version!==SAVE_VERSION)return "UNSUPPORTED_VERSION";if(snapshot.slot!=null&&Number(snapshot.slot)!==Number(slot))return "SLOT_MISMATCH";const w=snapshot.world_state;if(!w||typeof w!=="object"||Array.isArray(w))return "INVALID_WORLD_STATE";if(w.world_position&&(!Number.isFinite(Number(w.world_position.x))||!Number.isFinite(Number(w.world_position.y))))return "INVALID_POSITION";const storeError=validateStoreBundle(snapshot.stores);if(storeError)return storeError;const sim=snapshot.stores?.["escie_world_simulation_v1"]||snapshot.simulation_state;if(sim&&w.world_position&&sim.position){if(Math.abs(Number(sim.position.x)-Number(w.world_position.x))>1||Math.abs(Number(sim.position.y)-Number(w.world_position.y))>1)return "STATE_POSITION_DIVERGENCE"}if(snapshot.input_mode!=null&&!["AUTO","KEYBOARD","TOUCH","GAMEPAD"].includes(String(snapshot.input_mode).toUpperCase()))return "INVALID_INPUT_MODE";return ""} 
 function clearRuntimeStores(){const keys=[KEY,...SAVE_STORE_KEYS];try{keys.forEach(k=>localStorage.removeItem(k));if(keys.some(k=>localStorage.getItem(k)!==null))throw new Error("CLEAR_RUNTIME_VERIFY_FAILED");return true}catch(e){return false}}
@@ -571,21 +571,19 @@ function processWorldQR(raw){
   let message="";
   if(kind==="QUERY"){
     const q="query:"+payload.toLowerCase();
-    const state=JSON.parse(localStorage.getItem("escie_game_state_v1")||"{}");
+    const state=readStorageJSON(KEY,{});
     state.world_unlocks=Array.isArray(state.world_unlocks)?state.world_unlocks:[];
     if(!state.world_unlocks.includes(q))state.world_unlocks.push(q);
     state.signals=(Number(state.signals)||0)+1;
     state.qr_history=(state.qr_history||[]).concat([{query:q,day:s?.day||1}]).slice(-100);
-    localStorage.setItem("escie_game_state_v1",JSON.stringify(state));
     window.ESCIE_GAME_REGISTRY?.applyPlayerEvent?.({event:"DISCOVERED",target:"qr:"+q,queries:[q]});
     record.ok=true;message="QR · QUERY UNLOCKED · "+q;
   }else if(kind==="DISCOVER"){
     const id=payload.toLowerCase().startsWith("game-")?payload:"game-discovery-"+payload.toLowerCase().replace(/[^a-z0-9_-]+/g,"-");
-    const state=JSON.parse(localStorage.getItem("escie_game_state_v1")||"{}");
+    const state=readStorageJSON(KEY,{});
     state.discoveries=Array.isArray(state.discoveries)?state.discoveries:[];
     if(!state.discoveries.includes(id))state.discoveries.push(id);
     state.signals=(Number(state.signals)||0)+1;
-    localStorage.setItem("escie_game_state_v1",JSON.stringify(state));
     window.ESCIE_GAME_REGISTRY?.applyPlayerEvent?.({event:"DISCOVERED",target:id,queries:["query:"+payload.toLowerCase()]});
     record.ok=true;message="QR · DISCOVERY RECORDED · "+id;
   }else if(kind==="DISTRICT"){
@@ -597,14 +595,13 @@ function processWorldQR(raw){
   }else if(kind==="SIGNAL"){
     const amount=Math.max(1,Math.min(25,Number(payload)));
     if(!Number.isFinite(amount))return reject("QR · INVALID SIGNAL VALUE");
-    const state=JSON.parse(localStorage.getItem("escie_game_state_v1")||"{}");
+    const state=readStorageJSON(KEY,{});
     state.signals=(Number(state.signals)||0)+amount;
-    localStorage.setItem("escie_game_state_v1",JSON.stringify(state));
     record.ok=true;message="QR · SIGNAL +"+amount;
   }else{
     return reject("QR · CODE TYPE NOT RECOGNIZED");
   }
-  record.message=message;m.qr.unshift(record);m.qr=m.qr.slice(0,50);writeQR(m);return {ok:true,message};
+  record.message=message;m.qr.unshift(record);m.qr=m.qr.slice(0,50);if(!commitStorageBatch({[KEY]:typeof state!=="undefined"?state:readStorageJSON(KEY,{}),[PHONE_STORE_KEY]:m}))return {ok:false,message:"QR · SAVE FAILED"};return {ok:true,message};
 }
 
  document.addEventListener("click",e=>{
