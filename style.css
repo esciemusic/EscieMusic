@@ -3317,3 +3317,10 @@ main > section:not(#entry).section-open{
 .world-empty{color:var(--escie-cold-grey);font:600 .56rem monospace}
 .inline-node{border:0;background:none;color:var(--escie-blue-bright);font:700 .58rem monospace;text-decoration:underline;cursor:pointer}
 @media(max-width:650px){.world-filters{grid-template-columns:1fr}.world-graph-note{display:block}.world-graph-note strong{display:block;margin-top:6px}}
+
+/* Glass Eye — audience interface */
+.glass-eye-interface{min-height:24rem;display:flex;flex-direction:column;justify-content:space-between;}
+.glass-eye-actions{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin:1.5rem 0 .75rem;}
+.glass-eye-actions button{font:inherit;letter-spacing:.12em;background:transparent;border:1px solid currentColor;padding:.65rem .9rem;cursor:pointer;}
+.glass-eye-actions button:hover,.glass-eye-actions button:focus-visible{transform:translateY(-1px);}
+.glass-eye-response{min-height:1.4em;opacity:.72;}
