@@ -56,14 +56,14 @@ function actor(x,z,seed){
  worldGroup.add(g);actors.push(g);
 }
 function gridToWorld(p){return {x:Number(p?.x||0)/15*108-54,z:Number(p?.y||0)/9*108-54}}
-function createEvidence(){const objects=root.ESCIE_WORLD_ACTIONS?.objects||[{id:"camera",x:12,y:2,label:"CAMERA",text:"A camera watches the lane.",discovery:"game-discovery-camera",queries:["query:camera"]},{id:"shoe",x:6,y:5,label:"BABY SHOE",text:"A small shoe sits near the curb.",discovery:"game-discovery-shoe",queries:["query:shoe"],item:"game-item-baby-shoe"},{id:"signal",x:13,y:7,label:"SIGNAL",text:"The distortion is strongest here.",discovery:"game-discovery-trail",queries:["query:signal"]}];objects.forEach(o=>{const q=gridToWorld(o);const m=box(.28,.08,.28,o.id==="signal"?0x6f3faf:0x8e1f2d,q.x,.08,q.z);m.userData.evidence=o;evidence.push(m)});}
+function createEvidence(){const objects=root.ESCIE_WORLD_ACTIONS?.objects||[];objects.forEach(o=>{const q=gridToWorld(o);const m=box(.28,.08,.28,o.id==="signal"?0x6f3faf:0x8e1f2d,q.x,.08,q.z);m.userData.evidence=o;evidence.push(m)});}
 function updateEvidence(){evidence.forEach(m=>{const d=Math.hypot(player.x-m.position.x,player.z-m.position.z);m.visible=d<18;});const near=evidence.find(m=>Math.hypot(player.x-m.position.x,player.z-m.position.z)<2.2);if(near){say3D("INVESTIGATE · "+near.userData.evidence.label+" · E / INTERACT");}return near;}
 function createStreetLife(){
  const live=root.ESCIE_WORLD_NPC?.state?.().npcs||{};const list=Object.values(live).filter(n=>n&&n.id&&Number.isFinite(Number(n.x))&&Number.isFinite(Number(n.y))).slice(0,28);
  if(list.length){list.forEach((n,i)=>{const q=gridToWorld(n);actor(q.x,q.z,i);const a=actors[actors.length-1];a.userData.id=n.id;a.userData.canonical=true;a.userData.npc=n});}
  for(let i=list.length;i<18;i++){const x=(i%2?1:-1)*(6.5+(i%4)*1.1),z=-45+i*5.2;actor(x,z,i+100);}
 }
-function syncCanonicalNPCs(t){const api=root.ESCIE_WORLD_NPC;if(!api)return;const live=api.state?.().npcs||{};actors.forEach(a=>{if(!a.userData.canonical)return;const n=live[a.userData.id];if(!n){a.visible=false;return}a.visible=Number(n.health??100)>0;const q=gridToWorld(n);a.position.x+=(q.x-a.position.x)*.18;a.position.z+=(q.z-a.position.z)*.18;a.rotation.y=n.facing==="E"?Math.PI/2:n.facing==="W"?-Math.PI/2:n.facing==="N"?Math.PI:0;a.userData.activity=n.activity||"IDLE";});if(performance.now()-player.npcSync>1000){const st=root.ESCIE_WORLD_SIMULATION?.state?.();if(st){api.tick?.(st.day,st.hour,st.minute,(x,y)=>false,5);}player.npcSync=performance.now();}}
+function syncCanonicalNPCs(t){const api=root.ESCIE_WORLD_NPC;if(!api)return;const live=api.state?.().npcs||{};actors.forEach(a=>{if(!a.userData.canonical)return;const n=live[a.userData.id];if(!n){a.visible=false;return}a.visible=Number(n.health??100)>0;const q=gridToWorld(n);a.position.x+=(q.x-a.position.x)*.18;a.position.z+=(q.z-a.position.z)*.18;a.rotation.y=n.facing==="E"?Math.PI/2:n.facing==="W"?-Math.PI/2:n.facing==="N"?Math.PI:0;a.userData.activity=n.activity||"IDLE";});player.npcSync=performance.now();}
 
 function streetProps(){
  for(let z=-48;z<=48;z+=12){
@@ -127,6 +127,7 @@ function setup(){
  renderer.domElement.addEventListener("touchmove",e=>{if(!touchLook||e.touches.length!==1)return;const t=e.touches[0];player.yaw-=(t.clientX-touchLook.x)*.006;player.pitch=clamp(player.pitch-(t.clientY-touchLook.y)*.004,-1.2,1.2);touchLook={x:t.clientX,y:t.clientY};},{passive:true});
  renderer.domElement.addEventListener("touchend",()=>touchLook=null,{passive:true});
  document.addEventListener("blur",()=>keys.clear());
+ visibilityHandler=()=>{if(document.hidden){if(raf)cancelAnimationFrame(raf);raf=0}else if(started&&!raf){clock.start();render();}};document.addEventListener("visibilitychange",visibilityHandler);
  return true;
 }
 function gamepadInput(){
@@ -134,7 +135,7 @@ function gamepadInput(){
  const dz=v=>Math.abs(v)<.14?0:v;return {f:-dz(Number(p.axes?.[1]||0)),str:dz(Number(p.axes?.[0]||0)),lookX:dz(Number(p.axes?.[2]||0)),lookY:dz(Number(p.axes?.[3]||0)),sprint:!!p.buttons?.[10]?.pressed,action:!!p.buttons?.[0]?.pressed};
 }
 function evidenceInteract(){const m=updateEvidence();if(!m)return false;const o=m.userData.evidence;const r=root.ESCIE_WORLD_ACTIONS?.interactObject?.(o);if(r!==false){say3D("EVIDENCE · "+String(o.label||o.id)+" · LOGGED");return true}return false}
-function vehicleInteract(){const vs=root.ESCIE_WORLD_VEHICLES;if(!vs)return false;if(player.inVehicle){const r=vs.exit?.();if(r?.ok){player.inVehicle=false;player.vehicleId=null;say3D("VEHICLE · EXITED");return true}return true}const d=updateVehicles.car;if(!d||Math.hypot(player.x-d.position.x,player.z-d.position.z)>3)return false;const r=vs.enter?.("COMPACT");if(r?.ok){player.inVehicle=true;player.vehicleId="COMPACT";say3D("VEHICLE · DRIVE");return true}say3D("VEHICLE · "+String(r?.reason||"UNAVAILABLE"));return true}
+function vehicleInteract(){const vs=root.ESCIE_WORLD_VEHICLES;if(!vs)return false;if(player.inVehicle){const r=vs.exit?.();if(r?.ok){player.inVehicle=false;player.vehicleId=null;say3D("VEHICLE · EXITED");return true}return true}const d=updateVehicles.car;if(!d||Math.hypot(player.x-d.position.x,player.z-d.position.z)>3)return false;const id=d.userData.vehicleId||vs.state?.()?.owned?.[0]?.id||"TAXI";const r=vs.enter?.(id);if(r?.ok){player.inVehicle=true;player.vehicleId=id;say3D("VEHICLE · DRIVE");return true}say3D("VEHICLE · "+String(r?.reason||"UNAVAILABLE"));return true}
 function interact(){if(evidenceInteract())return true;if(vehicleInteract())return true;
  const near=doors.find(d=>Math.hypot(player.x-d.x,player.z-d.z)<2.4);
  if(near){if(near.open){root.ESCIE_WORLD_INTERIOR?.exit?.();near.open=false;near.mesh.rotation.y=0;say3D("EXITED · BACK ON THE STREET");return true}const st=root.ESCIE_WORLD_SIMULATION?.state?.(),b=near.building;if(b){const result=root.ESCIE_WORLD_SIMULATION?.enterBuilding?.(st?.neighbourhood,b.id);if(!result?.ok){say3D("ACCESS · "+String(result?.reason||"DENIED"));return true}root.dispatchEvent(new CustomEvent("escie:world-interior-enter",{detail:result}));}near.open=true;near.mesh.rotation.y=Math.PI/2;say3D(b?"ENTERED · "+b.name:"DOOR OPEN · INTERIOR LAYER AVAILABLE");return true}
@@ -172,7 +173,7 @@ function updateVehicles(t){
  const active=vs.current;updateVehicles.car.visible=!!active;
  if(player.inVehicle){updateVehicles.car.position.set(player.x,0,player.z);updateVehicles.car.rotation.y=player.yaw;updateVehicles.car.visible=true}else if(active){updateVehicles.car.position.x=-4+Math.sin(t*.12)*7;updateVehicles.car.position.z=-10+Math.cos(t*.12)*18;updateVehicles.car.rotation.y=t*.12;}
 }
-function updateLaw(){if(performance.now()-player.lawSync<1800)return;root.ESCIE_WORLD_LAW?.tick?.();player.lawSync=performance.now()}
+function updateLaw(){const law=root.ESCIE_WORLD_LAW?.state?.();if(law)player.lawSync=performance.now()}
 function updateEnvironment(t){
  const st=root.ESCIE_WORLD_SIMULATION?.state?.()||{},cycle=((Number(st.hour||12)*60+Number(st.minute||0))/1440),angle=cycle*Math.PI*2;
  const daylight=Math.max(.08,Math.sin(angle-Math.PI/2)*.5+.5);const weather=String(st.weather||"COLD").toUpperCase();const snow=worldGroup?.children.find(o=>o.isPoints);if(snow)snow.visible=weather.includes("SNOW")||weather.includes("COLD");
@@ -187,7 +188,7 @@ function updateHud(){
 }
 function updateQuality(dt){const ms=dt*1000;perf.frameMs=perf.frameMs*.92+ms*.08;if(perf.frameMs>28)perf.lowFrames++;else perf.lowFrames=Math.max(0,perf.lowFrames-1);if(perf.lowFrames>90&&perf.quality!=="low"){perf.quality="low";worldGroup?.traverse(o=>{if(o.isPoints)o.visible=false;});renderer?.setPixelRatio(Math.min(devicePixelRatio||1,1));}} 
 function updateActors(t){
- actors.forEach(a=>{a.position.x=a.userData.base+Math.sin(t*.35+a.userData.phase)*.8;a.rotation.y=Math.sin(t*.35+a.userData.phase)*.25;});
+ actors.forEach(a=>{if(a.userData.canonical)return;a.position.x=a.userData.base+Math.sin(t*.35+a.userData.phase)*.8;a.rotation.y=Math.sin(t*.35+a.userData.phase)*.25;});
 }
 function render(){
  const dt=Math.min(clock.getDelta(),.05);updateQuality(dt);move(dt);updateLaw();updateActors(clock.elapsedTime);syncCanonicalNPCs(clock.elapsedTime);updateVehicles(clock.elapsedTime);updateEnvironment(clock.elapsedTime);if(performance.now()-perf.hud>120){updateHud();perf.hud=performance.now();}
@@ -200,7 +201,7 @@ function render(){
  }
  renderer.render(scene,camera);raf=requestAnimationFrame(render);
 }
-function stop(){if(raf)cancelAnimationFrame(raf);raf=0;document.exitPointerLock?.();if(resizeObserver){resizeObserver.disconnect();resizeObserver=null;}started=false;}
+function stop(){if(raf)cancelAnimationFrame(raf);raf=0;document.exitPointerLock?.();if(resizeObserver){resizeObserver.disconnect();resizeObserver=null;}window.removeEventListener("resize",resize);if(visibilityHandler)document.removeEventListener("visibilitychange",visibilityHandler);started=false;}
 function setMode(v){
  thirdPerson=!!v;avatar.visible=thirdPerson;
  const log=document.getElementById("world-log");if(log)log.textContent=thirdPerson?"3D REALITY · THIRD PERSON":"3D REALITY · FIRST PERSON";
