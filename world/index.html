@@ -20,14 +20,14 @@
       <button type="button" data-game-enter>ENTER WORLD</button>
       <button type="button" data-game-continue>CONTINUE</button>
       <button type="button" data-game-fullscreen>FULLSCREEN</button>
-      <a href="/" data-game-return>RETURN TO ESCIE</a>
+      <a href="../" data-game-return>RETURN TO ESCIE</a>
     </div>
     <small>KEYBOARD · TOUCH · GAMEPAD / BLUETOOTH CONTROLLER</small>
   </div>
 </div>
 <div id="world-device" class="world-device"><div class="world-device-top"><span>ESCIE</span><span>THE WORLD</span><span id="device-status">● SIGNAL</span></div><div class="world-shell">
 <header class="world-header">
-<a href="/" class="world-back">← ESCIE</a>
+<a href="../" class="world-back">← ESCIE</a>
 <div><span class="world-kicker">THE WORLD</span><strong>PLAYABLE LAYER</strong></div>
 <div id="world-state" class="world-state">LOCAL STATE</div>
 </header>
@@ -55,8 +55,39 @@
 <section id="world-investigation" class="world-investigation" hidden aria-label="Investigation board"><div class="investigation-head"><div><span class="world-kicker">THE THREAD</span><h2>INVESTIGATION</h2></div><button type="button" data-close-investigation>CLOSE</button></div><div id="investigation-board" class="investigation-board"></div><p class="investigation-note">Connections are suggestions, not proof. The player decides what the evidence means.</p></section>
 <section id="world-phone" class="world-phone" hidden aria-label="ESCIE phone"><div class="phone-top"><strong>ESCIE PHONE</strong><button type="button" data-phone-close>CLOSE</button></div><nav class="phone-tabs"><button type="button" data-phone-tab="calls">CALLS</button><button type="button" data-phone-tab="photos">CAMERA</button><button type="button" data-phone-tab="notes">NOTES</button><button type="button" data-phone-tab="messages">MESSAGES</button><button type="button" data-phone-tab="notifications">NOTIFY</button><button type="button" data-phone-tab="qr">QR</button><button type="button" data-phone-tab="map">MAP</button><button type="button" data-phone-tab="music">MUSIC</button></nav><div id="phone-content" class="phone-content"></div></section>
 </main>
-<footer><span>ESCIE</span><span>THE SIGNAL REMAINS DISTORTED.</span><a href="/">RETURN TO ESCIE</a></footer>
+<footer><span>ESCIE</span><span>THE SIGNAL REMAINS DISTORTED.</span><a href="../">RETURN TO ESCIE</a></footer>
 </div></div>
+<script>
+(function(){
+  "use strict";
+  var gate=document.getElementById("game-boot");
+  var enter=document.querySelector("[data-game-enter]");
+  var cont=document.querySelector("[data-game-continue]");
+  var fs=document.querySelector("[data-game-fullscreen]");
+  var returnLink=document.querySelector("[data-game-return]");
+  function hide(){if(gate){gate.hidden=true;document.body.classList.add("game-live");}}
+  function enterGame(){hide();try{window.dispatchEvent(new CustomEvent("escie:world-enter",{detail:{mode:"new"}}));}catch(e){}}
+  function continueGame(){hide();try{window.dispatchEvent(new CustomEvent("escie:world-enter",{detail:{mode:"continue"}}));}catch(e){}}
+  async function fullscreen(){
+    try{
+      if(!document.fullscreenElement){await document.documentElement.requestFullscreen();}
+      else{await document.exitFullscreen();}
+    }catch(e){}
+  }
+  if(enter)enter.addEventListener("click",enterGame);
+  if(cont)cont.addEventListener("click",continueGame);
+  if(fs)fs.addEventListener("click",fullscreen);
+  if(returnLink)returnLink.addEventListener("click",function(){try{sessionStorage.setItem("escieWorldReturn","1");}catch(e){}});
+  document.addEventListener("visibilitychange",function(){
+    if(document.hidden){
+      try{window.ESCIE_WORLD_ACTIONS&&window.ESCIE_WORLD_ACTIONS.save&&window.ESCIE_WORLD_ACTIONS.save();}catch(e){}
+    }
+  });
+  window.addEventListener("beforeunload",function(){
+    try{window.ESCIE_WORLD_ACTIONS&&window.ESCIE_WORLD_ACTIONS.save&&window.ESCIE_WORLD_ACTIONS.save();}catch(e){}
+  });
+})();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 <script src="../data/games.js"></script>
 <script src="world-simulation.js"></script>
