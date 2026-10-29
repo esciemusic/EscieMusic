@@ -158,12 +158,12 @@ const NPC_DAY_PLAN=[
 const npcPopulation=(district)=>NPC_POPULATIONS[String(district||"").toUpperCase()]||[];
 const npcHomeTarget=(n)=>{const b=findBuilding(String(n.district||"").toUpperCase(),n.home);return b?findLandmark(n.district,b.landmark):null};
 const npcWorkTarget=(n)=>{const b=findBuilding(String(n.district||"").toUpperCase(),n.work);return b?findLandmark(n.district,b.landmark):null};
-const npcSpawn=(n)=>{const t=n.x!=null?{x:n.x,y:n.y}:npcHomeTarget(n)||{x:2,y:7};return {x:t.x,y:t.y}};
+const npcSpawn=(n)=>{const t=npcHomeTarget(n)||{x:n.x??2,y:n.y??7};return {x:t.x,y:t.y}};
 const seedDistrictNPCs=(district)=>{
   const d=String(district||"").toUpperCase(),pop=npcPopulation(d),api=window.ESCIE_WORLD_NPC;
   if(!api?.registerNPC)return [];
   return pop.map(n=>{const existing=api.state?.().npcs?.[n.id];const x=existing?.x??n.x,y=existing?.y??n.y;
-    return api.registerNPC(Object.assign({},n,{district:d,x,y,schedule:NPC_DAY_PLAN.map(p=>Object.assign({},p,{target:p.target==="home"?npcSpawn(Object.assign({},n,{district:d,x:n.x,y:n.y})):npcWorkTarget(Object.assign({},n,{district:d}))||{x:n.x,y:n.y}}))}))
+    return api.registerNPC(Object.assign({},n,{district:d,x,y,schedule:NPC_DAY_PLAN.map(p=>Object.assign({},p,{target:p.target==="home"?npcSpawn(Object.assign({},n,{district:d})):npcWorkTarget(Object.assign({},n,{district:d}))||{x:n.x,y:n.y}}))}))
   });
 };
 const seedWorldNPCs=()=>Object.keys(NPC_POPULATIONS).flatMap(seedDistrictNPCs);
