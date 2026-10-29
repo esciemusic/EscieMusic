@@ -25,6 +25,7 @@ function registryState(seed){const registry=window.ESCIE_GAME_REGISTRY;if(!regis
 function syncRegistryState(local){if(!local||!window.ESCIE_GAME_REGISTRY?.createPlayerState)return local;const r=registryState(local);local.observed=r.observed;local.interacted=r.interacted;local.heard=r.heard;local.seen=r.seen;local.collected=r.collected;local.connections=r.connections;local.discoveries=r.discoveries;local.missed=r.missed;local.visited_scenes=r.visited_scenes;local.visited_locations=r.visited_locations;local.unknown=r.unknown;local.unresolved=r.unresolved;local.unlocked=r.unlocked;local.path=r.path;local.event_count=r.event_count;local.last_seen_at=r.last_seen_at;return local;}
 function save(s){try{syncRegistryState(s);return commitStorageBatch({[KEY]:s})}catch(e){return false}}
 function say(t){log.textContent=t}
+function worldPulse(cls,ms=700){const b=document.body;if(!b)return;b.classList.remove(cls);void b.offsetWidth;b.classList.add(cls);clearTimeout(b["__escie_"+cls]);b["__escie_"+cls]=setTimeout(()=>b.classList.remove(cls),ms)}
 function rpgState(s){
  const current=s&&typeof s==="object"?s:{};
  if(window.ESCIE_RPG&&!current.rpg)current.rpg=window.ESCIE_RPG.default();
@@ -38,7 +39,7 @@ function awardRPGXP(amount,reason){
  if(result.gained>0){
    const levelText=result.leveled?" · LEVEL "+result.state.level+" · +"+(result.levels*2)+" POINTS":"";
    if(!save(s)){say("RPG · SAVE FAILED");return false}
-   say("XP +"+result.gained+" · "+String(reason||"PROGRESS").toUpperCase()+levelText);
+   say("XP +"+result.gained+" · "+String(reason||"PROGRESS").toUpperCase()+levelText);worldPulse(result.leveled?"is-level-up":"is-xp-gain",result.leveled?1800:900);
  }
  return result;
 }
@@ -78,7 +79,7 @@ function render(){syncNPCVisuals();if(room==="room01"){target=roomObjects.find(o
 const r=rpgState(s),summary=window.ESCIE_RPG?.summary?.(r)||r;
 const hp=Math.max(0,Math.min(100,Number(s.health??100))),energy=Math.max(0,Math.min(100,Number(s.energy??100)));
 const level=Math.max(1,Number(summary.level||r.level||1)),xp=Math.max(0,Number(summary.xp??r.xp??0)),next=Math.max(1,Number(window.ESCIE_RPG?.xpForNext?.(level)||100));
-const wanted=Math.max(0,Number(s.wanted||s.legal_status?.wanted||0)),money=Math.max(0,Number(s.money||0));
+const wanted=Math.max(0,Number(s.wanted||s.legal_status?.wanted||0)),money=Math.max(0,Number(s.money||0));document.body.classList.toggle("is-low-health",hp<=25);document.body.classList.toggle("is-wanted",wanted>0);
 const hpEl=document.getElementById("world-hp"),enEl=document.getElementById("world-energy"),xpEl=document.getElementById("world-xp"),moneyEl=document.getElementById("world-money"),wantedEl=document.getElementById("world-wanted");
 const hpBar=document.getElementById("world-hp-bar"),enBar=document.getElementById("world-energy-bar"),xpBar=document.getElementById("world-xp-bar");
 if(hpEl)hpEl.textContent=Math.round(hp);
@@ -181,7 +182,7 @@ function performControlAction(type){
  if(t==="SPRINT"){const s=state();sim.advance?.(1);say("SPRINT · MOVEMENT SPEED INCREASED · "+Number(s.energy??0)+" ENERGY");return}
  if(t==="OPEN"){const v=window.ESCIE_WORLD_VEHICLES;const s=state();if(v&&s.transport==="CAR"&&v.state().current){const radio=v.radio();say(radio.ok?("RADIO · "+radio.line):"CAR · NO RADIO");return}if(enterNearbyBuilding())return;interactNow();return}
  if(t==="STEAL"){const target=npcs.find(n=>Math.abs(n.x-pos.x)<=1&&Math.abs(n.y-pos.y)<=1);if(!target){say("STEAL · NO VALID TARGET");return}const r=sim.steal?.("npc:"+target.id,false);say(r?.ok===false?"STEAL · FAILED":"STEAL · ACTION TAKEN · NO WITNESS");return}
- if(t==="FIGHT"){const target=npcs.find(n=>Math.abs(n.x-pos.x)<=1&&Math.abs(n.y-pos.y)<=1);if(!target){say("FIGHT · NO VALID TARGET");return}const attack=sim.combatAttack?.(target.id,{weapon:"FIST"});if(attack?.reason==="EXHAUSTED"){say("FIGHT · TOO EXHAUSTED");return}if(!attack?.ok){say("FIGHT · "+String(attack?.reason||"FAILED"));return}window.ESCIE_WORLD_NPC?.relationship?.(target.id,-8,"FIGHT");if(attack.target?.down){const s0=state(),rr=rpgState(s0),xp=window.ESCIE_RPG?.gainXP?.(rr,40,"COMBAT");if(xp){s0.rpg=window.ESCIE_RPG.recordCombat(xp.state,"knockout",{dealt:Number(attack.damage||0),taken:0});save(s0)}say("TARGET DOWN · +40 XP · CONSEQUENCE REGISTERED");}else{const retaliation=Math.max(2,Math.min(12,Math.round((100-(attack.target?.health??100))/12)));const hit=sim.applyDamage?.(retaliation,"NPC_RETALIATION");if(hit?.dead){const r=sim.respawn?.();say(r?.ok?"YOU DIED · RESPAWNED · 06:00 · PARC-EXTENSION":"YOU DIED · NO RESPAWN");return}if(hit?.hospital){say("SERIOUS INJURY · HOSPITAL REQUIRED");return}say("FIGHT · TARGET HP "+Number(attack.target?.health??0)+" · YOUR HP "+Number(hit?.state?.health??0));}return}
+ if(t==="FIGHT"){worldPulse("is-combat",650);const target=npcs.find(n=>Math.abs(n.x-pos.x)<=1&&Math.abs(n.y-pos.y)<=1);if(!target){say("FIGHT · NO VALID TARGET");return}const attack=sim.combatAttack?.(target.id,{weapon:"FIST"});if(attack?.reason==="EXHAUSTED"){say("FIGHT · TOO EXHAUSTED");return}if(!attack?.ok){say("FIGHT · "+String(attack?.reason||"FAILED"));return}window.ESCIE_WORLD_NPC?.relationship?.(target.id,-8,"FIGHT");if(attack.target?.down){const s0=state(),rr=rpgState(s0),xp=window.ESCIE_RPG?.gainXP?.(rr,40,"COMBAT");if(xp){s0.rpg=window.ESCIE_RPG.recordCombat(xp.state,"knockout",{dealt:Number(attack.damage||0),taken:0});save(s0)}say("TARGET DOWN · +40 XP · CONSEQUENCE REGISTERED");}else{const retaliation=Math.max(2,Math.min(12,Math.round((100-(attack.target?.health??100))/12)));const hit=sim.applyDamage?.(retaliation,"NPC_RETALIATION");if(hit?.dead){const r=sim.respawn?.();say(r?.ok?"YOU DIED · RESPAWNED · 06:00 · PARC-EXTENSION":"YOU DIED · NO RESPAWN");return}if(hit?.hospital){say("SERIOUS INJURY · HOSPITAL REQUIRED");return}say("FIGHT · TARGET HP "+Number(attack.target?.health??0)+" · YOUR HP "+Number(hit?.state?.health??0));}return}
 }
 function key(e){if(preventInputRepeat(e))return;const k=e.key.toLowerCase();activeInputDevice("KEYBOARD");if(k==="arrowup"||k==="w")move(0,-1);else if(k==="arrowdown"||k==="s")move(0,1);else if(k==="arrowleft"||k==="a")move(-1,0);else if(k==="arrowright"||k==="d")move(1,0);else if(k==="enter"||k===" ")interactNow();else if(k==="i")inventory();else if(k==="g")glass();else if(k==="escape"&&room==="room01")leaveRoom();else if(dialogue&&["1","2","3"].includes(k))chooseDialogue(Number(k)-1)}
 window.ESCIE_WORLD_ACTIONS={performControlAction,awardRPGXP,purchaseGameItem,objects:objects.map(o=>Object.assign({},o)),discover:(o)=>discover(o),interactObject:(o)=>{if(!o)return false;const sim=window.ESCIE_WORLD_SIMULATION;if(sim){if(o.id==="camera")sim.change({stress:2});if(o.id==="shoe")sim.change({stress:1,social:1});if(o.id==="signal")sim.change({stress:-2,reputation:1});}say(o.text||o.label||"INTERACTION");return discover(o)}};
