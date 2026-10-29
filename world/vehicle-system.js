@@ -30,6 +30,15 @@ const damage=(amount=0,source="IMPACT")=>{
  return {ok:true,condition:s.condition[id],vehicle:get(id),disabled:s.condition[id]<=0};
 },
 impact=(amount=0,source="COLLISION")=>damage(amount,source);
+const repair=(id,amount=100)=>{
+ const s=read(),target=String(id||"").toUpperCase();if(!target||!VEHICLES[target])return {ok:false,reason:"UNKNOWN_VEHICLE"};
+ if(!s.owned.includes(target)&&target!=="TAXI")return {ok:false,reason:"NOT_OWNED"};
+ const before=Math.max(0,Math.min(100,Number(s.condition?.[target]??100))),gain=Math.max(0,Math.min(100-before,Number(amount)||0));
+ if(!gain)return {ok:true,condition:before,cost:0,vehicle:get(target)};
+ const cost=Math.max(1,Math.ceil(gain*.75));if(Number(s.money||0)<cost)return {ok:false,reason:"INSUFFICIENT_FUNDS",cost,condition:before};
+ s.money-=cost;s.condition[target]=before+gain;s.history=Array.isArray(s.history)?s.history:[];s.history.unshift({type:"REPAIR",vehicle:target,amount:gain,cost,condition:s.condition[target],at:Date.now()});s.history=s.history.slice(0,100);
+ if(!save(s))return {ok:false,reason:"SAVE_FAILED"};return {ok:true,condition:s.condition[target],cost,vehicle:get(target)};
+};
 const state=()=>{const s=read();return {owned:s.owned.map(get).filter(Boolean),current:get(s.current),radio:s.radio,condition:s.condition,history:s.history}};
 window.ESCIE_WORLD_VEHICLES={state,vehicles:VEHICLES,get,own,acquire,enter,exit,radio,damage,impact};
 })();
