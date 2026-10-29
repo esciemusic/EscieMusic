@@ -1,6 +1,6 @@
 (()=>{"use strict";
 const REF={
- version:2,
+ version:3,
  network:{major_corridors:["Jean-Talon","Parc","Acadie","Saint-Viateur","Mont-Royal","Saint-Denis","Saint-Laurent","Sherbrooke","Rosemont","Beaubien","Notre-Dame","Wellington"],transit_hubs:["Parc","Acadie","Jean-Talon","Laurier","Mont-Royal","Berri-UQAM","McGill","Peel","Guy-Concordia","Champ-de-Mars","Place-d’Armes","Saint-Henri","Vendôme","De l’Église","Verdun"]},
  source:"MONTRÉAL_REFERENCE_LAYER",
  method:"OFFICIAL_CITY_REFERENCE",
@@ -15,6 +15,8 @@ const REF={
   "SAINT-HENRI":{borough:"Le Sud-Ouest",corridors:["Notre-Dame","Saint-Henri","Vendôme"],stations:["Saint-Henri","Vendôme"],character:"residential / industrial-transition"},
   "VERDUN":{borough:"Verdun",corridors:["Wellington","Verdun","De l'Église"],stations:["De l'Église","Verdun"],character:"residential / commercial / waterfront"}
  },
+ road_classes:{LOCAL:"LOCAL",COLLECTOR:"COLLECTOR",ARTERIAL:"ARTERIAL",HIGHWAY:"HIGHWAY",PEDESTRIAN:"PEDESTRIAN"},
+ climate:{seasonal_surface:["SNOW","SLUSH","WET","DRY"],winter_effects:["reduced traction","snowbanks","shorter daylight"],spring_effects:["potholes","wet pavement","construction"],summer_effects:["dry pavement","heat","outdoor activity"],autumn_effects:["wet leaves","cool pavement","shorter daylight"]},
  rules:[
   "Real Montréal street and transit relationships are the spatial reference.",
   "Use fictionalized businesses and original characters.",
@@ -22,6 +24,7 @@ const REF={
   "ESCIE distortion is layered over recognizable city structure."
  ],
  source_urls:{
+  open_data:"https://donnees.montreal.ca/",
   planning:"https://montreal.ca/en/services/land-use-planning-interactive-maps",
   heritage:"https://montreal.ca/en/services/view-heritage-databases",
   toponymy:"https://montreal.ca/en/services/learn-about-place-names",
