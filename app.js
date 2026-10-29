@@ -1255,6 +1255,11 @@ function renderClothing(){
     });
 
     document.addEventListener("keydown", event => {
+      if ((event.key === "Enter" || event.key === " ") && event.target.closest("[data-record-id]") && !event.target.closest("button,a,input,select,textarea")) {
+        event.preventDefault();
+        event.target.closest("[data-record-id]").click();
+        return;
+      }
       if (event.key === "Escape" && !modal.hidden) {
         modal.hidden = true;
         document.body.classList.remove("inspector-open");
