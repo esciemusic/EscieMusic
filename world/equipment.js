@@ -13,8 +13,8 @@ const read=()=>{try{const v=JSON.parse(localStorage.getItem(KEY)||"null");return
 const save=s=>{try{const raw=JSON.stringify(s);localStorage.setItem(KEY,raw);if(localStorage.getItem(KEY)!==raw)throw new Error("SAVE_VERIFY_FAILED:"+KEY);return s}catch(e){return null}};
 const item=id=>ITEMS[String(id||"").toUpperCase()]||null;
 const owned=id=>read().owned.includes(String(id).toUpperCase());
-const equip=id=>{const s=read(),i=item(id);if(!i||!s.owned.includes(i.id))return {ok:false,reason:"NOT_OWNED"};s.equipped[i.slot]=i.id;save(s);return {ok:true,item:i,state:s}};
-const acquire=(id)=>{const s=read(),i=item(id);if(!i)return {ok:false,reason:"UNKNOWN_ITEM"};if(!s.owned.includes(i.id))s.owned.push(i.id);save(s);return {ok:true,item:i,state:s}};
+const equip=id=>{const s=read(),i=item(id);if(!i||!s.owned.includes(i.id))return {ok:false,reason:"NOT_OWNED"};s.equipped[i.slot]=i.id;if(!save(s))return {ok:false,reason:"SAVE_FAILED"};return {ok:true,item:i,state:s}};
+const acquire=(id)=>{const s=read(),i=item(id);if(!i)return {ok:false,reason:"UNKNOWN_ITEM"};if(!s.owned.includes(i.id))s.owned.push(i.id);if(!save(s))return {ok:false,reason:"SAVE_FAILED"};return {ok:true,item:i,state:s}};
 const weapon=()=>item(read().equipped.HAND)||ITEMS.FISTS;
 const armor=()=>{const i=item(read().equipped.BODY);return Number(i?.armor||0)};
 const damage=(targetArmor=0)=>Math.max(1,Math.round(Number(weapon().damage||9)*(1-Math.min(.6,Number(targetArmor||0)/100))));
