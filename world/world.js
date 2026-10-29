@@ -316,7 +316,7 @@ clearResetFlag();
 const ENTRY_SEEN_KEY="escie_world_entry_seen_v1";
 function worldEntryGate(){
   if(document.getElementById("world-entry-gate"))return;
-  const slot=activeSaveSlot(), status=saveSlotStatus(slot), hasSave=status.startsWith("SAVED");
+  const slot=activeSaveSlot(), status=saveSlotStatus(slot), currentState=state(), freshStart=currentState&&currentState.entry_source==="new-game"&&!currentState.entered, hasSave=status.startsWith("SAVED")&&!freshStart;
   const el=document.createElement("section");
   el.id="world-entry-gate";
   el.className="world-entry-gate";
