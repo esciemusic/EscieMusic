@@ -416,3 +416,18 @@ assert(worldRuntime.includes("window.ESCIE_WORLD_BOOT=status"),"world must expos
 assert(worldRuntime.includes("typeof sim.state==="function"?sim.state():sim.state"),"dream choices must safely resolve simulation state");
 for(const control of requiredControls) assert(worldHtml.includes(control),"world HTML missing control "+control);
 console.log("ESCIE world control wiring contracts OK");
+
+/* CONFIRMED MASTER PALETTE */
+
+
+assert(style.includes("--escie-void:#050505"),"master palette must define Void");
+assert(style.includes("--escie-blue:#2f80ff"),"master palette must define Signal Blue");
+assert(style.includes("--escie-purple:#6f3faf"),"master palette must define Deep Violet");
+assert(style.includes("--escie-ultraviolet:#9b59ff"),"master palette must define Ultraviolet");
+assert(style.includes("--escie-green:#8faf72"),"master palette must define incidental green");
+assert(style.includes("--escie-red:#8e1f2d"),"master palette must define Blood");
+assert(style.includes("--escie-rust:#8a4035"),"master palette must define Rust");
+assert(style.includes("--escie-amber:#b8873a"),"master palette must define Amber");
+assert(style.includes("--escie-cold-grey:#70747a"),"master palette must define Cold Grey");
+assert(world.includes("--world-green:var(--escie-blue)"),"world legacy green signal alias must resolve to Signal Blue");
+console.log("ESCIE confirmed master palette contracts OK");
