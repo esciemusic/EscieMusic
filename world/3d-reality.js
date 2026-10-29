@@ -128,7 +128,7 @@ function setup(){
  renderer.domElement.addEventListener("touchmove",e=>{if(!touchLook||e.touches.length!==1)return;const t=e.touches[0];player.yaw-=(t.clientX-touchLook.x)*.006;player.pitch=clamp(player.pitch-(t.clientY-touchLook.y)*.004,-1.2,1.2);touchLook={x:t.clientX,y:t.clientY};},{passive:true});
  renderer.domElement.addEventListener("touchend",()=>touchLook=null,{passive:true});
  document.addEventListener("blur",()=>keys.clear());
- visibilityHandler=()=>{if(document.hidden){if(raf)cancelAnimationFrame(raf);raf=0}else if(started&&!paused&&!raf){clock.start();render();}};document.addEventListener("visibilitychange",visibilityHandler);
+ visibilityHandler=()=>{if(document.hidden){root.ESCIE_WORLD_SIMULATION?.flush?.();if(raf)cancelAnimationFrame(raf);raf=0}else if(started&&!paused&&!raf){clock.start();render();}};document.addEventListener("visibilitychange",visibilityHandler);
  return true;
 }
 function gamepadInput(){
@@ -237,7 +237,7 @@ function togglePause(force){
  if(map)map.setAttribute("aria-hidden",paused?"false":"true");
  const panel=document.getElementById("world-pause");
  if(panel)panel.hidden=!paused;
- if(paused){syncPauseMap();if(raf)cancelAnimationFrame(raf);raf=0;document.exitPointerLock?.();}
+ if(paused){root.ESCIE_WORLD_SIMULATION?.flush?.();root.ESCIE_WORLD_ACTIONS?.save?.();syncPauseMap();if(raf)cancelAnimationFrame(raf);raf=0;document.exitPointerLock?.();}
  else if(started&&!raf){clock.start();render();}
  const log=document.getElementById("world-log");
  if(log)log.textContent=paused?"PAUSED · MAP / SYSTEM":"3D REALITY · "+(thirdPerson?"THIRD PERSON":"FIRST PERSON");
