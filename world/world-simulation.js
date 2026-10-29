@@ -27,41 +27,92 @@ const DREAM_STATES={
 const evaluateDream=(s)=>{const reasons=[];if(Number(s.damage)>=35)reasons.push("DAMAGE");if(Number(s.sleep)>=70)reasons.push("SLEEP");if(Number(s.drug_effect)>0)reasons.push("DRUG_EFFECT");if(Number(s.alcohol_effect)>0)reasons.push("ALCOHOL_EFFECT");if(Number(s.stress)>=70)reasons.push("STRESS");if(!reasons.length)return null;const nightmare=reasons.includes("DAMAGE")||reasons.includes("STRESS")||reasons.includes("DRUG_EFFECT");return nightmare?DREAM_STATES.NIGHTMARE:DREAM_STATES.MEMORY};
 const enterDream=(type)=>{const s=read(),d=DREAM_STATES[type]||DREAM_STATES.NIGHTMARE;s.dreams=s.dreams||[];const event={type:d.id,title:d.title,reasons:evaluateDream(s)?.causes||[],day:s.day,hour:s.hour,intensity:d.intensity,horror:!!d.horror};s.dreams.unshift(event);s.dream=s.dreams.slice(0,25);s.sleep=0;s.drug_effect=Math.max(0,Number(s.drug_effect)-1);s.alcohol_effect=Math.max(0,Number(s.alcohol_effect)-1);save(s);return event};
 const WORLD_STREETS={
-  "PARC-EXTENSION":[{id:"HOME",label:"HOME",x:2,y:7,type:"STREET"},{id:"PARC",label:"PARC METRO",x:4,y:6,type:"METRO",station:"Parc"},{id:"ACADIE",label:"ACADIE METRO",x:6,y:4,type:"METRO",station:"Acadie"}],
-  "MILE END":[{id:"LAURIER",label:"LAURIER",x:4,y:5,type:"METRO",station:"Laurier"},{id:"MONT_ROYAL",label:"MONT-ROYAL",x:8,y:5,type:"METRO",station:"Mont-Royal"},{id:"ROSEMONT",label:"ROSEMONT EDGE",x:11,y:6,type:"STREET"}],
-  "PLATEAU":[{id:"LAURIER",label:"LAURIER",x:3,y:5,type:"METRO",station:"Laurier"},{id:"MONT_ROYAL",label:"MONT-ROYAL",x:7,y:5,type:"METRO",station:"Mont-Royal"},{id:"SHERBROOKE",label:"SHERBROOKE",x:10,y:7,type:"METRO",station:"Sherbrooke"}],
-  "ROSEMONT":[{id:"ROSEMONT",label:"ROSEMONT",x:4,y:5,type:"METRO",station:"Rosemont"},{id:"BEAUBIEN",label:"BEAUBIEN",x:8,y:6,type:"METRO",station:"Beaubien"},{id:"JEAN_TALON",label:"JEAN-TALON",x:11,y:4,type:"METRO",station:"Jean-Talon"}],
-  "DOWNTOWN":[{id:"BERRI_UQAM",label:"BERRI-UQAM",x:4,y:7,type:"METRO",station:"Berri-UQAM"},{id:"MCGILL",label:"MCGILL",x:7,y:5,type:"METRO",station:"McGill"},{id:"PEEL",label:"PEEL",x:10,y:5,type:"METRO",station:"Peel"},{id:"GUY_CONCORDIA",label:"GUY-CONCORDIA",x:12,y:7,type:"METRO",station:"Guy-Concordia"}],
-  "OLD MONTREAL":[{id:"CHAMP_DE_MARS",label:"CHAMP-DE-MARS",x:5,y:5,type:"METRO",station:"Champ-de-Mars"},{id:"PLACE_DARMES",label:"PLACE-D'ARMES",x:9,y:7,type:"METRO",station:"Place-d'Armes"}],
-  "SAINT-HENRI":[{id:"SAINT_HENRI",label:"SAINT-HENRI",x:4,y:6,type:"METRO",station:"Saint-Henri"},{id:"PLACE_SAINT_HENRI",label:"PLACE-SAINT-HENRI",x:7,y:4,type:"METRO",station:"Place-Saint-Henri"},{id:"VENDOME",label:"VENDÔME",x:11,y:6,type:"METRO",station:"Vendôme"}],
-  "VERDUN":[{id:"DE_LEGLISE",label:"DE L'ÉGLISE",x:5,y:5,type:"METRO",station:"De l'Église"},{id:"VERDUN",label:"VERDUN",x:9,y:6,type:"METRO",station:"Verdun"}]
+  "PARC-EXTENSION":[
+    {id:"HOME",label:"HOME",x:2,y:7,type:"STREET"},
+    {id:"DUROCHER",label:"DUROCHER",x:3,y:7,type:"STREET"},
+    {id:"HUTCHISON",label:"HUTCHISON",x:3,y:6,type:"STREET"},
+    {id:"JEAN_TALON",label:"JEAN-TALON",x:4,y:5,type:"STREET"},
+    {id:"PARC",label:"PARC METRO",x:4,y:6,type:"METRO",station:"Parc"},
+    {id:"BEAUMONT",label:"BEAUMONT",x:5,y:5,type:"STREET"},
+    {id:"ACADIE",label:"ACADIE METRO",x:6,y:4,type:"METRO",station:"Acadie"},
+    {id:"OGILVY",label:"OGILVY",x:7,y:5,type:"STREET"}
+  ],
+  "MILE END":[
+    {id:"LAURIER",label:"LAURIER",x:4,y:5,type:"METRO",station:"Laurier"},
+    {id:"SAINT_VIATEUR",label:"SAINT-VIATEUR",x:6,y:5,type:"STREET"},
+    {id:"MONT_ROYAL",label:"MONT-ROYAL",x:8,y:5,type:"METRO",station:"Mont-Royal"},
+    {id:"SAINT_URBAIN",label:"SAINT-URBAIN",x:8,y:6,type:"STREET"},
+    {id:"ROSEMONT",label:"ROSEMONT EDGE",x:11,y:6,type:"STREET"}
+  ],
+  "PLATEAU":[
+    {id:"LAURIER",label:"LAURIER",x:3,y:5,type:"METRO",station:"Laurier"},
+    {id:"SAINT_DENIS",label:"SAINT-DENIS",x:5,y:5,type:"STREET"},
+    {id:"MONT_ROYAL",label:"MONT-ROYAL",x:7,y:5,type:"METRO",station:"Mont-Royal"},
+    {id:"SAINT_LAURENT",label:"SAINT-LAURENT",x:8,y:6,type:"STREET"},
+    {id:"SHERBROOKE",label:"SHERBROOKE",x:10,y:7,type:"METRO",station:"Sherbrooke"}
+  ],
+  "ROSEMONT":[
+    {id:"ROSEMONT",label:"ROSEMONT",x:4,y:5,type:"METRO",station:"Rosemont"},
+    {id:"BEAUBIEN",label:"BEAUBIEN",x:8,y:6,type:"METRO",station:"Beaubien"},
+    {id:"JEAN_TALON",label:"JEAN-TALON",x:11,y:4,type:"METRO",station:"Jean-Talon"},
+    {id:"IBERVILLE",label:"IBERVILLE",x:10,y:6,type:"STREET"}
+  ],
+  "DOWNTOWN":[
+    {id:"BERRI_UQAM",label:"BERRI-UQAM",x:4,y:7,type:"METRO",station:"Berri-UQAM"},
+    {id:"SAINT_DENIS",label:"SAINT-DENIS",x:5,y:6,type:"STREET"},
+    {id:"MCGILL",label:"MCGILL",x:7,y:5,type:"METRO",station:"McGill"},
+    {id:"PEEL",label:"PEEL",x:10,y:5,type:"METRO",station:"Peel"},
+    {id:"GUY_CONCORDIA",label:"GUY-CONCORDIA",x:12,y:7,type:"METRO",station:"Guy-Concordia"}
+  ],
+  "OLD MONTREAL":[
+    {id:"CHAMP_DE_MARS",label:"CHAMP-DE-MARS",x:5,y:5,type:"METRO",station:"Champ-de-Mars"},
+    {id:"PLACE_DARMES",label:"PLACE-D'ARMES",x:9,y:7,type:"METRO",station:"Place-d'Armes"},
+    {id:"OLD_PORT",label:"OLD PORT",x:11,y:8,type:"STREET"}
+  ],
+  "SAINT-HENRI":[
+    {id:"SAINT_HENRI",label:"SAINT-HENRI",x:4,y:6,type:"METRO",station:"Saint-Henri"},
+    {id:"PLACE_SAINT_HENRI",label:"PLACE-SAINT-HENRI",x:7,y:4,type:"METRO",station:"Place-Saint-Henri"},
+    {id:"NOTRE_DAME",label:"NOTRE-DAME",x:8,y:6,type:"STREET"},
+    {id:"VENDOME",label:"VENDÔME",x:11,y:6,type:"METRO",station:"Vendôme"}
+  ],
+  "VERDUN":[
+    {id:"DE_LEGLISE",label:"DE L'ÉGLISE",x:5,y:5,type:"METRO",station:"De l'Église"},
+    {id:"WELLINGTON",label:"WELLINGTON",x:7,y:6,type:"STREET"},
+    {id:"VERDUN",label:"VERDUN",x:9,y:6,type:"METRO",station:"Verdun"}
+  ]
 };
-const nearestStreetNode=(neighbourhood,position)=>{const nodes=WORLD_STREETS[String(neighbourhood||"").toUpperCase()]||[];if(!nodes.length)return null;const p=position||{x:2,y:7};return nodes.reduce((best,n)=>{const d=Math.abs(Number(p.x)-n.x)+Math.abs(Number(p.y)-n.y);return !best||d<best.distance?Object.assign({},n,{distance:d}):best},null)};
+const nearestStreetNode=(neighbourhood,position)=>{
+  const nodes=WORLD_STREETS[String(neighbourhood||"").toUpperCase()]||[];
+  if(!nodes.length)return null;
+  const p=position||{x:2,y:7};
+  return nodes.reduce((best,n)=>{
+    const d=Math.abs(Number(p.x)-n.x)+Math.abs(Number(p.y)-n.y);
+    return !best||d<best.distance?Object.assign({},n,{distance:d}):best
+  },null)
+};
 const STREET_EDGES={
-  "PARC-EXTENSION":[["HOME","PARC"],["PARC","ACADIE"]],
-  "MILE END":[["LAURIER","MONT_ROYAL"],["MONT_ROYAL","ROSEMONT"]],
-  "PLATEAU":[["LAURIER","MONT_ROYAL"],["MONT_ROYAL","SHERBROOKE"]],
-  "ROSEMONT":[["ROSEMONT","BEAUBIEN"],["BEAUBIEN","JEAN_TALON"]],
-  "DOWNTOWN":[["BERRI_UQAM","MCGILL"],["MCGILL","PEEL"],["PEEL","GUY_CONCORDIA"]],
-  "OLD MONTREAL":[["CHAMP_DE_MARS","PLACE_DARMES"]],
-  "SAINT-HENRI":[["SAINT_HENRI","PLACE_SAINT_HENRI"],["PLACE_SAINT_HENRI","VENDOME"]],
-  "VERDUN":[["DE_LEGLISE","VERDUN"]]
+  "PARC-EXTENSION":[["HOME","DUROCHER"],["DUROCHER","HUTCHISON"],["HUTCHISON","PARC"],["PARC","JEAN_TALON"],["JEAN_TALON","BEAUMONT"],["BEAUMONT","ACADIE"],["ACADIE","OGILVY"]],
+  "MILE END":[["LAURIER","SAINT_VIATEUR"],["SAINT_VIATEUR","MONT_ROYAL"],["MONT_ROYAL","SAINT_URBAIN"],["SAINT_URBAIN","ROSEMONT"]],
+  "PLATEAU":[["LAURIER","SAINT_DENIS"],["SAINT_DENIS","MONT_ROYAL"],["MONT_ROYAL","SAINT_LAURENT"],["SAINT_LAURENT","SHERBROOKE"]],
+  "ROSEMONT":[["ROSEMONT","BEAUBIEN"],["BEAUBIEN","IBERVILLE"],["IBERVILLE","JEAN_TALON"]],
+  "DOWNTOWN":[["BERRI_UQAM","SAINT_DENIS"],["SAINT_DENIS","MCGILL"],["MCGILL","PEEL"],["PEEL","GUY_CONCORDIA"]],
+  "OLD MONTREAL":[["CHAMP_DE_MARS","PLACE_DARMES"],["PLACE_DARMES","OLD_PORT"]],
+  "SAINT-HENRI":[["SAINT_HENRI","PLACE_SAINT_HENRI"],["PLACE_SAINT_HENRI","NOTRE_DAME"],["NOTRE_DAME","VENDOME"]],
+  "VERDUN":[["DE_LEGLISE","WELLINGTON"],["WELLINGTON","VERDUN"]]
 };
-const streetGraph=(neighbourhood)=>{const d=String(neighbourhood||"").toUpperCase(),nodes=WORLD_STREETS[d]||[],edges=STREET_EDGES[d]||[];return {neighbourhood:d,nodes,edges};};
-const streetPath=(neighbourhood,fromId,toId)=>{const g=streetGraph(neighbourhood),adj={};g.nodes.forEach(n=>adj[n.id]=[]);g.edges.forEach(e=>{const a=e[0],b=e[1];if(adj[a]&&adj[b]){adj[a].push(b);adj[b].push(a)}});if(!adj[fromId]||!adj[toId])return null;const q=[[fromId]],seen=new Set([fromId]);while(q.length){const path=q.shift(),cur=path[path.length-1];if(cur===toId)return path;for(const next of adj[cur])if(!seen.has(next)){seen.add(next);q.push(path.concat(next))}}return null};
-const movePlayer=(dx,dy,opts={})=>{const s=read(),d=String(s.neighbourhood||"PARC-EXTENSION").toUpperCase();const ox=Number(s.position?.x??2),oy=Number(s.position?.y??7),nx=ox+Number(dx||0),ny=oy+Number(dy||0);if(!Number.isFinite(nx)||!Number.isFinite(ny))return {ok:false,reason:"INVALID_POSITION"};const mode=String(opts.mode||s.transport||"FOOT").toUpperCase();const fromNode=nearestStreetNode(d,{x:ox,y:oy}),toNode=nearestStreetNode(d,{x:nx,y:ny});const graphPath=fromNode&&toNode?streetPath(d,fromNode.id,toNode.id):null;const nodeChanged=!!(fromNode&&toNode&&fromNode.id!==toNode.id);const edgeConnected=!nodeChanged||!!(graphPath&&graphPath.length>=2);s.position={x:nx,y:ny};s.transport=mode;s.transport_history=(s.transport_history||[]).concat([{mode,from:{x:ox,y:oy},to:{x:nx,y:ny},from_node:fromNode?.id||null,to_node:toNode?.id||null,graph_path:graphPath||[],edge_connected:edgeConnected,day:s.day,hour:s.hour}]).slice(-200);if(mode==="RUN")s.energy=clamp(s.energy-1);if(mode==="PARKOUR")s.energy=clamp(s.energy-2);if(["SKATEBOARD","ROLLERBLADES","BIKE"].includes(mode))s.energy=clamp(s.energy-1);save(s);try{window.dispatchEvent(new CustomEvent("escie:world-movement",{detail:{mode,from:{x:ox,y:oy},to:{x:nx,y:ny},neighbourhood:d,from_node:fromNode?.id||null,to_node:toNode?.id||null,graph_path:graphPath||[],edge_connected:edgeConnected}}))}catch(e){}return {ok:true,from:{x:ox,y:oy},to:{x:nx,y:ny},mode,from_node:fromNode?.id||null,to_node:toNode?.id||null,graph_path:graphPath||[],edge_connected:edgeConnected,state:read()}};
-const CITY_DISTRICTS={
-  "PARC-EXTENSION":{label:"Parc-Extension",spawn:{x:2,y:7},access:"PUBLIC",activation:["START","TRANSIT"]},
-  "MILE END":{label:"Mile End",spawn:{x:8,y:6},access:"PUBLIC",activation:["TRANSIT","SOCIAL","MUSIC"]},
-  "PLATEAU":{label:"Plateau",spawn:{x:8,y:6},access:"PUBLIC",activation:["TRANSIT","SOCIAL","SHOPS"]},
-  "ROSEMONT":{label:"Rosemont",spawn:{x:8,y:6},access:"PUBLIC",activation:["TRANSIT","HEALTH","SHOPS"]},
-  "DOWNTOWN":{label:"Downtown",spawn:{x:8,y:6},access:"PUBLIC",activation:["TRANSIT","WORK","ENTERTAINMENT"]},
-  "OLD MONTREAL":{label:"Old Montréal",spawn:{x:8,y:6},access:"PUBLIC",activation:["TRANSIT","HISTORY","ENTERTAINMENT"]},
-  "SAINT-HENRI":{label:"Saint-Henri",spawn:{x:8,y:6},access:"PUBLIC",activation:["TRANSIT","WORK","SOCIAL"]},
-  "VERDUN":{label:"Verdun",spawn:{x:8,y:6},access:"PUBLIC",activation:["TRANSIT","SOCIAL","SHOPS"]}
+const streetGraph=(neighbourhood)=>{
+  const d=String(neighbourhood||"").toUpperCase();
+  return {neighbourhood:d,nodes:WORLD_STREETS[d]||[],edges:STREET_EDGES[d]||[]};
 };
-const district=(id)=>CITY_DISTRICTS[String(id||"").toUpperCase()]||null;
-const activateDistrict=(id,reason="GAMEPLAY")=>{const s=read(),d=district(id);if(!d)return false;s.access=Array.isArray(s.access)?s.access:[];if(!s.access.includes(String(id).toUpperCase()))s.access.push(String(id).toUpperCase());s.access_history=(s.access_history||[]).concat([{district:String(id).toUpperCase(),reason,day:s.day,hour:s.hour}]).slice(-100);s.neighbourhood=String(id).toUpperCase();save(s);return true};
+const streetPath=(neighbourhood,fromId,toId)=>{
+  const g=streetGraph(neighbourhood),adj={};g.nodes.forEach(n=>adj[n.id]=[]);
+  g.edges.forEach(e=>{const a=e[0],b=e[1];if(adj[a]&&adj[b]){adj[a].push(b);adj[b].push(a)}});
+  if(!adj[fromId]||!adj[toId])return null;
+  const q=[[fromId]],seen=new Set([fromId]);
+  while(q.length){const path=q.shift(),cur=path[path.length-1];if(cur===toId)return path;
+    for(const next of adj[cur])if(!seen.has(next)){seen.add(next);q.push(path.concat(next))}}
+  return null;
+};
 const CITY_BACKBONE={
   "PARC-EXTENSION":["PARC","ACADIE"],
   "MILE END":["LAURIER","MONT_ROYAL"],
