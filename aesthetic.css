@@ -222,3 +222,23 @@ main > .site-section:not(#entry) .section-drop-panel .content-container{
     transition:none;
   }
 }
+
+/* =========================================================
+   WORLD / GEOGRAPHIC RECORD
+   Places are quiet records, not a second homepage.
+   ========================================================= */
+
+.world-index{max-width:980px}
+.world-index-intro{max-width:680px;margin:18px 0 28px;color:var(--muted);font-size:11px;line-height:1.8}
+.world-place-list{border-top:1px solid rgba(216,212,202,.12)}
+.world-place{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:18px;align-items:center;padding:18px 0;border-bottom:1px solid rgba(216,212,202,.1)}
+.world-place-index{font:700 10px/1 var(--escie-font-mono);letter-spacing:.16em;color:var(--escie-aesthetic-purple)}
+.world-place-copy h3{margin:0;font:400 clamp(15px,2vw,21px)/1.2 var(--escie-font-display);letter-spacing:.08em}
+.world-place-copy p{margin:7px 0 0;color:var(--faint);font-size:10px;line-height:1.7}
+.world-place-state{font:700 8px/1 var(--escie-font-mono);letter-spacing:.18em;color:var(--faint)}
+.world-place:hover{background:linear-gradient(90deg,rgba(155,89,255,.035),transparent 70%)}
+@media(max-width:700px){
+  .world-place{grid-template-columns:32px minmax(0,1fr);gap:12px;padding:15px 0}
+  .world-place-state{grid-column:2}
+  .world-place-copy p{font-size:9px}
+}
