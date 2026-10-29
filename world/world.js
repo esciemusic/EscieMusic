@@ -222,34 +222,48 @@ syncMainSitePlayerProfile();
 p.name=(el.querySelector("#world-player-name").value||"PLAYER").trim().slice(0,24)||"PLAYER";p.updated_at=new Date().toISOString();localStorage.setItem(PROFILE_KEY,JSON.stringify(p));el.hidden=true;say?.("PROFILE SAVED.");saveWorldState?.()}}const p=ensureProfile();el.querySelector("[data-profile-id]").textContent="PLAYER ID · "+p.id;el.querySelector("#world-player-name").value=p.name||"PLAYER";el.hidden=false;el.querySelector("#world-player-name")?.focus()}
 document.querySelector("[data-profile]")?.addEventListener("click",profileMenu);
 ensureProfile();
-const SAVE_KEY="escie_world_save_v1",SAVE_VERSION=2;
+const SAVE_KEY="escie_world_save_v1",SAVE_VERSION=2,SAVE_SLOT_COUNT=3,ACTIVE_SLOT_KEY="escie_world_active_slot_v1",SAVE_SLOT_PREFIX="escie_world_save_slot_v1_";
+function activeSaveSlot(){try{const n=Number(localStorage.getItem(ACTIVE_SLOT_KEY)||1);return Number.isInteger(n)&&n>=1&&n<=SAVE_SLOT_COUNT?n:1}catch(e){return 1}}
+function saveSlotKey(slot=activeSaveSlot()){const n=Number(slot);return SAVE_SLOT_PREFIX+(Number.isInteger(n)&&n>=1&&n<=SAVE_SLOT_COUNT?n:1)}
+function saveSlotStores(){const keys=["escie_world_simulation_v1","escie_world_npc_v1","escie_world_npc_life_v1","escie_world_equipment_v1","escie_world_vehicles_v1","escie_world_law_v1"];const stores={};for(const k of keys){try{const raw=localStorage.getItem(k);if(raw!==null)stores[k]=JSON.parse(raw)}catch(e){}}return stores}
+function restoreSaveStores(stores){const keys=["escie_world_simulation_v1","escie_world_npc_v1","escie_world_npc_life_v1","escie_world_equipment_v1","escie_world_vehicles_v1","escie_world_law_v1"];for(const k of keys){try{if(stores&&Object.prototype.hasOwnProperty.call(stores,k))localStorage.setItem(k,JSON.stringify(stores[k]));else localStorage.removeItem(k)}catch(e){}}}
+function clearRuntimeStores(){[KEY,"escie_world_simulation_v1","escie_world_npc_v1","escie_world_npc_life_v1","escie_world_equipment_v1","escie_world_vehicles_v1","escie_world_law_v1"].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}})}
+function migrateLegacySave(){try{if(localStorage.getItem(saveSlotKey()))return;const raw=localStorage.getItem(SAVE_KEY);if(!raw)return;localStorage.setItem(saveSlotKey(1),raw);localStorage.setItem(ACTIVE_SLOT_KEY,"1")}catch(e){}}
 function saveIndicator(msg="GAME SAVED"){let el=document.getElementById("world-save-indicator");if(!el){el=document.createElement("div");el.id="world-save-indicator";el.className="world-save-indicator";document.body.appendChild(el)}el.textContent=msg;el.classList.add("visible");clearTimeout(window.__saveTimer);window.__saveTimer=setTimeout(()=>el.classList.remove("visible"),1400)}
 function saveWorldState(){try{
+  migrateLegacySave();
   const current=state();
   current.world_room=room;
   current.world_position={x:Number(pos.x)||0,y:Number(pos.y)||0};
   current.input_mode=controlScheme();
   save(current);
   const sim=window.ESCIE_WORLD_SIMULATION?.state?.();
-  const snapshot={version:SAVE_VERSION,saved_at:new Date().toISOString(),world_state:current,simulation_state:sim&&typeof sim==="object"?sim:null,input_mode:controlScheme()};
-  localStorage.setItem(SAVE_KEY,JSON.stringify(snapshot));
-  saveIndicator();
+  const snapshot={version:SAVE_VERSION,saved_at:new Date().toISOString(),slot:activeSaveSlot(),world_state:current,simulation_state:sim&&typeof sim==="object"?sim:null,input_mode:controlScheme(),stores:saveSlotStores()};
+  localStorage.setItem(saveSlotKey(),JSON.stringify(snapshot));
+  localStorage.setItem(ACTIVE_SLOT_KEY,String(activeSaveSlot()));
+  saveIndicator("SLOT "+activeSaveSlot()+" SAVED");
 }catch(e){saveIndicator("SAVE FAILED")}}
-function loadWorldSave(){try{
-  const raw=localStorage.getItem(SAVE_KEY);if(!raw)return;
+function loadWorldSave(slot=activeSaveSlot()){try{
+  migrateLegacySave();
+  const raw=localStorage.getItem(saveSlotKey(slot));if(!raw)return false;
   const parsed=JSON.parse(raw);
   const snapshot=parsed&&typeof parsed==="object"&&!Array.isArray(parsed)&&parsed.world_state?parsed:{version:1,world_state:parsed};
   const saved=snapshot.world_state;
-  if(!saved||typeof saved!=="object"||Array.isArray(saved))return;
+  if(!saved||typeof saved!=="object"||Array.isArray(saved))return false;
+  clearRuntimeStores();
   localStorage.setItem(KEY,JSON.stringify(saved));
-  if(snapshot.simulation_state&&typeof snapshot.simulation_state==="object"&&!Array.isArray(snapshot.simulation_state))localStorage.setItem("escie_world_simulation_v1",JSON.stringify(snapshot.simulation_state));
+  if(snapshot.stores&&typeof snapshot.stores==="object"&&!Array.isArray(snapshot.stores))restoreSaveStores(snapshot.stores);
+  else if(snapshot.simulation_state&&typeof snapshot.simulation_state==="object"&&!Array.isArray(snapshot.simulation_state))localStorage.setItem("escie_world_simulation_v1",JSON.stringify(snapshot.simulation_state));
   if(["AUTO","KEYBOARD","TOUCH","GAMEPAD"].includes(String(snapshot.input_mode||saved.input_mode||"").toUpperCase()))setControlScheme(String(snapshot.input_mode||saved.input_mode).toUpperCase());
-}catch(e){}}
+  localStorage.setItem(ACTIVE_SLOT_KEY,String(slot));
+  return true;
+}catch(e){return false}}
+function switchSaveSlot(slot){const n=Number(slot);if(!Number.isInteger(n)||n<1||n>SAVE_SLOT_COUNT)return false;if(n===activeSaveSlot())return true;try{saveWorldState();localStorage.setItem(ACTIVE_SLOT_KEY,String(n));clearRuntimeStores();loadWorldSave(n);location.reload();return true}catch(e){return false}}
 const RESET_FLAG="escie_world_reset_pending_v1";
 function resetLocalGame(){
   try{
     localStorage.setItem(RESET_FLAG,"1");
-    [KEY,SAVE_KEY,"escie_world_simulation_v1","escie_world_npc_v1","escie_world_npc_life_v1","escie_world_equipment_v1","escie_world_vehicles_v1","escie_world_law_v1"].forEach(k=>localStorage.removeItem(k));
+    [KEY,SAVE_KEY,saveSlotKey(),"escie_world_simulation_v1","escie_world_npc_v1","escie_world_npc_life_v1","escie_world_equipment_v1","escie_world_vehicles_v1","escie_world_law_v1"].forEach(k=>localStorage.removeItem(k));
     sessionStorage.removeItem("escie_handheld_mode");
     sessionStorage.removeItem("escie_device_mode");
   }catch(e){}
@@ -260,9 +274,10 @@ function clearResetFlag(){try{localStorage.removeItem(RESET_FLAG)}catch(e){}}
 document.addEventListener("visibilitychange",()=>{if(document.hidden&&!resetPending())saveWorldState()});
 window.addEventListener("pagehide",()=>{if(!resetPending())saveWorldState()});
 document.querySelector("[data-save]")?.addEventListener("click",saveWorldState);
-loadWorldSave();
+migrateLegacySave();
+loadWorldSave(activeSaveSlot());
 clearResetFlag();
-function systemMenu(){let el=document.getElementById("world-system");if(!el){el=document.createElement("section");el.id="world-system";el.className="world-system";el.hidden=true;el.innerHTML='<div class="system-panel" role="dialog" aria-modal="true" aria-label="World system"><div class="system-head"><div><span class="world-kicker">ESCIE / THE WORLD</span><h2>SYSTEM</h2></div><button class="system-close" data-system-close>CLOSE</button></div><div class="system-grid"><div class="system-card"><strong>STATE</strong><span>LOCAL PLAYER STATE ACTIVE</span></div><div class="system-card"><strong>CANON</strong><span>GAME CANNOT WRITE CANONICAL TRUTH</span></div><div class="system-card"><strong>INPUT</strong><span data-system-input>DETECTING…</span></div><div class="system-card"><strong>DISPLAY</strong><span data-system-display>DETECTING…</span></div><div class="system-card"><strong>SIGNAL</strong><span data-system-signal>0</span></div><div class="system-card"><strong>DISCOVERIES</strong><span data-system-discoveries>0</span></div></div><div class="system-actions"><button data-system-prefs>PREFERENCES</button><button data-system-pause>PAUSE MENU</button><button data-system-reset>RESET LOCAL GAME</button></div></div>';document.body.appendChild(el);el.querySelector("[data-system-close]").onclick=()=>el.hidden=true;el.querySelector("[data-system-prefs]").onclick=()=>{el.hidden=true;preferences()};el.querySelector("[data-system-pause]").onclick=()=>{el.hidden=true;pauseMenu()};el.querySelector("[data-system-reset]").onclick=()=>{if(confirm("Reset local THE WORLD progress? This clears gameplay, simulation, NPC, equipment, vehicle and law state. Profile and preferences remain.")){resetLocalGame()}}}const s=JSON.parse(localStorage.getItem("escie_game_state_v1")||"{}");el.querySelector("[data-system-input]").textContent=(prefs().controls||"AUTO").toUpperCase();el.querySelector("[data-system-display]").textContent=(prefs().display||"DEVICE").toUpperCase();el.querySelector("[data-system-signal]").textContent=String(s.signals||0);el.querySelector("[data-system-discoveries]").textContent=String((s.discoveries||[]).length);el.hidden=false;el.querySelector("[data-system-close]")?.focus()}
+function systemMenu(){let el=document.getElementById("world-system");if(!el){el=document.createElement("section");el.id="world-system";el.className="world-system";el.hidden=true;el.innerHTML='<div class="system-panel" role="dialog" aria-modal="true" aria-label="World system"><div class="system-head"><div><span class="world-kicker">ESCIE / THE WORLD</span><h2>SYSTEM</h2></div><button class="system-close" data-system-close>CLOSE</button></div><div class="system-grid"><div class="system-card"><strong>STATE</strong><span>LOCAL PLAYER STATE ACTIVE</span></div><div class="system-card"><strong>CANON</strong><span>GAME CANNOT WRITE CANONICAL TRUTH</span></div><div class="system-card"><strong>INPUT</strong><span data-system-input>DETECTING…</span></div><div class="system-card"><strong>DISPLAY</strong><span data-system-display>DETECTING…</span></div><div class="system-card"><strong>SAVE SLOT</strong><span data-system-slot>SLOT 1</span></div><div class="system-card"><strong>SIGNAL</strong><span data-system-signal>0</span></div><div class="system-card"><strong>DISCOVERIES</strong><span data-system-discoveries>0</span></div></div><div class="system-actions"><button data-system-prefs>PREFERENCES</button><button data-system-pause>PAUSE MENU</button><button data-system-slot-1>SLOT 1</button><button data-system-slot-2>SLOT 2</button><button data-system-slot-3>SLOT 3</button><button data-system-reset>RESET ACTIVE SLOT</button></div></div>';document.body.appendChild(el);el.querySelector("[data-system-close]").onclick=()=>el.hidden=true;el.querySelector("[data-system-prefs]").onclick=()=>{el.hidden=true;preferences()};el.querySelector("[data-system-pause]").onclick=()=>{el.hidden=true;pauseMenu()};[1,2,3].forEach(n=>{el.querySelector("[data-system-slot-"+n+"]").onclick=()=>{if(n===activeSaveSlot()){say("SAVE SLOT "+n+" · ACTIVE");return}if(confirm("Switch to SAVE SLOT "+n+"? Current progress will be saved to SLOT "+activeSaveSlot()+".")){el.hidden=true;switchSaveSlot(n)}}});el.querySelector("[data-system-reset]").onclick=()=>{if(confirm("Reset the ACTIVE save slot? This clears gameplay, simulation, NPC, equipment, vehicle and law state for SLOT "+activeSaveSlot()+". Other save slots, profile and preferences remain.")){resetLocalGame()}}}const s=JSON.parse(localStorage.getItem("escie_game_state_v1")||"{}");el.querySelector("[data-system-input]").textContent=(prefs().controls||"AUTO").toUpperCase();el.querySelector("[data-system-display]").textContent=(prefs().display||"DEVICE").toUpperCase();el.querySelector("[data-system-slot]").textContent="SLOT "+activeSaveSlot();el.querySelector("[data-system-signal]").textContent=String(s.signals||0);el.querySelector("[data-system-discoveries]").textContent=String((s.discoveries||[]).length);el.hidden=false;el.querySelector("[data-system-close]")?.focus()}
 document.querySelector("[data-system]")?.addEventListener("click",systemMenu);
 function pauseMenu(){let el=document.getElementById("world-pause");if(!el){el=document.createElement("section");el.id="world-pause";el.className="world-pause";el.hidden=true;el.innerHTML='<div class="pause-panel" role="dialog" aria-modal="true" aria-label="Pause menu"><span class="world-kicker">ESCIE / THE WORLD</span><h2>PAUSED</h2><div class="pause-status">GAME STATE IS LOCAL · CANON REMAINS UNCHANGED</div><div class="pause-actions"><button data-resume>RESUME</button><button data-open-prefs>SETTINGS</button><button data-open-inventory>INVENTORY</button><button data-open-glass>GLASS EYE</button><button data-exit-world>EXIT TO ESCIE</button></div></div>';document.body.appendChild(el);el.querySelector("[data-resume]").onclick=()=>el.hidden=true;el.querySelector("[data-open-prefs]").onclick=()=>{el.hidden=true;preferences()};el.querySelector("[data-open-inventory]").onclick=()=>{el.hidden=true;inventory?.()};el.querySelector("[data-open-glass]").onclick=()=>{el.hidden=true;glass?.()};el.querySelector("[data-exit-world]").onclick=()=>location.href="../"}el.hidden=false;el.querySelector("[data-resume]")?.focus()}
 document.querySelector("[data-pause]")?.addEventListener("click",pauseMenu);
