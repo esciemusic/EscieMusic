@@ -206,7 +206,21 @@ function render(){
  renderer.render(scene,camera);raf=requestAnimationFrame(render);
 }
 function stop(){paused=false;if(raf)cancelAnimationFrame(raf);raf=0;document.exitPointerLock?.();if(resizeObserver){resizeObserver.disconnect();resizeObserver=null;}window.removeEventListener("resize",resize);if(visibilityHandler)document.removeEventListener("visibilitychange",visibilityHandler);started=false;}
-function togglePause(force){\n const next=typeof force==="boolean"?force:!paused;\n paused=next;\n document.body.classList.toggle("is-world-paused",paused);\n const map=document.getElementById("world-map");\n if(map)map.setAttribute("aria-hidden",paused?"false":"true");\n const panel=document.getElementById("world-pause");\n if(panel)panel.hidden=!paused;\n if(paused){if(raf)cancelAnimationFrame(raf);raf=0;document.exitPointerLock?.();}\n else if(started&&!raf){clock.start();render();}\n const log=document.getElementById("world-log");\n if(log)log.textContent=paused?"PAUSED · MAP / SYSTEM":"3D REALITY · "+(thirdPerson?"THIRD PERSON":"FIRST PERSON");\n return paused;\n}\nfunction setMode(v){
+function togglePause(force){
+ const next=typeof force==="boolean"?force:!paused;
+ paused=next;
+ document.body.classList.toggle("is-world-paused",paused);
+ const map=document.getElementById("world-map");
+ if(map)map.setAttribute("aria-hidden",paused?"false":"true");
+ const panel=document.getElementById("world-pause");
+ if(panel)panel.hidden=!paused;
+ if(paused){if(raf)cancelAnimationFrame(raf);raf=0;document.exitPointerLock?.();}
+ else if(started&&!raf){clock.start();render();}
+ const log=document.getElementById("world-log");
+ if(log)log.textContent=paused?"PAUSED · MAP / SYSTEM":"3D REALITY · "+(thirdPerson?"THIRD PERSON":"FIRST PERSON");
+ return paused;
+}
+function setMode(v){
  thirdPerson=!!v;avatar.visible=thirdPerson;
  const log=document.getElementById("world-log");if(log)log.textContent=thirdPerson?"3D REALITY · THIRD PERSON":"3D REALITY · FIRST PERSON";
 }
@@ -214,7 +228,8 @@ function bind(){
  document.addEventListener("click",e=>{const control=e.target.closest("[data-control-action]");if(control){const type=control.dataset.controlAction;if(type==="SPRINT"){move._touchSprint=true;setTimeout(()=>move._touchSprint=false,500)}else if(type==="OPEN")interact();else if(type==="FIGHT"){fight3D()||root.ESCIE_WORLD_ACTIONS?.performControlAction?.(type)}else if(type==="STEAL")root.ESCIE_WORLD_ACTIONS?.performControlAction?.(type);}});
  document.addEventListener("click",e=>{
    const b=e.target.closest("[data-3d-camera]");if(b){setMode(!thirdPerson);b.textContent=thirdPerson?"FIRST PERSON":"THIRD PERSON";}
-   const p=e.target.closest("[data-pause]");if(p)togglePause();\n   const r=e.target.closest("[data-world-resume]");if(r)togglePause(false);
+   const p=e.target.closest("[data-pause]");if(p)togglePause();
+   const r=e.target.closest("[data-world-resume]");if(r)togglePause(false);
  });
  document.querySelectorAll("[data-dir]").forEach(b=>{
    const map={up:"w",down:"s",left:"a",right:"d"};const k=map[b.dataset.dir];
