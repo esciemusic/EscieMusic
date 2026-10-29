@@ -42,7 +42,15 @@
 <p>You are not entering another universe. You are entering another layer of the same one.</p>
 </section>
 <section class="world-game" aria-label="ESCIE World game">
-<div class="world-hud"><span id="world-location">PARC-EXTENSION</span><span id="world-coordinates">03 · 03</span><span id="world-signal">0 SIGNAL</span></div>
+<div class="world-hud" aria-label="RPG status">
+<div class="world-hud-location"><span id="world-location">PARC-EXTENSION</span><span id="world-coordinates">03 · 03</span></div>
+<div class="world-hud-bars">
+<div class="world-stat"><span>HP</span><div class="world-meter"><i id="world-hp-bar"></i></div><b id="world-hp">100</b></div>
+<div class="world-stat"><span>EN</span><div class="world-meter"><i id="world-energy-bar"></i></div><b id="world-energy">100</b></div>
+<div class="world-stat world-xp-stat"><span>XP</span><div class="world-meter"><i id="world-xp-bar"></i></div><b id="world-xp">LV 1 · 0</b></div>
+</div>
+<div class="world-hud-economy"><span id="world-money">$0</span><span id="world-signal">0 SIGNAL</span><span id="world-wanted">WANTED 0</span></div>
+</div>
 <div id="world-stage" class="world-stage" tabindex="0" aria-label="Playable Montréal laneway">
 <div id="world-map" class="world-map"></div>
 <div id="world-player" class="world-player" aria-label="Player"></div>
