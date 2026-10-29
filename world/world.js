@@ -261,10 +261,16 @@ function saveWorldState(){let previousSlotRaw=null;try{
 function createFreshSnapshot(slot){const n=Number(slot);const simulation=defaultStoreBundle(null)["escie_world_simulation_v1"];simulation.position={x:start.x,y:start.y};return {version:SAVE_VERSION,saved_at:new Date().toISOString(),slot:n,world_state:{version:1,session_id:"local-world",player_id:window.ESCIE_GAME_PROFILE?.id||null,episode_id:"the-world",world_room:"lane",world_position:{x:start.x,y:start.y},inventory:[],discoveries:[],world_unlocks:[],signals:0,entered:false,entry_source:"new-game",unresolved:[],unknown:[],completed_quests:[],input_mode:"AUTO",created_at:new Date().toISOString()},simulation_state:simulation,input_mode:"AUTO",stores:defaultStoreBundle(simulation)}}
 function initializeEmptySave(slot=activeSaveSlot()){try{
   const n=Number(slot);if(!Number.isInteger(n)||n<1||n>SAVE_SLOT_COUNT)return false;
-  if(n===activeSaveSlot())clearRuntimeStores();
   const fresh=createFreshSnapshot(n);
+  const invalid=validateSaveSnapshot(fresh,n);if(invalid)return false;
   localStorage.setItem(saveSlotKey(n),JSON.stringify(fresh));
-  if(n===activeSaveSlot()){localStorage.setItem(KEY,JSON.stringify(fresh.world_state));localStorage.setItem(ACTIVE_SLOT_KEY,String(n));saveWorldState();}
+  if(n===activeSaveSlot()){
+    clearRuntimeStores();
+    localStorage.setItem(KEY,JSON.stringify(fresh.world_state));
+    if(!restoreSaveStores(fresh.stores))throw new Error("FRESH_STORE_RESTORE_FAILED");
+    localStorage.setItem(ACTIVE_SLOT_KEY,String(n));
+    if(!saveWorldState())throw new Error("FRESH_SAVE_FAILED");
+  }
   saveIndicator("SLOT "+n+" · NEW GAME");
   return true;
 }catch(e){return false}}
@@ -294,7 +300,9 @@ const RESET_FLAG="escie_world_reset_pending_v1";
 function resetLocalGame(){
   try{
     localStorage.setItem(RESET_FLAG,"1");
-    [KEY,SAVE_KEY,saveSlotKey(),"escie_world_simulation_v1","escie_world_npc_v1","escie_world_npc_life_v1","escie_world_equipment_v1","escie_world_vehicles_v1","escie_world_law_v1"].forEach(k=>localStorage.removeItem(k));
+    const active=activeSaveSlot();
+    [KEY,SAVE_KEY,saveSlotKey(active),"escie_world_simulation_v1","escie_world_npc_v1","escie_world_npc_life_v1","escie_world_equipment_v1","escie_world_vehicles_v1","escie_world_law_v1"].forEach(k=>localStorage.removeItem(k));
+    for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k&&k.startsWith("escie_world_quarantine_v1_"+active+"_"))localStorage.removeItem(k)}
     sessionStorage.removeItem("escie_handheld_mode");
     sessionStorage.removeItem("escie_device_mode");
   }catch(e){}
