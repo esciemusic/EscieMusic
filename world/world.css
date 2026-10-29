@@ -263,3 +263,28 @@ body.escie-world-page,.world-device,.world-device .world-shell{background:#05070
 \n/* MULTILINGUAL WORLD UI */\n.world-language-control{display:inline-flex;align-items:center;gap:.45rem;margin:.35rem 0;font:600 .55rem monospace;letter-spacing:.08em}.world-language-control select{border:1px solid var(--world-line);background:#05070a;color:var(--escie-paper);padding:.35rem .5rem;font:inherit}\n
 /* Secondary autobiographical blue accent */
 :root{--world-blue:#2f80ff;--world-blue-soft:rgba(47,128,255,.18);}
+
+/* SEMANTIC ENTITY COLORS — THE WORLD */
+:root{
+  --world-entity-player:var(--escie-blue);
+  --world-entity-player-bright:var(--escie-blue-bright);
+  --world-entity-npc:var(--escie-paper);
+  --world-entity-building:var(--escie-concrete);
+  --world-entity-surveillance:var(--escie-cold-grey);
+  --world-entity-investigation:var(--escie-blue);
+  --world-entity-signal:var(--escie-purple);
+  --world-entity-danger:var(--escie-red);
+  --world-entity-warning:var(--escie-amber);
+  --world-entity-vehicle:var(--escie-cold-grey);
+  --world-entity-owned:var(--escie-blue);
+}
+.world-player{background:var(--world-entity-player);box-shadow:0 0 16px rgba(47,128,255,.35)}
+.world-object{color:var(--world-entity-npc);text-shadow:0 0 8px rgba(240,237,228,.18)}
+.world-object[data-entity="camera"]{color:var(--world-entity-surveillance)}
+.world-object[data-entity="signal"]{color:var(--world-entity-signal)}
+.world-object[data-entity="danger"]{color:var(--world-entity-danger)}
+.world-interact{color:var(--world-entity-player-bright);border-color:var(--world-line)}
+.world-action-cluster [data-control-action="FIGHT"]{color:var(--world-entity-danger)}
+.world-action-cluster [data-control-action="STEAL"]{color:var(--world-entity-warning)}
+.dream-touch-controls button{border-color:var(--world-entity-signal);color:var(--world-entity-signal)}
+.dream-touch-controls button:active,.dream-touch-controls .dream-hide.active{background:var(--world-entity-signal);color:var(--escie-void)}
