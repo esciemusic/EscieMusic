@@ -589,6 +589,31 @@
     );
   }
 
+  function renderWorld(){
+    const container=byId("world-container"); if(!container)return;
+    const locations=normalizeCollection(getLocations()).filter(isPublic);
+    if(!locations.length){
+      renderEmpty(container,"THE WORLD IS BEING RECORDED. PLACES WILL APPEAR WHEN THEY ENTER THE PUBLIC RECORD.");
+      return;
+    }
+    const ordered=locations.slice().sort((a,b)=>{
+      if(a.id==="montreal") return -1;
+      if(b.id==="montreal") return 1;
+      if(a.id==="parc-extension") return -1;
+      if(b.id==="parc-extension") return 1;
+      return recordTitle(a).localeCompare(recordTitle(b));
+    });
+    container.innerHTML='<div class="world-index">'+motifMarkup("world")+
+      '<p class="eyebrow">GEOGRAPHIC RECORD / '+escapeHTML(String(ordered.length))+' PUBLIC PLACES</p>'+
+      '<p class="world-index-intro">MONTRÉAL IS THE ANCHOR. THE OTHER PLACES ARE REFERENCES WITHIN THE SAME PHYSICAL CITY, NOT SEPARATE WORLDS.</p>'+
+      '<div class="world-place-list">'+ordered.map((place,index)=>
+        '<article class="world-place" data-record-id="'+escapeHTML(recordId(place))+'">'+
+          '<span class="world-place-index">'+String(index+1).padStart(2,"0")+'</span>'+
+          '<div class="world-place-copy"><h3>'+escapeHTML(recordTitle(place))+'</h3><p>'+escapeHTML(place.description||"PUBLIC GEOGRAPHIC REFERENCE.")+'</p></div>'+
+          '<span class="world-place-state">'+escapeHTML(String(place.status||"active").toUpperCase())+'</span>'+
+        '</article>').join("")+'</div></div>';
+  }
+
   function renderWeb(){
     const container=byId("web-container"); if(!container)return;
     const registry=getGlobal("ESCIE_RECORD_REGISTRY",null);
@@ -1125,7 +1150,8 @@ function renderClothing(){
       if(!control)return;
       ESCIE_RUNTIME.webFilters=ESCIE_RUNTIME.webFilters||{};
       ESCIE_RUNTIME.webFilters[control.getAttribute("data-web-filter")]=control.value||"";
-      renderWeb();
+      renderWorld();
+    renderWeb();
     });
 
     document.addEventListener("click", event => {
