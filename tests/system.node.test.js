@@ -371,9 +371,9 @@ assert(worldRuntime.includes("const stores=saveSlotStores()"),"world save snapsh
 assert(worldRuntime.includes("function switchSaveSlot"),"world runtime must support save-slot switching");
 assert(worldRuntime.includes("RESET ACTIVE SLOT"),"world system UI must expose active-slot reset semantics");
 assert(worldRuntime.includes("Other save slots, profile and preferences remain."),"active-slot reset must preserve other slots, profile and preferences");
-assert(worldRuntime.includes('data-slot-load="1"'),"world system UI must expose slot one load control");
-assert(worldRuntime.includes('data-slot-load="2"'),"world system UI must expose slot two load control");
-assert(worldRuntime.includes('data-slot-load="3"'),"world system UI must expose slot three load control");
+assert(worldRuntime.includes('data-slot-load="'+n+'"'),"world system UI must expose slot one load control");
+assert(worldRuntime.includes('data-slot-load="'+n+'"'),"world system UI must expose slot two load control");
+assert(worldRuntime.includes('data-slot-load="'+n+'"'),"world system UI must expose slot three load control");
 assert(worldRuntime.includes("function quarantineSave"),"world save system must quarantine corrupted slots");
 assert(worldRuntime.includes("function validateSaveSnapshot"),"world save system must validate save snapshots before restore");
 assert(worldRuntime.includes("function initializeEmptySave"),"world save system must initialize missing slots as new games");
