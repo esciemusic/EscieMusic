@@ -46,12 +46,12 @@ function awardRPGXP(amount,reason){
  return result;
 }
 function character(){
- const s=state(),r=rpgState(s),summary=window.ESCIE_RPG?.summary?.(r)||r,board=document.getElementById("rpg-board"),panel=document.getElementById("world-rpg");
+ const s=state(),r=rpgState(s),summary=window.ESCIE_RPG?.summary?.(r)||r,gear=window.ESCIE_WORLD_EQUIPMENT?.describe?.(),board=document.getElementById("rpg-board"),panel=document.getElementById("world-rpg");
  if(!board||!panel)return summary;
  const attrs=Object.entries(summary.attributes||{}).map(([k,v])=>"<div><span>"+esc(k)+"</span><strong>"+Number(v||0)+"</strong></div>").join("");
  const skills=Object.entries(summary.skills||{}).map(([k,v])=>"<div><span>"+esc(k)+"</span><strong>"+Number(v||0)+"</strong></div>").join("");
  const next=summary.next_xp==null?"MAX":summary.next_xp;
- board.innerHTML="<article class=\"rpg-card rpg-identity\"><span class=\"world-kicker\">CHARACTER</span><h3>"+esc(summary.class_id)+" · LEVEL "+Number(summary.level||1)+"</h3><p>XP "+Number(summary.xp||0)+" / "+next+" · "+Number(summary.unspent_points||0)+" POINTS AVAILABLE</p></article><section class=\"rpg-grid\"><div><h3>ATTRIBUTES</h3>"+attrs+"</div><div><h3>SKILLS</h3>"+skills+"</div></section><section class=\"rpg-combat\"><h3>COMBAT RECORD</h3><p>KILLS "+Number(summary.combat?.kills||0)+" · KNOCKOUTS "+Number(summary.combat?.knockouts||0)+" · DAMAGE "+Number(summary.combat?.damage_dealt||0)+" / "+Number(summary.combat?.damage_taken||0)+"</p></section><p class=\"investigation-note\">Progression is game-state only. It changes what the player can do; it does not rewrite the underlying reality.</p>";
+ board.innerHTML="<article class=\"rpg-card rpg-identity\"><span class=\"world-kicker\">CHARACTER</span><h3>"+esc(summary.class_id)+" · LEVEL "+Number(summary.level||1)+"</h3><p>XP "+Number(summary.xp||0)+" / "+next+" · "+Number(summary.unspent_points||0)+" POINTS AVAILABLE</p><p>PERKS · "+esc((summary.perks||[]).join(" · ")||"NONE")+ "</p><p>EQUIPPED · HAND "+esc(gear?.equipped?.hand?.label||"FISTS")+" · BODY "+esc(gear?.equipped?.body?.label||"NONE")+"</p></article><section class=\"rpg-grid\"><div><h3>ATTRIBUTES</h3>"+attrs+"</div><div><h3>SKILLS</h3>"+skills+"</div></section><section class=\"rpg-combat\"><h3>COMBAT RECORD</h3><p>KILLS "+Number(summary.combat?.kills||0)+" · KNOCKOUTS "+Number(summary.combat?.knockouts||0)+" · DAMAGE "+Number(summary.combat?.damage_dealt||0)+" / "+Number(summary.combat?.damage_taken||0)+"</p></section><p class=\"investigation-note\">Progression is game-state only. It changes what the player can do; it does not rewrite the underlying reality.</p>";
  panel.hidden=false;return summary;
 }
 function spendRPGPoint(type,id){
