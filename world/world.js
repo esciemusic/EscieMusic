@@ -276,9 +276,11 @@ function initializeEmptySave(slot=activeSaveSlot()){let previousSlotRaw=null,pre
   previousKeyRaw=localStorage.getItem(KEY);
   if(wasActive)backup=captureRuntimeStores();
   previousActiveRaw=localStorage.getItem(ACTIVE_SLOT_KEY);
-  localStorage.setItem(saveSlotKey(n),JSON.stringify(fresh));
+  const freshSerialized=JSON.stringify(fresh);
+  localStorage.setItem(saveSlotKey(n),freshSerialized);
+  if(localStorage.getItem(saveSlotKey(n))!==freshSerialized)throw new Error("FRESH_SLOT_WRITE_FAILED");
   if(wasActive){
-    clearRuntimeStores();
+    if(!clearRuntimeStores())throw new Error("FRESH_CLEAR_FAILED");
     localStorage.setItem(KEY,JSON.stringify(fresh.world_state));
     if(!restoreSaveStores(fresh.stores))throw new Error("FRESH_STORE_RESTORE_FAILED");
     localStorage.setItem(ACTIVE_SLOT_KEY,String(n));
@@ -289,10 +291,12 @@ function initializeEmptySave(slot=activeSaveSlot()){let previousSlotRaw=null,pre
 }catch(e){
   try{
     if(previousSlotRaw===null)localStorage.removeItem(saveSlotKey(Number(slot)));else localStorage.setItem(saveSlotKey(Number(slot)),previousSlotRaw);
+    if(localStorage.getItem(saveSlotKey(Number(slot)))!==previousSlotRaw)throw new Error("NEW_GAME_SLOT_ROLLBACK_FAILED");
     if(wasActive){
       if(previousKeyRaw===null)localStorage.removeItem(KEY);else localStorage.setItem(KEY,previousKeyRaw);
       if(previousActiveRaw===null)localStorage.removeItem(ACTIVE_SLOT_KEY);else localStorage.setItem(ACTIVE_SLOT_KEY,previousActiveRaw);
-      if(backup)restoreSaveStores(backup);
+      if(localStorage.getItem(ACTIVE_SLOT_KEY)!==previousActiveRaw)throw new Error("NEW_GAME_ACTIVE_ROLLBACK_FAILED");
+      if(backup&&!restoreSaveStores(backup))throw new Error("NEW_GAME_STORE_ROLLBACK_FAILED");
     }
   }catch(_e){}
   saveIndicator("SLOT "+Number(slot)+" · NEW GAME FAILED");
