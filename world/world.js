@@ -35,7 +35,8 @@ function worldEventFeed(text){
 function worldPulse(cls,ms=700){const b=document.body;if(!b)return;b.classList.remove(cls);void b.offsetWidth;b.classList.add(cls);clearTimeout(b["__escie_"+cls]);b["__escie_"+cls]=setTimeout(()=>b.classList.remove(cls),ms)}
 function rpgState(s){
  const current=s&&typeof s==="object"?s:{};
- if(window.ESCIE_RPG&&!current.rpg)current.rpg=window.ESCIE_RPG.default();
+ if(window.ESCIE_RPG&&!current.rpg){current.rpg=window.ESCIE_RPG.default();}
+ if(window.ESCIE_RPG&&current.rpg){current.rpg=window.ESCIE_RPG.state(current.rpg);}
  if(!current.rpg&&typeof current==="object")current.rpg={version:1,class_id:"DRIFTER",level:1,xp:0,unspent_points:0,attributes:{BODY:1,MIND:1,NERVE:1,SOCIAL:1},skills:{ATHLETICS:0,PARKOUR:0,STREETWISE:0,INVESTIGATION:0,TECH:0,CHARISMA:0,COMBAT:0,STEALTH:0},perks:[],quests:{active:[],completed:[],failed:[]},rewards:[],loot:[],equipment:{head:null,body:null,hands:null,feet:null,weapon:null,accessory:null},combat:{kills:0,knockouts:0,damage_dealt:0,damage_taken:0},dialogue:{choices:0,successes:0},discoveries:0};
  return current.rpg;
 }
