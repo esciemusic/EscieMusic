@@ -229,7 +229,7 @@ function bind(){
  document.addEventListener("click",e=>{
    const b=e.target.closest("[data-3d-camera]");if(b){setMode(!thirdPerson);b.textContent=thirdPerson?"FIRST PERSON":"THIRD PERSON";}
    const p=e.target.closest("[data-pause]");if(p)togglePause();
-   const r=e.target.closest("[data-world-resume]");if(r)togglePause(false);
+   const r=e.target.closest("[data-world-resume]");if(r)togglePause(false);const s=e.target.closest("[data-save]");if(s&&paused){root.ESCIE_WORLD_ACTIONS?.save?.();}const x=e.target.closest("[data-return-pause]");if(x&&paused){window.location.href="../";}
  });
  document.querySelectorAll("[data-dir]").forEach(b=>{
    const map={up:"w",down:"s",left:"a",right:"d"};const k=map[b.dataset.dir];
