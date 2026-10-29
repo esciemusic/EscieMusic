@@ -472,3 +472,10 @@ console.log("ESCIE interior lifecycle contracts OK");
 /* ROOM TRANSITION NPC TIME-SCALE CONTRACT */
 assert(worldRuntime.includes('NPC?.tick?.(sim.day,sim.hour,sim.minute,(x,y)=>room==="lane"?isWall(x,y):false,5)'),"room transitions must pass their five-minute simulation interval into NPC life");
 console.log("ESCIE room-transition NPC time-scale contract OK");
+
+
+/* NPC RELATIONSHIP PERSISTENCE CONTRACT */
+assert(npcLifeRuntime.includes('api.relationship==="function"'),"NPC life relationship changes must route through the canonical NPC relationship writer");
+assert(npcLifeRuntime.includes("const fresh=api.state()?.npcs?.[id]||n"),"NPC life relationship changes must read back canonical NPC state");
+assert(npcLifeRuntime.includes('ls.npcs[id]=Object.assign(ls.npcs[id]||{}, {relationship:Number(fresh.relationship||next)})'),"NPC life relationship changes must persist their mirrored life state");
+console.log("ESCIE NPC relationship persistence contract OK");
