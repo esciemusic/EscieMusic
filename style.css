@@ -3138,3 +3138,120 @@ body::after{
 @media (prefers-reduced-motion:reduce){
   body::after{display:none;}
 }
+
+
+/* =========================================================
+   SECTION DROPDOWNS — readable layers, not a wall of content
+   ========================================================= */
+
+main > section:not(#entry){
+  scroll-margin-top:18px;
+}
+
+.section-drop-trigger{
+  appearance:none;
+  -webkit-appearance:none;
+  width:100%;
+  display:grid;
+  grid-template-columns:42px 1fr 34px;
+  align-items:center;
+  gap:12px;
+  margin:0;
+  padding:16px 18px;
+  border:1px solid rgba(216,212,202,.12);
+  border-left:2px solid rgba(47,128,255,.42);
+  background:linear-gradient(90deg,rgba(16,17,20,.94),rgba(5,5,5,.88));
+  color:var(--escie-paper);
+  text-align:left;
+  cursor:pointer;
+  font:700 clamp(15px,2vw,20px)/1.1 monospace;
+  letter-spacing:.14em;
+  box-shadow:inset 0 1px 0 rgba(216,212,202,.035);
+  transition:border-color .22s ease,background .22s ease,box-shadow .22s ease,transform .22s ease;
+}
+.section-drop-trigger:hover,
+.section-drop-trigger:focus-visible{
+  border-color:var(--escie-blue);
+  background:linear-gradient(90deg,rgba(47,128,255,.09),rgba(5,5,5,.92));
+  box-shadow:0 0 28px rgba(47,128,255,.08),inset 0 0 20px rgba(47,128,255,.035);
+  outline:none;
+}
+.section-drop-index{
+  color:var(--escie-cold-grey);
+  font-size:.62em;
+  letter-spacing:.08em;
+}
+.section-drop-title{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.section-drop-symbol{
+  display:grid;
+  place-items:center;
+  width:30px;
+  height:30px;
+  border:1px solid rgba(216,212,202,.16);
+  color:var(--escie-blue-bright);
+  font-size:20px;
+  line-height:1;
+}
+.section-open .section-drop-trigger{
+  border-left-color:var(--escie-blue);
+  background:linear-gradient(90deg,rgba(47,128,255,.10),rgba(16,17,20,.94));
+}
+.section-open .section-drop-symbol{
+  border-color:var(--escie-blue-line);
+  box-shadow:0 0 14px rgba(47,128,255,.10);
+}
+.section-drop-panel{
+  display:grid;
+  grid-template-rows:0fr;
+  overflow:hidden;
+  opacity:0;
+  visibility:hidden;
+  transition:grid-template-rows .38s ease,opacity .24s ease,visibility .38s ease;
+}
+.section-drop-panel > *{
+  min-height:0;
+}
+.section-open .section-drop-panel{
+  grid-template-rows:1fr;
+  opacity:1;
+  visibility:visible;
+}
+.section-open .section-drop-panel > *{
+  overflow:visible;
+}
+.section-collapsed .section-drop-panel > *{
+  pointer-events:none;
+}
+.section-open .section-drop-panel > *{
+  pointer-events:auto;
+}
+.section-collapsed .section-inner,
+.section-collapsed:not(:has(.section-inner)){
+  min-height:auto;
+}
+main > section:not(#entry).section-collapsed{
+  min-height:0;
+}
+main > section:not(#entry).section-open{
+  min-height:0;
+}
+@media(max-width:700px){
+  .section-drop-trigger{
+    grid-template-columns:30px 1fr 30px;
+    padding:14px 12px;
+    gap:8px;
+    letter-spacing:.09em;
+  }
+  .section-drop-index{font-size:.55em}
+  .section-drop-title{font-size:.9em}
+  .section-drop-symbol{width:26px;height:26px;font-size:18px}
+}
+@media(prefers-reduced-motion:reduce){
+  .section-drop-panel{transition:none}
+  .section-drop-trigger{transition:none}
+}
