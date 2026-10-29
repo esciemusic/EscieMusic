@@ -96,6 +96,14 @@
         <div id="merch-container" class="content-container" aria-live="polite"></div>
       </div>
     </section>
+    <section id="world" class="site-section world-section">
+      <div class="section-inner">
+        <div class="section-visual section-visual-world" data-visual-section="world" aria-hidden="true"><span class="world-grid"></span><span class="world-pulse"></span><span class="world-node world-node-a"></span><span class="world-node world-node-b"></span><span class="world-node world-node-c"></span></div>
+        <h2>THE WORLD</h2>
+        <div id="world-container" class="content-container"></div>
+      </div>
+    </section>
+
     <section id="web" class="site-section web-section">
       <div class="section-inner">
         <div class="section-visual section-visual-web" data-visual-section="the-web" aria-hidden="true"><span class="visual-key">⌕</span><span class="visual-node n1"></span><span class="visual-node n2"></span><span class="visual-node n3"></span><span class="visual-wire w1"></span><span class="visual-wire w2"></span><span class="visual-wire w3"></span></div>
@@ -152,6 +160,50 @@
     <p>THE SIGNAL REMAINS DISTORTED.</p>
     <div id="footer-social" class="footer-social" aria-label="External signal"></div>
   </footer>
+
+  <script>
+  /* ESCIE SECTION ACCORDION — one world, one readable layer at a time */
+  (function(){
+    "use strict";
+    function initSectionAccordion(){
+      var sections=[].slice.call(document.querySelectorAll("main > section")).filter(function(section){
+        return section.id!=="entry" && section.querySelector("h2");
+      });
+      sections.forEach(function(section,index){
+        if(section.dataset.accordionReady==="1")return;
+        var heading=section.querySelector("h2"),inner=section.querySelector(".section-inner")||section;
+        var button=document.createElement("button");
+        button.type="button";button.className="section-drop-trigger";
+        button.setAttribute("aria-controls",section.id+"-panel");button.setAttribute("aria-expanded","false");
+        button.innerHTML='<span class="section-drop-index">'+String(index+1).padStart(2,"0")+'</span><span class="section-drop-title"></span><span class="section-drop-symbol" aria-hidden="true">+</span>';
+        button.querySelector(".section-drop-title").textContent=heading.textContent.trim();heading.hidden=true;
+        var panel=document.createElement("div");panel.className="section-drop-panel";panel.id=section.id+"-panel";panel.setAttribute("role","region");
+        while(heading.nextSibling)panel.appendChild(heading.nextSibling);
+        inner.appendChild(button);inner.appendChild(panel);section.dataset.accordionReady="1";section.classList.add("section-collapsed");
+        button.addEventListener("click",function(){
+          var open=section.classList.contains("section-open");
+          sections.forEach(function(other){
+            other.classList.remove("section-open");other.classList.add("section-collapsed");
+            var b=other.querySelector(".section-drop-trigger");
+            if(b){b.setAttribute("aria-expanded","false");var s=b.querySelector(".section-drop-symbol");if(s)s.textContent="+";}
+          });
+          if(!open){
+            section.classList.remove("section-collapsed");section.classList.add("section-open");
+            button.setAttribute("aria-expanded","true");button.querySelector(".section-drop-symbol").textContent="−";
+            requestAnimationFrame(function(){section.scrollIntoView({behavior:"smooth",block:"start"});});
+          }
+        });
+      });
+      document.querySelectorAll('.index-navigation a[href^="#"]').forEach(function(link){
+        link.addEventListener("click",function(){
+          var id=link.getAttribute("href").slice(1),section=document.getElementById(id);if(!section)return;
+          var button=section.querySelector(".section-drop-trigger");if(button&&section.classList.contains("section-collapsed"))button.click();
+        });
+      });
+    }
+    if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initSectionAccordion);else initSectionAccordion();
+  })();
+  </script>
 
   <!-- Foundational contracts -->
   <script src="core/lyrics.js"></script>
@@ -233,6 +285,7 @@
 
   <!-- Public navigation / language / narration -->
   <script src="navigation.js"></script>
+  <script src="world-engine.js"></script>
   
   <script src="language.js"></script>
   <script src="narration.js"></script>
