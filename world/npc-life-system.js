@@ -16,7 +16,7 @@ const seed=(n)=>{
 };
 const ensure=(n)=>{
  const tier=n.simulation_tier||tiers(n.id);const s=read();s.npcs=s.npcs||{};const existing=s.npcs[n.id]||{};
- if(tier==="GENERIC"){delete existing.life;existing.simulation_tier=tier;s.npcs[n.id]=existing;save(s);return null;}
+ if(tier==="GENERIC"){delete existing.life;existing.simulation_tier=tier;s.npcs[n.id]=existing;if(!save(s))return null;return null;}
  const life=Object.assign(seed(n),existing.life||{},{
   goal:existing.life?.goal||GOALS[hash(n.id)%GOALS.length],
   money:Number(existing.life?.money??seed(n).money),
@@ -24,11 +24,11 @@ const ensure=(n)=>{
   hunger:clamp(existing.life?.hunger??70),energy:clamp(existing.life?.energy??80),
   stress:clamp(existing.life?.stress??15),social:clamp(existing.life?.social??45)
  });
- existing.life=life;existing.simulation_tier=tier;s.npcs[n.id]=existing;save(s);return life;
+ existing.life=life;existing.simulation_tier=tier;s.npcs[n.id]=existing;if(!save(s))return null;return life;
 };
 const profile=id=>{const s=read();return s.npcs?.[id]?.life||null};
 const remember=(id,memory)=>{
- const s=read(),n=s.npcs?.[id];if(!n)return null;if((n.simulation_tier||tiers(id))==="GENERIC")return null;n.life=n.life||seed(n);n.life.memories=(n.life.memories||[]).concat([Object.assign({},memory,{day:window.ESCIE_WORLD_SIMULATION?.state?.().day||1})]).slice(-30);save(s);return n.life;
+ const s=read(),n=s.npcs?.[id];if(!n)return null;if((n.simulation_tier||tiers(id))==="GENERIC")return null;n.life=n.life||seed(n);n.life.memories=(n.life.memories||[]).concat([Object.assign({},memory,{day:window.ESCIE_WORLD_SIMULATION?.state?.().day||1})]).slice(-30);if(!save(s))return null;return n.life;
 };
 const relationship=(id,delta,reason)=>{
  const api=window.ESCIE_WORLD_NPC;if(!api)return null;const n=api.state()?.npcs?.[id];if(!n)return null;if((n.simulation_tier||tiers(id))==="GENERIC")return null;n.links=n.links||{};n.life=n.life||ensure(n);
@@ -67,11 +67,11 @@ const tick=(minutes=30)=>{
   if(l.hunger<10||l.energy<10||l.health<40)l.life_state="STRUGGLING";
   if(l.money<20)l.life_state="FINANCIALLY_STRESSED";
  });
- save(s);return {ok:true,count:Object.keys(s.npcs).length};
+ if(!save(s))return {ok:false,reason:"SAVE_FAILED",count:Object.keys(s.npcs).length};return {ok:true,count:Object.keys(s.npcs).length};
 };
 const syncRelationships=()=>{
  const api=window.ESCIE_WORLD_NPC;if(!api)return 0;const s=read(),all=api.state()?.npcs||{};let count=0;
- Object.values(all).forEach(n=>{const l=s.npcs?.[n.id]?.life;if(!l)return;n.life=l;n.life.relationships=n.life.relationships||{};Object.keys(n.links||{}).forEach(id=>n.life.relationships[id]=n.links[id]);count++});save(s);return count;
+ Object.values(all).forEach(n=>{const l=s.npcs?.[n.id]?.life;if(!l)return;n.life=l;n.life.relationships=n.life.relationships||{};Object.keys(n.links||{}).forEach(id=>n.life.relationships[id]=n.links[id]);count++});if(!save(s))return null;return count;
 };
 const promote=(id,reason="PLAYER_INTERACTION")=>{const s=read(),n=s.npcs?.[id];if(!n)return null;if((n.simulation_tier||tiers(id))==="FEATURED")return n;n.simulation_tier="SIMULATED";n.engagement=Object.assign({score:0,reasons:[]},n.engagement||{});n.engagement.score+=1;n.engagement.reasons=(n.engagement.reasons||[]).concat(reason).slice(-20);if(!save(s))return null;if(!ensure(n))return null;return s.npcs[id];};
 const feature=(id,reason="STORY_IMPORTANCE")=>{const s=read(),n=s.npcs?.[id];if(!n)return null;n.simulation_tier="FEATURED";n.engagement=Object.assign({score:0,reasons:[]},n.engagement||{});n.engagement.score+=5;n.engagement.reasons=(n.engagement.reasons||[]).concat(reason).slice(-20);if(!save(s))return null;if(!ensure(n))return null;return s.npcs[id];};
