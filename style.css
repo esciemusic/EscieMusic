@@ -3257,8 +3257,9 @@ main > section:not(#entry).section-open{
 }
 
 
-/* GAME BOUNDARY — the main site only points to the dedicated game */
-.entry-game-link{margin-top:14px;display:flex;justify-content:center}
-.world-controller-link{display:inline-flex;align-items:center;gap:9px;padding:9px 13px;border:1px solid rgba(47,128,255,.38);color:var(--escie-paper);text-decoration:none;font:700 10px/1 monospace;letter-spacing:.16em;background:rgba(5,5,5,.55)}
-.world-controller-link span:first-child{font-size:15px;line-height:1}
-.world-controller-link:hover,.world-controller-link:focus-visible{border-color:var(--escie-blue);color:var(--escie-blue-bright);box-shadow:0 0 20px rgba(47,128,255,.10);outline:none}
+/* GAME BOUNDARY — game access lives inside THE GLASS EYE */
+.glass-eye-game-entry{display:flex;justify-content:center;margin:clamp(22px,4vw,42px) 0 8px}
+.world-controller-link{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-width:190px;padding:13px 18px;border:1px solid rgba(47,128,255,.42);color:var(--escie-paper);text-decoration:none;font:700 10px/1 monospace;letter-spacing:.16em;background:rgba(5,5,5,.62);transition:border-color .22s ease,box-shadow .22s ease,transform .22s ease,color .22s ease}
+.world-controller-icon{display:grid;place-items:center;width:26px;height:26px;border:1px solid rgba(216,212,202,.18);font-size:14px;line-height:1}
+.world-controller-link:hover,.world-controller-link:focus-visible{border-color:var(--escie-blue);color:var(--escie-blue-bright);box-shadow:0 0 24px rgba(47,128,255,.12);transform:translateY(-1px);outline:none}
+@media(max-width:700px){.glass-eye-game-entry{margin-top:24px}.world-controller-link{min-width:170px;padding:12px 14px}}
