@@ -463,3 +463,11 @@ body.escie-game-page.is-level-up .world-hud .world-xp-stat{border-color:var(--es
 @keyframes escieWorldXp{0%{box-shadow:0 0 0 rgba(111,63,175,0)}45%{box-shadow:0 0 24px rgba(111,63,175,.24)}100%{box-shadow:0 0 0 rgba(111,63,175,0)}}
 @keyframes escieWorldLevel{0%{transform:translateY(0);filter:none}18%{transform:translateY(-2px);filter:brightness(1.2)}100%{transform:translateY(0);filter:none}}
 @media(prefers-reduced-motion:reduce){body.escie-game-page.is-combat .world-stage,body.escie-game-page.is-xp-gain .world-hud .world-xp-stat,body.escie-game-page.is-level-up .world-hud .world-xp-stat{animation:none}}
+
+
+/* QUEST TRACKER */
+body.escie-game-page .world-quest-tracker{position:absolute;top:calc(var(--world-safe-top,12px) + 94px);left:12px;z-index:12;width:min(290px,calc(100vw - 24px));display:grid;gap:3px;padding:8px 10px;border:1px solid var(--escie-blue-line);background:rgba(5,5,5,.86);box-shadow:0 8px 24px rgba(0,0,0,.28);pointer-events:none}
+body.escie-game-page .world-quest-tracker[hidden]{display:none}
+body.escie-game-page .world-quest-tracker strong{font:700 .68rem/1.2 monospace;letter-spacing:.06em;color:var(--escie-paper)}
+body.escie-game-page .world-quest-tracker small{font:400 .58rem/1.35 monospace;color:var(--escie-cold-grey)}
+@media(max-width:600px){body.escie-game-page .world-quest-tracker{top:82px;width:min(240px,calc(100vw - 24px));padding:7px 8px}body.escie-game-page .world-quest-tracker small{font-size:.5rem}}
