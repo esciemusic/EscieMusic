@@ -184,18 +184,29 @@ function move(dt){
  let f=(keys.has("w")||keys.has("arrowup")?1:0)-(keys.has("s")||keys.has("arrowdown")?1:0);
  let str=(keys.has("d")||keys.has("arrowright")?1:0)-(keys.has("a")||keys.has("arrowleft")?1:0);f+=gp.f;str+=gp.str;
  const len=Math.hypot(f,str)||1;f/=len;str/=len;
- const sprinting=!player.inVehicle&&(keys.has("shift")||gp.sprint||move._touchSprint);const rpg=root.ESCIE_RPG,rs=root.ESCIE_WORLD_SIMULATION?.state?.()||{};const sprintCheck=rpg?.check?.(rs.rpg||{}, "ATHLETICS",2);let canSprint=sprinting&&(!rpg||!sprintCheck||sprintCheck.ok);if(canSprint&&performance.now()-player.lastSprintDrain>900){const body=root.ESCIE_WORLD_EQUIPMENT?.describe?.().equipped?.body?.id;const cost=body==="JACKET"?2:1;if(Number(rs.energy??0)<cost){canSprint=false;say3D("SPRINT · TOO EXHAUSTED");}else{root.ESCIE_WORLD_SIMULATION?.change?.({energy:-cost});player.lastSprintDrain=performance.now();}}const base=player.inVehicle?9.5:player.speed;const speed=(canSprint?base*1.45:base)*dt;
+ const sprinting=!player.inVehicle&&(keys.has("shift")||gp.sprint||move._touchSprint);const rpg=root.ESCIE_RPG,rs=root.ESCIE_WORLD_SIMULATION?.state?.()||{};const sprintCheck=rpg?.check?.(rs.rpg||{}, "ATHLETICS",2);let canSprint=sprinting&&(!rpg||!sprintCheck||sprintCheck.ok);if(canSprint&&performance.now()-player.lastSprintDrain>900){const body=root.ESCIE_WORLD_EQUIPMENT?.describe?.().equipped?.body?.id;const cost=body==="JACKET"?2:1;if(Number(rs.energy??0)<cost){canSprint=false;say3D("SPRINT · TOO EXHAUSTED");}else{root.ESCIE_WORLD_SIMULATION?.change?.({energy:-cost});player.lastSprintDrain=performance.now();}}const base=player.inVehicle?9.5:4.2;const speed=(canSprint?base*1.45:base)*dt;
  const c=Math.cos(player.yaw),si=Math.sin(player.yaw);
  const nx=player.x+(-si*f+c*str)*speed,nz=player.z+(-c*f-si*str)*speed;
  const oldX=player.x,oldZ=player.z;
- if(!blocked(nx,player.z))player.x=nx;if(!blocked(player.x,nz))player.z=nz;
- if(player.inVehicle&&Math.hypot(player.x-oldX,player.z-oldZ)>0.01){
-   const hit=Math.abs(player.x)>=bounds-.15||Math.abs(player.z)>=bounds-.15;
-   if(hit&&performance.now()-vehicleImpacts.last>vehicleImpacts.cooldown){
-     const amount=Math.max(2,Math.min(15,Math.round(Math.hypot(player.x-oldX,player.z-oldZ)*3)));
-     const result=root.ESCIE_WORLD_VEHICLES?.damage?.(amount);
+ const attempted=Math.hypot(nx-oldX,nz-oldZ);
+ const xBlocked=blocked(nx,player.z),zBlocked=blocked(player.x,nz);
+ if(!xBlocked)player.x=nx;if(!zBlocked)player.z=nz;
+ if(player.inVehicle&&attempted>.08&&performance.now()-vehicleImpacts.last>vehicleImpacts.cooldown){
+   const actual=Math.hypot(player.x-oldX,player.z-oldZ);
+   const boundary=Math.abs(nx)>bounds||Math.abs(nz)>bounds;
+   const collision=xBlocked||zBlocked||boundary;
+   if(collision){
+     const severity=Math.max(2,Math.min(18,Math.round(attempted*5)));
+     const result=root.ESCIE_WORLD_VEHICLES?.damage?.(severity);
      vehicleImpacts.last=performance.now();
-     if(result?.ok)say3D("VEHICLE · IMPACT · CONDITION "+Number(result.condition||0)+"%");
+     if(result?.ok){
+       say3D("VEHICLE · IMPACT · CONDITION "+Number(result.condition||0)+"%");
+       if(Number(result.condition||0)<=0){
+         root.ESCIE_WORLD_VEHICLES?.exit?.();
+         player.inVehicle=false;player.vehicleId=null;player.speed=4.2;
+         say3D("VEHICLE · DISABLED · ON FOOT");
+       }
+     }
    }
  }
  player.x=clamp(player.x,-bounds,bounds);player.z=clamp(player.z,-bounds,bounds);
