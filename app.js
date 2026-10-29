@@ -529,7 +529,7 @@
       const context = recordContext(track);
       const parent = context.parents[0];
       const parentRecord = parent ? getAllRecords().find(item => recordId(item) === parent.record) : null;
-      return '<article class="music-card" data-record-type="art" data-record-id="' +
+      return '<article class="merch-card" data-merch-category="'+escapeHTML(item.category||"CORE")+'">'+'<div class="merch-card-top"><span class="eyebrow">'+escapeHTML(item.category||"CORE")+'</span><span class="merch-status">'+escapeHTML(stage)+'</span></div>'+'<div class="merch-card-art" aria-hidden="true"><span>'+escapeHTML(front||"ESCIE")+'</span><i></i><strong>'+escapeHTML(back||item.title||"")+'</strong></div>'+'<div class="merch-card-body"><h3>'+escapeHTML(item.title||"UNTITLED")+'</h3><p>'+escapeHTML(item.notes||"Physical ESCIE object.")+'</p>'+'<dl class="merch-specs"><div><dt>GARMENT</dt><dd>'+escapeHTML(details||"SPECIFICATION PENDING")+'</dd></div>'+'<div><dt>FIT / SIZE</dt><dd>'+escapeHTML((item.fit||"FIT PENDING")+" · "+sizes)+'</dd></div>'+'<div><dt>PRODUCTION</dt><dd>'+escapeHTML(priority+" · "+(packet.quantity_decision||"HUMAN GATE"))+'</dd></div></dl>'+action+'</div></article>';
       escapeHTML(recordId(track)) + '"' + narrationAttributes(track) + '>' +
         '<p class="music-card-index">' + escapeHTML(track.number || "ART") + "</p>" +
         '<div class="music-card-content"><h3>' + escapeHTML(recordTitle(track)) + "</h3>" +
