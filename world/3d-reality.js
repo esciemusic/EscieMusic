@@ -113,7 +113,7 @@ function setup(){
  const s=stage();if(!s||!window.THREE)return false;
  const initial=root.ESCIE_WORLD_SIMULATION?.state?.()?.position||{x:2,y:7};player.x=Number(initial.x||0)/15*108-54;player.z=Number(initial.y||0)/9*108-54;
  if(s.querySelector(".escie-3d-canvas"))return true;
- try{renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:"high-performance"});}catch(e){say3D("3D UNAVAILABLE · 2D MAP REMAINS PLAYABLE");return false}
+ try{renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:"high-performance"});}catch(e){say3D("3D UNAVAILABLE · WEBGL REQUIRED");return false}
  renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.7));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
  renderer.domElement.className="escie-3d-canvas";renderer.domElement.setAttribute("aria-label","ESCIE 3D playable world");s.appendChild(renderer.domElement);const status=document.createElement("div");status.id="escie-3d-status";status.setAttribute("aria-live","polite");status.textContent="ESCIE WORLD · INITIALIZING";s.appendChild(status);
  camera=new THREE.PerspectiveCamera(70,1,.05,180);clock=new THREE.Clock();buildScene();resize();resizeObserver=window.ResizeObserver?new ResizeObserver(resize):null;resizeObserver?.observe(s);window.addEventListener("resize",resize);
