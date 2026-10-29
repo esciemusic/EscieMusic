@@ -241,10 +241,12 @@ function validateSaveSnapshot(snapshot,slot){if(!snapshot||typeof snapshot!=="ob
 function clearRuntimeStores(){[KEY,"escie_world_simulation_v1","escie_world_npc_v1","escie_world_npc_life_v1","escie_world_equipment_v1","escie_world_vehicles_v1","escie_world_law_v1"].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}})}
 function migrateLegacySave(){try{if(localStorage.getItem(saveSlotKey()))return;const raw=localStorage.getItem(SAVE_KEY);if(!raw)return;let parsed;try{parsed=JSON.parse(raw)}catch(e){return}const legacy=parsed&&typeof parsed==="object"&&!Array.isArray(parsed)&&parsed.world_state?parsed:{version:1,slot:1,world_state:parsed};const staged=Object.assign({},legacy,{version:legacy.version||1,slot:1,stores:normalizeSaveStores(legacy)});if(validateSaveSnapshot(staged,1))return;localStorage.setItem(saveSlotKey(1),JSON.stringify(staged));localStorage.setItem(ACTIVE_SLOT_KEY,"1")}catch(e){}}
 function saveIndicator(msg="GAME SAVED"){let el=document.getElementById("world-save-indicator");if(!el){el=document.createElement("div");el.id="world-save-indicator";el.className="world-save-indicator";document.body.appendChild(el)}el.textContent=msg;el.classList.add("visible");clearTimeout(window.__saveTimer);window.__saveTimer=setTimeout(()=>el.classList.remove("visible"),1400)}
-function saveWorldState(){let previousSlotRaw=null;try{
+function saveWorldState(){let previousSlotRaw=null,previousKeyRaw=null,previousActiveRaw=null,slot=null;try{
   migrateLegacySave();
-  const slot=activeSaveSlot();
+  slot=activeSaveSlot();
   previousSlotRaw=localStorage.getItem(saveSlotKey(slot));
+  previousKeyRaw=localStorage.getItem(KEY);
+  previousActiveRaw=localStorage.getItem(ACTIVE_SLOT_KEY);
   const current=state();
   current.world_room=room;
   current.world_position={x:Number(pos.x)||0,y:Number(pos.y)||0};
@@ -259,7 +261,11 @@ function saveWorldState(){let previousSlotRaw=null;try{
   localStorage.setItem(ACTIVE_SLOT_KEY,String(slot));
   saveIndicator("SLOT "+slot+" SAVED");
   return true;
-}catch(e){try{const slot=activeSaveSlot();if(previousSlotRaw===null)localStorage.removeItem(saveSlotKey(slot));else localStorage.setItem(saveSlotKey(slot),previousSlotRaw)}catch(_e){}saveIndicator("SAVE FAILED · "+String(e?.message||"STORAGE"));return false}}
+}catch(e){try{
+  if(slot!==null){if(previousSlotRaw===null)localStorage.removeItem(saveSlotKey(slot));else localStorage.setItem(saveSlotKey(slot),previousSlotRaw)}
+  if(previousKeyRaw===null)localStorage.removeItem(KEY);else localStorage.setItem(KEY,previousKeyRaw);
+  if(previousActiveRaw===null)localStorage.removeItem(ACTIVE_SLOT_KEY);else localStorage.setItem(ACTIVE_SLOT_KEY,previousActiveRaw);
+}catch(_e){}saveIndicator("SAVE FAILED · "+String(e?.message||"STORAGE"));return false}}
 function createFreshSnapshot(slot){const n=Number(slot);const simulation=defaultStoreBundle(null)["escie_world_simulation_v1"];simulation.position={x:start.x,y:start.y};return {version:SAVE_VERSION,saved_at:new Date().toISOString(),slot:n,world_state:{version:1,session_id:"local-world",player_id:window.ESCIE_GAME_PROFILE?.id||null,episode_id:"the-world",world_room:"lane",world_position:{x:start.x,y:start.y},inventory:[],discoveries:[],world_unlocks:[],signals:0,entered:false,entry_source:"new-game",unresolved:[],unknown:[],completed_quests:[],input_mode:"AUTO",created_at:new Date().toISOString()},simulation_state:simulation,input_mode:"AUTO",stores:defaultStoreBundle(simulation)}}
 function initializeEmptySave(slot=activeSaveSlot()){try{
   const n=Number(slot);if(!Number.isInteger(n)||n<1||n>SAVE_SLOT_COUNT)return false;
@@ -278,7 +284,7 @@ function initializeEmptySave(slot=activeSaveSlot()){try{
 }catch(e){return false}}
 function deleteSaveSlot(slot){try{const n=Number(slot);if(!Number.isInteger(n)||n<1||n>SAVE_SLOT_COUNT)return false;if(n===activeSaveSlot()){resetLocalGame();return true}localStorage.removeItem(saveSlotKey(n));for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k&&k.startsWith("escie_world_quarantine_v1_"+n+"_"))localStorage.removeItem(k)}saveIndicator("SLOT "+n+" · DELETED");return true}catch(e){return false}}
 function saveSlotStatus(slot){try{const n=Number(slot);if(!Number.isInteger(n)||n<1||n>SAVE_SLOT_COUNT)return "INVALID";const raw=localStorage.getItem(saveSlotKey(n));if(!raw)return "EMPTY";let p;try{p=JSON.parse(raw)}catch(e){return "CORRUPT"}const staged=p&&typeof p==="object"&&!Array.isArray(p)&&p.world_state?Object.assign({},p,{stores:normalizeSaveStores(p)}):{version:1,slot:n,world_state:p,stores:normalizeSaveStores({world_state:p})};const invalid=validateSaveSnapshot(staged,n);if(invalid)return "CORRUPT";const w=staged.world_state||{};const legacy=p?.stores==null;return (legacy?"SAVED · LEGACY":"SAVED")+" · "+String(w.world_room||"LANE").toUpperCase()+" · "+Number(w.signals||0)+" SIGNAL"}catch(e){return "CORRUPT"}}
-function loadWorldSave(slot=activeSaveSlot()){let backup=null;try{
+function loadWorldSave(slot=activeSaveSlot()){let backup=null,previousKeyRaw=null,previousActiveRaw=null,previousSlotRaw=null;try{
   migrateLegacySave();
   const n=Number(slot);if(!Number.isInteger(n)||n<1||n>SAVE_SLOT_COUNT)return false;
   const raw=localStorage.getItem(saveSlotKey(n));
@@ -289,6 +295,9 @@ function loadWorldSave(slot=activeSaveSlot()){let backup=null;try{
   const staged=Object.assign({},snapshot,{stores});
   const invalid=validateSaveSnapshot(staged,n);if(invalid){quarantineSave(n,raw,invalid);saveIndicator("SLOT "+n+" QUARANTINED");return false}
   backup=captureRuntimeStores();
+  previousKeyRaw=localStorage.getItem(KEY);
+  previousActiveRaw=localStorage.getItem(ACTIVE_SLOT_KEY);
+  previousSlotRaw=localStorage.getItem(saveSlotKey(n));
   clearRuntimeStores();
   localStorage.setItem(KEY,JSON.stringify(staged.world_state));
   if(!restoreSaveStores(stores))throw new Error("RESTORE_FAILED");
@@ -296,7 +305,9 @@ function loadWorldSave(slot=activeSaveSlot()){let backup=null;try{
   localStorage.setItem(ACTIVE_SLOT_KEY,String(n));
   if(snapshot.stores==null){localStorage.setItem(saveSlotKey(n),JSON.stringify(Object.assign({},staged,{saved_at:new Date().toISOString()})));}
   return true;
-}catch(e){if(backup){try{clearRuntimeStores();restoreSaveStores(backup)}catch(_e){}}saveIndicator("LOAD FAILED · "+String(e?.message||"RESTORE"));return false}}
+}catch(e){
+  try{clearRuntimeStores();if(backup)restoreSaveStores(backup);if(previousKeyRaw===null)localStorage.removeItem(KEY);else localStorage.setItem(KEY,previousKeyRaw);if(previousActiveRaw===null)localStorage.removeItem(ACTIVE_SLOT_KEY);else localStorage.setItem(ACTIVE_SLOT_KEY,previousActiveRaw);if(previousSlotRaw!==null)localStorage.setItem(saveSlotKey(Number(slot)),previousSlotRaw)}catch(_e){}
+  saveIndicator("LOAD FAILED · "+String(e?.message||"RESTORE"));return false}}
 function switchSaveSlot(slot){const n=Number(slot);if(!Number.isInteger(n)||n<1||n>SAVE_SLOT_COUNT)return false;if(n===activeSaveSlot())return true;try{if(!saveWorldState()){saveIndicator("SLOT SWITCH BLOCKED · SAVE FAILED");return false}if(!loadWorldSave(n)){saveIndicator("SLOT SWITCH BLOCKED · LOAD FAILED");return false}location.reload();return true}catch(e){saveIndicator("SLOT SWITCH BLOCKED");return false}}
 const RESET_FLAG="escie_world_reset_pending_v1";
 function resetLocalGame(){
