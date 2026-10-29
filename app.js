@@ -607,7 +607,7 @@
       '<p class="eyebrow">GEOGRAPHIC RECORD / '+escapeHTML(String(ordered.length))+' PUBLIC PLACES</p>'+
       '<p class="world-index-intro">MONTRÉAL IS THE ANCHOR. THE OTHER PLACES ARE REFERENCES WITHIN THE SAME PHYSICAL CITY, NOT SEPARATE WORLDS.</p>'+
       '<div class="world-place-list">'+ordered.map((place,index)=>
-        '<article class="world-place" data-record-id="'+escapeHTML(recordId(place))+'">'+
+        '<article class="world-place" role="button" tabindex="0" aria-label="Open '+escapeHTML(recordTitle(place))+'" data-record-id="'+escapeHTML(recordId(place))+'">'+
           '<span class="world-place-index">'+String(index+1).padStart(2,"0")+'</span>'+
           '<div class="world-place-copy"><h3>'+escapeHTML(recordTitle(place))+'</h3><p>'+escapeHTML(place.description||"PUBLIC GEOGRAPHIC REFERENCE.")+'</p></div>'+
           '<span class="world-place-state">'+escapeHTML(String(place.status||"active").toUpperCase())+'</span>'+
