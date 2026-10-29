@@ -10,10 +10,27 @@ permissions:
 
 jobs:
   contracts:
+    strategy:
+      fail-fast: false
+      matrix:
+        test:
+          - central.node.test.js
+          - health.node.test.js
+          - ingestion.node.test.js
+          - module-references.node.test.js
+          - publishing.node.test.js
+          - record.node.test.js
+          - release-firewall.node.test.js
+          - release-injector.node.test.js
+          - release-runtime.node.test.js
+          - site-loads.node.test.js
+          - system.node.test.js
+          - world-engine.node.test.js
     runs-on: ubuntu-latest
+    name: Contract · ${{ matrix.test }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm test
+      - run: node --test tests/${{ matrix.test }}
