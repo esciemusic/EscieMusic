@@ -267,13 +267,14 @@ function saveWorldState(){let previousSlotRaw=null,previousKeyRaw=null,previousA
   if(previousActiveRaw===null)localStorage.removeItem(ACTIVE_SLOT_KEY);else localStorage.setItem(ACTIVE_SLOT_KEY,previousActiveRaw);
 }catch(_e){}saveIndicator("SAVE FAILED · "+String(e?.message||"STORAGE"));return false}}
 function createFreshSnapshot(slot){const n=Number(slot);const simulation=defaultStoreBundle(null)["escie_world_simulation_v1"];simulation.position={x:start.x,y:start.y};return {version:SAVE_VERSION,saved_at:new Date().toISOString(),slot:n,world_state:{version:1,session_id:"local-world",player_id:window.ESCIE_GAME_PROFILE?.id||null,episode_id:"the-world",world_room:"lane",world_position:{x:start.x,y:start.y},inventory:[],discoveries:[],world_unlocks:[],signals:0,entered:false,entry_source:"new-game",unresolved:[],unknown:[],completed_quests:[],input_mode:"AUTO",created_at:new Date().toISOString()},simulation_state:simulation,input_mode:"AUTO",stores:defaultStoreBundle(simulation)}}
-function initializeEmptySave(slot=activeSaveSlot()){let previousSlotRaw=null,previousKeyRaw=null,previousActiveRaw=null,wasActive=false;try{
+function initializeEmptySave(slot=activeSaveSlot()){let previousSlotRaw=null,previousKeyRaw=null,previousActiveRaw=null,backup=null,wasActive=false;try{
   const n=Number(slot);if(!Number.isInteger(n)||n<1||n>SAVE_SLOT_COUNT)return false;
   const fresh=createFreshSnapshot(n);
   const invalid=validateSaveSnapshot(fresh,n);if(invalid)return false;
   wasActive=n===activeSaveSlot();
   previousSlotRaw=localStorage.getItem(saveSlotKey(n));
   previousKeyRaw=localStorage.getItem(KEY);
+  if(wasActive)backup=captureRuntimeStores();
   previousActiveRaw=localStorage.getItem(ACTIVE_SLOT_KEY);
   localStorage.setItem(saveSlotKey(n),JSON.stringify(fresh));
   if(wasActive){
@@ -291,6 +292,7 @@ function initializeEmptySave(slot=activeSaveSlot()){let previousSlotRaw=null,pre
     if(wasActive){
       if(previousKeyRaw===null)localStorage.removeItem(KEY);else localStorage.setItem(KEY,previousKeyRaw);
       if(previousActiveRaw===null)localStorage.removeItem(ACTIVE_SLOT_KEY);else localStorage.setItem(ACTIVE_SLOT_KEY,previousActiveRaw);
+      if(backup)restoreSaveStores(backup);
     }
   }catch(_e){}
   saveIndicator("SLOT "+Number(slot)+" · NEW GAME FAILED");
