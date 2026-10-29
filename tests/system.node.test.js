@@ -546,4 +546,12 @@ assert(fs.readFileSync("app.js","utf8").includes("GEOGRAPHIC RECORD"),"THE WORLD
 assert(aestheticRuntime.includes(".world-place-list"),"THE WORLD geographic record must have a restrained list presentation");
 assert(fs.readFileSync("app.js","utf8").includes("renderMerch();\n    bindMerchFilters();\n    renderWorld();\n    renderWeb();"),"public render lifecycle must render THE WORLD before THE WEB");
 assert(!fs.readFileSync("app.js","utf8").includes("ESCIE_RUNTIME.webFilters[control.getAttribute(\"data-web-filter\")]=control.value||\"\";\n      renderWorld();"),"THE WEB filter changes must not rebuild THE WORLD unnecessarily");
+const publicAppRuntime=fs.readFileSync("app.js","utf8");
+const musicRenderer=publicAppRuntime.match(/function renderMusic\([\\s\\S]*?function renderProjects/);
+assert(musicRenderer,"public music renderer must remain a bounded function");
+assert(!musicRenderer[0].includes("item.category"),"public music renderer must not reference merch-only item state");
+assert(!musicRenderer[0].includes("packet.quantity_decision"),"public music renderer must not reference merch production state");
+assert(musicRenderer[0].includes("data-record-id"),"public music renderer must expose record targets for playback/inspection");
+console.log("ESCIE public music renderer contracts OK");
+
 console.log("ESCIE public index hierarchy and compact accordion contracts OK");
