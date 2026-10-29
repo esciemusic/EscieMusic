@@ -193,10 +193,37 @@ function move(dt){
 }
 function updateVehicles(t){
  const vs=root.ESCIE_WORLD_VEHICLES?.state?.();if(!vs)return;
- if(!updateVehicles.car){updateVehicles.car=new THREE.Group();updateVehicles.car.userData.escieVehicle=true;const body=new THREE.Mesh(new THREE.BoxGeometry(1.7,.55,3.4),makeMat(0x101114,.65,.35));body.position.y=.55;updateVehicles.car.add(body);const roof=new THREE.Mesh(new THREE.BoxGeometry(1.2,.35,1.6),makeMat(0x111615,.6));roof.position.y=.98;updateVehicles.car.add(roof);worldGroup.add(updateVehicles.car);}
- const available=vs.owned?.find?.(v=>v?.id)||null;const active=vs.current||available?.id||null;updateVehicles.car.userData.vehicleId=active;updateVehicles.car.visible=!!active&&!interiorMode;
- if(player.inVehicle&&active){player.vehicleId=active;updateVehicles.car.position.set(player.x,0,player.z);updateVehicles.car.rotation.y=player.yaw;updateVehicles.car.visible=!interiorMode;}
- else if(active){updateVehicles.car.position.x=-4+Math.sin(t*.12)*7;updateVehicles.car.position.z=-10+Math.cos(t*.12)*18;updateVehicles.car.rotation.y=t*.12;}
+ const active=vs.current||vs.owned?.find?.(v=>v?.id)?.id||null;
+ if(!updateVehicles.car){updateVehicles.car=new THREE.Group();updateVehicles.car.userData.escieVehicle=true;worldGroup.add(updateVehicles.car);}
+ const type=String(vs.current?.type||vs.owned?.find?.(v=>v?.id===active)?.type||"").toUpperCase();
+ if(active&&updateVehicles.car.userData.vehicleId!==active){
+   updateVehicles.car.clear();
+   const isCar=type==="CAR",isBike=type==="BIKE",isBoard=type==="BOARD";
+   if(isCar){
+     const body=new THREE.Mesh(new THREE.BoxGeometry(1.7,.55,3.4),makeMat(0x101114,.65,.35));body.position.y=.55;updateVehicles.car.add(body);
+     const roof=new THREE.Mesh(new THREE.BoxGeometry(1.2,.35,1.6),makeMat(0x111615,.6));roof.position.y=.98;updateVehicles.car.add(roof);
+   }else if(isBike){
+     const frame=new THREE.Mesh(new THREE.BoxGeometry(.16,.16,2.4),makeMat(0x2f80ff,.55,.3));frame.position.y=.7;updateVehicles.car.add(frame);
+     [-.82,.82].forEach(z=>{const wheel=new THREE.Mesh(new THREE.TorusGeometry(.38,.06,8,16),makeMat(0x101114,.8));wheel.rotation.x=Math.PI/2;wheel.position.set(0,.38,z);updateVehicles.car.add(wheel);});
+     const seat=new THREE.Mesh(new THREE.BoxGeometry(.32,.12,.5),makeMat(0x292a2e,.8));seat.position.set(0,.9,.05);updateVehicles.car.add(seat);
+   }else if(isBoard){
+     const board=new THREE.Mesh(new THREE.BoxGeometry(.45,.08,2.3),makeMat(0x6f3faf,.7));board.position.y=.18;board.rotation.y=.08;updateVehicles.car.add(board);
+     [-.7,.7].forEach(z=>{const wheel=new THREE.Mesh(new THREE.CylinderGeometry(.09,.09,.12,12),makeMat(0x101114,.8));wheel.rotation.z=Math.PI/2;wheel.position.set(.18,.08,z);updateVehicles.car.add(wheel);});
+   }
+   updateVehicles.car.userData.vehicleId=active;updateVehicles.car.userData.vehicleType=type;
+ }
+ const condition=Math.max(0,Math.min(100,Number(vs.condition?.[active]??100)));
+ const performanceFactor=.55+.45*(condition/100);
+ updateVehicles.car.userData.condition=condition;
+ updateVehicles.car.visible=!!active&&!interiorMode;
+ if(player.inVehicle&&active){
+   player.vehicleId=active;
+   const base=type==="CAR"?9.5:type==="BIKE"?7.2:5.4;
+   player.speed=base*performanceFactor;
+   updateVehicles.car.position.set(player.x,0,player.z);updateVehicles.car.rotation.y=player.yaw;updateVehicles.car.visible=!interiorMode;
+ }else if(active){
+   updateVehicles.car.position.x=-4+Math.sin(t*.12)*7;updateVehicles.car.position.z=-10+Math.cos(t*.12)*18;updateVehicles.car.rotation.y=t*.12;
+ }
 }
 function updateLaw(){const law=root.ESCIE_WORLD_LAW?.state?.();if(law)player.lawSync=performance.now()}
 function worldHeartbeat(){if(!started||paused)return;const now=performance.now(),step=5000;if(!player.worldTick){player.worldTick=now;player.npcTick=now;return}if(now-player.worldTick<step)return;const elapsedMinutes=Math.max(1,Math.round((now-player.worldTick)/60000));player.worldTick=now;const sim=root.ESCIE_WORLD_SIMULATION,st=sim?.advance?.(elapsedMinutes);const s=sim?.state?.();if(s){if(!player.npcTick||now-player.npcTick>=30000){player.npcTick=now;root.ESCIE_WORLD_NPC?.tick?.(s.day,s.hour,s.minute,(x,y)=>{const d=String(s.neighbourhood||"PARC-EXTENSION").toUpperCase(),nodes=root.ESCIE_WORLD_SIMULATION?.streetGraph?.(d)?.nodes||[];const p=nodes.find(n=>Number(n.x)===Number(x)&&Number(n.y)===Number(y));if(!p)return false;return false;},elapsedMinutes);root.ESCIE_WORLD_NPC_LIFE?.syncRelationships?.();}root.ESCIE_WORLD_LAW?.tick?.();}}
