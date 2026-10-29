@@ -256,7 +256,7 @@ function processWorldQR(raw){
   m.qr=Array.isArray(m.qr)?m.qr:[];
   const writeQR=x=>localStorage.setItem("escie_phone_v1",JSON.stringify(x));
   const record={code:value.slice(0,160),day:s?.day||1,time:new Date().toLocaleTimeString(),ok:false};
-  const reject=(message)=>{record.message=message;m.qr.unshift(record);m.qr=m.qr.slice(0,50);write(m);return {ok:false,message};};
+  const reject=(message)=>{record.message=message;m.qr.unshift(record);m.qr=m.qr.slice(0,50);writeQR(m);return {ok:false,message};};
   if(!/^ESCIE:\/\//i.test(value))return reject("QR · INVALID ESCIE CODE");
   if(!parts.length||!allowed.test(payload))return reject("QR · UNSUPPORTED CODE");
   let message="";
