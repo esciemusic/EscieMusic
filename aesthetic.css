@@ -60,3 +60,75 @@
     transition:none;
   }
 }
+
+
+/* =========================================================
+   COLLAPSED INDEX SECTIONS
+   Closed sections stay close together.
+   Vertical space belongs to the section only while it is open.
+   ========================================================= */
+
+main > .site-section:not(#entry){
+  min-height:0;
+  padding:5px 0;
+}
+
+main > .site-section:not(#entry).section-collapsed{
+  min-height:0;
+  padding:5px 0;
+}
+
+main > .site-section:not(#entry).section-open{
+  min-height:0;
+  padding:5px 0 46px;
+}
+
+main > .site-section:not(#entry) .section-inner{
+  width:min(100%,var(--max-width));
+}
+
+main > .site-section:not(#entry) .section-drop-panel{
+  padding:0;
+  transition:
+    grid-template-rows var(--escie-motion-slow),
+    opacity var(--escie-motion-standard),
+    visibility var(--escie-motion-slow),
+    padding var(--escie-motion-slow);
+}
+
+main > .site-section:not(#entry).section-open .section-drop-panel{
+  padding:28px 0 8px;
+}
+
+main > .site-section:not(#entry) .section-drop-trigger{
+  min-height:52px;
+}
+
+main > .site-section:not(#entry).section-collapsed + .site-section:not(#entry){
+  margin-top:0;
+}
+
+@media(max-width:700px){
+  main > .site-section:not(#entry),
+  main > .site-section:not(#entry).section-collapsed{
+    padding:4px 0;
+  }
+
+  main > .site-section:not(#entry).section-open{
+    padding:4px 0 30px;
+  }
+
+  main > .site-section:not(#entry).section-open .section-drop-panel{
+    padding:20px 0 4px;
+  }
+
+  main > .site-section:not(#entry) .section-drop-trigger{
+    min-height:48px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  main > .site-section:not(#entry) .section-drop-panel{
+    transition:none;
+  }
+}
