@@ -27,14 +27,14 @@ function createGround(){
  box(9,.04,130,0x171918,0,.04,0);
  for(let z=-54;z<54;z+=8){box(.18,.025,3.6,0xc7c8bd,0,.07,z);}
 }
-function door(x,z,w,h,seed){
+function door(x,z,w,h,seed,building){
  const mat=makeMat(seed%2?0x292a2e:0x101114,.72,seed%2?.2:0);
  const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,.08),mat);m.position.set(x, h/2, z);worldGroup.add(m);
  const sign=new THREE.Mesh(new THREE.BoxGeometry(w*.7,.08,.02),makeMat(0x2f80ff,.7));sign.position.set(x,h*.78,z-.06);worldGroup.add(sign);
- doors.push({mesh:m,x,z,w:.75,h:2.2,id:"door-"+seed,open:false});
+ doors.push({mesh:m,x,z,w:.9,h:2.2,id:"door-"+seed,open:false,building});
  return m;
 }
-function building(x,z,w,d,h,seed){
+function building(x,z,w,d,h,seed,buildingRef){
  const wall=[0x1b1c1f,0x292a2e,0x303235,0x101114][seed%4];
  box(w,h,d,wall,x,h/2,z,{roughness:.96,solid:true});
  const rows=Math.max(2,Math.floor(h/3)), cols=Math.max(2,Math.floor(w/2.8));
@@ -45,7 +45,7 @@ function building(x,z,w,d,h,seed){
    box(.55,.85,.035,lit?0x70747a:0x101114,px,py,z-d/2-.02);
  }
  if(seed%3===0) box(w*.65,.12,d*.7,0x1e2020,x,h+.08,z);
- if(seed%2===0) door(x,z-d/2-.055,1.15,2.2,seed);
+ if(seed%2===0) door(x,z-d/2-.055,1.15,2.2,seed,buildingRef);
 }
 function actor(x,z,seed){
  const g=new THREE.Group();
@@ -77,6 +77,7 @@ function createSnow(){
  const mat=new THREE.PointsMaterial({color:0xd9ddda,size:.055,transparent:true,opacity:.62});
  worldGroup.add(new THREE.Points(geo,mat));
 }
+function createCanonicalBuildings(){const s=root.ESCIE_WORLD_SIMULATION?.state?.()||{};const list=root.ESCIE_WORLD_SIMULATION?.districtBuildings?.(s.neighbourhood)||[];list.forEach((b,i)=>building(-27+(i%4)*18,-38+Math.floor(i/4)*18,10,10,12+i%3,i+1,b));}
 function buildScene(){
  scene=new THREE.Scene();scene.background=new THREE.Color(0x050505);scene.fog=new THREE.FogExp2(0x101114,.018);
  worldGroup=new THREE.Group();scene.add(worldGroup);
@@ -84,7 +85,7 @@ function buildScene(){
  const moon=new THREE.DirectionalLight(0x70747a,1.5);moon.position.set(-18,30,12);scene.add(moon);
  const green=new THREE.PointLight(0x2f80ff,2.8,20);green.position.set(0,5,6);scene.add(green);lights.push(green);
  dayLight=moon;ambientLight=scene.children.find(o=>o instanceof THREE.HemisphereLight);
- createGround();
+ createGround();createCanonicalBuildings();
  let seed=1;
  for(let x=-34;x<=34;x+=12)for(let z=-52;z<=52;z+=13){
    if(Math.abs(x)<10)continue;
@@ -103,7 +104,7 @@ function resize(){
 function setup(){
  const s=stage();if(!s||!window.THREE)return false;
  if(s.querySelector(".escie-3d-canvas"))return true;
- renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:"high-performance"});
+ try{renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:"high-performance"});}catch(e){say3D("3D UNAVAILABLE · 2D MAP REMAINS PLAYABLE");return false}
  renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.7));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
  renderer.domElement.className="escie-3d-canvas";renderer.domElement.setAttribute("aria-label","ESCIE 3D playable world");s.appendChild(renderer.domElement);
  camera=new THREE.PerspectiveCamera(70,1,.05,180);clock=new THREE.Clock();buildScene();resize();window.addEventListener("resize",resize);
@@ -120,12 +121,12 @@ function setup(){
  return true;
 }
 function gamepadInput(){
- const pads=navigator.getGamepads?.()||[];const p=[...pads].find(Boolean);if(!p)return {f:0,str:0,sprint:false,action:false};
- return {f:-Number(p.axes?.[1]||0),str:Number(p.axes?.[0]||0),sprint:!!p.buttons?.[10]?.pressed,action:!!p.buttons?.[0]?.pressed};
+ const pads=navigator.getGamepads?.()||[];const p=[...pads].find(Boolean);if(!p)return {f:0,str:0,lookX:0,lookY:0,sprint:false,action:false};
+ const dz=v=>Math.abs(v)<.14?0:v;return {f:-dz(Number(p.axes?.[1]||0)),str:dz(Number(p.axes?.[0]||0)),lookX:dz(Number(p.axes?.[2]||0)),lookY:dz(Number(p.axes?.[3]||0)),sprint:!!p.buttons?.[10]?.pressed,action:!!p.buttons?.[0]?.pressed};
 }
 function interact(){
- const near=doors.find(d=>Math.hypot(player.x-d.x,player.z-d.z)<2.1);
- if(near){near.open=!near.open;near.mesh.rotation.y=near.open?Math.PI/2:0;say3D(near.open?"DOOR OPEN · INTERIOR LAYER AVAILABLE":"DOOR CLOSED");return true}
+ const near=doors.find(d=>Math.hypot(player.x-d.x,player.z-d.z)<2.4);
+ if(near){if(near.open){root.ESCIE_WORLD_INTERIOR?.exit?.();near.open=false;near.mesh.rotation.y=0;say3D("EXITED · BACK ON THE STREET");return true}const st=root.ESCIE_WORLD_SIMULATION?.state?.(),b=near.building;if(b){const result=root.ESCIE_WORLD_SIMULATION?.enterBuilding?.(st?.neighbourhood,b.id);if(!result?.ok){say3D("ACCESS · "+String(result?.reason||"DENIED"));return true}root.dispatchEvent(new CustomEvent("escie:world-interior-enter",{detail:result}));}near.open=true;near.mesh.rotation.y=Math.PI/2;say3D(b?"ENTERED · "+b.name:"DOOR OPEN · INTERIOR LAYER AVAILABLE");return true}
  return false;
 }
 function say3D(t){const log=document.getElementById("world-log");if(log)log.textContent=t}
@@ -135,16 +136,17 @@ function blocked(x,z){
 }
 function move(dt){
  const gp=gamepadInput();
+ player.yaw+=gp.lookX*dt*2.4;player.pitch=clamp(player.pitch-gp.lookY*dt*1.8,-1.2,1.2);
  if(gp.action&&!move._lastAction){document.querySelector("[data-action-primary]")?.click()} move._lastAction=gp.action;
  let f=(keys.has("w")||keys.has("arrowup")?1:0)-(keys.has("s")||keys.has("arrowdown")?1:0);
  let str=(keys.has("d")||keys.has("arrowright")?1:0)-(keys.has("a")||keys.has("arrowleft")?1:0);f+=gp.f;str+=gp.str;
  const len=Math.hypot(f,str)||1;f/=len;str/=len;
- const speed=((keys.has("shift")||gp.sprint)?player.speed*1.75:player.speed)*dt;
+ const speed=((keys.has("shift")||gp.sprint||move._touchSprint)?player.speed*1.75:player.speed)*dt;
  const c=Math.cos(player.yaw),si=Math.sin(player.yaw);
  const nx=player.x+(-si*f+c*str)*speed,nz=player.z+(-c*f-si*str)*speed;
  if(!blocked(nx,player.z))player.x=nx;if(!blocked(player.x,nz))player.z=nz;
  player.x=clamp(player.x,-bounds,bounds);player.z=clamp(player.z,-bounds,bounds);
- const sim=root.ESCIE_WORLD_SIMULATION,st=sim?.state?.();if(st&&st.position){st.position.x=player.x;st.position.y=player.z;}
+ const sim=root.ESCIE_WORLD_SIMULATION,st=sim?.state?.();if(st?.position)root.ESCIE_WORLD_SIMULATION?.setPosition?.(player.x,player.z);
  avatar.position.set(player.x,0,player.z);avatar.rotation.y=player.yaw;
 }
 function updateVehicles(t){
@@ -158,7 +160,7 @@ function updateVehicles(t){
  if(active){updateVehicles.car.position.x=-4+Math.sin(t*.12)*7;updateVehicles.car.position.z=-10+Math.cos(t*.12)*18;updateVehicles.car.rotation.y=t*.12;}
 }
 function updateEnvironment(t){
- const cycle=(t%180)/180,angle=cycle*Math.PI*2;
+ const st=root.ESCIE_WORLD_SIMULATION?.state?.()||{},cycle=((Number(st.hour||12)*60+Number(st.minute||0))/1440),angle=cycle*Math.PI*2;
  const daylight=Math.max(.08,Math.sin(angle-Math.PI/2)*.5+.5);
  if(dayLight){dayLight.intensity=.35+daylight*1.25;dayLight.position.set(Math.cos(angle)*25,8+daylight*28,Math.sin(angle)*25);}
  if(ambientLight)ambientLight.intensity=.25+daylight*.6;
@@ -166,8 +168,8 @@ function updateEnvironment(t){
 }
 function updateHud(){
  const coord=document.getElementById("world-coordinates"),sig=document.getElementById("world-signal");
- if(coord)coord.textContent=Math.round(player.x+54).toString().padStart(2,"0")+" · "+Math.round(player.z+54).toString().padStart(2,"0");
- if(sig){const distance=Math.hypot(player.x,player.z);sig.textContent=Math.max(0,100-Math.round(distance)).toString()+" SIGNAL";}
+ if(coord)coord.textContent=Math.round(player.x+54).toString().padStart(2,"0")+" · "+Math.round(player.z+54).toString().padStart(2,"0");if(st)document.getElementById("world-location")&&(document.getElementById("world-location").textContent=st.neighbourhood||"PARC-EXTENSION");
+ if(sig){const distance=Math.hypot(player.x,player.z),wanted=Number(st?.wanted||0);sig.textContent=Math.max(0,100-Math.round(distance)+wanted*5).toString()+" SIGNAL";}
 }
 function updateActors(t){
  actors.forEach(a=>{a.position.x=a.userData.base+Math.sin(t*.35+a.userData.phase)*.8;a.rotation.y=Math.sin(t*.35+a.userData.phase)*.25;});
