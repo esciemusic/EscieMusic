@@ -147,6 +147,16 @@ function move(dt){
  const sim=root.ESCIE_WORLD_SIMULATION,st=sim?.state?.();if(st&&st.position){st.position.x=player.x;st.position.y=player.z;}
  avatar.position.set(player.x,0,player.z);avatar.rotation.y=player.yaw;
 }
+function updateVehicles(t){
+ const vs=root.ESCIE_WORLD_VEHICLES?.state?.(); if(!vs)return;
+ if(!updateVehicles.car){
+  updateVehicles.car=new THREE.Group();const body=new THREE.Mesh(new THREE.BoxGeometry(1.7,.55,3.4),makeMat(0x26302d,.65,.35));body.position.y=.55;updateVehicles.car.add(body);
+  const roof=new THREE.Mesh(new THREE.BoxGeometry(1.2,.35,1.6),makeMat(0x111615,.6));roof.position.y=.98;updateVehicles.car.add(roof);
+  updateVehicles.car.position.set(-4,.0,-10);worldGroup.add(updateVehicles.car);
+ }
+ const active=vs.current;updateVehicles.car.visible=!!active;
+ if(active){updateVehicles.car.position.x=-4+Math.sin(t*.12)*7;updateVehicles.car.position.z=-10+Math.cos(t*.12)*18;updateVehicles.car.rotation.y=t*.12;}
+}
 function updateEnvironment(t){
  const cycle=(t%180)/180,angle=cycle*Math.PI*2;
  const daylight=Math.max(.08,Math.sin(angle-Math.PI/2)*.5+.5);
@@ -163,7 +173,7 @@ function updateActors(t){
  actors.forEach(a=>{a.position.x=a.userData.base+Math.sin(t*.35+a.userData.phase)*.8;a.rotation.y=Math.sin(t*.35+a.userData.phase)*.25;});
 }
 function render(){
- const dt=Math.min(clock.getDelta(),.05);move(dt);updateActors(clock.elapsedTime);updateEnvironment(clock.elapsedTime);updateHud();
+ const dt=Math.min(clock.getDelta(),.05);move(dt);updateActors(clock.elapsedTime);updateVehicles(clock.elapsedTime);updateEnvironment(clock.elapsedTime);updateHud();
  if(thirdPerson){
    const back=new THREE.Vector3(Math.sin(player.yaw)*4.2,2.4,Math.cos(player.yaw)*4.2);
    camera.position.set(player.x+back.x,back.y,player.z+back.z);camera.lookAt(player.x,1.1,player.z);
