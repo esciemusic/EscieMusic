@@ -112,7 +112,7 @@ function resize(){
 function setup(){
  const s=stage();if(!s||!window.THREE)return false;
  const initial=root.ESCIE_WORLD_SIMULATION?.state?.()?.position||{x:2,y:7};player.x=Number(initial.x||0)/15*108-54;player.z=Number(initial.y||0)/9*108-54;
- if(s.querySelector(".escie-3d-canvas"))return true;
+ if(renderer)return true;const stale=s.querySelector(".escie-3d-canvas");if(stale)stale.remove();const staleStatus=s.querySelector("#escie-3d-status");if(staleStatus)staleStatus.remove();
  try{renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:"high-performance"});}catch(e){say3D("3D UNAVAILABLE · WEBGL REQUIRED");return false}
  renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.7));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
  renderer.domElement.className="escie-3d-canvas";renderer.domElement.setAttribute("aria-label","ESCIE 3D playable world");s.appendChild(renderer.domElement);const status=document.createElement("div");status.id="escie-3d-status";status.setAttribute("aria-live","polite");status.textContent="ESCIE WORLD · INITIALIZING";s.appendChild(status);
@@ -127,7 +127,7 @@ function setup(){
  renderer.domElement.addEventListener("touchmove",e=>{if(!touchLook||e.touches.length!==1)return;const t=e.touches[0];player.yaw-=(t.clientX-touchLook.x)*.006;player.pitch=clamp(player.pitch-(t.clientY-touchLook.y)*.004,-1.2,1.2);touchLook={x:t.clientX,y:t.clientY};},{passive:true});
  renderer.domElement.addEventListener("touchend",()=>touchLook=null,{passive:true});
  document.addEventListener("blur",()=>keys.clear());
- visibilityHandler=()=>{if(document.hidden){if(raf)cancelAnimationFrame(raf);raf=0}else if(started&&!raf){clock.start();render();}};document.addEventListener("visibilitychange",visibilityHandler);
+ visibilityHandler=()=>{if(document.hidden){if(raf)cancelAnimationFrame(raf);raf=0}else if(started&&!paused&&!raf){clock.start();render();}};document.addEventListener("visibilitychange",visibilityHandler);
  return true;
 }
 function gamepadInput(){
