@@ -1518,6 +1518,9 @@ body[data-route="escie"] #escie {
   transition:color 180ms ease;
 }
 .footer-social-link:hover,.footer-social-link:focus-visible{color:var(--white)}
+@media(max-width:760px){
+  .world-controls{grid-template-columns:1fr}
+}
 @media(max-width:700px){
   .footer-social{gap:10px 14px}
   .footer-social-label{width:100%;margin:0 0 2px}
@@ -3270,6 +3273,11 @@ main > section:not(#entry).section-open{
 /* THE WORLD — public record layer */
 .world-section .section-inner{position:relative}
 .world-section .content-container{position:relative;z-index:2}
+.world-controls{display:grid;grid-template-columns:minmax(0,1fr) minmax(150px,.35fr) minmax(170px,.4fr);gap:8px;margin:0 0 12px}
+.world-controls input,.world-controls select{width:100%;min-width:0;box-sizing:border-box;border:1px solid rgba(216,212,202,.14);background:rgba(5,5,5,.82);color:var(--escie-paper);padding:10px;font:600 .6rem monospace;letter-spacing:.04em}
+.world-controls input::placeholder{color:var(--escie-cold-grey)}
+.world-controls input:focus,.world-controls select:focus{border-color:var(--escie-blue);outline:none;box-shadow:0 0 14px rgba(47,128,255,.08)}
+
 .world-intro{padding:18px;border:1px solid rgba(216,212,202,.12);background:rgba(16,17,20,.72);margin-bottom:12px}
 .world-intro p{margin:0;color:var(--escie-paper);font:600 .72rem/1.6 monospace}
 .world-tabs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
