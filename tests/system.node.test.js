@@ -459,3 +459,11 @@ assert(worldRuntime.includes("NPC?.tick?.(rs.day,rs.hour,rs.minute,(x,y)=>false,
 assert(worldRuntime.includes("NPC?.tick?.(sim.state().day,sim.state().hour,sim.state().minute,(x,y)=>isWall(x,y),1)"),"lane movement must advance NPC life on the same time scale");
 assert(worldRuntime.includes("window.ESCIE_WORLD_NPC_LIFE?.syncRelationships?.();persistRoom();say"),"room movement must synchronize NPC relationships and persistence");
 console.log("ESCIE NPC time-scale contracts OK");
+
+
+/* INTERIOR LIFECYCLE CONTRACTS */
+assert(interiorRuntime.includes("const nx=Math.max(0,Math.min(7,active.player.x+dx))"),"interior movement must calculate bounded next position");
+assert(interiorRuntime.includes("sim?.advance)sim.advance(2)"),"interior movement must advance the World clock");
+assert(interiorRuntime.includes("NPC?.tick?.(s.day,s.hour,s.minute,(x,y)=>false,2)"),"interior movement must advance NPC schedules and life");
+assert(interiorRuntime.includes("NPC_LIFE?.syncRelationships?.()"),"interior movement must synchronize NPC relationships");
+console.log("ESCIE interior lifecycle contracts OK");
