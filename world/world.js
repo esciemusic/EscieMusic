@@ -422,7 +422,17 @@ function worldBootAudit(){
 const bootStatus=worldBootAudit();
 if(!bootStatus.ready)throw new Error("ESCIE WORLD BOOT DEPENDENCY FAILURE: "+bootStatus.missing.join(", "));
 migrateLegacySave();
-loadWorldSave(activeSaveSlot());
+const bootSlot=activeSaveSlot();
+const bootSaveOk=loadWorldSave(bootSlot);
+window.ESCIE_WORLD_BOOT=Object.assign({},window.ESCIE_WORLD_BOOT||{},{
+  save_ready:!!bootSaveOk,
+  save_slot:bootSlot,
+  save_status:saveSlotStatus(bootSlot)
+});
+if(!bootSaveOk){
+  saveIndicator("BOOT SAVE FAILED · SLOT "+bootSlot);
+  throw new Error("ESCIE WORLD BOOT SAVE FAILURE · SLOT "+bootSlot+" · "+String(window.ESCIE_WORLD_BOOT.save_status));
+}
 (function restoreWorldRuntime(){
   const s=state();
   const allowed=["lane","room01","room02","trace"];
