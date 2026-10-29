@@ -93,8 +93,8 @@ function setControlScheme(v){try{localStorage.setItem("escie_world_control_schem
 function performControlAction(type){
  const sim=window.ESCIE_WORLD_SIMULATION,s=sim?.state?.();if(!sim||!s)return;
  const t=String(type||"").toUpperCase();
- if(t==="SPRINT"){sim.advance?.(1);say("SPRINT · MOVEMENT SPEED INCREASED");return}
- if(t==="OPEN"){interactNow();return}
+ if(t==="SPRINT"){const s=state();sim.advance?.(1);say("SPRINT · MOVEMENT SPEED INCREASED · "+Number(s.energy??0)+" ENERGY");return}
+ if(t==="OPEN"){const v=window.ESCIE_WORLD_VEHICLES;const s=state();if(v&&s.transport==="CAR"&&v.state().current){const radio=v.radio();say(radio.ok?("RADIO · "+radio.line):"CAR · NO RADIO");return}interactNow();return}
  if(t==="STEAL"){const target=npcs.find(n=>Math.abs(n.x-pos.x)<=1&&Math.abs(n.y-pos.y)<=1);if(!target){say("STEAL · NO VALID TARGET");return}const r=sim.steal?.("npc:"+target.id,false);say(r?.ok===false?"STEAL · FAILED":"STEAL · ACTION TAKEN · NO WITNESS");return}
  if(t==="FIGHT"){const target=npcs.find(n=>Math.abs(n.x-pos.x)<=1&&Math.abs(n.y-pos.y)<=1);if(!target){say("FIGHT · NO VALID TARGET");return}const attack=sim.combatAttack?.(target.id,{weapon:"FIST"});if(attack?.reason==="EXHAUSTED"){say("FIGHT · TOO EXHAUSTED");return}if(!attack?.ok){say("FIGHT · "+String(attack?.reason||"FAILED"));return}window.ESCIE_WORLD_NPC?.relationship?.(target.id,-8,"FIGHT");if(attack.target?.down){say("TARGET DOWN · CONSEQUENCE REGISTERED");}else{const retaliation=Math.max(2,Math.min(12,Math.round((100-(attack.target?.health??100))/12)));const hit=sim.applyDamage?.(retaliation,"NPC_RETALIATION");if(hit?.dead){const r=sim.respawn?.();say(r?.ok?"YOU DIED · RESPAWNED · 06:00 · PARC-EXTENSION":"YOU DIED · NO RESPAWN");return}if(hit?.hospital){say("SERIOUS INJURY · HOSPITAL REQUIRED");return}say("FIGHT · TARGET HP "+Number(attack.target?.health??0)+" · YOUR HP "+Number(hit?.state?.health??0));}return}
 }
