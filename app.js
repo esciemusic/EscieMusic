@@ -529,21 +529,7 @@
       const context = recordContext(track);
       const parent = context.parents[0];
       const parentRecord = parent ? getAllRecords().find(item => recordId(item) === parent.record) : null;
-      return `
-        <article class="merch-card" data-merch-category="${escapeHTML(item.category || "CORE")}">
-          <div class="merch-card-top"><span class="eyebrow">${escapeHTML(item.category || "CORE")}</span><span class="merch-status">${escapeHTML(stage)}</span></div>
-          <div class="merch-card-art" aria-hidden="true"><span>${escapeHTML(front || "ESCIE")}</span><i></i><strong>${escapeHTML(back || item.title || "")}</strong></div>
-          <div class="merch-card-body">
-            <h3>${escapeHTML(item.title || "UNTITLED")}</h3>
-            <p>${escapeHTML(item.notes || "Physical ESCIE object.")}</p>
-            <dl class="merch-specs">
-              <div><dt>GARMENT</dt><dd>${escapeHTML(details || "SPECIFICATION PENDING")}</dd></div>
-              <div><dt>FIT / SIZE</dt><dd>${escapeHTML((item.fit || "FIT PENDING") + " · " + sizes)}</dd></div>
-              <div><dt>PRODUCTION</dt><dd>${escapeHTML(priority + " · " + (packet.quantity_decision || "HUMAN GATE"))}</dd></div>
-            </dl>
-            ${action}
-          </div>
-        </article>`;
+      return '<article class="merch-card" data-merch-category="'+escapeHTML(item.category||"CORE")+'"><div class="merch-card-top"><span class="eyebrow">'+escapeHTML(item.category||"CORE")+'</span><span class="merch-status">'+escapeHTML(stage)+'</span></div><div class="merch-card-art" aria-hidden="true"><span>'+escapeHTML(front||"ESCIE")+'</span><i></i><strong>'+escapeHTML(back||item.title||"")+'</strong></div><div class="merch-card-body"><h3>'+escapeHTML(item.title||"UNTITLED")+'</h3><p>'+escapeHTML(item.notes||"Physical ESCIE object.")+'</p><dl class="merch-specs"><div><dt>GARMENT</dt><dd>'+escapeHTML(details||"SPECIFICATION PENDING")+'</dd></div><div><dt>FIT / SIZE</dt><dd>'+escapeHTML((item.fit||"FIT PENDING")+" · "+sizes)+'</dd></div><div><dt>PRODUCTION</dt><dd>'+escapeHTML(priority+" · "+(packet.quantity_decision||"HUMAN GATE"))+'</dd></div></dl>'+action+'</div></article>';
     }).join("");
   }
 
@@ -717,7 +703,21 @@ function renderClothing(){
       const back=item.back&&item.back.text?item.back.text:"";
       const ready=String(item.status||"").toUpperCase()==="RELEASED"&&!!storeUrl;
       const action=ready?'<a class="merch-card-action" href="'+escapeHTML(storeUrl)+'" target="_blank" rel="noopener noreferrer">BUY / '+escapeHTML(storeLabel)+'</a>':'<span class="merch-card-action is-quiet">SAMPLE / APPROVAL IN PROGRESS</span>';
-      return '<article class="merch-card" data-merch-category="'+escapeHTML(item.category||"CORE")+'"><div class="merch-card-top"><span class="eyebrow">'+escapeHTML(item.category||"CORE")+'</span><span class="merch-status">'+escapeHTML(stage)+'</span></div><div class="merch-card-art" aria-hidden="true"><span>'+escapeHTML(front||"ESCIE")+'</span><i></i><strong>'+escapeHTML(back||item.title||"")+"</strong></div><div class=\"merch-card-body\"><h3>"+escapeHTML(item.title||"UNTITLED")+"</h3><p>"+escapeHTML(item.notes||"Physical ESCIE object.")+"</p><dl class=\"merch-specs\"><div><dt>GARMENT</dt><dd>"+escapeHTML(details||"SPECIFICATION PENDING")+"</dd></div><div><dt>FIT / SIZE</dt><dd>"+escapeHTML((item.fit||"FIT PENDING")+" · "+sizes)+"</dd></div><div><dt>PRODUCTION</dt><dd>"+escapeHTML(priority+" · "+(packet.quantity_decision||"HUMAN GATE"))+"</dd></div></dl>"+action+"</div></article>';
+      return `
+        <article class="merch-card" data-merch-category="${escapeHTML(item.category || "CORE")}">
+          <div class="merch-card-top"><span class="eyebrow">${escapeHTML(item.category || "CORE")}</span><span class="merch-status">${escapeHTML(stage)}</span></div>
+          <div class="merch-card-art" aria-hidden="true"><span>${escapeHTML(front || "ESCIE")}</span><i></i><strong>${escapeHTML(back || item.title || "")}</strong></div>
+          <div class="merch-card-body">
+            <h3>${escapeHTML(item.title || "UNTITLED")}</h3>
+            <p>${escapeHTML(item.notes || "Physical ESCIE object.")}</p>
+            <dl class="merch-specs">
+              <div><dt>GARMENT</dt><dd>${escapeHTML(details || "SPECIFICATION PENDING")}</dd></div>
+              <div><dt>FIT / SIZE</dt><dd>${escapeHTML((item.fit || "FIT PENDING") + " · " + sizes)}</dd></div>
+              <div><dt>PRODUCTION</dt><dd>${escapeHTML(priority + " · " + (packet.quantity_decision || "HUMAN GATE"))}</dd></div>
+            </dl>
+            ${action}
+          </div>
+        </article>`;
     }).join("");
     const storeAction=storeUrl?'<a class="merch-store-link" href="'+escapeHTML(storeUrl)+'" target="_blank" rel="noopener noreferrer">'+escapeHTML(storeLabel)+' ↗</a>':'<span class="merch-store-link is-disabled">STORE LAYER / NOT CONNECTED</span>';
     container.innerHTML='<div class="merch-statusbar"><div><span class="eyebrow">DROP 001 / THE FIRST WARDROBE</span><strong>'+visible.length+" PHYSICAL RECORD"+(visible.length===1?"":"S")+"</strong></div><p>Checkout, inventory, shipping and taxes stay outside the ESCIE site. This shell remains the archive and presentation layer.</p>"+storeAction+"</div><div class="merch-grid-list">"+cards+"</div>';
