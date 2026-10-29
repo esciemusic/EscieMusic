@@ -219,22 +219,22 @@ body.escie-world-page,.world-device,.world-device .world-shell,.world-game,.worl
  .world-save-indicator{background:rgba(5,8,7,.92)}
  .dream-overlay{background:radial-gradient(circle at center,rgba(57,255,136,.10),rgba(0,0,0,.94))}
  .dream-frame{background:rgba(5,8,7,.92);box-shadow:0 0 80px rgba(57,255,136,.12)}
-/* BLUE SIGNAL ACCENT — ESCIE world presentation */
-:root{--world-green:#4da3ff;--world-deep:#4da3ff;--world-line:rgba(77,163,255,.45);--escie-green:#4da3ff;--escie-green-dim:#1b4f8a;--escie-green-soft:rgba(77,163,255,.18)}
+/* BLUE SIGNAL ACCENT — canonical visual foundation */
+:root{--world-blue:#4da3ff;--world-blue-dim:#1b4f8a;--world-blue-soft:rgba(77,163,255,.18);--world-line:rgba(77,163,255,.45);--world-green:var(--world-blue);--world-deep:var(--world-blue);--escie-green:var(--world-blue);--escie-green-dim:var(--world-blue-dim);--escie-green-soft:var(--world-blue-soft)}
 body.escie-world-page,.world-device,.world-device .world-shell{background:#05070a;color:#dceeff}
- .world-shell{background:radial-gradient(circle at 50% 20%,rgba(77,163,255,.10),transparent 42%),#05070a}
- .world-header{background:rgba(5,7,10,.90)}
- .world-map{background-color:#070b11;background-image:linear-gradient(rgba(77,163,255,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(77,163,255,.10) 1px,transparent 1px)}
- .world-map:before{background:linear-gradient(90deg,transparent 0 18%,rgba(77,163,255,.18) 18% 21%,transparent 21% 70%,rgba(77,163,255,.18) 70% 73%,transparent 73%);border-color:rgba(77,163,255,.25)}
- .world-map:after{background:#0a0f17;border-color:rgba(77,163,255,.18)}
- .world-game,.world-investigation,.world-market{box-shadow:0 0 55px rgba(77,163,255,.10)}
- .world-tile.floor,.investigation-node,.market-item,.world-quest,.sim-card,.phone-card,.system-card,.life-stat,.profile-id{background:rgba(77,163,255,.045)}
- .world-tile.wall{background:linear-gradient(135deg,#10151c,#070d14);box-shadow:inset 0 0 12px rgba(77,163,255,.10)}
- .world-player{background:#07101a}
- .world-interact,.world-controls button,.world-actions button,.investigation-link,.market-item button,.evidence-detail-actions button,.world-quest,.transit-mode button,.sim-actions button,.phone-top button,.phone-tabs button,.phone-card button{background:rgba(77,163,255,.06)}
- .world-controls button:hover,.world-controls button:focus-visible,.world-actions button:hover,.sim-actions button:hover,.phone-top button:hover,.phone-tabs button:hover{background:rgba(77,163,255,.14)}
- .world-phone{color:#dceeff;box-shadow:0 25px 80px rgba(77,163,255,.16)}
- .world-preferences,.world-pause,.world-system,.world-profile,.world-life,.simulation-panel{background:rgba(0,0,0,.78)}
- .world-save-indicator{background:rgba(5,7,10,.92)}
- .dream-overlay{background:radial-gradient(circle at center,rgba(77,163,255,.10),rgba(0,0,0,.94))}
- .dream-frame{background:rgba(5,7,10,.92);box-shadow:0 0 80px rgba(77,163,255,.12)}
+.world-shell{background:radial-gradient(circle at 50% 20%,rgba(77,163,255,.10),transparent 42%),#05070a}
+.world-header{background:rgba(5,7,10,.90)}
+.world-map{background-color:#070b11;background-image:linear-gradient(rgba(77,163,255,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(77,163,255,.10) 1px,transparent 1px)}
+.world-map:before{background:linear-gradient(90deg,transparent 0 18%,rgba(77,163,255,.18) 18% 21%,transparent 21% 70%,rgba(77,163,255,.18) 70% 73%,transparent 73%);border-color:rgba(77,163,255,.25)}
+.world-map:after{background:#0a0f17;border-color:rgba(77,163,255,.18)}
+.world-game,.world-investigation,.world-market{box-shadow:0 0 55px rgba(77,163,255,.10)}
+.world-tile.floor,.investigation-node,.market-item,.world-quest,.sim-card,.phone-card,.system-card,.life-stat,.profile-id{background:rgba(77,163,255,.045)}
+.world-tile.wall{background:linear-gradient(135deg,#10151c,#070d14);box-shadow:inset 0 0 12px rgba(77,163,255,.10)}
+.world-player{background:#07101a}
+.world-interact,.world-controls button,.world-actions button,.investigation-link,.market-item button,.evidence-detail-actions button,.world-quest,.transit-mode button,.sim-actions button,.phone-top button,.phone-tabs button,.phone-card button{background:rgba(77,163,255,.06)}
+.world-controls button:hover,.world-controls button:focus-visible,.world-actions button:hover,.sim-actions button:hover,.phone-top button:hover,.phone-tabs button:hover{background:rgba(77,163,255,.14)}
+.world-phone{color:#dceeff;box-shadow:0 25px 80px rgba(77,163,255,.16)}
+.world-preferences,.world-pause,.world-system,.world-profile,.world-life,.simulation-panel{background:rgba(0,0,0,.78)}
+.world-save-indicator{background:rgba(5,7,10,.92)}
+.dream-overlay{background:radial-gradient(circle at center,rgba(77,163,255,.10),rgba(0,0,0,.94))}
+.dream-frame{background:rgba(5,7,10,.92);box-shadow:0 0 80px rgba(77,163,255,.12)}
