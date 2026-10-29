@@ -267,12 +267,16 @@ function saveWorldState(){let previousSlotRaw=null,previousKeyRaw=null,previousA
   if(previousActiveRaw===null)localStorage.removeItem(ACTIVE_SLOT_KEY);else localStorage.setItem(ACTIVE_SLOT_KEY,previousActiveRaw);
 }catch(_e){}saveIndicator("SAVE FAILED · "+String(e?.message||"STORAGE"));return false}}
 function createFreshSnapshot(slot){const n=Number(slot);const simulation=defaultStoreBundle(null)["escie_world_simulation_v1"];simulation.position={x:start.x,y:start.y};return {version:SAVE_VERSION,saved_at:new Date().toISOString(),slot:n,world_state:{version:1,session_id:"local-world",player_id:window.ESCIE_GAME_PROFILE?.id||null,episode_id:"the-world",world_room:"lane",world_position:{x:start.x,y:start.y},inventory:[],discoveries:[],world_unlocks:[],signals:0,entered:false,entry_source:"new-game",unresolved:[],unknown:[],completed_quests:[],input_mode:"AUTO",created_at:new Date().toISOString()},simulation_state:simulation,input_mode:"AUTO",stores:defaultStoreBundle(simulation)}}
-function initializeEmptySave(slot=activeSaveSlot()){try{
+function initializeEmptySave(slot=activeSaveSlot()){let previousSlotRaw=null,previousKeyRaw=null,previousActiveRaw=null,wasActive=false;try{
   const n=Number(slot);if(!Number.isInteger(n)||n<1||n>SAVE_SLOT_COUNT)return false;
   const fresh=createFreshSnapshot(n);
   const invalid=validateSaveSnapshot(fresh,n);if(invalid)return false;
+  wasActive=n===activeSaveSlot();
+  previousSlotRaw=localStorage.getItem(saveSlotKey(n));
+  previousKeyRaw=localStorage.getItem(KEY);
+  previousActiveRaw=localStorage.getItem(ACTIVE_SLOT_KEY);
   localStorage.setItem(saveSlotKey(n),JSON.stringify(fresh));
-  if(n===activeSaveSlot()){
+  if(wasActive){
     clearRuntimeStores();
     localStorage.setItem(KEY,JSON.stringify(fresh.world_state));
     if(!restoreSaveStores(fresh.stores))throw new Error("FRESH_STORE_RESTORE_FAILED");
@@ -281,7 +285,17 @@ function initializeEmptySave(slot=activeSaveSlot()){try{
   }
   saveIndicator("SLOT "+n+" · NEW GAME");
   return true;
-}catch(e){return false}}
+}catch(e){
+  try{
+    if(previousSlotRaw===null)localStorage.removeItem(saveSlotKey(Number(slot)));else localStorage.setItem(saveSlotKey(Number(slot)),previousSlotRaw);
+    if(wasActive){
+      if(previousKeyRaw===null)localStorage.removeItem(KEY);else localStorage.setItem(KEY,previousKeyRaw);
+      if(previousActiveRaw===null)localStorage.removeItem(ACTIVE_SLOT_KEY);else localStorage.setItem(ACTIVE_SLOT_KEY,previousActiveRaw);
+    }
+  }catch(_e){}
+  saveIndicator("SLOT "+Number(slot)+" · NEW GAME FAILED");
+  return false;
+}}
 function deleteSaveSlot(slot){try{const n=Number(slot);if(!Number.isInteger(n)||n<1||n>SAVE_SLOT_COUNT)return false;if(n===activeSaveSlot()){resetLocalGame();return true}localStorage.removeItem(saveSlotKey(n));for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k&&k.startsWith("escie_world_quarantine_v1_"+n+"_"))localStorage.removeItem(k)}saveIndicator("SLOT "+n+" · DELETED");return true}catch(e){return false}}
 function saveSlotStatus(slot){try{const n=Number(slot);if(!Number.isInteger(n)||n<1||n>SAVE_SLOT_COUNT)return "INVALID";const raw=localStorage.getItem(saveSlotKey(n));if(!raw)return "EMPTY";let p;try{p=JSON.parse(raw)}catch(e){return "CORRUPT"}const staged=p&&typeof p==="object"&&!Array.isArray(p)&&p.world_state?Object.assign({},p,{stores:normalizeSaveStores(p)}):{version:1,slot:n,world_state:p,stores:normalizeSaveStores({world_state:p})};const invalid=validateSaveSnapshot(staged,n);if(invalid)return "CORRUPT";const w=staged.world_state||{};const legacy=p?.stores==null;return (legacy?"SAVED · LEGACY":"SAVED")+" · "+String(w.world_room||"LANE").toUpperCase()+" · "+Number(w.signals||0)+" SIGNAL"}catch(e){return "CORRUPT"}}
 function loadWorldSave(slot=activeSaveSlot()){let backup=null,previousKeyRaw=null,previousActiveRaw=null,previousSlotRaw=null;try{
@@ -387,19 +401,20 @@ function worldEntryGate(){
   document.body.appendChild(el);
   const close=()=>{el.hidden=true;try{sessionStorage.setItem(ENTRY_SEEN_KEY,"1")}catch(e){};stage?.focus?.()};
   el.querySelector("[data-entry-continue]")?.addEventListener("click",()=>{close();say("RESUMED · SLOT "+slot);render()});
-  el.querySelector("[data-entry-new]")?.addEventListener("click",()=>{try{sessionStorage.setItem(ENTRY_SEEN_KEY,"1")}catch(e){};initializeEmptySave(slot);location.reload()});
+  el.querySelector("[data-entry-new]")?.addEventListener("click",()=>{const ok=initializeEmptySave(slot);if(!ok)return;safelyMarkEntrySeen();location.reload()});
   el.querySelector("[data-entry-slots]")?.addEventListener("click",()=>{close();systemMenu();document.getElementById("world-system")?.removeAttribute("hidden")});
   el.querySelector("[data-entry-exit]")?.addEventListener("click",()=>{location.href="../"});
   el.hidden=false;
 }
+function safelyMarkEntrySeen(){try{sessionStorage.setItem(ENTRY_SEEN_KEY,"1")}catch(e){}}
 try{if(sessionStorage.getItem(ENTRY_SEEN_KEY)!=="1")worldEntryGate()}catch(e){worldEntryGate()}
 function systemMenu(){let el=document.getElementById("world-system");
 if(!el){el=document.createElement("section");el.id="world-system";el.className="world-system";el.hidden=true;
 el.innerHTML='<div class="system-panel" role="dialog" aria-modal="true" aria-label="World system"><div class="system-head"><div><span class="world-kicker">ESCIE / THE WORLD</span><h2>SYSTEM</h2></div><button class="system-close" data-system-close>CLOSE</button></div><div class="system-grid"><div class="system-card"><strong>STATE</strong><span>LOCAL PLAYER STATE ACTIVE</span></div><div class="system-card"><strong>CANON</strong><span>GAME CANNOT WRITE CANONICAL TRUTH</span></div><div class="system-card"><strong>INPUT</strong><span data-system-input>DETECTING…</span></div><div class="system-card"><strong>DISPLAY</strong><span data-system-display>DETECTING…</span></div><div class="system-card"><strong>SAVE SLOT</strong><span data-system-slot>SLOT 1</span></div><div class="system-card"><strong>SIGNAL</strong><span data-system-signal>0</span></div><div class="system-card"><strong>DISCOVERIES</strong><span data-system-discoveries>0</span></div></div><div class="system-save-manager"><h3>SAVE / LOAD</h3><div class="save-slot-list" data-save-slot-list></div></div><div class="system-actions"><button data-system-prefs>PREFERENCES</button><button data-system-pause>PAUSE MENU</button><button data-system-reset>RESET ACTIVE SLOT</button></div></div>';
 document.body.appendChild(el);el.querySelector("[data-system-close]").onclick=()=>el.hidden=true;el.querySelector("[data-system-prefs]").onclick=()=>{el.hidden=true;preferences()};el.querySelector("[data-system-pause]").onclick=()=>{el.hidden=true;pauseMenu()};el.querySelector("[data-system-reset]").onclick=()=>{if(confirm("Reset the ACTIVE save slot? This clears gameplay, simulation, NPC, equipment, vehicle and law state for SLOT "+activeSaveSlot()+". Other save slots, profile and preferences remain.")){resetLocalGame()}}}
 const refreshSaveManager=()=>{const list=el.querySelector("[data-save-slot-list]");if(!list)return;list.innerHTML=[1,2,3].map(function(n){const status=saveSlotStatus(n),active=n===activeSaveSlot();return '<article class="save-slot-card '+(active?"active ":"")+status.toLowerCase().replace(/[^a-z]+/g,"-")+'"><strong>SLOT '+n+(active?" · ACTIVE":"")+'</strong><span>'+esc(status)+'</span><div><button type="button" data-slot-load="'+n+'">LOAD</button><button type="button" data-slot-new="'+n+'">NEW</button><button type="button" data-slot-delete="'+n+'">DELETE</button></div></article>'}).join("");
-list.querySelectorAll("[data-slot-load]").forEach(b=>b.onclick=()=>{const n=Number(b.dataset.slotLoad);if(n===activeSaveSlot()){say("SLOT "+n+" · ACTIVE");return}if(saveSlotStatus(n)==="EMPTY"){initializeEmptySave(n);localStorage.setItem(ACTIVE_SLOT_KEY,String(n));location.reload();return}if(confirm("Load SAVE SLOT "+n+"? Current progress will be saved to SLOT "+activeSaveSlot()+".")){switchSaveSlot(n)}});
-list.querySelectorAll("[data-slot-new]").forEach(b=>b.onclick=()=>{const n=Number(b.dataset.slotNew);if(saveSlotStatus(n)!=="EMPTY"&&!confirm("Replace SAVE SLOT "+n+" with a NEW GAME? Existing progress will be deleted."))return;if(n===activeSaveSlot()){resetLocalGame();return}initializeEmptySave(n);say("SLOT "+n+" · NEW GAME READY");refreshSaveManager()});
+list.querySelectorAll("[data-slot-load]").forEach(b=>b.onclick=()=>{const n=Number(b.dataset.slotLoad);if(n===activeSaveSlot()){say("SLOT "+n+" · ACTIVE");return}if(saveSlotStatus(n)==="EMPTY"){if(!initializeEmptySave(n)){say("SLOT "+n+" · NEW GAME FAILED");return}localStorage.setItem(ACTIVE_SLOT_KEY,String(n));location.reload();return}if(confirm("Load SAVE SLOT "+n+"? Current progress will be saved to SLOT "+activeSaveSlot()+".")){switchSaveSlot(n)}});
+list.querySelectorAll("[data-slot-new]").forEach(b=>b.onclick=()=>{const n=Number(b.dataset.slotNew);if(saveSlotStatus(n)!=="EMPTY"&&!confirm("Replace SAVE SLOT "+n+" with a NEW GAME? Existing progress will be deleted."))return;if(n===activeSaveSlot()){resetLocalGame();return}const ok=initializeEmptySave(n);say(ok?"SLOT "+n+" · NEW GAME READY":"SLOT "+n+" · NEW GAME FAILED");refreshSaveManager()});
 list.querySelectorAll("[data-slot-delete]").forEach(b=>b.onclick=()=>{const n=Number(b.dataset.slotDelete);if(saveSlotStatus(n)==="EMPTY"){say("SLOT "+n+" · EMPTY");return}if(confirm("Delete SAVE SLOT "+n+"? This cannot be undone.")){deleteSaveSlot(n);if(n!==activeSaveSlot())refreshSaveManager()}})};
 const s=JSON.parse(localStorage.getItem("escie_game_state_v1")||"{}");el.querySelector("[data-system-input]").textContent=(prefs().controls||"AUTO").toUpperCase();el.querySelector("[data-system-display]").textContent=(prefs().display||"DEVICE").toUpperCase();el.querySelector("[data-system-slot]").textContent="SLOT "+activeSaveSlot();el.querySelector("[data-system-signal]").textContent=String(s.signals||0);el.querySelector("[data-system-discoveries]").textContent=String((s.discoveries||[]).length);refreshSaveManager();el.hidden=false;el.querySelector("[data-system-close]")?.focus()}
 
