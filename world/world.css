@@ -1,3 +1,18 @@
+/* ESCIE WORLD — canonical palette aliases */
+:root{
+  --world-blue:var(--escie-blue,#2f80ff);
+  --world-blue-bright:var(--escie-blue-bright,#4da3ff);
+  --world-blue-soft:var(--escie-blue-soft,rgba(47,128,255,.18));
+  --world-purple:var(--escie-purple,#6f3faf);
+  --world-purple-bright:var(--escie-ultraviolet,#9b59ff);
+  --world-purple-soft:var(--escie-purple-soft,rgba(111,63,175,.16));
+  --world-green:var(--escie-green,#8faf72);
+  --world-danger:var(--escie-red,#8e1f2d);
+  --world-warning:var(--escie-amber,#b8873a);
+  --world-cold-grey:var(--escie-cold-grey,#70747a);
+  --world-line:var(--escie-blue-line,rgba(47,128,255,.55));
+}
+
 :root{--world-green:#9b59ff;--world-deep:#9b59ff;--world-line:rgba(155,89,255,.45)}
 body.escie-world-page{margin:0;background:#9b59ff;color:#9b59ff;min-height:100vh}
 .world-shell{min-height:100vh;display:flex;flex-direction:column;background:radial-gradient(circle at 50% 20%,rgba(155,89,255,.45),transparent 42%),#9b59ff}
@@ -220,7 +235,7 @@ body.escie-world-page,.world-device,.world-device .world-shell,.world-game,.worl
  .dream-overlay{background:radial-gradient(circle at center,rgba(155,89,255,.10),rgba(0,0,0,.94))}
  .dream-frame{background:rgba(5,8,7,.92);box-shadow:0 0 80px rgba(155,89,255,.12)}
 /* BLUE SIGNAL ACCENT — canonical visual foundation */
-:root{--world-blue:#9b59ff;--world-blue-dim:#126b3b;--world-blue-soft:rgba(155,89,255,.18);--world-line:rgba(155,89,255,.45);--world-green:var(--world-blue);--world-deep:var(--world-blue);--escie-green:var(--world-blue);--escie-green-dim:var(--world-blue-dim);--escie-green-soft:var(--world-blue-soft)}
+:root{--world-blue:var(--escie-blue);--world-blue-dim:var(--escie-blue-soft);--world-blue-soft:var(--escie-blue-soft);--world-line:var(--escie-blue-line);--world-deep:var(--escie-blue);}
 body.escie-world-page,.world-device,.world-device .world-shell{background:#05070a;color:#dceeff}
 .world-shell{background:radial-gradient(circle at 50% 20%,rgba(155,89,255,.10),transparent 42%),#05070a}
 .world-header{background:rgba(5,7,10,.90)}
