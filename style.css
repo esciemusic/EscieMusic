@@ -8,30 +8,46 @@
    ROOT
    ========================================================= */
 
-:root {
-  --signal-green:#9b59ff;
-  --signal-green-dim:#126b3b;
+/* =========================================================
+   ESCIE MASTER COLOR SYSTEM
+   Black = foundation · Blue = identity/signal · Purple = distortion
+   Green = incidental/environmental only
+   ========================================================= */
+:root{
+  --escie-void:#050505;
+  --escie-black:#0b0b0d;
+  --escie-asphalt:#101114;
+  --escie-concrete:#1b1c1f;
+  --escie-smoke:#292a2e;
+  --escie-white:#d8d4ca;
+  --escie-paper:#f0ede4;
 
-  --black: #050505;
-  --deep-black: #020202;
+  --escie-blue:#2f80ff;
+  --escie-blue-bright:#4da3ff;
+  --escie-blue-soft:rgba(47,128,255,.18);
+  --escie-blue-line:rgba(47,128,255,.55);
 
-  --white: #f2f2ed;
-  --muted: rgba(242, 242, 237, 0.58);
-  --faint: rgba(242, 242, 237, 0.28);
+  --escie-purple:#6f3faf;
+  --escie-ultraviolet:#9b59ff;
+  --escie-purple-soft:rgba(111,63,175,.16);
 
-  --line: rgba(242, 242, 237, 0.14);
+  --escie-green:#8faf72;
+  --escie-red:#8e1f2d;
+  --escie-rust:#8a4035;
+  --escie-amber:#b8873a;
+  --escie-cold-grey:#70747a;
 
-  --header-height: 72px;
+  --signal-purple:var(--escie-purple);
+  --signal-purple-dim:var(--escie-purple-soft);
 
-  --max-width: 1400px;
-
-  --ease:
-    cubic-bezier(0.22, 1, 0.36, 1);
-
-  --slow:
-    cubic-bezier(0.16, 1, 0.3, 1);
-
+  --black:var(--escie-void);
+  --deep-black:#020202;
+  --white:var(--escie-paper);
+  --muted:rgba(240,237,228,.58);
+  --faint:rgba(240,237,228,.28);
+  --line:rgba(240,237,228,.14);
 }
+
 
 
 /* =========================================================
