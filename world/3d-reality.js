@@ -155,7 +155,12 @@ function updatePolice(){const law=root.ESCIE_WORLD_LAW?.state?.();if(!law?.activ
 function npcInteract(){const live=root.ESCIE_WORLD_NPC?.state?.().npcs||{};let best=null,bd=2.4;actors.forEach(a=>{if(!a.userData.canonical)return;const n=live[a.userData.id];if(!n||Number(n.health??100)<=0)return;const d=Math.hypot(player.x-a.position.x,player.z-a.position.z);if(d<bd){bd=d;best=n}});if(!best)return false;const sim=root.ESCIE_WORLD_SIMULATION?.state?.()||{};const raw=root.ESCIE_WORLD_DIALOGUE?.generate?.(best,{id:"player",name:"YOU"},{day:sim.day||1,hour:sim.hour||12,minute:sim.minute||0,language:best.native_language||"en",community:best.community||"LOCAL"})?.line||("LOCAL · "+(best.occupation||best.role||"RESIDENT"));const line=root.ESCIE_WORLD_LANGUAGE?.speakToPlayer?.(best,raw)||raw;root.ESCIE_WORLD_NPC?.rememberInteraction?.(best.id,{channel:"3D",text:raw});root.ESCIE_WORLD_NPC?.relationship?.(best.id,1,"3D CONVERSATION");root.ESCIE_WORLD_ACTIONS?.discover?.({id:"npc:"+best.id,label:best.name||best.role||best.id,discovery:"NPC CONTACT",queries:[best.occupation||best.role||"LOCAL"]});root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(5,"NPC CONTACT");say3D((best.name||best.role||"LOCAL")+" · "+line);return true}
 function vehicleInteract(){const vs=root.ESCIE_WORLD_VEHICLES;if(!vs)return false;const state=vs.state?.()||{};if(player.inVehicle){const r=vs.exit?.();if(r?.ok){player.inVehicle=false;player.vehicleId=null;say3D("VEHICLE · EXITED · FOOT");return true}say3D("VEHICLE · "+String(r?.reason||"EXIT FAILED"));return true}const d=updateVehicles.car;if(!d||!d.visible||Math.hypot(player.x-d.position.x,player.z-d.position.z)>3)return false;const id=d.userData.vehicleId||state.owned?.[0]?.id||"TAXI";
  const condition=Number(state.condition?.[id]??100);
- if(condition<=0){say3D("VEHICLE · DISABLED · REQUIRES REPAIR");return true}
+ if(condition<=0){
+   const repair=root.ESCIE_WORLD_VEHICLES?.repair?.(id,100);
+   if(repair?.ok){say3D("VEHICLE · REPAIRED · "+Number(repair.condition||0)+"% · $"+Number(repair.cost||0));}
+   else say3D("VEHICLE · DISABLED · REPAIR "+(repair?.cost?("$"+repair.cost):"REQUIRED"));
+   return true
+ }
  const r=vs.enter?.(id);if(r?.ok){player.inVehicle=true;player.vehicleId=id;say3D("VEHICLE · "+String(r.vehicle?.label||id)+" · DRIVE");return true}say3D("VEHICLE · "+String(r?.reason||"UNAVAILABLE"));return true}
 function interact(){if(interiorMode)return exit3DInterior();if(evidenceInteract())return true;if(npcInteract())return true;if(vehicleInteract())return true;
  const near=doors.find(d=>Math.hypot(player.x-d.x,player.z-d.z)<2.4);
@@ -254,7 +259,7 @@ function updateVehicles(t){
  updateVehicles.car.userData.condition=condition;
  updateVehicles.car.visible=!!active&&!interiorMode;
  updateVehicles.car.userData.disabled=condition<=0;
- updateVehicles.car.scale.setScalar(condition<=0?.82:1);
+ updateVehicles.car.scale.setScalar(condition<=0 ? .82 : 1);
  if(player.inVehicle&&active){
    player.vehicleId=active;
    const base=type==="CAR"?9.5:type==="BIKE"?7.2:5.4;
