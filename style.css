@@ -2922,3 +2922,47 @@ body.inspector-open{overflow:hidden}
    ========================================================= */
 :root{--escie-blue:#2f80ff;--escie-blue-soft:rgba(47,128,255,.18);--escie-blue-line:rgba(47,128,255,.55);}
 .escie-blue,.blue-accent{color:var(--escie-blue);}
+
+
+/* =========================================================
+   CONFIRMED MASTER PALETTE — FINAL
+   Void / asphalt / concrete = reality foundation
+   Blue = ESCIE identity + signal
+   Purple = distortion / psychology / abnormality
+   White / grey = reality + evidence + documentation
+   Red / rust = danger / damage / consequence
+   Amber = warning / Montréal lighting / infrastructure
+   Green = incidental / environmental only
+   ========================================================= */
+:root{
+  --escie-void:#050505;
+  --escie-asphalt:#101114;
+  --escie-concrete:#1b1c1f;
+  --escie-smoke:#292a2e;
+  --escie-white:#d8d4ca;
+  --escie-paper:#f0ede4;
+  --escie-blue:#2f80ff;
+  --escie-blue-bright:#4da3ff;
+  --escie-blue-soft:rgba(47,128,255,.18);
+  --escie-blue-line:rgba(47,128,255,.55);
+  --escie-purple:#6f3faf;
+  --escie-ultraviolet:#9b59ff;
+  --escie-purple-soft:rgba(111,63,175,.16);
+  --escie-muted-purple:#604b70;
+  --escie-green:#8faf72;
+  --escie-rust:#8a4035;
+  --escie-red:#8e1f2d;
+  --escie-amber:#b8873a;
+  --escie-cold-grey:#70747a;
+
+  --signal:#2f80ff;
+  --signal-bright:#4da3ff;
+  --distortion:#6f3faf;
+  --distortion-bright:#9b59ff;
+  --reality:#f0ede4;
+  --documentation:#70747a;
+  --danger:#8e1f2d;
+  --damage:#8a4035;
+  --warning:#b8873a;
+  --environment:#8faf72;
+}
