@@ -1,0 +1,24 @@
+/* ESCIE RPG SYSTEM
+ * Character progression is game-state only. It never writes canonical ESCIE truth.
+ */
+(function(){
+"use strict";
+const root=typeof window!=="undefined"?window:globalThis;
+const CLASSES=["DRIFTER","RUNNER","INVESTIGATOR","SURVIVOR"];
+const ATTRIBUTES=["BODY","MIND","NERVE","SOCIAL"];
+const SKILLS=["ATHLETICS","PARKOUR","STREETWISE","INVESTIGATION","TECH","CHARISMA","COMBAT","STEALTH"];
+const XP_TABLE=[0,100,250,450,700,1000,1400,1850,2350,2900,3500];
+const DEFAULT={version:1,class_id:"DRIFTER",level:1,xp:0,unspent_points:0,attributes:{BODY:1,MIND:1,NERVE:1,SOCIAL:1},skills:{ATHLETICS:0,PARKOUR:0,STREETWISE:0,INVESTIGATION:0,TECH:0,CHARISMA:0,COMBAT:0,STEALTH:0},perks:[],quests:{active:[],completed:[],failed:[]},rewards:[],loot:[],equipment:{head:null,body:null,hands:null,feet:null,weapon:null,accessory:null},combat:{kills:0,knockouts:0,damage_dealt:0,damage_taken:0},dialogue:{choices:0,successes:0},discoveries:0};
+function clone(v){return JSON.parse(JSON.stringify(v))}
+function state(seed){const s=seed&&typeof seed==="object"&&!Array.isArray(seed)?seed:{};const o=Object.assign({},clone(DEFAULT),s);o.attributes=Object.assign({},DEFAULT.attributes,s.attributes||{});o.skills=Object.assign({},DEFAULT.skills,s.skills||{});o.equipment=Object.assign({},DEFAULT.equipment,s.equipment||{});o.combat=Object.assign({},DEFAULT.combat,s.combat||{});o.dialogue=Object.assign({},DEFAULT.dialogue,s.dialogue||{});o.quests=Object.assign({},DEFAULT.quests,s.quests||{});["perks","rewards","loot"].forEach(k=>{if(!Array.isArray(o[k]))o[k]=[]});return o}
+function levelForXP(xp){let level=1;for(let i=1;i<XP_TABLE.length;i++)if(Number(xp)>=XP_TABLE[i])level=i+1;return level}
+function xpToNext(xp){const l=levelForXP(xp);return l>=XP_TABLE.length?null:XP_TABLE[l]}
+function gainXP(seed,amount,reason){const s=state(seed),before=s.level,gain=Math.max(0,Math.floor(Number(amount)||0));s.xp+=gain;s.level=levelForXP(s.xp);if(s.level>before)s.unspent_points+=(s.level-before)*2;return {state:s,gained:gain,leveled:s.level>before,levels:s.level-before,reason:String(reason||"")}}
+function spendPoint(seed,type,id){const s=state(seed);if(s.unspent_points<1)return {ok:false,state:s,reason:"NO POINTS"};const t=String(type||"").toUpperCase(),key=String(id||"").toUpperCase();if(t==="ATTRIBUTE"&&!ATTRIBUTES.includes(key))return {ok:false,state:s,reason:"INVALID ATTRIBUTE"};if(t==="SKILL"&&!SKILLS.includes(key))return {ok:false,state:s,reason:"INVALID SKILL"};if(t==="ATTRIBUTE")s.attributes[key]++;else s.skills[key]++;s.unspent_points--;return {ok:true,state:s,reason:key+" +1"}}
+function classInfo(id){const c=String(id||"DRIFTER").toUpperCase();const data={DRIFTER:{title:"DRIFTER",desc:"Adaptable street survivor.",bonus:{NERVE:1,STREETWISE:1}},RUNNER:{title:"RUNNER",desc:"Movement, speed and escape.",bonus:{BODY:1,PARKOUR:1,ATHLETICS:1}},INVESTIGATOR:{title:"INVESTIGATOR",desc:"Patterns, evidence and technology.",bonus:{MIND:1,INVESTIGATION:1,TECH:1}},SURVIVOR:{title:"SURVIVOR",desc:"Resilience, conflict and pressure.",bonus:{NERVE:1,COMBAT:1,STEALTH:1}}};return data[c]||data.DRIFTER}
+function setClass(seed,id){const s=state(seed),c=String(id||"").toUpperCase();if(s.level!==1||s.xp>0)return {ok:false,state:s,reason:"CLASS LOCKED AFTER PROGRESSION"};if(!CLASSES.includes(c))return {ok:false,state:s,reason:"INVALID CLASS"};s.class_id=c;return {ok:true,state:s,reason:"CLASS SET"}}
+function check(seed,skill,difficulty){const s=state(seed),key=String(skill||"").toUpperCase(),value=(Number(s.skills[key])||0)+(key==="ATHLETICS"||key==="PARKOUR"?Number(s.attributes.BODY||0):key==="INVESTIGATION"||key==="TECH"?Number(s.attributes.MIND||0):key==="COMBAT"||key==="STEALTH"?Number(s.attributes.NERVE||0):Number(s.attributes.SOCIAL||0));return {ok:value>=Number(difficulty||0),value,difficulty:Number(difficulty||0),margin:value-Number(difficulty||0)}}
+function recordCombat(seed,kind,data){const s=state(seed),d=data&&typeof data==="object"?data:{};if(kind==="kill")s.combat.kills++;if(kind==="knockout")s.combat.knockouts++;s.combat.damage_dealt+=Math.max(0,Number(d.dealt)||0);s.combat.damage_taken+=Math.max(0,Number(d.taken)||0);return s}
+function summary(seed){const s=state(seed);return {class_id:s.class_id,level:s.level,xp:s.xp,next_xp:xpToNext(s.xp),unspent_points:s.unspent_points,attributes:clone(s.attributes),skills:clone(s.skills),combat:clone(s.combat),quests:clone(s.quests),equipment:clone(s.equipment)}}
+root.ESCIE_RPG={version:"1.0.0",classes:()=>CLASSES.slice(),attributes:()=>ATTRIBUTES.slice(),skills:()=>SKILLS.slice(),default:()=>clone(DEFAULT),state,gainXP,spendPoint,classInfo,setClass,check,recordCombat,summary,xpToNext,levelForXP};
+})();
