@@ -15,6 +15,12 @@ if(!Array.isArray(s.npcs[n.id].schedule)||!s.npcs[n.id].schedule.length){
  const socialOffsets={MUSICIAN:{x:3,y:2},BARISTA:{x:2,y:1},SHOPKEEPER:{x:-2,y:2},TRAINER:{x:1,y:-2},OFFICE_WORKER:{x:-3,y:-1},CLINIC_WORKER:{x:-2,y:-2},VENUE_WORKER:{x:3,y:-2},ARCHIVIST:{x:-3,y:2},VENDOR:{x:2,y:-3}};
  const roleOffset=socialOffsets[occupation]||{x:0,y:0};
  social.x=Math.max(0,Math.min(15,social.x+roleOffset.x));social.y=Math.max(0,Math.min(9,social.y+roleOffset.y));
+ const buildings=window.ESCIE_WORLD_SIMULATION?.districtBuildings?.(district)||[];
+ const preferred={MUSICIAN:["STUDIO","VENUE"],BARISTA:["CAFE"],SHOPKEEPER:["SHOP"],TRAINER:["GYM"],OFFICE_WORKER:["OFFICE"],CLINIC_WORKER:["CLINIC"],VENUE_WORKER:["VENUE"],ARCHIVIST:["ARCHIVE"],VENDOR:["SHOP","VENUE"]}[occupation]||[];
+ const pickBuilding=(types,exclude=[])=>buildings.find(b=>types.some(t=>String(b.interior||"").toUpperCase()===t||String(b.type||"").toUpperCase()===t)&&!exclude.includes(b.id))||buildings.find(b=>!exclude.includes(b.id))||null;
+ const workBuilding=pickBuilding(preferred); const socialBuilding=pickBuilding(["CLUB","CAFE","VENUE","STUDIO"],workBuilding?[workBuilding.id]:[]);
+ s.npcs[n.id].workplace_id=workBuilding?.id||null;s.npcs[n.id].social_place_id=socialBuilding?.id||null;
+ if(workBuilding)s.npcs[n.id].work_building=workBuilding;if(socialBuilding)s.npcs[n.id].social_building=socialBuilding;
  s.npcs[n.id].home=Object.assign({district},home);s.npcs[n.id].work=Object.assign({district},work);s.npcs[n.id].social=Object.assign({district},social);
  const socialStart=1020+(h%3)*30;
  const socialEnd=Math.min(1260,socialStart+90+(h%2)*30);
