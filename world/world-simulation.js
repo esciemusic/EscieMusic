@@ -369,7 +369,7 @@ const combatDefend=()=>{
  const s=read();s.stamina=Math.min(100,Number(s.stamina??100)+4);s.stress=clamp(s.stress-1);s.events=(s.events||[]).concat([{type:"COMBAT_DEFEND",day:s.day,hour:s.hour}]).slice(-100);if(!save(s))return {ok:false,reason:"SAVE_FAILED"};return {ok:true,state:read()};
 };
 const applyDamage=(amount=0,cause="UNKNOWN",opts={})=>{
- const s=read(),d=Math.max(0,Number(amount)||0);if(!d)return {ok:true,damage:0,state:s};
+ const s=read(),eq=window.ESCIE_WORLD_EQUIPMENT,d0=Math.max(0,Number(amount)||0),armor=Number(eq?.armor?.()||0),d=Math.max(0,Math.round(d0*(1-Math.min(.7,armor/100))));if(!d)return {ok:true,damage:0,state:s};
  s.health=clamp(s.health-d);s.damage=clamp((s.damage||0)+d);s.stress=clamp(s.stress+Math.min(30,d*.4));
  s.events=(s.events||[]).concat([{type:"INJURY",damage:d,cause,day:s.day,hour:s.hour}]).slice(-100);
  if(s.health<=0){s.legal_status="DECEASED";s.status="DECEASED";s.events=(s.events||[]).concat([{type:"DEATH",cause,day:s.day,hour:s.hour}]).slice(-100);if(!save(s))return {ok:false,reason:"SAVE_FAILED"};return {ok:false,dead:true,respawn:true,state:read()}}
