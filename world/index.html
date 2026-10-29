@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="ESCIE — THE WORLD. A playable layer of the same reality.">
 <title>ESCIE — THE WORLD</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#050505">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="stylesheet" href="world.css">
 <link rel="stylesheet" href="game-shell.css">
 </head>
@@ -87,6 +91,9 @@
     try{window.ESCIE_WORLD_ACTIONS&&window.ESCIE_WORLD_ACTIONS.save&&window.ESCIE_WORLD_ACTIONS.save();}catch(e){}
   });
 })();
+</script>
+<script>
+(function(){try{if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js",{scope:"./"}).catch(function(){});});}}catch(e){}})();
 </script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 <script src="../data/games.js"></script>
