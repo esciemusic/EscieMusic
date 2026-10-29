@@ -343,7 +343,8 @@ assert(worldRuntime.includes("world_position={x:Number(pos.x)||0,y:Number(pos.y)
 assert(worldRuntime.includes("simulation_state:sim&&typeof sim==="+"\"object\""),"world save must snapshot simulation state");
 assert(worldRuntime.includes("input_mode:controlScheme()"),"world save must persist the active input mode");
 assert(worldRuntime.includes("snapshot.world_state"),"world load must restore the saved world state envelope");
-assert(worldRuntime.includes('localStorage.setItem("escie_world_simulation_v1",JSON.stringify(snapshot.simulation_state))'),"world load must restore simulation state");
+assert(worldRuntime.includes("function restoreSaveStores"),"world load must restore auxiliary gameplay stores");
+assert(worldRuntime.includes('"escie_world_simulation_v1"'),"world load must restore simulation state through the store bundle");
 assert(worldRuntime.includes('setControlScheme(String(snapshot.input_mode||saved.input_mode).toUpperCase())'),"world load must restore input mode");
 assert(worldRuntime.includes("boot.world_position"),"world boot must restore the saved playable position");
 assert(worldRuntime.includes('const RESET_FLAG="escie_world_reset_pending_v1"'),"world reset must use a reset guard");
