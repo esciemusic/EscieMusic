@@ -13,7 +13,7 @@ const observe=(action,pos,opts={})=>{
  Object.values(s.surveillance||{}).forEach(c=>{if(typeof c.x!=="number"||typeof c.y!=="number")return;const d=dist(pos,c);if(d<=Number(c.radius||5)&&inField(c,pos)&&lineOfSight(c,pos,opts.blocked))candidates.push({source:"CAMERA:"+c.id,distance:d,awareness:Number(c.awareness??90)})});
  const visible=candidates.find(v=>visibility(action,v.distance,v.awareness,opts));
  s.observations=(s.observations||[]).concat([{action,day:sim?.state?.().day||1,observed:!!visible,sources:candidates.map(v=>v.source)}]).slice(-100);
- if(visible&&sim?.detect){s.detections=(s.detections||[]).concat([{action,source:visible.source,day:sim.state().day}]).slice(-100);save(s);sim.detect(visible.source,action==="THEFT"?8:2)}
+ if(visible){window.ESCIE_WORLD_NPC_LIFE?.engage?.(visible.source.replace(/^NPC:/,""),action==="THEFT"?"WITNESSED_THEFT":"OBSERVED");} if(visible&&sim?.detect){s.detections=(s.detections||[]).concat([{action,source:visible.source,day:sim.state().day}]).slice(-100);save(s);sim.detect(visible.source,action==="THEFT"?8:2)}
  else save(s);
  return {observed:!!visible,source:visible?.source||null,candidates};
 };
