@@ -6,6 +6,7 @@
 "use strict";
 const root=window;
 let renderer,scene,camera,clock,avatar,worldGroup,thirdPerson=false,started=false,raf=0;
+const obstacles=[],actors=[];
 const keys=new Set();
 const player={x:0,z:8,y:1.7,yaw:0,pitch:0,speed:4.2,sprint:7.5};
 const bounds=54;
@@ -14,7 +15,7 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const makeMat=(color,roughness=1,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
 function box(w,h,d,color,x,y,z,opts={}){
  const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),makeMat(color,opts.roughness??.92,opts.metalness??0));
- m.position.set(x,y,z); if(opts.rot)m.rotation.y=opts.rot; worldGroup.add(m); return m;
+ m.position.set(x,y,z); if(opts.rot)m.rotation.y=opts.rot; worldGroup.add(m); if(opts.solid)obstacles.push({x,z,w,d}); return m;
 }
 function cyl(r,h,color,x,y,z){
  const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,16),makeMat(color,.8));m.position.set(x,y,z);worldGroup.add(m);return m;
@@ -28,7 +29,7 @@ function createGround(){
 }
 function building(x,z,w,d,h,seed){
  const wall=[0x343638,0x45474a,0x56585a,0x303235][seed%4];
- box(w,h,d,wall,x,h/2,z,{roughness:.96});
+ box(w,h,d,wall,x,h/2,z,{roughness:.96,solid:true});
  const rows=Math.max(2,Math.floor(h/3)), cols=Math.max(2,Math.floor(w/2.8));
  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
    const px=x-w/2+1.2+c*((w-2.4)/Math.max(1,cols-1));
@@ -37,6 +38,17 @@ function building(x,z,w,d,h,seed){
    box(.55,.85,.035,lit?0x9ca36f:0x171a1a,px,py,z-d/2-.02);
  }
  if(seed%3===0) box(w*.65,.12,d*.7,0x1e2020,x,h+.08,z);
+}
+function actor(x,z,seed){
+ const g=new THREE.Group();
+ const coat=[0x141918,0x202726,0x303735][seed%3];
+ const b=new THREE.Mesh(new THREE.CapsuleGeometry(.2,.65,4,8),makeMat(coat,.95));b.position.y=.62;g.add(b);
+ const h=new THREE.Mesh(new THREE.SphereGeometry(.17,12,8),makeMat(0x373b38,.98));h.position.y=1.3;g.add(h);
+ g.position.set(x,0,z);g.userData={id:"street-person-"+seed,drift:(seed%2?1:-1),base:x,phase:seed};
+ worldGroup.add(g);actors.push(g);
+}
+function createStreetLife(){
+ for(let i=0;i<18;i++){const x=(i%2?1:-1)*(6.5+(i%4)*1.1),z=-45+i*5.2;actor(x,z,i);}
 }
 function streetProps(){
  for(let z=-48;z<=48;z+=12){
@@ -69,7 +81,7 @@ function buildScene(){
    if(Math.abs(x)<10)continue;
    building(x,z,9+seed%4,9+seed%5,9+(seed%5)*2,seed++);
  }
- streetProps();createSnow();
+ streetProps();createStreetLife();createSnow();
  avatar=new THREE.Group();
  const body=new THREE.Mesh(new THREE.CapsuleGeometry(.28,.9,5,10),makeMat(0x111313,.9));
  body.position.y=.8;avatar.add(body);
@@ -102,6 +114,10 @@ function gamepadInput(){
  const pads=navigator.getGamepads?.()||[];const p=[...pads].find(Boolean);if(!p)return {f:0,str:0,sprint:false,action:false};
  return {f:-Number(p.axes?.[1]||0),str:Number(p.axes?.[0]||0),sprint:!!p.buttons?.[10]?.pressed,action:!!p.buttons?.[0]?.pressed};
 }
+function blocked(x,z){
+ const r=.45;
+ return obstacles.some(o=>Math.abs(x-o.x)<o.w/2+r&&Math.abs(z-o.z)<o.d/2+r);
+}
 function move(dt){
  const gp=gamepadInput();
  if(gp.action&&!move._lastAction){document.querySelector("[data-action-primary]")?.click()} move._lastAction=gp.action;
@@ -110,13 +126,17 @@ function move(dt){
  const len=Math.hypot(f,str)||1;f/=len;str/=len;
  const speed=((keys.has("shift")||gp.sprint)?player.speed*1.75:player.speed)*dt;
  const c=Math.cos(player.yaw),si=Math.sin(player.yaw);
- player.x+=(-si*f+c*str)*speed;player.z+=(-c*f-si*str)*speed;
+ const nx=player.x+(-si*f+c*str)*speed,nz=player.z+(-c*f-si*str)*speed;
+ if(!blocked(nx,player.z))player.x=nx;if(!blocked(player.x,nz))player.z=nz;
  player.x=clamp(player.x,-bounds,bounds);player.z=clamp(player.z,-bounds,bounds);
  const sim=root.ESCIE_WORLD_SIMULATION,st=sim?.state?.();if(st&&st.position){st.position.x=player.x;st.position.y=player.z;}
  avatar.position.set(player.x,0,player.z);avatar.rotation.y=player.yaw;
 }
+function updateActors(t){
+ actors.forEach(a=>{a.position.x=a.userData.base+Math.sin(t*.35+a.userData.phase)*.8;a.rotation.y=Math.sin(t*.35+a.userData.phase)*.25;});
+}
 function render(){
- const dt=Math.min(clock.getDelta(),.05);move(dt);
+ const dt=Math.min(clock.getDelta(),.05);move(dt);updateActors(clock.elapsedTime);
  if(thirdPerson){
    const back=new THREE.Vector3(Math.sin(player.yaw)*4.2,2.4,Math.cos(player.yaw)*4.2);
    camera.position.set(player.x+back.x,back.y,player.z+back.z);camera.lookAt(player.x,1.1,player.z);
