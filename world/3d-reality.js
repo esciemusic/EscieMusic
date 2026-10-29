@@ -9,6 +9,7 @@ let renderer,scene,camera,clock,avatar,worldGroup,thirdPerson=false,started=fals
 const obstacles=[],actors=[],doors=[],lights=[],evidence=[]; const perf={quality:"auto",frameMs:16,lowFrames:0,last:performance.now(),hud:0};
 const keys=new Set();
 const player={x:0,z:8,y:1.7,yaw:0,pitch:0,speed:4.2,sprint:7.5,lastSync:0,lastGridX:null,lastGridY:null,inVehicle:false,vehicleId:null,npcSync:0,lawSync:0,lastSprintDrain:0,worldTick:0};
+let interiorMode=false,interiorGroup=null,interiorBuilding=null,interiorSaved=null;
 const bounds=54;
 const stage=()=>document.getElementById("world-stage");
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -140,13 +141,34 @@ function fight3D(){const hit=nearestNPC(2.8);if(!hit){say3D("COMBAT · NO TARGET
 function updatePolice(){const law=root.ESCIE_WORLD_LAW?.state?.();if(!law?.active){if(updatePolice.group)updatePolice.group.visible=false;return}const count=Math.max(1,Math.min(4,Number(law.units?.length||law.level||1)));if(!updatePolice.group){updatePolice.group=new THREE.Group();updatePolice.group.userData.policeResponse=true;worldGroup.add(updatePolice.group)}const group=updatePolice.group;while(group.children.length<count){const g=new THREE.Group();g.userData.police=true;const body=new THREE.Mesh(new THREE.BoxGeometry(1.45,.5,2.8),makeMat(0x292a2e,.7,.25));body.position.y=.5;g.add(body);const roof=new THREE.Mesh(new THREE.BoxGeometry(1.1,.28,1.1),makeMat(0x101114,.65));roof.position.y=.88;g.add(roof);const light=new THREE.Mesh(new THREE.BoxGeometry(.18,.08,.32),makeMat(0x2f80ff,.45));light.position.set(.28,1.08,0);g.add(light);group.add(g)}group.visible=true;const baseAng=Math.atan2(player.z,player.x);for(let i=0;i<group.children.length;i++){const g=group.children[i],active=i<count;g.visible=active;if(!active)continue;const spread=i===0?0:(i%2?1:-1)*(0.35+Math.floor(i/2)*0.18);const ang=baseAng+Math.PI+spread;const radius=Math.max(9,24-Number(law.level||1)*2-i*2);const tx=player.x+Math.cos(ang)*radius,tz=player.z+Math.sin(ang)*radius;g.position.x+=(tx-g.position.x)*.025;g.position.z+=(tz-g.position.z)*.025;g.rotation.y=Math.atan2(player.x-g.position.x,player.z-g.position.z);if(i===0&&Math.hypot(player.x-g.position.x,player.z-g.position.z)<3.2){const r=root.ESCIE_WORLD_LAW?.arrest?.();if(r?.ok)say3D("POLICE · ARRESTED · SENTENCE "+Number(r.sentence||0)+" MIN");}}}
 function npcInteract(){const live=root.ESCIE_WORLD_NPC?.state?.().npcs||{};let best=null,bd=2.4;actors.forEach(a=>{if(!a.userData.canonical)return;const n=live[a.userData.id];if(!n||Number(n.health??100)<=0)return;const d=Math.hypot(player.x-a.position.x,player.z-a.position.z);if(d<bd){bd=d;best=n}});if(!best)return false;const sim=root.ESCIE_WORLD_SIMULATION?.state?.()||{};const raw=root.ESCIE_WORLD_DIALOGUE?.generate?.(best,{id:"player",name:"YOU"},{day:sim.day||1,hour:sim.hour||12,minute:sim.minute||0,language:best.native_language||"en",community:best.community||"LOCAL"})?.line||("LOCAL · "+(best.occupation||best.role||"RESIDENT"));const line=root.ESCIE_WORLD_LANGUAGE?.speakToPlayer?.(best,raw)||raw;root.ESCIE_WORLD_NPC?.rememberInteraction?.(best.id,{channel:"3D",text:raw});root.ESCIE_WORLD_NPC?.relationship?.(best.id,1,"3D CONVERSATION");root.ESCIE_WORLD_ACTIONS?.discover?.({id:"npc:"+best.id,label:best.name||best.role||best.id,discovery:"NPC CONTACT",queries:[best.occupation||best.role||"LOCAL"]});root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(5,"NPC CONTACT");say3D((best.name||best.role||"LOCAL")+" · "+line);return true}
 function vehicleInteract(){const vs=root.ESCIE_WORLD_VEHICLES;if(!vs)return false;if(player.inVehicle){const r=vs.exit?.();if(r?.ok){player.inVehicle=false;player.vehicleId=null;say3D("VEHICLE · EXITED");return true}return true}const d=updateVehicles.car;if(!d||Math.hypot(player.x-d.position.x,player.z-d.position.z)>3)return false;const id=d.userData.vehicleId||vs.state?.()?.owned?.[0]?.id||"TAXI";const r=vs.enter?.(id);if(r?.ok){player.inVehicle=true;player.vehicleId=id;say3D("VEHICLE · DRIVE");return true}say3D("VEHICLE · "+String(r?.reason||"UNAVAILABLE"));return true}
-function interact(){if(evidenceInteract())return true;if(npcInteract())return true;if(vehicleInteract())return true;
+function interact(){if(interiorMode)return exit3DInterior();if(evidenceInteract())return true;if(npcInteract())return true;if(vehicleInteract())return true;
  const near=doors.find(d=>Math.hypot(player.x-d.x,player.z-d.z)<2.4);
- if(near){if(near.open){root.ESCIE_WORLD_INTERIOR?.exit?.();near.open=false;near.mesh.rotation.y=0;say3D("EXITED · BACK ON THE STREET");return true}const st=root.ESCIE_WORLD_SIMULATION?.state?.(),b=near.building;if(b&&String(b.type||"").toUpperCase()==="SHOP"){const buy=root.ESCIE_WORLD_ACTIONS?.purchaseGameItem?.("game-item-green-pass");if(buy?.ok){say3D("SHOP · GREEN PASS PURCHASED · -3 SIGNAL");return true}if(buy?.reason==="INSUFFICIENT_SIGNAL"){say3D("SHOP · GREEN PASS · 3 SIGNAL REQUIRED");return true}if(buy?.reason==="ALREADY_OWNED")say3D("SHOP · GREEN PASS · ALREADY OWNED");}if(b){const result=root.ESCIE_WORLD_SIMULATION?.enterBuilding?.(st?.neighbourhood,b.id);if(!result?.ok){say3D("ACCESS · "+String(result?.reason||"DENIED"));return true}root.dispatchEvent(new CustomEvent("escie:world-interior-enter",{detail:result}));}near.open=true;near.mesh.rotation.y=Math.PI/2;say3D(b?"ENTERED · "+b.name:"DOOR OPEN · INTERIOR LAYER AVAILABLE");return true}
+ if(near){if(near.open){root.ESCIE_WORLD_INTERIOR?.exit?.();near.open=false;near.mesh.rotation.y=0;say3D("EXITED · BACK ON THE STREET");return true}const st=root.ESCIE_WORLD_SIMULATION?.state?.(),b=near.building;if(b&&String(b.type||"").toUpperCase()==="SHOP"){const buy=root.ESCIE_WORLD_ACTIONS?.purchaseGameItem?.("game-item-green-pass");if(buy?.ok){say3D("SHOP · GREEN PASS PURCHASED · -3 SIGNAL");return true}if(buy?.reason==="INSUFFICIENT_SIGNAL"){say3D("SHOP · GREEN PASS · 3 SIGNAL REQUIRED");return true}if(buy?.reason==="ALREADY_OWNED")say3D("SHOP · GREEN PASS · ALREADY OWNED");}if(b){const result=root.ESCIE_WORLD_SIMULATION?.enterBuilding?.(st?.neighbourhood,b.id);if(!result?.ok){say3D("ACCESS · "+String(result?.reason||"DENIED"));return true}enter3DInterior(b);}near.open=true;near.mesh.rotation.y=Math.PI/2;say3D(b?"ENTERED · "+b.name:"DOOR OPEN · INTERIOR LAYER AVAILABLE");return true}
  return false;
 }
 function say3D(t){const log=document.getElementById("world-log");if(log)log.textContent=t}
+function enter3DInterior(building){
+ interiorMode=true;interiorBuilding=building;interiorSaved={x:player.x,z:player.z,yaw:player.yaw,obstacles:obstacles.slice()};
+ doors.forEach(d=>{d.open=false;d.mesh.rotation.y=0});obstacles.length=0;
+ worldGroup.children.forEach(o=>o.visible=false);
+ interiorGroup=new THREE.Group();worldGroup.add(interiorGroup);
+ const floor=new THREE.Mesh(new THREE.BoxGeometry(16,.12,12),makeMat(0x101114,.95));floor.position.y=0;interiorGroup.add(floor);
+ [[0,2,-6],[0,2,6],[-8,2,0],[8,2,0]].forEach((p,i)=>{const w=new THREE.Mesh(new THREE.BoxGeometry(i<2?16:.12,4,i<2?.12:12),makeMat(0x292a2e,.96));w.position.set(p[0],p[1],p[2]);interiorGroup.add(w)});
+ const desk=new THREE.Mesh(new THREE.BoxGeometry(3,.9,1.2),makeMat(0x1b1c1f,.9));desk.position.set(0,.45,-2);interiorGroup.add(desk);
+ const signal=new THREE.Mesh(new THREE.BoxGeometry(.7,.08,.7),makeMat(0x2f80ff,.55,.2));signal.position.set(0,.95,-2);interiorGroup.add(signal);
+ const light=new THREE.PointLight(0x4da3ff,2,18);light.position.set(0,3,0);interiorGroup.add(light);
+ player.x=0;player.z=4.4;player.y=1.7;player.yaw=Math.PI;avatar.position.set(player.x,0,player.z);
+ say3D("ENTERED · "+String(building?.name||"INTERIOR")+" · 3D");
+}
+function exit3DInterior(){
+ if(!interiorMode)return false;root.ESCIE_WORLD_SIMULATION?.leaveBuilding?.();
+ if(interiorGroup){worldGroup.remove(interiorGroup);interiorGroup=null}worldGroup.children.forEach(o=>o.visible=true);
+ interiorMode=false;interiorBuilding=null;obstacles.splice(0,obstacles.length,...(interiorSaved?.obstacles||[]));
+ player.x=interiorSaved?.x??player.x;player.z=interiorSaved?.z??player.z;player.yaw=interiorSaved?.yaw??player.yaw;avatar.position.set(player.x,0,player.z);
+ say3D("EXITED · BACK ON THE STREET");return true;
+}
 function blocked(x,z){
+ if(interiorMode)return Math.abs(x)>7.3||Math.abs(z)>5.3;
  const r=.45;
  const openDoor=doors.some(d=>d.open&&Math.hypot(x-d.x,z-d.z)<1.35);
  if(openDoor)return false;
