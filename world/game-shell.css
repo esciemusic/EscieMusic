@@ -496,3 +496,9 @@ body.escie-game-page .inventory-card button:hover,body.escie-game-page .inventor
 
 body.escie-game-page .inventory-card.is-selected{border-color:var(--escie-blue-bright);box-shadow:0 0 22px rgba(47,128,255,.13),inset 0 0 20px rgba(47,128,255,.05)}
 body.escie-game-page .inventory-card.is-selected::before{content:"SELECTED";display:block;margin-bottom:7px;color:var(--escie-blue-bright);font:800 .45rem monospace;letter-spacing:.14em}
+
+body.escie-game-page .world-event-feed{position:absolute;left:12px;bottom:12px;width:min(360px,calc(100vw - 24px));display:flex;flex-direction:column;gap:4px;pointer-events:none;z-index:30}
+body.escie-game-page .world-event{padding:6px 8px;border-left:2px solid var(--world-ui-signal);background:rgba(5,5,5,.82);color:var(--escie-paper);font:600 .5rem/1.35 monospace;letter-spacing:.04em;box-shadow:0 4px 16px rgba(0,0,0,.24);animation:escieWorldEventIn .18s ease-out}
+@keyframes escieWorldEventIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:translateX(0)}}
+@media(max-width:600px){body.escie-game-page .world-event-feed{bottom:8px;left:8px;width:min(300px,calc(100vw - 16px))}body.escie-game-page .world-event{font-size:.45rem}}
+@media(prefers-reduced-motion:reduce){body.escie-game-page .world-event{animation:none}}
