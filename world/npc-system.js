@@ -11,8 +11,14 @@ if(!Array.isArray(s.npcs[n.id].schedule)||!s.npcs[n.id].schedule.length){
  const home={x:Number(base.x||2)+(h%3)-1,y:Number(base.y||7)+((h>>2)%3)-1};
  const work={x:Number(base.x||2)+((h>>3)%5)-2,y:Number(base.y||7)+((h>>5)%5)-2};
  const social={x:Number(base.x||2)+((h>>7)%5)-2,y:Number(base.y||7)+((h>>9)%5)-2};
+ const occupation=String(s.npcs[n.id].occupation||s.npcs[n.id].role||"LOCAL").toUpperCase();
+ const socialOffsets={MUSICIAN:{x:3,y:2},BARISTA:{x:2,y:1},SHOPKEEPER:{x:-2,y:2},TRAINER:{x:1,y:-2},OFFICE_WORKER:{x:-3,y:-1},CLINIC_WORKER:{x:-2,y:-2},VENUE_WORKER:{x:3,y:-2},ARCHIVIST:{x:-3,y:2},VENDOR:{x:2,y:-3}};
+ const roleOffset=socialOffsets[occupation]||{x:0,y:0};
+ social.x=Math.max(0,Math.min(15,social.x+roleOffset.x));social.y=Math.max(0,Math.min(9,social.y+roleOffset.y));
  s.npcs[n.id].home=Object.assign({district},home);s.npcs[n.id].work=Object.assign({district},work);s.npcs[n.id].social=Object.assign({district},social);
- s.npcs[n.id].schedule=[{start:0,end:420,activity:"SLEEP",target:home},{start:420,end:540,activity:"COMMUTE",target:work},{start:540,end:1020,activity:"WORK",target:work},{start:1020,end:1140,activity:"SOCIAL",target:social},{start:1140,end:1320,activity:"COMMUTE",target:home},{start:1320,end:1440,activity:"HOME",target:home}];
+ const socialStart=1020+(h%3)*30;
+ const socialEnd=Math.min(1260,socialStart+90+(h%2)*30);
+ s.npcs[n.id].schedule=[{start:0,end:420,activity:"SLEEP",target:home},{start:420,end:540,activity:"COMMUTE",target:work},{start:540,end:1020,activity:"WORK",target:work},{start:socialStart,end:socialEnd,activity:"SOCIAL",target:social},{start:socialEnd,end:1320,activity:"COMMUTE",target:home},{start:1320,end:1440,activity:"HOME",target:home}];
 }
 save(s);if(tier!=="GENERIC")window.ESCIE_WORLD_NPC_LIFE?.ensure?.(s.npcs[n.id]);return s.npcs[n.id]};
 const registerSurveillance=n=>{const s=read();s.surveillance=s.surveillance||{};s.surveillance[n.id]=Object.assign({},n);save(s);return n};
