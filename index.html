@@ -51,6 +51,12 @@
               <a href="#art">ENTER THE WORK</a>
               <a href="world/" aria-label="Enter the dedicated ESCIE World game">ENTER THE WORLD</a>
             </div>
+            <div class="entry-game-link" aria-label="Game access">
+              <a href="world/" class="world-controller-link" aria-label="Open ESCIE World game">
+                <span aria-hidden="true">🎮</span>
+                <span>OPEN WORLD</span>
+              </a>
+            </div>
             <div class="entry-route" aria-label="Experience structure"><span>THE MAN</span><i>→</i><span>THE WORLD</span><i>→</i><span>THE SIGNAL</span><i>→</i><span>THE GLASS EYE</span></div>
           </div>
         </div>
@@ -85,16 +91,7 @@
   <p class="section-lede">Some things are found. Some are earned. Some can leave the screen.</p>
   <div id="game-shop-container" class="game-shop-container" aria-live="polite"></div><div id="game-container" class="game-container" aria-live="polite"></div>
 </section>
-<section id="clothing" class="site-section clothing-section">
-      <div class="section-inner">
-        <div class="section-visual section-visual-work" data-visual-section="clothing" aria-hidden="true"><span class="visual-vhs"></span><span class="visual-daisy">✳</span><span class="visual-scanline"></span></div>
-        <h2>CLOTHING</h2>
-        <p class="art-threshold">THE FIRST WARDROBE.</p>
-        <div id="clothing-container" class="content-container"></div>
-      </div>
-    </section>
-
-    <section id="world" class="site-section world-section">
+ class="site-section world-section">
       <div class="section-inner">
         <div class="section-visual section-visual-world" data-visual-section="world" aria-hidden="true"><span class="world-grid"></span><span class="world-pulse"></span><span class="world-node world-node-a"></span><span class="world-node world-node-b"></span><span class="world-node world-node-c"></span></div>
         <h2>THE WORLD</h2>
@@ -151,72 +148,6 @@
     <p>THE SIGNAL REMAINS DISTORTED.</p>
     <div id="footer-social" class="footer-social" aria-label="External signal"></div>
   </footer>
-
-  <script>
-  /* ESCIE SECTION ACCORDION — one world, one readable layer at a time */
-  (function(){
-    "use strict";
-    function initSectionAccordion(){
-      var sections=[].slice.call(document.querySelectorAll("main > section")).filter(function(section){
-        return section.id!=="entry" && section.querySelector("h2");
-      });
-      sections.forEach(function(section,index){
-        if(section.dataset.accordionReady==="1")return;
-        var heading=section.querySelector("h2");
-        var inner=section.querySelector(".section-inner")||section;
-        var button=document.createElement("button");
-        button.type="button";
-        button.className="section-drop-trigger";
-        button.setAttribute("aria-controls",section.id+"-panel");
-        button.setAttribute("aria-expanded","false");
-        button.innerHTML='<span class="section-drop-index">'+String(index+1).padStart(2,"0")+'</span><span class="section-drop-title"></span><span class="section-drop-symbol" aria-hidden="true">+</span>';
-        button.querySelector(".section-drop-title").textContent=heading.textContent.trim();
-        heading.hidden=true;
-        var panel=document.createElement("div");
-        panel.className="section-drop-panel";
-        panel.id=section.id+"-panel";
-        panel.setAttribute("role","region");
-        panel.setAttribute("aria-labelledby",button.id||"");
-        while(heading.nextSibling){
-          panel.appendChild(heading.nextSibling);
-        }
-        inner.appendChild(button);
-        inner.appendChild(panel);
-        section.dataset.accordionReady="1";
-        section.classList.add("section-collapsed");
-        button.addEventListener("click",function(){
-          var open=section.classList.contains("section-open");
-          sections.forEach(function(other){
-            other.classList.remove("section-open");
-            other.classList.add("section-collapsed");
-            var b=other.querySelector(".section-drop-trigger");
-            if(b){b.setAttribute("aria-expanded","false");var s=b.querySelector(".section-drop-symbol");if(s)s.textContent="+";}
-          });
-          if(!open){
-            section.classList.remove("section-collapsed");
-            section.classList.add("section-open");
-            button.setAttribute("aria-expanded","true");
-            button.querySelector(".section-drop-symbol").textContent="−";
-            requestAnimationFrame(function(){
-              section.scrollIntoView({behavior:"smooth",block:"start"});
-            });
-          }
-        });
-      });
-      var links=document.querySelectorAll('.index-navigation a[href^="#"]');
-      links.forEach(function(link){
-        link.addEventListener("click",function(){
-          var id=link.getAttribute("href").slice(1),section=document.getElementById(id);
-          if(!section)return;
-          var button=section.querySelector(".section-drop-trigger");
-          if(button && section.classList.contains("section-collapsed"))button.click();
-        });
-      });
-    }
-    if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initSectionAccordion);
-    else initSectionAccordion();
-  })();
-  </script>
 
   <!-- Foundational contracts -->
   <script src="record.js"></script>
@@ -298,7 +229,7 @@
   <!-- Public navigation / language / narration -->
   <script src="navigation.js"></script>
   <script src="world-engine.js"></script>
-  <script src="ui/game.js"></script>
+  
   <script src="language.js"></script>
   <script src="narration.js"></script>
 
