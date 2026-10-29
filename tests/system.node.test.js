@@ -346,3 +346,10 @@ assert((worldRuntime.match(/function interactNow\(/g)||[]).length===1,"world run
 assert((worldRuntime.match(/function investigation\(/g)||[]).length===1,"world runtime must have exactly one active investigation function");
 assert((worldRuntime.match(/function investigationLegacy\(/g)||[]).length===1,"legacy investigation must be explicitly isolated");
 console.log("ESCIE world runtime contracts OK");
+
+const worldHtml=fs.readFileSync("world/index.html","utf8");
+assert((worldHtml.match(/data-action(?:="[^"]*")?/g)||[]).length===2,"world HTML should expose exactly two interact controls: dpad primary and labeled action");
+assert(!worldHtml.includes('<button data-control-action="SPRINT">SPRINT</button><button data-action>INTERACT</button>'),"world HTML must not contain the removed duplicate interact control");
+const requiredControls=["data-dir","data-control-action","data-action","data-fullscreen","data-rotate","data-device","data-preferences","data-pause","data-system","data-save","data-profile","data-life","data-life-systems","data-inventory","data-glass","data-investigation","data-market","data-phone-open","data-quests"];
+for(const control of requiredControls) assert(worldHtml.includes(control),"world HTML missing control "+control);
+console.log("ESCIE world control wiring contracts OK");
