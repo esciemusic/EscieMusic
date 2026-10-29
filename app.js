@@ -1150,8 +1150,7 @@ function renderClothing(){
       if(!control)return;
       ESCIE_RUNTIME.webFilters=ESCIE_RUNTIME.webFilters||{};
       ESCIE_RUNTIME.webFilters[control.getAttribute("data-web-filter")]=control.value||"";
-      renderWorld();
-    renderWeb();
+      renderWeb();
     });
 
     document.addEventListener("click", event => {
@@ -1719,6 +1718,7 @@ function renderClothing(){
     renderClothing();
     renderMerch();
     bindMerchFilters();
+    renderWorld();
     renderWeb();
     renderArchive();
     renderInvestigation();
