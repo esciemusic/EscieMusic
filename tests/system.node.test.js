@@ -410,5 +410,8 @@ assert(worldRuntime.includes("data-entry-exit"),"world entry must support return
 assert(worldRuntime.includes("function restoreWorldRuntime"),"world must restore saved room and position on boot");
 assert(worldRuntime.includes("room=allowed.includes(String(s.world_room))"),"world boot must restore the saved room");
 assert(worldRuntime.includes("syncSimulationPosition()"),"world boot must resync simulation position");
+assert(worldRuntime.includes("WORLD_BOOT_DEPENDENCIES"),"world must declare boot dependencies");
+assert(worldRuntime.includes("function worldBootAudit"),"world must audit boot dependencies");
+assert(worldRuntime.includes("window.ESCIE_WORLD_BOOT=status"),"world must expose boot readiness status");
 for(const control of requiredControls) assert(worldHtml.includes(control),"world HTML missing control "+control);
 console.log("ESCIE world control wiring contracts OK");
