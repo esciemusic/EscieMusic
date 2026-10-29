@@ -26,7 +26,12 @@ function state(){try{const parsed=JSON.parse(localStorage.getItem(KEY)||"{}");re
 function registryState(seed){const registry=window.ESCIE_GAME_REGISTRY;if(!registry?.createPlayerState)return seed&&typeof seed==="object"?seed:{};const s=seed&&typeof seed==="object"?seed:{};return registry.createPlayerState({session_id:s.session_id||"local-world",player_id:s.player_id||window.ESCIE_GAME_PROFILE?.id||null,episode_id:s.episode_id||"the-world",current_scene:s.world_room||room,current_location:s.neighbourhood||"PARC-EXTENSION",observed:s.observed,interacted:s.interacted,heard:s.heard,seen:s.seen,collected:s.collected,connections:s.connections,discoveries:s.discoveries,missed:s.missed,visited_scenes:s.visited_scenes,visited_locations:s.visited_locations,signals:s.signal_ids,unknown:s.unknown,unresolved:s.unresolved,unlocked:s.unlocked||s.world_unlocks,path:s.path,event_count:s.event_count});}
 function syncRegistryState(local){if(!local||!window.ESCIE_GAME_REGISTRY?.createPlayerState)return local;const r=registryState(local);local.observed=r.observed;local.interacted=r.interacted;local.heard=r.heard;local.seen=r.seen;local.collected=r.collected;local.connections=r.connections;local.discoveries=r.discoveries;local.missed=r.missed;local.visited_scenes=r.visited_scenes;local.visited_locations=r.visited_locations;local.unknown=r.unknown;local.unresolved=r.unresolved;local.unlocked=r.unlocked;local.path=r.path;local.event_count=r.event_count;local.last_seen_at=r.last_seen_at;return local;}
 function save(s){try{syncRegistryState(s);return commitStorageBatch({[KEY]:s})}catch(e){return false}}
-function say(t){log.textContent=t}
+function say(t){log.textContent=t;const text=String(t||"");if(text)worldEventFeed(text)}
+function worldEventFeed(text){
+ const feed=document.getElementById("world-event-feed");if(!feed)return;
+ const item=document.createElement("div");item.className="world-event";item.textContent=text;feed.prepend(item);
+ while(feed.children.length>5)feed.removeChild(feed.lastChild);
+}
 function worldPulse(cls,ms=700){const b=document.body;if(!b)return;b.classList.remove(cls);void b.offsetWidth;b.classList.add(cls);clearTimeout(b["__escie_"+cls]);b["__escie_"+cls]=setTimeout(()=>b.classList.remove(cls),ms)}
 function rpgState(s){
  const current=s&&typeof s==="object"?s:{};
