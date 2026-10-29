@@ -76,7 +76,7 @@
       fit:"Same physical family as ESCIE HEAVY TEE",
       sizes:["S","M","L","XL","2XL","3XL"],
       front:{text:"BAM / BY ANY MEANS",placement:"left chest",ink:"DIRTY WHITE"},
-      back:{art_direction:"Single dominant Montréal scene with figure, architecture and discoverable BAM visual language; limited green signal",hierarchy:["SCENE","OBJECTS","SIGNAL"]},
+      back:{art_direction:"Single dominant Montréal scene with figure, architecture and discoverable BAM visual language; limited blue accent signal",hierarchy:["SCENE","OBJECTS","SIGNAL"]},
       label:"BAM / BY ANY MEANS / 001 / ESCIE",
       hidden_detail:"BABY SHOE — INTERIOR",
       decoration:{sample:"DTF or DTG",production:"SCREEN PRINT TARGET"},
