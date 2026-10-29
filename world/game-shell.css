@@ -535,7 +535,7 @@ body.escie-game-page .world-pause{
   box-shadow:0 24px 100px rgba(0,0,0,.65),0 0 60px rgba(47,128,255,.10);
 }
 body.escie-game-page .world-pause[hidden]{display:none}
-body.escie-game-page .world-pause-head{
+body.escie-game-page .world-pause-head{\n  position:fixed;\n  top:3vh;\n  left:7vw;\n  right:7vw;\n  z-index:93;\n  padding:10px 12px;\n  background:rgba(5,5,5,.94);\n  border:1px solid var(--world-ui-line);\n
   display:flex;
   align-items:center;
   justify-content:space-between;
