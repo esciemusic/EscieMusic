@@ -6,7 +6,7 @@
 "use strict";
 const root=window;
 let renderer,scene,camera,clock,avatar,worldGroup,thirdPerson=false,started=false,raf=0,dayLight,ambientLight,resizeObserver,visibilityHandler;
-const obstacles=[],actors=[],doors=[],lights=[]; const perf={quality:"auto",frameMs:16,lowFrames:0,last:performance.now(),hud:0};
+const obstacles=[],actors=[],doors=[],lights=[],evidence=[]; const perf={quality:"auto",frameMs:16,lowFrames:0,last:performance.now(),hud:0};
 const keys=new Set();
 const player={x:0,z:8,y:1.7,yaw:0,pitch:0,speed:4.2,sprint:7.5,lastSync:0,lastGridX:null,lastGridY:null,inVehicle:false,vehicleId:null,npcSync:0};
 const bounds=54;
@@ -56,6 +56,8 @@ function actor(x,z,seed){
  worldGroup.add(g);actors.push(g);
 }
 function gridToWorld(p){return {x:Number(p?.x||0)/15*108-54,z:Number(p?.y||0)/9*108-54}}
+function createEvidence(){const objects=root.ESCIE_WORLD_ACTIONS?.objects||[{id:"camera",x:12,y:2,label:"CAMERA",text:"A camera watches the lane.",discovery:"game-discovery-camera",queries:["query:camera"]},{id:"shoe",x:6,y:5,label:"BABY SHOE",text:"A small shoe sits near the curb.",discovery:"game-discovery-shoe",queries:["query:shoe"],item:"game-item-baby-shoe"},{id:"signal",x:13,y:7,label:"SIGNAL",text:"The distortion is strongest here.",discovery:"game-discovery-trail",queries:["query:signal"]}];objects.forEach(o=>{const q=gridToWorld(o);const m=box(.28,.08,.28,o.id==="signal"?0x6f3faf:0x8e1f2d,q.x,.08,q.z);m.userData.evidence=o;evidence.push(m)});}
+function updateEvidence(){evidence.forEach(m=>{const d=Math.hypot(player.x-m.position.x,player.z-m.position.z);m.visible=d<18;});const near=evidence.find(m=>Math.hypot(player.x-m.position.x,player.z-m.position.z)<2.2);if(near){say3D("INVESTIGATE · "+near.userData.evidence.label+" · E / INTERACT");}return near;}
 function createStreetLife(){
  const live=root.ESCIE_WORLD_NPC?.state?.().npcs||{};const list=Object.values(live).filter(n=>n&&n.id&&Number.isFinite(Number(n.x))&&Number.isFinite(Number(n.y))).slice(0,28);
  if(list.length){list.forEach((n,i)=>{const q=gridToWorld(n);actor(q.x,q.z,i);const a=actors[actors.length-1];a.userData.id=n.id;a.userData.canonical=true;a.userData.npc=n});}
@@ -97,7 +99,7 @@ function buildScene(){
    if(Math.abs(x)<10)continue;
    building(x,z,9+seed%4,9+seed%5,9+(seed%5)*2,seed++);
  }
- streetProps();createStreetLife();createSnow();
+ streetProps();createEvidence();createStreetLife();createSnow();
  avatar=new THREE.Group();
  const body=new THREE.Mesh(new THREE.CapsuleGeometry(.28,.9,5,10),makeMat(0x101114,.9));
  body.position.y=.8;avatar.add(body);
@@ -131,8 +133,9 @@ function gamepadInput(){
  const pads=navigator.getGamepads?.()||[];const p=[...pads].find(Boolean);if(!p)return {f:0,str:0,lookX:0,lookY:0,sprint:false,action:false};
  const dz=v=>Math.abs(v)<.14?0:v;return {f:-dz(Number(p.axes?.[1]||0)),str:dz(Number(p.axes?.[0]||0)),lookX:dz(Number(p.axes?.[2]||0)),lookY:dz(Number(p.axes?.[3]||0)),sprint:!!p.buttons?.[10]?.pressed,action:!!p.buttons?.[0]?.pressed};
 }
+function evidenceInteract(){const m=updateEvidence();if(!m)return false;const o=m.userData.evidence;const r=root.ESCIE_WORLD_ACTIONS?.interactObject?.(o);if(r!==false){say3D("EVIDENCE · "+String(o.label||o.id)+" · LOGGED");return true}return false}
 function vehicleInteract(){const vs=root.ESCIE_WORLD_VEHICLES;if(!vs)return false;if(player.inVehicle){const r=vs.exit?.();if(r?.ok){player.inVehicle=false;player.vehicleId=null;say3D("VEHICLE · EXITED");return true}return true}const d=updateVehicles.car;if(!d||Math.hypot(player.x-d.position.x,player.z-d.position.z)>3)return false;const r=vs.enter?.("COMPACT");if(r?.ok){player.inVehicle=true;player.vehicleId="COMPACT";say3D("VEHICLE · DRIVE");return true}say3D("VEHICLE · "+String(r?.reason||"UNAVAILABLE"));return true}
-function interact(){if(vehicleInteract())return true;
+function interact(){if(evidenceInteract())return true;if(vehicleInteract())return true;
  const near=doors.find(d=>Math.hypot(player.x-d.x,player.z-d.z)<2.4);
  if(near){if(near.open){root.ESCIE_WORLD_INTERIOR?.exit?.();near.open=false;near.mesh.rotation.y=0;say3D("EXITED · BACK ON THE STREET");return true}const st=root.ESCIE_WORLD_SIMULATION?.state?.(),b=near.building;if(b){const result=root.ESCIE_WORLD_SIMULATION?.enterBuilding?.(st?.neighbourhood,b.id);if(!result?.ok){say3D("ACCESS · "+String(result?.reason||"DENIED"));return true}root.dispatchEvent(new CustomEvent("escie:world-interior-enter",{detail:result}));}near.open=true;near.mesh.rotation.y=Math.PI/2;say3D(b?"ENTERED · "+b.name:"DOOR OPEN · INTERIOR LAYER AVAILABLE");return true}
  return false;
