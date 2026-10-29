@@ -40,8 +40,42 @@ const observe=(action,pos,opts={})=>{
  return {observed:!!visible,source:visible?.source||null,candidates};
 };
 const scheduleFor=(n,minute)=>{const s=n.schedule||[];if(!s.length)return null;return s.find(v=>minute>=v.start&&minute<v.end)||s[s.length-1]};
+const buildingAtTarget=(n,a)=>{
+ const b=a?.activity==="WORK"?n.work_building:a?.activity==="SOCIAL"?n.social_building:null;
+ if(!b)return null;
+ const lm=window.ESCIE_WORLD_SIMULATION?.districtLandmarks?.(n.district)?.find?.(x=>x.id===b.landmark);
+ return lm?{building:b,landmark:lm}:null;
+};
+const updateInteriorPresence=(n,a,minute)=>{
+ n.interior=n.interior||null;
+ const target=buildingAtTarget(n,a);
+ const near=target&&Math.abs(Number(n.x)-Number(target.landmark.x||0))+Math.abs(Number(n.y)-Number(target.landmark.y||0))<=1;
+ if(target&&near&&["WORK","SOCIAL"].includes(a.activity)){
+   n.interior={building_id:target.building.id,interior:target.building.interior,room:target.building.interior==="OFFICE"?"WORKSPACE":target.building.interior==="CAFE"?"COUNTER":target.building.interior==="STUDIO"?"LOUNGE":target.building.interior==="GYM"?"FLOOR":target.building.interior==="CLINIC"?"WAITING":"MAIN",entered:true,activity:a.activity,day:window.ESCIE_WORLD_SIMULATION?.state?.().day||1,minute};
+ }else if(n.interior&&(!target||a.activity==="COMMUTE"||a.activity==="SLEEP"||a.activity==="HOME")){
+   n.interior=null;
+ }
+ return n.interior;
+};
+const interiorSocialTick=(st,day,hour,minute)=>{
+ const groups={};
+ Object.values(st.npcs||{}).forEach(n=>{if(n.interior?.entered&&n.interior.building_id) (groups[n.interior.building_id]||(groups[n.interior.building_id]=[])).push(n)});
+ Object.values(groups).forEach(group=>{
+   for(let i=0;i<group.length;i++)for(let j=i+1;j<group.length;j++){
+     const a=group[i],b=group[j];
+     if(a.activity==="DOWN"||b.activity==="DOWN")continue;
+     const language=(a.native_language||"en")===(b.native_language||"en")?(a.native_language||"en"):"mixed";
+     const exchange=window.ESCIE_WORLD_DIALOGUE?.generate?.(a,b,{day,hour,minute,language,community:a.community||"LOCAL",tension:Number(a.relationship||0)<-40||Number(b.relationship||0)<-40})||null;
+     st.social_exchanges.unshift({day,hour,minute,from:a.id,to:b.id,language,community:a.community||"LOCAL",type:"INTERIOR_CONVERSATION",building_id:a.interior.building_id,line:exchange?.line||null,topic:exchange?.topic||"LOCAL"});
+     st.social_exchanges=st.social_exchanges.slice(0,100);
+     npcLink(a.id,b.id,exchange?.topic==="TENSION"?-1:1,"interior social");
+     if(typeof window!=="undefined")window.dispatchEvent(new CustomEvent("escie:npc-interior-exchange",{detail:{from:a,to:b,building:a.interior.building_id,exchange}}));
+   }
+ });
+ return Object.keys(groups).length;
+};
 const socialTick=(day,hour,minute)=>{const st=read(),sim=window.ESCIE_WORLD_SIMULATION,s=sim?.state?.()||{};const active=Object.values(st.npcs||{}).filter(n=>n.district&&n.x!=null&&n.y!=null);st.social_exchanges=st.social_exchanges||[];for(let i=0;i<active.length;i++)for(let j=i+1;j<active.length;j++){const a=active[i],b=active[j];if(a.district!==b.district||Math.abs(a.x-b.x)+Math.abs(a.y-b.y)>2)continue;const tense=(a.relationship||0)<-40||(b.relationship||0)<-40;if(tense){a.activity="TENSION";b.activity="TENSION"}else if(a.activity!=="DOWN"&&b.activity!=="DOWN"){const language=(a.native_language||"en")===(b.native_language||"en")?(a.native_language||"en"):"mixed";const exchange=window.ESCIE_WORLD_DIALOGUE?.generate?.(a,b,{day,hour,minute,language,community:a.community||"LOCAL",tension:false})||null;st.social_exchanges.unshift({day,hour,minute,from:a.id,to:b.id,language,community:a.community||"LOCAL",type:"CONVERSATION",line:exchange?.line||null,topic:exchange?.topic||"LOCAL"});st.social_exchanges=st.social_exchanges.slice(0,100);if(exchange&&typeof window!=="undefined")window.dispatchEvent(new CustomEvent("escie:npc-social-exchange",{detail:exchange}));}}save(st);return active.length};
-const tick=(day,hour,minute,blocked)=>{const st=read(),sim=window.ESCIE_WORLD_SIMULATION,now=Number(hour)*60+Number(minute);Object.values(st.npcs||{}).forEach(n=>{if(typeof n.x!=="number"||typeof n.y!=="number")return;const a=scheduleFor(n,now);if(!a||!a.target)return;const dx=Math.sign(a.target.x-n.x),dy=Math.sign(a.target.y-n.y);let nx=n.x,ny=n.y;if(dx&&!(blocked&&blocked(n.x+dx,n.y)))nx+=dx;else if(dy&&!(blocked&&blocked(n.x,n.y+dy)))ny+=dy;if(nx!==n.x||ny!==n.y){n.x=nx;n.y=ny;n.facing=dx?dx>0?"E":"W":dy?dy>0?"S":"N":n.facing||"S";}n.activity=a.activity||n.activity||"IDLE";n.schedule_day=day;n.schedule_minute=now;});window.ESCIE_WORLD_NPC_LIFE?.tick?.(30);window.ESCIE_WORLD_NPC_LIFE?.syncRelationships?.();save(st);return st.npcs};
+const tick=(day,hour,minute,blocked)=>{const st=read(),sim=window.ESCIE_WORLD_SIMULATION,now=Number(hour)*60+Number(minute);Object.values(st.npcs||{}).forEach(n=>{if(typeof n.x!=="number"||typeof n.y!=="number")return;const a=scheduleFor(n,now);if(!a||!a.target)return;const dx=Math.sign(a.target.x-n.x),dy=Math.sign(a.target.y-n.y);let nx=n.x,ny=n.y;if(dx&&!(blocked&&blocked(n.x+dx,n.y)))nx+=dx;else if(dy&&!(blocked&&blocked(n.x,n.y+dy)))ny+=dy;if(nx!==n.x||ny!==n.y){n.x=nx;n.y=ny;n.facing=dx?dx>0?"E":"W":dy?dy>0?"S":"N":n.facing||"S";}n.activity=a.activity||n.activity||"IDLE";n.schedule_day=day;n.schedule_minute=now;updateInteriorPresence(n,a,now);});interiorSocialTick(st,day,hour,minute);window.ESCIE_WORLD_NPC_LIFE?.tick?.(30);window.ESCIE_WORLD_NPC_LIFE?.syncRelationships?.();save(st);return st.npcs};
 const damageNPC=(id,amount=0,cause="FIST")=>{
  const s=read(),n=s.npcs[id];if(!n)return {ok:false,reason:"NPC_NOT_FOUND"};
  const d=Math.max(0,Number(amount)||0);n.health=Math.max(0,Number(n.health??100)-d);n.damage=Math.min(100,Number(n.damage||0)+d);n.activity=n.health<=0?"DOWN":"COMBAT";n.last_combat={cause,damage:d,day:window.ESCIE_WORLD_SIMULATION?.state?.().day||1};s.npcs[id]=n;save(s);
@@ -53,6 +87,6 @@ const reaction=(id,context={})=>{const s=read(),n=s.npcs[id]||{},rel=Number(n.re
 const npcLink=(aId,bId,delta=0,reason="social")=>{const s=read();const a=s.npcs[aId]||{id:aId},b=s.npcs[bId]||{id:bId};a.links=a.links||{};b.links=b.links||{};a.links[bId]=Math.max(-100,Math.min(100,Number(a.links[bId]||0)+Number(delta||0)));b.links[aId]=Math.max(-100,Math.min(100,Number(b.links[aId]||0)+Number(delta||0)));a.last_social={with:bId,reason,day:window.ESCIE_WORLD_SIMULATION?.state?.().day||1};b.last_social={with:aId,reason,day:window.ESCIE_WORLD_SIMULATION?.state?.().day||1};s.npcs[aId]=a;s.npcs[bId]=b;save(s);return {a:a.links[bId],b:b.links[aId]};};
 const rumor=(fromId,subject,text,importance=1)=>{const s=read(),sim=window.ESCIE_WORLD_SIMULATION,day=sim?.state?.().day||1;const seen=[];Object.values(s.npcs||{}).forEach(n=>{if(n.id===fromId)return;n.rumors=n.rumors||[];n.rumors.unshift({subject,text,importance,from:fromId,day});n.rumors=n.rumors.slice(0,20);seen.push(n.id)});save(s);return seen};
 const memory=(id,data={})=>{const sim=window.ESCIE_WORLD_SIMULATION;return sim?.npcMemory?sim.npcMemory(id,data):null};
-window.ESCIE_WORLD_NPC={state:read,registerNPC,registerSurveillance,observe,tick,socialTick,npcLink,rumor,memory,relationship,rememberInteraction,reaction,damageNPC};
+window.ESCIE_WORLD_NPC={state:read,registerNPC,registerSurveillance,observe,tick,socialTick,interiorSocialTick,updateInteriorPresence,npcLink,rumor,memory,relationship,rememberInteraction,reaction,damageNPC};
 if(!localStorage.getItem(KEY))save(DEFAULT);
 })();
