@@ -252,8 +252,9 @@ function processWorldQR(raw){
   const parts=normalized.split("/").map(x=>decodeURIComponent(x).trim()).filter(Boolean);
   const kind=String(parts.shift()||"").toUpperCase(), payload=parts.join("/"), sim=window.ESCIE_WORLD_SIMULATION, s=sim?.state?.();
   const allowed=/^[A-Z0-9_ .-]+$/i;
-  const m=readPhone();
+  let m={};try{m=JSON.parse(localStorage.getItem("escie_phone_v1")||"{}")}catch(e){}
   m.qr=Array.isArray(m.qr)?m.qr:[];
+  const writeQR=x=>localStorage.setItem("escie_phone_v1",JSON.stringify(x));
   const record={code:value.slice(0,160),day:s?.day||1,time:new Date().toLocaleTimeString(),ok:false};
   const reject=(message)=>{record.message=message;m.qr.unshift(record);m.qr=m.qr.slice(0,50);write(m);return {ok:false,message};};
   if(!/^ESCIE:\/\//i.test(value))return reject("QR · INVALID ESCIE CODE");
@@ -294,7 +295,7 @@ function processWorldQR(raw){
   }else{
     return reject("QR · CODE TYPE NOT RECOGNIZED");
   }
-  record.message=message;m.qr.unshift(record);m.qr=m.qr.slice(0,50);write(m);return {ok:true,message};
+  record.message=message;m.qr.unshift(record);m.qr=m.qr.slice(0,50);writeQR(m);return {ok:true,message};
 }
 
  document.addEventListener("click",e=>{
