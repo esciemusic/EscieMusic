@@ -2899,3 +2899,10 @@ body.inspector-open{overflow:hidden}
 
 
 
+
+/* =========================================================
+   ESCIE BLUE ACCENT
+   Secondary autobiographical accent. Green remains the primary signal.
+   ========================================================= */
+:root{--escie-blue:#2f80ff;--escie-blue-soft:rgba(47,128,255,.18);--escie-blue-line:rgba(47,128,255,.55);}
+.escie-blue,.blue-accent{color:var(--escie-blue);}
