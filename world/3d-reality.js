@@ -145,7 +145,10 @@ function policeCollision(){
   if(d<2.2&&performance.now()-vehicleImpacts.last>vehicleImpacts.cooldown){
    const result=root.ESCIE_WORLD_VEHICLES?.impact?.(Math.max(5,Math.min(20,Math.round(12+(3-d)*3))),"POLICE_COLLISION");
    vehicleImpacts.last=performance.now();
-   if(result?.ok)say3D("POLICE · VEHICLE IMPACT · CONDITION "+Number(result.condition||0)+"%");
+   if(result?.ok){
+     if(result.exited||Number(result.condition||0)<=0){player.inVehicle=false;player.vehicleId=null;player.speed=4.2;say3D("POLICE · VEHICLE DISABLED · ON FOOT");}
+     else say3D("POLICE · VEHICLE IMPACT · CONDITION "+Number(result.condition||0)+"%");
+   }
    return true;
   }
  }
