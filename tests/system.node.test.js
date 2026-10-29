@@ -544,4 +544,6 @@ assert(aestheticRuntime.includes(".section-open .section-drop-trigger"),"expande
 assert(fs.readFileSync("app.js","utf8").includes("function renderWorld()"),"public runtime must render the geographic world record");
 assert(fs.readFileSync("app.js","utf8").includes("GEOGRAPHIC RECORD"),"THE WORLD must expose the public geographic record");
 assert(aestheticRuntime.includes(".world-place-list"),"THE WORLD geographic record must have a restrained list presentation");
+assert(fs.readFileSync("app.js","utf8").includes("renderMerch();\n    bindMerchFilters();\n    renderWorld();\n    renderWeb();"),"public render lifecycle must render THE WORLD before THE WEB");
+assert(!fs.readFileSync("app.js","utf8").includes("ESCIE_RUNTIME.webFilters[control.getAttribute(\"data-web-filter\")]=control.value||\"\";\n      renderWorld();"),"THE WEB filter changes must not rebuild THE WORLD unnecessarily");
 console.log("ESCIE public index hierarchy and compact accordion contracts OK");
