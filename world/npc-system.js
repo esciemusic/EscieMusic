@@ -24,7 +24,9 @@ if(!Array.isArray(s.npcs[n.id].schedule)||!s.npcs[n.id].schedule.length){
  s.npcs[n.id].home=Object.assign({district},home);s.npcs[n.id].work=Object.assign({district},work);s.npcs[n.id].social=Object.assign({district},social);
  const socialStart=1020+(h%3)*30;
  const socialEnd=Math.min(1260,socialStart+90+(h%2)*30);
- s.npcs[n.id].schedule=[{start:0,end:420,activity:"SLEEP",target:home},{start:420,end:540,activity:"COMMUTE",target:work},{start:540,end:1020,activity:"WORK",target:work},{start:socialStart,end:socialEnd,activity:"SOCIAL",target:social},{start:socialEnd,end:1320,activity:"COMMUTE",target:home},{start:1320,end:1440,activity:"HOME",target:home}];
+ const workPoint=landmarkPoint(district,workBuilding?.landmark)||work;
+ const socialPoint=landmarkPoint(district,socialBuilding?.landmark)||social;
+ s.npcs[n.id].schedule=[{start:0,end:420,activity:"SLEEP",target:home},{start:420,end:540,activity:"COMMUTE",target:workPoint},{start:540,end:1020,activity:"WORK",target:workPoint},{start:socialStart,end:socialEnd,activity:"SOCIAL",target:socialPoint},{start:socialEnd,end:1320,activity:"COMMUTE",target:home},{start:1320,end:1440,activity:"HOME",target:home}];
 }
 save(s);if(tier!=="GENERIC")window.ESCIE_WORLD_NPC_LIFE?.ensure?.(s.npcs[n.id]);return s.npcs[n.id]};
 const registerSurveillance=n=>{const s=read();s.surveillance=s.surveillance||{};s.surveillance[n.id]=Object.assign({},n);save(s);return n};
@@ -40,10 +42,16 @@ const observe=(action,pos,opts={})=>{
  return {observed:!!visible,source:visible?.source||null,candidates};
 };
 const scheduleFor=(n,minute)=>{const s=n.schedule||[];if(!s.length)return null;return s.find(v=>minute>=v.start&&minute<v.end)||s[s.length-1]};
+const landmarkPoint=(district,landmark)=>{
+ const sim=window.ESCIE_WORLD_SIMULATION;if(!sim)return null;
+ const lm=sim.findLandmark?.(district,landmark);if(!lm)return null;
+ const node=(sim.streetNodes?.[String(district||"").toUpperCase()]||[]).find(x=>x.id===lm.node);
+ return node?Object.assign({},lm,{x:node.x,y:node.y}):null;
+};
 const buildingAtTarget=(n,a)=>{
  const b=a?.activity==="WORK"?n.work_building:a?.activity==="SOCIAL"?n.social_building:null;
  if(!b)return null;
- const lm=window.ESCIE_WORLD_SIMULATION?.districtLandmarks?.(n.district)?.find?.(x=>x.id===b.landmark);
+ const lm=landmarkPoint(n.district,b.landmark);
  return lm?{building:b,landmark:lm}:null;
 };
 const updateInteriorPresence=(n,a,minute)=>{
