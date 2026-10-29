@@ -334,6 +334,8 @@ assert(gameShopRuntime.includes("renderGameItemInspector"),"public game doorway 
 
 
 const worldRuntime=fs.readFileSync("world/world.js","utf8");
+const style=fs.readFileSync("style.css","utf8");
+const world=fs.readFileSync("world/world.css","utf8");
 const dreamPlayRuntime=fs.readFileSync("world/dream-play.js","utf8");
 assert(worldRuntime.includes('const parsed=JSON.parse(localStorage.getItem(KEY)||"{}");return parsed&&typeof parsed==="object"&&!Array.isArray(parsed)?parsed:{}'),"world save state must reject null and array-shaped corruption");
 assert(worldRuntime.includes('if(!target){say("Nothing nearby to interact with.");return false}'),"world interaction must safely handle no target");
