@@ -476,6 +476,11 @@ assert(world3dRuntime.includes("function enter3DInterior(building)"),"3D gamepla
 assert(world3dRuntime.includes("interiorMode=true"),"3D interiors must enter through the 3D gameplay layer");
 assert(world3dRuntime.includes("interiorMode)return exit3DInterior()"),"3D interior state must return to the outdoor world through the 3D layer");
 assert(!worldIndex.includes('<script src="interior-system.js"></script>'),"legacy 2D interior renderer must not be loaded into playable gameplay");
+assert(world.includes(".world-map{display:none;"),"2D map must be hidden during active 3D gameplay");
+assert(world.includes("body.is-world-paused .world-map{display:block}"),"2D map must only be revealed by pause state");
+assert(world3dRuntime.includes('document.body.classList.toggle("is-world-paused",paused)'),"3D pause state must own the 2D map visibility state");
+assert(!worldIndex.includes("REALITY FILTER"),"game UI must not expose the removed reality filter");
+
 console.log("ESCIE 3D interior lifecycle contracts OK");
 
 
