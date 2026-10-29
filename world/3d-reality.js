@@ -132,6 +132,8 @@ function interact(){
 function say3D(t){const log=document.getElementById("world-log");if(log)log.textContent=t}
 function blocked(x,z){
  const r=.45;
+ const openDoor=doors.some(d=>d.open&&Math.hypot(x-d.x,z-d.z)<1.35);
+ if(openDoor)return false;
  return obstacles.some(o=>Math.abs(x-o.x)<o.w/2+r&&Math.abs(z-o.z)<o.d/2+r);
 }
 function move(dt){
@@ -190,6 +192,7 @@ function setMode(v){
  const log=document.getElementById("world-log");if(log)log.textContent=thirdPerson?"3D REALITY · THIRD PERSON":"3D REALITY · FIRST PERSON";
 }
 function bind(){
+ document.addEventListener("click",e=>{const control=e.target.closest("[data-control-action]");if(control){const type=control.dataset.controlAction;if(type==="SPRINT"){move._touchSprint=true;setTimeout(()=>move._touchSprint=false,500)}else if(type==="OPEN")interact();}});
  document.addEventListener("click",e=>{
    const b=e.target.closest("[data-3d-camera]");if(b){setMode(!thirdPerson);b.textContent=thirdPerson?"FIRST PERSON":"THIRD PERSON";}
    const t=e.target.closest("[data-3d-toggle]");if(t){const s=stage();s?.classList.toggle("three-active");t.textContent=s?.classList.contains("three-active")?"2D MAP":"3D REALITY";resize();}
