@@ -2,7 +2,7 @@
 const KEY="escie_world_npc_life_v1";
 const DEFAULT={npcs:{},events:[]};
 const read=()=>{try{return Object.assign({},DEFAULT,JSON.parse(localStorage.getItem(KEY)||"{}"))}catch(e){return JSON.parse(JSON.stringify(DEFAULT))}};
-const save=s=>{try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}return s};
+const save=s=>{try{const raw=JSON.stringify(s);localStorage.setItem(KEY,raw);if(localStorage.getItem(KEY)!==raw)throw new Error("SAVE_VERIFY_FAILED:"+KEY);return s}catch(e){return null}};
 const clamp=(n,a=0,b=100)=>Math.max(a,Math.min(b,Number(n)||0));
 const hash=(id)=>{let h=0;for(let i=0;i<String(id).length;i++)h=((h<<5)-h)+String(id).charCodeAt(i)|0;return Math.abs(h)};
 const GOALS=["STABILITY","MONEY","CREATIVE","FAMILY","HEALTH","SOCIAL","FREEDOM","KNOWLEDGE"];
