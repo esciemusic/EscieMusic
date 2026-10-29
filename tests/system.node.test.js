@@ -225,6 +225,13 @@ assert(gameRuntime.includes("canonical_write:false"),"player state must never be
 assert(gameRuntime.includes("player/game records cannot write canonical truth directly"),"game registry must enforce canonical write boundary");
 assert(gameRuntime.includes("function applyPlayerEvent"),"game registry must expose player event application");
 assert(gameRuntime.includes("function playerMemory"),"game registry must expose player memory projection");
+assert(gameRuntime.includes("GAME_OBJECT_TYPES"),"game registry must define world object types");
+assert(gameRuntime.includes("GAME_EVENT_TYPES"),"game registry must define game event types");
+assert(gameRuntime.includes("function gameObject"),"game registry must expose world object creation");
+assert(gameRuntime.includes("function validateGameObject"),"game registry must validate world objects");
+assert(gameRuntime.includes("function canInteract"),"game registry must gate interactions");
+assert(gameRuntime.includes("function applyGameEvent"),"game registry must normalize gameplay events");
+
 
 assert(fs.readFileSync("data/registry.js","utf8").includes('["game",()=>collection("ESCIE_GAMES")]'),"canonical registry must ingest game records");
 assert(fs.readFileSync("index.html","utf8").includes('<script src="data/games.js"></script>'),"public runtime must load the game registry");
