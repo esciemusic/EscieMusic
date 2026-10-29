@@ -558,51 +558,49 @@ window.addEventListener("escie:financial-event",e=>{const d=e.detail||{};if(wind
 
 function processWorldQR(raw){
   const value=String(raw||"").trim(), normalized=value.replace(/^escie:\/\//i,"");
-  const parts=normalized.split("/").map(x=>decodeURIComponent(x).trim()).filter(Boolean);
+  let parts;
+  try{parts=normalized.split("/").map(x=>decodeURIComponent(x).trim()).filter(Boolean)}catch(e){return {ok:false,message:"QR · INVALID CODE"}}
   const kind=String(parts.shift()||"").toUpperCase(), payload=parts.join("/"), sim=window.ESCIE_WORLD_SIMULATION, s=sim?.state?.();
   let qrState=readStorageJSON(KEY,{});
   const allowed=/^[A-Z0-9_ .-]+$/i;
-  let m={};try{m=JSON.parse(localStorage.getItem("escie_phone_v1")||"{}")}catch(e){}
+  const m=readStorageJSON(PHONE_STORE_KEY,{});
   m.qr=Array.isArray(m.qr)?m.qr:[];
-  const writeQR=x=>writePhoneState(x);
   const record={code:value.slice(0,160),day:s?.day||1,time:new Date().toLocaleTimeString(),ok:false};
-  const reject=(message)=>{record.message=message;m.qr.unshift(record);m.qr=m.qr.slice(0,50);writeQR(m);return {ok:false,message};};
+  const reject=(message)=>{record.message=message;m.qr.unshift(record);m.qr=m.qr.slice(0,50);writePhoneState(m);return {ok:false,message}};
   if(!/^ESCIE:\/\//i.test(value))return reject("QR · INVALID ESCIE CODE");
   if(!parts.length||!allowed.test(payload))return reject("QR · UNSUPPORTED CODE");
   let message="";
   if(kind==="QUERY"){
     const q="query:"+payload.toLowerCase();
-    qrState=readStorageJSON(KEY,{});
-    state.world_unlocks=Array.isArray(state.world_unlocks)?state.world_unlocks:[];
-    if(!state.world_unlocks.includes(q))state.world_unlocks.push(q);
-    state.signals=(Number(state.signals)||0)+1;
-    state.qr_history=(state.qr_history||[]).concat([{query:q,day:s?.day||1}]).slice(-100);
+    qrState.world_unlocks=Array.isArray(qrState.world_unlocks)?qrState.world_unlocks:[];
+    if(!qrState.world_unlocks.includes(q))qrState.world_unlocks.push(q);
+    qrState.signals=(Number(qrState.signals)||0)+1;
+    qrState.qr_history=(qrState.qr_history||[]).concat([{query:q,day:s?.day||1}]).slice(-100);
     window.ESCIE_GAME_REGISTRY?.applyPlayerEvent?.({event:"DISCOVERED",target:"qr:"+q,queries:[q]});
     record.ok=true;message="QR · QUERY UNLOCKED · "+q;
   }else if(kind==="DISCOVER"){
     const id=payload.toLowerCase().startsWith("game-")?payload:"game-discovery-"+payload.toLowerCase().replace(/[^a-z0-9_-]+/g,"-");
-    const state=readStorageJSON(KEY,{});
-    state.discoveries=Array.isArray(state.discoveries)?state.discoveries:[];
-    if(!state.discoveries.includes(id))state.discoveries.push(id);
-    state.signals=(Number(state.signals)||0)+1;
+    qrState.discoveries=Array.isArray(qrState.discoveries)?qrState.discoveries:[];
+    if(!qrState.discoveries.includes(id))qrState.discoveries.push(id);
+    qrState.signals=(Number(qrState.signals)||0)+1;
     window.ESCIE_GAME_REGISTRY?.applyPlayerEvent?.({event:"DISCOVERED",target:id,queries:["query:"+payload.toLowerCase()]});
     record.ok=true;message="QR · DISCOVERY RECORDED · "+id;
   }else if(kind==="DISTRICT"){
-    const d=payload.toUpperCase();
-    const known=sim?.districts?.[d];
+    const d=payload.toUpperCase(), known=sim?.districts?.[d];
     if(!known)return reject("QR · UNKNOWN DISTRICT");
     sim.activateDistrict?.(d,"QR");
     record.ok=true;message="QR · DISTRICT ACCESS · "+d;
   }else if(kind==="SIGNAL"){
     const amount=Math.max(1,Math.min(25,Number(payload)));
     if(!Number.isFinite(amount))return reject("QR · INVALID SIGNAL VALUE");
-    const state=readStorageJSON(KEY,{});
-    state.signals=(Number(state.signals)||0)+amount;
+    qrState.signals=(Number(qrState.signals)||0)+amount;
     record.ok=true;message="QR · SIGNAL +"+amount;
-  }else{
-    return reject("QR · CODE TYPE NOT RECOGNIZED");
-  }
-  record.message=message;m.qr.unshift(record);m.qr=m.qr.slice(0,50);if(!commitStorageBatch({[KEY]:qrState,[PHONE_STORE_KEY]:m}))return {ok:false,message:"QR · SAVE FAILED"};return {ok:true,message};
+  }else return reject("QR · CODE TYPE NOT RECOGNIZED");
+  record.message=message;m.qr.unshift(record);m.qr=m.qr.slice(0,50);
+  const updates={[PHONE_STORE_KEY]:m};
+  if(kind==="QUERY"||kind==="DISCOVER"||kind==="SIGNAL")updates[KEY]=qrState;
+  if(!commitStorageBatch(updates))return {ok:false,message:"QR · SAVE FAILED"};
+  return {ok:true,message};
 }
 
  document.addEventListener("click",e=>{
