@@ -716,6 +716,20 @@ function renderClothing(){
     container.innerHTML='<div class="merch-statusbar"><div><span class="eyebrow">DROP 001 / THE FIRST WARDROBE</span><strong>'+visible.length+" PHYSICAL RECORD"+(visible.length===1?"":"S")+"</strong></div><p>Checkout, inventory, shipping and taxes stay outside the ESCIE site. This shell remains the archive and presentation layer.</p>"+storeAction+"</div><div class="merch-grid-list">"+cards+"</div>';
   }
 
+  function bindMerchFilters(){
+    document.querySelectorAll("[data-merch-filter]").forEach(button=>{
+      if(button.dataset.bound==="true")return;
+      button.dataset.bound="true";
+      button.addEventListener("click",()=>{
+        const value=String(button.dataset.merchFilter||"ALL").toUpperCase();
+        const container=byId("merch-container");
+        if(container)container.dataset.filter=value;
+        document.querySelectorAll("[data-merch-filter]").forEach(item=>item.classList.toggle("is-active",item===button));
+        renderMerch();
+      });
+    });
+  }
+
 
 
   function renderArchive() {
@@ -1682,6 +1696,7 @@ function renderClothing(){
     renderProjects();
     renderClothing();
     renderMerch();
+    bindMerchFilters();
     renderWeb();
     renderArchive();
     renderInvestigation();
