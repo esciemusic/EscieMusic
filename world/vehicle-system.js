@@ -41,7 +41,10 @@ const repair=(id,amount=100)=>{
  const spent=sim?.spend?.(cost,"VEHICLE_REPAIR");
  if(spent===false)return {ok:false,reason:"INSUFFICIENT_FUNDS",cost,condition:before};
  s.condition[target]=before+gain;s.history=Array.isArray(s.history)?s.history:[];s.history.unshift({type:"REPAIR",vehicle:target,amount:gain,cost,condition:s.condition[target],at:Date.now()});s.history=s.history.slice(0,100);
- if(!save(s))return {ok:false,reason:"SAVE_FAILED"};
+ if(!save(s)){
+   sim?.change?.({money:cost});
+   return {ok:false,reason:"SAVE_FAILED"};
+ }
  return {ok:true,condition:s.condition[target],cost,vehicle:get(target)};
 };
 const state=()=>{const s=read();return {owned:s.owned.map(get).filter(Boolean),current:get(s.current),radio:s.radio,condition:s.condition,history:s.history}};
