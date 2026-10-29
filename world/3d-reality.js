@@ -5,7 +5,7 @@
 (function(){
 "use strict";
 const root=window;
-let renderer,scene,camera,clock,avatar,worldGroup,thirdPerson=false,started=false,raf=0,dayLight,ambientLight,resizeObserver,visibilityHandler;
+let renderer,scene,camera,clock,avatar,worldGroup,thirdPerson=false,started=false,paused=false,raf=0,dayLight,ambientLight,resizeObserver,visibilityHandler;
 const obstacles=[],actors=[],doors=[],lights=[],evidence=[]; const perf={quality:"auto",frameMs:16,lowFrames:0,last:performance.now(),hud:0};
 const keys=new Set();
 const player={x:0,z:8,y:1.7,yaw:0,pitch:0,speed:4.2,sprint:7.5,lastSync:0,lastGridX:null,lastGridY:null,inVehicle:false,vehicleId:null,npcSync:0,lawSync:0};
@@ -205,8 +205,8 @@ function render(){
  }
  renderer.render(scene,camera);raf=requestAnimationFrame(render);
 }
-function stop(){if(raf)cancelAnimationFrame(raf);raf=0;document.exitPointerLock?.();if(resizeObserver){resizeObserver.disconnect();resizeObserver=null;}window.removeEventListener("resize",resize);if(visibilityHandler)document.removeEventListener("visibilitychange",visibilityHandler);started=false;}
-function setMode(v){
+function stop(){paused=false;if(raf)cancelAnimationFrame(raf);raf=0;document.exitPointerLock?.();if(resizeObserver){resizeObserver.disconnect();resizeObserver=null;}window.removeEventListener("resize",resize);if(visibilityHandler)document.removeEventListener("visibilitychange",visibilityHandler);started=false;}
+function togglePause(force){\n const next=typeof force==="boolean"?force:!paused;\n paused=next;\n document.body.classList.toggle("is-world-paused",paused);\n const map=document.getElementById("world-map");\n if(map)map.setAttribute("aria-hidden",paused?"false":"true");\n const panel=document.getElementById("world-pause");\n if(panel)panel.hidden=!paused;\n if(paused){if(raf)cancelAnimationFrame(raf);raf=0;document.exitPointerLock?.();}\n else if(started&&!raf){clock.start();render();}\n const log=document.getElementById("world-log");\n if(log)log.textContent=paused?"PAUSED · MAP / SYSTEM":"3D REALITY · "+(thirdPerson?"THIRD PERSON":"FIRST PERSON");\n return paused;\n}\nfunction setMode(v){
  thirdPerson=!!v;avatar.visible=thirdPerson;
  const log=document.getElementById("world-log");if(log)log.textContent=thirdPerson?"3D REALITY · THIRD PERSON":"3D REALITY · FIRST PERSON";
 }
@@ -224,7 +224,7 @@ function bind(){
 }
 function start(){
  if(started)return;started=true;if(!setup()){started=false;return;}
- bind();const s=stage();s.classList.add("three-active");setMode(false);render();
+ bind();const s=stage();s.classList.add("three-active");setMode(false);togglePause(false);render();
 }
 root.ESCIE_3D_WORLD={start,stop,ready:()=>!!renderer,toggleCamera:()=>setMode(!thirdPerson),interact,fight:fight3D,setSprint:(v)=>{move._touchSprint=!!v},status:()=>({ready:!!renderer,quality:perf.quality,frameMs:Math.round(perf.frameMs)})};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",start);else start();
