@@ -56,8 +56,12 @@ function lootRoll(table=WORLD_LOOT_TABLE){
  return table[table.length-1];
 }
 function questLootBonus(qid){
- const q=QUESTS.find(x=>x.id===qid);if(!q)return null;
- const map={};if(qid==="FIRST SIGNAL")map.drop={id:"SIGNAL",kind:"SIGNAL",amount:2,reason:"QUEST SIGNAL"};if(qid==="GREEN ACCESS")map.drop={id:"JACKET",kind:"EQUIPMENT",reason:"ACCESS REWARD"};return map.drop||null;
+ const map={};
+ if(qid==="quest-first-signal")map.drop={id:"SIGNAL",kind:"SIGNAL",amount:2,reason:"QUEST SIGNAL"};
+ if(qid==="quest-green-access")map.drop={id:"JACKET",kind:"EQUIPMENT",reason:"ACCESS REWARD"};
+ if(qid==="quest-field-gear")map.drop={id:"SIGNAL",kind:"SIGNAL",amount:2,reason:"FIELD GEAR REWARD"};
+ if(qid==="quest-winter-weight")map.drop={id:"SIGNAL",kind:"SIGNAL",amount:3,reason:"WINTER WEIGHT REWARD"};
+ return map.drop||null;
 }
 function grantLoot(reason="",source="",opts={}){
  const s=state(),r=rpgState(s),key=String(source||reason||"LOOT");
@@ -182,14 +186,17 @@ const QUESTS=[
  {id:"quest-witness",title:"THE WITNESS",description:"Speak to THE WITNESS and receive the key instruction.",requires:["game-discovery-witness"],reward:1},
  {id:"quest-room01",title:"ROOM 01",description:"Open the locked door and enter the unknown address.",requires:["room01"],reward:2},
  {id:"quest-archive",title:"THE DATED TAPE",description:"Find the television and VHS tape inside ROOM 01.",requires:["game-discovery-tv","game-discovery-tape"],reward:2},
+ {id:"quest-field-gear",title:"FIELD GEAR",description:"Recover a useful tool from the street and prove you can work with what you find.",requires:["gear:POCKET_KNIFE"],reward:2},
  {id:"quest-green-access",title:"GREEN ACCESS",description:"Acquire the Green Pass and enter the deeper layer.",requires:["game-item-green-pass","room02"],reward:3},
+ {id:"quest-winter-weight",title:"WINTER WEIGHT",description:"Recover the heavy jacket and learn what protection costs.",requires:["gear:JACKET"],reward:2},
  {id:"quest-trace",title:"TRACE",description:"Wake the Green Terminal and open the Trace Gate.",requires:["game-discovery-terminal","query:trace"],reward:4},
  {id:"quest-exit",title:"THE SIGNAL EXIT",description:"Reach the end marker in the Trace Layer.",requires:["game-discovery-exit"],reward:5}
 ];
-function questStatus(q,s){const done=Array.isArray(s.completed_quests)&&s.completed_quests.includes(q.id);const met=q.requires.every(id=>id==="room01"?s.world_room==="room01":id==="room02"?s.world_room==="room02":id==="trace"?s.world_room==="trace":id.startsWith("query:")?(Array.isArray(s.world_unlocks)&&s.world_unlocks.includes(id)):(Array.isArray(s.discoveries)&&s.discoveries.includes(id))||(Array.isArray(s.inventory)&&s.inventory.includes(id)));return {done,met};}
+function questStatus(q,s){const done=Array.isArray(s.completed_quests)&&s.completed_quests.includes(q.id);const met=q.requires.every(id=>id==="room01"?s.world_room==="room01":id==="room02"?s.world_room==="room02":id==="trace"?s.world_room==="trace":id.startsWith("query:")?(Array.isArray(s.world_unlocks)&&s.world_unlocks.includes(id)):id.startsWith("gear:")?(!!window.ESCIE_WORLD_EQUIPMENT?.owned?.(id.slice(5))):((Array.isArray(s.discoveries)&&s.discoveries.includes(id))||(Array.isArray(s.inventory)&&s.inventory.includes(id))));return {done,met};}
 function grantQuestRewards(){
  const s=state();s.completed_quests=Array.isArray(s.completed_quests)?s.completed_quests:[];const r=rpgState(s);r.quests=r.quests||{active:[],completed:[],failed:[]};r.quests.active=Array.isArray(r.quests.active)?r.quests.active:[];r.quests.completed=Array.isArray(r.quests.completed)?r.quests.completed:[];let gained=0;
- QUESTS.forEach(q=>{const st=questStatus(q,s);if(st.done){if(!r.quests.completed.includes(q.id))r.quests.completed.push(q.id);r.quests.active=r.quests.active.filter(id=>id!==q.id);return}if(st.met&&!r.quests.active.includes(q.id))r.quests.active.push(q.id);if(!st.done&&st.met){s.completed_quests.push(q.id);if(!r.quests.completed.includes(q.id))r.quests.completed.push(q.id);r.quests.active=r.quests.active.filter(id=>id!==q.id);gained+=q.reward;}});
+ const newlyCompleted=[];
+ QUESTS.forEach(q=>{const st=questStatus(q,s);if(st.done){if(!r.quests.completed.includes(q.id))r.quests.completed.push(q.id);r.quests.active=r.quests.active.filter(id=>id!==q.id);return}if(st.met&&!r.quests.active.includes(q.id))r.quests.active.push(q.id);if(!st.done&&st.met){s.completed_quests.push(q.id);if(!r.quests.completed.includes(q.id))r.quests.completed.push(q.id);r.quests.active=r.quests.active.filter(id=>id!==q.id);newlyCompleted.push(q.id);gained+=q.reward;}});
  if(gained){
    const r=rpgState(s),xp=window.ESCIE_RPG?.gainXP?.(r,gained*25,"QUEST");
    if(xp)s.rpg=xp.state;
@@ -199,7 +206,7 @@ function grantQuestRewards(){
      const next=registry.applyEconomyEvent(economy,{type:"EARN",amount:gained,currency:"SIGNAL",reason:"WORLD QUEST REWARD",timestamp:new Date().toISOString()});
      s.signals=Number(next.balances.SIGNAL||0);
    }else s.signals=Number(s.signals||0)+gained;
-   if(!save(s)){say("QUEST COMPLETE · SAVE FAILED");return}QUESTS.filter(q=>s.completed_quests.includes(q.id)).slice(-1).forEach(q=>{const special=questLootBonus(q.id);if(special)grantLoot("QUEST REWARD",q.id,{drop:special,once:true})});say("QUEST COMPLETE · +"+gained+" SIGNAL");
+   if(!save(s)){say("QUEST COMPLETE · SAVE FAILED");return}newlyCompleted.forEach(qid=>{const special=questLootBonus(qid);if(special)grantLoot("QUEST REWARD",qid,{drop:special,once:true})});say("QUEST COMPLETE · +"+gained+" SIGNAL");
    return gained;
  }
  return 0;
