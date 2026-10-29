@@ -36,3 +36,286 @@ body.escie-game-page .world-phone{position:fixed;inset:0;z-index:100;overflow:au
 @media(max-width:900px) and (orientation:landscape){body.escie-game-page .world-controls{padding:6px}body.escie-game-page .world-action-cluster{grid-template-columns:repeat(6,minmax(54px,1fr));gap:4px}body.escie-game-page .world-action-cluster button{min-height:38px;padding:4px;font-size:.48rem}body.escie-game-page .world-dpad button{width:38px;height:32px}}
 @media(pointer:coarse){body.escie-game-page button,a{touch-action:manipulation}}
 @media(prefers-reduced-motion:reduce){.game-boot-noise{display:none}}
+
+
+/* =========================================================
+   ESCIE WORLD UI GOVERNANCE
+   The game is the same universe: physical foundation + signal +
+   distortion. Effects communicate state; they do not decorate it.
+   ========================================================= */
+
+body.escie-game-page{
+  --world-ui-surface:rgba(16,17,20,.88);
+  --world-ui-solid:rgba(5,5,5,.96);
+  --world-ui-line:rgba(216,212,202,.14);
+  --world-ui-signal:rgba(47,128,255,.48);
+  --world-ui-distortion:rgba(111,63,175,.32);
+  --world-ui-danger:rgba(142,31,45,.55);
+  --world-ui-warning:rgba(184,135,58,.52);
+  --world-ui-environment:rgba(143,175,114,.46);
+}
+
+/* Global game atmosphere. */
+body.escie-game-page::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:20;
+  pointer-events:none;
+  opacity:.035;
+  background:
+    repeating-linear-gradient(0deg,transparent 0 3px,rgba(216,212,202,.22) 4px),
+    linear-gradient(90deg,transparent 0 48%,rgba(47,128,255,.025) 50%,transparent 52%);
+  mix-blend-mode:screen;
+}
+
+body.escie-game-page .world-hud{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:6px;
+  padding:6px;
+  color:var(--escie-paper);
+  font:700 .58rem/1.2 monospace;
+  letter-spacing:.12em;
+  text-shadow:0 0 10px rgba(47,128,255,.22);
+}
+
+body.escie-game-page .world-hud > *{
+  min-height:24px;
+  display:inline-flex;
+  align-items:center;
+  padding:5px 8px;
+  border:1px solid var(--world-ui-line);
+  background:rgba(5,5,5,.72);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+}
+
+body.escie-game-page .world-hud > :first-child{
+  border-color:var(--world-ui-signal);
+  color:var(--escie-blue-bright);
+}
+
+body.escie-game-page .world-hud > :nth-child(3){
+  color:var(--escie-amber);
+}
+
+body.escie-game-page .world-controls{
+  padding:14px;
+  background:
+    linear-gradient(180deg,transparent,rgba(5,5,5,.92) 48%),
+    linear-gradient(90deg,rgba(47,128,255,.035),transparent 40%,rgba(111,63,175,.035));
+}
+
+body.escie-game-page .world-action-cluster{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(62px,1fr));
+  gap:6px;
+  max-height:min(34vh,260px);
+  overflow:auto;
+  padding:4px;
+  scrollbar-width:thin;
+  scrollbar-color:var(--escie-blue) transparent;
+}
+
+body.escie-game-page .world-action-cluster button,
+body.escie-game-page .world-dpad button{
+  min-height:42px;
+  border:1px solid rgba(216,212,202,.14);
+  background:rgba(16,17,20,.9);
+  color:var(--escie-paper);
+  box-shadow:inset 0 1px 0 rgba(216,212,202,.035);
+  font:700 .52rem/1.2 monospace;
+  letter-spacing:.08em;
+  transition:transform 140ms ease,border-color 180ms ease,background 180ms ease,box-shadow 180ms ease;
+}
+
+body.escie-game-page .world-action-cluster button:hover,
+body.escie-game-page .world-action-cluster button:focus-visible{
+  border-color:var(--escie-blue);
+  background:rgba(47,128,255,.10);
+  box-shadow:0 0 18px rgba(47,128,255,.12),inset 0 0 18px rgba(47,128,255,.04);
+  outline:0;
+}
+
+body.escie-game-page .world-action-cluster button:active,
+body.escie-game-page .world-dpad button:active{
+  transform:translateY(1px) scale(.985);
+}
+
+body.escie-game-page .world-action-cluster button[data-control-action="FIGHT"]{
+  border-color:var(--world-ui-danger);
+}
+
+body.escie-game-page .world-action-cluster button[data-control-action="STEAL"]{
+  border-color:var(--world-ui-warning);
+}
+
+body.escie-game-page .world-action-cluster button[data-control-action="SPRINT"]{
+  border-color:var(--world-ui-environment);
+}
+
+body.escie-game-page .world-dpad{
+  filter:drop-shadow(0 8px 20px rgba(0,0,0,.35));
+}
+
+body.escie-game-page .world-dpad button{
+  width:48px;
+  height:42px;
+  min-height:42px;
+}
+
+body.escie-game-page .world-dpad [data-action-primary]{
+  color:var(--escie-blue-bright);
+  border-color:var(--escie-blue);
+}
+
+body.escie-game-page .world-log{
+  padding:9px 11px;
+  border-left:2px solid var(--escie-blue);
+  background:rgba(5,5,5,.78);
+  box-shadow:0 10px 35px rgba(0,0,0,.28);
+  color:var(--escie-paper);
+  font:600 .62rem/1.5 monospace;
+  letter-spacing:.06em;
+  backdrop-filter:blur(7px);
+  -webkit-backdrop-filter:blur(7px);
+}
+
+body.escie-game-page .world-3d-tools{
+  gap:5px;
+  padding:5px;
+}
+
+body.escie-game-page .world-3d-tools button{
+  min-height:34px;
+  padding:7px 9px;
+  border-color:var(--world-ui-signal);
+  background:rgba(5,5,5,.72);
+  color:var(--escie-paper);
+  box-shadow:0 6px 20px rgba(0,0,0,.25);
+}
+
+body.escie-game-page .world-3d-tools button:hover,
+body.escie-game-page .world-3d-tools button:focus-visible{
+  background:rgba(47,128,255,.13);
+  outline:1px solid var(--escie-blue);
+  outline-offset:1px;
+}
+
+body.escie-game-page .world-quests,
+body.escie-game-page .world-rpg,
+body.escie-game-page .world-market,
+body.escie-game-page .world-investigation,
+body.escie-game-page .world-phone,
+body.escie-game-page .simulation-panel{
+  background:
+    radial-gradient(circle at 50% 0,rgba(47,128,255,.06),transparent 34%),
+    linear-gradient(180deg,rgba(5,5,5,.98),rgba(16,17,20,.98));
+}
+
+body.escie-game-page .investigation-head,
+body.escie-game-page .phone-top,
+body.escie-game-page .sim-head{
+  position:sticky;
+  top:0;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:12px;
+  border-bottom:1px solid var(--world-ui-line);
+  background:rgba(5,5,5,.92);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+}
+
+body.escie-game-page .investigation-head h2,
+body.escie-game-page .phone-top strong,
+body.escie-game-page .sim-head h2{
+  margin:0;
+  color:var(--escie-paper);
+}
+
+body.escie-game-page :is([data-close-quests],[data-close-rpg],[data-close-market],[data-close-investigation],[data-phone-close],[data-sim-close]){
+  border:1px solid var(--world-ui-line);
+  background:var(--escie-asphalt);
+  color:var(--escie-paper);
+  padding:8px 10px;
+  font:700 .56rem monospace;
+  letter-spacing:.1em;
+}
+
+body.escie-game-page :is([data-close-quests],[data-close-rpg],[data-close-market],[data-close-investigation],[data-phone-close],[data-sim-close]):hover,
+body.escie-game-page :is([data-close-quests],[data-close-rpg],[data-close-market],[data-close-investigation],[data-phone-close],[data-sim-close]):focus-visible{
+  border-color:var(--escie-blue);
+  color:var(--escie-blue-bright);
+  outline:0;
+}
+
+body.escie-game-page .game-boot{
+  background:
+    radial-gradient(circle at 50% 42%,rgba(47,128,255,.12),transparent 30%),
+    radial-gradient(circle at 72% 72%,rgba(111,63,175,.07),transparent 28%),
+    var(--escie-void);
+}
+
+body.escie-game-page .game-boot-panel{
+  border-color:var(--escie-blue-line);
+  background:
+    linear-gradient(180deg,rgba(16,17,20,.96),rgba(5,5,5,.97)),
+    repeating-linear-gradient(0deg,transparent 0 5px,rgba(216,212,202,.018) 6px);
+  box-shadow:var(--ui-shadow,0 20px 70px rgba(0,0,0,.42)),0 0 100px rgba(47,128,255,.12),inset 0 0 55px rgba(111,63,175,.05);
+}
+
+body.escie-game-page .game-boot h1{
+  color:var(--escie-blue-bright);
+  text-shadow:0 0 30px rgba(47,128,255,.16);
+}
+
+body.escie-game-page .game-boot-status{
+  border-left-color:var(--escie-blue);
+  background:rgba(47,128,255,.055);
+}
+
+body.escie-game-page .game-boot-actions :is(button,a){
+  border-color:rgba(216,212,202,.16);
+  background:var(--escie-asphalt);
+}
+
+body.escie-game-page .game-boot-actions :is(button,a):first-child{
+  border-color:var(--escie-blue-bright);
+  color:var(--escie-blue-bright);
+}
+
+body.escie-game-page .game-boot-actions :is(button,a):hover,
+body.escie-game-page .game-boot-actions :is(button,a):focus-visible{
+  background:rgba(47,128,255,.11);
+  outline-color:var(--escie-blue);
+}
+
+@media(max-width:900px){
+  body.escie-game-page .world-action-cluster{
+    grid-template-columns:repeat(4,minmax(62px,1fr));
+  }
+}
+
+@media(max-width:600px){
+  body.escie-game-page .world-hud{font-size:.5rem;gap:4px;padding:4px;}
+  body.escie-game-page .world-hud > *{min-height:22px;padding:4px 6px;}
+  body.escie-game-page .world-controls{padding:8px;}
+  body.escie-game-page .world-action-cluster{
+    grid-template-columns:repeat(3,minmax(72px,1fr));
+    max-height:30vh;
+  }
+  body.escie-game-page .world-action-cluster button{min-height:40px;font-size:.48rem;}
+  body.escie-game-page .world-dpad button{width:44px;height:38px;min-height:38px;}
+}
+
+@media(prefers-reduced-motion:reduce){
+  body.escie-game-page::after{display:none;}
+  body.escie-game-page .world-action-cluster button,
+  body.escie-game-page .world-dpad button{transition:none;}
+}
