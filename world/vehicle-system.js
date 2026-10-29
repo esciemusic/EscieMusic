@@ -12,7 +12,7 @@ const VEHICLES={
 const DEFAULT={owned:["BIKE","SKATEBOARD","ROLLERBLADES"],current:null,radio:true,condition:{},history:[]};
 const clone=o=>JSON.parse(JSON.stringify(o));
 const read=()=>{try{const v=JSON.parse(localStorage.getItem(KEY)||"null");return v&&Array.isArray(v.owned)?v:clone(DEFAULT)}catch(e){return clone(DEFAULT)}};
-const save=s=>{localStorage.setItem(KEY,JSON.stringify(s));return s};
+const save=s=>{try{localStorage.setItem(KEY,JSON.stringify(s));return s}catch(e){return s}};
 const get=id=>VEHICLES[String(id||"").toUpperCase()]||null;
 const own=id=>read().owned.includes(String(id).toUpperCase());
 const acquire=(id)=>{const s=read(),v=get(id);if(!v)return {ok:false,reason:"UNKNOWN_VEHICLE"};if(!s.owned.includes(v.id))s.owned.push(v.id);save(s);return {ok:true,vehicle:v,state:s}};
