@@ -20,7 +20,7 @@
       fit:"Boxy / relaxed / dropped shoulder",
       sizes:["S","M","L","XL","2XL","3XL"],
       front:{text:"ESCIE",placement:"left chest",width_mm:"90–110",ink:"DIRTY WHITE"},
-      back:{art_direction:"Montréal photographic composition; documentary, cold, damaged-media texture; restrained cold-blue accent",width_mm:"300–330",height_mm:"400–450",text:"THE SIGNAL REMAINS DISTORTED."},
+      back:{art_direction:"Montréal photographic composition; documentary, cold, damaged-media texture; restrained green signal accent",width_mm:"300–330",height_mm:"400–450",text:"THE SIGNAL REMAINS DISTORTED."},
       label:"ESCIE / THE SIGNAL REMAINS DISTORTED.",
       hidden_detail:"DAISY — INTERIOR",
       decoration:{sample:"DTF or DTG",production:"SCREEN PRINT TARGET"},
