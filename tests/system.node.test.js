@@ -415,7 +415,7 @@ assert(worldRuntime.includes("syncSimulationPosition()"),"world boot must resync
 assert(worldRuntime.includes("WORLD_BOOT_DEPENDENCIES"),"world must declare boot dependencies");
 assert(worldRuntime.includes("function worldBootAudit"),"world must audit boot dependencies");
 assert(worldRuntime.includes("window.ESCIE_WORLD_BOOT=status"),"world must expose boot readiness status");
-assert(worldRuntime.includes("typeof sim.state==="function"?sim.state():sim.state"),"dream choices must safely resolve simulation state");
+assert(worldRuntime.includes('typeof sim.state==="function"?sim.state():sim.state'),"dream choices must safely resolve simulation state");
 for(const control of requiredControls) assert(worldHtml.includes(control),"world HTML missing control "+control);
 console.log("ESCIE world control wiring contracts OK");
 
