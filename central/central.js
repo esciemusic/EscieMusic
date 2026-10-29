@@ -8,7 +8,7 @@ function saveDrafts(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state.draf
 function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function routesFor(type,text){
   const t=(type+" "+text).toLowerCase(), routes=[];
-  if(/music|song|track|album|bam/.test(t)){routes.push("WEB / WORK","ARCHIVE","SOCIAL / ANNOUNCEMENT")}
+  if(/music|song|track|album/.test(t)){routes.push("WEB / WORK","ARCHIVE","SOCIAL / ANNOUNCEMENT")}
   if(/photo|visual|image|video/.test(t)){routes.push("ARCHIVE","WEB / GLASS EYE","SOCIAL")}
   if(/investigat|evidence|proof|question/.test(t)){routes.push("INVESTIGATION","ARCHIVE")}
   if(/event|release|show|drop/.test(t)){routes.push("NOW","WEB / TIMELINE","SOCIAL")}
