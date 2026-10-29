@@ -407,3 +407,46 @@ body.escie-game-page .world-hud .world-kicker{letter-spacing:.1em}
   body.escie-game-page .world-hud-bars{padding:4px 5px}
   body.escie-game-page .world-stat{grid-template-columns:17px minmax(35px,1fr) 29px;font-size:.43rem}
 }
+
+
+/* CONTEXTUAL INTERACTION PROMPT
+   Appears only when the player is close enough to something meaningful.
+   The prompt is a gameplay signal, not decoration. */
+body.escie-game-page #world-interact{
+  transform:translate(-50%,calc(-100% - 14px));
+  padding:7px 9px;
+  border:1px solid var(--world-ui-signal);
+  background:rgba(5,5,5,.9);
+  color:var(--escie-paper);
+  box-shadow:0 8px 28px rgba(0,0,0,.35),0 0 18px rgba(47,128,255,.09);
+  font:700 .52rem/1.2 monospace;
+  letter-spacing:.08em;
+  white-space:nowrap;
+  pointer-events:none;
+  z-index:18;
+}
+body.escie-game-page #world-interact[data-action="TALK"]{
+  border-color:var(--escie-purple);
+  box-shadow:0 8px 28px rgba(0,0,0,.35),0 0 18px rgba(111,63,175,.10);
+}
+body.escie-game-page #world-interact::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:-5px;
+  width:8px;
+  height:8px;
+  transform:translateX(-50%) rotate(45deg);
+  border-right:1px solid currentColor;
+  border-bottom:1px solid currentColor;
+  background:#050505;
+}
+@media(max-width:600px){
+  body.escie-game-page #world-interact{
+    padding:6px 8px;
+    font-size:.45rem;
+    max-width:calc(100vw - 24px);
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+}
