@@ -132,3 +132,34 @@ main > .site-section:not(#entry).section-collapsed + .site-section:not(#entry){
     transition:none;
   }
 }
+
+
+/* =========================================================
+   INDEX RHYTHM
+   Closed rows read as one quiet index.
+   Open rows earn the visual separation.
+   ========================================================= */
+
+main > .site-section:not(#entry).section-collapsed + .site-section:not(#entry).section-collapsed{
+  box-shadow:none;
+}
+
+main > .site-section:not(#entry).section-collapsed .section-drop-trigger{
+  opacity:.86;
+}
+
+main > .site-section:not(#entry).section-open{
+  box-shadow:inset 0 18px 42px -44px rgba(242,242,237,.22);
+}
+
+main > .site-section:not(#entry).section-open .section-drop-trigger{
+  box-shadow:
+    inset 0 1px 0 rgba(216,212,202,.045),
+    0 10px 32px rgba(0,0,0,.16);
+}
+
+@media(max-width:700px){
+  main > .site-section:not(#entry).section-open{
+    box-shadow:inset 0 12px 30px -34px rgba(242,242,237,.18);
+  }
+}
