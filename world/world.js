@@ -55,6 +55,10 @@ function lootRoll(table=WORLD_LOOT_TABLE){
  for(const x of table){roll-=Math.max(0,Number(x.weight)||0);if(roll<=0)return x}
  return table[table.length-1];
 }
+function questLootBonus(qid){
+ const q=QUESTS.find(x=>x.id===qid);if(!q)return null;
+ const map={};if(qid==="FIRST SIGNAL")map.drop={id:"SIGNAL",kind:"SIGNAL",amount:2,reason:"QUEST SIGNAL"};if(qid==="GREEN ACCESS")map.drop={id:"JACKET",kind:"EQUIPMENT",reason:"ACCESS REWARD"};return map.drop||null;
+}
 function grantLoot(reason="",source="",opts={}){
  const s=state(),r=rpgState(s),key=String(source||reason||"LOOT");
  r.loot=Array.isArray(r.loot)?r.loot:[];
@@ -186,7 +190,7 @@ function questStatus(q,s){const done=Array.isArray(s.completed_quests)&&s.comple
 function grantQuestRewards(){
  const s=state();s.completed_quests=Array.isArray(s.completed_quests)?s.completed_quests:[];const r=rpgState(s);r.quests=r.quests||{active:[],completed:[],failed:[]};r.quests.active=Array.isArray(r.quests.active)?r.quests.active:[];r.quests.completed=Array.isArray(r.quests.completed)?r.quests.completed:[];let gained=0;
  QUESTS.forEach(q=>{const st=questStatus(q,s);if(st.done){if(!r.quests.completed.includes(q.id))r.quests.completed.push(q.id);r.quests.active=r.quests.active.filter(id=>id!==q.id);return}if(st.met&&!r.quests.active.includes(q.id))r.quests.active.push(q.id);if(!st.done&&st.met){s.completed_quests.push(q.id);if(!r.quests.completed.includes(q.id))r.quests.completed.push(q.id);r.quests.active=r.quests.active.filter(id=>id!==q.id);gained+=q.reward;}});
- if(gained){
+ if(gained){const completedNow=QUESTS.filter(q=>q.completed&&s.completed_quests.includes(q.id));
    const r=rpgState(s),xp=window.ESCIE_RPG?.gainXP?.(r,gained*25,"QUEST");
    if(xp)s.rpg=xp.state;
    const registry=window.ESCIE_GAME_REGISTRY;
