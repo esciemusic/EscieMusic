@@ -21,28 +21,28 @@ function cyl(r,h,color,x,y,z){
  const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,16),makeMat(color,.8));m.position.set(x,y,z);worldGroup.add(m);return m;
 }
 function createGround(){
- const g=new THREE.Mesh(new THREE.PlaneGeometry(130,130),new THREE.MeshStandardMaterial({color:0x292b2b,roughness:1}));
+ const g=new THREE.Mesh(new THREE.PlaneGeometry(130,130),new THREE.MeshStandardMaterial({color:0x1b1c1f,roughness:1}));
  g.rotation.x=-Math.PI/2;worldGroup.add(g);
  for(let i=-50;i<=50;i+=10){box(.08,.01,130,0x3a3c3c,i,.01,0);box(130,.01,.08,0x3a3c3c,0,.012,i);}
  box(9,.04,130,0x171918,0,.04,0);
  for(let z=-54;z<54;z+=8){box(.18,.025,3.6,0xc7c8bd,0,.07,z);}
 }
 function door(x,z,w,h,seed){
- const mat=makeMat(seed%2?0x38443b:0x252b28,.72,seed%2?.2:0);
+ const mat=makeMat(seed%2?0x292a2e:0x101114,.72,seed%2?.2:0);
  const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,.08),mat);m.position.set(x, h/2, z);worldGroup.add(m);
- const sign=new THREE.Mesh(new THREE.BoxGeometry(w*.7,.08,.02),makeMat(0x8faf72,.7));sign.position.set(x,h*.78,z-.06);worldGroup.add(sign);
+ const sign=new THREE.Mesh(new THREE.BoxGeometry(w*.7,.08,.02),makeMat(0x2f80ff,.7));sign.position.set(x,h*.78,z-.06);worldGroup.add(sign);
  doors.push({mesh:m,x,z,w:.75,h:2.2,id:"door-"+seed,open:false});
  return m;
 }
 function building(x,z,w,d,h,seed){
- const wall=[0x343638,0x45474a,0x56585a,0x303235][seed%4];
+ const wall=[0x1b1c1f,0x292a2e,0x303235,0x101114][seed%4];
  box(w,h,d,wall,x,h/2,z,{roughness:.96,solid:true});
  const rows=Math.max(2,Math.floor(h/3)), cols=Math.max(2,Math.floor(w/2.8));
  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
    const px=x-w/2+1.2+c*((w-2.4)/Math.max(1,cols-1));
    const py=1.8+r*((h-3)/Math.max(1,rows-1));
    const lit=(seed+r*7+c*3)%5===0;
-   box(.55,.85,.035,lit?0x9ca36f:0x171a1a,px,py,z-d/2-.02);
+   box(.55,.85,.035,lit?0x70747a:0x101114,px,py,z-d/2-.02);
  }
  if(seed%3===0) box(w*.65,.12,d*.7,0x1e2020,x,h+.08,z);
  if(seed%2===0) door(x,z-d/2-.055,1.15,2.2,seed);
@@ -61,13 +61,13 @@ function createStreetLife(){
 function streetProps(){
  for(let z=-48;z<=48;z+=12){
    cyl(.08,4.5,0x151718,-5,2.25,z);
-   const lamp=box(.12,.12,.9,0x8e918c,-5,4.35,z,{metalness:.6});lamp.rotation.z=.15;
-   box(.28,.08,.18,0xb9c4a0,-5.25,4.25,z);
+   const lamp=box(.12,.12,.9,0x70747a,-5,4.35,z,{metalness:.6});lamp.rotation.z=.15;
+   box(.28,.08,.18,0x2f80ff,-5.25,4.25,z);
  }
  for(let z=-44;z<=44;z+=11){
    const side=z%22===0?-9:9;
-   box(1.8,.45,4.1,0x343a3c,side,.45,z,{roughness:.8});
-   box(1.55,.3,1.9,0x202324,side,1.0,z);
+   box(1.8,.45,4.1,0x292a2e,side,.45,z,{roughness:.8});
+   box(1.55,.3,1.9,0x101114,side,1.0,z);
  }
 }
 function createSnow(){
@@ -78,11 +78,11 @@ function createSnow(){
  worldGroup.add(new THREE.Points(geo,mat));
 }
 function buildScene(){
- scene=new THREE.Scene();scene.background=new THREE.Color(0x090d0c);scene.fog=new THREE.FogExp2(0x0b100f,.018);
+ scene=new THREE.Scene();scene.background=new THREE.Color(0x050505);scene.fog=new THREE.FogExp2(0x101114,.018);
  worldGroup=new THREE.Group();scene.add(worldGroup);
- scene.add(new THREE.HemisphereLight(0xaebbc0,0x101312,.8));
- const moon=new THREE.DirectionalLight(0xb9d0c9,1.5);moon.position.set(-18,30,12);scene.add(moon);
- const green=new THREE.PointLight(0x8faf72,3.5,20);green.position.set(0,5,6);scene.add(green);lights.push(green);
+ scene.add(new THREE.HemisphereLight(0xd8d4ca,0x101114,.8));
+ const moon=new THREE.DirectionalLight(0x70747a,1.5);moon.position.set(-18,30,12);scene.add(moon);
+ const green=new THREE.PointLight(0x2f80ff,2.8,20);green.position.set(0,5,6);scene.add(green);lights.push(green);
  dayLight=moon;ambientLight=scene.children.find(o=>o instanceof THREE.HemisphereLight);
  createGround();
  let seed=1;
@@ -92,9 +92,9 @@ function buildScene(){
  }
  streetProps();createStreetLife();createSnow();
  avatar=new THREE.Group();
- const body=new THREE.Mesh(new THREE.CapsuleGeometry(.28,.9,5,10),makeMat(0x111313,.9));
+ const body=new THREE.Mesh(new THREE.CapsuleGeometry(.28,.9,5,10),makeMat(0x101114,.9));
  body.position.y=.8;avatar.add(body);
- const head=new THREE.Mesh(new THREE.SphereGeometry(.22,16,12),makeMat(0x303535,.95));head.position.y=1.55;avatar.add(head);
+ const head=new THREE.Mesh(new THREE.SphereGeometry(.22,16,12),makeMat(0x70747a,.95));head.position.y=1.55;avatar.add(head);
  avatar.position.set(player.x,.0,player.z);scene.add(avatar);
 }
 function resize(){
@@ -150,7 +150,7 @@ function move(dt){
 function updateVehicles(t){
  const vs=root.ESCIE_WORLD_VEHICLES?.state?.(); if(!vs)return;
  if(!updateVehicles.car){
-  updateVehicles.car=new THREE.Group();const body=new THREE.Mesh(new THREE.BoxGeometry(1.7,.55,3.4),makeMat(0x26302d,.65,.35));body.position.y=.55;updateVehicles.car.add(body);
+  updateVehicles.car=new THREE.Group();const body=new THREE.Mesh(new THREE.BoxGeometry(1.7,.55,3.4),makeMat(0x101114,.65,.35));body.position.y=.55;updateVehicles.car.add(body);
   const roof=new THREE.Mesh(new THREE.BoxGeometry(1.2,.35,1.6),makeMat(0x111615,.6));roof.position.y=.98;updateVehicles.car.add(roof);
   updateVehicles.car.position.set(-4,.0,-10);worldGroup.add(updateVehicles.car);
  }
