@@ -309,9 +309,9 @@ const combatAttack=(targetId,opts={})=>{
  const s=read();const target=window.ESCIE_WORLD_NPC?.state?.().npcs?.[targetId];if(!target)return {ok:false,reason:"TARGET_NOT_FOUND"};
  if(s.legal_status==="DECEASED")return {ok:false,reason:"DEAD"};
  const stamina=Number(s.stamina??100);if(stamina<8)return {ok:false,reason:"EXHAUSTED"};
- const weapon=String(opts.weapon||"FIST").toUpperCase();const base=weapon==="HEAVY"?22:weapon==="LIGHT"?14:9;
+ const eq=window.ESCIE_WORLD_EQUIPMENT;const equipped=eq?.weapon?.()||{id:"FISTS",damage:9,stamina:10,label:"FISTS"};const weapon=String(opts.weapon||equipped.id||"FISTS").toUpperCase();const base=Number(equipped.damage||9);
  const hit=Math.max(1,Math.round(base*(1-Math.min(.6,Number(target.armor||0)/100))));
- s.stamina=Math.max(0,stamina-(weapon==="HEAVY"?18:10));s.stress=clamp(s.stress+2);
+ s.stamina=Math.max(0,stamina-Number(equipped.stamina||10));s.stress=clamp(s.stress+2);
  s.events=(s.events||[]).concat([{type:"COMBAT_ATTACK",target:targetId,weapon,damage:hit,day:s.day,hour:s.hour}]).slice(-100);save(s);
  const result=window.ESCIE_WORLD_NPC?.damageNPC?.(targetId,hit,weapon)||{ok:true};
  return {ok:true,hit,weapon,target:result,state:read()};
