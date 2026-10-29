@@ -529,7 +529,20 @@
       const context = recordContext(track);
       const parent = context.parents[0];
       const parentRecord = parent ? getAllRecords().find(item => recordId(item) === parent.record) : null;
-      return '<article class="merch-card" data-merch-category="'+escapeHTML(item.category||"CORE")+'"><div class="merch-card-top"><span class="eyebrow">'+escapeHTML(item.category||"CORE")+'</span><span class="merch-status">'+escapeHTML(stage)+'</span></div><div class="merch-card-art" aria-hidden="true"><span>'+escapeHTML(front||"ESCIE")+'</span><i></i><strong>'+escapeHTML(back||item.title||"")+'</strong></div><div class="merch-card-body"><h3>'+escapeHTML(item.title||"UNTITLED")+'</h3><p>'+escapeHTML(item.notes||"Physical ESCIE object.")+'</p><dl class="merch-specs"><div><dt>GARMENT</dt><dd>'+escapeHTML(details||"SPECIFICATION PENDING")+'</dd></div><div><dt>FIT / SIZE</dt><dd>'+escapeHTML((item.fit||"FIT PENDING")+" · "+sizes)+'</dd></div><div><dt>PRODUCTION</dt><dd>'+escapeHTML(priority+" · "+(packet.quantity_decision||"HUMAN GATE"))+'</dd></div></dl>'+action+'</div></article>';
+      const media = Array.isArray(track.media) ? track.media : [];
+      const audio = media.find(item => String(item && (item.type || item.kind) || "").toLowerCase() === "audio" && item.url);
+      const stage = String(track.release_status || track.status || "TRANSMISSION").toUpperCase();
+      const projectLabel = parentRecord ? recordTitle(parentRecord) : (track.project || "ESCIE");
+      const number = track.number ? String(track.number).padStart(3, "0") : "—";
+      const listen = audio
+        ? '<button class="record-action record-card" type="button" data-record-id="' + escapeHTML(recordId(track)) + '">LISTEN</button>'
+        : '<span class="record-action is-muted">AUDIO PENDING</span>';
+      return '<article class="music-card" data-record-id="' + escapeHTML(recordId(track)) + '"' + narrationAttributes(track) + '>' +
+        '<div class="music-card-top"><span class="eyebrow">' + escapeHTML(number) + ' / ' + escapeHTML(projectLabel) + '</span><span class="merch-status">' + escapeHTML(stage) + '</span></div>' +
+        '<div class="music-card-body"><h3>' + escapeHTML(recordTitle(track)) + '</h3>' +
+        '<p>' + escapeHTML(track.description || track.summary || "ESCIE music record.") + '</p>' +
+        '<div class="music-card-meta"><span>' + escapeHTML(track.release_date || "DATE WITHHELD") + '</span><span>' + escapeHTML((track.tags || []).slice(0, 3).join(" · ") || "SIGNAL") + '</span></div>' +
+        listen + '</div></article>';
     }).join("");
   }
 
