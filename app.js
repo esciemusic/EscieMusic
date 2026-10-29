@@ -690,6 +690,32 @@ function renderClothing(){
     container.innerHTML='<div class="clothing-intro"><p class="eyebrow">DROP 001 / THE FIRST WARDROBE</p><h3>THE GARMENT STANDS ON ITS OWN.</h3><p>Clothing is part of the world, not a requirement for understanding it. Digital connections remain secondary.</p></div><div class="clothing-grid">'+cards+'</div>';
   }
 
+  function renderMerch(){
+    const container=byId("merch-container");
+    if(!container)return;
+    const config=getGlobal("ESCIE_MERCH",{});
+    const clothing=normalizeCollection(getGlobal("ESCIE_CLOTHING",[])).filter(item=>item&&item.type==="CLOTHING");
+    const filterState=String(container.dataset.filter||"ALL").toUpperCase();
+    const visible=clothing.filter(item=>filterState==="ALL"||String(item.category||"CORE").toUpperCase()===filterState);
+    if(!visible.length){container.innerHTML='<div class="merch-empty"><p class="eyebrow">WARDROBE / '+escapeHTML(filterState)+'</p><h3>NOTHING IS PUBLIC HERE YET.</h3><p>The physical layer only shows garments that have a defined production path.</p></div>';return;}
+    const storeUrl=String(config.storefront_url||"").trim();
+    const storeLabel=String(config.storefront_label||"OPEN THE STORE");
+    const cards=visible.map(item=>{
+      const packet=item.production_packet||{};
+      const stage=String(item.production_stage||"DESIGN");
+      const priority=String(item.priority||"STANDARD");
+      const sizes=Array.isArray(item.sizes)?item.sizes.join(" / "):"";
+      const details=[item.color,item.garment,item.fabric,item.gsm_target].filter(Boolean).join(" · ");
+      const front=item.front&&item.front.text?item.front.text:"";
+      const back=item.back&&item.back.text?item.back.text:"";
+      const ready=String(item.status||"").toUpperCase()==="RELEASED"&&!!storeUrl;
+      const action=ready?'<a class="merch-card-action" href="'+escapeHTML(storeUrl)+'" target="_blank" rel="noopener noreferrer">BUY / '+escapeHTML(storeLabel)+'</a>':'<span class="merch-card-action is-quiet">SAMPLE / APPROVAL IN PROGRESS</span>';
+      return '<article class="merch-card" data-merch-category="'+escapeHTML(item.category||"CORE")+'"><div class="merch-card-top"><span class="eyebrow">'+escapeHTML(item.category||"CORE")+'</span><span class="merch-status">'+escapeHTML(stage)+'</span></div><div class="merch-card-art" aria-hidden="true"><span>'+escapeHTML(front||"ESCIE")+'</span><i></i><strong>'+escapeHTML(back||item.title||"")+"</strong></div><div class=\"merch-card-body\"><h3>"+escapeHTML(item.title||"UNTITLED")+"</h3><p>"+escapeHTML(item.notes||"Physical ESCIE object.")+"</p><dl class=\"merch-specs\"><div><dt>GARMENT</dt><dd>"+escapeHTML(details||"SPECIFICATION PENDING")+"</dd></div><div><dt>FIT / SIZE</dt><dd>"+escapeHTML((item.fit||"FIT PENDING")+" · "+sizes)+"</dd></div><div><dt>PRODUCTION</dt><dd>"+escapeHTML(priority+" · "+(packet.quantity_decision||"HUMAN GATE"))+"</dd></div></dl>"+action+"</div></article>';
+    }).join("");
+    const storeAction=storeUrl?'<a class="merch-store-link" href="'+escapeHTML(storeUrl)+'" target="_blank" rel="noopener noreferrer">'+escapeHTML(storeLabel)+' ↗</a>':'<span class="merch-store-link is-disabled">STORE LAYER / NOT CONNECTED</span>';
+    container.innerHTML='<div class="merch-statusbar"><div><span class="eyebrow">DROP 001 / THE FIRST WARDROBE</span><strong>'+visible.length+" PHYSICAL RECORD"+(visible.length===1?"":"S")+"</strong></div><p>Checkout, inventory, shipping and taxes stay outside the ESCIE site. This shell remains the archive and presentation layer.</p>"+storeAction+"</div><div class="merch-grid-list">"+cards+"</div>';
+  }
+
 
 
   function renderArchive() {
@@ -1398,6 +1424,7 @@ function renderClothing(){
         renderMusic();
         renderProjects();
         renderClothing();
+        renderMerch();
         renderWeb();
         renderArchive();
         renderInvestigation();
@@ -1654,6 +1681,7 @@ function renderClothing(){
     renderMusic();
     renderProjects();
     renderClothing();
+    renderMerch();
     renderWeb();
     renderArchive();
     renderInvestigation();
@@ -1671,7 +1699,6 @@ function renderClothing(){
   }
 
   function initialize() {
-    renderGameShop();
     if (ESCIE_RUNTIME.initialized) return ESCIE_RUNTIME;
 
     ESCIE_RUNTIME.initialized = true;
