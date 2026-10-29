@@ -90,14 +90,25 @@ function setup(){
  renderer.domElement.addEventListener("mousemove",e=>{if(document.pointerLockElement!==renderer.domElement)return;player.yaw-=e.movementX*.0022;player.pitch=clamp(player.pitch-e.movementY*.0018,-1.2,1.2);});
  document.addEventListener("keydown",e=>{keys.add(e.key.toLowerCase());if(["w","a","s","d","shift","arrowup","arrowdown","arrowleft","arrowright"].includes(e.key.toLowerCase()))e.preventDefault();});
  document.addEventListener("keyup",e=>keys.delete(e.key.toLowerCase()));
+ document.addEventListener("keydown",e=>{if(e.key.toLowerCase()==="e"){document.querySelector("[data-action-primary]")?.click();}});
+ let touchLook=null;
+ renderer.domElement.addEventListener("touchstart",e=>{if(e.touches.length===1)touchLook={x:e.touches[0].clientX,y:e.touches[0].clientY};},{passive:true});
+ renderer.domElement.addEventListener("touchmove",e=>{if(!touchLook||e.touches.length!==1)return;const t=e.touches[0];player.yaw-=(t.clientX-touchLook.x)*.006;player.pitch=clamp(player.pitch-(t.clientY-touchLook.y)*.004,-1.2,1.2);touchLook={x:t.clientX,y:t.clientY};},{passive:true});
+ renderer.domElement.addEventListener("touchend",()=>touchLook=null,{passive:true});
  document.addEventListener("blur",()=>keys.clear());
  return true;
 }
+function gamepadInput(){
+ const pads=navigator.getGamepads?.()||[];const p=[...pads].find(Boolean);if(!p)return {f:0,str:0,sprint:false,action:false};
+ return {f:-Number(p.axes?.[1]||0),str:Number(p.axes?.[0]||0),sprint:!!p.buttons?.[10]?.pressed,action:!!p.buttons?.[0]?.pressed};
+}
 function move(dt){
+ const gp=gamepadInput();
+ if(gp.action&&!move._lastAction){document.querySelector("[data-action-primary]")?.click()} move._lastAction=gp.action;
  let f=(keys.has("w")||keys.has("arrowup")?1:0)-(keys.has("s")||keys.has("arrowdown")?1:0);
- let str=(keys.has("d")||keys.has("arrowright")?1:0)-(keys.has("a")||keys.has("arrowleft")?1:0);
+ let str=(keys.has("d")||keys.has("arrowright")?1:0)-(keys.has("a")||keys.has("arrowleft")?1:0);f+=gp.f;str+=gp.str;
  const len=Math.hypot(f,str)||1;f/=len;str/=len;
- const speed=(keys.has("shift")?player.speed*1.75:player.speed)*dt;
+ const speed=((keys.has("shift")||gp.sprint)?player.speed*1.75:player.speed)*dt;
  const c=Math.cos(player.yaw),si=Math.sin(player.yaw);
  player.x+=(-si*f+c*str)*speed;player.z+=(-c*f-si*str)*speed;
  player.x=clamp(player.x,-bounds,bounds);player.z=clamp(player.z,-bounds,bounds);
