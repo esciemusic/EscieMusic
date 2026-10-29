@@ -471,3 +471,8 @@ body.escie-game-page .world-quest-tracker[hidden]{display:none}
 body.escie-game-page .world-quest-tracker strong{font:700 .68rem/1.2 monospace;letter-spacing:.06em;color:var(--escie-paper)}
 body.escie-game-page .world-quest-tracker small{font:400 .58rem/1.35 monospace;color:var(--escie-cold-grey)}
 @media(max-width:600px){body.escie-game-page .world-quest-tracker{top:82px;width:min(240px,calc(100vw - 24px));padding:7px 8px}body.escie-game-page .world-quest-tracker small{font-size:.5rem}}
+
+/* RPG ACTION FEEDBACK */
+body.escie-game-page.is-rpg-blocked #world-log{border-color:var(--escie-purple);box-shadow:0 0 18px rgba(111,63,175,.18);animation:escieWorldBlocked .5s ease-out}
+@keyframes escieWorldBlocked{0%,100%{transform:translateX(0)}25%{transform:translateX(-2px)}75%{transform:translateX(2px)}}
+@media(prefers-reduced-motion:reduce){body.escie-game-page.is-rpg-blocked #world-log{animation:none}}
