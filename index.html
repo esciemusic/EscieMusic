@@ -79,20 +79,24 @@
     </section>
 
 
-    <section id="game-shop" class="world-section game-shop-section" aria-labelledby="game-shop-title">
-  <div class="section-kicker">THE SIGNAL / ITEMS</div>
-  <h2 id="game-shop-title">THINGS YOU CAN TAKE WITH YOU.</h2>
-  <p class="section-lede">Some things are found. Some are earned. Some can leave the screen.</p>
-  <div id="game-shop-container" class="game-shop-container" aria-live="polite"></div><div id="game-container" class="game-container" aria-live="polite"></div>
-</section>
- class="site-section world-section">
+
+
+    <section id="merch" class="site-section merch-section" aria-labelledby="merch-title">
       <div class="section-inner">
-        <div class="section-visual section-visual-world" data-visual-section="world" aria-hidden="true"><span class="world-grid"></span><span class="world-pulse"></span><span class="world-node world-node-a"></span><span class="world-node world-node-b"></span><span class="world-node world-node-c"></span></div>
-        <h2>THE WORLD</h2>
-        <div id="world-container" class="content-container"></div>
+        <div class="section-visual section-visual-merch" data-visual-section="merch" aria-hidden="true"><span class="merch-grid"></span><span class="merch-tag"></span><span class="merch-mark">ESCIE</span></div>
+        <div class="merch-heading">
+          <p class="eyebrow">PHYSICAL LAYER / MERCH</p>
+          <h2 id="merch-title">THE WORLD, YOU CAN WEAR.</h2>
+          <p class="merch-lede">Physical objects from the ESCIE world. The work, investigation, music and discoveries remain free. Merch is the material layer.</p>
+        </div>
+        <div class="merch-controls" role="toolbar" aria-label="Filter merchandise">
+          <button type="button" class="merch-filter is-active" data-merch-filter="ALL">ALL</button>
+          <button type="button" class="merch-filter" data-merch-filter="CORE">ESCIE</button>
+          <button type="button" class="merch-filter" data-merch-filter="BAM">BAM</button>
+        </div>
+        <div id="merch-container" class="content-container" aria-live="polite"></div>
       </div>
     </section>
-
     <section id="web" class="site-section web-section">
       <div class="section-inner">
         <div class="section-visual section-visual-web" data-visual-section="the-web" aria-hidden="true"><span class="visual-key">⌕</span><span class="visual-node n1"></span><span class="visual-node n2"></span><span class="visual-node n3"></span><span class="visual-wire w1"></span><span class="visual-wire w2"></span><span class="visual-wire w3"></span></div>
@@ -218,6 +222,7 @@
   <script src="data/archive.js"></script>
   <script src="data/signals.js"></script>
   <script src="data/clothing.js"></script>
+  <script src="data/merch.js"></script>
   <script src="data/glass-eye-memory.js"></script>
   <script src="data/glass-eye-journey.js"></script>
   <script src="data/symbols.js"></script>
