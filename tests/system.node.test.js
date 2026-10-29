@@ -203,6 +203,22 @@ assert(orphanProvenanceAudit.missing.length === 1, "missing provenance source mu
 
 console.log("ESCIE provenance contracts OK");
 
+const rpgRuntime=fs.readFileSync("world/rpg-system.js","utf8");
+assert(rpgRuntime.includes("const CLASSES=[\"DRIFTER\",\"RUNNER\",\"INVESTIGATOR\",\"SURVIVOR\"]"),"RPG must expose four starting classes");
+assert(rpgRuntime.includes("function setClass"),"RPG must expose starting class selection");
+assert(rpgRuntime.includes("CLASS LOCKED AFTER PROGRESSION"),"RPG class choice must lock after progression");
+assert(rpgRuntime.includes("function gainXP"),"RPG must support XP progression");
+assert(rpgRuntime.includes("function spendPoint"),"RPG must support attribute/skill progression");
+assert(rpgRuntime.includes("function check"),"RPG must expose skill checks");
+assert(rpgRuntime.includes("function recordCombat"),"RPG must persist combat progression");
+const worldRpgRuntime=fs.readFileSync("world/world.js","utf8");
+const worldRpgHtml=fs.readFileSync("world/index.html","utf8");
+assert(worldRpgRuntime.includes("data-rpg-class"),"RPG character screen must expose class selection controls");
+assert(worldRpgRuntime.includes("setClass?.("),"RPG class selection must route through the canonical RPG setter");
+assert(worldRpgRuntime.includes("s.rpg=result.state"),"RPG class selection must persist into world state");
+assert(worldRpgHtml.includes("id=\"world-rpg\""),"world HTML must expose the RPG character panel");
+assert(worldRpgHtml.includes("data-character"),"world HTML must expose the RPG character control");
+console.log("ESCIE RPG progression contracts OK");
 const gameRuntime=fs.readFileSync("data/games.js","utf8");
 assert(gameRuntime.includes('"game_episode"'),"game registry must support game episodes");
 assert(gameRuntime.includes('"game_scene"'),"game registry must support game scenes");
