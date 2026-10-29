@@ -214,6 +214,8 @@ assert(rpgRuntime.includes("function recordCombat"),"RPG must persist combat pro
 const worldRpgRuntime=fs.readFileSync("world/world.js","utf8");
 const worldRpgHtml=fs.readFileSync("world/index.html","utf8");
 assert(worldRpgRuntime.includes("data-rpg-class"),"RPG character screen must expose class selection controls");
+assert(worldRpgRuntime.includes("info.bonus"),"RPG character screen must expose class specialization bonuses");
+assert(fs.readFileSync("world/world.css","utf8").includes(".rpg-class-choice"),"RPG class specialization choices must be styled");
 assert(worldRpgRuntime.includes("setClass?.("),"RPG class selection must route through the canonical RPG setter");
 assert(worldRpgRuntime.includes("s.rpg=result.state"),"RPG class selection must persist into world state");
 assert(worldRpgHtml.includes("id=\"world-rpg\""),"world HTML must expose the RPG character panel");
