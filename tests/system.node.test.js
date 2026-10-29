@@ -450,3 +450,12 @@ console.log("ESCIE world lifecycle contracts OK");
 assert(worldRuntime.includes("window.ESCIE_WORLD_NPC?.tick?.(sim.day,sim.hour,sim.minute"),"room transitions must advance NPC schedules");
 assert(worldRuntime.includes("window.ESCIE_WORLD_NPC_LIFE?.syncRelationships?.()"),"room transitions must synchronize NPC relationships");
 console.log("ESCIE NPC lifecycle contracts OK");
+
+
+/* NPC TIME-SCALE CONTRACTS */
+assert(npcRuntime.includes("const tick=(day,hour,minute,blocked,elapsedMinutes=30)"),"NPC ticking must accept elapsed simulation minutes");
+assert(npcRuntime.includes("NPC_LIFE?.tick?.(Math.max(1,Number(elapsedMinutes)||30))"),"NPC life simulation must use the elapsed simulation interval");
+assert(worldRuntime.includes("NPC?.tick?.(rs.day,rs.hour,rs.minute,(x,y)=>false,2)"),"interior room movement must advance NPC life on the same time scale");
+assert(worldRuntime.includes("NPC?.tick?.(sim.state().day,sim.state().hour,sim.state().minute,(x,y)=>isWall(x,y),1)"),"lane movement must advance NPC life on the same time scale");
+assert(worldRuntime.includes("window.ESCIE_WORLD_NPC_LIFE?.syncRelationships?.();persistRoom();say"),"room movement must synchronize NPC relationships and persistence");
+console.log("ESCIE NPC time-scale contracts OK");
