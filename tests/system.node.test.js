@@ -331,3 +331,18 @@ assert(gameShopRuntime.includes("ENTER CHECKOUT"),"real-money game items must ro
 assert(gameShopRuntime.includes("EARN IN THE SIGNAL"),"earned game items must remain in-game");
 assert(gameShopRuntime.includes("FOUND / CLAIMED IN GAME"),"free game items must remain game-native");
 assert(gameShopRuntime.includes("renderGameItemInspector"),"public game doorway must expose acquisition state");
+
+
+const worldRuntime=fs.readFileSync("world/world.js","utf8");
+assert(worldRuntime.includes('const parsed=JSON.parse(localStorage.getItem(KEY)||"{}");return parsed&&typeof parsed==="object"&&!Array.isArray(parsed)?parsed:{}'),"world save state must reject null and array-shaped corruption");
+assert(worldRuntime.includes('if(!target){say("Nothing nearby to interact with.");return false}'),"world interaction must safely handle no target");
+assert(worldRuntime.includes('window.ESCIE_WORLD_DREAM_STATE?.active'),"dream controls must only intercept input while dream play is active");
+assert(worldRuntime.includes('function activeInputDevice(kind)'),"world runtime must track the active input device");
+assert(worldRuntime.includes('activeInputDevice("KEYBOARD")'),"keyboard input must register as active");
+assert(worldRuntime.includes('activeInputDevice("TOUCH")'),"touch input must register as active");
+assert(worldRuntime.includes('activeInputDevice("GAMEPAD")'),"gamepad input must register as active");
+assert((worldRuntime.match(/function roomSetup\(/g)||[]).length===1,"world runtime must have exactly one room initializer");
+assert((worldRuntime.match(/function interactNow\(/g)||[]).length===1,"world runtime must have exactly one interaction handler");
+assert((worldRuntime.match(/function investigation\(/g)||[]).length===1,"world runtime must have exactly one active investigation function");
+assert((worldRuntime.match(/function investigationLegacy\(/g)||[]).length===1,"legacy investigation must be explicitly isolated");
+console.log("ESCIE world runtime contracts OK");
