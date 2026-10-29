@@ -377,7 +377,7 @@ function resetLocalGame(){
   try{
     localStorage.setItem(RESET_FLAG,"1");
     const active=activeSaveSlot();
-    const keys=[KEY,SAVE_KEY,saveSlotKey(active),"escie_world_simulation_v1","escie_world_npc_v1","escie_world_npc_life_v1","escie_world_equipment_v1","escie_world_vehicles_v1","escie_world_law_v1"];
+    const keys=[KEY,SAVE_KEY,saveSlotKey(active),...SAVE_STORE_KEYS];
     for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k&&k.startsWith("escie_world_quarantine_v1_"+active+"_"))keys.push(k)}
     keys.forEach(k=>{localStorage.removeItem(k);removed.push(k)});
     if(keys.some(k=>localStorage.getItem(k)!==null))throw new Error("RESET_INCOMPLETE");
