@@ -541,4 +541,7 @@ assert(aestheticRuntime.includes("padding:5px 0"),"collapsed sections must stay 
 assert(aestheticRuntime.includes("section-open .section-drop-panel"),"expanded sections must create their own internal space");
 assert(aestheticRuntime.includes("padding:28px 0 8px"),"expanded sections must create readable content spacing");
 assert(aestheticRuntime.includes(".section-open .section-drop-trigger"),"expanded sections must receive a distinct visual state");
+assert(fs.readFileSync("app.js","utf8").includes("function renderWorld()"),"public runtime must render the geographic world record");
+assert(fs.readFileSync("app.js","utf8").includes("GEOGRAPHIC RECORD"),"THE WORLD must expose the public geographic record");
+assert(aestheticRuntime.includes(".world-place-list"),"THE WORLD geographic record must have a restrained list presentation");
 console.log("ESCIE public index hierarchy and compact accordion contracts OK");
