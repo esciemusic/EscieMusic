@@ -5,7 +5,7 @@ const read=()=>{try{return Object.assign({},DEFAULT,JSON.parse(localStorage.getI
 const save=s=>{try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}return s};
 const clamp=(n,a=0,b=100)=>Math.max(a,Math.min(b,Number(n)||0));
 const hash=(id)=>{let h=0;for(let i=0;i<String(id).length;i++)h=((h<<5)-h)+String(id).charCodeAt(i)|0;return Math.abs(h)};
-const GOALS=["STABILITY","MONEY","CREATIVE","FAMILY","HEALTH","SOCIAL","FREEDOM","KNOWLEDGE"];
+const GOALS=["STABILITY","MONEY","CREATIVE","FAMILY","HEALTH","SOCIAL","FREEDOM","KNOWLEDGE"];\nconst tiers=id=>{const h=hash(id)%100;if(String(id)==="witness"||h<8)return "FEATURED";if(h<32)return "SIMULATED";return "GENERIC"};
 const seed=(n)=>{
  const h=hash(n.id),income=n.income_band||"MIDDLE";
  const baseMoney={LOW:80,LOW_MIDDLE:180,MIDDLE:420,UPPER_MIDDLE:900}[income]||180;
@@ -21,7 +21,7 @@ const ensure=(n)=>{
   hunger:clamp(existing.life?.hunger??70),energy:clamp(existing.life?.energy??80),
   stress:clamp(existing.life?.stress??15),social:clamp(existing.life?.social??45)
  });
- existing.life=life;s.npcs[n.id]=existing;save(s);return life;
+ existing.life=life;existing.simulation_tier=tier;s.npcs[n.id]=existing;save(s);return life;
 };
 const profile=id=>{const s=read();return s.npcs?.[id]?.life||null};
 const remember=(id,memory)=>{
@@ -69,6 +69,6 @@ const syncRelationships=()=>{
  Object.values(all).forEach(n=>{const l=s.npcs?.[n.id]?.life;if(!l)return;n.life=l;n.life.relationships=n.life.relationships||{};Object.keys(n.links||{}).forEach(id=>n.life.relationships[id]=n.links[id]);count++});save(s);return count;
 };
 const goalFor=id=>profile(id)?.goal||null;
-window.ESCIE_WORLD_NPC_LIFE={state:read,ensure,profile,tick,remember,relationship,syncRelationships,goalFor,goals:GOALS};
+window.ESCIE_WORLD_NPC_LIFE={state:read,ensure,profile,tick,remember,relationship,syncRelationships,goalFor,goals:GOALS,tiers,featureLevels:["GENERIC","SIMULATED","FEATURED"]};
 if(!localStorage.getItem(KEY))save(DEFAULT);
 })();
