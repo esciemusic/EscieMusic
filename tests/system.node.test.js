@@ -467,3 +467,8 @@ assert(interiorRuntime.includes("sim?.advance)sim.advance(2)"),"interior movemen
 assert(interiorRuntime.includes("NPC?.tick?.(s.day,s.hour,s.minute,(x,y)=>false,2)"),"interior movement must advance NPC schedules and life");
 assert(interiorRuntime.includes("NPC_LIFE?.syncRelationships?.()"),"interior movement must synchronize NPC relationships");
 console.log("ESCIE interior lifecycle contracts OK");
+
+
+/* ROOM TRANSITION NPC TIME-SCALE CONTRACT */
+assert(worldRuntime.includes('NPC?.tick?.(sim.day,sim.hour,sim.minute,(x,y)=>room==="lane"?isWall(x,y):false,5)'),"room transitions must pass their five-minute simulation interval into NPC life");
+console.log("ESCIE room-transition NPC time-scale contract OK");
