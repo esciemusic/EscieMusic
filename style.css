@@ -2966,3 +2966,175 @@ body.inspector-open{overflow:hidden}
   --warning:#b8873a;
   --environment:#8faf72;
 }
+
+
+/* =========================================================
+   ESCIE UI GOVERNANCE — SIGNAL DISTORTION LAYER
+   Foundation: Void / Asphalt / Concrete
+   Identity: Signal Blue
+   Distortion: Purple
+   Evidence: Dirty White / Paper
+   Consequence: Blood / Rust / Amber
+   Environmental anomaly: Sick Green
+   ========================================================= */
+
+:root{
+  --ui-surface:rgba(16,17,20,.82);
+  --ui-surface-strong:rgba(11,11,13,.94);
+  --ui-surface-soft:rgba(27,28,31,.62);
+  --ui-border:rgba(216,212,202,.12);
+  --ui-border-strong:rgba(47,128,255,.42);
+  --ui-text:var(--escie-paper);
+  --ui-muted:rgba(216,212,202,.58);
+  --ui-faint:rgba(216,212,202,.34);
+  --ui-shadow:0 20px 70px rgba(0,0,0,.42);
+  --ui-signal-glow:0 0 28px rgba(47,128,255,.16);
+  --ui-distortion-glow:0 0 28px rgba(111,63,175,.13);
+}
+
+/* UI surfaces should feel like found equipment, not glassmorphism. */
+button,
+.index-navigation,
+.music-card,
+.now-state,
+.empty-state,
+.investigation-case,
+.bam-part{
+  -webkit-tap-highlight-color:transparent;
+}
+
+.index-navigation{
+  background:
+    linear-gradient(180deg,rgba(16,17,20,.96),rgba(5,5,5,.94)),
+    repeating-linear-gradient(0deg,transparent 0 5px,rgba(216,212,202,.018) 6px);
+  border-color:var(--ui-border-strong);
+  box-shadow:var(--ui-shadow),var(--ui-signal-glow),inset 0 1px 0 rgba(216,212,202,.045);
+}
+
+.index-navigation::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(90deg,rgba(47,128,255,.035),transparent 28%,transparent 72%,rgba(111,63,175,.035));
+  mix-blend-mode:screen;
+}
+
+.index-navigation a{
+  position:relative;
+  border-left:1px solid transparent;
+  border-bottom:1px solid rgba(216,212,202,.055);
+  min-height:46px;
+}
+
+.index-navigation a::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-1px;
+  width:0;
+  height:1px;
+  background:var(--escie-blue);
+  box-shadow:0 0 12px rgba(47,128,255,.35);
+  transition:width 300ms ease;
+}
+
+.index-navigation a:hover,
+.index-navigation a:focus-visible{
+  color:var(--escie-paper);
+  border-left-color:var(--escie-blue);
+  background:linear-gradient(90deg,rgba(47,128,255,.08),transparent);
+}
+
+.index-navigation a:hover::after,
+.index-navigation a:focus-visible::after{width:100%;}
+
+/* Signal language: blue marks interaction, purple marks distortion. */
+a:hover,
+button:hover{ text-shadow:0 0 12px rgba(47,128,255,.16); }
+
+button{
+  border-radius:0;
+}
+
+:where(button,.button,.cta,.control,.index-trigger){
+  position:relative;
+  isolation:isolate;
+}
+
+:where(button,.button,.cta,.control)::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background:linear-gradient(90deg,rgba(47,128,255,.08),transparent 45%,rgba(111,63,175,.05));
+  opacity:0;
+  transition:opacity 220ms ease;
+}
+
+:where(button,.button,.cta,.control):hover::before,
+:where(button,.button,.cta,.control):focus-visible::before{opacity:1;}
+
+/* Evidence/document treatment. */
+.empty-state,
+.investigation-case,
+.now-state{
+  position:relative;
+  background:linear-gradient(90deg,rgba(216,212,202,.018),transparent 28%,transparent 72%,rgba(47,128,255,.018));
+}
+
+.empty-state::after,
+.investigation-case::after,
+.now-state::after{
+  content:"";
+  position:absolute;
+  top:0;
+  right:0;
+  width:56px;
+  height:1px;
+  background:var(--escie-blue);
+  opacity:.55;
+}
+
+/* Controlled media damage — subtle, never decorative noise everywhere. */
+.site-section:nth-of-type(4n)::after{
+  content:"";
+  position:absolute;
+  top:18%;
+  right:0;
+  width:clamp(22px,7vw,90px);
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--escie-purple));
+  opacity:.22;
+  pointer-events:none;
+}
+
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:49;
+  pointer-events:none;
+  opacity:.025;
+  background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(216,212,202,.22) 4px);
+  mix-blend-mode:overlay;
+}
+
+@media (max-width:700px){
+  .index-navigation{
+    right:10px;
+    width:calc(100vw - 20px);
+    max-height:78svh;
+    padding:10px;
+  }
+  .index-navigation a{
+    min-height:50px;
+    padding:14px 10px;
+    font-size:clamp(15px,5vw,21px);
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  body::after{display:none;}
+}
