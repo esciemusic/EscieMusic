@@ -5,8 +5,8 @@
 (function(){
 "use strict";
 const root=window;
-let renderer,scene,camera,clock,avatar,worldGroup,thirdPerson=false,started=false,raf=0;
-const obstacles=[],actors=[];
+let renderer,scene,camera,clock,avatar,worldGroup,thirdPerson=false,started=false,raf=0,dayLight,ambientLight;
+const obstacles=[],actors=[],doors=[],lights=[];
 const keys=new Set();
 const player={x:0,z:8,y:1.7,yaw:0,pitch:0,speed:4.2,sprint:7.5};
 const bounds=54;
@@ -27,6 +27,13 @@ function createGround(){
  box(9,.04,130,0x171918,0,.04,0);
  for(let z=-54;z<54;z+=8){box(.18,.025,3.6,0xc7c8bd,0,.07,z);}
 }
+function door(x,z,w,h,seed){
+ const mat=makeMat(seed%2?0x38443b:0x252b28,.72,seed%2?.2:0);
+ const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,.08),mat);m.position.set(x, h/2, z);worldGroup.add(m);
+ const sign=new THREE.Mesh(new THREE.BoxGeometry(w*.7,.08,.02),makeMat(0x8faf72,.7));sign.position.set(x,h*.78,z-.06);worldGroup.add(sign);
+ doors.push({mesh:m,x,z,w:.75,h:2.2,id:"door-"+seed,open:false});
+ return m;
+}
 function building(x,z,w,d,h,seed){
  const wall=[0x343638,0x45474a,0x56585a,0x303235][seed%4];
  box(w,h,d,wall,x,h/2,z,{roughness:.96,solid:true});
@@ -38,6 +45,7 @@ function building(x,z,w,d,h,seed){
    box(.55,.85,.035,lit?0x9ca36f:0x171a1a,px,py,z-d/2-.02);
  }
  if(seed%3===0) box(w*.65,.12,d*.7,0x1e2020,x,h+.08,z);
+ if(seed%2===0) door(x,z-d/2-.055,1.15,2.2,seed);
 }
 function actor(x,z,seed){
  const g=new THREE.Group();
@@ -74,7 +82,8 @@ function buildScene(){
  worldGroup=new THREE.Group();scene.add(worldGroup);
  scene.add(new THREE.HemisphereLight(0xaebbc0,0x101312,.8));
  const moon=new THREE.DirectionalLight(0xb9d0c9,1.5);moon.position.set(-18,30,12);scene.add(moon);
- const green=new THREE.PointLight(0x8faf72,3.5,20);green.position.set(0,5,6);scene.add(green);
+ const green=new THREE.PointLight(0x8faf72,3.5,20);green.position.set(0,5,6);scene.add(green);lights.push(green);
+ dayLight=moon;ambientLight=scene.children.find(o=>o instanceof THREE.HemisphereLight);
  createGround();
  let seed=1;
  for(let x=-34;x<=34;x+=12)for(let z=-52;z<=52;z+=13){
@@ -102,7 +111,7 @@ function setup(){
  renderer.domElement.addEventListener("mousemove",e=>{if(document.pointerLockElement!==renderer.domElement)return;player.yaw-=e.movementX*.0022;player.pitch=clamp(player.pitch-e.movementY*.0018,-1.2,1.2);});
  document.addEventListener("keydown",e=>{keys.add(e.key.toLowerCase());if(["w","a","s","d","shift","arrowup","arrowdown","arrowleft","arrowright"].includes(e.key.toLowerCase()))e.preventDefault();});
  document.addEventListener("keyup",e=>keys.delete(e.key.toLowerCase()));
- document.addEventListener("keydown",e=>{if(e.key.toLowerCase()==="e"){document.querySelector("[data-action-primary]")?.click();}});
+ document.addEventListener("keydown",e=>{if(e.key.toLowerCase()==="e"){if(!interact())document.querySelector("[data-action-primary]")?.click();}});
  let touchLook=null;
  renderer.domElement.addEventListener("touchstart",e=>{if(e.touches.length===1)touchLook={x:e.touches[0].clientX,y:e.touches[0].clientY};},{passive:true});
  renderer.domElement.addEventListener("touchmove",e=>{if(!touchLook||e.touches.length!==1)return;const t=e.touches[0];player.yaw-=(t.clientX-touchLook.x)*.006;player.pitch=clamp(player.pitch-(t.clientY-touchLook.y)*.004,-1.2,1.2);touchLook={x:t.clientX,y:t.clientY};},{passive:true});
@@ -114,6 +123,12 @@ function gamepadInput(){
  const pads=navigator.getGamepads?.()||[];const p=[...pads].find(Boolean);if(!p)return {f:0,str:0,sprint:false,action:false};
  return {f:-Number(p.axes?.[1]||0),str:Number(p.axes?.[0]||0),sprint:!!p.buttons?.[10]?.pressed,action:!!p.buttons?.[0]?.pressed};
 }
+function interact(){
+ const near=doors.find(d=>Math.hypot(player.x-d.x,player.z-d.z)<2.1);
+ if(near){near.open=!near.open;near.mesh.rotation.y=near.open?Math.PI/2:0;say3D(near.open?"DOOR OPEN · INTERIOR LAYER AVAILABLE":"DOOR CLOSED");return true}
+ return false;
+}
+function say3D(t){const log=document.getElementById("world-log");if(log)log.textContent=t}
 function blocked(x,z){
  const r=.45;
  return obstacles.some(o=>Math.abs(x-o.x)<o.w/2+r&&Math.abs(z-o.z)<o.d/2+r);
@@ -132,6 +147,13 @@ function move(dt){
  const sim=root.ESCIE_WORLD_SIMULATION,st=sim?.state?.();if(st&&st.position){st.position.x=player.x;st.position.y=player.z;}
  avatar.position.set(player.x,0,player.z);avatar.rotation.y=player.yaw;
 }
+function updateEnvironment(t){
+ const cycle=(t%180)/180,angle=cycle*Math.PI*2;
+ const daylight=Math.max(.08,Math.sin(angle-Math.PI/2)*.5+.5);
+ if(dayLight){dayLight.intensity=.35+daylight*1.25;dayLight.position.set(Math.cos(angle)*25,8+daylight*28,Math.sin(angle)*25);}
+ if(ambientLight)ambientLight.intensity=.25+daylight*.6;
+ if(scene?.fog)scene.fog.density=.014+(1-daylight)*.012;
+}
 function updateHud(){
  const coord=document.getElementById("world-coordinates"),sig=document.getElementById("world-signal");
  if(coord)coord.textContent=Math.round(player.x+54).toString().padStart(2,"0")+" · "+Math.round(player.z+54).toString().padStart(2,"0");
@@ -141,7 +163,7 @@ function updateActors(t){
  actors.forEach(a=>{a.position.x=a.userData.base+Math.sin(t*.35+a.userData.phase)*.8;a.rotation.y=Math.sin(t*.35+a.userData.phase)*.25;});
 }
 function render(){
- const dt=Math.min(clock.getDelta(),.05);move(dt);updateActors(clock.elapsedTime);updateHud();
+ const dt=Math.min(clock.getDelta(),.05);move(dt);updateActors(clock.elapsedTime);updateEnvironment(clock.elapsedTime);updateHud();
  if(thirdPerson){
    const back=new THREE.Vector3(Math.sin(player.yaw)*4.2,2.4,Math.cos(player.yaw)*4.2);
    camera.position.set(player.x+back.x,back.y,player.z+back.z);camera.lookAt(player.x,1.1,player.z);
