@@ -375,7 +375,7 @@ assert(worldRuntime.includes("function validateSaveSnapshot"),"world save system
 assert(worldRuntime.includes("JSON_PARSE_FAILED"),"world save system must classify malformed JSON");
 assert(worldRuntime.includes("SLOT_MISMATCH"),"world save system must reject cross-slot snapshots");
 assert(worldRuntime.includes("INVALID_POSITION"),"world save system must reject malformed saved positions");
-assert(worldRuntime.includes("SLOT "+' + 'n+" QUARANTINED"),"world save system must notify when a slot is quarantined");
+assert(worldRuntime.includes('saveIndicator("SLOT "+n+" QUARANTINED")'),"world save system must notify when a slot is quarantined");
 assert(worldRuntime.includes('function activeInputDevice(kind)'),"world runtime must track the active input device");
 assert(worldRuntime.includes('activeInputDevice("KEYBOARD")'),"keyboard input must register as active");
 assert(worldRuntime.includes('activeInputDevice("TOUCH")'),"touch input must register as active");
