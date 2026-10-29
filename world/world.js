@@ -246,9 +246,66 @@ window.addEventListener("escie:financial-event",e=>{const d=e.detail||{};if(wind
  const call=(contact,text)=>{const m=read();m.calls=m.calls||[];m.calls.unshift({contact,text,time:new Date().toLocaleTimeString()});m.calls=m.calls.slice(0,50);write(m);notify("CALL · "+contact,"CALL");};
  const message=(contact,text)=>{const m=read();m.messages=m.messages||[];m.messages.unshift({contact,text,day:window.ESCIE_WORLD_SIMULATION?.state?.().day||1,time:new Date().toLocaleTimeString(),unread:true});m.messages=m.messages.slice(0,100);write(m);notify("MESSAGE · "+contact,"MESSAGE");};const relationshipMessage=(id,text)=>{const n=window.ESCIE_WORLD_NPC?.state?.().npcs?.[id]||{};const contact=n.name||id;message(contact,text);};
  window.ESCIE_PHONE_GAMEPLAY={notify,call,message,relationshipMessage};
+
+function processWorldQR(raw){
+  const value=String(raw||"").trim(), normalized=value.replace(/^escie:\/\//i,"");
+  const parts=normalized.split("/").map(x=>decodeURIComponent(x).trim()).filter(Boolean);
+  const kind=String(parts.shift()||"").toUpperCase(), payload=parts.join("/"), sim=window.ESCIE_WORLD_SIMULATION, s=sim?.state?.();
+  const allowed=/^[A-Z0-9_ .-]+$/i;
+  const m=readPhone();
+  m.qr=Array.isArray(m.qr)?m.qr:[];
+  const record={code:value.slice(0,160),day:s?.day||1,time:new Date().toLocaleTimeString(),ok:false};
+  const reject=(message)=>{record.message=message;m.qr.unshift(record);m.qr=m.qr.slice(0,50);write(m);return {ok:false,message};};
+  if(!/^ESCIE:\/\//i.test(value))return reject("QR · INVALID ESCIE CODE");
+  if(!parts.length||!allowed.test(payload))return reject("QR · UNSUPPORTED CODE");
+  let message="";
+  if(kind==="QUERY"){
+    const q="query:"+payload.toLowerCase();
+    const state=JSON.parse(localStorage.getItem("escie_game_state_v1")||"{}");
+    state.world_unlocks=Array.isArray(state.world_unlocks)?state.world_unlocks:[];
+    if(!state.world_unlocks.includes(q))state.world_unlocks.push(q);
+    state.signals=(Number(state.signals)||0)+1;
+    state.qr_history=(state.qr_history||[]).concat([{query:q,day:s?.day||1}]).slice(-100);
+    localStorage.setItem("escie_game_state_v1",JSON.stringify(state));
+    window.ESCIE_GAME_REGISTRY?.applyPlayerEvent?.({event:"DISCOVERED",target:"qr:"+q,queries:[q]});
+    record.ok=true;message="QR · QUERY UNLOCKED · "+q;
+  }else if(kind==="DISCOVER"){
+    const id=payload.toLowerCase().startsWith("game-")?payload:"game-discovery-"+payload.toLowerCase().replace(/[^a-z0-9_-]+/g,"-");
+    const state=JSON.parse(localStorage.getItem("escie_game_state_v1")||"{}");
+    state.discoveries=Array.isArray(state.discoveries)?state.discoveries:[];
+    if(!state.discoveries.includes(id))state.discoveries.push(id);
+    state.signals=(Number(state.signals)||0)+1;
+    localStorage.setItem("escie_game_state_v1",JSON.stringify(state));
+    window.ESCIE_GAME_REGISTRY?.applyPlayerEvent?.({event:"DISCOVERED",target:id,queries:["query:"+payload.toLowerCase()]});
+    record.ok=true;message="QR · DISCOVERY RECORDED · "+id;
+  }else if(kind==="DISTRICT"){
+    const d=payload.toUpperCase();
+    const known=sim?.districts?.[d];
+    if(!known)return reject("QR · UNKNOWN DISTRICT");
+    sim.activateDistrict?.(d,"QR");
+    record.ok=true;message="QR · DISTRICT ACCESS · "+d;
+  }else if(kind==="SIGNAL"){
+    const amount=Math.max(1,Math.min(25,Number(payload)));
+    if(!Number.isFinite(amount))return reject("QR · INVALID SIGNAL VALUE");
+    const state=JSON.parse(localStorage.getItem("escie_game_state_v1")||"{}");
+    state.signals=(Number(state.signals)||0)+amount;
+    localStorage.setItem("escie_game_state_v1",JSON.stringify(state));
+    record.ok=true;message="QR · SIGNAL +"+amount;
+  }else{
+    return reject("QR · CODE TYPE NOT RECOGNIZED");
+  }
+  record.message=message;m.qr.unshift(record);m.qr=m.qr.slice(0,50);write(m);return {ok:true,message};
+}
+
  document.addEventListener("click",e=>{
    const b=e.target.closest("[data-phone-call]"); if(b){const id=b.dataset.phoneCall;const contact=id==="witness"?"THE WITNESS":"UNKNOWN CONTACT";call(contact,"Connection established.");if(id==="witness"){window.ESCIE_WORLD_NPC?.rememberInteraction?.("witness",{channel:"PHONE",text:"Called the Witness."});const rel=window.ESCIE_WORLD_NPC?.relationship?.("witness",1,"PHONE CALL");message(contact,rel>=40?"You can call me again.":rel<=-40?"Do not call me again.":"I know. I am listening.");}}
-   const q=e.target.closest("[data-phone-qr]"); if(q){notify("QR SCANNER READY · ENTER OR SCAN A CODE","QR");}
+   const q=e.target.closest("[data-phone-qr]"); if(q){
+  const input=document.getElementById("phone-qr-input"),raw=String(input?.value||"").trim();
+  if(!raw){notify("QR · ENTER A CODE FIRST","QR");return;}
+  const result=processWorldQR(raw);
+  notify(result.message||("QR · "+(result.ok?"ACCEPTED":"REJECTED")),"QR");
+  phoneApp("qr");
+}
  });
 })();
 
