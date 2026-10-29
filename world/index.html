@@ -28,7 +28,7 @@
 <div id="world-player" class="world-player" aria-label="Player"></div>
 <div id="world-interact" class="world-interact" hidden></div>
 </div>
-<div class="world-controls">
+<div class="world-3d-tools" aria-label="3D reality controls"><button type="button" data-3d-toggle>2D MAP</button><button type="button" data-3d-camera>THIRD PERSON</button><span class="world-kicker">WASD / ARROWS · SHIFT SPRINT · CLICK 3D VIEW TO LOOK</span></div><div class="world-controls">
 <div class="world-dpad" aria-label="Movement controls"><button type="button" data-dir="up">▲</button><div><button type="button" data-dir="left">◀</button><button type="button" data-action data-action-primary>●</button><button type="button" data-dir="right">▶</button></div><button type="button" data-dir="down">▼</button></div>
 <div class="world-actions world-action-cluster" aria-label="Action controls"><button type="button" data-action data-action-primary>INTERACT</button><button type="button" data-control-action="STEAL">STEAL</button><button type="button" data-control-action="FIGHT">FIGHT</button><button type="button" data-control-action="OPEN">OPEN</button><button type="button" data-control-action="SPRINT">SPRINT</button><button type="button" data-fullscreen>FULLSCREEN</button><button type="button" data-rotate>ROTATE</button><button type="button" data-device>HANDHELD</button><button type="button" data-preferences>PREFERENCES</button><button type="button" data-pause>PAUSE</button><button type="button" data-system>SYSTEM</button><button type="button" data-save>SAVE</button><button type="button" data-profile>PROFILE</button><button type="button" data-life>LIFE</button><button type="button" data-life-systems>SIMULATION</button><button type="button" data-inventory>INVENTORY</button><button type="button" data-character>CHARACTER</button><button type="button" data-glass>GLASS EYE</button><button type="button" data-investigation>INVESTIGATION</button><button type="button" data-market>WORLD MARKET</button><button type="button" data-phone-open>PHONE</button><button type="button" data-quests>QUESTS</button></div>
 </div>
@@ -41,6 +41,7 @@
 </main>
 <footer><span>ESCIE</span><span>THE SIGNAL REMAINS DISTORTED.</span><a href="../">RETURN TO THE WORLD ABOVE</a></footer>
 </div></div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 <script src="../data/games.js"></script>
 <script src="world-simulation.js"></script>
 <script src="city-reference.js"></script>
@@ -55,6 +56,7 @@
 <script src="interior-system.js"></script>
 <script src="rpg-system.js"></script>
 <script src="world.js"></script>
+<script src="3d-reality.js"></script>
 <script src="dream-play.js"></script>
 <section id="world-simulation" class="simulation-panel" hidden><div class="sim-panel" role="dialog" aria-modal="true" aria-label="World simulation"><div class="sim-head"><div><span class="world-kicker">CITY / LIFE / CONSEQUENCE</span><h2>SIMULATION</h2></div><button type="button" class="system-close" data-sim-close>CLOSE</button></div><div class="sim-grid" data-sim-grid></div><div class="sim-actions"><button type="button" data-sim-eat>EAT · $8</button><button type="button" data-sim-sleep>SLEEP</button><button type="button" data-sim-rest>REST</button><button type="button" data-sim-work>WORK SHIFT</button><button type="button" data-sim-social>SOCIALIZE</button><button type="button" data-sim-transport="FOOT">WALK</button><button type="button" data-sim-transport="RUN">RUN</button><button type="button" data-sim-transport="PARKOUR">PARKOUR</button><button type="button" data-sim-transport="SKATEBOARD">SKATEBOARD</button><button type="button" data-sim-transport="ROLLERBLADES">ROLLERBLADES</button><button type="button" data-sim-transport="BIKE">BIKE</button><button type="button" data-sim-time>ADVANCE TIME</button><button type="button" data-sim-train>TRAIN</button><button type="button" data-sim-graffiti>GRAFFITI</button></div><div class="transit-panel" data-transit-panel aria-label="Public transit"></div><p class="sim-note">Choices, access, transportation, money and consequences are stateful. Locations can remain inaccessible until gameplay makes them relevant.</p></div></section>
 </body>
