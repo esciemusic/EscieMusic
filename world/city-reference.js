@@ -1,6 +1,12 @@
 (()=>{"use strict";
 const REF={
  version:3,
+ mobility:{
+  cycling:{all_season_km:740,total_km:1083,seasonal_start:"04-01",seasonal_end:"11-15",protected_km:251,marked_km:489},
+  pedestrian:{shared_street_speed_kmh:20},
+  underground_network:{name:"RESO",approx_km:32},
+  winter:{snow_clearance:true},
+ },
  network:{major_corridors:["Jean-Talon","Parc","Acadie","Saint-Viateur","Mont-Royal","Saint-Denis","Saint-Laurent","Sherbrooke","Rosemont","Beaubien","Notre-Dame","Wellington"],transit_hubs:["Parc","Acadie","Jean-Talon","Laurier","Mont-Royal","Berri-UQAM","McGill","Peel","Guy-Concordia","Champ-de-Mars","Place-d’Armes","Saint-Henri","Vendôme","De l’Église","Verdun"]},
  source:"MONTRÉAL_REFERENCE_LAYER",
  method:"OFFICIAL_CITY_REFERENCE",
@@ -17,6 +23,12 @@ const REF={
  },
  road_classes:{LOCAL:"LOCAL",COLLECTOR:"COLLECTOR",ARTERIAL:"ARTERIAL",HIGHWAY:"HIGHWAY",PEDESTRIAN:"PEDESTRIAN"},
  climate:{seasonal_surface:["SNOW","SLUSH","WET","DRY"],winter_effects:["reduced traction","snowbanks","shorter daylight"],spring_effects:["potholes","wet pavement","construction"],summer_effects:["dry pavement","heat","outdoor activity"],autumn_effects:["wet leaves","cool pavement","shorter daylight"]},
+ road_behavior:{
+  pedestrian_priority:["PEDESTRIAN","SHARED"],
+  shared_speed_kmh:20,
+  seasonal_cycle_routes:true,
+  winter_cycle_routes:true,
+ },
  rules:[
   "Real Montréal street and transit relationships are the spatial reference.",
   "Use fictionalized businesses and original characters.",
