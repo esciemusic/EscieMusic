@@ -107,7 +107,7 @@ document.addEventListener("escie-dream-play-start",ensureControls);
    data.dream_history.unshift({level:s.level?.label||"DREAM",result:s.result||"WAKE",detected:!!s.detected,clue:s.found||null,turns:s.turns||0,day:data.day||1});
    data.dream_history=data.dream_history.slice(0,30);
    if(s.found){data.dream_clues=Array.isArray(data.dream_clues)?data.dream_clues:[];if(!data.dream_clues.includes(s.found))data.dream_clues.push(s.found);}
-   localStorage.setItem(key,JSON.stringify(data));
+   const raw=JSON.stringify(data);localStorage.setItem(key,raw);if(localStorage.getItem(key)!==raw)throw new Error("DREAM_PERSIST_VERIFY_FAILED");
   }catch(e){}
  }
  document.addEventListener("escie-dream-complete",e=>persistWake(e.detail));
