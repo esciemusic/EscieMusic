@@ -521,3 +521,23 @@ assert(worldRuntime.includes("function validateStoreBundle(stores)"),"save valid
 assert(worldRuntime.includes("INVALID_STORE_"),"save validation must produce store-specific corruption reasons");
 assert(worldRuntime.includes("const storeError=validateStoreBundle(snapshot.stores)"),"snapshot validation must reject malformed auxiliary stores");
 console.log("ESCIE save-store integrity contracts OK");
+
+
+/* PUBLIC INDEX / ACCORDION HIERARCHY CONTRACTS */
+const publicNavigationRuntime=fs.readFileSync("navigation.js","utf8");
+const aestheticRuntime=fs.readFileSync("aesthetic.css","utf8");
+assert(publicNavigationRuntime.includes('id:"now",label:"NOW"'),"public index must retain NOW");
+assert(publicNavigationRuntime.includes('id:"art",label:"WORK"'),"public index must retain WORK");
+assert(publicNavigationRuntime.includes('id:"world",label:"THE WORLD"'),"public index must retain THE WORLD");
+assert(publicNavigationRuntime.includes('id:"web",label:"THE WEB"'),"public index must retain THE WEB");
+assert(publicNavigationRuntime.includes('id:"archives",label:"ARCHIVE"'),"public index must retain ARCHIVE");
+assert(publicNavigationRuntime.includes('id:"investigation",label:"INVESTIGATION"'),"public index must retain INVESTIGATION");
+assert(publicNavigationRuntime.includes('id:"glass-eye",label:"GLASS EYE"'),"public index must retain GLASS EYE");
+assert(publicNavigationRuntime.includes('id:"escie",label:"ESCIE"'),"public index must retain ESCIE");
+assert(!publicNavigationRuntime.includes('id:"merch",label:"MERCH"'),"MERCH must not occupy a primary index slot");
+assert(!publicNavigationRuntime.includes('id:"enter-world"'),"ENTER THE WORLD must not occupy a primary index slot");
+assert(aestheticRuntime.includes("main > .site-section:not(#entry).section-collapsed"),"collapsed sections must have an explicit compact state");
+assert(aestheticRuntime.includes("padding:5px 0"),"collapsed sections must stay tightly spaced");
+assert(aestheticRuntime.includes("section-open .section-drop-panel"),"expanded sections must create their own internal space");
+assert(aestheticRuntime.includes("padding:28px 0 8px"),"expanded sections must create readable content spacing");
+console.log("ESCIE public index hierarchy and compact accordion contracts OK");
