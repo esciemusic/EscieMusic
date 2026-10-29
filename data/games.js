@@ -354,6 +354,42 @@
     };
   }
 
+  const GAME_OBJECT_TYPES=["world_object","npc","door","item","evidence","location","trigger","prop","portal"];
+  const GAME_EVENT_TYPES=["ENTER","EXIT","OBSERVE","INTERACT","COLLECT","HEAR","SEE","DISCOVER","UNLOCK","DIALOGUE","MISSION","WORLD_CHANGE"];
+  function gameObject(record){
+    if(!record||typeof record!=="object") return null;
+    return Object.assign({id:null,type:"world_object",title:"UNTITLED",description:"",scene_id:null,location_id:null,position:null,interactions:[],requires:[],gives:[],events:[],visible:true,active:true,metadata:{},canonical_write:false},record,{interactions:list(record.interactions),requires:list(record.requires),gives:list(record.gives),events:list(record.events),metadata:record.metadata&&typeof record.metadata==="object"?record.metadata:{}});
+  }
+  function validateGameObject(record){
+    const errors=[];
+    if(!record||typeof record!=="object") return {ok:false,errors:["object must be an object"]};
+    if(!record.id) errors.push("missing id");
+    if(!GAME_OBJECT_TYPES.includes(record.type)) errors.push("unsupported object type");
+    if(record.canonical_write===true) errors.push("world objects cannot write canonical truth directly");
+    if(!Array.isArray(record.interactions)||!Array.isArray(record.requires)||!Array.isArray(record.gives)||!Array.isArray(record.events)) errors.push("object arrays must be arrays");
+    return {ok:errors.length===0,errors};
+  }
+  function canInteract(object,playerState){
+    const source=gameObject(object);
+    if(!source||source.active===false||source.visible===false) return {ok:false,reason:"unavailable"};
+    const state=createPlayerState(playerState);
+    const requirements=source.requires||[];
+    const missing=requirements.filter(id=>!Array.isArray(state.unlocked)||!state.unlocked.includes(id));
+    return missing.length?{ok:false,reason:"locked",missing}:{ok:true,reason:"available"};
+  }
+  function applyGameEvent(seed,event){
+    const state=createPlayerState(seed);
+    if(!event||typeof event!=="object") return state;
+    const type=String(event.type||"").toUpperCase();
+    if(!GAME_EVENT_TYPES.includes(type)) return state;
+    const target=typeof event.target_id==="string"?event.target_id.trim():"";
+    const mapped={ENTER:"ENTERED",EXIT:"LEFT",OBSERVE:"OBSERVED",INTERACT:"INTERACTED",COLLECT:"COLLECTED",HEAR:"HEARD",SEE:"SEEN",DISCOVER:"DISCOVERED"};
+    if(mapped[type]) return applyPlayerEvent(state,Object.assign({},event,{type:mapped[type],target_id:target}));
+    if(type==="UNLOCK"&&target){state.unlocked=cleanIds(state.unlocked);addUnique(state.unlocked,target);}
+    if(type==="DIALOGUE"||type==="MISSION"||type==="WORLD_CHANGE"){const timestamp=event.timestamp||new Date().toISOString();state.path.push({type,target_id:target,timestamp,data:event.data||null});state.event_count+=1;state.last_seen_at=timestamp;}
+    return state;
+  }
+
   const API={
     version:"1.1.0",
     itemTypes:()=>GAME_ITEM_TYPES.slice(),
