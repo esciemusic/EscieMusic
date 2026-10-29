@@ -311,3 +311,17 @@ body.escie-world-page,.world-device,.world-device .world-shell{background:#05070
 .world-object[data-entity="npc"][data-state="SOCIAL"]{color:var(--world-entity-npc);border-color:rgba(240,237,228,.38)}
 .world-object[data-entity="signal"][data-state="DISTORTION"]{color:var(--world-entity-signal);border-color:var(--world-entity-signal)}
 @keyframes world-camera-alert{50%{opacity:.45}100%{opacity:1}}
+
+/* ENTER THE WORLD GATE */
+.world-entry-gate{position:fixed;inset:0;z-index:3000;display:grid;place-items:center;padding:1rem;background:rgba(8,8,10,.92);backdrop-filter:blur(14px);color:var(--world-purple-bright)}
+.world-entry-gate[hidden]{display:none}
+.entry-panel{width:min(560px,100%);box-sizing:border-box;padding:clamp(1.5rem,5vw,3rem);border:1px solid var(--world-line);background:linear-gradient(145deg,rgba(111,63,175,.18),rgba(8,8,10,.96));box-shadow:0 0 90px rgba(111,63,175,.28),inset 0 0 35px rgba(143,175,114,.04)}
+.entry-panel h2{margin:.6rem 0 .8rem;font-size:clamp(2.2rem,10vw,4.8rem);line-height:.82;letter-spacing:-.055em;color:var(--world-green)}
+.entry-panel p{max-width:48ch;line-height:1.65;opacity:.72}
+.entry-status{padding:.65rem .75rem;border-left:2px solid var(--world-green);background:rgba(143,175,114,.05);font:600 .58rem/1.5 monospace;letter-spacing:.1em;text-transform:uppercase}
+.entry-actions{display:grid;gap:.55rem;margin-top:1.4rem}
+.entry-actions button{min-height:48px;border:1px solid var(--world-line);background:rgba(111,63,175,.12);color:inherit;padding:.75rem 1rem;text-align:left;font:700 .62rem monospace;letter-spacing:.12em;cursor:pointer;touch-action:manipulation}
+.entry-actions button:first-child{border-color:var(--world-green);color:var(--world-green)}
+.entry-actions button:hover,.entry-actions button:focus-visible{background:rgba(143,175,114,.09);outline:1px solid var(--world-green);outline-offset:2px}
+@media(max-width:700px){.world-entry-gate{padding:.75rem}.entry-panel{min-height:100%;display:flex;flex-direction:column;justify-content:center}.entry-actions{margin-top:1.2rem}}
+@media(prefers-reduced-motion:reduce){.world-entry-gate *{scroll-behavior:auto}}
