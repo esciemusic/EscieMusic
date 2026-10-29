@@ -245,10 +245,21 @@ function saveWorldState(){try{
   localStorage.setItem(ACTIVE_SLOT_KEY,String(activeSaveSlot()));
   saveIndicator("SLOT "+activeSaveSlot()+" SAVED");
 }catch(e){saveIndicator("SAVE FAILED")}}
+function initializeEmptySave(slot=activeSaveSlot()){try{
+  const n=Number(slot);if(!Number.isInteger(n)||n<1||n>SAVE_SLOT_COUNT)return false;
+  clearRuntimeStores();
+  const fresh={version:1,session_id:"local-world",player_id:window.ESCIE_GAME_PROFILE?.id||null,episode_id:"the-world",world_room:"lane",world_position:{x:start.x,y:start.y},inventory:[],discoveries:[],world_unlocks:[],signals:0,entered:false,entry_source:"new-game",unresolved:[],unknown:[],completed_quests:[],input_mode:"AUTO",created_at:new Date().toISOString()};
+  localStorage.setItem(KEY,JSON.stringify(fresh));
+  localStorage.setItem(ACTIVE_SLOT_KEY,String(n));
+  saveWorldState();
+  saveIndicator("SLOT "+n+" · NEW GAME");
+  return true;
+}catch(e){return false}}
 function loadWorldSave(slot=activeSaveSlot()){try{
   migrateLegacySave();
   const n=Number(slot);if(!Number.isInteger(n)||n<1||n>SAVE_SLOT_COUNT)return false;
-  const raw=localStorage.getItem(saveSlotKey(n));if(!raw)return false;
+  const raw=localStorage.getItem(saveSlotKey(n));
+  if(!raw)return initializeEmptySave(n);
   let parsed;try{parsed=JSON.parse(raw)}catch(e){quarantineSave(n,raw,"JSON_PARSE_FAILED");saveIndicator("SLOT "+n+" QUARANTINED");return false}
   const snapshot=parsed&&typeof parsed==="object"&&!Array.isArray(parsed)&&parsed.world_state?parsed:{version:1,slot:n,world_state:parsed};
   const invalid=validateSaveSnapshot(snapshot,n);if(invalid){quarantineSave(n,raw,invalid);saveIndicator("SLOT "+n+" QUARANTINED");return false}
