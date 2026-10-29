@@ -3255,3 +3255,10 @@ main > section:not(#entry).section-open{
   .section-drop-panel{transition:none}
   .section-drop-trigger{transition:none}
 }
+
+
+/* GAME BOUNDARY — the main site only points to the dedicated game */
+.entry-game-link{margin-top:14px;display:flex;justify-content:center}
+.world-controller-link{display:inline-flex;align-items:center;gap:9px;padding:9px 13px;border:1px solid rgba(47,128,255,.38);color:var(--escie-paper);text-decoration:none;font:700 10px/1 monospace;letter-spacing:.16em;background:rgba(5,5,5,.55)}
+.world-controller-link span:first-child{font-size:15px;line-height:1}
+.world-controller-link:hover,.world-controller-link:focus-visible{border-color:var(--escie-blue);color:var(--escie-blue-bright);box-shadow:0 0 20px rgba(47,128,255,.10);outline:none}
