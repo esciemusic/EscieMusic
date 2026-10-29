@@ -370,6 +370,12 @@ assert(worldRuntime.includes("Other save slots, profile and preferences remain."
 assert(worldRuntime.includes("data-system-slot-1"),"world system UI must expose slot one");
 assert(worldRuntime.includes("data-system-slot-2"),"world system UI must expose slot two");
 assert(worldRuntime.includes("data-system-slot-3"),"world system UI must expose slot three");
+assert(worldRuntime.includes("function quarantineSave"),"world save system must quarantine corrupted slots");
+assert(worldRuntime.includes("function validateSaveSnapshot"),"world save system must validate save snapshots before restore");
+assert(worldRuntime.includes("JSON_PARSE_FAILED"),"world save system must classify malformed JSON");
+assert(worldRuntime.includes("SLOT_MISMATCH"),"world save system must reject cross-slot snapshots");
+assert(worldRuntime.includes("INVALID_POSITION"),"world save system must reject malformed saved positions");
+assert(worldRuntime.includes("SLOT "+' + 'n+" QUARANTINED"),"world save system must notify when a slot is quarantined");
 assert(worldRuntime.includes('function activeInputDevice(kind)'),"world runtime must track the active input device");
 assert(worldRuntime.includes('activeInputDevice("KEYBOARD")'),"keyboard input must register as active");
 assert(worldRuntime.includes('activeInputDevice("TOUCH")'),"touch input must register as active");
