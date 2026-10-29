@@ -450,3 +450,16 @@ body.escie-game-page #world-interact::after{
     text-overflow:ellipsis;
   }
 }
+
+
+/* GAMEPLAY FEEDBACK STATES */
+body.escie-game-page.is-low-health .world-hud-bars{border-color:var(--world-ui-danger);box-shadow:0 0 22px rgba(142,31,45,.12)}
+body.escie-game-page.is-low-health .world-hud-bars .world-stat:first-child .world-meter i{background:var(--escie-red);box-shadow:0 0 12px rgba(142,31,45,.35)}
+body.escie-game-page.is-wanted .world-hud-economy #world-wanted{border-color:var(--world-ui-danger);background:rgba(142,31,45,.10);text-shadow:0 0 10px rgba(142,31,45,.35)}
+body.escie-game-page.is-combat .world-stage{animation:escieWorldCombat .22s steps(2,end) 2}
+body.escie-game-page.is-xp-gain .world-hud .world-xp-stat{animation:escieWorldXp .7s ease-out}
+body.escie-game-page.is-level-up .world-hud .world-xp-stat{border-color:var(--escie-purple);box-shadow:0 0 24px rgba(111,63,175,.22);animation:escieWorldLevel 1.8s ease-out}
+@keyframes escieWorldCombat{0%,100%{transform:translate(0)}25%{transform:translate(-2px,1px)}75%{transform:translate(2px,-1px)}}
+@keyframes escieWorldXp{0%{box-shadow:0 0 0 rgba(111,63,175,0)}45%{box-shadow:0 0 24px rgba(111,63,175,.24)}100%{box-shadow:0 0 0 rgba(111,63,175,0)}}
+@keyframes escieWorldLevel{0%{transform:translateY(0);filter:none}18%{transform:translateY(-2px);filter:brightness(1.2)}100%{transform:translateY(0);filter:none}}
+@media(prefers-reduced-motion:reduce){body.escie-game-page.is-combat .world-stage,body.escie-game-page.is-xp-gain .world-hud .world-xp-stat,body.escie-game-page.is-level-up .world-hud .world-xp-stat{animation:none}}
