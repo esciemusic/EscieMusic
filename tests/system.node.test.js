@@ -407,5 +407,8 @@ assert(worldRuntime.includes("data-entry-continue"),"world entry must support co
 assert(worldRuntime.includes("data-entry-new"),"world entry must support new game");
 assert(worldRuntime.includes("data-entry-slots"),"world entry must expose save/load");
 assert(worldRuntime.includes("data-entry-exit"),"world entry must support returning to ESCIE");
+assert(worldRuntime.includes("function restoreWorldRuntime"),"world must restore saved room and position on boot");
+assert(worldRuntime.includes("room=allowed.includes(String(s.world_room))"),"world boot must restore the saved room");
+assert(worldRuntime.includes("syncSimulationPosition()"),"world boot must resync simulation position");
 for(const control of requiredControls) assert(worldHtml.includes(control),"world HTML missing control "+control);
 console.log("ESCIE world control wiring contracts OK");
