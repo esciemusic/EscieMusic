@@ -1,6 +1,6 @@
 "use strict";
 const KEY="escie_game_state_v1",W=16,H=10,start={x:2,y:7};
-const let npcs=[{id:"witness",x:8,y:3,label:"THE WITNESS",lines:["You came through the signal. I have seen that before.","Do not confuse what you find with what is proven."],choices:[{label:"WHO ARE YOU?",text:"Someone who stayed long enough to notice the pattern."},{label:"WHAT IS THIS PLACE?",text:"A real street. Everything after that is interpretation."},{label:"I NEED THE KEY.",text:"Then find the thing that responds to the distortion.",discovery:"game-discovery-witness",queries:["query:witness","query:key"]}]}];
+let npcs=[{id:"witness",x:8,y:3,label:"THE WITNESS",lines:["You came through the signal. I have seen that before.","Do not confuse what you find with what is proven."],choices:[{label:"WHO ARE YOU?",text:"Someone who stayed long enough to notice the pattern."},{label:"WHAT IS THIS PLACE?",text:"A real street. Everything after that is interpretation."},{label:"I NEED THE KEY.",text:"Then find the thing that responds to the distortion.",discovery:"game-discovery-witness",queries:["query:witness","query:key"]}]}];
 const objects=[
 {id:"camera",x:12,y:2,label:"CAMERA",text:"A camera watches the lane. Its lens is pointed somewhere specific.",discovery:"game-discovery-camera",queries:["query:camera","query:surveillance"]},
 {id:"shoe",x:6,y:5,label:"BABY SHOE",text:"A small shoe sits near the curb. Meaning unresolved.",discovery:"game-discovery-shoe",queries:["query:baby shoe","query:shoe","query:childhood"],item:"game-item-baby-shoe"},
