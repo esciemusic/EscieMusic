@@ -358,12 +358,13 @@ const combatAttack=(targetId,opts={})=>{
  const s=read();const target=window.ESCIE_WORLD_NPC?.state?.().npcs?.[targetId];if(!target)return {ok:false,reason:"TARGET_NOT_FOUND"};
  if(s.legal_status==="DECEASED")return {ok:false,reason:"DEAD"};
  const stamina=Number(s.stamina??100);if(stamina<8)return {ok:false,reason:"EXHAUSTED"};
- const eq=window.ESCIE_WORLD_EQUIPMENT;const equipped=eq?.weapon?.()||{id:"FISTS",damage:9,stamina:10,label:"FISTS"};const weapon=String(opts.weapon||equipped.id||"FISTS").toUpperCase();const base=Number(equipped.damage||9);
+ const eq=window.ESCIE_WORLD_EQUIPMENT;const equipped=eq?.weapon?.()||{id:"FISTS",damage:9,stamina:10,label:"FISTS"};if(eq?.durability?.(equipped.id)===0)return {ok:false,reason:"BROKEN"};const weapon=String(opts.weapon||equipped.id||"FISTS").toUpperCase();const base=Number(equipped.damage||9);
  const hit=Math.max(1,Math.round(base*(1-Math.min(.6,Number(target.armor||0)/100))));
  s.stamina=Math.max(0,stamina-Number(equipped.stamina||10));s.stress=clamp(s.stress+2);
  s.events=(s.events||[]).concat([{type:"COMBAT_ATTACK",target:targetId,weapon,damage:hit,day:s.day,hour:s.hour}]).slice(-100);if(!save(s))return {ok:false,reason:"SAVE_FAILED"};
+ const wear=eq?.consume?.(equipped.id,1);
  const result=window.ESCIE_WORLD_NPC?.damageNPC?.(targetId,hit,weapon)||{ok:true};
- return {ok:true,hit,weapon,target:result,state:read()};
+ return {ok:true,hit,weapon,target:result,durability:wear?.remaining,state:read()};
 };
 const combatDefend=()=>{
  const s=read();s.stamina=Math.min(100,Number(s.stamina??100)+4);s.stress=clamp(s.stress-1);s.events=(s.events||[]).concat([{type:"COMBAT_DEFEND",day:s.day,hour:s.hour}]).slice(-100);if(!save(s))return {ok:false,reason:"SAVE_FAILED"};return {ok:true,state:read()};
