@@ -1,0 +1,62 @@
+/* =========================================================
+   ESCIE AESTHETIC SYSTEM
+   Single source of truth for visual language.
+   Images are referenced, not duplicated into CSS.
+   ========================================================= */
+
+:root{
+  --escie-aesthetic-purple:#9b59ff;
+  --escie-aesthetic-purple-soft:rgba(155,89,255,.22);
+  --escie-aesthetic-purple-line:rgba(155,89,255,.58);
+
+  --escie-font-display:Arial,Helvetica,sans-serif;
+  --escie-font-body:Arial,Helvetica,sans-serif;
+  --escie-font-mono:"Courier New",Courier,monospace;
+
+  --escie-motion-fast:180ms cubic-bezier(.2,.7,.2,1);
+  --escie-motion-standard:350ms cubic-bezier(.22,1,.36,1);
+  --escie-motion-slow:650ms cubic-bezier(.16,1,.3,1);
+  --escie-motion-signal:1200ms cubic-bezier(.16,1,.3,1);
+
+  --escie-visual-atlas:url("assets/visuals/escie-visual-atlas.webp");
+}
+
+.site-logo,
+.index-trigger{
+  color:var(--escie-aesthetic-purple);
+  text-shadow:0 0 18px var(--escie-aesthetic-purple-soft);
+}
+
+.site-logo:hover,
+.index-trigger:hover{
+  color:var(--escie-aesthetic-purple);
+}
+
+.index-trigger::after{
+  background:var(--escie-aesthetic-purple);
+}
+
+.site-header,
+.site-section,
+.site-footer{
+  font-family:var(--escie-font-body);
+}
+
+.site-logo{
+  transition:opacity var(--escie-motion-standard),
+             letter-spacing var(--escie-motion-standard),
+             color var(--escie-motion-standard);
+}
+
+.index-trigger{
+  transition:opacity var(--escie-motion-standard),
+             letter-spacing var(--escie-motion-standard),
+             color var(--escie-motion-standard);
+}
+
+@media (prefers-reduced-motion:reduce){
+  .site-logo,
+  .index-trigger{
+    transition:none;
+  }
+}
