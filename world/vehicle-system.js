@@ -45,5 +45,5 @@ const repair=(id,amount=100)=>{
  return {ok:true,condition:s.condition[target],cost,vehicle:get(target)};
 };
 const state=()=>{const s=read();return {owned:s.owned.map(get).filter(Boolean),current:get(s.current),radio:s.radio,condition:s.condition,history:s.history}};
-window.ESCIE_WORLD_VEHICLES={state,vehicles:VEHICLES,get,own,acquire,enter,exit,radio,damage,impact};
+window.ESCIE_WORLD_VEHICLES={state,vehicles:VEHICLES,get,own,acquire,enter,exit,radio,damage,impact,repair};
 })();
