@@ -160,7 +160,7 @@ function move(dt){
  const nx=player.x+(-si*f+c*str)*speed,nz=player.z+(-c*f-si*str)*speed;
  if(!blocked(nx,player.z))player.x=nx;if(!blocked(player.x,nz))player.z=nz;
  player.x=clamp(player.x,-bounds,bounds);player.z=clamp(player.z,-bounds,bounds);
- const sim=root.ESCIE_WORLD_SIMULATION,st=sim?.state?.();if(st?.position&&performance.now()-player.lastSync>250){const gx=Math.max(0,Math.min(15,Math.round((player.x+54)/108*15))),gy=Math.max(0,Math.min(9,Math.round((player.z+54)/108*9)));if(gx!==player.lastGridX||gy!==player.lastGridY){sim.setPosition?.(gx,gy);player.lastGridX=gx;player.lastGridY=gy;}player.lastSync=performance.now();}
+ const sim=root.ESCIE_WORLD_SIMULATION,st=sim?.state?.();if(st?.position&&performance.now()-player.lastSync>250){const gx=Math.max(0,Math.min(15,Math.round((player.x+54)/108*15))),gy=Math.max(0,Math.min(9,Math.round((player.z+54)/108*9)));if(gx!==player.lastGridX||gy!==player.lastGridY){sim.setPosition?.(gx,gy);sim.advance?.(1);const ns=sim.state?.();root.ESCIE_WORLD_NPC?.tick?.(ns?.day,ns?.hour,ns?.minute,(x,y)=>false,1);root.ESCIE_WORLD_NPC_LIFE?.syncRelationships?.();player.lastGridX=gx;player.lastGridY=gy;}player.lastSync=performance.now();}
  avatar.position.set(player.x,0,player.z);avatar.rotation.y=player.yaw;
 }
 function updateVehicles(t){
