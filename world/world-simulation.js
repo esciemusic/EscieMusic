@@ -373,7 +373,7 @@ const applyDamage=(amount=0,cause="UNKNOWN",opts={})=>{
  s.events=(s.events||[]).concat([{type:"INJURY",damage:d,cause,day:s.day,hour:s.hour}]).slice(-100);
  if(s.health<=0){s.legal_status="DECEASED";s.status="DECEASED";s.events=(s.events||[]).concat([{type:"DEATH",cause,day:s.day,hour:s.hour}]).slice(-100);if(!save(s))return {ok:false,reason:"SAVE_FAILED"};return {ok:false,dead:true,respawn:true,state:read()}}
  if(s.health<=25){s.legal_status="HOSPITAL";s.status="RECOVERING";s.access=(s.access||[]);if(!save(s))return {ok:false,reason:"SAVE_FAILED"};return {ok:true,hospital:true,state:read()}}
- return {ok:true,damage:d,state:save(s)};
+ if(!save(s))return {ok:false,reason:"SAVE_FAILED"};return {ok:true,damage:d,state:read()};
 };
 const respawn=(opts={})=>{
  const s=read();if(s.legal_status!=="DECEASED"&&s.health>0)return {ok:false,reason:"NOT_DEAD"};
@@ -400,7 +400,7 @@ const buildingAction=(interior,action,opts={})=>{
  if(["EAT","SLEEP","REST","SOCIAL","WORK","TRAIN"].includes(a))return activity(a,opts);
  if(a==="BUY"){const cost=Math.max(1,Number(opts.cost||12));if(s.money<cost)return fail("INSUFFICIENT_FUNDS");return spend(cost,opts.reason||"BUILDING_PURCHASE"),{ok:true,purchased:true,cost,state:read()}}
  if(a==="HEAL"){const cost=Math.max(0,Number(opts.cost??20));if(s.health>=100)return fail("ALREADY_HEALTHY");if(s.money<cost)return fail("INSUFFICIENT_FUNDS");s.money-=cost;s.health=Math.min(100,s.health+35);s.damage=Math.max(0,s.damage-30);s.stress=clamp(s.stress-8);s.financial_history=(s.financial_history||[]).concat([{type:"EXPENSE",amount:cost,reason:"CLINIC",day:s.day}]).slice(-100);if(!save(s))return fail("SAVE_FAILED");if(!advance(30))return fail("TIME_SAVE_FAILED");return {ok:true,healed:true,state:read()}};
- if(a==="RECORD"){s.events=(s.events||[]).concat([{type:"RECORD_SESSION",interior:i,day:s.day,hour:s.hour}]).slice(-100);s.stress=clamp(s.stress+2);save(s);advance(30);return {ok:true,recorded:true,state:read()}};
+ if(a==="RECORD"){s.events=(s.events||[]).concat([{type:"RECORD_SESSION",interior:i,day:s.day,hour:s.hour}]).slice(-100);s.stress=clamp(s.stress+2);if(!save(s))return fail("SAVE_FAILED");if(!advance(30))return fail("TIME_SAVE_FAILED");return {ok:true,recorded:true,state:read()}};
  if(a==="LISTEN"||a==="READ"||a==="INVESTIGATE"||a==="TRACE"){s.events=(s.events||[]).concat([{type:"INTERIOR_DISCOVERY",action:a,interior:i,day:s.day,hour:s.hour}]).slice(-100);if(!save(s))return fail("SAVE_FAILED");if(!advance(15))return fail("TIME_SAVE_FAILED");return {ok:true,discovery:a,state:read()}};
  if(a==="DANCE"){return activity("SOCIAL",{reason:"DANCE"})}
  return fail("ACTION_NOT_IMPLEMENTED");
