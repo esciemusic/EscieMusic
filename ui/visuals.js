@@ -117,7 +117,7 @@
   if(!work)return;
   if(WORK_ALBUM_OBSERVER){WORK_ALBUM_OBSERVER.disconnect();WORK_ALBUM_OBSERVER=null;}
 
-  const cards=Array.from(document.querySelectorAll(".bam-project[data-project-visuals]"));
+  const cards=Array.from(document.querySelectorAll(".project-card[data-project-visuals]"));
   const parseVisuals=card=>{
    try{
     const raw=card.getAttribute("data-project-visuals")||"[]";
