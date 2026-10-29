@@ -288,3 +288,20 @@ body.escie-world-page,.world-device,.world-device .world-shell{background:#05070
 .world-action-cluster [data-control-action="STEAL"]{color:var(--world-entity-warning)}
 .dream-touch-controls button{border-color:var(--world-entity-signal);color:var(--world-entity-signal)}
 .dream-touch-controls button:active,.dream-touch-controls .dream-hide.active{background:var(--world-entity-signal);color:var(--escie-void)}
+
+/* ENTITY STATE VISUALS — reality first, signal second */
+.world-object[data-entity="npc"]{border-color:rgba(240,237,228,.24);color:var(--world-entity-npc)}
+.world-object[data-entity="building"]{border-color:rgba(112,116,122,.34);color:var(--world-entity-building)}
+.world-object[data-entity="camera"]{border-color:rgba(112,116,122,.65);color:var(--world-entity-surveillance)}
+.world-object[data-entity="signal"]{border-color:rgba(111,63,175,.65);color:var(--world-entity-signal);animation:world-signal-pulse 2.8s ease-in-out infinite}
+.world-object[data-entity="object"]{border-color:rgba(216,212,202,.18);color:var(--escie-paper)}
+.world-player{border:2px solid var(--world-entity-player-bright);position:relative}
+.world-player:after{background:var(--world-entity-player);box-shadow:0 0 12px rgba(47,128,255,.35)}
+.world-law-alert,.wanted-indicator,.police-indicator{color:var(--world-entity-danger);border-color:var(--world-entity-danger)}
+.vehicle-indicator,.transport-indicator{color:var(--world-entity-vehicle);border-color:rgba(112,116,122,.55)}
+.investigation-node{border-color:rgba(47,128,255,.42);color:var(--world-entity-investigation)}
+.investigation-node.signal,.investigation-node[data-type="signal"]{border-color:rgba(111,63,175,.55);color:var(--world-entity-signal)}
+.market-item.owned,.market-item[data-state="OWNED"]{border-color:rgba(47,128,255,.48)}
+.market-item[data-state="PURCHASABLE"]{border-color:rgba(184,135,58,.45)}
+@keyframes world-signal-pulse{0%,100%{opacity:.72}50%{opacity:1;filter:drop-shadow(0 0 7px rgba(111,63,175,.35))}}
+@media(prefers-reduced-motion:reduce){.world-object[data-entity="signal"]{animation:none}}
