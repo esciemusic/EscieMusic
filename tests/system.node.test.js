@@ -540,4 +540,5 @@ assert(aestheticRuntime.includes("main > .site-section:not(#entry).section-colla
 assert(aestheticRuntime.includes("padding:5px 0"),"collapsed sections must stay tightly spaced");
 assert(aestheticRuntime.includes("section-open .section-drop-panel"),"expanded sections must create their own internal space");
 assert(aestheticRuntime.includes("padding:28px 0 8px"),"expanded sections must create readable content spacing");
+assert(aestheticRuntime.includes(".section-open .section-drop-trigger"),"expanded sections must receive a distinct visual state");
 console.log("ESCIE public index hierarchy and compact accordion contracts OK");
