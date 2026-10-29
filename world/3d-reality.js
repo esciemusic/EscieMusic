@@ -5,8 +5,8 @@
 (function(){
 "use strict";
 const root=window;
-let renderer,scene,camera,clock,avatar,worldGroup,thirdPerson=false,started=false,raf=0,dayLight,ambientLight;
-const obstacles=[],actors=[],doors=[],lights=[];
+let renderer,scene,camera,clock,avatar,worldGroup,thirdPerson=false,started=false,raf=0,dayLight,ambientLight,resizeObserver,visibilityHandler;
+const obstacles=[],actors=[],doors=[],lights=[]; const perf={quality:"auto",frameMs:16,lowFrames:0,last:performance.now(),hud:0};
 const keys=new Set();
 const player={x:0,z:8,y:1.7,yaw:0,pitch:0,speed:4.2,sprint:7.5,lastSync:0,lastGridX:null,lastGridY:null};
 const bounds=54;
@@ -70,6 +70,7 @@ function streetProps(){
    box(1.55,.3,1.9,0x101114,side,1.0,z);
  }
 }
+function clearWorld(){obstacles.length=0;actors.length=0;doors.length=0;lights.length=0;}
 function createSnow(){
  const geo=new THREE.BufferGeometry(),n=850,pos=new Float32Array(n*3);
  for(let i=0;i<n;i++){pos[i*3]=(Math.random()-.5)*120;pos[i*3+1]=Math.random()*22;pos[i*3+2]=(Math.random()-.5)*120;}
@@ -79,11 +80,11 @@ function createSnow(){
 }
 function createCanonicalBuildings(){const s=root.ESCIE_WORLD_SIMULATION?.state?.()||{};const list=root.ESCIE_WORLD_SIMULATION?.districtBuildings?.(s.neighbourhood)||[];list.forEach((b,i)=>building(-27+(i%4)*18,-38+Math.floor(i/4)*18,10,10,12+i%3,i+1,b));}
 function buildScene(){
- scene=new THREE.Scene();scene.background=new THREE.Color(0x050505);scene.fog=new THREE.FogExp2(0x101114,.018);
+ clearWorld();scene=new THREE.Scene();scene.background=new THREE.Color(0x050505);scene.fog=new THREE.FogExp2(0x101114,.018);
  worldGroup=new THREE.Group();scene.add(worldGroup);
  scene.add(new THREE.HemisphereLight(0xd8d4ca,0x101114,.8));
  const moon=new THREE.DirectionalLight(0x70747a,1.5);moon.position.set(-18,30,12);scene.add(moon);
- const green=new THREE.PointLight(0x2f80ff,2.8,20);green.position.set(0,5,6);scene.add(green);lights.push(green);
+ const signal=new THREE.PointLight(0x2f80ff,2.2,20);signal.position.set(0,5,6);scene.add(signal);lights.push(signal);
  dayLight=moon;ambientLight=scene.children.find(o=>o instanceof THREE.HemisphereLight);
  createGround();createCanonicalBuildings();
  let seed=1;
@@ -108,7 +109,7 @@ function setup(){
  try{renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:"high-performance"});}catch(e){say3D("3D UNAVAILABLE · 2D MAP REMAINS PLAYABLE");return false}
  renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.7));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
  renderer.domElement.className="escie-3d-canvas";renderer.domElement.setAttribute("aria-label","ESCIE 3D playable world");s.appendChild(renderer.domElement);
- camera=new THREE.PerspectiveCamera(70,1,.05,180);clock=new THREE.Clock();buildScene();resize();window.addEventListener("resize",resize);
+ camera=new THREE.PerspectiveCamera(70,1,.05,180);clock=new THREE.Clock();buildScene();resize();resizeObserver=window.ResizeObserver?new ResizeObserver(resize):null;resizeObserver?.observe(s);window.addEventListener("resize",resize);
  renderer.domElement.addEventListener("click",()=>renderer.domElement.requestPointerLock?.());
  renderer.domElement.addEventListener("mousemove",e=>{if(document.pointerLockElement!==renderer.domElement)return;player.yaw-=e.movementX*.0022;player.pitch=clamp(player.pitch-e.movementY*.0018,-1.2,1.2);});
  document.addEventListener("keydown",e=>{keys.add(e.key.toLowerCase());if(["w","a","s","d","shift","arrowup","arrowdown","arrowleft","arrowright"].includes(e.key.toLowerCase()))e.preventDefault();});
@@ -174,11 +175,12 @@ function updateHud(){
  if(coord)coord.textContent=Math.round(player.x+54).toString().padStart(2,"0")+" · "+Math.round(player.z+54).toString().padStart(2,"0");if(st)document.getElementById("world-location")&&(document.getElementById("world-location").textContent=st.neighbourhood||"PARC-EXTENSION");
  if(sig){const distance=Math.hypot(player.x,player.z),wanted=Number(st?.wanted||0);sig.textContent=Math.max(0,100-Math.round(distance)+wanted*5).toString()+" SIGNAL";}
 }
+function updateQuality(dt){const ms=dt*1000;perf.frameMs=perf.frameMs*.92+ms*.08;if(perf.frameMs>28)perf.lowFrames++;else perf.lowFrames=Math.max(0,perf.lowFrames-1);if(perf.lowFrames>90&&perf.quality!=="low"){perf.quality="low";worldGroup?.traverse(o=>{if(o.isPoints)o.visible=false;});renderer?.setPixelRatio(Math.min(devicePixelRatio||1,1));}} 
 function updateActors(t){
  actors.forEach(a=>{a.position.x=a.userData.base+Math.sin(t*.35+a.userData.phase)*.8;a.rotation.y=Math.sin(t*.35+a.userData.phase)*.25;});
 }
 function render(){
- const dt=Math.min(clock.getDelta(),.05);move(dt);updateActors(clock.elapsedTime);updateVehicles(clock.elapsedTime);updateEnvironment(clock.elapsedTime);updateHud();
+ const dt=Math.min(clock.getDelta(),.05);updateQuality(dt);move(dt);updateActors(clock.elapsedTime);updateVehicles(clock.elapsedTime);updateEnvironment(clock.elapsedTime);if(performance.now()-perf.hud>120){updateHud();perf.hud=performance.now();}
  if(thirdPerson){
    const back=new THREE.Vector3(Math.sin(player.yaw)*4.2,2.4,Math.cos(player.yaw)*4.2);
    camera.position.set(player.x+back.x,back.y,player.z+back.z);camera.lookAt(player.x,1.1,player.z);
@@ -188,6 +190,7 @@ function render(){
  }
  renderer.render(scene,camera);raf=requestAnimationFrame(render);
 }
+function stop(){if(raf)cancelAnimationFrame(raf);raf=0;document.exitPointerLock?.();if(resizeObserver){resizeObserver.disconnect();resizeObserver=null;}started=false;}
 function setMode(v){
  thirdPerson=!!v;avatar.visible=thirdPerson;
  const log=document.getElementById("world-log");if(log)log.textContent=thirdPerson?"3D REALITY · THIRD PERSON":"3D REALITY · FIRST PERSON";
@@ -208,6 +211,6 @@ function start(){
  if(started)return;started=true;if(!setup()){started=false;return;}
  bind();const s=stage();s.classList.add("three-active");setMode(false);render();
 }
-root.ESCIE_3D_WORLD={start,ready:()=>!!renderer,toggleCamera:()=>setMode(!thirdPerson)};
+root.ESCIE_3D_WORLD={start,stop,ready:()=>!!renderer,toggleCamera:()=>setMode(!thirdPerson),status:()=>({ready:!!renderer,quality:perf.quality,frameMs:Math.round(perf.frameMs)})};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",start);else start();
 })();
