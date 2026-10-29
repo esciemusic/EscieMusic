@@ -560,6 +560,7 @@ function processWorldQR(raw){
   const value=String(raw||"").trim(), normalized=value.replace(/^escie:\/\//i,"");
   const parts=normalized.split("/").map(x=>decodeURIComponent(x).trim()).filter(Boolean);
   const kind=String(parts.shift()||"").toUpperCase(), payload=parts.join("/"), sim=window.ESCIE_WORLD_SIMULATION, s=sim?.state?.();
+  let qrState=readStorageJSON(KEY,{});
   const allowed=/^[A-Z0-9_ .-]+$/i;
   let m={};try{m=JSON.parse(localStorage.getItem("escie_phone_v1")||"{}")}catch(e){}
   m.qr=Array.isArray(m.qr)?m.qr:[];
@@ -571,7 +572,7 @@ function processWorldQR(raw){
   let message="";
   if(kind==="QUERY"){
     const q="query:"+payload.toLowerCase();
-    const state=readStorageJSON(KEY,{});
+    qrState=readStorageJSON(KEY,{});
     state.world_unlocks=Array.isArray(state.world_unlocks)?state.world_unlocks:[];
     if(!state.world_unlocks.includes(q))state.world_unlocks.push(q);
     state.signals=(Number(state.signals)||0)+1;
@@ -601,7 +602,7 @@ function processWorldQR(raw){
   }else{
     return reject("QR · CODE TYPE NOT RECOGNIZED");
   }
-  record.message=message;m.qr.unshift(record);m.qr=m.qr.slice(0,50);if(!commitStorageBatch({[KEY]:typeof state!=="undefined"?state:readStorageJSON(KEY,{}),[PHONE_STORE_KEY]:m}))return {ok:false,message:"QR · SAVE FAILED"};return {ok:true,message};
+  record.message=message;m.qr.unshift(record);m.qr=m.qr.slice(0,50);if(!commitStorageBatch({[KEY]:qrState,[PHONE_STORE_KEY]:m}))return {ok:false,message:"QR · SAVE FAILED"};return {ok:true,message};
 }
 
  document.addEventListener("click",e=>{
