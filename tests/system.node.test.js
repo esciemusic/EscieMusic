@@ -405,7 +405,7 @@ const worldHtml=fs.readFileSync("world/index.html","utf8");
 assert((worldHtml.match(/\bdata-action(?=\s|=|>)/g)||[]).length===2,"world HTML should expose exactly two interact controls: dpad primary and labeled action");
 assert(!worldHtml.includes('<button data-control-action="SPRINT">SPRINT</button><button data-action>INTERACT</button>'),"world HTML must not contain the removed duplicate interact control");
 const requiredControls=["data-dir","data-control-action","data-action","data-fullscreen","data-rotate","data-device","data-preferences","data-pause","data-system","data-save","data-profile","data-life","data-life-systems","data-inventory","data-glass","data-investigation","data-market","data-phone-open","data-quests"];
-assert(!worldHtml.match(/<button(?![^>]*\\btype=)[^>]*>/),"world HTML buttons must declare explicit type");
+assert(!worldHtml.match(/<button(?![^>]*\btype=)[^>]*>/),"world HTML buttons must declare explicit type");
 assert(worldRuntime.includes("function worldEntryGate()"),"world must expose a first-entry gate");
 assert(worldRuntime.includes("data-entry-continue"),"world entry must support continue");
 assert(worldRuntime.includes("data-entry-new"),"world entry must support new game");
