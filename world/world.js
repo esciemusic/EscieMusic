@@ -190,7 +190,7 @@ function questStatus(q,s){const done=Array.isArray(s.completed_quests)&&s.comple
 function grantQuestRewards(){
  const s=state();s.completed_quests=Array.isArray(s.completed_quests)?s.completed_quests:[];const r=rpgState(s);r.quests=r.quests||{active:[],completed:[],failed:[]};r.quests.active=Array.isArray(r.quests.active)?r.quests.active:[];r.quests.completed=Array.isArray(r.quests.completed)?r.quests.completed:[];let gained=0;
  QUESTS.forEach(q=>{const st=questStatus(q,s);if(st.done){if(!r.quests.completed.includes(q.id))r.quests.completed.push(q.id);r.quests.active=r.quests.active.filter(id=>id!==q.id);return}if(st.met&&!r.quests.active.includes(q.id))r.quests.active.push(q.id);if(!st.done&&st.met){s.completed_quests.push(q.id);if(!r.quests.completed.includes(q.id))r.quests.completed.push(q.id);r.quests.active=r.quests.active.filter(id=>id!==q.id);gained+=q.reward;}});
- if(gained){const completedNow=QUESTS.filter(q=>q.completed&&s.completed_quests.includes(q.id));
+ if(gained){
    const r=rpgState(s),xp=window.ESCIE_RPG?.gainXP?.(r,gained*25,"QUEST");
    if(xp)s.rpg=xp.state;
    const registry=window.ESCIE_GAME_REGISTRY;
@@ -199,7 +199,7 @@ function grantQuestRewards(){
      const next=registry.applyEconomyEvent(economy,{type:"EARN",amount:gained,currency:"SIGNAL",reason:"WORLD QUEST REWARD",timestamp:new Date().toISOString()});
      s.signals=Number(next.balances.SIGNAL||0);
    }else s.signals=Number(s.signals||0)+gained;
-   if(!save(s)){say("QUEST COMPLETE · SAVE FAILED");return}say("QUEST COMPLETE · +"+gained+" SIGNAL");
+   if(!save(s)){say("QUEST COMPLETE · SAVE FAILED");return}QUESTS.filter(q=>s.completed_quests.includes(q.id)).slice(-1).forEach(q=>{const special=questLootBonus(q.id);if(special)grantLoot("QUEST REWARD",q.id,{drop:special,once:true})});say("QUEST COMPLETE · +"+gained+" SIGNAL");
    return gained;
  }
  return 0;
