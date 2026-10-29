@@ -476,7 +476,10 @@ body.escie-game-page .world-quest-tracker small{font:400 .58rem/1.35 monospace;c
 body.escie-game-page.is-rpg-blocked #world-log{border-color:var(--escie-purple);box-shadow:0 0 18px rgba(111,63,175,.18);animation:escieWorldBlocked .5s ease-out}
 @keyframes escieWorldBlocked{0%,100%{transform:translateX(0)}25%{transform:translateX(-2px)}75%{transform:translateX(2px)}}
 @media(prefers-reduced-motion:reduce){body.escie-game-page.is-rpg-blocked #world-log{animation:none}}
-\n\n/* EQUIPMENT INVENTORY */\nbody.escie-game-page .world-inventory{position:fixed;inset:0;z-index:100;overflow:auto;margin:0;border-radius:0;background:radial-gradient(circle at 50% 0,rgba(47,128,255,.06),transparent 34%),linear-gradient(180deg,rgba(5,5,5,.98),rgba(16,17,20,.98));color:var(--escie-paper)}
+
+
+/* EQUIPMENT INVENTORY */
+body.escie-game-page .world-inventory{position:fixed;inset:0;z-index:100;overflow:auto;margin:0;border-radius:0;background:radial-gradient(circle at 50% 0,rgba(47,128,255,.06),transparent 34%),linear-gradient(180deg,rgba(5,5,5,.98),rgba(16,17,20,.98));color:var(--escie-paper)}
 body.escie-game-page .inventory-board{padding:16px;max-width:1100px;margin:0 auto}
 body.escie-game-page .inventory-loadout{display:grid;grid-template-columns:auto 1fr auto 1fr;gap:8px;align-items:center;margin-bottom:14px;padding:12px;border:1px solid var(--world-ui-line);background:rgba(5,5,5,.65)}
 body.escie-game-page .inventory-loadout span{color:var(--escie-cold-grey);font:700 .55rem monospace;letter-spacing:.1em}
@@ -535,7 +538,16 @@ body.escie-game-page .world-pause{
   box-shadow:0 24px 100px rgba(0,0,0,.65),0 0 60px rgba(47,128,255,.10);
 }
 body.escie-game-page .world-pause[hidden]{display:none}
-body.escie-game-page .world-pause-head{\n  position:fixed;\n  top:3vh;\n  left:7vw;\n  right:7vw;\n  z-index:93;\n  padding:10px 12px;\n  background:rgba(5,5,5,.94);\n  border:1px solid var(--world-ui-line);\n
+body.escie-game-page .world-pause-head{
+  position:fixed;
+  top:3vh;
+  left:7vw;
+  right:7vw;
+  z-index:93;
+  padding:10px 12px;
+  background:rgba(5,5,5,.94);
+  border:1px solid var(--world-ui-line);
+
   display:flex;
   align-items:center;
   justify-content:space-between;
