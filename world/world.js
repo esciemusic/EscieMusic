@@ -371,7 +371,7 @@ function loadWorldSave(slot=activeSaveSlot()){let backup=null,previousKeyRaw=nul
   }catch(_e){rollbackOk=false}
   saveIndicator(rollbackOk?"LOAD FAILED · RESTORED":"LOAD FAILED · ROLLBACK FAILED");
   return false}}
-let worldStorageBusy=false;\nfunction withWorldStorageLock(fn){if(worldStorageBusy){saveIndicator("STORAGE BUSY · PLEASE WAIT");return false}worldStorageBusy=true;try{return fn()}finally{worldStorageBusy=false}}\nfunction switchSaveSlot(slot){return withWorldStorageLock(()=>{const n=Number(slot);if(!Number.isInteger(n)||n<1||n>SAVE_SLOT_COUNT)return false;if(n===activeSaveSlot())return true;try{if(!saveWorldState()){saveIndicator("SLOT SWITCH BLOCKED · SAVE FAILED");return false}if(!loadWorldSave(n)){saveIndicator("SLOT SWITCH BLOCKED · LOAD FAILED");return false}location.reload();return true}catch(e){saveIndicator("SLOT SWITCH BLOCKED");return false}})}
+let worldStorageBusy=false;\nfunction withWorldStorageLock(fn){if(worldStorageBusy){saveIndicator("STORAGE BUSY · PLEASE WAIT");return false}worldStorageBusy=true;try{return fn()}finally{worldStorageBusy=false}}\nfunction switchSaveSlot(slot){const n=Number(slot);if(!Number.isInteger(n)||n<1||n>SAVE_SLOT_COUNT)return false;if(n===activeSaveSlot())return true;try{if(!saveWorldState()){saveIndicator("SLOT SWITCH BLOCKED · SAVE FAILED");return false}if(!loadWorldSave(n)){saveIndicator("SLOT SWITCH BLOCKED · LOAD FAILED");return false}location.reload();return true}catch(e){saveIndicator("SLOT SWITCH BLOCKED");return false}}
 const RESET_FLAG="escie_world_reset_pending_v1";
 function resetLocalGame(){
   const removed=[];
