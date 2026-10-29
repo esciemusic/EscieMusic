@@ -41,6 +41,31 @@ function npcDialogue(n){const rel=Number(window.ESCIE_WORLD_NPC?.state?.().npcs?
 function chooseDialogueLegacy(i){if(!dialogue)return;const c=(dialogue.choices||[])[i];if(!c)return;const sim=window.ESCIE_WORLD_SIMULATION;
 if(dialogue._npc&&dialogue.id!=="witness"){if(c.label==="JOB"){const offer=sim?.npcJobOffer?.(dialogue.id)||{};const result=offer.ok&&offer.available?sim.npcJobAccept(dialogue.id):offer;say(result.ok?(result.offer.label+" · +$"+result.offer.pay):"NO WORK · "+String(result.reason||"UNAVAILABLE"));dialogue=null;render();return;}if(c.label==="FAVOR"){const result=sim?.npcFavor?.(dialogue.id,"FAVOR")||{};say(result.ok?"FAVOR COMPLETE · +$"+result.reward:"NO FAVOR · "+String(result.reason||"TRUST REQUIRED"));dialogue=null;render();return;}const type=c.label==="GIVE"?"GIFT":c.label;const result=sim?.npcInteraction?.(dialogue.id,type)||{};say((result.reaction||"OBSERVANT")+" · "+(result.relationship??0)+" RELATIONSHIP");window.ESCIE_PHONE_GAMEPLAY?.relationshipMessage?.(dialogue.id,c.text);dialogue=null;render();return;}
 if(sim){if(c.label==="WHO ARE YOU?")sim.choice("witness_identity","WHO ARE YOU?",{stress:1,social:2});else if(c.label==="WHAT IS THIS PLACE?")sim.choice("witness_place","WHAT IS THIS PLACE?",{stress:-1,social:1});else if(c.label==="I NEED THE KEY.")sim.choice("witness_key","I NEED THE KEY.",{stress:2,reputation:1});}say(window.ESCIE_WORLD_LANGUAGE?.speakToPlayer?.(dialogue,c.text)||c.text);window.ESCIE_WORLD_NPC?.rememberInteraction?.("witness",{choice:c.label,text:c.text});window.ESCIE_WORLD_NPC?.relationship?.("witness",c.label==="I NEED THE KEY."?5:2,c.label);if(c.discovery){const o={discovery:c.discovery,queries:c.queries||[]};discover(o);if(c.discovery==="game-discovery-witness"){const s=state();s.inventory=Array.isArray(s.inventory)?s.inventory:[];if(!s.inventory.includes("game-item-signal-key")){s.inventory.push("game-item-signal-key");save(s);say(c.text+" The Witness places the Signal Key in your hand.");}}}dialogue=null;render();}
+const nearbyBuilding=()=>{
+ const sim=window.ESCIE_WORLD_SIMULATION;if(!sim)return null;
+ const s=sim.state?.()||{},d=String(s.neighbourhood||"PARC-EXTENSION").toUpperCase(),p=pos;
+ const buildings=sim.districtBuildings?.(d)||[];
+ let best=null;
+ buildings.forEach(b=>{
+   const lm=sim.findLandmark?.(d,b.landmark);const node=(sim.streetNodes?.[d]||[]).find(x=>x.id===lm?.node);
+   if(!node)return;
+   const distance=Math.abs(Number(p.x)-node.x)+Math.abs(Number(p.y)-node.y);
+   if(distance<=1&&(!best||distance<best.distance))best={building:b,node,distance};
+ });
+ return best;
+};
+function enterNearbyBuilding(){
+ const sim=window.ESCIE_WORLD_SIMULATION,b=nearbyBuilding();if(!sim||!b)return false;
+ const result=sim.enterBuilding?.(String(sim.state().neighbourhood||"").toUpperCase(),b.building.id);
+ if(!result?.ok){say(b.building.name+" · "+String(result.reason||"ACCESS REQUIRED"));return true;}
+ const live=window.ESCIE_WORLD_NPC?.state?.().npcs||{};
+ const occupants=Object.values(live).filter(n=>n.interior?.entered&&n.interior.building_id===b.building.id);
+ const names=occupants.map(n=>n.name||n.label||n.role||"LOCAL");
+ const interior=result.interior?.name||b.building.interior;
+ say(interior+" · ENTERED · "+(names.length?names.length+" PEOPLE INSIDE · "+names.slice(0,4).join(", "):"NO ONE HERE"));
+ window.dispatchEvent(new CustomEvent("escie:world-interior-enter",{detail:{building:b.building,occupants}}));
+ return true;
+}
 function interactNPC(n){const d=npcDialogue(n);d.choices.forEach(ch=>ch.text=ch.text);dialogue=d;openDialogue(d);dialogue._npc=true;return d;}
 function chooseDialogue(i){if(!dialogue)return;const c=(dialogue.choices||[])[i];if(!c)return;const sim=window.ESCIE_WORLD_SIMULATION;
 if(dialogue._npc&&dialogue.id!=="witness"){const type=c.label==="GIVE"?"GIFT":c.label;const result=sim?.npcInteraction?.(dialogue.id,type)||{};say((result.reaction||"OBSERVANT")+" · "+(result.relationship??0)+" RELATIONSHIP");if(window.ESCIE_PHONE_GAMEPLAY?.relationshipMessage)window.ESCIE_PHONE_GAMEPLAY.relationshipMessage(dialogue.id,c.text);dialogue=null;render();return;}
@@ -94,7 +119,7 @@ function performControlAction(type){
  const sim=window.ESCIE_WORLD_SIMULATION,s=sim?.state?.();if(!sim||!s)return;
  const t=String(type||"").toUpperCase();
  if(t==="SPRINT"){const s=state();sim.advance?.(1);say("SPRINT · MOVEMENT SPEED INCREASED · "+Number(s.energy??0)+" ENERGY");return}
- if(t==="OPEN"){const v=window.ESCIE_WORLD_VEHICLES;const s=state();if(v&&s.transport==="CAR"&&v.state().current){const radio=v.radio();say(radio.ok?("RADIO · "+radio.line):"CAR · NO RADIO");return}interactNow();return}
+ if(t==="OPEN"){const v=window.ESCIE_WORLD_VEHICLES;const s=state();if(v&&s.transport==="CAR"&&v.state().current){const radio=v.radio();say(radio.ok?("RADIO · "+radio.line):"CAR · NO RADIO");return}if(enterNearbyBuilding())return;interactNow();return}
  if(t==="STEAL"){const target=npcs.find(n=>Math.abs(n.x-pos.x)<=1&&Math.abs(n.y-pos.y)<=1);if(!target){say("STEAL · NO VALID TARGET");return}const r=sim.steal?.("npc:"+target.id,false);say(r?.ok===false?"STEAL · FAILED":"STEAL · ACTION TAKEN · NO WITNESS");return}
  if(t==="FIGHT"){const target=npcs.find(n=>Math.abs(n.x-pos.x)<=1&&Math.abs(n.y-pos.y)<=1);if(!target){say("FIGHT · NO VALID TARGET");return}const attack=sim.combatAttack?.(target.id,{weapon:"FIST"});if(attack?.reason==="EXHAUSTED"){say("FIGHT · TOO EXHAUSTED");return}if(!attack?.ok){say("FIGHT · "+String(attack?.reason||"FAILED"));return}window.ESCIE_WORLD_NPC?.relationship?.(target.id,-8,"FIGHT");if(attack.target?.down){say("TARGET DOWN · CONSEQUENCE REGISTERED");}else{const retaliation=Math.max(2,Math.min(12,Math.round((100-(attack.target?.health??100))/12)));const hit=sim.applyDamage?.(retaliation,"NPC_RETALIATION");if(hit?.dead){const r=sim.respawn?.();say(r?.ok?"YOU DIED · RESPAWNED · 06:00 · PARC-EXTENSION":"YOU DIED · NO RESPAWN");return}if(hit?.hospital){say("SERIOUS INJURY · HOSPITAL REQUIRED");return}say("FIGHT · TARGET HP "+Number(attack.target?.health??0)+" · YOUR HP "+Number(hit?.state?.health??0));}return}
 }
