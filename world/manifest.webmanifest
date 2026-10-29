@@ -1,0 +1,12 @@
+{
+  "name":"ESCIE — THE WORLD",
+  "short_name":"ESCIE WORLD",
+  "start_url":"./",
+  "scope":"./",
+  "display":"fullscreen",
+  "orientation":"any",
+  "background_color":"#050505",
+  "theme_color":"#050505",
+  "description":"A playable layer of the same reality.",
+  "icons":[]
+}
