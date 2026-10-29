@@ -66,19 +66,18 @@ const updateInteriorPresence=(n,a,minute)=>{
  return n.interior;
 };
 const interiorSocialTick=(st,day,hour,minute)=>{
- const groups={};
- Object.values(st.npcs||{}).forEach(n=>{if(n.interior?.entered&&n.interior.building_id) (groups[n.interior.building_id]||(groups[n.interior.building_id]=[])).push(n)});
+ const groups={},seen=new Set();
+ Object.values(st.npcs||{}).forEach(n=>{if(n.interior?.entered&&n.interior.building_id)(groups[n.interior.building_id]||(groups[n.interior.building_id]=[])).push(n)});
  Object.values(groups).forEach(group=>{
-   for(let i=0;i<group.length;i++)for(let j=i+1;j<group.length;j++){
-     const a=group[i],b=group[j];
-     if(a.activity==="DOWN"||b.activity==="DOWN")continue;
-     const language=(a.native_language||"en")===(b.native_language||"en")?(a.native_language||"en"):"mixed";
-     const exchange=window.ESCIE_WORLD_DIALOGUE?.generate?.(a,b,{day,hour,minute,language,community:a.community||"LOCAL",tension:Number(a.relationship||0)<-40||Number(b.relationship||0)<-40})||null;
-     st.social_exchanges.unshift({day,hour,minute,from:a.id,to:b.id,language,community:a.community||"LOCAL",type:"INTERIOR_CONVERSATION",building_id:a.interior.building_id,line:exchange?.line||null,topic:exchange?.topic||"LOCAL"});
-     st.social_exchanges=st.social_exchanges.slice(0,100);
-     npcLink(a.id,b.id,exchange?.topic==="TENSION"?-1:1,"interior social");
-     if(typeof window!=="undefined")window.dispatchEvent(new CustomEvent("escie:npc-interior-exchange",{detail:{from:a,to:b,building:a.interior.building_id,exchange}}));
-   }
+  for(let i=0;i<group.length;i++)for(let j=i+1;j<group.length;j++){
+   const a=group[i],b=group[j],key=[a.id,b.id].sort().join("|");if(seen.has(key)||a.activity==="DOWN"||b.activity==="DOWN")continue;seen.add(key);
+   const language=(a.native_language||"en")===(b.native_language||"en")?(a.native_language||"en"):"mixed";
+   const tense=Number(a.relationship||0)<-40||Number(b.relationship||0)<-40;
+   const exchange=window.ESCIE_WORLD_DIALOGUE?.generate?.(a,b,{day,hour,minute,language,community:a.community||"LOCAL",tension:tense})||null;
+   st.social_exchanges.unshift({day,hour,minute,from:a.id,to:b.id,language,community:a.community||"LOCAL",type:tense?"INTERIOR_TENSION":"INTERIOR_CONVERSATION",building_id:a.interior.building_id,line:exchange?.line||null,topic:exchange?.topic||"LOCAL"});
+   st.social_exchanges=st.social_exchanges.slice(0,100);npcLink(a.id,b.id,tense?-1:1,"interior social");
+   if(typeof window!=="undefined")window.dispatchEvent(new CustomEvent("escie:npc-interior-exchange",{detail:{from:a,to:b,building:a.interior.building_id,exchange}}));
+  }
  });
  return Object.keys(groups).length;
 };
