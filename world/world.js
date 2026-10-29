@@ -222,10 +222,29 @@ syncMainSitePlayerProfile();
 p.name=(el.querySelector("#world-player-name").value||"PLAYER").trim().slice(0,24)||"PLAYER";p.updated_at=new Date().toISOString();localStorage.setItem(PROFILE_KEY,JSON.stringify(p));el.hidden=true;say?.("PROFILE SAVED.");saveWorldState?.()}}const p=ensureProfile();el.querySelector("[data-profile-id]").textContent="PLAYER ID · "+p.id;el.querySelector("#world-player-name").value=p.name||"PLAYER";el.hidden=false;el.querySelector("#world-player-name")?.focus()}
 document.querySelector("[data-profile]")?.addEventListener("click",profileMenu);
 ensureProfile();
-const SAVE_KEY="escie_world_save_v1";
+const SAVE_KEY="escie_world_save_v1",SAVE_VERSION=2;
 function saveIndicator(msg="GAME SAVED"){let el=document.getElementById("world-save-indicator");if(!el){el=document.createElement("div");el.id="world-save-indicator";el.className="world-save-indicator";document.body.appendChild(el)}el.textContent=msg;el.classList.add("visible");clearTimeout(window.__saveTimer);window.__saveTimer=setTimeout(()=>el.classList.remove("visible"),1400)}
-function saveWorldState(){try{const raw=localStorage.getItem("escie_game_state_v1");if(raw)localStorage.setItem(SAVE_KEY,raw);saveIndicator()}catch(e){saveIndicator("SAVE FAILED")}}
-function loadWorldSave(){try{const raw=localStorage.getItem(SAVE_KEY);if(raw&&!localStorage.getItem("escie_game_state_v1"))localStorage.setItem("escie_game_state_v1",raw)}catch(e){}}
+function saveWorldState(){try{
+  const current=state();
+  current.world_room=room;
+  current.world_position={x:Number(pos.x)||0,y:Number(pos.y)||0};
+  current.input_mode=controlScheme();
+  save(current);
+  const sim=window.ESCIE_WORLD_SIMULATION?.state?.();
+  const snapshot={version:SAVE_VERSION,saved_at:new Date().toISOString(),world_state:current,simulation_state:sim&&typeof sim==="object"?sim:null,input_mode:controlScheme()};
+  localStorage.setItem(SAVE_KEY,JSON.stringify(snapshot));
+  saveIndicator();
+}catch(e){saveIndicator("SAVE FAILED")}}
+function loadWorldSave(){try{
+  const raw=localStorage.getItem(SAVE_KEY);if(!raw)return;
+  const parsed=JSON.parse(raw);
+  const snapshot=parsed&&typeof parsed==="object"&&!Array.isArray(parsed)&&parsed.world_state?parsed:{version:1,world_state:parsed};
+  const saved=snapshot.world_state;
+  if(!saved||typeof saved!=="object"||Array.isArray(saved))return;
+  localStorage.setItem(KEY,JSON.stringify(saved));
+  if(snapshot.simulation_state&&typeof snapshot.simulation_state==="object"&&!Array.isArray(snapshot.simulation_state))localStorage.setItem("escie_world_simulation_v1",JSON.stringify(snapshot.simulation_state));
+  if(["AUTO","KEYBOARD","TOUCH","GAMEPAD"].includes(String(snapshot.input_mode||saved.input_mode||"").toUpperCase()))setControlScheme(String(snapshot.input_mode||saved.input_mode).toUpperCase());
+}catch(e){}}
 document.addEventListener("visibilitychange",()=>{if(document.hidden)saveWorldState()});
 window.addEventListener("pagehide",saveWorldState);
 document.querySelector("[data-save]")?.addEventListener("click",saveWorldState);
@@ -247,7 +266,10 @@ function rotateGame(){requestFullscreen();say("ROTATION REQUESTED · TURN DEVICE
 document.querySelector("[data-fullscreen]")?.addEventListener("click",toggleFullscreen);document.querySelector("[data-rotate]")?.addEventListener("click",rotateGame);
 try{if(sessionStorage.getItem("escie_handheld_mode")==="1")setHandheld(true);if(sessionStorage.getItem("escie_device_mode")==="1")document.getElementById("world-device")?.classList.add("device-immersive")}catch(e){}
 document.addEventListener("fullscreenchange",()=>{document.body.classList.toggle("fullscreen-active",!!document.fullscreenElement)});
-const boot=state();if(boot.world_room==="trace"){room="trace";roomSetup();}else if(boot.world_room==="room02"){room="room02";roomSetup();}else if(boot.world_room==="room01"){room="room01";roomSetup();}drawMap();render();stage.focus();poll();
+const boot=state();
+if(boot.world_position&&Number.isFinite(Number(boot.world_position.x))&&Number.isFinite(Number(boot.world_position.y)))pos={x:Math.max(0,Math.min(W-1,Number(boot.world_position.x))),y:Math.max(0,Math.min(H-1,Number(boot.world_position.y)))};
+if(boot.world_room==="trace"){room="trace";roomSetup();}else if(boot.world_room==="room02"){room="room02";roomSetup();}else if(boot.world_room==="room01"){room="room01";roomSetup();}
+syncSimulationPosition();drawMap();render();stage.focus();poll();
 
 })();
 (function(){
