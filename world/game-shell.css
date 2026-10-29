@@ -1,0 +1,38 @@
+/* ESCIE WORLD — DEDICATED GAME SHELL */
+html,body.escie-game-page{margin:0;width:100%;height:100%;min-height:100%;overflow:hidden;background:#050505}
+body.escie-game-page{position:fixed;inset:0;overscroll-behavior:none;touch-action:manipulation}
+body.escie-game-page .world-device{position:fixed;inset:0;width:100vw;height:100dvh;min-height:100%;margin:0;padding:0;border:0;overflow:hidden}
+body.escie-game-page .world-device-top{display:none}
+body.escie-game-page .world-shell{position:fixed;inset:0;width:100%;height:100%;min-height:100dvh;overflow:hidden;border:0}
+body.escie-game-page .world-header{position:absolute;top:0;left:0;right:0;z-index:40}
+body.escie-game-page main{height:100%;min-height:100%;overflow:hidden}
+body.escie-game-page .world-intro,
+body.escie-game-page footer{display:none}
+body.escie-game-page .world-game{position:fixed;inset:0;display:flex;flex-direction:column;width:100%;height:100dvh;min-height:100%;margin:0;border:0;border-radius:0;box-shadow:none;overflow:hidden}
+body.escie-game-page .world-hud{position:absolute;top:52px;left:12px;right:12px;z-index:30;pointer-events:none}
+body.escie-game-page .world-stage{flex:1;min-height:0;height:auto;aspect-ratio:auto}
+body.escie-game-page .world-controls{position:absolute;left:0;right:0;bottom:0;z-index:35;padding:10px;pointer-events:none;background:linear-gradient(transparent,rgba(5,5,5,.82))}
+body.escie-game-page .world-controls>*{pointer-events:auto}
+body.escie-game-page .world-3d-tools{position:absolute;top:88px;right:12px;z-index:35;border:0;background:transparent}
+body.escie-game-page .world-log{position:absolute;left:12px;bottom:145px;z-index:35;max-width:min(520px,calc(100% - 24px));pointer-events:none}
+body.escie-game-page .world-quests,
+body.escie-game-page .world-rpg,
+body.escie-game-page .world-market,
+body.escie-game-page .world-investigation,
+body.escie-game-page .world-phone{position:fixed;inset:0;z-index:100;overflow:auto;margin:0;border-radius:0}
+.game-boot{position:fixed;inset:0;z-index:5000;display:grid;place-items:center;background:radial-gradient(circle at 50% 45%,rgba(47,128,255,.10),rgba(5,5,5,.98) 62%);color:#f0ede4}
+.game-boot[hidden]{display:none}
+.game-boot-panel{position:relative;width:min(680px,calc(100vw - 32px));padding:clamp(28px,6vw,64px);box-sizing:border-box;border:1px solid rgba(47,128,255,.55);background:rgba(16,17,20,.94);box-shadow:0 0 120px rgba(47,128,255,.14),inset 0 0 50px rgba(111,63,175,.08)}
+.game-boot h1{margin:.35rem 0 1rem;font-size:clamp(3rem,12vw,8rem);line-height:.82;letter-spacing:-.07em;color:#4da3ff}
+.game-boot p{max-width:42ch;line-height:1.6;color:#d8d4ca}
+.game-boot-status{margin:1.25rem 0;padding:.7rem;border-left:2px solid #2f80ff;background:rgba(47,128,255,.07);font:600 .62rem/1.5 monospace;letter-spacing:.08em}
+.game-boot-actions{display:grid;gap:8px}
+.game-boot-actions button,.game-boot-actions a{display:block;min-height:50px;box-sizing:border-box;padding:14px 16px;border:1px solid rgba(47,128,255,.42);background:#101114;color:#f0ede4;text-align:left;text-decoration:none;font:700 .66rem monospace;letter-spacing:.12em;cursor:pointer}
+.game-boot-actions button:first-child{border-color:#4da3ff;color:#4da3ff}
+.game-boot-actions button:hover,.game-boot-actions button:focus-visible,.game-boot-actions a:hover,.game-boot-actions a:focus-visible{background:rgba(47,128,255,.14);outline:1px solid #2f80ff;outline-offset:2px}
+.game-boot small{display:block;margin-top:1.2rem;opacity:.5;font:600 .55rem monospace;letter-spacing:.08em}
+.game-boot-noise{position:absolute;inset:0;pointer-events:none;opacity:.08;background:repeating-linear-gradient(0deg,transparent 0 2px,#d8d4ca 3px,#d8d4ca 4px);mix-blend-mode:overlay}
+@media(max-width:700px) and (orientation:portrait){.game-boot-panel{min-height:100dvh;display:flex;flex-direction:column;justify-content:center;width:100%;border-left:0;border-right:0}.game-boot-actions{margin-top:.4rem}body.escie-game-page .world-3d-tools{top:70px;right:6px}body.escie-game-page .world-hud{top:46px;left:6px;right:6px}body.escie-game-page .world-log{bottom:170px;left:6px}}
+@media(max-width:900px) and (orientation:landscape){body.escie-game-page .world-controls{padding:6px}body.escie-game-page .world-action-cluster{grid-template-columns:repeat(6,minmax(54px,1fr));gap:4px}body.escie-game-page .world-action-cluster button{min-height:38px;padding:4px;font-size:.48rem}body.escie-game-page .world-dpad button{width:38px;height:32px}}
+@media(pointer:coarse){body.escie-game-page button,a{touch-action:manipulation}}
+@media(prefers-reduced-motion:reduce){.game-boot-noise{display:none}}
