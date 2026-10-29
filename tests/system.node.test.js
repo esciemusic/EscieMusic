@@ -444,3 +444,9 @@ assert(worldRuntime.includes("if(s?.cancelled)return"),"dream completion must ig
 assert(dreamPlayRuntime.includes('cancel=function(reason="CANCELLED")'),"dream play must expose lifecycle cancellation");
 assert(dreamPlayRuntime.includes("s.cancelled=true;s.active=false"),"dream cancellation must invalidate active state");
 console.log("ESCIE world lifecycle contracts OK");
+
+
+/* NPC LIFECYCLE CONTRACTS */
+assert(worldRuntime.includes("window.ESCIE_WORLD_NPC?.tick?.(sim.day,sim.hour,sim.minute"),"room transitions must advance NPC schedules");
+assert(worldRuntime.includes("window.ESCIE_WORLD_NPC_LIFE?.syncRelationships?.()"),"room transitions must synchronize NPC relationships");
+console.log("ESCIE NPC lifecycle contracts OK");
