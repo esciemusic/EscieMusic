@@ -334,6 +334,7 @@ assert(gameShopRuntime.includes("renderGameItemInspector"),"public game doorway 
 
 
 const worldRuntime=fs.readFileSync("world/world.js","utf8");
+const dreamPlayRuntime=fs.readFileSync("world/dream-play.js","utf8");
 assert(worldRuntime.includes('const parsed=JSON.parse(localStorage.getItem(KEY)||"{}");return parsed&&typeof parsed==="object"&&!Array.isArray(parsed)?parsed:{}'),"world save state must reject null and array-shaped corruption");
 assert(worldRuntime.includes('if(!target){say("Nothing nearby to interact with.");return false}'),"world interaction must safely handle no target");
 assert(worldRuntime.includes('window.ESCIE_WORLD_DREAM_STATE?.active'),"dream controls must only intercept input while dream play is active");
@@ -431,3 +432,15 @@ assert(style.includes("--escie-amber:#b8873a"),"master palette must define Amber
 assert(style.includes("--escie-cold-grey:#70747a"),"master palette must define Cold Grey");
 assert(world.includes("--world-green:var(--escie-blue)"),"world legacy green signal alias must resolve to Signal Blue");
 console.log("ESCIE confirmed master palette contracts OK");
+
+
+/* WORLD LIFECYCLE CONTRACTS */
+assert(worldRuntime.includes("function cleanupWorldLifecycle(reason="),"world lifecycle must clean active layers before room transitions");
+assert(worldRuntime.includes("function transitionRoom(nextRoom,nextPos,message)"),"world room transitions must use one lifecycle path");
+assert(worldRuntime.includes("window.ESCIE_WORLD_SIMULATION?.advance?.(5)"),"room transitions must advance simulation time");
+assert(worldRuntime.includes("syncSimulationPosition();persistRoom();"),"room transitions must synchronize simulation position before saving");
+assert(worldRuntime.includes("s.world_position={x:Number(pos.x)||0,y:Number(pos.y)||0}"),"room persistence must include runtime position");
+assert(worldRuntime.includes("if(s?.cancelled)return"),"dream completion must ignore cancelled sessions");
+assert(dreamPlayRuntime.includes('cancel=function(reason="CANCELLED")'),"dream play must expose lifecycle cancellation");
+assert(dreamPlayRuntime.includes("s.cancelled=true;s.active=false"),"dream cancellation must invalidate active state");
+console.log("ESCIE world lifecycle contracts OK");
