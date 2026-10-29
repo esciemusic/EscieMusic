@@ -32,8 +32,10 @@ const remember=(id,memory)=>{
 };
 const relationship=(id,delta,reason)=>{
  const api=window.ESCIE_WORLD_NPC;if(!api)return null;const n=api.state()?.npcs?.[id];if(!n)return null;if((n.simulation_tier||tiers(id))==="GENERIC")return null;n.links=n.links||{};n.life=n.life||ensure(n);
- const player=Number(n.relationship||0)+Number(delta||0);n.relationship=Math.max(-100,Math.min(100,player));
- return n.relationship;
+ const player=Number(n.relationship||0)+Number(delta||0);const next=Math.max(-100,Math.min(100,player));
+ if(typeof api.relationship==="function")api.relationship(id,next-Number(n.relationship||0),reason);else n.relationship=next;
+ const fresh=api.state()?.npcs?.[id]||n;const ls=read();ls.npcs=ls.npcs||{};ls.npcs[id]=Object.assign(ls.npcs[id]||{}, {relationship:Number(fresh.relationship||next)});save(ls);
+ return Number(fresh.relationship||next);
 };
 const chooseActivity=(n,s)=>{
  const l=n.life||ensure(n),now=s.hour*60+s.minute;
