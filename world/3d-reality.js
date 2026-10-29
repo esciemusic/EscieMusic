@@ -8,7 +8,7 @@ const root=window;
 let renderer,scene,camera,clock,avatar,worldGroup,thirdPerson=false,started=false,raf=0,dayLight,ambientLight;
 const obstacles=[],actors=[],doors=[],lights=[];
 const keys=new Set();
-const player={x:0,z:8,y:1.7,yaw:0,pitch:0,speed:4.2,sprint:7.5};
+const player={x:0,z:8,y:1.7,yaw:0,pitch:0,speed:4.2,sprint:7.5,lastSync:0,lastGridX:null,lastGridY:null};
 const bounds=54;
 const stage=()=>document.getElementById("world-stage");
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -103,6 +103,7 @@ function resize(){
 }
 function setup(){
  const s=stage();if(!s||!window.THREE)return false;
+ const initial=root.ESCIE_WORLD_SIMULATION?.state?.()?.position||{x:2,y:7};player.x=Number(initial.x||0)*7.2-54;player.z=Number(initial.y||0)*7.2-54;
  if(s.querySelector(".escie-3d-canvas"))return true;
  try{renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:"high-performance"});}catch(e){say3D("3D UNAVAILABLE · 2D MAP REMAINS PLAYABLE");return false}
  renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.7));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
@@ -148,7 +149,7 @@ function move(dt){
  const nx=player.x+(-si*f+c*str)*speed,nz=player.z+(-c*f-si*str)*speed;
  if(!blocked(nx,player.z))player.x=nx;if(!blocked(player.x,nz))player.z=nz;
  player.x=clamp(player.x,-bounds,bounds);player.z=clamp(player.z,-bounds,bounds);
- const sim=root.ESCIE_WORLD_SIMULATION,st=sim?.state?.();if(st?.position)root.ESCIE_WORLD_SIMULATION?.setPosition?.(player.x,player.z);
+ const sim=root.ESCIE_WORLD_SIMULATION,st=sim?.state?.();if(st?.position&&performance.now()-player.lastSync>250){const gx=Math.max(0,Math.min(15,Math.round((player.x+54)/7.2))),gy=Math.max(0,Math.min(15,Math.round((player.z+54)/7.2)));if(gx!==player.lastGridX||gy!==player.lastGridY){sim.setPosition?.(gx,gy);player.lastGridX=gx;player.lastGridY=gy;}player.lastSync=performance.now();}
  avatar.position.set(player.x,0,player.z);avatar.rotation.y=player.yaw;
 }
 function updateVehicles(t){
@@ -169,7 +170,7 @@ function updateEnvironment(t){
  if(scene?.fog)scene.fog.density=.014+(1-daylight)*.012;
 }
 function updateHud(){
- const coord=document.getElementById("world-coordinates"),sig=document.getElementById("world-signal");
+ const st=root.ESCIE_WORLD_SIMULATION?.state?.()||{},coord=document.getElementById("world-coordinates"),sig=document.getElementById("world-signal");
  if(coord)coord.textContent=Math.round(player.x+54).toString().padStart(2,"0")+" · "+Math.round(player.z+54).toString().padStart(2,"0");if(st)document.getElementById("world-location")&&(document.getElementById("world-location").textContent=st.neighbourhood||"PARC-EXTENSION");
  if(sig){const distance=Math.hypot(player.x,player.z),wanted=Number(st?.wanted||0);sig.textContent=Math.max(0,100-Math.round(distance)+wanted*5).toString()+" SIGNAL";}
 }
