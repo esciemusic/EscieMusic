@@ -291,6 +291,26 @@ window.addEventListener("pagehide",()=>{if(!resetPending())saveWorldState()});
 document.querySelector("[data-save]")?.addEventListener("click",saveWorldState);
 migrateLegacySave();
 loadWorldSave(activeSaveSlot());
+(function restoreWorldRuntime(){
+  const s=state();
+  const allowed=["lane","room01","room02","trace"];
+  room=allowed.includes(String(s.world_room))?String(s.world_room):"lane";
+  const p=s.world_position&&typeof s.world_position==="object"?s.world_position:null;
+  if(p&&Number.isFinite(Number(p.x))&&Number.isFinite(Number(p.y))){
+    pos={x:Number(p.x),y:Number(p.y)};
+  }else{
+    pos={...start};
+  }
+  if(room==="lane"){
+    pos={x:Math.max(0,Math.min(W-1,pos.x)),y:Math.max(0,Math.min(H-1,pos.y))};
+  }else{
+    pos={x:Math.max(0,Math.min(7,pos.x)),y:Math.max(0,Math.min(7,pos.y))};
+  }
+  roomSetup();
+  syncSimulationPosition();
+  drawMap();
+  render();
+})();
 clearResetFlag();
 
 const ENTRY_SEEN_KEY="escie_world_entry_seen_v1";
