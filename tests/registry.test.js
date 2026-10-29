@@ -2,7 +2,7 @@
  * ESCIE TESTS — REGISTRY
  *
  * Contract checks use an isolated in-memory release fixture so the public
- * repository can remain completely free of unreleased BAM metadata.
+ * repository can remain completely free of unreleased project metadata.
  */
 (function(){
   "use strict";
