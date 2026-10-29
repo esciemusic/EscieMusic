@@ -292,6 +292,26 @@ document.querySelector("[data-save]")?.addEventListener("click",saveWorldState);
 migrateLegacySave();
 loadWorldSave(activeSaveSlot());
 clearResetFlag();
+
+const ENTRY_SEEN_KEY="escie_world_entry_seen_v1";
+function worldEntryGate(){
+  if(document.getElementById("world-entry-gate"))return;
+  const slot=activeSaveSlot(), status=saveSlotStatus(slot), hasSave=status.startsWith("SAVED");
+  const el=document.createElement("section");
+  el.id="world-entry-gate";
+  el.className="world-entry-gate";
+  el.innerHTML='<div class="entry-panel" role="dialog" aria-modal="true" aria-label="Enter The World"><span class="world-kicker">ESCIE / THE WORLD</span><h2>ENTER THE WORLD</h2><p>You are entering another layer of the same reality.</p><p class="entry-status">SLOT '+slot+' · '+esc(status)+'</p><div class="entry-actions">'+
+    (hasSave?'<button type="button" data-entry-continue>CONTINUE</button>':'<button type="button" data-entry-new>NEW GAME</button>')+
+    '<button type="button" data-entry-slots>SAVE / LOAD</button><button type="button" data-entry-exit>RETURN TO ESCIE</button></div></div>';
+  document.body.appendChild(el);
+  const close=()=>{el.hidden=true;try{sessionStorage.setItem(ENTRY_SEEN_KEY,"1")}catch(e){};stage?.focus?.()};
+  el.querySelector("[data-entry-continue]")?.addEventListener("click",()=>{close();say("RESUMED · SLOT "+slot);render()});
+  el.querySelector("[data-entry-new]")?.addEventListener("click",()=>{initializeEmptySave(slot);location.reload()});
+  el.querySelector("[data-entry-slots]")?.addEventListener("click",()=>{close();systemMenu();document.getElementById("world-system")?.removeAttribute("hidden")});
+  el.querySelector("[data-entry-exit]")?.addEventListener("click",()=>{location.href="../"});
+  el.hidden=false;
+}
+worldEntryGate();
 function systemMenu(){let el=document.getElementById("world-system");
 if(!el){el=document.createElement("section");el.id="world-system";el.className="world-system";el.hidden=true;
 el.innerHTML='<div class="system-panel" role="dialog" aria-modal="true" aria-label="World system"><div class="system-head"><div><span class="world-kicker">ESCIE / THE WORLD</span><h2>SYSTEM</h2></div><button class="system-close" data-system-close>CLOSE</button></div><div class="system-grid"><div class="system-card"><strong>STATE</strong><span>LOCAL PLAYER STATE ACTIVE</span></div><div class="system-card"><strong>CANON</strong><span>GAME CANNOT WRITE CANONICAL TRUTH</span></div><div class="system-card"><strong>INPUT</strong><span data-system-input>DETECTING…</span></div><div class="system-card"><strong>DISPLAY</strong><span data-system-display>DETECTING…</span></div><div class="system-card"><strong>SAVE SLOT</strong><span data-system-slot>SLOT 1</span></div><div class="system-card"><strong>SIGNAL</strong><span data-system-signal>0</span></div><div class="system-card"><strong>DISCOVERIES</strong><span data-system-discoveries>0</span></div></div><div class="system-save-manager"><h3>SAVE / LOAD</h3><div class="save-slot-list" data-save-slot-list></div></div><div class="system-actions"><button data-system-prefs>PREFERENCES</button><button data-system-pause>PAUSE MENU</button><button data-system-reset>RESET ACTIVE SLOT</button></div></div>';
