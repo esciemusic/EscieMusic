@@ -367,7 +367,7 @@ assert(worldRuntime.includes("function saveSlotStores"),"world save system must 
 assert(worldRuntime.includes("function restoreSaveStores"),"world save system must restore auxiliary gameplay stores");
 assert(worldRuntime.includes("function migrateLegacySave"),"world save system must migrate the legacy save into slot one");
 assert(worldRuntime.includes("const snapshot={version:SAVE_VERSION,saved_at:new Date().toISOString(),slot,world_state:current"),"world save snapshots must identify their active slot");
-assert(worldRuntime.includes("stores:saveSlotStores()"),"world save snapshots must include auxiliary gameplay state");
+assert(worldRuntime.includes("const stores=saveSlotStores()"),"world save snapshots must capture auxiliary gameplay state");
 assert(worldRuntime.includes("function switchSaveSlot"),"world runtime must support save-slot switching");
 assert(worldRuntime.includes("RESET ACTIVE SLOT"),"world system UI must expose active-slot reset semantics");
 assert(worldRuntime.includes("Other save slots, profile and preferences remain."),"active-slot reset must preserve other slots, profile and preferences");
