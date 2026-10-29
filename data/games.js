@@ -248,6 +248,7 @@
     signals:[],
     unknown:[],
     unresolved:[],
+    unlocked:[],
     path:[],
     event_count:0,
     canonical_write:false
@@ -279,6 +280,7 @@
     state.signals=cleanIds(input.signals);
     state.unknown=cleanIds(input.unknown);
     state.unresolved=cleanIds(input.unresolved);
+    state.unlocked=cleanIds(input.unlocked);
     state.path=Array.isArray(input.path)?input.path.slice(-500):[];
     state.event_count=Number.isFinite(Number(input.event_count))?Number(input.event_count):0;
     state.canonical_write=false;
@@ -350,6 +352,7 @@
       signals:source.signals.slice(),
       unknown:source.unknown.slice(),
       unresolved:source.unresolved.slice(),
+      unlocked:source.unlocked.slice(),
       path:source.path.slice()
     };
   }
