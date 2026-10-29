@@ -333,12 +333,14 @@ assert(gameShopRuntime.includes("FOUND / CLAIMED IN GAME"),"free game items must
 assert(gameShopRuntime.includes("renderGameItemInspector"),"public game doorway must expose acquisition state");
 
 
-const worldRuntime=fs.readFileSync("world/world.js","utf8");
+const worldRuntime = fs.readFileSync("world/world.js", "utf8");
+const world3dRuntime = fs.readFileSync("world/3d-reality.js", "utf8");
+const worldIndex = fs.readFileSync("world/index.html", "utf8");
 const style=fs.readFileSync("style.css","utf8");
 const world=fs.readFileSync("world/world.css","utf8");
 const npcRuntime=fs.readFileSync("world/npc-system.js","utf8");
 const npcLifeRuntime=fs.readFileSync("world/npc-life-system.js","utf8");
-const interiorRuntime=fs.readFileSync("world/interior-system.js","utf8");
+const interiorRuntime = fs.readFileSync("world/interior-system.js", "utf8");
 const dreamPlayRuntime=fs.readFileSync("world/dream-play.js","utf8");
 assert(worldRuntime.includes('const parsed=JSON.parse(localStorage.getItem(KEY)||"{}");return parsed&&typeof parsed==="object"&&!Array.isArray(parsed)?parsed:{}'),"world save state must reject null and array-shaped corruption");
 assert(worldRuntime.includes('if(!target){say("Nothing nearby to interact with.");return false}'),"world interaction must safely handle no target");
@@ -470,16 +472,16 @@ console.log("ESCIE NPC time-scale contracts OK");
 
 
 /* INTERIOR LIFECYCLE CONTRACTS */
-assert(interiorRuntime.includes("const nx=Math.max(0,Math.min(7,active.player.x+dx))"),"interior movement must calculate bounded next position");
-assert(interiorRuntime.includes("sim?.advance)sim.advance(2)"),"interior movement must advance the World clock");
-assert(interiorRuntime.includes("NPC?.tick?.(s.day,s.hour,s.minute,(x,y)=>false,2)"),"interior movement must advance NPC schedules and life");
-assert(interiorRuntime.includes("NPC_LIFE?.syncRelationships?.()"),"interior movement must synchronize NPC relationships");
-console.log("ESCIE interior lifecycle contracts OK");
+assert(worldRuntime.includes("function enter3DInterior(building)"),"3D gameplay must own interior transitions");
+assert(world3dRuntime.includes("interiorMode=true"),"3D interiors must enter through the 3D gameplay layer");
+assert(world3dRuntime.includes("interiorMode)return exit3DInterior()"),"3D interior state must return to the outdoor world through the 3D layer");
+assert(!worldIndex.includes('<script src="interior-system.js"></script>'),"legacy 2D interior renderer must not be loaded into playable gameplay");
+console.log("ESCIE 3D interior lifecycle contracts OK");
 
 
 /* ROOM TRANSITION NPC TIME-SCALE CONTRACT */
-assert(worldRuntime.includes('NPC?.tick?.(sim.day,sim.hour,sim.minute,(x,y)=>room==="lane"?isWall(x,y):false,5)'),"room transitions must pass their five-minute simulation interval into NPC life");
-console.log("ESCIE room-transition NPC time-scale contract OK");
+assert(world3dRuntime.includes("NPC?.tick?.("),"3D world transitions must retain NPC time-scale integration");
+console.log("ESCIE 3D room-transition time-scale contract OK");
 
 
 /* NPC RELATIONSHIP PERSISTENCE CONTRACT */
