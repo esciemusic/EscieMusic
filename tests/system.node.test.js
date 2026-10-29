@@ -339,7 +339,7 @@ assert(worldRuntime.includes('if(!target){say("Nothing nearby to interact with."
 assert(worldRuntime.includes('window.ESCIE_WORLD_DREAM_STATE?.active'),"dream controls must only intercept input while dream play is active");
 assert(worldRuntime.includes('const SAVE_KEY="escie_world_save_v1",SAVE_VERSION=2'),"world save must use a versioned snapshot format");
 assert(worldRuntime.includes("world_position={x:Number(pos.x)||0,y:Number(pos.y)||0"),"world save must persist the playable position");
-assert(worldRuntime.includes("simulation_state:sim&&typeof sim==="+""object""),"world save must snapshot simulation state");
+assert(worldRuntime.includes("simulation_state:sim&&typeof sim==="+"\"object\""),"world save must snapshot simulation state");
 assert(worldRuntime.includes("input_mode:controlScheme()"),"world save must persist the active input mode");
 assert(worldRuntime.includes("snapshot.world_state"),"world load must restore the saved world state envelope");
 assert(worldRuntime.includes('localStorage.setItem("escie_world_simulation_v1",JSON.stringify(snapshot.simulation_state))'),"world load must restore simulation state");
