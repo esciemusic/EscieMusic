@@ -87,6 +87,13 @@ document.addEventListener("escie-dream-play-start",ensureControls);
   if(out.detected)out.lastDetection=out.turns;
   return out;
  };
+ window.ESCIE_WORLD_DREAM_PLAY.cancel=function(reason="CANCELLED"){
+  const s=window.ESCIE_WORLD_DREAM_STATE;if(!s)return false;
+  s.cancelled=true;s.active=false;s.result=reason;
+  const el=document.getElementById("dream-play-layer");if(el)el.hidden=true;
+  if(window.ESCIE_WORLD_DREAM_STATE===s)window.ESCIE_WORLD_DREAM_STATE=null;
+  return true;
+ };
  window.ESCIE_WORLD_DREAM_PLAY.hide=function(){
   const s=window.ESCIE_WORLD_DREAM_STATE;if(!s?.active)return null;
   s.hidden=!s.hidden;
