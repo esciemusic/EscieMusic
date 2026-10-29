@@ -402,5 +402,10 @@ assert((worldHtml.match(/data-action(?:="[^"]*")?/g)||[]).length===2,"world HTML
 assert(!worldHtml.includes('<button data-control-action="SPRINT">SPRINT</button><button data-action>INTERACT</button>'),"world HTML must not contain the removed duplicate interact control");
 const requiredControls=["data-dir","data-control-action","data-action","data-fullscreen","data-rotate","data-device","data-preferences","data-pause","data-system","data-save","data-profile","data-life","data-life-systems","data-inventory","data-glass","data-investigation","data-market","data-phone-open","data-quests"];
 assert(!worldHtml.match(/<button(?![^>]*\\btype=)[^>]*>/),"world HTML buttons must declare explicit type");
+assert(worldRuntime.includes("function worldEntryGate()"),"world must expose a first-entry gate");
+assert(worldRuntime.includes("data-entry-continue"),"world entry must support continue");
+assert(worldRuntime.includes("data-entry-new"),"world entry must support new game");
+assert(worldRuntime.includes("data-entry-slots"),"world entry must expose save/load");
+assert(worldRuntime.includes("data-entry-exit"),"world entry must support returning to ESCIE");
 for(const control of requiredControls) assert(worldHtml.includes(control),"world HTML missing control "+control);
 console.log("ESCIE world control wiring contracts OK");
