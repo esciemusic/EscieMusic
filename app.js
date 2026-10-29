@@ -541,7 +541,7 @@
   }
 
   function renderProjects() {
-    const container = byId("bam-container");
+    const container = byId("projects-container");
     if (!container) return;
 
     const projects = getFilteredWorkRecords().filter(record => record.type === "project");
@@ -565,13 +565,13 @@
 
       if (!releasedStructure.length) return "";
 
-      return '<article class="bam-project" data-record-type="body" data-record-id="' +
+      return '<article class="project-card" data-record-type="body" data-record-id="' +
         escapeHTML(recordId(project)) + '"' + narrationAttributes(project) + '>' +
         '<p class="eyebrow">CURRENT TRANSMISSION</p>' +
         '<h3>' + escapeHTML(recordTitle(project)) + "</h3>" +
-        '<div class="bam-structure">' +
+        '<div class="project-structure">' +
           releasedStructure.map(part =>
-            '<button class="bam-part record-card" type="button" data-record-id="' + escapeHTML(part.trackId || "") + '">' +
+            '<button class="project-part record-card" type="button" data-record-id="' + escapeHTML(part.trackId || "") + '">' +
               '<span>' + escapeHTML(part.number) + '</span>' +
               '<strong>' + escapeHTML(part.title) + '</strong>' +
               '<em>' + escapeHTML(part.role) + '</em>' +
