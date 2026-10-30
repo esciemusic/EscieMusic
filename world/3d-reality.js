@@ -234,7 +234,7 @@ function updateStreetIncident(now){
      }
      const actions=root.ESCIE_WORLD_ACTIONS,law=root.ESCIE_WORLD_LAW;
      if(streetIncident.type==="ARGUMENT"){root.ESCIE_WORLD_NPC?.npcLink?.(a.id,b.id,-2,"ARGUMENT ESCALATED");root.ESCIE_WORLD_NPC?.rememberInteraction?.(a.id,{channel:"STREET_INCIDENT",type:"ARGUMENT",outcome:"ESCALATED WITHOUT INTERVENTION"});}
-     else if(streetIncident.type==="THEFT_WITNESS"){root.dispatchEvent(new CustomEvent("escie:world-detection",{detail:{source:"STREET THEFT",level:1}}));law?.dispatch?.("STREET THEFT",1);actions?.awardRPGXP?.(2,"OBSERVED CONSEQUENCE");}
+     else if(streetIncident.type==="THEFT_WITNESS"){root.dispatchEvent(new CustomEvent("escie:world-detection",{detail:{source:"STREET THEFT",level:1}}));law?.dispatch?.("STREET THEFT",1);actions?.awardRPGXP?.(2,"OBSERVED CONSEQUENCE");actors.forEach(x=>{if(!x.userData.canonical||x===aa||x===bb)return;const n=live[x.userData.id];if(!n||Number(n.health??100)<=0)return;const d=Math.hypot(x.position.x-streetIncident.x,x.position.z-streetIncident.z);if(d<=9)root.ESCIE_WORLD_NPC?.rememberInteraction?.(n.id,{channel:"STREET_INCIDENT",type:"THEFT_WITNESS",outcome:"WITNESS CONFIRMED"});});}
      else if(streetIncident.type==="MINOR_ACCIDENT"){root.ESCIE_WORLD_NPC?.npcLink?.(a.id,b.id,1,"ACCIDENT RESOLVED");}
      else if(streetIncident.type==="DELIVERY_CONFLICT"){root.ESCIE_WORLD_NPC?.relationship?.(a.id,-1,"DELIVERY CONFLICT");root.ESCIE_WORLD_NPC?.relationship?.(b.id,-1,"DELIVERY CONFLICT");}
      else if(streetIncident.type==="POLICE_STOP"){law?.dispatch?.("POLICE STOP",1);}
