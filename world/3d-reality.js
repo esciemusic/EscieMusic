@@ -1,28 +1,5 @@
 function enter3DInterior(building){
  interiorMode=true;interiorBuilding=building;interiorSaved={x:player.x,z:player.z,yaw:player.yaw,obstacles:obstacles.slice()};
- doors.forEach(d=>{d.open=false;d.mesh.rotation.y=0});obstacles.length=0;
- worldGroup.children.forEach(o=>o.visible=false);
- interiorGroup=new THREE.Group();worldGroup.add(interiorGroup);
- const floor=new THREE.Mesh(new THREE.BoxGeometry(16,.12,12),makeMat(0x101114,.95));floor.position.y=0;interiorGroup.add(floor);
- [[0,2,-6],[0,2,6],[-8,2,0],[8,2,0]].forEach((p,i)=>{const w=new THREE.Mesh(new THREE.BoxGeometry(i<2?16:.12,4,i<2 ? .12 : 12),makeMat(0x292a2e,.96));w.position.set(p[0],p[1],p[2]);interiorGroup.add(w)});
- const desk=new THREE.Mesh(new THREE.BoxGeometry(3,.9,1.2),makeMat(0x1b1c1f,.9));desk.position.set(0,.45,-2);interiorGroup.add(desk);
- const type=String(building?.interior||"").toUpperCase();
- const prop=(w,h,d,color,x,y,z,opts={})=>{const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),makeMat(color,opts.roughness??.9,opts.metalness??0));m.position.set(x,y,z);interiorGroup.add(m);return m};
- const cylProp=(r,h,color,x,y,z)=>{const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,16),makeMat(color,.86));m.position.set(x,y,z);interiorGroup.add(m);return m};
- if(type==="SHOP"){prop(4,.9,1.1,0x292a2e,-2,.45,1);prop(4,.9,1.1,0x292a2e,2,.45,1);for(let i=-2;i<=2;i++)prop(.5,.7,.5,0x70747a,i,.35,-4);}
- else if(type==="CAFE"){for(const x of [-3,0,3]){cylProp(.65,.12,0x8a4035,x,.75,0);for(const z of [-.75,.75])cylProp(.18,.9,0x292a2e,x,.38,z);}prop(6,1,1,0x1b1c1f,0,.5,-4);}
- else if(type==="STUDIO"){prop(5,.8,1.4,0x101114,0,.4,-2);for(const x of [-3,-1,1,3])prop(.7,1,.5,0x292a2e,x,.5,2);prop(2,.8,.5,0x6f3faf,0,.4,3.5);}
- else if(type==="CLUB"||type==="VENUE"){prop(7,.12,5,0x6f3faf,0,.06,0);for(let x=-3;x<=3;x+=2)cylProp(.08,3,0x2f80ff,x,1.5,-4.8);}
- else if(type==="GYM"){for(const x of [-3,0,3]){prop(.6,1.8,.6,0x303235,x,.9,-1);prop(2,.15,.8,0x70747a,x,1.85,-1);}prop(5,.08,4,0x101114,0,.05,2);}
- else if(type==="APARTMENT"||type==="ROOM_HOME"){prop(5,.5,2,0x292a2e,0,.25,-1);prop(2.8,.5,2,0x303235,-3,.25,2);prop(1,.8,1,0x70747a,3,.4,-2);}
- else if(type==="CLINIC"){prop(2.5,.7,6,0x70747a,0,.35,0);for(const x of [-3,3])prop(1,.8,1,0x292a2e,x,.4,2);}
- else if(type==="OFFICE"||type==="ARCHIVE"){for(const x of [-3,0,3])prop(1.2,2.8,.6,0x292a2e,x,1.4,2);prop(5,.9,1.2,0x1b1c1f,0,.45,-2);}
- const signal=new THREE.Mesh(new THREE.BoxGeometry(.7,.08,.7),makeMat(type==="SIGNAL_ROOM"||type==="ARCHIVE"?0x6f3faf:0x2f80ff,.55,.2));signal.position.set(0,.95,-2);interiorGroup.add(signal);
- const light=new THREE.PointLight(0x4da3ff,2,18);light.position.set(0,3,0);interiorGroup.add(light);
- player.x=0;player.z=4.4;player.y=1.7;player.yaw=Math.PI;avatar.position.set(player.x,0,player.z);
- say3D("ENTERED · "+String(building?.name||"INTERIOR")+" · 3D");
-}function enter3DInterior(building){
- interiorMode=true;interiorBuilding=building;interiorSaved={x:player.x,z:player.z,yaw:player.yaw,obstacles:obstacles.slice()};
  interiorActors.length=0;interiorStations.length=0;
  doors.forEach(d=>{d.open=false;d.mesh.rotation.y=0});obstacles.length=0;
  worldGroup.children.forEach(o=>o.visible=false);
@@ -66,7 +43,7 @@ function enter3DInterior(building){
  });
  // Occupants come only from canonical NPC population data already present in the simulation.
  const district=String(building?.district||root.ESCIE_WORLD_SIMULATION?.state?.().neighbourhood||"").toUpperCase();
- const population=(root.ESCIE_WORLD_CITY?.npcPopulations?.[district]||[]).filter(n=>n&&(n.home===building.id||n.work===building.id));
+ const population=(root.ESCIE_WORLD_CITY?.npcPopulations?.[district]||[]).filter(n=>{const live=root.ESCIE_WORLD_NPC?.state?.().npcs?.[n.id];return n&&(n.home===building.id||n.work===building.id||live?.workplace_id===building.id||live?.social_place_id===building.id);});
  population.slice(0,5).forEach((profile,i)=>{
    const live=root.ESCIE_WORLD_NPC?.state?.().npcs?.[profile.id];if(!live)return;
    const p=[[-4,1],[4,1],[-4,-1],[4,-1],[0,3]][i];
@@ -109,7 +86,7 @@ function updateInteriorOccupants(t){
    const activity=String(current?.activity||live.activity||g.userData.interiorActivity||"WORK").toUpperCase();
    const expectedBuilding=
      activity==="WORK" ? live.work_building?.id :
-     activity==="SOCIAL" ? live.social_building?.id :
+     activity==="SOCIAL" ? (live.social_building?.id||live.social_place_id) :
      ["SLEEP","HOME"].includes(activity) ? (live.home?.id||live.home_building?.id) : null;
    const shouldBeHere=!expectedBuilding||String(expectedBuilding)===String(interiorBuilding?.id);
    g.visible=shouldBeHere;
