@@ -777,17 +777,21 @@ function renderClothing(){
         ${storeAction}
       </div>
       <div class="merch-grid-list">${cards}</div>`;
-    container.innerHTML =
-      '<div class="archive-status"><p class="eyebrow">' + visible.length + ' PUBLIC RECORD' + (visible.length === 1 ? '' : 'S') + '</p><p>Preserved material is shown as it enters the public record. Nothing is filled in merely because the archive has space for it.</p></div>' +
-      visible.map(record =>
-      '<article class="archive-entry" data-record-id="' +
-      escapeHTML(recordId(record)) + '"' + narrationAttributes(record) + '>' +
-        '<time>' + escapeHTML(record.date || record.date_start || record.status || "UNDATED") + '</time>' +
-        '<div><h3>' + escapeHTML(recordTitle(record)) + "</h3>" +
-        (record.description ? '<p>' + escapeHTML(record.description) + '</p>' : '') +
-                (window.ESCIE_MEDIA && Array.isArray(record.media) ? window.ESCIE_MEDIA.renderAll(record.media) : '') +
-        '</div></article>'
-    ).join("");
+  }
+
+  function bindMerchFilters(){
+    const controls=document.querySelectorAll("[data-merch-filter]");
+    controls.forEach(button=>{
+      if(button.dataset.bound==="1")return;
+      button.dataset.bound="1";
+      button.addEventListener("click",()=>{
+        const value=String(button.getAttribute("data-merch-filter")||"ALL").toUpperCase();
+        const container=byId("merch-container");
+        if(container)container.dataset.filter=value;
+        controls.forEach(item=>item.classList.toggle("is-active",item===button));
+        renderMerch();
+      });
+    });
   }
 
   function renderInvestigation() {
