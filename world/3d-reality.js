@@ -1198,7 +1198,7 @@ function setMode(v){
 }
 function bind(){
  document.addEventListener("keydown",e=>{
-   if(e.key==="Escape"&&!e.repeat){e.preventDefault();togglePause(!paused);}
+   if(e.key==="Escape"&&!e.repeat){e.preventDefault();if(interiorMode){exit3DInterior();return}togglePause();}
  });
  document.addEventListener("click",e=>{
    const p=e.target.closest("[data-pause]");if(p)togglePause();
