@@ -1197,13 +1197,17 @@ function setMode(v){
  const log=document.getElementById("world-log");if(log)log.textContent=thirdPerson?"3D REALITY · THIRD PERSON":"3D REALITY · FIRST PERSON";
 }
 function bind(){
- document.addEventListener("click",e=>{const control=e.target.closest("[data-control-action]");if(control){const type=control.dataset.controlAction;if(type==="SPRINT"){move._touchSprint=true;setTimeout(()=>move._touchSprint=false,500)}else if(type==="OPEN")interact();else if(type==="FIGHT"){fight3D()||root.ESCIE_WORLD_ACTIONS?.performControlAction?.(type)}else if(type==="STEAL")root.ESCIE_WORLD_ACTIONS?.performControlAction?.(type);}});
  document.addEventListener("click",e=>{
-   const b=e.target.closest("[data-3d-camera]");if(b){setMode(!thirdPerson);b.textContent=thirdPerson?"FIRST PERSON":"THIRD PERSON";}
    const p=e.target.closest("[data-pause]");if(p)togglePause();
-   const r=e.target.closest("[data-world-resume]");if(r)togglePause(false);const s=e.target.closest("[data-save]");if(s&&paused){root.ESCIE_WORLD_ACTIONS?.save?.();}const x=e.target.closest("[data-return-pause]");if(x&&paused){window.location.href="../";} const open=e.target.closest("[data-pause-open]");if(open&&paused){const api=root.ESCIE_WORLD_UI,type=open.dataset.pauseOpen;if(type==="inventory")api?.inventory?.();else if(type==="character")api?.character?.();else if(type==="investigation")api?.investigation?.();else if(type==="market")api?.market?.();else if(type==="phone")api?.phoneApp?.("notifications");else if(type==="quests")api?.quests?.();else if(type==="simulation")api?.openSimulation?.();else if(type==="system")api?.systemMenu?.();else if(type==="profile")api?.profileMenu?.();else if(type==="preferences")api?.preferences?.();else if(type==="glass")api?.glass?.();}
+   const r=e.target.closest("[data-world-resume]");if(r)togglePause(false);
+   const s=e.target.closest("[data-save]");if(s&&paused)root.ESCIE_WORLD_ACTIONS?.save?.();
+   const x=e.target.closest("[data-return-pause]");if(x&&paused){window.location.href="../";}
+   const open=e.target.closest("[data-pause-open]");
+   if(open&&paused){
+     const api=root.ESCIE_WORLD_UI,type=open.dataset.pauseOpen;
+     if(type==="inventory")api?.inventory?.();else if(type==="character")api?.character?.();else if(type==="investigation")api?.investigation?.();else if(type==="market")api?.market?.();else if(type==="phone")api?.phoneApp?.("notifications");else if(type==="quests")api?.quests?.();else if(type==="simulation")api?.openSimulation?.();else if(type==="system")api?.systemMenu?.();else if(type==="profile")api?.profileMenu?.();else if(type==="preferences")api?.preferences?.();else if(type==="glass")api?.glass?.();
+   }
  });
-
 }
 function start(){
  if(started)return;
