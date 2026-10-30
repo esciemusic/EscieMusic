@@ -605,6 +605,9 @@ assert(world3dInterior.includes("occupiedBy:null,holdUntil:0"),"interior station
 assert(world3dInterior.includes('activity==="COMMUTE"'),"interior NPCs must leave active interior state during commute windows");
 assert(world3dInterior.includes("g.userData.occupation"),"interior NPC runtime must preserve occupation context");
 assert(world3dInterior.includes("g.userData.roomTransition"),"interior NPCs must retain room-transition state");
+assert(world3dRuntime.includes("currentWindow=n=>Array.isArray(n.schedule)"),"street NPC runtime must consume persistent schedule windows");
+assert(world3dRuntime.includes('scheduledActivity==="COMMUTE"'),"street NPC runtime must visibly route commute behavior");
+assert(world3dRuntime.includes("n.x=Number(target.x)"),"street NPC schedule targets must resolve back into canonical NPC position state");
 
 
 const worldContent=fs.readFileSync("data/world-content.js","utf8");
