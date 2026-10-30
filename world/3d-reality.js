@@ -371,10 +371,29 @@ function crimeInteract(){
  if(!near||near.open)return false;
  const b=near.building,interior=String(b?.interior||"").toUpperCase();
  if(!b)return false;
- const night=Number(root.ESCIE_WORLD_SIMULATION?.state?.().hour||12)>=22||Number(root.ESCIE_WORLD_SIMULATION?.state?.().hour||12)<6;
+ const sim=root.ESCIE_WORLD_SIMULATION;
+ const st=sim?.state?.()||{};
+ const night=Number(st.hour||12)>=22||Number(st.hour||12)<6;
  if(!night)return false;
- const result=root.ESCIE_WORLD_SIMULATION?.commitCrime?.("BURGLARY",{target:b.id,risk:2,witnessed:false});
- if(result?.ok){root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(8,"BURGLARY");say3D("BURGLARY · "+interior+" · WANTED RISK "+Number(result.wanted||0));return true}
+ let job=st.crime_job;
+ if(!job){
+   const accepted=sim?.crimeJobAccept?.("BURGLARY",b.id);
+   if(accepted?.ok){say3D("CRIME JOB · "+accepted.job.title+" · PREPARE FIRST");return true}
+   return false;
+ }
+ if(String(job.target||"").toUpperCase()!==String(b.id||"").toUpperCase())return false;
+ if(job.step==="PREPARE"){
+   const prepared=sim?.crimeJobProgress?.("PREPARE",{target:b.id});
+   if(prepared?.ok){say3D("BURGLARY · GEAR READY · RETURN TO ENTRY");return true}
+ }
+ if(job.step==="ENTER"){
+   const entered=sim?.crimeJobProgress?.("ENTER",{target:b.id});
+   if(entered?.ok){
+     sim?.commitCrime?.("BURGLARY",{target:b.id,risk:2,witnessed:false});
+     const result=sim?.enterBuilding?.(st.neighbourhood,b.id);
+     if(result?.ok){enter3DInterior(b);root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(10,"BURGLARY ENTRY");say3D("BURGLARY · "+interior+" · INSIDE");return true}
+   }
+ }
  return false;
 }
 function nearestNPC(max=2.8){const live=root.ESCIE_WORLD_NPC?.state?.().npcs||{};let best=null,bd=max;actors.forEach(a=>{if(!a.userData.canonical)return;const n=live[a.userData.id];if(!n||Number(n.health??100)<=0)return;const d=Math.hypot(player.x-a.position.x,player.z-a.position.z);if(d<bd){bd=d;best={npc:n,actor:a,d}}});return best}
@@ -893,7 +912,21 @@ function updateInteriorOccupants(t){
    }
  });
 }
+function crimeInteriorAction(){
+ const sim=root.ESCIE_WORLD_SIMULATION,st=sim?.state?.()||{},j=st.crime_job;
+ if(!j||!interiorBuilding)return false;
+ if(j.step==="TAKE"){
+   const r=sim.crimeJobProgress?.("TAKE",{target:interiorBuilding.id});
+   if(r?.ok){root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(15,"BURGLARY LOOT");say3D("LOOT TAKEN · GET OUT");return true}
+ }
+ if(j.step==="FENCE"&&String(interiorBuilding.interior||"").toUpperCase()==="SHOP"){
+   const r=sim.crimeJobProgress?.("FENCE",{target:interiorBuilding.id});
+   if(r?.ok){root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(30,"CRIME JOB COMPLETE");say3D("STOLEN GOODS FENCED · +$"+Number(r.reward||0));return true}
+ }
+ return false;
+}
 function use3DInteriorAction(){
+ if(crimeInteriorAction())return true;
  const b=interiorBuilding,sim=root.ESCIE_WORLD_SIMULATION,def=b&&root.ESCIE_WORLD_CITY?.interiors?.[b.interior];
  if(!b||!def)return false;
  const nearNpc=interiorActors.find(a=>a.userData.canonical&&Math.hypot(player.x-a.position.x,player.z-a.position.z)<2.4);
@@ -918,7 +951,15 @@ function use3DInteriorAction(){
  say3D(String(b.name||"INTERIOR")+" · "+station.room+" · "+action+(result?.ok===false?" · "+String(result.reason||"UNAVAILABLE"):" · DONE"));
  return true;
 }
+function crimeExitProgress(){
+ const sim=root.ESCIE_WORLD_SIMULATION,st=sim?.state?.(),j=st?.crime_job;
+ if(!j||j.step!=="ESCAPE")return false;
+ const r=sim.crimeJobProgress?.("ESCAPE",{target:j.target});
+ if(r?.ok){say3D("ESCAPE · STOLEN GOODS SECURED · FIND A FENCE");return true}
+ return false;
+}
 function exit3DInterior(){
+ crimeExitProgress();
  if(!interiorMode)return false;
  root.ESCIE_WORLD_SIMULATION?.leaveBuilding?.();
  if(interiorGroup){worldGroup.remove(interiorGroup);interiorGroup=null}
