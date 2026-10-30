@@ -87,6 +87,8 @@ function syncCanonicalNPCs(t){
   a.visible=Number(n.health??100)>0;
   const scheduleWindow=currentWindow(n),scheduledActivity=String(scheduleWindow?.activity||n.activity||"IDLE").toUpperCase();
   const district=String(n.district||sim.neighbourhood||"").toUpperCase();
+  if(!["WORK","SOCIAL","SLEEP","HOME","COMMUTE"].includes(scheduledActivity)){a.visible=Number(n.health??100)>0;n.current_building_id=null;n.current_building_state="OUTSIDE";}
+
   const buildings=root.ESCIE_WORLD_SIMULATION?.districtBuildings?.(district)||[];
   const destinationId=scheduledActivity==="WORK"?(n.workplace_id||n.work_building?.id):scheduledActivity==="SOCIAL"?(n.social_place_id||n.social_building?.id):["SLEEP","HOME"].includes(scheduledActivity)?(n.home_building?.id||n.home?.id):null;
   const destination=destinationId?buildings.find(b=>String(b.id)===String(destinationId)):null;
@@ -101,6 +103,7 @@ function syncCanonicalNPCs(t){
       a.position.x+=dx/dist*Math.min(dist,speed);
       a.position.z+=dz/dist*Math.min(dist,speed);
       a.rotation.y=Math.atan2(dx,dz);
+      a.userData.lastWorldX=a.position.x;a.userData.lastWorldZ=a.position.z;
       a.userData.traveling=true;
       a.userData.destinationBuilding=destination?.id||null;
     }else{
@@ -116,7 +119,10 @@ function syncCanonicalNPCs(t){
       }
     }
   }else{
-    const q=gridToWorld(n);a.position.x+=(q.x-a.position.x)*.18;a.position.z+=(q.z-a.position.z)*.18;
+    const q=gridToWorld(n);
+    const targetX=Number.isFinite(Number(a.userData.lastWorldX))?a.userData.lastWorldX:q.x;
+    const targetZ=Number.isFinite(Number(a.userData.lastWorldZ))?a.userData.lastWorldZ:q.z;
+    a.position.x+=(targetX-a.position.x)*.18;a.position.z+=(targetZ-a.position.z)*.18;
     a.userData.traveling=false;
   }
   a.userData.activity=scheduledActivity;
