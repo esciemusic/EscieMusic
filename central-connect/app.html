@@ -154,7 +154,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
 .crew-intro{position:relative;z-index:2}.crew-intro h2{font-size:clamp(24px,3vw,38px);letter-spacing:-.05em;margin:7px 0}.crew-intro p{max-width:420px;line-height:1.7}.crew-orbit{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:8px}.crew-node{padding:14px 15px;border:1px solid rgba(190,215,198,.09);border-radius:16px;background:rgba(7,10,8,.42);display:grid;grid-template-columns:auto 1fr;column-gap:10px;align-items:center}.crew-node b{grid-row:1/3;font:10px ui-monospace,SFMono-Regular,Menlo,monospace;color:#6f7d73}.crew-node strong{font-size:11px;letter-spacing:.12em}.crew-node span{font-size:10px;color:#707a73;margin-top:2px}.crew-node:hover{border-color:rgba(190,215,198,.2);background:rgba(26,34,29,.5)}
 @media(max-width:760px){.central-crew{grid-template-columns:1fr}.crew-orbit{grid-template-columns:1fr 1fr}}
 @media(max-width:480px){.central-crew{padding:20px 17px}.crew-orbit{grid-template-columns:1fr}.crew-node{padding:12px}}
-</style>
+<style id="central-responsive-fix">.topbar{overflow:visible}.utilityMenu{z-index:120;max-height:min(70vh,520px);overflow:auto;box-sizing:border-box}.utilityMenu button strong,.utilityMenu button .ey{overflow-wrap:anywhere}.auditRunMeta{margin-top:10px;color:#777;font-size:10px;letter-spacing:.08em}.auditState.neutral{color:#777;border-color:#343430}@media(max-width:700px){.topbar{padding:10px 11px;gap:8px}.brandtext{max-width:42vw}.brandname{font-size:11px}.topactions{gap:5px}.utilityMenu{position:fixed;top:72px;left:12px;right:12px;width:auto;max-height:calc(100vh - 88px);border-radius:14px}.utilityMenu button{padding:13px 12px}.utilityMenu button strong{font-size:12px;display:block}.utilityMenu button .ey{font-size:9px;line-height:1.45}.nav{gap:4px;padding:8px 0}.nav button{flex:0 0 auto}.hero{grid-template-columns:1fr}.status.headStatus{top:68px}.auditPanel{padding:14px}.sectionTitle{align-items:flex-start;flex-direction:column}.dashboard{grid-template-columns:1fr 1fr}.tile{grid-column:span 1}.tile.wide,.tile.full{grid-column:1/-1}}</style></head>
 </head>
 <body>
 <div class="shell">
@@ -165,7 +165,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
   <div class="utility"><button class="iconbtn" id="utilityToggle" aria-expanded="false" aria-controls="utilityMenu" aria-label="Open utilities">⋯</button>
     <div id="utilityMenu" class="utilityMenu hidden" role="menu">
       <button data-utility="audit"><strong>AUDIT</strong><span class="ey">System health, security, integrity, agents, connectors</span></button>
-      <button data-utility="command"><strong>COMMAND PALETTE</strong><span class="ey">Jump, create, review, audit or distribute</span></button>
+      <button data-utility="connect"><strong>CONNECT SERVICES</strong><span class="ey">Instagram, TikTok, YouTube and future destinations</span></button><button data-utility="command"><strong>COMMAND PALETTE</strong><span class="ey">Jump, create, review, audit or distribute</span></button>
       <button data-utility="activity"><strong>ACTIVITY</strong><span class="ey">Recent Central events and agent operations</span></button>
       <button data-utility="shortcuts"><strong>SHORTCUTS</strong><span class="ey">Fast controls and navigation</span></button>
     </div>
@@ -187,14 +187,16 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
     <div class="sectionTitle" style="margin:0 0 8px"><div><div class="kicker">GUARDIAN / SYSTEM</div><h2>AUDIT</h2><p>Audit observes. It does not silently change canon.</p></div><button id="auditClose" class="btn ghost">CLOSE</button></div>
     <div class="panel" style="padding:15px"><div class="kicker">AUDIT STATE</div><h2 id="auditOverall" style="margin-top:6px">READY</h2><p id="auditSummary">Run a full check to inspect the current surface.</p><button id="runAudit" class="btn primary" style="margin-top:8px">RUN FULL AUDIT</button></div>
     <div class="auditGrid" id="auditGrid">
-      <div class="auditItem"><span class="auditState pass">PASS</span><strong>Session boundary</strong><span>Authentication surface present.</span></div>
-      <div class="auditItem"><span class="auditState pass">PASS</span><strong>Human approval</strong><span>Agent protocol blocks silent canon writes.</span></div>
-      <div class="auditItem"><span class="auditState pass">PASS</span><strong>Provider secrets</strong><span>Browser surface does not contain provider secrets.</span></div>
-      <div class="auditItem"><span class="auditState warn">WATCH</span><strong>Destinations</strong><span>Provider apps still require configuration.</span></div>
-      <div class="auditItem"><span class="auditState pass">PASS</span><strong>Workspace isolation</strong><span>Workspace ID is carried with Central operations.</span></div>
-      <div class="auditItem"><span class="auditState pass">PASS</span><strong>Agent history</strong><span>Local runtime history is bounded for storage safety.</span></div>
-      <div class="auditItem"><span class="auditState pass">PASS</span><strong>Universe contract</strong><span>Central, public and game boundaries share one architectural contract.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Session boundary</strong><span>Authentication surface will be checked.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Human approval</strong><span>Agent protocol will be checked for canonical write blocking.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Provider secrets</strong><span>Browser surface will be checked for exposed secrets.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Destinations</strong><span>Connector service and provider configuration will be checked.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Workspace isolation</strong><span>Authenticated workspace access will be checked.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Agent history</strong><span>Runtime and durable job access will be checked.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Universe contract</strong><span>Central/public/game boundaries will be checked.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Live public bridge</strong><span>Published record access will be checked.</span></div>
     </div>
+    <div class="auditRunMeta" id="auditRunMeta">NO AUDIT HAS RUN YET.</div>
   </aside>
 </div>
 
@@ -272,7 +274,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
 
 <section id="app" class="hidden">
   <nav class="nav" id="mainNav">
-    <button class="active" data-target="home">OVERVIEW</button><button data-target="work">WORK</button><button data-target="brain">BRAIN</button><button data-target="tasks">TASKS</button><button data-target="suggestions">SUGGESTIONS</button><button data-target="review">REVIEW</button><button data-target="archive">ARCHIVE</button><button data-target="agents">AGENTS</button><button data-target="insights">INSIGHTS</button><button data-target="destinations">DESTINATIONS</button><button data-target="settings">SETTINGS</button>
+    <button class="active" data-target="home">OVERVIEW</button><button data-target="work">WORK</button><button data-target="brain">BRAIN</button><button data-target="tasks">TASKS</button><button data-target="suggestions">SUGGESTIONS</button><button data-target="review">REVIEW</button><button data-target="archive">ARCHIVE</button><button data-target="agents">AGENTS</button><button data-target="insights">INSIGHTS</button><button data-target="destinations">CONNECT</button><button data-target="settings">SETTINGS</button>
   </nav>
   <div id="home">
     <div class="hero"><div class="panel heroMain"><div><div class="kicker">ESCIE / OWNER WORKSPACE</div><h1>CONTROL<br>THE SIGNAL.</h1><p id="acct" class="heroCopy"></p><div class="heroMeta"><span class="chip">CANONICAL SOURCE</span><span class="chip">HUMAN APPROVAL</span><span class="chip">PRIVATE BY DEFAULT</span></div></div><div class="heroMeta"><span class="chip">CREATE ONCE</span><span class="chip">APPROVE ONCE</span><span class="chip">DISTRIBUTE MANY</span></div></div>
@@ -315,6 +317,10 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
   </div>
 
   <div id="work" class="section hidden"><div class="sectionTitle"><div><div class="kicker">CANONICAL SOURCE</div><h2>WORK</h2><p>Music, art, people, places, moments, fragments and evidence will live here.</p></div></div><div class="panel"><h2>Workspace layer</h2><p>This is the next functional surface: create once, attach relationships, add media and preserve history.</p><div class="quickgrid" style="margin-top:14px"><button class="quick"><strong>＋ CREATE RECORD</strong><span>Song / artwork / story / person / place / moment</span></button><button class="quick"><strong>⇱ IMPORT</strong><span>Bring an existing source into Central</span></button><button class="quick"><strong>⊕ RELATE</strong><span>Connect records without duplicating them</span></button><button class="quick"><strong>▤ HISTORY</strong><span>See versions and decisions</span></button></div></div></div>
+
+  <div id="tasks" class="section hidden"><div class="sectionTitle"><div><div class="kicker">OPERATOR QUEUE</div><h2>TASKS</h2><p>Work that Central has prepared, delegated or is waiting for you to decide.</p></div></div><div class="panel"><div class="quickgrid"><button class="quick" data-target="commandDesk"><strong>＋ COMMAND DESK</strong><span>Upload, ask Central, give a task, review results and make the human decision.</span></button><button class="quick" data-target="agents"><strong>◌ TALK TO CENTRAL</strong><span>Describe the outcome you need. Central routes it.</span></button></div><div class="stack" style="margin-top:14px"><div class="rowcard"><div class="rowleft"><div class="rowtitle">HUMAN GATE</div><div class="rowmeta">External publishing, canonical changes and irreversible actions remain blocked until you approve them.</div></div><span class="pill">REQUIRED</span></div><div class="rowcard"><div class="rowleft"><div class="rowtitle">RESULTS</div><div class="rowmeta">Specialist results return to Central and appear in REVIEW before execution.</div></div><span class="pill">CENTRAL</span></div></div></div></div>
+
+  <div id="suggestions" class="section hidden"><div class="sectionTitle"><div><div class="kicker">BRAIN OUTPUT</div><h2>SUGGESTIONS</h2><p>Patterns, links, gaps and creative possibilities prepared for human review.</p></div></div><div class="panel"><h2>Suggestion queue</h2><p>Suggestions are proposals, not canon. Open REVIEW to approve, reject, quarantine or request a controlled modification.</p><button class="btn primary" data-target="review" style="margin-top:10px">OPEN REVIEW</button></div></div>
 
   <div id="brain" class="section hidden"><div class="sectionTitle"><div><div class="kicker">SUPPORTING BODY</div><h2>BRAIN</h2><p>ESCIE remains the heart and final authority. The Brain assists; it does not canonize.</p></div></div><div class="panel"><h2>Analysis engine</h2><p>Future jobs: correlate records, detect missing links, suggest tags, identify contradictions, surface evidence and prepare tasks.</p><div class="stack" style="margin-top:14px"><div class="rowcard"><div class="rowleft"><div class="rowtitle">RELATIONSHIP SCAN</div><div class="rowmeta">Find people / places / moments / works connected to the selected record.</div></div><span class="pill">READY TO BUILD</span></div><div class="rowcard"><div class="rowleft"><div class="rowtitle">GAP DETECTION</div><div class="rowmeta">Preserve unknowns instead of inventing missing information.</div></div><span class="pill">READY TO BUILD</span></div><div class="rowcard"><div class="rowleft"><div class="rowtitle">SUGGESTION QUEUE</div><div class="rowmeta">Every suggestion becomes a human decision.</div></div><span class="pill">READY TO BUILD</span></div></div></div></div>
 
@@ -374,7 +380,9 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
   </div>
 </div>
 
-<div id="destinations" class="section hidden"><div class="sectionTitle"><div><div class="kicker">ADAPTER LAYER</div><h2>DESTINATIONS</h2><p>Central is the source of truth. Platforms are destinations.</p></div></div><div class="panel"><div id="connectors"></div></div></div>
+<div id="insights" class="section hidden"><div class="sectionTitle"><div><div class="kicker">SYSTEM VIEW</div><h2>INSIGHTS</h2><p>What is moving, what is waiting, and where Central needs your attention.</p></div></div><div class="dashboard"><div class="panel tile"><div class="kicker">CANON</div><div class="big" id="insightCanon">—</div><div class="sub">published public records</div></div><div class="panel tile"><div class="kicker">PENDING</div><div class="big" id="insightPending">—</div><div class="sub">human decisions</div></div><div class="panel tile"><div class="kicker">CONNECT</div><div class="big" id="insightConnect">—</div><div class="sub">provider states</div></div><div class="panel tile"><div class="kicker">AGENT</div><div class="big">LIVE</div><div class="sub">deterministic routing</div></div></div></div>
+
+  <div id="destinations" class="section hidden"><div class="sectionTitle"><div><div class="kicker">ADAPTER LAYER</div><h2>DESTINATIONS</h2><p>Central is the source of truth. Platforms are destinations.</p></div></div><div class="panel"><div id="connectors"></div></div></div>
 
   <div id="settings" class="section hidden"><div class="sectionTitle"><div><div class="kicker">CONTROL</div><h2>SETTINGS</h2><p>Workspace identity, security and future connector configuration.</p></div></div><div class="panel"><h2>Operator</h2><p>Account: <strong id="settingsAccount">—</strong></p><p>Publishing remains fail-closed until provider authorization and execution are fully configured.</p></div></div>
 
@@ -393,7 +401,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
     document.querySelectorAll("#mainNav button").forEach(b=>b.classList.toggle("active",b.dataset.target===target));
     window.scrollTo({top:0,left:0,behavior:"auto"});if(document.scrollingElement)document.scrollingElement.scrollTop=0;document.documentElement.scrollTop=0;document.body.scrollTop=0;
   }
-  document.querySelectorAll("#mainNav button[data-target]").forEach(b=>b.addEventListener("click",()=>show(b.dataset.target)));
+  document.querySelectorAll("#mainNav button[data-target]").forEach(b=>b.addEventListener("click",()=>show(b.dataset.target)));\n  document.addEventListener("click",e=>{const b=e.target.closest(".quick[data-target],.quick[data-section],button[data-target]");if(!b||b.closest("#mainNav"))return;const target=b.dataset.target||b.dataset.section;if(target&&$(target)){show(target);if(target==="commandDesk")document.querySelector("#commandDesk")?.scrollIntoView({behavior:"smooth",block:"start"});}});
   // Agent routing is owned by agent-ui.js; keep one authoritative runtime.  document.querySelectorAll("[data-target]").forEach(b=>{if(!b.closest("#mainNav"))b.addEventListener("click",()=>show(b.dataset.target))});
   const theme=$("themeToggle");
   theme&&theme.addEventListener("click",()=>{
@@ -413,26 +421,44 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
   function openAudit(){menu?.classList.add("hidden");const d=$("auditDrawer");if(d){d.classList.remove("hidden");d.setAttribute("aria-hidden","false")}}
   function closeAudit(){const d=$("auditDrawer");if(d){d.classList.add("hidden");d.setAttribute("aria-hidden","true")}}
   document.querySelectorAll("[data-utility='audit']").forEach(b=>b.addEventListener("click",openAudit));
-  document.querySelectorAll("[data-utility='command']").forEach(b=>b.addEventListener("click",()=>{menu?.classList.add("hidden");openSearch();setTimeout(()=>{if(searchInput)searchInput.value="";searchInput?.focus()},30)}));
+  document.querySelectorAll("[data-utility='command']").forEach(b=>b.addEventListener("click",()=>{menu?.classList.add("hidden");openSearch();setTimeout(()=>{if(searchInput)searchInput.value="";searchInput?.focus()},30)}));\n  document.querySelectorAll("[data-utility='connect']").forEach(b=>b.addEventListener("click",()=>{menu?.classList.add("hidden");show("destinations");}));
   document.querySelectorAll("[data-utility='activity']").forEach(b=>b.addEventListener("click",()=>{menu?.classList.add("hidden");document.querySelector("#diag")?.scrollIntoView({behavior:"smooth",block:"center"});}));
   document.querySelectorAll("[data-utility='shortcuts']").forEach(b=>b.addEventListener("click",()=>{menu?.classList.add("hidden");openSearch();setTimeout(()=>{if(searchInput){searchInput.value="shortcut";doSearch("shortcut")}},30)}));
   $("auditClose")?.addEventListener("click",closeAudit);
   $("auditDrawer")?.addEventListener("click",e=>{if(e.target.id==="auditDrawer")closeAudit()});
-  $("runAudit")?.addEventListener("click",()=>{
-    const items=[...document.querySelectorAll("#auditGrid .auditItem")], failures=[];
+  $("runAudit")?.addEventListener("click",async()=>{
+    const started=performance.now(),items=[...document.querySelectorAll("#auditGrid .auditItem")];
+    const setState=(i,state,label)=>{const badge=items[i]?.querySelector(".auditState");if(!badge)return;badge.className="auditState "+state;badge.textContent=label;};
+    items.forEach((_,i)=>setState(i,"neutral","CHECKING"));
+    const failures=[];
+    const session=window.ESCIE_CENTRAL_API?.getSession?.();
+    const workspace=window.ESCIE_CENTRAL_API?.getWorkspaceId?.();
+    const auth=session?.access_token;
+    const headers=auth?{apikey:K,Authorization:"Bearer "+auth,Accept:"application/json"}:{apikey:K,Accept:"application/json"};
+    async function probe(url){const t=performance.now();try{const response=await fetch(url,{headers,cache:"no-store"});return {ok:response.ok,status:response.status,ms:Math.round(performance.now()-t)};}catch(error){return {ok:false,status:0,error:String(error?.message||error),ms:Math.round(performance.now()-t)};}}
     const checks=[
-      ["Session boundary",!!window.ESCIE_CENTRAL_API?.getSession?.()],
-      ["Human approval",!!window.ESCIE_AGENT_PROTOCOL&&!window.ESCIE_AGENT_PROTOCOL.canWriteCanonical("central-orchestrator")],
-      ["Provider secrets",true],
-      ["Destinations",!!window.ESCIE_CENTRAL_API?.getWorkspaceId?.()],
-      ["Workspace isolation",!!window.ESCIE_CENTRAL_API?.getWorkspaceId?.()],
-      ["Agent history",!!window.ESCIE_AGENT_RUNTIME],
-      ["Universe contract",!!window.ESCIE_UNIVERSE_CONTRACT?.validate?.().ok],
-      ["Layer balance",!!window.ESCIE_LAYER_BALANCE?.validate?.().ok]
+      !!auth,
+      !!window.ESCIE_AGENT_PROTOCOL&&!window.ESCIE_AGENT_PROTOCOL.canWriteCanonical("central-orchestrator"),
+      !/service[_-]?role|secret[_-]?key/i.test(document.documentElement.innerHTML),
+      false,
+      false,
+      !!window.ESCIE_AGENT_RUNTIME&&!!window.ESCIE_CENTRAL_API?.enqueueAgentJob,
+      !!window.ESCIE_UNIVERSE_CONTRACT?.validate?.().ok,
+      false
     ];
-    checks.forEach((x,i)=>{const el=items[i];if(!el)return;const badge=el.querySelector(".auditState");if(x[1]){badge.className="auditState pass";badge.textContent="PASS"}else{badge.className="auditState warn";badge.textContent="WATCH";failures.push(x[0])}});
-    const overall=$("auditOverall"),summary=$("auditSummary");if(failures.length){overall.textContent="ATTENTION";summary.textContent=failures.join(" • ")+" need attention. No automatic changes were made."}else{overall.textContent="ALL CLEAR";summary.textContent="Core surface checks passed. No automatic changes were made."}
-    L("AUDIT",failures.length?"Warnings: "+failures.join(", "):"Full audit passed");
+    const workspaceProbe=workspace?await probe(R+"/workspaces?id=eq."+encodeURIComponent(workspace)+"&select=id&limit=1"):null;
+    checks[4]=!!workspaceProbe?.ok;
+    const connectorProbe=auth?await probe(C):null;
+    checks[3]=!!connectorProbe?.ok;
+    const publicProbe=await probe(R+"/records?select=id&visibility=eq.PUBLIC&publication_state=eq.PUBLISHED&limit=1");
+    checks[7]=!!publicProbe?.ok;
+    checks.forEach((ok,i)=>{if(ok)setState(i,"pass","PASS");else{setState(i,"warn","WATCH");failures.push(items[i]?.querySelector("strong")?.textContent||"CHECK");}});
+    const elapsed=Math.max(1,Math.round(performance.now()-started));
+    const overall=$("auditOverall"),summary=$("auditSummary"),meta=$("auditRunMeta");
+    if(overall)overall.textContent=failures.length?"ATTENTION":"ALL CLEAR";
+    if(summary)summary.textContent=failures.length?failures.join(" • ")+" require attention. No automatic changes were made.":"Live checks completed. No automatic changes were made.";
+    if(meta)meta.textContent="LAST RUN · "+new Date().toLocaleTimeString()+" · "+elapsed+"ms"+(connectorProbe?" · CONNECTOR "+connectorProbe.status:"")+" · PUBLIC "+publicProbe.status;
+    L("AUDIT",(failures.length?"Warnings: ":"Passed: ")+failures.join(", "));
   });
   const searchDock=$("searchDock"),searchInput=$("globalSearchInput"),searchResults=$("searchResults");
   function openSearch(){searchDock?.classList.remove("hidden");searchDock?.setAttribute("aria-hidden","false");setTimeout(()=>searchInput?.focus(),20)}
