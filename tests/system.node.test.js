@@ -342,7 +342,7 @@ assert(glassMemoryRuntime.includes("escie_glass_eye_memory_v1"),"Glass Eye memor
 assert(glassMemoryRuntime.includes("canonical_write=false"),"Glass Eye memory must never become canonical");
 assert(glassMemoryRuntime.includes("CLEAR MY MEMORY"),"Glass Eye memory must provide local reset");
 assert(glassMemoryRuntime.includes("LOCAL / PRIVATE / NON-CANONICAL"),"Glass Eye memory must disclose its local non-canonical status");
-assert(fs.readFileSync("index.html","utf8").includes('id="glass-eye-memory"'),"public site must expose Glass Eye memory surface");
+assert(fs.readFileSync("index.html","utf8").includes('id="glass-eye-container"'),"public site must expose Glass Eye surface");
 const glassAppRuntime=fs.readFileSync("app.js","utf8");
 assert(glassAppRuntime.includes("LOOK. LISTEN. FOLLOW. RETURN."),"Glass Eye must retain its audience-facing core function");
 assert(glassAppRuntime.includes("data-glass-eye-action"),"Glass Eye must expose audience interaction controls");
