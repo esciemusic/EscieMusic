@@ -217,7 +217,10 @@ assert(worldRpgRuntime.includes("data-rpg-class"),"RPG character screen must exp
 assert(worldRpgRuntime.includes("info.bonus"),"RPG character screen must expose class specialization bonuses");
 assert(fs.readFileSync("world/world.css","utf8").includes(".rpg-class-choice"),"RPG class specialization choices must be styled");
 assert(worldRpgRuntime.includes("setClass?.("),"RPG class selection must route through the canonical RPG setter");
-assert(worldRpgRuntime.includes("s.rpg=result.state"),"RPG class selection must persist into world state");\nassert(worldRpgRuntime.includes("data-rpg-spend-type"),"RPG character screen must expose point allocation controls");\nassert(worldRpgRuntime.includes("spendRPGPoint"),"RPG point allocation must route through the world persistence bridge");\nassert(worldRpgHtml.includes("id=\"world-rpg\""),"world HTML must expose the RPG character panel");
+assert(worldRpgRuntime.includes("s.rpg=result.state"),"RPG class selection must persist into world state");
+assert(worldRpgRuntime.includes("data-rpg-spend-type"),"RPG character screen must expose point allocation controls");
+assert(worldRpgRuntime.includes("spendRPGPoint"),"RPG point allocation must route through the world persistence bridge");
+assert(worldRpgHtml.includes("id=\"world-rpg\""),"world HTML must expose the RPG character panel");
 assert(worldRpgHtml.includes("data-character"),"world HTML must expose the RPG character control");
 console.log("ESCIE RPG progression contracts OK");
 const gameRuntime=fs.readFileSync("data/games.js","utf8");
