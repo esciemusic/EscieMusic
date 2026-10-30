@@ -32,7 +32,7 @@ body.escie-world-page{margin:0;background:var(--escie-void);color:var(--escie-wh
 .world-interact[hidden]{display:none}
 .world-log{min-height:2.5rem;padding:.8rem 1rem;border-top:1px solid var(--world-line);font-size:.7rem;letter-spacing:.08em;opacity:.7}
 footer{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:2rem clamp(1rem,4vw,3rem);margin-top:auto;border-top:1px solid var(--world-line);font-size:.6rem;letter-spacing:.12em;opacity:.55}footer a{color:inherit}
-body.is-world-paused .world-map{display:block}body.is-world-paused .world-player{display:block}body.is-world-paused .world-interact{display:block}@media(max-width:700px){.world-header{grid-template-columns:1fr auto}.world-state{display:none}.world-intro{padding-top:3rem}.world-stage{aspect-ratio:4/5;min-height:480px}.world-controls{flex-direction:column}.world-actions{justify-content:center}.world-map{background-size:32px 32px}}
+body.is-world-paused .world-map{display:block}body.is-world-paused .world-player{display:block}body.is-world-paused .world-interact{display:block}@media(max-width:700px){.world-header{grid-template-columns:1fr auto}.world-state{display:none}.world-intro{padding-top:3rem}.world-stage{aspect-ratio:4/5;min-height:480px}.world-map{background-size:32px 32px}}
 @media(prefers-reduced-motion:reduce){.world-player{transition:none}}
 .world-tile{position:absolute;box-sizing:border-box;pointer-events:none}.world-tile.floor{background:rgba(47,128,255,.24);border-right:1px solid rgba(47,128,255,.24);border-bottom:1px solid rgba(47,128,255,.24)}.world-tile.wall{background:linear-gradient(135deg,var(--escie-asphalt),var(--escie-concrete));border:1px solid rgba(47,128,255,.24);box-shadow:inset 0 0 12px rgba(47,128,255,.24)}.world-object{position:absolute;transform:translate(-50%,-50%);z-index:2;color:var(--world-green);font:700 1rem monospace;text-shadow:0 0 14px rgba(47,128,255,.24);pointer-events:none}.world-map:after{z-index:1}.world-player{z-index:3}.world-interact{z-index:4}
 .world-investigation{width:min(1100px,calc(100% - 2rem));margin:-1.5rem auto 3rem;border:1px solid var(--world-line);background:var(--escie-void);padding:1rem}.investigation-head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid var(--world-line);padding-bottom:.8rem}.investigation-head h2{margin:.35rem 0;font-size:clamp(1.8rem,6vw,3.5rem);line-height:.9}.investigation-head button{border:1px solid var(--world-line);background:transparent;color:inherit;padding:.6rem;font:600 .58rem monospace}.investigation-board{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.7rem;padding:1rem 0}.investigation-node{min-height:90px;padding:.8rem;border:1px solid rgba(47,128,255,.24);background:rgba(47,128,255,.24);display:flex;flex-direction:column;gap:.35rem}.investigation-node.found{border-color:rgba(47,128,255,.24);box-shadow:0 0 20px rgba(47,128,255,.24)}.investigation-node.unresolved{grid-column:1/-1;border-color:rgba(47,128,255,.24)}.investigation-node span,.investigation-node small{font:600 .52rem monospace;letter-spacing:.1em;opacity:.55}.investigation-node strong{font-size:.85rem;letter-spacing:.08em}.investigation-note{margin:0;font-size:.68rem;line-height:1.6;opacity:.55}@media(max-width:700px){.world-investigation{width:calc(100% - 2rem);box-sizing:border-box}.investigation-board{grid-template-columns:1fr 1fr}}
@@ -47,7 +47,7 @@ body.escie-world-page{overscroll-behavior:none}
 .world-game.handheld-mode{position:fixed;inset:0;z-index:1000;width:100vw;height:100dvh;margin:0;max-width:none;border:0;background:var(--escie-void);display:flex;flex-direction:column;justify-content:center;padding:clamp(8px,2vw,20px);box-sizing:border-box}
 .handheld-mode .world-hud{flex:0 0 auto;margin:0 auto;width:min(1100px,100%);box-sizing:border-box}
 .handheld-mode .world-stage{width:min(1100px,100%);height:auto;aspect-ratio:16/9;min-height:0;margin:0 auto;box-shadow:0 0 0 1px rgba(47,128,255,.24),0 0 70px rgba(47,128,255,.24);border-radius:10px}
-.handheld-mode .world-controls{width:min(1100px,100%);box-sizing:border-box;margin:0 auto;border:0;padding:.65rem 0 0}
+.handheld-mode 
 .handheld-mode .world-log{width:min(1100px,100%);box-sizing:border-box;margin:0 auto;border:0}
 .handheld-mode~*{display:none}
 .world-handheld-top{display:none}
@@ -62,9 +62,9 @@ body.escie-world-page{overscroll-behavior:none}
  body.escie-world-page:has(.handheld-mode) .world-stage{aspect-ratio:16/9;width:calc(100vw - 16px);max-height:58dvh}
 }
 @media (max-width:700px){
- .world-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
- .world-actions button{min-height:46px}
- .world-dpad button{min-width:54px;min-height:48px}
+ 
+ 
+ 
 }
 
 /* DEVICE FRAME / CONSOLE PRESENTATION */
@@ -226,8 +226,8 @@ body.escie-world-page,.world-device,.world-device .world-shell,.world-game,.worl
  .world-tile.floor,.investigation-node,.market-item,.world-quest,.sim-card,.phone-card,.system-card,.life-stat,.profile-id{background:rgba(111,63,175,.045)}
  .world-tile.wall{background:linear-gradient(135deg,var(--escie-concrete),var(--escie-asphalt));box-shadow:inset 0 0 12px rgba(111,63,175,.10)}
  .world-player{background:var(--escie-asphalt)}
- .world-interact,.world-controls button,.world-actions button,.investigation-link,.market-item button,.evidence-detail-actions button,.world-quest,.transit-mode button,.sim-actions button,.phone-top button,.phone-tabs button,.phone-card button{background:rgba(111,63,175,.06)}
- .world-controls button:hover,.world-controls button:focus-visible,.world-actions button:hover,.sim-actions button:hover,.phone-top button:hover,.phone-tabs button:hover{background:rgba(111,63,175,.14)}
+ .world-interact,.world-controls button,
+ .world-controls button:hover,.world-controls button:focus-visible,
  .world-phone{color:var(--escie-paper);box-shadow:0 25px 80px rgba(50,80,55,.18)}
  .world-preferences,.world-pause,.world-system,.world-profile,.world-life,.simulation-panel{background:rgba(0,0,0,.78)}
  .world-save-indicator{background:rgba(5,8,7,.92)}
@@ -245,8 +245,8 @@ body.escie-world-page,.world-device,.world-device .world-shell{background:#05070
 .world-tile.floor,.investigation-node,.market-item,.world-quest,.sim-card,.phone-card,.system-card,.life-stat,.profile-id{background:rgba(47,128,255,.045)}
 .world-tile.wall{background:linear-gradient(135deg,var(--escie-concrete),var(--escie-asphalt));box-shadow:inset 0 0 12px rgba(111,63,175,.10)}
 .world-player{background:var(--escie-asphalt)}
-.world-interact,.world-controls button,.world-actions button,.investigation-link,.market-item button,.evidence-detail-actions button,.world-quest,.transit-mode button,.sim-actions button,.phone-top button,.phone-tabs button,.phone-card button{background:rgba(111,63,175,.06)}
-.world-controls button:hover,.world-controls button:focus-visible,.world-actions button:hover,.sim-actions button:hover,.phone-top button:hover,.phone-tabs button:hover{background:rgba(111,63,175,.14)}
+.world-interact,.world-controls button,
+.world-controls button:hover,.world-controls button:focus-visible,
 .world-phone{color:var(--escie-paper);box-shadow:0 25px 80px rgba(111,63,175,.12)}
 .world-preferences,.world-pause,.world-system,.world-profile,.world-life,.simulation-panel{background:rgba(0,0,0,.78)}
 .world-save-indicator{background:rgba(5,7,10,.92)}
@@ -254,11 +254,11 @@ body.escie-world-page,.world-device,.world-device .world-shell{background:#05070
 .dream-frame{background:rgba(5,7,10,.92);box-shadow:0 0 80px rgba(47,128,255,.12)}
 
 /* GTA / RPG CONTROL FOUNDATION — blue signal */
-.world-controls{display:grid;grid-template-columns:minmax(180px,1fr) minmax(300px,2fr);align-items:end;gap:1rem}
-.world-dpad{justify-self:start}.world-action-cluster{display:grid;grid-template-columns:repeat(4,minmax(72px,1fr));gap:.5rem;justify-self:end;width:100%}
+
+.world-action-cluster{display:grid;grid-template-columns:repeat(4,minmax(72px,1fr));gap:.5rem;justify-self:end;width:100%}
 .world-action-cluster [data-control-action]{min-height:48px;font-weight:700;letter-spacing:.08em}
 .world-action-cluster [data-control-action="FIGHT"]{border-style:dashed}.world-action-cluster [data-control-action="STEAL"]{border-style:dotted}
-@media(max-width:700px){.world-controls{grid-template-columns:1fr;align-items:stretch}.world-dpad{justify-self:center}.world-action-cluster{justify-self:stretch;grid-template-columns:repeat(2,1fr)}.world-action-cluster [data-control-action]{min-height:52px}.world-actions{width:100%;justify-content:center}}
+@media(max-width:700px){.world-action-cluster{justify-self:stretch;grid-template-columns:repeat(2,1fr)}.world-action-cluster [data-control-action]{min-height:52px}}
 \n/* MULTILINGUAL WORLD UI */\n.world-language-control{display:inline-flex;align-items:center;gap:.45rem;margin:.35rem 0;font:600 .55rem monospace;letter-spacing:.08em}.world-language-control select{border:1px solid var(--world-line);background:#05070a;color:var(--escie-paper);padding:.35rem .5rem;font:inherit}\n
 /* Secondary autobiographical blue accent */
 :root{--world-blue:#2f80ff;--world-blue-soft:rgba(47,128,255,.18);}
