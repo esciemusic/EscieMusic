@@ -156,6 +156,7 @@ pre,.diag,.code{max-width:100%;overflow-x:auto}
       <div class="auditItem"><span class="auditState warn">WATCH</span><strong>Destinations</strong><span>Provider apps still require configuration.</span></div>
       <div class="auditItem"><span class="auditState pass">PASS</span><strong>Workspace isolation</strong><span>Workspace ID is carried with Central operations.</span></div>
       <div class="auditItem"><span class="auditState pass">PASS</span><strong>Agent history</strong><span>Local runtime history is bounded for storage safety.</span></div>
+      <div class="auditItem"><span class="auditState pass">PASS</span><strong>Universe contract</strong><span>Central, public and game boundaries share one architectural contract.</span></div>
     </div>
   </aside>
 </div>
@@ -367,7 +368,8 @@ pre,.diag,.code{max-width:100%;overflow-x:auto}
       ["Provider secrets",true],
       ["Destinations",!!window.ESCIE_CENTRAL_API?.getWorkspaceId?.()],
       ["Workspace isolation",!!window.ESCIE_CENTRAL_API?.getWorkspaceId?.()],
-      ["Agent history",!!window.ESCIE_AGENT_RUNTIME]
+      ["Agent history",!!window.ESCIE_AGENT_RUNTIME],
+      ["Universe contract",!!window.ESCIE_UNIVERSE_CONTRACT?.validate?.().ok]
     ];
     checks.forEach((x,i)=>{const el=items[i];if(!el)return;const badge=el.querySelector(".auditState");if(x[1]){badge.className="auditState pass";badge.textContent="PASS"}else{badge.className="auditState warn";badge.textContent="WATCH";failures.push(x[0])}});
     const overall=$("auditOverall"),summary=$("auditSummary");if(failures.length){overall.textContent="ATTENTION";summary.textContent=failures.join(" • ")+" need attention. No automatic changes were made."}else{overall.textContent="ALL CLEAR";summary.textContent="Core surface checks passed. No automatic changes were made."}
