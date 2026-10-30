@@ -1,84 +1,38 @@
 /*
  * ESCIE SIGNAL — COUNTDOWN
- *
- * Countdown state is a temporal presentation layer.
- * It measures time toward a configured event without creating the event.
- *
- * The countdown may be configured later for the public threshold:
- * October 31, 2026 -> November 22, 2026.
+ * Temporal presentation only. It never creates or mutates canon.
  */
-
 const ESCIE_COUNTDOWN = {
-  target: null,
-
-  configure(target) {
-    const date = target ? new Date(target) : null;
-
-    if (date && Number.isNaN(date.getTime())) {
-      throw new Error("Invalid countdown target.");
-    }
-
-    this.target = date;
-    return this.target;
+  version:"2.0.0",
+  start:new Date("2026-10-31T00:00:00-04:00"),
+  target:new Date("2026-11-22T00:00:00-05:00"),
+  configure(target,start){
+    const t=target?new Date(target):this.target;
+    const s=start?new Date(start):this.start;
+    if(Number.isNaN(t.getTime())||Number.isNaN(s.getTime())||t.getTime()<=s.getTime())throw new Error("Invalid countdown window.");
+    this.target=t;this.start=s;return this;
   },
-
-  remaining(now = new Date()) {
-    if (!this.target) {
-      return null;
-    }
-
-    const current = new Date(now);
-
-    if (Number.isNaN(current.getTime())) {
-      return null;
-    }
-
-    return Math.max(0, this.target.getTime() - current.getTime());
+  active(now=new Date()){
+    const n=new Date(now);
+    return !Number.isNaN(n.getTime())&&n.getTime()>=this.start.getTime()&&n.getTime()<this.target.getTime();
   },
-
-  expired(now = new Date()) {
-    const remaining = this.remaining(now);
-    return remaining !== null && remaining <= 0;
+  remaining(now=new Date()){
+    if(!this.active(now))return this.expired(now)?0:null;
+    return Math.max(0,this.target.getTime()-new Date(now).getTime());
   },
-
-  parts(now = new Date()) {
-    const milliseconds = this.remaining(now);
-
-    if (milliseconds === null) {
-      return null;
-    }
-
-    const totalSeconds = Math.floor(milliseconds / 1000);
-
-    return {
-      days: Math.floor(totalSeconds / 86400),
-      hours: Math.floor((totalSeconds % 86400) / 3600),
-      minutes: Math.floor((totalSeconds % 3600) / 60),
-      seconds: totalSeconds % 60,
-      milliseconds: milliseconds % 1000
-    };
+  expired(now=new Date()){
+    const n=new Date(now);
+    return !Number.isNaN(n.getTime())&&n.getTime()>=this.target.getTime();
   },
-
-  display(now = new Date()) {
-    const parts = this.parts(now);
-
-    if (!parts) {
-      return null;
-    }
-
-    return [
-      String(parts.days).padStart(2, "0"),
-      String(parts.hours).padStart(2, "0"),
-      String(parts.minutes).padStart(2, "0"),
-      String(parts.seconds).padStart(2, "0")
-    ].join(":");
+  parts(now=new Date()){
+    const ms=this.remaining(now);if(ms===null)return null;
+    const totalSeconds=Math.floor(ms/1000);
+    return {days:Math.floor(totalSeconds/86400),hours:Math.floor((totalSeconds%86400)/3600),minutes:Math.floor((totalSeconds%3600)/60),seconds:totalSeconds%60,milliseconds:ms%1000};
+  },
+  display(now=new Date()){
+    const p=this.parts(now);if(!p)return null;
+    return [p.days,p.hours,p.minutes,p.seconds].map(x=>String(x).padStart(2,"0")).join(":");
   }
 };
-
-if (typeof window !== "undefined") {
-  window.ESCIE_COUNTDOWN = ESCIE_COUNTDOWN;
-}
-
-if (typeof module !== "undefined" && module.exports) {
-  module.exports = ESCIE_COUNTDOWN;
-}
+if(typeof window!=="undefined")window.ESCIE_COUNTDOWN=ESCIE_COUNTDOWN;
+if(typeof module!=="undefined"&&module.exports)module.exports=ESCIE_COUNTDOWN;
