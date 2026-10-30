@@ -691,3 +691,9 @@ assert(world3dRuntime.includes("a.userData.combatState="CHASING""),"hostile NPCs
 assert(world3dRuntime.includes("sim?.applyDamage?.(damage,"NPC_ATTACK")"),"hostile NPCs must be able to damage the player");
 assert(world3dRuntime.includes("a.userData.combatState="ATTACKING""),"hostile NPCs must enter an attacking state");
 console.log("ESCIE active NPC combat gameplay OK");
+
+assert(world3dRuntime.includes("api?.favor?.(best.id,"FAVOR")"),"3D NPC encounters must support favors");
+assert(world3dRuntime.includes("api?.jobOffer?.(best.id)"),"3D NPC encounters must surface playable jobs");
+assert(world3dRuntime.includes("api?.jobAccept?.(best.id)"),"3D NPC jobs must be completable from gameplay");
+assert(world3dRuntime.includes("interactionCooldown"),"NPC rewards must have an interaction cooldown");
+console.log("ESCIE NPC job/favor gameplay OK");
