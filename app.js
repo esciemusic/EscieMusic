@@ -1843,6 +1843,13 @@ function renderClothing(){
       "ESCIE_VISUALS_UI"
     ]);
 
+    const universe = validateUniverseContract();
+    report.universe = universe;
+    if (!universe.ok) {
+      report.ok = false;
+      report.failed = report.failed.concat(["ESCIE_UNIVERSE_CONTRACT"]);
+    }
+
     const visualAudit = ESCIE_RUNTIME.visualAudit();
     report.visuals = visualAudit;
     if (!visualAudit.ok) {
