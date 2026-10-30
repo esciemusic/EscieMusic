@@ -530,7 +530,7 @@ function enter3DInterior(building){
  const stationPositions=[[-4,-4],[4,-4],[-4,3],[4,3]];
  stationActions.forEach((action,i)=>{
    const p=stationPositions[i%stationPositions.length],m=cylProp(.35,.08,action==="TRACE"||action==="INVESTIGATE"?0x6f3faf:0x2f80ff,p[0],.12,p[1]);
-   m.userData.interiorStation={action:String(action).toUpperCase(),building:building.id,room:rooms[i%Math.max(1,rooms.length)]||"MAIN"};
+   m.userData.interiorStation={action:String(action).toUpperCase(),building:building.id,room:rooms[i%Math.max(1,rooms.length)]||"MAIN",occupiedBy:null,holdUntil:0};
    interiorStations.push(m);
  });
  // Occupants come only from canonical NPC population data already present in the simulation.
@@ -556,8 +556,9 @@ function updateInteriorOccupants(t){
  const minute=Number(sim.hour||12)*60+Number(sim.minute||0);
  const hashId=id=>{let h=0;for(const ch of String(id||""))h=((h<<5)-h)+ch.charCodeAt(0)|0;return Math.abs(h)};
  const stationFor=(g,activity)=>{
-   const compatible=interiorStations.filter(s=>{
-     const a=String(s.userData.interiorStation?.action||"").toUpperCase();
+   const compatible=interiorStations.filter(st=>{
+     const meta=st.userData.interiorStation||{},a=String(meta.action||"").toUpperCase();
+     if(meta.occupiedBy&&meta.occupiedBy!==g.userData.id&&Number(meta.holdUntil||0)>minute)return false;
      return a===activity ||
        (activity==="SOCIAL"&&["SOCIAL","TALK","DANCE"].includes(a)) ||
        (activity==="WORK"&&["WORK","RECORD","BUY","INVESTIGATE"].includes(a)) ||
@@ -570,6 +571,13 @@ function updateInteriorOccupants(t){
    const slot=Math.floor(minute/15)+hashId(g.userData.id);
    return compatible[slot%compatible.length];
  };
+ const releaseStation=g=>{
+   const id=g.userData.id;
+   interiorStations.forEach(st=>{
+     const m=st.userData.interiorStation;
+     if(m?.occupiedBy===id){m.occupiedBy=null;m.holdUntil=0;}
+   });
+ };
  interiorActors.forEach((g,i)=>{
    const live=g.userData.npc||root.ESCIE_WORLD_NPC?.state?.().npcs?.[g.userData.id];
    if(!live)return;
@@ -577,26 +585,37 @@ function updateInteriorOccupants(t){
    const current=schedule.find(v=>minute>=Number(v.start||0)&&minute<Number(v.end||0))||null;
    const activity=String(current?.activity||live.activity||g.userData.interiorActivity||"WORK").toUpperCase();
    const expectedBuilding=
-     activity==="WORK" ? live.work_building?.id :
+     activity==="WORK" ? (live.work_building?.id||live.workplace_id) :
      activity==="SOCIAL" ? (live.social_building?.id||live.social_place_id) :
      ["SLEEP","HOME"].includes(activity) ? (live.home?.id||live.home_building?.id) : null;
    const shouldBeHere=!expectedBuilding||String(expectedBuilding)===String(interiorBuilding?.id);
-   g.visible=shouldBeHere;
-   if(!shouldBeHere){g.userData.reacting=false;return;}
+   if(!shouldBeHere||activity==="COMMUTE"){
+     releaseStation(g);
+     g.userData.reacting=false;
+     g.userData.interiorActivity=activity;
+     g.visible=false;
+     return;
+   }
+   g.visible=true;
    g.userData.interiorActivity=activity;
+   g.userData.occupation=String(live.occupation||live.role||"LOCAL").toUpperCase();
    g.userData.scheduleWindow=current?.end!=null?String(current.start)+"-"+String(current.end):"ROUTINE";
    const nearbyPlayer=Math.hypot(player.x-g.position.x,player.z-g.position.z)<3.2;
-   let target=null;
+   let target=null,station=null;
    if(nearbyPlayer){
      target={x:player.x,z:player.z};
      g.userData.reacting=true;
+     releaseStation(g);
    }else{
      g.userData.reacting=false;
-     const station=stationFor(g,activity);
+     station=stationFor(g,activity);
      if(station){
+       const meta=station.userData.interiorStation;
        target=station.position;
-       g.userData.targetStation=station.userData.interiorStation;
-       g.userData.targetRoom=station.userData.interiorStation.room;
+       meta.occupiedBy=g.userData.id;
+       meta.holdUntil=Math.max(Number(meta.holdUntil||0),minute+30+(hashId(g.userData.id)%31));
+       g.userData.targetStation=meta;
+       g.userData.targetRoom=meta.room;
      }else if(interiorActors.length>1&&activity==="SOCIAL"){
        const others=interiorActors.filter(o=>o!==g&&o.visible);
        const other=others.length?others[(i+Math.floor(minute/30))%others.length]:null;
@@ -606,7 +625,8 @@ function updateInteriorOccupants(t){
    if(target){
      const dx=target.x-g.position.x,dz=target.z-g.position.z,dist=Math.hypot(dx,dz);
      if(dist>.45){
-       const speed=g.userData.reacting?.0.9:(activity==="COMMUTE"?.52:.38);
+       const role=g.userData.occupation;
+       const speed=g.userData.reacting?.9:((role==="SHOPKEEPER"||role==="BARISTA"||role==="OFFICE_WORKER")?.32:.38);
        const step=Math.min(dist,speed*.016);
        g.position.x+=dx/dist*step;g.position.z+=dz/dist*step;
        g.rotation.y=Math.atan2(dx,dz);
@@ -615,6 +635,8 @@ function updateInteriorOccupants(t){
        g.position.y=Math.sin(t*2+i)*.008;
        if(g.userData.reacting)g.rotation.y=Math.atan2(player.x-g.position.x,player.z-g.position.z);
        g.userData.stationHold=Math.floor(minute/15);
+       g.userData.roomTransition=(g.userData.targetRoom||"MAIN");
+       g.userData.socialPair=activity==="SOCIAL"&&interiorActors.some(o=>o!==g&&o.visible);
      }
    }
  });
