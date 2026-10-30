@@ -138,7 +138,38 @@ function createSnow(){
  const mat=new THREE.PointsMaterial({color:0xd9ddda,size:.055,transparent:true,opacity:.62});
  snowMesh=new THREE.Points(geo,mat);worldGroup.add(snowMesh);
 }
-function createCanonicalBuildings(){const s=root.ESCIE_WORLD_SIMULATION?.state?.()||{};const list=root.ESCIE_WORLD_SIMULATION?.districtBuildings?.(s.neighbourhood)||[];list.forEach((b,i)=>building(-27+(i%4)*18,-38+Math.floor(i/4)*18,10,10,12+i%3,i+1,b));}
+function cityProfile(){
+ const sim=root.ESCIE_WORLD_SIMULATION,st=sim?.state?.()||{},district=String(st.neighbourhood||"PARC-EXTENSION").toUpperCase();
+ const ref=sim?.districtReference?.(district)||root.ESCIE_CITY_REFERENCE?.districts?.[district]||{};
+ const texture=sim?.districtTexture?.(district)||root.ESCIE_CITY_REFERENCE?.district_texture?.[district]||{};
+ return {district,ref,texture,season:sim?.seasonalSurface?.()||null};
+}
+function createMontrealStreetLayer(){
+ const p=cityProfile(),t=p.texture||{};
+ const commercial=(t.activity||[]).some(x=>/shops|storefront|commercial|caf|bars|markets|takeout|restaurants/i.test(x));
+ const cycling=(t.street||[]).some(x=>/bike|cycling/i.test(x))||p.season?.cycling;
+ const waterfront=(t.activity||[]).some(x=>/waterfront|canal/i.test(x));
+ const alley=(t.street||[]).some(x=>/alley|back lane|narrow/i.test(x));
+ box(3.8,.16,130,0x242827,-6.5,.09,0);
+ box(3.8,.16,130,0x242827,6.5,.09,0);
+ if(commercial){for(let z=-50;z<=50;z+=10){box(.7,.12,.45,0x4b4e4a,-7.15,.2,z);box(.7,.12,.45,0x4b4e4a,7.15,.2,z);}}
+ if(cycling){for(let z=-48;z<=48;z+=7){const m=box(.08,.025,2.2,0x5b6a60,-3.25,.12,z);m.userData.cyclingMarking=true;laneMarkings.push(m);}}
+ if(waterfront){box(18,.18,1.2,0x33413d,0,.16,-49);for(let x=-8;x<=8;x+=2)box(.06,.5,.06,0x52635b,x,.35,-49);}
+ if(alley){for(let z=-44;z<=44;z+=9)box(.9,.08,.12,0x3d403e,9.1,.13,z);}
+}
+function createCanonicalBuildings(){
+ const s=root.ESCIE_WORLD_SIMULATION?.state?.()||{},p=cityProfile(),t=p.texture||{};
+ const list=root.ESCIE_WORLD_SIMULATION?.districtBuildings?.(s.neighbourhood)||[];
+ const archetypes=t.building||[];
+ list.forEach((b,i)=>{
+   const type=String(archetypes[i%Math.max(1,archetypes.length)]||"plex").toLowerCase();
+   const width=type.includes("high-rise")?13:type.includes("row")?8:type.includes("storefront")?11:10;
+   const depth=type.includes("high-rise")?13:type.includes("loft")?12:10;
+   const height=type.includes("high-rise")?24:type.includes("historic")?14:type.includes("walkup")?15:12+(i%3);
+   building(-27+(i%4)*18,-38+Math.floor(i/4)*18,width,depth,height,i+1,b);
+ });
+}
+
 function buildScene(){
  clearWorld();scene=new THREE.Scene();scene.background=new THREE.Color(0x050505);scene.fog=new THREE.FogExp2(0x101114,.018);
  worldGroup=new THREE.Group();scene.add(worldGroup);
@@ -150,7 +181,7 @@ function buildScene(){
  const rimA=new THREE.PointLight(0x9aa6a1,.12,5,2);rimA.userData.baseIntensity=.12;scene.add(rimA);playerRimLights.push(rimA);
  const rimB=new THREE.PointLight(0x2f80ff,.08,4,2);rimB.userData.baseIntensity=.08;scene.add(rimB);playerRimLights.push(rimB);
  dayLight=moon;ambientLight=hemi;
- createGround();createCanonicalBuildings();
+ createGround();createMontrealStreetLayer();createCanonicalBuildings();
  let seed=1;
  for(let x=-34;x<=34;x+=12)for(let z=-52;z<=52;z+=13){
    if(Math.abs(x)<10)continue;
