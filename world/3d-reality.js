@@ -57,7 +57,7 @@ function building(x,z,w,d,h,seed,buildingRef){
    interiorLight.userData.readabilityLight=true;
    worldGroup.add(interiorLight);lights.push(interiorLight);readabilityLights.push(interiorLight);
  }
- if(seed%2===0 || buildingRef) door(x,z-d/2-.055,1.15,2.2,seed,buildingRef);
+ if(seed%2===0 || buildingRef){const dm=door(x,z-d/2-.055,1.15,2.2,seed,buildingRef);if(buildingRef)buildingRef.__worldDoor={x,z:z-d/2-.055,mesh:dm};}
 }
 function actor(x,z,seed){
  const g=new THREE.Group();
@@ -86,19 +86,34 @@ function syncCanonicalNPCs(t){
   const n=live[a.userData.id];if(!n){a.visible=false;return}
   a.visible=Number(n.health??100)>0;
   const scheduleWindow=currentWindow(n),scheduledActivity=String(scheduleWindow?.activity||n.activity||"IDLE").toUpperCase();
+  const district=String(n.district||sim.neighbourhood||"").toUpperCase();
+  const buildings=root.ESCIE_WORLD_SIMULATION?.districtBuildings?.(district)||[];
+  const destinationId=scheduledActivity==="WORK"?(n.workplace_id||n.work_building?.id):scheduledActivity==="SOCIAL"?(n.social_place_id||n.social_building?.id):["SLEEP","HOME"].includes(scheduledActivity)?(n.home_building?.id||n.home?.id):null;
+  const destination=destinationId?buildings.find(b=>String(b.id)===String(destinationId)):null;
+  const destinationDoor=destination?.__worldDoor||null;
   const target=scheduleWindow?.target;
-  if(target&&Number.isFinite(Number(target.x))&&Number.isFinite(Number(target.y))){
-    const tq=gridToWorld(target),dx=tq.x-a.position.x,dz=tq.z-a.position.z,dist=Math.hypot(dx,dz);
-    if(dist>.7){
+  const routeTarget=destinationDoor||((target&&Number.isFinite(Number(target.x))&&Number.isFinite(Number(target.y)))?{...gridToWorld(target)}:null);
+  if(routeTarget&&Number.isFinite(Number(routeTarget.x))&&Number.isFinite(Number(routeTarget.z??routeTarget.y))){
+    const tq=Number.isFinite(Number(routeTarget.z))?routeTarget:{x:Number(routeTarget.x),z:Number(routeTarget.y)};
+    const dx=tq.x-a.position.x,dz=tq.z-a.position.z,dist=Math.hypot(dx,dz);
+    if(dist>.9){
       const speed=scheduledActivity==="COMMUTE"?.075:.045;
       a.position.x+=dx/dist*Math.min(dist,speed);
       a.position.z+=dz/dist*Math.min(dist,speed);
       a.rotation.y=Math.atan2(dx,dz);
       a.userData.traveling=true;
+      a.userData.destinationBuilding=destination?.id||null;
     }else{
       a.userData.traveling=false;
-      if(Number.isFinite(Number(n.x)))n.x=Number(target.x);
-      if(Number.isFinite(Number(n.y)))n.y=Number(target.y);
+      a.userData.destinationBuilding=destination?.id||null;
+      if(destination){
+        n.current_building_id=destination.id;
+        n.current_building_state=scheduledActivity==="COMMUTE"?"ARRIVING":"INSIDE";
+        a.visible=false;
+      }else{
+        if(Number.isFinite(Number(target?.x)))n.x=Number(target.x);
+        if(Number.isFinite(Number(target?.y)))n.y=Number(target.y);
+      }
     }
   }else{
     const q=gridToWorld(n);a.position.x+=(q.x-a.position.x)*.18;a.position.z+=(q.z-a.position.z)*.18;
@@ -578,7 +593,7 @@ function enter3DInterior(building){
  });
  // Occupants come only from canonical NPC population data already present in the simulation.
  const district=String(building?.district||root.ESCIE_WORLD_SIMULATION?.state?.().neighbourhood||"").toUpperCase();
- const population=(root.ESCIE_WORLD_CITY?.npcPopulations?.[district]||[]).filter(n=>{const live=root.ESCIE_WORLD_NPC?.state?.().npcs?.[n.id];return n&&(n.home===building.id||n.work===building.id||live?.workplace_id===building.id||live?.social_place_id===building.id);});
+ const population=(root.ESCIE_WORLD_CITY?.npcPopulations?.[district]||[]).filter(n=>{const live=root.ESCIE_WORLD_NPC?.state?.().npcs?.[n.id];return n&&(n.home===building.id||n.work===building.id||live?.workplace_id===building.id||live?.social_place_id===building.id||live?.current_building_id===building.id);});
  population.slice(0,5).forEach((profile,i)=>{
    const live=root.ESCIE_WORLD_NPC?.state?.().npcs?.[profile.id];if(!live)return;
    const p=[[-4,1],[4,1],[-4,-1],[4,-1],[0,3]][i];
