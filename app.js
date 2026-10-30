@@ -1845,7 +1845,8 @@ function renderClothing(){
 
     const universe = validateUniverseContract();
     report.universe = universe;
-    if (!universe.ok) {
+    report.layerBalance = (window.ESCIE_LAYER_BALANCE && window.ESCIE_LAYER_BALANCE.validate) ? window.ESCIE_LAYER_BALANCE.validate() : {ok:false,errors:["layer balance unavailable"]};
+    if (!universe.ok || !report.layerBalance.ok) {
       report.ok = false;
       report.failed = report.failed.concat(["ESCIE_UNIVERSE_CONTRACT"]);
     }
