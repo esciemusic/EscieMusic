@@ -49,3 +49,6 @@ console.log("ESCIE Command Desk end-to-end contracts OK");
 
 
 test("command desk provides human review controls for specialist results",()=>{for(const x of ['data-jd="APPROVE"','data-jd="REJECT"','data-jd="QUARANTINE"','function reviewJob','state:next','human_review','S.tab==="REVIEW"','RESULTS AWAITING YOU'])assert(desk.includes(x),x)});
+
+
+test("command desk preserves review history and creates controlled follow-up tasks",()=>{for(const x of ['review_history','REVISION_REQUESTED','RESULT_REVISION_REQUEST','APPROVED_EXECUTION_PREPARATION','requires_human_approval:true','Do not execute external side effects or change canon.','data-jd="MODIFY"'])assert(desk.includes(x),x)});
