@@ -269,6 +269,55 @@ const districts={
  "SAINT-HENRI":{spawn:{x:4,y:6}},
  "VERDUN":{spawn:{x:5,y:5}}
 };
+/* CANONICAL DENSITY EXPANSION
+ * Authored population/building additions live here so the runtime remains behavior-only.
+ */
+const densityNPCs={
+ "PARC-EXTENSION":[
+  {id:"resident_pe_02",role:"RESIDENT",home:"HOME_01",work:"CAFE_01",x:3,y:7,awareness:45},
+  {id:"barista_pe_01",role:"BARISTA",home:"HOME_01",work:"CAFE_01",x:5,y:6,awareness:58},
+  {id:"worker_pe_01",role:"WORKER",home:"HOME_01",work:"SHOP_01",x:6,y:5,awareness:50}
+ ],
+ "MILE END":[
+  {id:"resident_me_01",role:"RESIDENT",home:"CAFE_ME",work:"SHOP_ME",x:4,y:5,awareness:48},
+  {id:"shopkeeper_me_01",role:"SHOPKEEPER",home:"STUDIO_ME",work:"SHOP_ME",x:7,y:5,awareness:62},
+  {id:"resident_me_02",role:"RESIDENT",home:"STUDIO_ME",work:"CAFE_ME",x:9,y:5,awareness:52}
+ ],
+ "PLATEAU":[
+  {id:"resident_pl_01",role:"RESIDENT",home:"CLUB_PL",work:"SHOP_PL",x:4,y:5,awareness:48},
+  {id:"shopkeeper_pl_01",role:"SHOPKEEPER",home:"CLUB_PL",work:"SHOP_PL",x:6,y:6,awareness:60},
+  {id:"musician_pl_01",role:"MUSICIAN",home:"CLUB_PL",work:"CLUB_PL",x:8,y:6,awareness:68}
+ ],
+ "ROSEMONT":[
+  {id:"resident_ro_01",role:"RESIDENT",home:"APARTMENT_RO",work:"SHOP_RO",x:6,y:6,awareness:48},
+  {id:"vendor_ro_01",role:"VENDOR",home:"APARTMENT_RO",work:"SHOP_RO",x:9,y:5,awareness:55},
+  {id:"worker_ro_01",role:"WORKER",home:"APARTMENT_RO",work:"CLINIC_RO",x:10,y:4,awareness:52}
+ ],
+ "DOWNTOWN":[
+  {id:"resident_dt_01",role:"RESIDENT",home:"VENUE_DT",work:"SHOP_DT",x:6,y:7,awareness:48},
+  {id:"vendor_dt_01",role:"VENDOR",home:"VENUE_DT",work:"SHOP_DT",x:9,y:6,awareness:60},
+  {id:"musician_dt_01",role:"MUSICIAN",home:"VENUE_DT",work:"VENUE_DT",x:11,y:7,awareness:68}
+ ],
+ "OLD MONTREAL":[
+  {id:"resident_om_01",role:"RESIDENT",home:"VENUE_OM",work:"VENUE_OM",x:7,y:6,awareness:45},
+  {id:"vendor_om_02",role:"VENDOR",home:"VENUE_OM",work:"VENUE_OM",x:10,y:7,awareness:58},
+  {id:"worker_om_01",role:"WORKER",home:"ARCHIVE_OM",work:"ARCHIVE_OM",x:8,y:6,awareness:64}
+ ],
+ "SAINT-HENRI":[
+  {id:"resident_sh_01",role:"RESIDENT",home:"CAFE_SH",work:"STUDIO_SH",x:5,y:6,awareness:48},
+  {id:"musician_sh_01",role:"MUSICIAN",home:"STUDIO_SH",work:"STUDIO_SH",x:9,y:5,awareness:68},
+  {id:"vendor_sh_01",role:"VENDOR",home:"CAFE_SH",work:"CAFE_SH",x:7,y:5,awareness:54}
+ ],
+ "VERDUN":[
+  {id:"resident_ve_01",role:"RESIDENT",home:"APARTMENT_VE",work:"SHOP_VE",x:5,y:6,awareness:48},
+  {id:"worker_ve_01",role:"WORKER",home:"APARTMENT_VE",work:"SHOP_VE",x:8,y:6,awareness:52},
+  {id:"vendor_ve_01",role:"VENDOR",home:"APARTMENT_VE",work:"GYM_VE",x:10,y:5,awareness:58}
+ ]
+};
+Object.keys(densityNPCs).forEach(d=>{
+  NPC_POPULATIONS[d]=(NPC_POPULATIONS[d]||[]).concat(densityNPCs[d]);
+});
+
 Object.assign(window.ESCIE_WORLD_CITY,{landmarks:world_landmarks,buildings:world_buildings,interiors,cityBackbone:city_backbone,cityConnections:city_connections,publicTransit:public_transit,districts});
 
 
