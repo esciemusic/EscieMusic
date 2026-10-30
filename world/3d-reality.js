@@ -365,8 +365,20 @@ function gamepadInput(){
  return {f:-touchPad.moveY,str:touchPad.moveX,lookX:touchPad.lookX,lookY:touchPad.lookY,sprint:touchPad.buttons.b||touchPad.buttons.rb,action:touchPad.buttons.a,start:touchPad.buttons.start,back:touchPad.buttons.back,fight:touchPad.buttons.x,open:touchPad.buttons.y};
 }
 function evidenceInteract(){const m=updateEvidence();if(!m)return false;const o=m.userData.evidence;const r=root.ESCIE_WORLD_ACTIONS?.interactObject?.(o);if(r!==false){say3D("EVIDENCE · "+String(o.label||o.id)+" · LOGGED");return true}return false}
+function crimeInteract(){
+ if(interiorMode)return false;
+ const near=doors.find(d=>d.building&&Math.hypot(player.x-d.x,player.z-d.z)<2.2);
+ if(!near||near.open)return false;
+ const b=near.building,interior=String(b?.interior||"").toUpperCase();
+ if(!b)return false;
+ const night=Number(root.ESCIE_WORLD_SIMULATION?.state?.().hour||12)>=22||Number(root.ESCIE_WORLD_SIMULATION?.state?.().hour||12)<6;
+ if(!night)return false;
+ const result=root.ESCIE_WORLD_SIMULATION?.commitCrime?.("BURGLARY",{target:b.id,risk:2,witnessed:false});
+ if(result?.ok){root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(8,"BURGLARY");say3D("BURGLARY · "+interior+" · WANTED RISK "+Number(result.wanted||0));return true}
+ return false;
+}
 function nearestNPC(max=2.8){const live=root.ESCIE_WORLD_NPC?.state?.().npcs||{};let best=null,bd=max;actors.forEach(a=>{if(!a.userData.canonical)return;const n=live[a.userData.id];if(!n||Number(n.health??100)<=0)return;const d=Math.hypot(player.x-a.position.x,player.z-a.position.z);if(d<bd){bd=d;best={npc:n,actor:a,d}}});return best}
-function fight3D(){const hit=nearestNPC(2.8);if(!hit){say3D("COMBAT · NO TARGET IN RANGE");return false}const sim=root.ESCIE_WORLD_SIMULATION,weapon=root.ESCIE_WORLD_EQUIPMENT?.weapon?.()?.id||"FISTS",attack=sim?.combatAttack?.(hit.npc.id,{weapon});if(attack?.reason==="EXHAUSTED"){say3D("COMBAT · TOO EXHAUSTED");return true}if(!attack?.ok){say3D("COMBAT · "+String(attack?.reason||"FAILED"));return true}root.ESCIE_WORLD_ACTIONS?.recordRPGCombat?.("hit",{dealt:Number(attack.hit||0)});root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(3,"COMBAT HIT");hit.actor.userData.reaction=attack.target?.down?"DOWN":"HOSTILE";hit.actor.userData.reactionUntil=performance.now()+2200;root.ESCIE_WORLD_NPC?.relationship?.(hit.npc.id,-8,"3D FIGHT");if(attack.target?.down){root.ESCIE_WORLD_ACTIONS?.recordRPGCombat?.("knockout",{dealt:Number(attack.hit||0)});root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(40,"COMBAT KNOCKOUT");say3D("TARGET DOWN · +40 XP · CONSEQUENCE REGISTERED");}else{reactToCrime("3D COMBAT",1);const retaliation=Math.max(2,Math.min(12,Math.round((100-(attack.target?.health??100))/12)));const hurt=sim?.applyDamage?.(retaliation,"NPC_RETALIATION");if(hurt?.dead){const rr=sim.respawn?.();say3D(rr?.ok?"YOU DIED · RESPAWNED":"YOU DIED");}else if(hurt?.hospital)say3D("SERIOUS INJURY · HOSPITAL REQUIRED");else say3D("COMBAT · TARGET HP "+Number(attack.target?.health??0)+" · WANTED RESPONSE");}return true}
+function fight3D(){const hit=nearestNPC(2.8);if(!hit){say3D("COMBAT · NO TARGET IN RANGE");return false}const sim=root.ESCIE_WORLD_SIMULATION,weapon=root.ESCIE_WORLD_EQUIPMENT?.weapon?.()?.id||"FISTS",attack=sim?.combatAttack?.(hit.npc.id,{weapon});if(attack?.reason==="EXHAUSTED"){say3D("COMBAT · TOO EXHAUSTED");return true}if(!attack?.ok){say3D("COMBAT · "+String(attack?.reason||"FAILED"));return true}root.ESCIE_WORLD_ACTIONS?.recordRPGCombat?.("hit",{dealt:Number(attack.hit||0)});root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(3,"COMBAT HIT");hit.actor.userData.reaction=attack.target?.down?"DOWN":"HOSTILE";hit.actor.userData.reactionUntil=performance.now()+2200;root.ESCIE_WORLD_NPC?.relationship?.(hit.npc.id,-8,"3D FIGHT");if(attack.target?.down){root.ESCIE_WORLD_ACTIONS?.recordRPGCombat?.("knockout",{dealt:Number(attack.hit||0)});root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(40,"COMBAT KNOCKOUT");say3D("TARGET DOWN · +40 XP · CONSEQUENCE REGISTERED");}else{root.ESCIE_WORLD_SIMULATION?.commitCrime?.("ASSAULT",{target:hit.npc.id,risk:2,witnessed:true});reactToCrime("3D COMBAT",2);const retaliation=Math.max(2,Math.min(12,Math.round((100-(attack.target?.health??100))/12)));const hurt=sim?.applyDamage?.(retaliation,"NPC_RETALIATION");if(hurt?.dead){const rr=sim.respawn?.();say3D(rr?.ok?"YOU DIED · RESPAWNED":"YOU DIED");}else if(hurt?.hospital)say3D("SERIOUS INJURY · HOSPITAL REQUIRED");else say3D("COMBAT · TARGET HP "+Number(attack.target?.health??0)+" · WANTED RESPONSE");}return true}
 function updateHostileNPCs(now){
  if(interiorMode)return;
  const live=root.ESCIE_WORLD_NPC?.state?.().npcs||{},sim=root.ESCIE_WORLD_SIMULATION;
@@ -649,6 +661,7 @@ function vehicleInteract(){const vs=root.ESCIE_WORLD_VEHICLES;if(!vs)return fals
      street.car.userData.occupied=true;street.car.visible=false;
      player.inVehicle=true;player.vehicleId="STREET_CAR";player.x=street.car.position.x;player.z=street.car.position.z;player.yaw=street.car.rotation.y;
      reactToCrime("VEHICLE THEFT",1);
+     root.ESCIE_WORLD_SIMULATION?.commitCrime?.("VEHICLE_THEFT",{target:"STREET_CAR",risk:2,witnessed:true});
      root.ESCIE_WORLD_ACTIONS?.performControlAction?.("STEAL");
      say3D("STREET CAR · STOLEN · POLICE RISK");
      return true;
@@ -663,7 +676,7 @@ function vehicleInteract(){const vs=root.ESCIE_WORLD_VEHICLES;if(!vs)return fals
    return true
  }
  const r=vs.enter?.(id);if(r?.ok){player.inVehicle=true;player.vehicleId=id;say3D("VEHICLE · "+String(r.vehicle?.label||id)+" · DRIVE");return true}say3D("VEHICLE · "+String(r?.reason||"UNAVAILABLE"));return true}
-function interact(){if(interiorMode)return use3DInteriorAction();if(evidenceInteract())return true;if(resolveStreetIncident())return true;if(encounterInteract())return true;if(npcInteract())return true;if(vehicleInteract())return true;
+function interact(){if(interiorMode)return use3DInteriorAction();if(evidenceInteract())return true;if(crimeInteract())return true;if(resolveStreetIncident())return true;if(encounterInteract())return true;if(npcInteract())return true;if(vehicleInteract())return true;
  const near=doors.find(d=>Math.hypot(player.x-d.x,player.z-d.z)<2.4);
  if(near){if(near.open){root.ESCIE_WORLD_INTERIOR?.exit?.();near.open=false;near.mesh.rotation.y=0;say3D("EXITED · BACK ON THE STREET");return true}const st=root.ESCIE_WORLD_SIMULATION?.state?.(),b=near.building;if(b&&String(b.type||"").toUpperCase()==="SHOP"){const buy=root.ESCIE_WORLD_ACTIONS?.purchaseGameItem?.("game-item-green-pass");if(buy?.ok){say3D("SHOP · GREEN PASS PURCHASED · -3 SIGNAL");return true}if(buy?.reason==="INSUFFICIENT_SIGNAL"){say3D("SHOP · GREEN PASS · 3 SIGNAL REQUIRED");return true}if(buy?.reason==="ALREADY_OWNED")say3D("SHOP · GREEN PASS · ALREADY OWNED");}if(b){const result=root.ESCIE_WORLD_SIMULATION?.enterBuilding?.(st?.neighbourhood,b.id);if(!result?.ok){say3D("ACCESS · "+String(result?.reason||"DENIED"));return true}enter3DInterior(b);}near.open=true;near.mesh.rotation.y=Math.PI/2;say3D(b?"ENTERED · "+b.name:"DOOR OPEN · INTERIOR LAYER AVAILABLE");return true}
  return false;
