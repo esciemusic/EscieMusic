@@ -24,10 +24,10 @@ function cyl(r,h,color,x,y,z){
 }
 function createGround(){
  const g=new THREE.Mesh(new THREE.PlaneGeometry(130,130),new THREE.MeshStandardMaterial({color:0x1d1f20,roughness:.94,metalness:.02}));
- g.rotation.x=-Math.PI/2;worldGroup.add(g);
- for(let i=-50;i<=50;i+=10){box(.08,.01,130,0x3a3c3c,i,.01,0);box(130,.01,.08,0x3a3c3c,0,.012,i);}
+ g.userData.worldGround=true;g.rotation.x=-Math.PI/2;worldGroup.add(g);
+ for(let i=-50;i<=50;i+=10){const a=box(.08,.01,130,0x3a3c3c,i,.01,0);const b=box(130,.01,.08,0x3a3c3c,0,.012,i);a.userData.streetMarking=true;b.userData.streetMarking=true;}
  box(9,.04,130,0x171918,0,.04,0);
- for(let z=-54;z<54;z+=8){box(.18,.025,3.6,0xc7c8bd,0,.07,z);}
+ for(let z=-54;z<54;z+=8){const m=box(.18,.025,3.6,0xc7c8bd,0,.07,z);m.userData.laneMarking=true;}
 }
 function door(x,z,w,h,seed,building){
  const mat=makeMat(seed%2?0x292a2e:0x101114,.72,seed%2?.2:0);
@@ -302,13 +302,19 @@ function updateEnvironment(t){
  const st=root.ESCIE_WORLD_SIMULATION?.state?.()||{},cycle=((Number(st.hour||12)*60+Number(st.minute||0))/1440),angle=cycle*Math.PI*2;
  const daylight=Math.max(.06,Math.sin(angle-Math.PI/2)*.5+.5);const weather=String(st.weather||"COLD").toUpperCase();const snow=worldGroup?.children.find(o=>o.isPoints);if(snow)snow.visible=weather.includes("SNOW")||weather.includes("COLD");
  const night=1-daylight,poorVisibility=weather.includes("SNOW")||weather.includes("FOG")||weather.includes("STORM"),snowWeather=weather.includes("SNOW"),fogWeather=weather.includes("FOG"),stormWeather=weather.includes("STORM");
+ const sceneDay=new THREE.Color(0x111418),sceneNight=new THREE.Color(0x050608);
  if(dayLight){const dawn=Math.max(0,1-Math.abs(daylight-.22)/.22),dusk=Math.max(0,1-Math.abs(daylight-.42)/.22);dayLight.intensity=(.32+daylight*1.55)*(snowWeather ? .94 :1)*(fogWeather ? .88 :1)*(stormWeather ? .82 :1);dayLight.position.set(Math.cos(angle)*25,8+daylight*28,Math.sin(angle)*25);dayLight.color.set(dawn||dusk?(dawn>.5?0xb8a78f:0xa7a0a1):(daylight>.45?0xd8d4ca:0x758394));}
  if(ambientLight)ambientLight.intensity=(.34+daylight*.68)*(snowWeather?1.08:1)*(fogWeather ? .94 :1)*(stormWeather ? .9 :1);
  if(playerLight){playerLight.intensity=.12+night*.72+(poorVisibility ? .18 : 0);playerLight.position.set(player.x,1.9,player.z);}
  if(scene?.fog)scene.fog.density=.008+night*.010+(fogWeather ? .008 :0)+(snowWeather ? .003 :0)+(stormWeather ? .004 :0);
  if(renderer){const exposure=stormWeather ? .94 :(fogWeather ? .99 :(snowWeather?1.02:(night>.72?1.1:1.05)));renderer.toneMappingExposure+=(exposure-renderer.toneMappingExposure)*.04;}
  lights.forEach((l,i)=>{if(!l.isPointLight)return;const isSignal=l===lights[0];if(isSignal)l.intensity=(1.15+night*1.1)*(stormWeather ? .82 :1);else l.intensity=(.08+night*.9)*(snowWeather?1.08:1)*(stormWeather ? .78 :1);});
- worldGroup?.traverse(o=>{if(!o.userData?.windowLight||!o.material)return;const base=Number(o.userData.baseEmissive||.35);o.material.emissiveIntensity=base*(.12+night*.88);});
+ worldGroup?.traverse(o=>{
+   if(o.userData?.windowLight&&o.material){const base=Number(o.userData.baseEmissive||.35);o.material.emissiveIntensity=base*(.12+night*.88);}
+   if(o.userData?.streetMarking&&o.material){o.material.emissive=new THREE.Color(0x252b28);o.material.emissiveIntensity=.015+night*.035;}
+   if(o.userData?.laneMarking&&o.material){o.material.emissive=new THREE.Color(0x4a4c43);o.material.emissiveIntensity=.02+night*.06;}
+   if(o.userData?.worldGround&&o.material){o.material.color.set(night>.65?0x171a1b:0x242728);}
+ });
  const headlights=updateVehicles.car?.userData?.headlights||[];headlights.forEach(l=>{const base=Number(l.userData.baseIntensity||.7);const visibilityBoost=poorVisibility ? .55 :0;const daylightCut=daylight>.58 ? .12 :1;l.intensity=base*(.25+night*.9+visibilityBoost)*daylightCut;});
 }
 function syncPauseMap(){const map=document.getElementById("world-map"),p=document.getElementById("world-player");if(!map||!p)return;const x=Math.max(0,Math.min(100,(player.x+54)/108*100)),y=Math.max(0,Math.min(100,(player.z+54)/108*100));p.style.left=x+"%";p.style.top=y+"%";p.title="PLAYER · "+Math.round(player.x+54)+" · "+Math.round(player.z+54);const sim=root.ESCIE_WORLD_SIMULATION?.state?.()||{};map.dataset.neighbourhood=String(sim.neighbourhood||"PARC-EXTENSION");map.dataset.transport=String(sim.transport||"FOOT");}
