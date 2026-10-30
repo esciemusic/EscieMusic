@@ -229,8 +229,6 @@ function updateStreetIncident(now){
    if(playerClose&&now-streetIncident.lastPrompt>4200){streetIncident.lastPrompt=now;say3D(label+" · APPROACH TO INTERVENE");}
    if(now>streetIncident.expires){
      if(streetIncident.type==="POLICE_STOP"){
-       const law=root.ESCIE_WORLD_LAW;
-       law?.dispatch?.("STREET POLICE STOP",1);
        root.ESCIE_WORLD_NPC?.rememberInteraction?.(a.id,{channel:"STREET_INCIDENT",type:"POLICE_STOP",outcome:"STOP CONTINUES"});
        root.ESCIE_WORLD_NPC?.rememberInteraction?.(b.id,{channel:"STREET_INCIDENT",type:"POLICE_STOP",outcome:"STOP CONTINUES"});
      }
