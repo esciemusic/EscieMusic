@@ -522,6 +522,13 @@ assert(world3dRuntime.includes("isPaused:()=>paused"),"3D runtime must expose au
 for(const fn of ["inventory","character","investigation","market","quests","openSimulation","phoneApp","glass","systemMenu","preferences","profileMenu"]){assert(worldRuntime.includes("function "+fn+"(") && worldRuntime.includes("ensureSystemPause();"),fn+" must route its 2D system view through pause state");} assert(worldRuntime.includes("const world=window.ESCIE_3D_WORLD"),"pause gate must use the browser global 3D runtime"); assert(worldRuntime.includes("window.ESCIE_WORLD_UI={inventory,character,investigation,market,quests,openSimulation,phoneApp,systemMenu,preferences,profileMenu,glass}"),"2D system views must be reachable through the world UI bridge"); assert(worldIndex.includes("data-pause-open=\"inventory\""),"pause menu must own inventory access"); assert(worldIndex.includes("data-pause-open=\"system\""),"pause menu must own system access"); assert(!worldIndex.includes("data-system>SYSTEM"),"system access must not remain in active gameplay controls"); assert(!worldIndex.includes("data-inventory>INVENTORY"),"inventory access must not remain in active gameplay controls"); assert(world3dRuntime.includes('if(e.key==="Escape"){e.preventDefault();togglePause();}'),"Escape must pause the authoritative 3D runtime"); assert(world3dRuntime.includes("data-pause-open"),"3D runtime must route pause-system actions");
 
 console.log("ESCIE 3D interior lifecycle contracts OK");
+assert((world3dRuntime.match(/function enter3DInterior\\(building\\)/g)||[]).length===1,"3D interior entry must have exactly one runtime implementation");
+assert(world3dRuntime.includes("const obstacles=[],actors=[],doors=[],lights=[],evidence=[],interiorActors=[],interiorStations=[];"),"3D interior actors and stations must have dedicated runtime collections");
+assert(world3dRuntime.includes("interiorActors.length=0;interiorStations.length=0;"),"interior runtime collections must clear during world reset");
+assert(world3dRuntime.includes("social_place_id"),"interior NPC routing must recognize canonical social-place assignments");
+console.log("ESCIE 3D interior runtime integrity contracts OK");
+
+
 assert(world3dRuntime.includes("const schedule=Array.isArray(live.schedule)?live.schedule:[]"),"interior NPCs must consume persistent canonical NPC schedules");
 assert(world3dRuntime.includes("const expectedBuilding="),"interior NPC visibility must follow schedule target buildings");
 assert(world3dRuntime.includes('activity==="WORK" ? live.work_building?.id'),"working NPCs must resolve their authored workplace");
