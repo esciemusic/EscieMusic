@@ -676,3 +676,7 @@ console.log("ESCIE file-based world ownership contracts OK");
 
 
 console.log("ESCIE public index hierarchy and compact accordion contracts OK");
+
+assert(world3dRuntime.includes("const pool=interiorMode?interiorActors:actors"),"NPC interaction must route to interior occupants while inside a building");
+assert(world3dRuntime.includes("!a.userData.canonical||!a.visible"),"NPC interaction must ignore hidden interior occupants");
+console.log("ESCIE interior NPC interaction routing OK");
