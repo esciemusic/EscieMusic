@@ -1841,7 +1841,8 @@ function renderClothing(){
       "ESCIE_PUBLISH_VALIDATE",
       "ESCIE_SEARCH_INDEX",
       "ESCIE_VISUALS",
-      "ESCIE_VISUALS_UI"
+      "ESCIE_VISUALS_UI",
+      "ESCIE_PERFORMANCE"
     ]);
 
     const universe = validateUniverseContract();
