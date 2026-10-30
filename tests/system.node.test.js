@@ -434,6 +434,10 @@ assert((worldRuntime.match(/function roomSetup\(/g)||[]).length===1,"world runti
 assert((worldRuntime.match(/function interactNow\(/g)||[]).length===1,"world runtime must have exactly one interaction handler");
 assert((worldRuntime.match(/function investigation\(/g)||[]).length===1,"world runtime must have exactly one active investigation function");
 assert((worldRuntime.match(/function investigationLegacy\(/g)||[]).length===1,"legacy investigation must be explicitly isolated");
+const worldQuestData=fs.readFileSync("data/world-quests.js","utf8");
+assert(worldQuestData.includes("quest-first-signal"),"world quest definitions must live in canonical file data");
+assert(worldRuntime.includes("window.ESCIE_WORLD_QUESTS"),"world runtime must consume file-based quest data");
+assert(worldIndex.includes("../data/world-quests.js"),"world entry must load canonical quest data before runtime");
 console.log("ESCIE world runtime contracts OK");
 
 const worldHtml=fs.readFileSync("world/index.html","utf8");
