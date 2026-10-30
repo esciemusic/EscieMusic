@@ -81,6 +81,48 @@ function enter3DInterior(building){
  player.x=0;player.z=4.4;player.y=1.7;player.yaw=Math.PI;avatar.position.set(player.x,0,player.z);
  say3D("ENTERED · "+String(building?.name||"INTERIOR")+" · "+(rooms.length?rooms.length+" ROOMS":"OPEN FLOOR"));
 }
+function updateInteriorOccupants(t){
+ if(!interiorMode||!interiorActors.length)return;
+ const sim=root.ESCIE_WORLD_SIMULATION?.state?.()||{};
+ interiorActors.forEach((g,i)=>{
+   const live=g.userData.npc||root.ESCIE_WORLD_NPC?.state?.().npcs?.[g.userData.id);
+   if(!live)return;
+   const activity=String(live.activity||g.userData.interiorActivity||"WORK").toUpperCase();
+   let target=null;
+   const nearbyPlayer=Math.hypot(player.x-g.position.x,player.z-g.position.z)<3.2;
+   if(nearbyPlayer){
+     target={x:player.x,z:player.z};
+     g.userData.reacting=true;
+   }else{
+     g.userData.reacting=false;
+     const compatible=interiorStations.filter(s=>{
+       const a=String(s.userData.interiorStation?.action||"").toUpperCase();
+       return a===activity ||
+         (activity==="SOCIAL"&&["SOCIAL","TALK","DANCE"].includes(a)) ||
+         (activity==="WORK"&&["WORK","RECORD","BUY","INVESTIGATE"].includes(a)) ||
+         (activity==="REST"&&["REST","SLEEP"].includes(a));
+     });
+     if(compatible.length)target=compatible[(i+Math.floor(t/9))%compatible.length].position;
+     else if(interiorActors.length>1&&activity==="SOCIAL"){
+       const other=interiorActors[(i+1)%interiorActors.length];
+       target={x:other.position.x,z:other.position.z};
+     }
+   }
+   if(target){
+     const dx=target.x-g.position.x,dz=target.z-g.position.z,dist=Math.hypot(dx,dz);
+     if(dist>.45){
+       const speed=g.userData.reacting?.0.9:0.38;
+       const step=Math.min(dist,speed*.016);
+       g.position.x+=dx/dist*step;g.position.z+=dz/dist*step;
+       g.rotation.y=Math.atan2(dx,dz);
+       g.position.y=Math.sin(t*8+i)*.018;
+     }else{
+       g.position.y=Math.sin(t*2+i)*.008;
+       if(g.userData.reacting)g.rotation.y=Math.atan2(player.x-g.position.x,player.z-g.position.z);
+     }
+   }
+ });
+}
 function use3DInteriorAction(){
  const b=interiorBuilding,sim=root.ESCIE_WORLD_SIMULATION,def=b&&root.ESCIE_WORLD_CITY?.interiors?.[b.interior];
  if(!b||!def)return false;
@@ -264,7 +306,7 @@ function updateActors(t){
 function render(){
  updateStreetEncounters(performance.now());
  updateStreetIncident(performance.now());
- const dt=Math.min(clock.getDelta(),.05);updateQuality(dt);move(dt);worldHeartbeat();updateLaw();updateActors(clock.elapsedTime);syncCanonicalNPCs(clock.elapsedTime);updateTraffic(clock.elapsedTime);updateVehicles(clock.elapsedTime);updatePolice();policeCollision();updateEnvironment(clock.elapsedTime);if(performance.now()-perf.hud>120){updateHud();syncPauseMap();perf.hud=performance.now();}
+ const dt=Math.min(clock.getDelta(),.05);updateQuality(dt);move(dt);worldHeartbeat();updateLaw();updateActors(clock.elapsedTime);syncCanonicalNPCs(clock.elapsedTime);updateTraffic(clock.elapsedTime);updateVehicles(clock.elapsedTime);updateInteriorOccupants(clock.elapsedTime);updatePolice();policeCollision();updateEnvironment(clock.elapsedTime);if(performance.now()-perf.hud>120){updateHud();syncPauseMap();perf.hud=performance.now();}
  if(thirdPerson){
    const vehicle=player.inVehicle,dist=vehicle?6.2:4.8,height=vehicle?2.9:2.45;
    const shoulder=new THREE.Vector3(Math.sin(player.yaw)*dist,height,Math.cos(player.yaw)*dist);
