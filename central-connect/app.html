@@ -369,7 +369,8 @@ pre,.diag,.code{max-width:100%;overflow-x:auto}
       ["Destinations",!!window.ESCIE_CENTRAL_API?.getWorkspaceId?.()],
       ["Workspace isolation",!!window.ESCIE_CENTRAL_API?.getWorkspaceId?.()],
       ["Agent history",!!window.ESCIE_AGENT_RUNTIME],
-      ["Universe contract",!!window.ESCIE_UNIVERSE_CONTRACT?.validate?.().ok]
+      ["Universe contract",!!window.ESCIE_UNIVERSE_CONTRACT?.validate?.().ok],
+      ["Layer balance",!!window.ESCIE_LAYER_BALANCE?.validate?.().ok]
     ];
     checks.forEach((x,i)=>{const el=items[i];if(!el)return;const badge=el.querySelector(".auditState");if(x[1]){badge.className="auditState pass";badge.textContent="PASS"}else{badge.className="auditState warn";badge.textContent="WATCH";failures.push(x[0])}});
     const overall=$("auditOverall"),summary=$("auditSummary");if(failures.length){overall.textContent="ATTENTION";summary.textContent=failures.join(" • ")+" need attention. No automatic changes were made."}else{overall.textContent="ALL CLEAR";summary.textContent="Core surface checks passed. No automatic changes were made."}
