@@ -117,6 +117,37 @@ pre,.diag,.code{max-width:100%;overflow-x:auto}
 .sample-fields{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.sample-fields input{padding:9px 10px;font-size:11px}@media(max-width:620px){.sample-fields{grid-template-columns:1fr}}
 
 .sample-qc{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding-top:8px;border-top:1px solid #242420}.sample-qc .kicker{grid-column:1/-1}.sample-qc input,.sample-qc select{padding:9px 10px;font-size:10px;min-width:0}.sample-qc .rowmeta{grid-column:1/-1}@media(max-width:620px){.sample-qc{grid-template-columns:1fr}}
+
+/* CENTRAL SOUL-WINDOW UI / 10-10 PRESENTATION PASS */
+body{background:
+ radial-gradient(900px 520px at 50% -8%,rgba(86,100,86,.24),transparent 62%),
+ radial-gradient(700px 520px at 100% 45%,rgba(45,72,62,.16),transparent 68%),
+ linear-gradient(180deg,#070908 0%,#090b0a 48%,#050605 100%);}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.012) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(to bottom,black,transparent 82%);}
+.shell{position:relative;isolation:isolate}
+.topbar{background:rgba(7,10,9,.58);border-color:rgba(190,205,194,.14);box-shadow:0 18px 70px rgba(0,0,0,.42),inset 0 1px rgba(255,255,255,.035);backdrop-filter:blur(24px) saturate(120%)}
+.mark{border-color:rgba(190,205,194,.24);background:radial-gradient(circle at 35% 25%,#37423a,#101311 62%,#070807);box-shadow:0 0 28px rgba(110,150,122,.12)}
+.status.headStatus{background:rgba(7,10,9,.62);border-color:rgba(190,205,194,.12);backdrop-filter:blur(18px)}
+.nav{padding:15px 4px 5px;gap:4px}.nav button{color:#727a74}.nav button.active,.nav button:hover{background:rgba(120,145,126,.09);border-color:rgba(180,205,187,.15);color:#e9eee9}
+.hero{gap:10px;align-items:stretch}.heroMain,.pulse,.panel{background:linear-gradient(135deg,rgba(22,27,24,.76),rgba(7,9,8,.66));border-color:rgba(190,205,194,.13);box-shadow:0 30px 100px rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.035);backdrop-filter:blur(18px)}
+.heroMain{border-radius:28px;min-height:330px;padding:28px}.heroMain:after{width:480px;height:480px;right:-210px;bottom:-300px;border-color:rgba(151,178,158,.10);box-shadow:0 0 0 60px rgba(151,178,158,.015),0 0 0 120px rgba(151,178,158,.009)}
+.heroMain h1{font-size:clamp(48px,8vw,92px);letter-spacing:-.07em;text-shadow:0 10px 40px rgba(0,0,0,.4)}
+.pulse{border-radius:28px;min-height:330px;position:relative;overflow:hidden}.pulse:before{content:"";position:absolute;inset:14px;border:1px solid rgba(175,198,182,.08);border-radius:22px;pointer-events:none}
+.signal i{background:#b9d1bf;box-shadow:0 0 14px rgba(150,190,161,.12)}
+.tile{min-height:118px;background:rgba(13,17,15,.48);border-radius:18px}.tile .big{font-size:25px;color:#dfe7e1}
+.dashboard{gap:9px}.sectionTitle{margin-top:36px}.quickgrid{gap:8px}.quick{border-color:rgba(190,205,194,.11);background:rgba(14,18,16,.48);border-radius:18px;transition:transform .22s ease,border-color .22s ease,background .22s ease,box-shadow .22s ease}.quick:hover{transform:translateY(-2px);border-color:rgba(190,215,196,.22);background:rgba(30,38,33,.52);box-shadow:0 18px 45px rgba(0,0,0,.22)}
+.rowcard{background:rgba(12,15,13,.55);border-color:rgba(190,205,194,.08)}.stack{border-color:rgba(190,205,194,.1);background:rgba(190,205,194,.07)}
+/* The greeting is a window, not another dashboard card. */
+.central-greeting{position:relative;display:grid;grid-template-columns:minmax(190px,.42fr) minmax(0,1fr);min-height:220px;margin:12px 0 4px;overflow:hidden;border-radius:30px;border:1px solid rgba(190,215,198,.13);background:linear-gradient(110deg,rgba(18,25,21,.72),rgba(7,10,8,.48) 58%,rgba(25,37,29,.42));box-shadow:0 35px 100px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.035);backdrop-filter:blur(20px)}
+.central-greeting:after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 17% 48%,rgba(139,182,151,.13),transparent 24%),linear-gradient(90deg,transparent 0 58%,rgba(255,255,255,.018) 58%,transparent 59%)}
+.greeting-window{position:relative;min-height:220px;overflow:hidden;background:radial-gradient(circle at 52% 50%,rgba(122,158,133,.12),transparent 33%),linear-gradient(180deg,rgba(20,29,24,.3),rgba(2,4,3,.62));border-right:1px solid rgba(190,215,198,.1)}
+.greeting-window:before,.greeting-window:after{content:"";position:absolute;background:rgba(191,211,198,.07)}.greeting-window:before{width:1px;top:12%;bottom:12%;left:50%}.greeting-window:after{height:1px;left:10%;right:10%;top:50%}
+.window-orbit{position:absolute;border:1px solid rgba(176,207,183,.16);border-radius:50%;transform:translate(-50%,-50%) rotate(-12deg)}.orbit-a{width:190px;height:118px;left:52%;top:50%}.orbit-b{width:110px;height:176px;left:52%;top:50%;transform:translate(-50%,-50%) rotate(34deg)}
+.window-signal{position:absolute;width:7px;height:7px;left:52%;top:50%;border-radius:50%;background:#c7e1cc;box-shadow:0 0 22px 5px rgba(142,192,153,.24)}
+.window-city{position:absolute;left:12%;right:12%;bottom:13%;height:25%;background:linear-gradient(90deg,transparent 0 4%,rgba(130,154,136,.15) 4% 8%,transparent 8% 12%,rgba(130,154,136,.11) 12% 17%,transparent 17% 21%,rgba(130,154,136,.18) 21% 28%,transparent 28% 34%,rgba(130,154,136,.12) 34% 42%,transparent 42% 48%,rgba(130,154,136,.18) 48% 53%,transparent 53% 61%,rgba(130,154,136,.1) 61% 69%,transparent 69% 77%,rgba(130,154,136,.17) 77% 84%,transparent 84%);clip-path:polygon(0 100%,0 55%,5% 55%,5% 36%,10% 36%,10% 62%,17% 62%,17% 20%,23% 20%,23% 50%,30% 50%,30% 8%,36% 8%,36% 57%,44% 57%,44% 28%,51% 28%,51% 64%,60% 64%,60% 14%,67% 14%,67% 48%,74% 48%,74% 31%,81% 31%,81% 55%,88% 55%,88% 23%,94% 23%,94% 62%,100% 62%,100% 100%)}
+.greeting-copy{position:relative;z-index:2;padding:32px 34px;align-self:center;max-width:720px}.greeting-copy h2{font-size:clamp(28px,4vw,48px);letter-spacing:-.055em;margin:6px 0}.greeting-copy p{font-size:14px;line-height:1.75;max-width:610px;color:#aeb7b0}.greeting-meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:20px}.greeting-meta span{font-size:9px;letter-spacing:.12em;color:#7e8b81;padding:7px 9px;border:1px solid rgba(190,215,198,.1);border-radius:999px;background:rgba(255,255,255,.018)}
+@media(max-width:700px){.central-greeting{grid-template-columns:1fr;min-height:0}.greeting-window{min-height:155px;border-right:0;border-bottom:1px solid rgba(190,215,198,.1)}.greeting-copy{padding:24px}.heroMain,.pulse{border-radius:22px}.heroMain{min-height:285px}}
+@media(prefers-reduced-motion:reduce){.quick{transition:none}}
 </style>
 </head>
 <body>
@@ -240,6 +271,18 @@ pre,.diag,.code{max-width:100%;overflow-x:auto}
   <div id="home">
     <div class="hero"><div class="panel heroMain"><div><div class="kicker">ESCIE / OWNER WORKSPACE</div><h1>CONTROL<br>THE SIGNAL.</h1><p id="acct" class="heroCopy"></p><div class="heroMeta"><span class="chip">CANONICAL SOURCE</span><span class="chip">HUMAN APPROVAL</span><span class="chip">PRIVATE BY DEFAULT</span></div></div><div class="heroMeta"><span class="chip">CREATE ONCE</span><span class="chip">APPROVE ONCE</span><span class="chip">DISTRIBUTE MANY</span></div></div>
     <div class="panel pulse"><div><div class="kicker">SYSTEM SIGNAL</div><h2>Operator online.</h2><p>Central is ready. Connections remain optional.</p></div><div class="signal"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="ey">WORKSPACE <span id="wid">—</span></div></div></div>
+    <div class="central-greeting">
+      <div class="greeting-window" aria-hidden="true">
+        <span class="window-orbit orbit-a"></span><span class="window-orbit orbit-b"></span>
+        <span class="window-signal"></span><span class="window-city"></span>
+      </div>
+      <div class="greeting-copy">
+        <div class="kicker">CENTRAL / PRESENCE</div>
+        <h2>You're back.</h2>
+        <p>I have the workspace open. Tell me what needs to happen next and I'll help organize the work, surface what matters, and prepare the next move.</p>
+        <div class="greeting-meta"><span>HEART: ESCIE</span><span>BRAIN: ACTIVE</span><span>HUMAN: FINAL AUTHORITY</span></div>
+      </div>
+    </div>
     <div class="dashboard">
       <div class="panel tile"><div class="kicker">WORK</div><div class="big">READY</div><div class="sub">Canonical source layer</div></div>
       <div class="panel tile"><div class="kicker">BRAIN</div><div class="big">IDLE</div><div class="sub">Analysis layer</div></div>
