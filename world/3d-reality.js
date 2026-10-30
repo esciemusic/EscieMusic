@@ -167,9 +167,11 @@ function setup(){
  visibilityHandler=()=>{if(document.hidden){root.ESCIE_WORLD_SIMULATION?.flush?.();if(raf)cancelAnimationFrame(raf);raf=0}else if(started&&!paused&&!raf){clock.start();render();}};document.addEventListener("visibilitychange",visibilityHandler);
  return true;
 }
+const touchPad={moveX:0,moveY:0,lookX:0,lookY:0,buttons:{a:false,b:false,x:false,y:false,lb:false,rb:false,start:false,back:false}};
 function gamepadInput(){
- const pads=navigator.getGamepads?.()||[];const p=[...pads].find(Boolean);if(!p)return {f:0,str:0,lookX:0,lookY:0,sprint:false,action:false,start:false,back:false};
- const dz=v=>Math.abs(v)<.14?0:v;return {f:-dz(Number(p.axes?.[1]||0)),str:dz(Number(p.axes?.[0]||0)),lookX:dz(Number(p.axes?.[2]||0)),lookY:dz(Number(p.axes?.[3]||0)),sprint:!!p.buttons?.[10]?.pressed,action:!!p.buttons?.[0]?.pressed,start:!!p.buttons?.[9]?.pressed,back:!!p.buttons?.[8]?.pressed};
+ const pads=navigator.getGamepads?.()||[];const p=[...pads].find(Boolean);const dz=v=>Math.abs(v)<.12?0:v;
+ if(p)return {f:-dz(Number(p.axes?.[1]||0)),str:dz(Number(p.axes?.[0]||0)),lookX:dz(Number(p.axes?.[2]||0)),lookY:dz(Number(p.axes?.[3]||0)),sprint:!!p.buttons?.[10]?.pressed,action:!!p.buttons?.[0]?.pressed,start:!!p.buttons?.[9]?.pressed,back:!!p.buttons?.[8]?.pressed,fight:!!p.buttons?.[2]?.pressed,open:!!p.buttons?.[3]?.pressed};
+ return {f:-touchPad.moveY,str:touchPad.moveX,lookX:touchPad.lookX,lookY:touchPad.lookY,sprint:touchPad.buttons.b||touchPad.buttons.rb,action:touchPad.buttons.a,start:touchPad.buttons.start,back:touchPad.buttons.back,fight:touchPad.buttons.x,open:touchPad.buttons.y};
 }
 function evidenceInteract(){const m=updateEvidence();if(!m)return false;const o=m.userData.evidence;const r=root.ESCIE_WORLD_ACTIONS?.interactObject?.(o);if(r!==false){say3D("EVIDENCE · "+String(o.label||o.id)+" · LOGGED");return true}return false}
 function nearestNPC(max=2.8){const live=root.ESCIE_WORLD_NPC?.state?.().npcs||{};let best=null,bd=max;actors.forEach(a=>{if(!a.userData.canonical)return;const n=live[a.userData.id];if(!n||Number(n.health??100)<=0)return;const d=Math.hypot(player.x-a.position.x,player.z-a.position.z);if(d<bd){bd=d;best={npc:n,actor:a,d}}});return best}
@@ -279,7 +281,7 @@ function move(dt){
  if(gp.start&&!move._lastStart){togglePause();} move._lastStart=gp.start;
  if(gp.back&&!move._lastBack){document.querySelector("[data-system]")?.click?.();} move._lastBack=gp.back;
  player.yaw+=gp.lookX*dt*2.4;player.pitch=clamp(player.pitch-gp.lookY*dt*1.8,-1.2,1.2);
- if(gp.action&&!move._lastAction){document.querySelector("[data-action-primary]")?.click()} move._lastAction=gp.action;
+ if(gp.action&&!move._lastAction){interact()} move._lastAction=gp.action;if(gp.fight&&!move._lastFight){fight3D()} move._lastFight=gp.fight;if(gp.open&&!move._lastOpen){interact()} move._lastOpen=gp.open;
  let f=(keys.has("w")||keys.has("arrowup")?1:0)-(keys.has("s")||keys.has("arrowdown")?1:0);
  let str=(keys.has("d")||keys.has("arrowright")?1:0)-(keys.has("a")||keys.has("arrowleft")?1:0);f+=gp.f;str+=gp.str;
  const len=Math.hypot(f,str)||1;f/=len;str/=len;
@@ -452,7 +454,7 @@ function bind(){
    const p=e.target.closest("[data-pause]");if(p)togglePause();
    const r=e.target.closest("[data-world-resume]");if(r)togglePause(false);const s=e.target.closest("[data-save]");if(s&&paused){root.ESCIE_WORLD_ACTIONS?.save?.();}const x=e.target.closest("[data-return-pause]");if(x&&paused){window.location.href="../";} const open=e.target.closest("[data-pause-open]");if(open&&paused){const api=root.ESCIE_WORLD_UI,type=open.dataset.pauseOpen;if(type==="inventory")api?.inventory?.();else if(type==="character")api?.character?.();else if(type==="investigation")api?.investigation?.();else if(type==="market")api?.market?.();else if(type==="phone")api?.phoneApp?.("notifications");else if(type==="quests")api?.quests?.();else if(type==="simulation")api?.openSimulation?.();else if(type==="system")api?.systemMenu?.();else if(type==="profile")api?.profileMenu?.();else if(type==="preferences")api?.preferences?.();else if(type==="glass")api?.glass?.();}
  });
- document.querySelectorAll("[data-dir]").forEach(b=>{
+ const mobilePad=document.getElementById("mobile-gamepad");if(mobilePad){mobilePad.querySelectorAll("[data-stick]").forEach(zone=>{const kind=zone.dataset.stick,knob=zone.querySelector(".mobile-stick");let id=null,cx=0,cy=0,max=1;const reset=()=>{id=null;knob.style.transform="translate(-50%,-50%)";if(kind==="move"){touchPad.moveX=touchPad.moveY=0}else{touchPad.lookX=touchPad.lookY=0}};zone.addEventListener("pointerdown",e=>{e.preventDefault();activeInputDevice("TOUCH");id=e.pointerId;const r=zone.getBoundingClientRect();cx=r.left+r.width/2;cy=r.top+r.height/2;max=Math.min(r.width,r.height)*.32;zone.setPointerCapture?.(id)});zone.addEventListener("pointermove",e=>{if(id!==e.pointerId)return;const dx=e.clientX-cx,dy=e.clientY-cy,len=Math.hypot(dx,dy)||1,x=Math.max(-1,Math.min(1,dx/max)),y=Math.max(-1,Math.min(1,dy/max));knob.style.transform="translate(calc(-50% + "+Math.max(-max,Math.min(max,dx))+"px),calc(-50% + "+Math.max(-max,Math.min(max,dy))+"px))";if(kind==="move"){touchPad.moveX=x;touchPad.moveY=y}else{touchPad.lookX=x;touchPad.lookY=y}});["pointerup","pointercancel","lostpointercapture"].forEach(ev=>zone.addEventListener(ev,reset))});mobilePad.querySelectorAll("[data-pad-button]").forEach(btn=>{const k=btn.dataset.padButton;const down=e=>{e.preventDefault();activeInputDevice("TOUCH");touchPad.buttons[k]=true;btn.classList.add("pressed")};const up=e=>{e.preventDefault();touchPad.buttons[k]=false;btn.classList.remove("pressed")};btn.addEventListener("pointerdown",down);["pointerup","pointercancel","pointerleave"].forEach(ev=>btn.addEventListener(ev,up))})}document.querySelectorAll("[data-dir]").forEach(b=>{
    const map={up:"w",down:"s",left:"a",right:"d"};const k=map[b.dataset.dir];
    const on=e=>{e.preventDefault();keys.add(k)},off=e=>{e.preventDefault();keys.delete(k)};
    b.addEventListener("pointerdown",on);b.addEventListener("pointerup",off);b.addEventListener("pointerleave",off);b.addEventListener("pointercancel",off);
