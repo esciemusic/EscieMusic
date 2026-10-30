@@ -685,3 +685,9 @@ assert(world3dRuntime.includes("g.userData.doorTransition=crossing?"ROOM_TRANSIT
 assert(world3dRuntime.includes("g.userData.doorTransition="ARRIVED""),"interior NPCs must mark arrival into the destination room");
 assert(world3dRuntime.includes("const gateBlocked=(x,z)=>"),"interior room movement must pass through a physical corridor gate");
 console.log("ESCIE physical interior room transitions OK");
+
+assert(world3dRuntime.includes("function updateHostileNPCs(now)"),"3D gameplay must include active hostile NPC AI");
+assert(world3dRuntime.includes("a.userData.combatState="CHASING""),"hostile NPCs must chase the player");
+assert(world3dRuntime.includes("sim?.applyDamage?.(damage,"NPC_ATTACK")"),"hostile NPCs must be able to damage the player");
+assert(world3dRuntime.includes("a.userData.combatState="ATTACKING""),"hostile NPCs must enter an attacking state");
+console.log("ESCIE active NPC combat gameplay OK");
