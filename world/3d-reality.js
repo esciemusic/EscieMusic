@@ -183,7 +183,7 @@ function enter3DInterior(building){
  worldGroup.children.forEach(o=>o.visible=false);
  interiorGroup=new THREE.Group();worldGroup.add(interiorGroup);
  const floor=new THREE.Mesh(new THREE.BoxGeometry(16,.12,12),makeMat(0x101114,.95));floor.position.y=0;interiorGroup.add(floor);
- [[0,2,-6],[0,2,6],[-8,2,0],[8,2,0]].forEach((p,i)=>{const w=new THREE.Mesh(new THREE.BoxGeometry(i<2?16:.12,4,i<2?.12:12),makeMat(0x292a2e,.96));w.position.set(p[0],p[1],p[2]);interiorGroup.add(w)});
+ [[0,2,-6],[0,2,6],[-8,2,0],[8,2,0]].forEach((p,i)=>{const w=new THREE.Mesh(new THREE.BoxGeometry(i<2?16:.12,4,i<2 ? .12 : 12),makeMat(0x292a2e,.96));w.position.set(p[0],p[1],p[2]);interiorGroup.add(w)});
  const desk=new THREE.Mesh(new THREE.BoxGeometry(3,.9,1.2),makeMat(0x1b1c1f,.9));desk.position.set(0,.45,-2);interiorGroup.add(desk);
  const signal=new THREE.Mesh(new THREE.BoxGeometry(.7,.08,.7),makeMat(0x2f80ff,.55,.2));signal.position.set(0,.95,-2);interiorGroup.add(signal);
  const light=new THREE.PointLight(0x4da3ff,2,18);light.position.set(0,3,0);interiorGroup.add(light);
