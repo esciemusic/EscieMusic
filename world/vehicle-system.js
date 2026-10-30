@@ -1,15 +1,7 @@
 /* ESCIE THE WORLD · Vehicle registry / ownership / radio layer */
 (()=>{"use strict";
 const KEY="escie_world_vehicles_v1";
-const VEHICLES={
- TAXI:{id:"TAXI",type:"CAR",label:"TAXI",price:0,owned:false,speed:2,risk:1,radio:true},
- STREET_CAR:{id:"STREET_CAR",type:"CAR",label:"STREET CAR",price:0,owned:false,speed:2,risk:3,radio:true},
- COMPACT:{id:"COMPACT",type:"CAR",label:"COMPACT",price:3500,owned:false,speed:3,risk:1,radio:true},
- SEDAN:{id:"SEDAN",type:"CAR",label:"SEDAN",price:6000,owned:false,speed:3,risk:1,radio:true},
- BIKE:{id:"BIKE",type:"BIKE",label:"BIKE",price:250,speed:2,risk:0,radio:false},
- SKATEBOARD:{id:"SKATEBOARD",type:"BOARD",label:"SKATEBOARD",price:100,speed:1,risk:0,radio:false},
- ROLLERBLADES:{id:"ROLLERBLADES",type:"BOARD",label:"ROLLERBLADES",price:140,speed:1,risk:0,radio:false}
-};
+const VEHICLES=(window.ESCIE_WORLD_ITEMS?.vehicles)||{};
 const DEFAULT={owned:["BIKE","SKATEBOARD","ROLLERBLADES"],current:null,radio:true,condition:{},history:[]};
 const clone=o=>JSON.parse(JSON.stringify(o));
 const read=()=>{try{const v=JSON.parse(localStorage.getItem(KEY)||"null");return v&&Array.isArray(v.owned)?v:clone(DEFAULT)}catch(e){return clone(DEFAULT)}};
