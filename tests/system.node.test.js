@@ -611,6 +611,9 @@ assert(world3dRuntime.includes("n.x=Number(target.x)"),"street NPC schedule targ
 assert(world3dRuntime.includes("buildingRef.__worldDoor"),"authored buildings must expose runtime door coordinates for NPC routing");
 assert(world3dRuntime.includes("current_building_id"),"NPC runtime must persist street/interior building state");
 assert(world3dRuntime.includes("lastWorldX"),"NPC runtime must preserve the last world position across interior transitions");
+assert(world3dRuntime.includes("enteringUntil"),"NPC building transitions must have a visible arrival phase before street actors disappear");
+assert(world3dRuntime.includes("doorTransition"),"NPC building transitions must expose explicit door transition state");
+assert(world3dRuntime.includes('n.current_building_state="INSIDE"'),"NPC runtime must persist an inside-building state after the door transition");
 
 
 const worldContent=fs.readFileSync("data/world-content.js","utf8");
