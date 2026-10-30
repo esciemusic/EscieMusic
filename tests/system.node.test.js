@@ -552,8 +552,8 @@ assert(world3dRuntime.includes("const expectedBuilding="),"interior NPC visibili
 assert(/activity==="WORK"\s*\?\s*\(live\.work_building\?\.id\|\|live\.workplace_id\)/.test(world3dRuntime),"working NPCs must resolve their authored workplace");
 assert(/activity==="SOCIAL"\s*\?\s*\(live\.social_building\?\.id\|\|live\.social_place_id\)/.test(world3dRuntime),"social NPCs must resolve their authored social place");
 assert(world3dRuntime.includes('["SLEEP","HOME"].includes(activity)'),"home NPC routines must resolve authored home buildings");
-assert(world3dRuntime.includes("g.userData.targetStation=station.userData.interiorStation"),"interior NPCs must persist their current station target");
-assert(world3dRuntime.includes("g.userData.targetRoom=station.userData.interiorStation.room"),"interior NPCs must retain their current room target");
+assert(/g\.userData\.targetStation=meta/.test(world3dRuntime)&&world3dRuntime.includes("const meta=station.userData.interiorStation"),"interior NPCs must persist their current station target");
+assert(world3dRuntime.includes("g.userData.targetRoom=meta.room"),"interior NPCs must retain their current room target");
 assert(world3dRuntime.includes("Math.floor(minute/15)+hashId(g.userData.id)"),"interior station selection must remain deterministic across frames");
 console.log("ESCIE contextual interior schedule contracts OK");
 
