@@ -20,8 +20,10 @@
       caption:"",
       tags:["montreal","graffiti","street","autumn","architecture","benches"],
       location:{
-        locationId:"LITTLE_ITALY",
+        locationId:"DANTE_PARK",
         label:"DANTE PARK · LITTLE ITALY",
+        placeType:"park",
+        landmarkId:"DANTE_PARK",
         coordinates:{lat:null,lng:null,accuracyM:null},
         coordinateSource:"user_provided",
         district:"Little Italy",
