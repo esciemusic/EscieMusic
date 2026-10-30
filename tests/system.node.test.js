@@ -707,3 +707,9 @@ assert(sim.includes("const crimeJobProgress="), "crime jobs must have physical p
 assert(world3dRuntime.includes("function crimeInteract()"), "3D world must expose physical crime entry");
 assert(world3dRuntime.includes("crimeJobProgress?.(\"TAKE\""), "crime interiors must support physical loot taking");
 assert(world3dRuntime.includes("crimeJobProgress?.(\"ESCAPE\""), "crime exits must progress the heist");
+assert(sim.includes("ROBBERY:{id:\"ROBBERY\""), "crime jobs must include robbery");
+assert(world3dRuntime.includes('const kind=night?"BURGLARY":(interior==="SHOP"?"ROBBERY":null)'), "3D crime must distinguish burglary and daytime robbery");
+assert(world3dRuntime.includes('commitCrime?.("ROBBERY"'), "robbery must create a systemic crime record");
+assert(law.includes("caseFiles"), "law system must maintain crime case files");
+assert(law.includes("reportCrime"), "law system must expose crime reporting");
+assert(law.includes("sim.change({wanted:-Number(st.wanted||0)})"), "arrest must clear wanted state after sentencing");
