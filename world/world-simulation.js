@@ -78,16 +78,6 @@ const nearestStreetNode=(neighbourhood,position)=>{
     return !best||d<best.distance?Object.assign({},n,{distance:d}):best
   },null)
 };
-const STREET_EDGES={
-  "PARC-EXTENSION":[["HOME","DUROCHER"],["DUROCHER","HUTCHISON"],["HUTCHISON","PARC"],["PARC","JEAN_TALON"],["JEAN_TALON","BEAUMONT"],["BEAUMONT","ACADIE"],["ACADIE","OGILVY"]],
-  "MILE END":[["LAURIER","SAINT_VIATEUR"],["SAINT_VIATEUR","MONT_ROYAL"],["MONT_ROYAL","SAINT_URBAIN"],["SAINT_URBAIN","ROSEMONT"]],
-  "PLATEAU":[["LAURIER","SAINT_DENIS"],["SAINT_DENIS","MONT_ROYAL"],["MONT_ROYAL","SAINT_LAURENT"],["SAINT_LAURENT","SHERBROOKE"]],
-  "ROSEMONT":[["ROSEMONT","BEAUBIEN"],["BEAUBIEN","IBERVILLE"],["IBERVILLE","JEAN_TALON"]],
-  "DOWNTOWN":[["BERRI_UQAM","SAINT_DENIS"],["SAINT_DENIS","MCGILL"],["MCGILL","PEEL"],["PEEL","GUY_CONCORDIA"]],
-  "OLD MONTREAL":[["CHAMP_DE_MARS","PLACE_DARMES"],["PLACE_DARMES","OLD_PORT"]],
-  "SAINT-HENRI":[["SAINT_HENRI","PLACE_SAINT_HENRI"],["PLACE_SAINT_HENRI","NOTRE_DAME"],["NOTRE_DAME","VENDOME"]],
-  "VERDUN":[["DE_LEGLISE","WELLINGTON"],["WELLINGTON","VERDUN"]]
-};
 const streetGraph=(neighbourhood)=>{
   const d=String(neighbourhood||"").toUpperCase();
   return {neighbourhood:d,nodes:WORLD_STREETS[d]||[],edges:STREET_EDGES[d]||[]};
@@ -101,48 +91,6 @@ const streetPath=(neighbourhood,fromId,toId)=>{
     for(const next of adj[cur])if(!seen.has(next)){seen.add(next);q.push(path.concat(next))}}
   return null;
 };
-const NPC_POPULATIONS={
-  "PARC-EXTENSION":[
-    {id:"resident_pe_01",role:"RESIDENT",home:"HOME_01",work:"SHOP_01",x:2,y:7,awareness:55},
-    {id:"shopkeeper_pe_01",role:"SHOPKEEPER",home:"HOME_01",work:"SHOP_01",x:4,y:5,awareness:65}
-  ],
-  "MILE END":[
-    {id:"barista_me_01",role:"BARISTA",home:"STUDIO_ME",work:"CAFE_ME",x:6,y:5,awareness:60},
-    {id:"musician_me_01",role:"MUSICIAN",home:"STUDIO_ME",work:"STUDIO_ME",x:8,y:5,awareness:70}
-  ],
-  "PLATEAU":[
-    {id:"worker_pl_01",role:"WORKER",home:"CLUB_PL",work:"SHOP_PL",x:5,y:5,awareness:55},
-    {id:"trainer_pl_01",role:"TRAINER",home:"GYM_PL",work:"GYM_PL",x:10,y:7,awareness:65}
-  ],
-  "ROSEMONT":[
-    {id:"worker_ro_01",role:"WORKER",home:"APARTMENT_RO",work:"SHOP_RO",x:8,y:6,awareness:55},
-    {id:"clinic_ro_01",role:"CLINIC_WORKER",home:"APARTMENT_RO",work:"CLINIC_RO",x:11,y:4,awareness:75}
-  ],
-  "DOWNTOWN":[
-    {id:"office_dt_01",role:"OFFICE_WORKER",home:"OFFICE_DT",work:"OFFICE_DT",x:7,y:5,awareness:55},
-    {id:"venue_dt_01",role:"VENUE_WORKER",home:"VENUE_DT",work:"VENUE_DT",x:12,y:7,awareness:65}
-  ],
-  "OLD MONTREAL":[
-    {id:"archivist_om_01",role:"ARCHIVIST",home:"ARCHIVE_OM",work:"ARCHIVE_OM",x:9,y:7,awareness:80},
-    {id:"vendor_om_01",role:"VENDOR",home:"VENUE_OM",work:"VENUE_OM",x:11,y:8,awareness:55}
-  ],
-  "SAINT-HENRI":[
-    {id:"cafe_sh_01",role:"BARISTA",home:"CAFE_SH",work:"CAFE_SH",x:8,y:6,awareness:60},
-    {id:"clinic_sh_01",role:"CLINIC_WORKER",home:"CLINIC_SH",work:"CLINIC_SH",x:11,y:6,awareness:75}
-  ],
-  "VERDUN":[
-    {id:"shop_ve_01",role:"SHOPKEEPER",home:"APARTMENT_VE",work:"SHOP_VE",x:7,y:6,awareness:60},
-    {id:"trainer_ve_01",role:"TRAINER",home:"GYM_VE",work:"GYM_VE",x:7,y:6,awareness:65}
-  ]
-};
-const NPC_DAY_PLAN=[
-  {start:0,end:360,activity:"SLEEP",target:"home"},
-  {start:360,end:540,activity:"COMMUTE",target:"work"},
-  {start:540,end:1020,activity:"WORK",target:"work"},
-  {start:1020,end:1140,activity:"SOCIAL",target:"social"},
-  {start:1140,end:1320,activity:"COMMUTE",target:"home"},
-  {start:1320,end:1440,activity:"SLEEP",target:"home"}
-];
 const npcPopulation=(district)=>NPC_POPULATIONS[String(district||"").toUpperCase()]||[];
 const npcHomeTarget=(n)=>{const b=findBuilding(String(n.district||"").toUpperCase(),n.home);return b?findLandmark(n.district,b.landmark):null};
 const npcWorkTarget=(n)=>{const b=findBuilding(String(n.district||"").toUpperCase(),n.work);return b?findLandmark(n.district,b.landmark):null};
