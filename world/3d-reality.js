@@ -228,6 +228,12 @@ function updateStreetIncident(now){
    const label={ARGUMENT:"ARGUMENT",THEFT_WITNESS:"POSSIBLE THEFT",MINOR_ACCIDENT:"MINOR ACCIDENT",DELIVERY_CONFLICT:"DELIVERY CONFLICT",POLICE_STOP:"POLICE STOP"}[streetIncident.type]||"STREET INCIDENT";
    if(playerClose&&now-streetIncident.lastPrompt>4200){streetIncident.lastPrompt=now;say3D(label+" · APPROACH TO INTERVENE");}
    if(now>streetIncident.expires){
+     if(streetIncident.type==="POLICE_STOP"){
+       const law=root.ESCIE_WORLD_LAW;
+       law?.dispatch?.("STREET POLICE STOP",1);
+       root.ESCIE_WORLD_NPC?.rememberInteraction?.(a.id,{channel:"STREET_INCIDENT",type:"POLICE_STOP",outcome:"STOP CONTINUES"});
+       root.ESCIE_WORLD_NPC?.rememberInteraction?.(b.id,{channel:"STREET_INCIDENT",type:"POLICE_STOP",outcome:"STOP CONTINUES"});
+     }
      const actions=root.ESCIE_WORLD_ACTIONS,law=root.ESCIE_WORLD_LAW;
      if(streetIncident.type==="ARGUMENT"){root.ESCIE_WORLD_NPC?.npcLink?.(a.id,b.id,-2,"ARGUMENT ESCALATED");root.ESCIE_WORLD_NPC?.rememberInteraction?.(a.id,{channel:"STREET_INCIDENT",type:"ARGUMENT",outcome:"ESCALATED WITHOUT INTERVENTION"});}
      else if(streetIncident.type==="THEFT_WITNESS"){root.dispatchEvent(new CustomEvent("escie:world-detection",{detail:{source:"STREET THEFT",level:1}}));law?.dispatch?.("STREET THEFT",1);actions?.awardRPGXP?.(2,"OBSERVED CONSEQUENCE");}
