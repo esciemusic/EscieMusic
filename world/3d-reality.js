@@ -122,7 +122,8 @@ function setup(){
  renderer.domElement.addEventListener("click",()=>renderer.domElement.requestPointerLock?.());
  renderer.domElement.addEventListener("mousemove",e=>{if(document.pointerLockElement!==renderer.domElement)return;player.yaw-=e.movementX*.0022;player.pitch=clamp(player.pitch-e.movementY*.0018,-1.2,1.2);});
  document.addEventListener("keydown",e=>{keys.add(e.key.toLowerCase());if(["w","a","s","d","shift","arrowup","arrowdown","arrowleft","arrowright"].includes(e.key.toLowerCase()))e.preventDefault();});
- document.addEventListener("keyup",e=>keys.delete(e.key.toLowerCase()));\n document.addEventListener("keydown",e=>{if(e.key==="Escape"){e.preventDefault();togglePause();}});
+ document.addEventListener("keyup",e=>keys.delete(e.key.toLowerCase()));
+ document.addEventListener("keydown",e=>{if(e.key==="Escape"){e.preventDefault();togglePause();}});
  document.addEventListener("keydown",e=>{if(e.key.toLowerCase()==="e"){if(!interact())document.querySelector("[data-action-primary]")?.click();}});
  let touchLook=null;
  renderer.domElement.addEventListener("touchstart",e=>{if(e.touches.length===1)touchLook={x:e.touches[0].clientX,y:e.touches[0].clientY};},{passive:true});
