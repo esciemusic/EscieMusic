@@ -3326,3 +3326,42 @@ main > section:not(#entry).section-open{
 .glass-eye-actions button{font:inherit;letter-spacing:.12em;background:transparent;border:1px solid currentColor;padding:.65rem .9rem;cursor:pointer;}
 .glass-eye-actions button:hover,.glass-eye-actions button:focus-visible{transform:translateY(-1px);}
 .glass-eye-response{min-height:1.4em;opacity:.72;}
+
+
+/* COUNTDOWN — dormant until 2026-10-31, then becomes part of the signal chamber */
+.escie-countdown{
+  position:absolute;
+  left:50%;
+  bottom:15%;
+  transform:translateX(-50%);
+  z-index:3;
+  display:grid;
+  justify-items:center;
+  gap:8px;
+  min-width:min(86vw,520px);
+  padding:14px 20px;
+  border-top:1px solid rgba(47,128,255,.35);
+  border-bottom:1px solid rgba(47,128,255,.18);
+  background:rgba(0,0,0,.26);
+  box-shadow:0 0 42px rgba(47,128,255,.06),inset 0 0 28px rgba(47,128,255,.025);
+  text-align:center;
+}
+.countdown-status{
+  color:rgba(216,212,202,.62);
+  font:700 9px/1 monospace;
+  letter-spacing:.34em;
+}
+.countdown-value{
+  color:var(--escie-paper);
+  font:700 clamp(1.55rem,5vw,3.2rem)/1 monospace;
+  letter-spacing:.14em;
+  text-shadow:0 0 18px rgba(47,128,255,.22);
+}
+@media(max-width:700px){
+  .escie-countdown{bottom:13%;min-width:72vw;padding:11px 12px}
+  .countdown-status{font-size:7px;letter-spacing:.24em}
+  .countdown-value{letter-spacing:.08em}
+}
+@media(prefers-reduced-motion:reduce){
+  .countdown-value{text-shadow:none}
+}
