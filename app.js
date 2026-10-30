@@ -779,6 +779,13 @@ function renderClothing(){
   }
 
   function bindMerchFilters(){
+    const host=byId("merch-filters");
+    const clothing=normalizeCollection(getGlobal("ESCIE_CLOTHING",[])).filter(item=>item&&item.type==="CLOTHING");
+    if(host){
+      const categories=Array.from(new Set(clothing.map(item=>String(item.category||"CORE").toUpperCase()))).sort();
+      const current=String(byId("merch-container")?.dataset.filter||"ALL").toUpperCase();
+      host.innerHTML=["ALL"].concat(categories).map(value=>'<button type="button" class="merch-filter '+(current===value?"is-active":"")+'" data-merch-filter="'+escapeHTML(value)+'">'+escapeHTML(value)+'</button>').join("");
+    }
     const controls=document.querySelectorAll("[data-merch-filter]");
     controls.forEach(button=>{
       if(button.dataset.bound==="1")return;
@@ -907,18 +914,55 @@ function renderClothing(){
   function renderGlassEye() {
     const container=byId("glass-eye-container"); if(!container)return;
     const memory=getGlobal("ESCIE_GLASS_EYE_MEMORY",null),journey=getGlobal("ESCIE_GLASS_EYE_JOURNEY",null);
-    const latest=getAllPublicRecords().filter(r=>r&&r.type==="music").sort((a,b)=>String(a.number||"").localeCompare(String(b.number||""),undefined,{numeric:true})).slice(-1)[0]||null;
-    const summary=memory&&typeof memory.summary==="function"?memory.summary():{observed:0,discoveries:0,connections:0,visited:0};
-    const path=journey&&typeof journey.journey==="function"?(journey.journey().path||[]):[];
+    const summary=memory&&typeof memory.summary==="function"?memory.summary():{observed:0,interacted:0,discoveries:0,connections:0,missed:0,unknown:0,unresolved:0,visited:0,events:0};
+    const state=memory&&typeof memory.state==="function"?memory.state():{};
+    const path=journey&&typeof journey.journey==="function"?(journey.journey().path||[]):(Array.isArray(state.path)?state.path:[]);
     const last=path.length?path[path.length-1]:null;
-    container.innerHTML='<div class="glass-frame glass-eye-interface"><div class="glass-readout"><span>THE GLASS EYE</span><span>THE AUDIENCE EYE / YOUR SIDE OF THE SCREEN</span></div><div class="glass-center"><span class="glass-dot"></span><strong>YOU ARE LOOKING THROUGH THE SCREEN.</strong><span class="glass-core-line">LOOK. LISTEN. FOLLOW. RETURN.</span><p>This is your corner of the ESCIE world. Notice something. Follow it. Come back. Your experience can stay yours without becoming canon.</p><div class="glass-eye-actions" role="group" aria-label="Glass Eye actions"><button type="button" data-glass-eye-action="observe">OBSERVE</button><button type="button" data-glass-eye-action="follow">FOLLOW A THREAD</button><button type="button" data-glass-eye-action="return">RETURN</button></div><p class="glass-eye-response" aria-live="polite">'+escapeHTML(latest?"A transmission is waiting. Your attention is the first interaction.":"The signal is quiet. Your attention is still part of the experience.")+'</p></div><div class="glass-memory-inline"><div><span>YOUR MEMORY</span><strong>LOCAL / NON-CANONICAL</strong></div><div class="glass-memory-stats"><span>OBSERVED <b>'+escapeHTML(summary.observed||0)+'</b></span><span>DISCOVERED <b>'+escapeHTML(summary.discoveries||0)+'</b></span><span>CONNECTED <b>'+escapeHTML(summary.connections||0)+'</b></span><span>VISITED <b>'+escapeHTML(summary.visited||0)+'</b></span></div><div class="glass-path-line"><span>RECENT PATH</span><em>'+escapeHTML(last?(last.type+" / "+(last.target_id||"—")):"NO OBSERVATIONS YET")+'</em></div><button type="button" class="glass-memory-clear-inline" data-glass-eye-action="clear-memory">CLEAR MY MEMORY</button></div><div class="glass-footer"><span>LOOK</span><span>LISTEN</span><span>FOLLOW</span><span>RETURN</span><span>NO CANON</span></div></div>';
+    const journeyState=journey&&typeof journey.journey==="function"?journey.journey():{};
+    const lastSignal=journeyState.last_signal||null;
+    const questions=Array.isArray(journeyState.questions)?journeyState.questions:(Array.isArray(state.unresolved)?state.unresolved:[]);
+    const unknowns=Array.isArray(journeyState.unknown)?journeyState.unknown:(Array.isArray(state.unknown)?state.unknown:[]);
+    const recent=path.slice(-6).reverse();
+    const esc=v=>escapeHTML(v==null?"":v);
+    container.innerHTML=
+      '<div class="glass-frame glass-eye-interface">'+
+        '<div class="glass-readout"><span>THE GLASS EYE</span><span>VIEWER LAYER / LOCAL MEMORY</span></div>'+
+        '<div class="glass-center">'+
+          '<span class="glass-dot"></span>'+
+          '<strong>THIS IS YOUR SIDE OF THE SCREEN.</strong>'+
+          '<span class="glass-core-line">SEE · HEAR · FOLLOW · MISS · RETURN</span>'+
+          '<p>The Glass Eye remembers your journey on this device. It does not decide what is real, write canon, or send your path to Central.</p>'+
+          '<div class="glass-eye-actions" role="group" aria-label="Glass Eye actions">'+
+            '<button type="button" data-glass-eye-action="observe">SEE WHAT I SAW</button>'+
+            '<button type="button" data-glass-eye-action="follow">FOLLOW MY THREAD</button>'+
+            '<button type="button" data-glass-eye-action="return">RETURN TO THE WORLD</button>'+
+          '</div>'+
+          '<p class="glass-eye-response" aria-live="polite">LOCAL MEMORY / NON-CANONICAL</p>'+
+        '</div>'+
+        '<div class="glass-memory-inline">'+
+          '<div><span>YOUR MEMORY</span><strong>LOCAL · PRIVATE · NON-CANONICAL</strong></div>'+
+          '<div class="glass-memory-stats">'+
+            '<span>SAW <b>'+esc(summary.observed||0)+'</b></span>'+
+            '<span>DID <b>'+esc(summary.interacted||0)+'</b></span>'+
+            '<span>MISSED <b>'+esc(summary.missed||0)+'</b></span>'+
+            '<span>CONNECTED <b>'+esc(summary.connections||0)+'</b></span>'+
+            '<span>UNKNOWN <b>'+esc(summary.unknown||unknowns.length||0)+'</b></span>'+
+            '<span>QUESTIONS <b>'+esc(summary.unresolved||questions.length||0)+'</b></span>'+
+          '</div>'+
+          '<div class="glass-path-line"><span>LAST SIGNAL</span><em>'+esc(lastSignal||"NONE RECORDED")+'</em></div>'+
+          '<div class="glass-path-line"><span>RECENT PATH</span><em>'+esc(last?(last.type+" / "+(last.target_id||"—")):"NO PATH YET")+'</em></div>'+
+          (recent.length?'<div class="glass-path-events">'+recent.map(e=>'<span>'+esc(e.type)+" / "+esc(e.target_id||"—")+'</span>').join("")+'</div>':'')+
+          '<button type="button" class="glass-memory-clear-inline" data-glass-eye-action="clear-memory">CLEAR MY MEMORY</button>'+
+        '</div>'+
+        '<div class="glass-footer"><span>YOUR PATH</span><span>YOUR MEMORY</span><span>NO CANON</span><span>NO CENTRAL HISTORY</span></div>'+
+      '</div>';
     const response=container.querySelector(".glass-eye-response");
     container.querySelectorAll("[data-glass-eye-action]").forEach(button=>button.addEventListener("click",()=>{
       const action=button.getAttribute("data-glass-eye-action");
       if(action==="clear-memory"){if(memory&&typeof memory.clear==="function")memory.clear();renderGlassEye();return;}
-      const messages={observe:"OBSERVING · what you notice belongs to your experience first.",follow:"FOLLOWING · choose a thread and see where it leads. The gaps stay gaps.",return:"RETURNING · the world remains here. Your path remains yours."};
+      const messages={observe:"LOCAL VIEW · your observations stay on this device.",follow:"THREAD OPEN · follow connections without turning your path into canon.",return:"RETURNING · the public world is unchanged by your journey."};
       if(response)response.textContent=messages[action]||"THE GLASS EYE IS OPEN.";
-      if(memory&&typeof memory.record==="function")memory.record({type:"GLASS_EYE_"+String(action||"").toUpperCase(),target_id:latest?recordId(latest):"glass-eye",timestamp:new Date().toISOString()});
+      if(memory&&typeof memory.record==="function")memory.record({type:"GLASS_EYE_"+String(action||"").toUpperCase(),target_id:"glass-eye",timestamp:new Date().toISOString()});
       setTimeout(renderGlassEye,0);
     }));
   }
@@ -944,10 +988,16 @@ function renderClothing(){
 
   function getAllPublicRecords() {
     const registry = getGlobal("ESCIE_RECORD_REGISTRY", null);
-    if (registry && typeof registry.allPublicRecords === "function") {
-      return registry.allPublicRecords().filter(isPublic);
-    }
-    return getAllRecords().filter(isPublic);
+    const canonical = registry && typeof registry.allPublicRecords === "function"
+      ? registry.allPublicRecords().filter(isPublic)
+      : getAllRecords().filter(isPublic);
+    const live = normalizeCollection(getGlobal("ESCIE_LIVE_RECORDS", []))
+      .filter(isPublic)
+      .filter(record => record && recordId(record));
+    const map = new Map();
+    canonical.forEach(record => map.set(recordId(record), record));
+    live.forEach(record => map.set(recordId(record), record));
+    return Array.from(map.values());
   }
 
   function registryAudit() {
