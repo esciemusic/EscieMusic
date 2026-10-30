@@ -191,7 +191,24 @@ function policeCollision(){
 }
 function updatePolice(){const law=root.ESCIE_WORLD_LAW?.state?.();if(!law?.active){if(updatePolice.group)updatePolice.group.visible=false;return}const count=Math.max(1,Math.min(4,Number(law.units?.length||law.level||1)));if(!updatePolice.group){updatePolice.group=new THREE.Group();updatePolice.group.userData.policeResponse=true;worldGroup.add(updatePolice.group)}const group=updatePolice.group;while(group.children.length<count){const g=new THREE.Group();g.userData.police=true;const body=new THREE.Mesh(new THREE.BoxGeometry(1.45,.5,2.8),makeMat(0x292a2e,.7,.25));body.position.y=.5;g.add(body);const roof=new THREE.Mesh(new THREE.BoxGeometry(1.1,.28,1.1),makeMat(0x101114,.65));roof.position.y=.88;g.add(roof);const light=new THREE.Mesh(new THREE.BoxGeometry(.18,.08,.32),makeMat(0x2f80ff,.45));light.position.set(.28,1.08,0);g.add(light);const beacon=new THREE.PointLight(0x2f80ff,.45,7,2);beacon.position.set(0,1.12,0);beacon.userData.baseIntensity=.45;beacon.userData.policeBeacon=true;g.add(beacon);g.userData.beacon=beacon;group.add(g)}group.visible=true;const baseAng=Math.atan2(player.z,player.x);for(let i=0;i<group.children.length;i++){const g=group.children[i],active=i<count;g.visible=active;if(!active)continue;const spread=i===0?0:(i%2?1:-1)*(0.35+Math.floor(i/2)*0.18);const ang=baseAng+Math.PI+spread;const radius=Math.max(9,24-Number(law.level||1)*2-i*2);const tx=player.x+Math.cos(ang)*radius,tz=player.z+Math.sin(ang)*radius;g.position.x+=(tx-g.position.x)*.025;g.position.z+=(tz-g.position.z)*.025;g.rotation.y=Math.atan2(player.x-g.position.x,player.z-g.position.z);if(i===0&&Math.hypot(player.x-g.position.x,player.z-g.position.z)<3.2){const r=root.ESCIE_WORLD_LAW?.arrest?.();if(r?.ok)say3D("POLICE · ARRESTED · SENTENCE "+Number(r.sentence||0)+" MIN");}}}
 function npcInteract(){const live=root.ESCIE_WORLD_NPC?.state?.().npcs||{};let best=null,bd=2.4;actors.forEach(a=>{if(!a.userData.canonical)return;const n=live[a.userData.id];if(!n||Number(n.health??100)<=0)return;const d=Math.hypot(player.x-a.position.x,player.z-a.position.z);if(d<bd){bd=d;best=n}});if(!best)return false;const sim=root.ESCIE_WORLD_SIMULATION?.state?.()||{};const raw=root.ESCIE_WORLD_DIALOGUE?.generate?.(best,{id:"player",name:"YOU"},{day:sim.day||1,hour:sim.hour||12,minute:sim.minute||0,language:best.native_language||"en",community:best.community||"LOCAL"})?.line||("LOCAL · "+(best.occupation||best.role||"RESIDENT"));const line=root.ESCIE_WORLD_LANGUAGE?.speakToPlayer?.(best,raw)||raw;root.ESCIE_WORLD_NPC?.rememberInteraction?.(best.id,{channel:"3D",text:raw});root.ESCIE_WORLD_NPC?.relationship?.(best.id,1,"3D CONVERSATION");root.ESCIE_WORLD_ACTIONS?.discover?.({id:"npc:"+best.id,label:best.name||best.role||best.id,discovery:"NPC CONTACT",queries:[best.occupation||best.role||"LOCAL"]});root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(5,"NPC CONTACT");say3D((best.name||best.role||"LOCAL")+" · "+line);return true}
-function vehicleInteract(){const vs=root.ESCIE_WORLD_VEHICLES;if(!vs)return false;const state=vs.state?.()||{};if(player.inVehicle){const r=vs.exit?.();if(r?.ok){player.inVehicle=false;player.vehicleId=null;say3D("VEHICLE · EXITED · FOOT");return true}say3D("VEHICLE · "+String(r?.reason||"EXIT FAILED"));return true}const d=updateVehicles.car;if(!d||!d.visible||Math.hypot(player.x-d.position.x,player.z-d.position.z)>3)return false;const id=d.userData.vehicleId||state.owned?.[0]?.id||"TAXI";
+function nearestTraffic(max=3){
+ let best=null,bd=max;
+ traffic.forEach(g=>{if(!g.visible||g.userData.occupied)return;const d=Math.hypot(player.x-g.position.x,player.z-g.position.z);if(d<bd){bd=d;best={car:g,d}}});
+ return best;
+}
+function vehicleInteract(){const vs=root.ESCIE_WORLD_VEHICLES;if(!vs)return false;const state=vs.state?.()||{};if(player.inVehicle){const r=vs.exit?.();if(r?.ok){player.inVehicle=false;player.vehicleId=null;say3D("VEHICLE · EXITED · FOOT");return true}say3D("VEHICLE · "+String(r?.reason||"EXIT FAILED"));return true}const street=nearestTraffic(3);
+ if(street){
+   const r=vs.enter?.("STREET_CAR");
+   if(r?.ok){
+     street.car.userData.occupied=true;street.car.visible=false;
+     player.inVehicle=true;player.vehicleId="STREET_CAR";player.x=street.car.position.x;player.z=street.car.position.z;player.yaw=street.car.rotation.y;
+     root.dispatchEvent(new CustomEvent("escie:world-detection",{detail:{source:"VEHICLE THEFT",level:1}}));
+     root.ESCIE_WORLD_ACTIONS?.performControlAction?.("STEAL");
+     say3D("STREET CAR · STOLEN · POLICE RISK");
+     return true;
+   }
+ }
+ const d=updateVehicles.car;if(!d||!d.visible||Math.hypot(player.x-d.position.x,player.z-d.position.z)>3)return false;const id=d.userData.vehicleId||state.owned?.[0]?.id||"TAXI";
  const condition=Number(state.condition?.[id]??100);
  if(condition<=0){
    const repair=root.ESCIE_WORLD_VEHICLES?.repair?.(id,100);
