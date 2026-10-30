@@ -315,7 +315,7 @@ const densityNPCs={
  ]
 };
 Object.keys(densityNPCs).forEach(d=>{
-  NPC_POPULATIONS[d]=(NPC_POPULATIONS[d]||[]).concat(densityNPCs[d]);
+  npcPopulations[d]=(npcPopulations[d]||[]).concat(densityNPCs[d]);
 });
 
 Object.assign(window.ESCIE_WORLD_CITY,{landmarks:world_landmarks,buildings:world_buildings,interiors,cityBackbone:city_backbone,cityConnections:city_connections,publicTransit:public_transit,districts});
