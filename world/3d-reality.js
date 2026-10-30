@@ -249,6 +249,17 @@ function updateStreetIncident(now){
  streetIncident.type=incidentType(first.npc,second.npc);streetIncident.aId=first.npc.id;streetIncident.bId=second.npc.id;streetIncident.x=(first.actor.position.x+second.actor.position.x)/2;streetIncident.z=(first.actor.position.z+second.actor.position.z)/2;streetIncident.expires=now+14000;streetIncident.nextAt=now+22000;streetIncident.lastPrompt=0;streetIncident.resolved=false;
  first.actor.userData.incident="INCIDENT";second.actor.userData.incident="INCIDENT";
  first.actor.userData.reaction=streetIncident.type==="POLICE_STOP"?"ALERT":"HOSTILE";second.actor.userData.reaction="ALERT";
+ actors.forEach(a=>{
+   if(!a.userData.canonical||a===first.actor||a===second.actor)return;
+   const n=live[a.userData.id];if(!n||Number(n.health??100)<=0)return;
+   const d=Math.hypot(a.position.x-streetIncident.x,a.position.z-streetIncident.z);
+   if(d<=9){
+     a.userData.reaction=streetIncident.type==="ARGUMENT"||streetIncident.type==="DELIVERY_CONFLICT"?"ALERT":"ALERT";
+     a.userData.reactionUntil=now+Math.min(6500,2600+(9-d)*320);
+     a.userData.activity="WITNESS";
+     root.ESCIE_WORLD_NPC?.rememberInteraction?.(n.id,{channel:"STREET_INCIDENT",type:streetIncident.type,outcome:"NEARBY WITNESS"});
+   }
+ });
  root.ESCIE_WORLD_NPC?.observe?.(streetIncident.type,{x:0,y:0},{radius:10,speed:"ALERT",blocked:()=>false});
  const labels={ARGUMENT:"ARGUMENT IN PROGRESS",THEFT_WITNESS:"POSSIBLE THEFT",MINOR_ACCIDENT:"MINOR ACCIDENT",DELIVERY_CONFLICT:"DELIVERY CONFLICT",POLICE_STOP:"POLICE STOP"};
  say3D((labels[streetIncident.type]||"STREET INCIDENT")+" · APPROACH TO INTERVENE");
