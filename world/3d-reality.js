@@ -90,7 +90,7 @@ function streetProps(){
    box(1.55,.3,1.9,0x101114,side,1.0,z);
  }
 }
-function clearWorld(){obstacles.length=0;actors.length=0;doors.length=0;lights.length=0;evidence.length=0;windowLights.length=0;streetMarkings.length=0;laneMarkings.length=0;groundMeshes.length=0;readabilityLights.length=0;facadeMeshes.length=0;playerRimLights.length=0;doorSignals.length=0;traffic.length=0;lastEnvironmentKey="";snowMesh=null;}
+function clearWorld(){traffic.lastImpact=0;obstacles.length=0;actors.length=0;doors.length=0;lights.length=0;evidence.length=0;windowLights.length=0;streetMarkings.length=0;laneMarkings.length=0;groundMeshes.length=0;readabilityLights.length=0;facadeMeshes.length=0;playerRimLights.length=0;doorSignals.length=0;traffic.length=0;lastEnvironmentKey="";snowMesh=null;}
 function createTraffic(){
  for(let i=0;i<6;i++){
    const g=new THREE.Group();g.userData.traffic=true;g.userData.lane=i%2===0?-2.35:2.35;g.userData.speed=.9+(i%3)*.18;g.userData.offset=i*19;
@@ -103,10 +103,21 @@ function createTraffic(){
 function updateTraffic(t){
  traffic.forEach((g,i)=>{
    const direction=i%2===0?1:-1;
-   g.position.z+=direction*g.userData.speed*.035;
+   const dz=Math.abs(player.z-g.position.z),dx=Math.abs(player.x-g.position.x);
+   const nearPlayer=dx<2.2&&dz<8&&!player.inVehicle;
+   const speed=nearPlayer?g.userData.speed*.34:g.userData.speed;
+   g.position.z+=direction*speed*.035;
    if(g.position.z>56)g.position.z=-56;
    if(g.position.z<-56)g.position.z=56;
    g.rotation.y=direction>0?0:Math.PI;
+   if(!player.inVehicle&&dx<1.45&&dz<1.7&&performance.now()-traffic.lastImpact>1800){
+     traffic.lastImpact=performance.now();
+     const hit=Math.max(3,Math.min(12,Math.round(8+speed*2)));
+     root.ESCIE_WORLD_SIMULATION?.applyDamage?.(hit,"TRAFFIC");
+     root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(1,"TRAFFIC CONSEQUENCE");
+     root.dispatchEvent(new CustomEvent("escie:world-detection",{detail:{source:"TRAFFIC COLLISION",level:1}}));
+     say3D("TRAFFIC · COLLISION · HEALTH -"+hit);
+   }
  });
 }
 function createSnow(){
@@ -462,7 +473,7 @@ function bind(){
 }
 function start(){
  if(started)return;started=true;if(!setup()){started=false;return;}
- bind();const s=stage();s.classList.add("three-active");setMode(false);togglePause(false);render();
+ bind();const s=stage();s.classList.add("three-active");setMode(true);togglePause(false);render();
 }
 root.ESCIE_3D_WORLD={start,stop,ready:()=>!!renderer,toggleCamera:()=>setMode(!thirdPerson),pause:()=>togglePause(true),resume:()=>togglePause(false),isPaused:()=>paused,interact,fight:fight3D,setSprint:(v)=>{move._touchSprint=!!v},status:()=>({ready:!!renderer,paused,quality:perf.quality,frameMs:Math.round(perf.frameMs)})};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",start);else start();
