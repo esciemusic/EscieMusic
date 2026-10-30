@@ -19,7 +19,9 @@
     },
     boundaries:Object.freeze({
       publicIsCanonicalDoorway:true,
-      gameIsExtension:true,\n      gameHosting:"EXTERNAL_PLATFORM_READY",\n      gamePublicLink:null,
+      gameIsExtension:true,
+      gameHosting:"EXTERNAL_PLATFORM_READY",
+      gamePublicLink:null,
       gamePresentation:"3D",
       gameplay2D:false,
       pauseMap2DOnly:true,
