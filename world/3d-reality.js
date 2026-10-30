@@ -75,7 +75,50 @@ function createStreetLife(){
  if(list.length){list.forEach((n,i)=>{const q=gridToWorld(n);actor(q.x,q.z,i);const a=actors[actors.length-1];a.userData.id=n.id;a.userData.canonical=true;a.userData.npc=n});}
  for(let i=list.length;i<18;i++){const x=(i%2?1:-1)*(6.5+(i%4)*1.1),z=-45+i*5.2;actor(x,z,i+100);}
 }
-function syncCanonicalNPCs(t){const api=root.ESCIE_WORLD_NPC;if(!api)return;const live=api.state?.().npcs||{};const now=performance.now();actors.forEach(a=>{if(!a.userData.canonical)return;const n=live[a.userData.id];if(!n){a.visible=false;return}a.visible=Number(n.health??100)>0;const q=gridToWorld(n);a.position.x+=(q.x-a.position.x)*.18;a.position.z+=(q.z-a.position.z)*.18;const reaction=a.userData.reaction&&now<Number(a.userData.reactionUntil||0)?a.userData.reaction:null;if(reaction){const dx=player.x-a.position.x,dz=player.z-a.position.z,d=Math.hypot(dx,dz)||1;if(reaction==="HOSTILE"){a.rotation.y=Math.atan2(dx,dz);if(d>2.4){a.position.x+=dx/d*.045;a.position.z+=dz/d*.045;}a.userData.activity="CONFRONT";}else{const away=1/d;a.position.x-=dx*away*.42;a.position.z-=dz*away*.42;a.rotation.y=Math.atan2(-dx,-dz);a.userData.activity="ALERT";}}else{a.rotation.y=n.facing==="E"?Math.PI/2:n.facing==="W"?-Math.PI/2:n.facing==="N"?Math.PI:0;a.userData.activity=n.activity||"IDLE";}});player.npcSync=now;}
+function syncCanonicalNPCs(t){
+ const api=root.ESCIE_WORLD_NPC;if(!api)return;
+ const live=api.state?.().npcs||{},now=performance.now();
+ const sim=root.ESCIE_WORLD_SIMULATION?.state?.()||{};
+ const minute=Number(sim.hour||12)*60+Number(sim.minute||0);
+ const currentWindow=n=>Array.isArray(n.schedule)?(n.schedule.find(v=>minute>=Number(v.start||0)&&minute<Number(v.end||0))||null):null;
+ actors.forEach(a=>{
+  if(!a.userData.canonical)return;
+  const n=live[a.userData.id];if(!n){a.visible=false;return}
+  a.visible=Number(n.health??100)>0;
+  const scheduleWindow=currentWindow(n),scheduledActivity=String(scheduleWindow?.activity||n.activity||"IDLE").toUpperCase();
+  const target=scheduleWindow?.target;
+  if(target&&Number.isFinite(Number(target.x))&&Number.isFinite(Number(target.y))){
+    const tq=gridToWorld(target),dx=tq.x-a.position.x,dz=tq.z-a.position.z,dist=Math.hypot(dx,dz);
+    if(dist>.7){
+      const speed=scheduledActivity==="COMMUTE"?.075:.045;
+      a.position.x+=dx/dist*Math.min(dist,speed);
+      a.position.z+=dz/dist*Math.min(dist,speed);
+      a.rotation.y=Math.atan2(dx,dz);
+      a.userData.traveling=true;
+    }else{
+      a.userData.traveling=false;
+      if(Number.isFinite(Number(n.x)))n.x=Number(target.x);
+      if(Number.isFinite(Number(n.y)))n.y=Number(target.y);
+    }
+  }else{
+    const q=gridToWorld(n);a.position.x+=(q.x-a.position.x)*.18;a.position.z+=(q.z-a.position.z)*.18;
+    a.userData.traveling=false;
+  }
+  a.userData.activity=scheduledActivity;
+  a.userData.scheduleWindow=scheduleWindow?.end!=null?String(scheduleWindow.start)+"-"+String(scheduleWindow.end):"ROUTINE";
+  a.userData.workplaceId=n.workplace_id||n.work_building?.id||null;
+  a.userData.socialPlaceId=n.social_place_id||n.social_building?.id||null;
+  const reaction=a.userData.reaction&&now<Number(a.userData.reactionUntil||0)?a.userData.reaction:null;
+  if(reaction){
+    const dx=player.x-a.position.x,dz=player.z-a.position.z,d=Math.hypot(dx,dz)||1;
+    if(reaction==="HOSTILE"){a.rotation.y=Math.atan2(dx,dz);if(d>2.4){a.position.x+=dx/d*.045;a.position.z+=dz/d*.045;}a.userData.activity="CONFRONT";}
+    else{const away=1/d;a.position.x-=dx*away*.42;a.position.z-=dz*away*.42;a.rotation.y=Math.atan2(-dx,-dz);a.userData.activity="ALERT";}
+  }else if(!a.userData.traveling){
+    a.rotation.y=n.facing==="E"?Math.PI/2:n.facing==="W"?-Math.PI/2:n.facing==="N"?Math.PI:0;
+  }
+ });
+ player.npcSync=now;
+}
 
 function streetProps(){
  for(let z=-48;z<=48;z+=12){
