@@ -84,34 +84,60 @@ function enter3DInterior(building){
 function updateInteriorOccupants(t){
  if(!interiorMode||!interiorActors.length)return;
  const sim=root.ESCIE_WORLD_SIMULATION?.state?.()||{};
+ const minute=Number(sim.hour||12)*60+Number(sim.minute||0);
+ const hashId=id=>{let h=0;for(const ch of String(id||""))h=((h<<5)-h)+ch.charCodeAt(0)|0;return Math.abs(h)};
+ const stationFor=(g,activity)=>{
+   const compatible=interiorStations.filter(s=>{
+     const a=String(s.userData.interiorStation?.action||"").toUpperCase();
+     return a===activity ||
+       (activity==="SOCIAL"&&["SOCIAL","TALK","DANCE"].includes(a)) ||
+       (activity==="WORK"&&["WORK","RECORD","BUY","INVESTIGATE"].includes(a)) ||
+       (activity==="CREATE"&&["RECORD","LISTEN","WORK"].includes(a)) ||
+       (activity==="REST"&&["REST","SLEEP"].includes(a)) ||
+       (activity==="EAT"&&["EAT","SOCIAL"].includes(a)) ||
+       (activity==="TRAIN"&&["TRAIN","REST"].includes(a));
+   });
+   if(!compatible.length)return null;
+   const slot=Math.floor(minute/15)+hashId(g.userData.id);
+   return compatible[slot%compatible.length];
+ };
  interiorActors.forEach((g,i)=>{
-   const live=g.userData.npc||root.ESCIE_WORLD_NPC?.state?.().npcs?.[g.userData.id]);
+   const live=g.userData.npc||root.ESCIE_WORLD_NPC?.state?.().npcs?.[g.userData.id];
    if(!live)return;
-   const activity=String(live.activity||g.userData.interiorActivity||"WORK").toUpperCase();
-   let target=null;
+   const schedule=Array.isArray(live.schedule)?live.schedule:[];
+   const current=schedule.find(v=>minute>=Number(v.start||0)&&minute<Number(v.end||0))||null;
+   const activity=String(current?.activity||live.activity||g.userData.interiorActivity||"WORK").toUpperCase();
+   const expectedBuilding=
+     activity==="WORK" ? live.work_building?.id :
+     activity==="SOCIAL" ? live.social_building?.id :
+     ["SLEEP","HOME"].includes(activity) ? (live.home?.id||live.home_building?.id) : null;
+   const shouldBeHere=!expectedBuilding||String(expectedBuilding)===String(interiorBuilding?.id);
+   g.visible=shouldBeHere;
+   if(!shouldBeHere){g.userData.reacting=false;return;}
+   g.userData.interiorActivity=activity;
+   g.userData.scheduleWindow=current?.end!=null?String(current.start)+"-"+String(current.end):"ROUTINE";
    const nearbyPlayer=Math.hypot(player.x-g.position.x,player.z-g.position.z)<3.2;
+   let target=null;
    if(nearbyPlayer){
      target={x:player.x,z:player.z};
      g.userData.reacting=true;
    }else{
      g.userData.reacting=false;
-     const compatible=interiorStations.filter(s=>{
-       const a=String(s.userData.interiorStation?.action||"").toUpperCase();
-       return a===activity ||
-         (activity==="SOCIAL"&&["SOCIAL","TALK","DANCE"].includes(a)) ||
-         (activity==="WORK"&&["WORK","RECORD","BUY","INVESTIGATE"].includes(a)) ||
-         (activity==="REST"&&["REST","SLEEP"].includes(a));
-     });
-     if(compatible.length)target=compatible[(i+Math.floor(t/9))%compatible.length].position;
-     else if(interiorActors.length>1&&activity==="SOCIAL"){
-       const other=interiorActors[(i+1)%interiorActors.length];
-       target={x:other.position.x,z:other.position.z};
+     const station=stationFor(g,activity);
+     if(station){
+       target=station.position;
+       g.userData.targetStation=station.userData.interiorStation;
+       g.userData.targetRoom=station.userData.interiorStation.room;
+     }else if(interiorActors.length>1&&activity==="SOCIAL"){
+       const others=interiorActors.filter(o=>o!==g&&o.visible);
+       const other=others.length?others[(i+Math.floor(minute/30))%others.length]:null;
+       if(other)target={x:other.position.x,z:other.position.z};
      }
    }
    if(target){
      const dx=target.x-g.position.x,dz=target.z-g.position.z,dist=Math.hypot(dx,dz);
      if(dist>.45){
-       const speed=g.userData.reacting?.0.9:0.38;
+       const speed=g.userData.reacting?.0.9:(activity==="COMMUTE"?.52:.38);
        const step=Math.min(dist,speed*.016);
        g.position.x+=dx/dist*step;g.position.z+=dz/dist*step;
        g.rotation.y=Math.atan2(dx,dz);
@@ -119,6 +145,7 @@ function updateInteriorOccupants(t){
      }else{
        g.position.y=Math.sin(t*2+i)*.008;
        if(g.userData.reacting)g.rotation.y=Math.atan2(player.x-g.position.x,player.z-g.position.z);
+       g.userData.stationHold=Math.floor(minute/15);
      }
    }
  });
