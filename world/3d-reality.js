@@ -39,7 +39,7 @@ function door(x,z,w,h,seed,building){
 }
 function building(x,z,w,d,h,seed,buildingRef){
  const wall=[0x1b1c1f,0x292a2e,0x303235,0x101114][seed%4];
- box(w,h,d,wall,x,h/2,z,{roughness:.96,solid:true});
+ const facade=box(w,h,d,wall,x,h/2,z,{roughness:.96,solid:true});\n facade.userData.facade=true;facade.userData.baseFacadeColor=wall;facadeMeshes.push(facade);
  const rows=Math.max(2,Math.floor(h/3)), cols=Math.max(2,Math.floor(w/2.8));
  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
    const px=x-w/2+1.2+c*((w-2.4)/Math.max(1,cols-1));
@@ -320,7 +320,7 @@ function updateEnvironment(t){
  laneMarkings.forEach(o=>{o.material.emissive=new THREE.Color(0x4a4c43);o.material.emissiveIntensity=.02+night*.06;});
  groundMeshes.forEach(o=>o.material.color.set(night>.65?0x171a1b:0x242728));
  const facadeNight=night*.12+(poorVisibility ? .025 : 0);
- facadeMeshes.forEach(o=>{const base=o.userData.baseFacadeColor||(o.userData.baseFacadeColor=o.material.color.getHex());const col=new THREE.Color(base);col.multiplyScalar(1-facadeNight);o.material.color.copy(col);});
+ facadeMeshes.forEach(o=>{const base=Number(o.userData.baseFacadeColor||0x202224),r=((base>>16)&255)/255,g=((base>>8)&255)/255,b=(base&255)/255,scale=1-facadeNight;o.material.color.setRGB(r*scale,g*scale,b*scale);});
  const headlights=updateVehicles.car?.userData?.headlights||[];headlights.forEach(l=>{const base=Number(l.userData.baseIntensity||.7);const visibilityBoost=poorVisibility ? .55 :0;const daylightCut=daylight>.58 ? .12 :1;l.intensity=base*(.25+night*.9+visibilityBoost)*daylightCut;});
 }
 function syncPauseMap(){const map=document.getElementById("world-map"),p=document.getElementById("world-player");if(!map||!p)return;const x=Math.max(0,Math.min(100,(player.x+54)/108*100)),y=Math.max(0,Math.min(100,(player.z+54)/108*100));p.style.left=x+"%";p.style.top=y+"%";p.title="PLAYER · "+Math.round(player.x+54)+" · "+Math.round(player.z+54);const sim=root.ESCIE_WORLD_SIMULATION?.state?.()||{};map.dataset.neighbourhood=String(sim.neighbourhood||"PARC-EXTENSION");map.dataset.transport=String(sim.transport||"FOOT");}
