@@ -210,13 +210,17 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
     <div class="panel" style="padding:15px"><div class="kicker">AUDIT STATE</div><h2 id="auditOverall" style="margin-top:6px">READY</h2><p id="auditSummary">Run a full check to inspect the current surface.</p><button id="runAudit" class="btn primary" style="margin-top:8px">RUN FULL AUDIT</button></div>
     <div class="auditGrid" id="auditGrid">
       <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Session boundary</strong><span>Authentication surface will be checked.</span></div>
-      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Human approval</strong><span>Agent protocol will be checked for canonical write blocking.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Human approval</strong><span>Canonical writes remain human-gated.</span></div>
       <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Provider secrets</strong><span>Browser surface will be checked for exposed secrets.</span></div>
       <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Destinations</strong><span>Connector service and provider configuration will be checked.</span></div>
       <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Workspace isolation</strong><span>Authenticated workspace access will be checked.</span></div>
-      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Agent history</strong><span>Runtime and durable job access will be checked.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Agent history</strong><span>Agent runtime and durable job access will be checked.</span></div>
       <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Universe contract</strong><span>Central/public/game boundaries will be checked.</span></div>
-      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Live public bridge</strong><span>Published record access will be checked.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Live public bridge</strong><span>Published public records will be checked.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Command Desk</strong><span>Receive, ask, task, review and activity surfaces will be checked.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Review controls</strong><span>Accept, decline, quarantine and revision paths will be checked.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Connect surface</strong><span>Provider connection controls will be present and reachable.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Operator controls</strong><span>Core Central workspaces will be checked for presence.</span></div>
     </div>
     <div class="auditRunMeta" id="auditRunMeta">NO AUDIT HAS RUN YET.</div>
   </aside>
