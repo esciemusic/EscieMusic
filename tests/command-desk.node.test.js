@@ -1,4 +1,4 @@
-const test=require("node:test");const assert=require("node:assert/strict");const fs=require("node:fs");
+const test=require("node:test");const assert=require("node:assert/strict");const fs=require("node:fs");const vm=require("node:vm");\n\nconst centralHtml=fs.readFileSync("central-connect/app.html","utf8");\nassertNoMalformedCentralNewlines();\nfunction assertNoMalformedCentralNewlines(){ assert(!centralHtml.includes("\\\\n"),"Central HTML must not contain malformed literal newline escapes"); for(const src of [...centralHtml.matchAll(/<script>([\\s\\S]*?)<\\/script>/g)].map(m=>m[1])){ new vm.Script(src,{filename:"central-connect/app.html"}); } }
 
 const desk=fs.readFileSync("central-connect/command-desk.js","utf8");
 
