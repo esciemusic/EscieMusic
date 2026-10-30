@@ -617,6 +617,14 @@ const worldEngine=fs.readFileSync("world-engine.js","utf8");
 assert(!worldEngine.includes("world-public-reality"),"public World Engine must not expose a reality filter");
 assert(!worldEngine.includes("realityLevel"),"public World Engine must not classify/filter the world through a reality-level control");
 
+const worldHealth=fs.readFileSync("world/health-check.js","utf8");
+assert(worldHealth.includes("ESCIE_WORLD_HEALTH"),"world must expose post-boot health state");
+assert(worldHealth.includes("ESCIE_WORLD_CONTENT"),"world health must verify canonical content");
+assert(worldHealth.includes("ESCIE_WORLD_CITY"),"world health must verify canonical city data");
+assert(worldHealth.includes("ESCIE_WORLD_ITEMS"),"world health must verify canonical item data");
+assert(worldHealth.includes("ESCIE_WORLD_QUESTS"),"world health must verify canonical quest data");
+assert(worldHealth.includes("ESCIE_WORLD_ACTIONS"),"world health must verify runtime boot");
+assert(worldIndex.indexOf("health-check.js")>worldIndex.indexOf("3d-reality.js"),"world health check must load after core runtime dependencies");
 console.log("ESCIE file-based world ownership contracts OK");
 
 
