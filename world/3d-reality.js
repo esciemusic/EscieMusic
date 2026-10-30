@@ -633,9 +633,12 @@ function bind(){
  });
 }
 function start(){
- if(started)return;started=true;if(!setup()){started=false;return;}
+ if(started)return;
+ if(document.getElementById("game-boot")&&!document.body.classList.contains("game-live"))return;
+ started=true;if(!setup()){started=false;return;}
  bind();const s=stage();s.classList.add("three-active");setMode(true);togglePause(false);render();
 }
 root.ESCIE_3D_WORLD={start,stop,ready:()=>!!renderer,toggleCamera:()=>setMode(!thirdPerson),pause:()=>togglePause(true),resume:()=>togglePause(false),isPaused:()=>paused,interact,fight:fight3D,setSprint:(v)=>{move._touchSprint=!!v},status:()=>({ready:!!renderer,paused,quality:perf.quality,frameMs:Math.round(perf.frameMs)})};
+root.addEventListener?.("escie:world-enter",()=>start());
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",start);else start();
 })();
