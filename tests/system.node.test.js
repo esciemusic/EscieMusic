@@ -581,6 +581,7 @@ const worldCity=fs.readFileSync("data/world-city.js","utf8");
 assert(worldContent.includes("window.ESCIE_WORLD_CONTENT"),"canonical world content file must publish the world content registry");
 assert(worldContent.includes("game-item-baby-shoe"),"canonical world content must retain authored world objects");
 assert(worldContent.includes("POCKET_KNIFE"),"canonical world content must retain authored loot");
+assert(worldContent.includes("TRACE CORE"),"canonical world content must retain authored room definitions");
 assert(worldCity.includes("window.ESCIE_WORLD_CITY"),"canonical city file must publish the city simulation registry");
 assert(worldCity.includes("PARC-EXTENSION"),"canonical city file must retain Montréal district street data");
 assert(worldCity.includes("npcPopulations"),"canonical city file must own authored NPC population data");
