@@ -64,6 +64,8 @@ const tick=(minutes=30)=>{
   if(activity==="SOCIAL"){l.social=clamp(l.social+10);l.stress=clamp(l.stress-6)}
   if(activity==="TRAIN"){l.energy=clamp(l.energy-7);l.health=clamp(l.health+0.4);l.stress=clamp(l.stress+1)}
   if(activity==="CREATE"){l.social=clamp(l.social+2);l.stress=clamp(l.stress-2)}
+  l.last_activity=activity;l.last_activity_day=ss.day;l.last_activity_hour=ss.hour;l.last_activity_minute=ss.minute;
+  l.history=Array.isArray(l.history)?l.history:[];l.history.push({day:ss.day,hour:ss.hour,minute:ss.minute,activity});if(l.history.length>40)l.history=l.history.slice(-40);
   if(l.hunger<10||l.energy<10||l.health<40)l.life_state="STRUGGLING";
   if(l.money<20)l.life_state="FINANCIALLY_STRESSED";
  });
@@ -77,6 +79,7 @@ const promote=(id,reason="PLAYER_INTERACTION")=>{const s=read(),n=s.npcs?.[id];i
 const feature=(id,reason="STORY_IMPORTANCE")=>{const s=read(),n=s.npcs?.[id];if(!n)return null;n.simulation_tier="FEATURED";n.engagement=Object.assign({score:0,reasons:[]},n.engagement||{});n.engagement.score+=5;n.engagement.reasons=(n.engagement.reasons||[]).concat(reason).slice(-20);if(!save(s))return null;if(!ensure(n))return null;return s.npcs[id];};
 const engage=(id,reason="INTERACTION")=>{const s=read(),n=s.npcs?.[id];if(!n)return null;n.engagement=Object.assign({score:0,reasons:[]},n.engagement||{});n.engagement.score+=1;n.engagement.reasons=(n.engagement.reasons||[]).concat(reason).slice(-20);if((n.simulation_tier||tiers(id))==="GENERIC"&&n.engagement.score>=2)n.simulation_tier="SIMULATED";if(!save(s))return null;if(n.simulation_tier!=="GENERIC"&&!ensure(n))return null;return s.npcs[id];};
 const goalFor=id=>profile(id)?.goal||null;
-window.ESCIE_WORLD_NPC_LIFE={state:read,ensure,profile,tick,remember,relationship,syncRelationships,goalFor,goals:GOALS,tiers,featureLevels:["GENERIC","SIMULATED","FEATURED"],promote,feature,engage};
+const activityFor=id=>{const l=profile(id);return l?{activity:l.last_activity||l.life_state,day:l.last_activity_day||null,hour:l.last_activity_hour??null,minute:l.last_activity_minute??null,history:Array.isArray(l.history)?l.history.slice(-12):[]}:null};
+window.ESCIE_WORLD_NPC_LIFE={state:read,ensure,profile,tick,remember,relationship,syncRelationships,goalFor,activityFor,goals:GOALS,tiers,featureLevels:["GENERIC","SIMULATED","FEATURED"],promote,feature,engage};
 if(!localStorage.getItem(KEY))save(DEFAULT);
 })();
