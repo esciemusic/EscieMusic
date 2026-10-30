@@ -5,7 +5,7 @@
   "use strict";
   const CONTRACT={
     id:"ESCIE_UNIVERSE",
-    version:"1.0.0",
+    version:"1.1.0",
     layers:Object.freeze({
       CENTRAL:"central",
       PUBLIC:"public",
@@ -39,6 +39,10 @@
       if(this.boundaries.publicIsCanonicalDoorway!==true||this.boundaries.gameIsExtension!==true)errors.push("public/game ownership boundary invalid");
       if(this.boundaries.centralHumanApproval!==true)errors.push("central approval guard missing");
       return {ok:errors.length===0,errors,version:this.version};
+    },
+    balanceStatus(){
+      const b=root.ESCIE_LAYER_BALANCE;
+      return b&&typeof b.validate==="function"?b.validate():{ok:false,errors:["layer balance unavailable"]};
     },
     layerStatus(){
       const w=typeof window!=="undefined"?window:{};
