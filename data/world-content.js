@@ -42,5 +42,9 @@ const rooms={
   {id:"return-frame",x:1,y:1,label:"RETURN FRAME",text:"A frame back to ROOM 02.",discovery:null}
  ]
 };
-window.ESCIE_WORLD_CONTENT={start,walls,npcs,objects,market:MARKET,lootTable:WORLD_LOOT_TABLE,rooms};
+const runtimeNPC={
+ witness:{id:"witness",x:8,y:3,role:"WITNESS",status:"UNKNOWN",awareness:78,social_context:"LOCAL",facing:"S",peripheral:true,schedule:[{start:0,end:420,activity:"SLEEP",target:{x:8,y:3}},{start:420,end:540,activity:"COMMUTE",target:{x:10,y:3}},{start:540,end:1020,activity:"WATCH",target:{x:8,y:3}},{start:1020,end:1260,activity:"SOCIAL",target:{x:10,y:7}},{start:1260,end:1440,activity:"HOME",target:{x:8,y:3}}]},
+ surveillance:[{id:"lane-camera",x:12,y:2,type:"CAMERA",radius:5,awareness:95,facing:"S",peripheral:false}]
+};
+window.ESCIE_WORLD_CONTENT={start,walls,npcs,objects,market:MARKET,lootTable:WORLD_LOOT_TABLE,rooms,runtimeNPC};
 })();
