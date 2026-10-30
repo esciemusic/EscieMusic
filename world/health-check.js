@@ -15,6 +15,7 @@
       ["vehicle runtime",!!root.ESCIE_VEHICLES],
       ["law runtime",!!root.ESCIE_LAW],
       ["universe contract",contract.ok],
+      ["layer balance",!!root.ESCIE_LAYER_BALANCE?.validate?.().ok],
       ["3D runtime",!!root.ESCIE_3D_WORLD]
     ];
     const missing=required.filter(x=>!x[1]).map(x=>x[0]);
