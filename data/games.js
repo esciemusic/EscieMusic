@@ -414,7 +414,8 @@
     return state;
   }
 
-  const API={\n    hosting:()=>JSON.parse(JSON.stringify(ESCIE_GAME_HOSTING)),
+  const API={
+    hosting:()=>JSON.parse(JSON.stringify(ESCIE_GAME_HOSTING)),
     version:"1.1.0",
     itemTypes:()=>GAME_ITEM_TYPES.slice(),
     priceTypes:()=>GAME_PRICE_TYPES.slice(),
