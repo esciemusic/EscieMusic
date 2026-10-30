@@ -89,6 +89,34 @@ const STREET_REALISM={
  "ARTERIAL":{lanes:4,sidewalk:true,parking:false,speed:50},
  "LANEWAY":{lanes:1,sidewalk:false,parking:false,speed:10}
 };
+const montrealReference=()=>window.ESCIE_CITY_REFERENCE||null;
+const districtTexture=(district)=>{
+ const r=montrealReference(),d=String(district||"").toUpperCase();
+ return r?.district_texture?.[d]||null;
+};
+const districtReference=(district)=>{
+ const r=montrealReference(),d=String(district||"").toUpperCase();
+ return r?.districts?.[d]||null;
+};
+const seasonalSurface=()=>{
+ const s=read(),r=montrealReference(),env=r?.environment?.[String(s.season||"").toLowerCase()]||{};
+ if(s.season==="WINTER")return {surface:s.weather==="SNOW/COLD"?"SNOW":"SLUSH",traction:0.68,visibility:0.78,plowing:!!env.plowing,snowbanks:!!env.snowbanks};
+ if(s.season==="SPRING")return {surface:"WET",traction:0.88,visibility:0.9,potholes:!!env.potholes,construction:!!env.construction};
+ if(s.season==="SUMMER")return {surface:"DRY",traction:1,visibility:1,terraces:!!env.terraces,cycling:!!env.cycling};
+ return {surface:"WET",traction:0.92,visibility:0.88,wetLeaves:!!env.wet_leaves};
+};
+const districtActivityProfile=(district)=>{
+ const t=districtTexture(district);
+ return t?{density:t.density,buildings:t.building,streets:t.street,activity:t.activity,night:t.night}:null;
+};
+const corridorContext=(district,nodeId)=>{
+ const d=String(district||"").toUpperCase(),n=(WORLD_STREETS[d]||[]).find(x=>x.id===nodeId),ref=districtReference(d);
+ if(!n)return null;
+ const label=String(n.label||"").toUpperCase();
+ const corridor=(ref?.corridors||[]).find(c=>label.includes(String(c).toUpperCase().replace(/É/g,"E")));
+ const transit=ref?.stations?.find(s=>String(s).toUpperCase()===String(n.station||"").toUpperCase());
+ return {district:d,node:n.id,label:n.label,corridor:corridor||null,transit:transit||null,texture:districtActivityProfile(d),season:seasonalSurface()};
+};
 const streetContext=(district,nodeId)=>{
  const n=(WORLD_STREETS[String(district||"").toUpperCase()]||[]).find(x=>x.id===nodeId);
  if(!n)return null;
@@ -407,4 +435,4 @@ const buildingAction=(interior,action,opts={})=>{
  if(a==="DANCE"){return activity("SOCIAL",{reason:"DANCE"})}
  return fail("ACTION_NOT_IMPLEMENTED");
 };
-const financialNotice=(type,amount,reason)=>{try{window.dispatchEvent(new CustomEvent("escie:financial-event",{detail:{type,amount,reason}}))}catch(e){}};const spend=(amount,reason)=>{const s=read();amount=Math.max(0,Number(amount)||0);if(s.money<amount)return false;s.money-=amount;s.financial_history=(s.financial_history||[]).concat([{type:"EXPENSE",amount,reason,day:s.day}]).slice(-100);const out=save(s);financialNotice("EXPENSE",amount,reason);return out};const npcMemory=(id,data={})=>{const s=read();s.npc_memory=s.npc_memory||{};s.npc_memory[id]=Object.assign({},s.npc_memory[id]||{},data,{last_day:s.day});return save(s)};const decayWanted=(m=1)=>{const s=read();if(s.sentence_minutes>0)return s;if(s.wanted>0){s.wanted=Math.max(0,s.wanted-Math.max(0,Number(m)||0));if(!s.wanted)s.legal_status="CLEAR"}return save(s)};const markSurveillance=(type,level=1)=>witnessed(type,level);const detect=(source,level=1)=>{const s=read();s.surveillance=(s.surveillance||[]).concat([{type:"DETECTION",source,level,day:s.day,hour:s.hour}]).slice(-100);if(!save(s))return null;return witnessed(source,level)};const clearWanted=()=>{const s=read();if(s.sentence_minutes>0)return s;s.wanted=0;s.legal_status="CLEAR";return save(s)};window.ESCIE_WORLD_SIMULATION={state:read,save:flush,flush,change,advance,setTransport:transport,setPosition,movePlayer,publicTransit,cityRoute,cityNavigate,routePlan,navigate,transitRoutes:PUBLIC_TRANSIT,transitService,districts:CITY_DISTRICTS,streetNodes:WORLD_STREETS,streetRealism:STREET_REALISM,streetContext,streetEdges:STREET_EDGES,streetGraph,nearestStreetNode,streetPath,landmarks:WORLD_LANDMARKS,districtLandmarks,findLandmark,buildings:WORLD_BUILDINGS,CITY_REFERENCE,interiors:INTERIORS,districtBuildings,findBuilding,enterBuilding,leaveBuilding,npcPopulations:NPC_POPULATIONS,npcDayPlan:NPC_DAY_PLAN,seedDistrictNPCs,seedWorldNPCs,npcInteraction,NPC_SOCIAL_RULES,npcJobOffer,npcJobAccept,npcFavor,NPC_JOB_OFFERS,district,activateDistrict,activity,choice,canAccess:access,train,graffiti,steal,dream,enterDream,evaluateDream,dreamContext,dreamSceneContext,dreamScenario,dreamScenarioPool,dreamDirector:DREAM_DIRECTOR,buildDreamLevel,dreamLevel,serve,useSubstance:use,job,spend,applyDamage,hospital,respawn,combatAttack,combatDefend,radioBroadcast,buildingAction,npcMemory,decayWanted,markSurveillance,witnessed,detect,clearWanted};if(!localStorage.getItem(K))save(D);else read()})();
+const financialNotice=(type,amount,reason)=>{try{window.dispatchEvent(new CustomEvent("escie:financial-event",{detail:{type,amount,reason}}))}catch(e){}};const spend=(amount,reason)=>{const s=read();amount=Math.max(0,Number(amount)||0);if(s.money<amount)return false;s.money-=amount;s.financial_history=(s.financial_history||[]).concat([{type:"EXPENSE",amount,reason,day:s.day}]).slice(-100);const out=save(s);financialNotice("EXPENSE",amount,reason);return out};const npcMemory=(id,data={})=>{const s=read();s.npc_memory=s.npc_memory||{};s.npc_memory[id]=Object.assign({},s.npc_memory[id]||{},data,{last_day:s.day});return save(s)};const decayWanted=(m=1)=>{const s=read();if(s.sentence_minutes>0)return s;if(s.wanted>0){s.wanted=Math.max(0,s.wanted-Math.max(0,Number(m)||0));if(!s.wanted)s.legal_status="CLEAR"}return save(s)};const markSurveillance=(type,level=1)=>witnessed(type,level);const detect=(source,level=1)=>{const s=read();s.surveillance=(s.surveillance||[]).concat([{type:"DETECTION",source,level,day:s.day,hour:s.hour}]).slice(-100);if(!save(s))return null;return witnessed(source,level)};const clearWanted=()=>{const s=read();if(s.sentence_minutes>0)return s;s.wanted=0;s.legal_status="CLEAR";return save(s)};window.ESCIE_WORLD_SIMULATION={state:read,save:flush,flush,change,advance,setTransport:transport,setPosition,movePlayer,publicTransit,cityRoute,cityNavigate,routePlan,navigate,transitRoutes:PUBLIC_TRANSIT,transitService,districts:CITY_DISTRICTS,streetNodes:WORLD_STREETS,streetRealism:STREET_REALISM,streetContext,streetEdges:STREET_EDGES,streetGraph,nearestStreetNode,streetPath,montrealReference,districtReference,districtTexture,districtActivityProfile,seasonalSurface,corridorContext,landmarks:WORLD_LANDMARKS,districtLandmarks,findLandmark,buildings:WORLD_BUILDINGS,CITY_REFERENCE,interiors:INTERIORS,districtBuildings,findBuilding,enterBuilding,leaveBuilding,npcPopulations:NPC_POPULATIONS,npcDayPlan:NPC_DAY_PLAN,seedDistrictNPCs,seedWorldNPCs,npcInteraction,NPC_SOCIAL_RULES,npcJobOffer,npcJobAccept,npcFavor,NPC_JOB_OFFERS,district,activateDistrict,activity,choice,canAccess:access,train,graffiti,steal,dream,enterDream,evaluateDream,dreamContext,dreamSceneContext,dreamScenario,dreamScenarioPool,dreamDirector:DREAM_DIRECTOR,buildDreamLevel,dreamLevel,serve,useSubstance:use,job,spend,applyDamage,hospital,respawn,combatAttack,combatDefend,radioBroadcast,buildingAction,npcMemory,decayWanted,markSurveillance,witnessed,detect,clearWanted};if(!localStorage.getItem(K))save(D);else read()})();
