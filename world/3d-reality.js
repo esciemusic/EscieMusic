@@ -30,7 +30,7 @@ function createGround(){
  for(let z=-54;z<54;z+=8){box(.18,.025,3.6,0xc7c8bd,0,.07,z);}
 }
 function door(x,z,w,h,seed,building){
- const mat=makeMat(seed%2?0x292a2e:0x101114,.72,seed%2?.2:0);
+ const mat=makeMat(seed%2?0x292a2e:0x101114,.72,seed%2 ? .2 : 0);
  const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,.08),mat);m.position.set(x, h/2, z);worldGroup.add(m);
  const sign=new THREE.Mesh(new THREE.BoxGeometry(w*.7,.08,.02),makeMat(0x2f80ff,.7));sign.position.set(x,h*.78,z-.06);worldGroup.add(sign);
  doors.push({mesh:m,x,z,w:.9,h:2.2,id:"door-"+seed,open:false,building});
@@ -322,7 +322,7 @@ function updateHud(){
 }
 function updateQuality(dt){const ms=dt*1000;perf.frameMs=perf.frameMs*.92+ms*.08;if(perf.frameMs>28)perf.lowFrames++;else perf.lowFrames=Math.max(0,perf.lowFrames-1);if(perf.lowFrames>90&&perf.quality!=="low"){perf.quality="low";worldGroup?.traverse(o=>{if(o.isPoints)o.visible=false;});renderer?.setPixelRatio(Math.min(devicePixelRatio||1,1));}} 
 function updateActors(t){
- actors.forEach(a=>{if(a.userData.canonical){if(a.userData.reaction&&performance.now()<Number(a.userData.reactionUntil||0)){a.rotation.y+=a.userData.reaction==="HOSTILE"?.08:-.04;}return}a.position.x=a.userData.base+Math.sin(t*.35+a.userData.phase)*.8;a.rotation.y=Math.sin(t*.35+a.userData.phase)*.25;});
+ actors.forEach(a=>{if(a.userData.canonical){if(a.userData.reaction&&performance.now()<Number(a.userData.reactionUntil||0)){a.rotation.y+=a.userData.reaction==="HOSTILE" ? .08 : -.04;}return}a.position.x=a.userData.base+Math.sin(t*.35+a.userData.phase)*.8;a.rotation.y=Math.sin(t*.35+a.userData.phase)*.25;});
 }
 function render(){
  const dt=Math.min(clock.getDelta(),.05);updateQuality(dt);move(dt);worldHeartbeat();updateLaw();updateActors(clock.elapsedTime);syncCanonicalNPCs(clock.elapsedTime);updateVehicles(clock.elapsedTime);updatePolice();policeCollision();updateEnvironment(clock.elapsedTime);if(performance.now()-perf.hud>120){updateHud();syncPauseMap();perf.hud=performance.now();}
