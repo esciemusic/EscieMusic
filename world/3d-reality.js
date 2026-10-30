@@ -7,7 +7,7 @@
 const root=window;
 let renderer,scene,camera,clock,avatar,worldGroup,thirdPerson=false,started=false,paused=false,raf=0,dayLight,ambientLight,playerLight,resizeObserver,visibilityHandler;
 const obstacles=[],actors=[],doors=[],lights=[],evidence=[];
-const windowLights=[],streetMarkings=[],laneMarkings=[],groundMeshes=[],readabilityLights=[];
+const windowLights=[],streetMarkings=[],laneMarkings=[],groundMeshes=[],readabilityLights=[],facadeMeshes=[],playerRimLights=[];
 const vehicleImpacts={last:0,cooldown:900}; const perf={quality:"auto",frameMs:16,lowFrames:0,last:performance.now(),hud:0};
 const keys=new Set();
 const player={x:0,z:8,y:1.7,yaw:0,pitch:0,speed:4.2,sprint:7.5,lastSync:0,lastGridX:null,lastGridY:null,inVehicle:false,vehicleId:null,npcSync:0,lawSync:0,lastSprintDrain:0,worldTick:0};
@@ -88,7 +88,7 @@ function streetProps(){
    box(1.55,.3,1.9,0x101114,side,1.0,z);
  }
 }
-function clearWorld(){obstacles.length=0;actors.length=0;doors.length=0;lights.length=0;evidence.length=0;windowLights.length=0;streetMarkings.length=0;laneMarkings.length=0;groundMeshes.length=0;readabilityLights.length=0;}
+function clearWorld(){obstacles.length=0;actors.length=0;doors.length=0;lights.length=0;evidence.length=0;windowLights.length=0;streetMarkings.length=0;laneMarkings.length=0;groundMeshes.length=0;readabilityLights.length=0;facadeMeshes.length=0;playerRimLights.length=0;}
 function createSnow(){
  const geo=new THREE.BufferGeometry(),n=850,pos=new Float32Array(n*3);
  for(let i=0;i<n;i++){pos[i*3]=(Math.random()-.5)*120;pos[i*3+1]=Math.random()*22;pos[i*3+2]=(Math.random()-.5)*120;}
@@ -105,6 +105,8 @@ function buildScene(){
  const fill=new THREE.DirectionalLight(0x43504a,.28);fill.position.set(22,10,-18);scene.add(fill);
  const signal=new THREE.PointLight(0x2f80ff,1.6,24,2);signal.position.set(0,5,6);scene.add(signal);lights.push(signal);
  playerLight=new THREE.PointLight(0xd8d4ca,.2,8,2);scene.add(playerLight);
+ const rimA=new THREE.PointLight(0x9aa6a1,.12,5,2);rimA.userData.baseIntensity=.12;scene.add(rimA);playerRimLights.push(rimA);
+ const rimB=new THREE.PointLight(0x2f80ff,.08,4,2);rimB.userData.baseIntensity=.08;scene.add(rimB);playerRimLights.push(rimB);
  dayLight=moon;ambientLight=hemi;
  createGround();createCanonicalBuildings();
  let seed=1;
@@ -307,6 +309,7 @@ function updateEnvironment(t){
  if(dayLight){const dawn=Math.max(0,1-Math.abs(daylight-.22)/.22),dusk=Math.max(0,1-Math.abs(daylight-.42)/.22);dayLight.intensity=(.32+daylight*1.55)*(snowWeather ? .94 :1)*(fogWeather ? .88 :1)*(stormWeather ? .82 :1);dayLight.position.set(Math.cos(angle)*25,8+daylight*28,Math.sin(angle)*25);dayLight.color.set(dawn||dusk?(dawn>.5?0xb8a78f:0xa7a0a1):(daylight>.45?0xd8d4ca:0x758394));}
  if(ambientLight)ambientLight.intensity=(.34+daylight*.68)*(snowWeather?1.08:1)*(fogWeather ? .94 :1)*(stormWeather ? .9 :1);
  if(playerLight){playerLight.intensity=.12+night*.72+(poorVisibility ? .18 : 0);playerLight.position.set(player.x,1.9,player.z);}
+ if(playerRimLights.length){const rimBoost=.04+night*.16+(poorVisibility ? .08 : 0);const yaw=player.yaw;const r1=playerRimLights[0],r2=playerRimLights[1];r1.position.set(player.x+Math.sin(yaw)*1.8,1.35,player.z+Math.cos(yaw)*1.8);r2.position.set(player.x-Math.sin(yaw)*1.5,1.1,player.z-Math.cos(yaw)*1.5);r1.intensity=Number(r1.userData.baseIntensity||.12)*(rimBoost/.12);r2.intensity=Number(r2.userData.baseIntensity||.08)*(rimBoost/.12)*.55;}
  if(scene?.fog)scene.fog.density=.008+night*.010+(fogWeather ? .008 :0)+(snowWeather ? .003 :0)+(stormWeather ? .004 :0);
  if(renderer){const exposure=stormWeather ? .94 :(fogWeather ? .99 :(snowWeather?1.02:(night>.72?1.1:1.05)));renderer.toneMappingExposure+=(exposure-renderer.toneMappingExposure)*.04;}
  lights.forEach((l,i)=>{if(!l.isPointLight)return;const isSignal=l===lights[0];if(isSignal)l.intensity=(1.15+night*1.1)*(stormWeather ? .82 :1);else {const base=Number(l.userData.baseIntensity||.35);l.intensity=base*(.18+night*.82)*(snowWeather?1.08:1)*(stormWeather ? .78 :1);}});
@@ -316,6 +319,8 @@ function updateEnvironment(t){
  streetMarkings.forEach(o=>{o.material.emissive=new THREE.Color(0x252b28);o.material.emissiveIntensity=.015+night*.035;});
  laneMarkings.forEach(o=>{o.material.emissive=new THREE.Color(0x4a4c43);o.material.emissiveIntensity=.02+night*.06;});
  groundMeshes.forEach(o=>o.material.color.set(night>.65?0x171a1b:0x242728));
+ const facadeNight=night*.12+(poorVisibility ? .025 : 0);
+ facadeMeshes.forEach(o=>{const base=o.userData.baseFacadeColor||(o.userData.baseFacadeColor=o.material.color.getHex());const col=new THREE.Color(base);col.multiplyScalar(1-facadeNight);o.material.color.copy(col);});
  const headlights=updateVehicles.car?.userData?.headlights||[];headlights.forEach(l=>{const base=Number(l.userData.baseIntensity||.7);const visibilityBoost=poorVisibility ? .55 :0;const daylightCut=daylight>.58 ? .12 :1;l.intensity=base*(.25+night*.9+visibilityBoost)*daylightCut;});
 }
 function syncPauseMap(){const map=document.getElementById("world-map"),p=document.getElementById("world-player");if(!map||!p)return;const x=Math.max(0,Math.min(100,(player.x+54)/108*100)),y=Math.max(0,Math.min(100,(player.z+54)/108*100));p.style.left=x+"%";p.style.top=y+"%";p.title="PLAYER · "+Math.round(player.x+54)+" · "+Math.round(player.z+54);const sim=root.ESCIE_WORLD_SIMULATION?.state?.()||{};map.dataset.neighbourhood=String(sim.neighbourhood||"PARC-EXTENSION");map.dataset.transport=String(sim.transport||"FOOT");}
