@@ -99,7 +99,7 @@ function awardRPGXP(amount,reason){
  }
  return result;
 }
-function ensureSystemPause(){const world=root.ESCIE_3D_WORLD;if(world?.ready?.()&&!world.isPaused?.())world.pause?.();}
+function ensureSystemPause(){const world=window.ESCIE_3D_WORLD;if(world?.ready?.()&&!world.isPaused?.())world.pause?.();}
 function character(){
  ensureSystemPause();
  const s=state(),r=rpgState(s),summary=window.ESCIE_RPG?.summary?.(r)||r,gear=window.ESCIE_WORLD_EQUIPMENT?.describe?.(),board=document.getElementById("rpg-board"),panel=document.getElementById("world-rpg");
