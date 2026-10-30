@@ -745,3 +745,8 @@ assert(world3dRuntime.includes('commitCrime?.("ROBBERY"'), "robbery must create 
 assert(lawRuntime.includes("caseFiles"), "law system must maintain crime case files");
 assert(lawRuntime.includes("reportCrime"), "law system must expose crime reporting");
 assert(lawRuntime.includes("sim.change({wanted:-Number(st.wanted||0)})"), "arrest must clear wanted state after sentencing");
+const merchApp=fs.readFileSync("app.js","utf8");
+assert(merchApp.includes("function bindMerchFilters"),"public merch filters must have a click handler");
+assert(merchApp.includes('button.addEventListener("click"'),"public merch filter buttons must bind click events");
+assert(merchApp.includes('data-merch-filter'),"public merch filters must expose filter targets");
+assert(!merchApp.includes("function bindMerchFilters(){}"),"public merch filter binding must not be an empty stub");
