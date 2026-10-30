@@ -323,7 +323,39 @@ function updateHud(){
  if(coord)coord.textContent=Math.round(player.x+54).toString().padStart(2,"0")+" · "+Math.round(player.z+54).toString().padStart(2,"0");if(st)document.getElementById("world-location")&&(document.getElementById("world-location").textContent=st.neighbourhood||"PARC-EXTENSION");
  if(sig){const distance=Math.hypot(player.x,player.z),wanted=Number(st?.wanted||0);sig.textContent=Math.max(0,100-Math.round(distance)+wanted*5).toString()+" SIGNAL";}const status=document.getElementById("escie-3d-status");if(status){status.textContent="LV "+Number(st?.rpg?.level||1)+" · HP "+Number(st.health??100)+" · ENERGY "+Number(st.energy??100)+" · WANTED "+Number(st.wanted||0)+" · $"+Number(st.money||0);}
 }
-function updateQuality(dt){const ms=dt*1000;perf.frameMs=perf.frameMs*.92+ms*.08;if(perf.frameMs>28)perf.lowFrames++;else perf.lowFrames=Math.max(0,perf.lowFrames-1);if(perf.lowFrames>90&&perf.quality!=="low"){perf.quality="low";worldGroup?.traverse(o=>{if(o.isPoints)o.visible=false;if(o.isPointLight&&!o.userData.readabilityLight&&!o.userData.criticalSignal&&!o.userData.policeBeacon)o.visible=false;});if(snowMesh)snowMesh.visible=false;renderer?.setPixelRatio(Math.min(devicePixelRatio||1,1));}} 
+function updateQuality(dt){
+ const ms=dt*1000;
+ perf.frameMs=perf.frameMs*.92+ms*.08;
+ if(perf.frameMs>28){
+   perf.lowFrames++;
+ }else{
+   perf.lowFrames=Math.max(0,perf.lowFrames-1);
+ }
+ if(perf.lowFrames>90&&perf.quality!=="low"){
+   perf.quality="low";
+   worldGroup?.traverse(o=>{
+     if(o.isPoints){
+       o.userData.lowQualityHidden=true;
+       o.visible=false;
+     }
+     if(o.isPointLight&&!o.userData.readabilityLight&&!o.userData.criticalSignal&&!o.userData.policeBeacon){
+       o.userData.lowQualityHidden=true;
+       o.visible=false;
+     }
+   });
+   if(snowMesh)snowMesh.visible=false;
+   renderer?.setPixelRatio(Math.min(devicePixelRatio||1,1));
+ }else if(perf.quality==="low"&&perf.frameMs<20&&perf.lowFrames===0){
+   perf.quality="auto";
+   worldGroup?.traverse(o=>{
+     if(o.userData.lowQualityHidden){
+       o.userData.lowQualityHidden=false;
+       o.visible=true;
+     }
+   });
+   renderer?.setPixelRatio(Math.min(devicePixelRatio||1,1.7));
+ }
+} 
 function updateActors(t){
  actors.forEach(a=>{if(a.userData.canonical){if(a.userData.reaction&&performance.now()<Number(a.userData.reactionUntil||0)){a.rotation.y+=a.userData.reaction==="HOSTILE" ? .08 : -.04;}return}a.position.x=a.userData.base+Math.sin(t*.35+a.userData.phase)*.8;a.rotation.y=Math.sin(t*.35+a.userData.phase)*.25;});
 }
