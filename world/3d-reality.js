@@ -30,7 +30,7 @@ function createGround(){
  for(let z=-54;z<54;z+=8){box(.18,.025,3.6,0xc7c8bd,0,.07,z);}
 }
 function door(x,z,w,h,seed,building){
- const mat=makeMat(seed%2?0x292a2e:0x101114,.72,seed%2 ? .2 : 0);
+ const mat=makeMat(seed%2?0x292a2e:0x101114,.72,seed%2?.2:0);
  const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,.08),mat);m.position.set(x, h/2, z);worldGroup.add(m);
  const sign=new THREE.Mesh(new THREE.BoxGeometry(w*.7,.08,.02),makeMat(0x2f80ff,.7));sign.position.set(x,h*.78,z-.06);worldGroup.add(sign);
  doors.push({mesh:m,x,z,w:.9,h:2.2,id:"door-"+seed,open:false,building});
@@ -72,10 +72,8 @@ function streetProps(){
    cyl(.08,4.5,0x151718,-5,2.25,z);
    const lamp=box(.12,.12,.9,0x70747a,-5,4.35,z,{metalness:.6});lamp.rotation.z=.15;
    box(.28,.08,.18,0x2f80ff,-5.25,4.25,z);
-   /* Local pools of practical light keep streets readable without turning the world bright. */
    const practical=new THREE.PointLight(0xc7d6c0,.75,10,2);practical.position.set(-5,4.05,z);worldGroup.add(practical);lights.push(practical);
  }
- for(let z=-44;z<=44;z+=11){
  for(let z=-44;z<=44;z+=11){
    const side=z%22===0?-9:9;
    box(1.8,.45,4.1,0x292a2e,side,.45,z,{roughness:.8});
@@ -92,13 +90,13 @@ function createSnow(){
 }
 function createCanonicalBuildings(){const s=root.ESCIE_WORLD_SIMULATION?.state?.()||{};const list=root.ESCIE_WORLD_SIMULATION?.districtBuildings?.(s.neighbourhood)||[];list.forEach((b,i)=>building(-27+(i%4)*18,-38+Math.floor(i/4)*18,10,10,12+i%3,i+1,b));}
 function buildScene(){
- clearWorld();scene=new THREE.Scene();scene.background=new THREE.Color(0x050505);scene.fog=new THREE.FogExp2(0x101114,.012);
+ clearWorld();scene=new THREE.Scene();scene.background=new THREE.Color(0x050505);scene.fog=new THREE.FogExp2(0x101114,.018);
  worldGroup=new THREE.Group();scene.add(worldGroup);
  const hemi=new THREE.HemisphereLight(0xd8d4ca,0x101114,.95);scene.add(hemi);
  const moon=new THREE.DirectionalLight(0x8a96a3,1.25);moon.position.set(-18,30,12);scene.add(moon);
  const fill=new THREE.DirectionalLight(0x43504a,.28);fill.position.set(22,10,-18);scene.add(fill);
  const signal=new THREE.PointLight(0x2f80ff,1.6,24,2);signal.position.set(0,5,6);scene.add(signal);lights.push(signal);
- playerLight=new THREE.PointLight(0xd8d4ca,.25,8,2);playerLight.position.set(0,1.8,0);scene.add(playerLight);
+ playerLight=new THREE.PointLight(0xd8d4ca,.2,8,2);scene.add(playerLight);
  dayLight=moon;ambientLight=hemi;
  createGround();createCanonicalBuildings();
  let seed=1;
@@ -183,7 +181,7 @@ function enter3DInterior(building){
  worldGroup.children.forEach(o=>o.visible=false);
  interiorGroup=new THREE.Group();worldGroup.add(interiorGroup);
  const floor=new THREE.Mesh(new THREE.BoxGeometry(16,.12,12),makeMat(0x101114,.95));floor.position.y=0;interiorGroup.add(floor);
- [[0,2,-6],[0,2,6],[-8,2,0],[8,2,0]].forEach((p,i)=>{const w=new THREE.Mesh(new THREE.BoxGeometry(i<2?16:.12,4,i<2 ? .12 : 12),makeMat(0x292a2e,.96));w.position.set(p[0],p[1],p[2]);interiorGroup.add(w)});
+ [[0,2,-6],[0,2,6],[-8,2,0],[8,2,0]].forEach((p,i)=>{const w=new THREE.Mesh(new THREE.BoxGeometry(i<2?16:.12,4,i<2?.12:12),makeMat(0x292a2e,.96));w.position.set(p[0],p[1],p[2]);interiorGroup.add(w)});
  const desk=new THREE.Mesh(new THREE.BoxGeometry(3,.9,1.2),makeMat(0x1b1c1f,.9));desk.position.set(0,.45,-2);interiorGroup.add(desk);
  const signal=new THREE.Mesh(new THREE.BoxGeometry(.7,.08,.7),makeMat(0x2f80ff,.55,.2));signal.position.set(0,.95,-2);interiorGroup.add(signal);
  const light=new THREE.PointLight(0x4da3ff,2,18);light.position.set(0,3,0);interiorGroup.add(light);
@@ -296,23 +294,11 @@ function updateEnvironment(t){
  const st=root.ESCIE_WORLD_SIMULATION?.state?.()||{},cycle=((Number(st.hour||12)*60+Number(st.minute||0))/1440),angle=cycle*Math.PI*2;
  const daylight=Math.max(.06,Math.sin(angle-Math.PI/2)*.5+.5);const weather=String(st.weather||"COLD").toUpperCase();const snow=worldGroup?.children.find(o=>o.isPoints);if(snow)snow.visible=weather.includes("SNOW")||weather.includes("COLD");
  const night=1-daylight,poorVisibility=weather.includes("SNOW")||weather.includes("FOG")||weather.includes("STORM");
- if(dayLight){
-   dayLight.intensity=.32+daylight*1.55;
-   dayLight.position.set(Math.cos(angle)*25,8+daylight*28,Math.sin(angle)*25);
-   dayLight.color.set(daylight>.45?0xd8d4ca:0x758394);
- }
+ if(dayLight){dayLight.intensity=.32+daylight*1.55;dayLight.position.set(Math.cos(angle)*25,8+daylight*28,Math.sin(angle)*25);dayLight.color.set(daylight>.45?0xd8d4ca:0x758394);}
  if(ambientLight)ambientLight.intensity=.34+daylight*.68;
  if(playerLight){playerLight.intensity=.12+night*.72+(poorVisibility ? .18 : 0);playerLight.position.set(player.x,1.9,player.z);}
- if(scene?.fog){
-   const target=.008+night*.010+(poorVisibility ? .006 : 0);
-   scene.fog.density+=(target-scene.fog.density)*.06;
- }
- lights.forEach((l,i)=>{
-   if(!l.isPointLight)return;
-   const isSignal=l===lights[0];
-   if(isSignal)l.intensity=1.15+night*1.1;
-   else l.intensity=.22+night*.85;
- });
+ if(scene?.fog)scene.fog.density=.008+night*.010+(poorVisibility ? .006 : 0);
+ lights.forEach((l,i)=>{if(!l.isPointLight)return;const isSignal=l===lights[0];if(isSignal)l.intensity=1.15+night*1.1;else l.intensity=.22+night*.85;});
 }
 function syncPauseMap(){const map=document.getElementById("world-map"),p=document.getElementById("world-player");if(!map||!p)return;const x=Math.max(0,Math.min(100,(player.x+54)/108*100)),y=Math.max(0,Math.min(100,(player.z+54)/108*100));p.style.left=x+"%";p.style.top=y+"%";p.title="PLAYER · "+Math.round(player.x+54)+" · "+Math.round(player.z+54);const sim=root.ESCIE_WORLD_SIMULATION?.state?.()||{};map.dataset.neighbourhood=String(sim.neighbourhood||"PARC-EXTENSION");map.dataset.transport=String(sim.transport||"FOOT");}
 function updateHud(){
@@ -322,7 +308,7 @@ function updateHud(){
 }
 function updateQuality(dt){const ms=dt*1000;perf.frameMs=perf.frameMs*.92+ms*.08;if(perf.frameMs>28)perf.lowFrames++;else perf.lowFrames=Math.max(0,perf.lowFrames-1);if(perf.lowFrames>90&&perf.quality!=="low"){perf.quality="low";worldGroup?.traverse(o=>{if(o.isPoints)o.visible=false;});renderer?.setPixelRatio(Math.min(devicePixelRatio||1,1));}} 
 function updateActors(t){
- actors.forEach(a=>{if(a.userData.canonical){if(a.userData.reaction&&performance.now()<Number(a.userData.reactionUntil||0)){a.rotation.y+=a.userData.reaction==="HOSTILE" ? .08 : -.04;}return}a.position.x=a.userData.base+Math.sin(t*.35+a.userData.phase)*.8;a.rotation.y=Math.sin(t*.35+a.userData.phase)*.25;});
+ actors.forEach(a=>{if(a.userData.canonical){if(a.userData.reaction&&performance.now()<Number(a.userData.reactionUntil||0)){a.rotation.y+=a.userData.reaction==="HOSTILE"?.08:-.04;}return}a.position.x=a.userData.base+Math.sin(t*.35+a.userData.phase)*.8;a.rotation.y=Math.sin(t*.35+a.userData.phase)*.25;});
 }
 function render(){
  const dt=Math.min(clock.getDelta(),.05);updateQuality(dt);move(dt);worldHeartbeat();updateLaw();updateActors(clock.elapsedTime);syncCanonicalNPCs(clock.elapsedTime);updateVehicles(clock.elapsedTime);updatePolice();policeCollision();updateEnvironment(clock.elapsedTime);if(performance.now()-perf.hud>120){updateHud();syncPauseMap();perf.hud=performance.now();}
