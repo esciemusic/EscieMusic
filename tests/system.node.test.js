@@ -783,4 +783,6 @@ assert(centralCommandDesk.includes('b.onclick=()=>{S.tab=b.dataset.tab;render()}
 assert(centralCommandDesk.includes('$("deskIntakeBtn")?.addEventListener("click",intake)'), "Command Desk intake must be wired");
 assert(centralCommandDesk.includes('$("deskRefresh")?.addEventListener("click",load)'), "Command Desk sync must be wired");
 assert(centralCommandDesk.includes('root.querySelectorAll("[data-a]").forEach(b=>b.onclick='), "Command Desk review decisions must be wired");
+assert(centralCommandDesk.includes('const broker=window.ESCIE_THIRD_PARTY_BROKER'), "Command Desk must guard the third-party storage broker");
+assert(centralCommandDesk.includes('THIRD_PARTY_STORAGE_BROKER_UNAVAILABLE'), "Command Desk must fail safely when storage broker is unavailable");
 console.log("ESCIE launch button coverage contracts OK");
