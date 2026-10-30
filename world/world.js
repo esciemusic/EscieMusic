@@ -5,6 +5,9 @@ let npcs=Array.isArray(CONTENT.npcs)?CONTENT.npcs.map(n=>Object.assign({},n)):[]
 objects=Array.isArray(CONTENT.objects)?CONTENT.objects.map(o=>Object.assign({},o)):[];
 const walls=CONTENT.walls instanceof Set?CONTENT.walls:new Set(CONTENT.walls||[]);
 const MARKET=Array.isArray(CONTENT.market)?CONTENT.market.map(x=>Object.assign({},x)):[];
+const WORLD_LOOT_TABLE=Array.isArray(CONTENT.lootTable)?CONTENT.lootTable.map(x=>Object.assign({},x)):[];
+if(window.ESCIE_WORLD_NPC){const runtimeNPC=CONTENT.runtimeNPC||{};if(runtimeNPC.witness)window.ESCIE_WORLD_NPC.registerNPC(Object.assign({},runtimeNPC.witness));(runtimeNPC.surveillance||[]).forEach(item=>window.ESCIE_WORLD_NPC.registerSurveillance(Object.assign({},item)));}
+window.ESCIE_WORLD_SIMULATION?.seedWorldNPCs?.();
 function contextualLootTable(source,reason){
  const s=state(),room=String(s.world_room||roomState.room||"lane"),skill=Number(rpgState(s)?.skills?.INVESTIGATION||0);
  const sourceText=String(source||"").toLowerCase(),reasonText=String(reason||"").toLowerCase();
