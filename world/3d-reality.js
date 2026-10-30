@@ -54,6 +54,7 @@ function building(x,z,w,d,h,seed,buildingRef){
    const interiorLight=new THREE.PointLight(0xc7d6c0,.35,7,2);
    interiorLight.position.set(x,Math.min(h-1.2,Math.max(2.2,h*.55)),z-d/2+.5);
    interiorLight.userData.baseIntensity=.35;
+   interiorLight.userData.readabilityLight=true;
    worldGroup.add(interiorLight);lights.push(interiorLight);readabilityLights.push(interiorLight);
  }
  if(seed%2===0) door(x,z-d/2-.055,1.15,2.2,seed,buildingRef);
@@ -305,7 +306,7 @@ function worldHeartbeat(){if(!started||paused)return;const now=performance.now()
  },elapsedMinutes);root.ESCIE_WORLD_NPC_LIFE?.syncRelationships?.();}root.ESCIE_WORLD_LAW?.tick?.();}}
 function updateEnvironment(t){
  const st=root.ESCIE_WORLD_SIMULATION?.state?.()||{},cycle=((Number(st.hour||12)*60+Number(st.minute||0))/1440),angle=cycle*Math.PI*2;
- const daylight=Math.max(.06,Math.sin(angle-Math.PI/2)*.5+.5);const weather=String(st.weather||"COLD").toUpperCase();if(snowMesh)snowMesh.visible=weather.includes("SNOW")||weather.includes("COLD");
+ const daylight=Math.max(.06,Math.sin(angle-Math.PI/2)*.5+.5);const weather=String(st.weather||"COLD").toUpperCase();if(snowMesh)snowMesh.visible=perf.quality!=="low"&&(weather.includes("SNOW")||weather.includes("COLD"));
  const night=1-daylight,poorVisibility=weather.includes("SNOW")||weather.includes("FOG")||weather.includes("STORM"),snowWeather=weather.includes("SNOW"),fogWeather=weather.includes("FOG"),stormWeather=weather.includes("STORM"); const environmentKey=weather+"|"+Math.round(night*100); const environmentChanged=environmentKey!==lastEnvironmentKey;
  if(dayLight){const dawn=Math.max(0,1-Math.abs(daylight-.22)/.22),dusk=Math.max(0,1-Math.abs(daylight-.42)/.22);dayLight.intensity=(.32+daylight*1.55)*(snowWeather ? .94 :1)*(fogWeather ? .88 :1)*(stormWeather ? .82 :1);dayLight.position.set(Math.cos(angle)*25,8+daylight*28,Math.sin(angle)*25);dayLight.color.set(dawn||dusk?(dawn>.5?0xb8a78f:0xa7a0a1):(daylight>.45?0xd8d4ca:0x758394));}
  if(ambientLight)ambientLight.intensity=(.34+daylight*.68)*(snowWeather?1.08:1)*(fogWeather ? .94 :1)*(stormWeather ? .9 :1);
