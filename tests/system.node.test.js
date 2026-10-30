@@ -731,7 +731,7 @@ assert(world3dRuntime.includes("interactionCooldown"),"NPC rewards must have an 
 console.log("ESCIE NPC job/favor gameplay OK");
 
 assert(simRuntime.includes("const commitCrime="), "simulation must expose systemic crime consequences");
-assert(world3dRuntime.includes("commitCrime?.(\"BURGLARY\""), "3D world must support burglary crime");
+assert(/const kind=night\?"BURGLARY":\(interior==="SHOP"\?"ROBBERY":null\)/.test(world3dRuntime)&&world3dRuntime.includes("commitCrime?.(kind"), "3D world must support burglary and robbery crime types");
 assert(world3dRuntime.includes("commitCrime?.(\"ASSAULT\""), "3D combat must record assault crime");
 assert(world3dRuntime.includes("commitCrime?.(\"VEHICLE_THEFT\""), "vehicle theft must record crime");
 assert(simRuntime.includes("const crimeJobAccept="), "simulation must support multi-step crime jobs");
