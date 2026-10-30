@@ -906,57 +906,24 @@ function renderClothing(){
   }
 
   function renderGlassEye() {
-    const container = byId("glass-eye-container");
-    if (!container) return;
-
-    const records = getAllPublicRecords();
-    const latest = records
-      .filter(record => record && record.type === "music")
-      .sort((a, b) => String(a.number || "").localeCompare(String(b.number || ""), undefined, { numeric: true }))
-      .slice(-1)[0] || null;
-    const memory = getGlobal("ESCIE_GLASS_EYE_MEMORY", null);
-
-    container.innerHTML =
-      '<div class="glass-frame glass-eye-interface">' +
-        '<div class="glass-readout"><span>THE GLASS EYE</span><span>YOUR SIDE OF THE SCREEN</span></div>' +
-        '<div class="glass-center">' +
-          '<span class="glass-dot"></span>' +
-          '<strong>LOOK. LISTEN. FOLLOW. RETURN.</strong>' +
-          '<p>The world is not finished when you arrive. What you notice becomes part of your path.</p>' +
-          '<div class="glass-eye-actions" role="group" aria-label="Glass Eye actions">' +
-            '<button type="button" data-glass-eye-action="observe">OBSERVE</button>' +
-            '<button type="button" data-glass-eye-action="listen">LISTEN</button>' +
-            '<button type="button" data-glass-eye-action="follow">FOLLOW</button>' +
-            '<button type="button" data-glass-eye-action="return">RETURN</button>' +
-          '</div>' +
-          '<p class="glass-eye-response" aria-live="polite">' +
-            escapeHTML(latest ? "A signal is waiting." : "The signal is quiet. Look closer.") +
-          '</p>' +
-        '</div>' +
-        '<div class="glass-footer"><span>YOUR PATH</span><span>LOCAL MEMORY</span><span>NO CANON</span></div>' +
-      '</div>';
-
-    const response = container.querySelector(".glass-eye-response");
-    container.querySelectorAll("[data-glass-eye-action]").forEach(button => {
-      button.addEventListener("click", () => {
-        const action = button.getAttribute("data-glass-eye-action");
-        const messages = {
-          observe: "OBSERVING · notice what is actually here.",
-          listen: latest ? "LISTENING · the current signal is open." : "LISTENING · waiting for a signal.",
-          follow: "FOLLOWING · threads lead deeper into the record.",
-          return: "RETURNING · your path remains yours."
-        };
-        if (response) response.textContent = messages[action] || "THE GLASS EYE IS OPEN.";
-        if (memory && typeof memory.record === "function") {
-          memory.record({
-            type: "GLASS_EYE_" + String(action || "").toUpperCase(),
-            target_id: latest ? recordId(latest) : "glass-eye",
-            timestamp: new Date().toISOString()
-          });
-        }
-      });
-    });
+    const container=byId("glass-eye-container"); if(!container)return;
+    const memory=getGlobal("ESCIE_GLASS_EYE_MEMORY",null),journey=getGlobal("ESCIE_GLASS_EYE_JOURNEY",null);
+    const latest=getAllPublicRecords().filter(r=>r&&r.type==="music").sort((a,b)=>String(a.number||"").localeCompare(String(b.number||""),undefined,{numeric:true})).slice(-1)[0]||null;
+    const summary=memory&&typeof memory.summary==="function"?memory.summary():{observed:0,discoveries:0,connections:0,visited:0};
+    const path=journey&&typeof journey.journey==="function"?(journey.journey().path||[]):[];
+    const last=path.length?path[path.length-1]:null;
+    container.innerHTML='<div class="glass-frame glass-eye-interface"><div class="glass-readout"><span>THE GLASS EYE</span><span>THE AUDIENCE EYE / YOUR SIDE OF THE SCREEN</span></div><div class="glass-center"><span class="glass-dot"></span><strong>YOU ARE LOOKING THROUGH THE SCREEN.</strong><p>This is your corner of the ESCIE world. Notice something. Follow it. Come back. Your experience can stay yours without becoming canon.</p><div class="glass-eye-actions" role="group" aria-label="Glass Eye actions"><button type="button" data-glass-eye-action="observe">OBSERVE</button><button type="button" data-glass-eye-action="follow">FOLLOW A THREAD</button><button type="button" data-glass-eye-action="return">RETURN</button></div><p class="glass-eye-response" aria-live="polite">'+escapeHTML(latest?"A transmission is waiting. Your attention is the first interaction.":"The signal is quiet. Your attention is still part of the experience.")+'</p></div><div class="glass-memory-inline"><div><span>YOUR MEMORY</span><strong>LOCAL / NON-CANONICAL</strong></div><div class="glass-memory-stats"><span>OBSERVED <b>'+escapeHTML(summary.observed||0)+'</b></span><span>DISCOVERED <b>'+escapeHTML(summary.discoveries||0)+'</b></span><span>CONNECTED <b>'+escapeHTML(summary.connections||0)+'</b></span><span>VISITED <b>'+escapeHTML(summary.visited||0)+'</b></span></div><div class="glass-path-line"><span>RECENT PATH</span><em>'+escapeHTML(last?(last.type+" / "+(last.target_id||"—")):"NO OBSERVATIONS YET")+'</em></div><button type="button" class="glass-memory-clear-inline" data-glass-eye-action="clear-memory">CLEAR MY MEMORY</button></div><div class="glass-footer"><span>LOOK</span><span>LISTEN</span><span>FOLLOW</span><span>RETURN</span><span>NO CANON</span></div></div>';
+    const response=container.querySelector(".glass-eye-response");
+    container.querySelectorAll("[data-glass-eye-action]").forEach(button=>button.addEventListener("click",()=>{
+      const action=button.getAttribute("data-glass-eye-action");
+      if(action==="clear-memory"){if(memory&&typeof memory.clear==="function")memory.clear();renderGlassEye();return;}
+      const messages={observe:"OBSERVING · what you notice belongs to your experience first.",follow:"FOLLOWING · choose a thread and see where it leads. The gaps stay gaps.",return:"RETURNING · the world remains here. Your path remains yours."};
+      if(response)response.textContent=messages[action]||"THE GLASS EYE IS OPEN.";
+      if(memory&&typeof memory.record==="function")memory.record({type:"GLASS_EYE_"+String(action||"").toUpperCase(),target_id:latest?recordId(latest):"glass-eye",timestamp:new Date().toISOString()});
+      setTimeout(renderGlassEye,0);
+    }));
   }
+
   function getAllRecords() {
     const registry = getGlobal("ESCIE_RECORD_REGISTRY", null);
     if (registry && typeof registry.records === "function") {
@@ -1774,6 +1741,8 @@ function renderClothing(){
     render();
     setupMobileMenu();
     setupRecordInspector();
+    const live=getGlobal("ESCIE_PUBLIC_LIVE",null);
+    if(live&&live.ready&&typeof live.ready.then==="function"){live.ready.then(function(){render();refreshNavigationState();}).catch(function(error){console.warn("ESCIE LIVE PUBLIC SOURCE UNAVAILABLE",error);});}
     bindNavigationRuntime();
 
     const state = getRuntimeState();
