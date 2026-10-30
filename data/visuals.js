@@ -14,11 +14,15 @@ function normalizeEscieVisualAsset(asset){
  if(asset==null)return null;
  if(typeof asset==="string")return asset.trim()?{url:asset.trim(),type:"image"}:null;
  if(typeof asset!=="object")return null;
- const url=String(asset.url||asset.src||asset.href||"").trim();
+ const mediaId=String(asset.mediaId||asset.registryId||"").trim();
+ const catalog=typeof window!=="undefined"&&window.ESCIE_MEDIA_CATALOG?window.ESCIE_MEDIA_CATALOG:null;
+ const registered=mediaId&&catalog&&typeof catalog.get==="function"?catalog.get(mediaId):null;
+ const source=registered?Object.assign({},registered,asset):asset;
+ const url=String(source.url||source.src||source.href||source.asset||"").trim();
  if(!url)return null;
- const type=String(asset.type||asset.kind||"image").toLowerCase();
+ const type=String(source.type||source.kind||"image").toLowerCase();
  if(!["image","photo","video","iframe"].includes(type))return null;
- return {url,type,alt:String(asset.alt||"").trim(),caption:String(asset.caption||"").trim(),poster:asset.poster?String(asset.poster).trim():null};
+ return {mediaId:mediaId||source.id||null,url,type,alt:String(source.alt||"").trim(),caption:String(source.caption||"").trim(),poster:source.poster?String(source.poster).trim():null};
 }
 function normalizeEscieVisuals(items){
  if(!Array.isArray(items))return [];
