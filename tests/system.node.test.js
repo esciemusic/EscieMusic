@@ -592,6 +592,13 @@ assert(worldRuntime.includes("window.ESCIE_WORLD_CONTENT"),"world runtime must c
 assert(!worldRuntime.includes("let npcs=[{id:\"witness\""),"world runtime must not own the authored NPC definition");
 assert(!worldRuntime.includes("const WORLD_LOOT_TABLE=["),"world runtime must not own the authored loot table");
 assert(simRuntime.includes("window.ESCIE_WORLD_CITY"),"simulation must consume canonical city data");
+const worldItems=fs.readFileSync("data/world-items.js","utf8");
+assert(worldItems.includes("window.ESCIE_WORLD_ITEMS"),"canonical world item file must publish item registries");
+assert(worldItems.includes("STREET_CAR"),"canonical world item file must retain street vehicle definitions");
+assert(worldItems.includes("POCKET_KNIFE"),"canonical world item file must retain equipment definitions");
+assert(fs.readFileSync("world/equipment.js","utf8").includes("window.ESCIE_WORLD_ITEMS?.equipment"),"equipment system must consume canonical item data");
+assert(fs.readFileSync("world/vehicle-system.js","utf8").includes("window.ESCIE_WORLD_ITEMS?.vehicles"),"vehicle system must consume canonical vehicle data");
+assert(worldIndex.indexOf("../data/world-items.js")<worldIndex.indexOf("equipment.js"),"world item data must load before equipment runtime");
 assert(!simRuntime.includes("const WORLD_STREETS={"),"simulation must not own the authored street graph");
 assert(!simRuntime.includes("const NPC_POPULATIONS={"),"simulation must not own authored NPC populations");
 assert(worldIndex.indexOf('../data/world-content.js')<worldIndex.indexOf('world.js'),"canonical world content must load before world runtime");
