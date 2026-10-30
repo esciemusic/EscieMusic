@@ -28,7 +28,7 @@ test("command desk supports the complete operator intake surface",()=>{
   ]) assert(desk.includes(x),x);
 });
 
-test("command desk delegates services through Central broker",()=>{
+test("command desk routes questions and tasks through the Central dispatcher",()=>{\n  assert(desk.includes("ESCIE_AGENT_DISPATCHER"));\n  assert(desk.includes("dispatchPlan"));\n  assert(desk.includes("CENTRAL_DISPATCHER_UNAVAILABLE"));\n  assert(desk.includes("message_type:\"HANDOFF\""));\n  assert(desk.includes("message_type:\"APPROVAL_REQUEST\""));\n});\n\ntest("command desk delegates services through Central broker",()=>{
   assert(desk.includes('ESCIE_THIRD_PARTY_BROKER'));
   assert(desk.includes('broker.plan'));
   assert(desk.includes('requires_human_approval:true'));
