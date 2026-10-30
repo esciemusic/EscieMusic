@@ -502,6 +502,9 @@ assert(world.includes(".world-map{display:none;"),"2D map must be hidden during 
 assert(world.includes("body.is-world-paused .world-map{display:block}"),"2D map must only be revealed by pause state");
 assert(world3dRuntime.includes('document.body.classList.toggle("is-world-paused",paused)'),"3D pause state must own the 2D map visibility state");
 assert(!worldIndex.includes("REALITY FILTER"),"game UI must not expose the removed reality filter");
+assert(world3dRuntime.includes("pause:()=>togglePause(true)"),"3D runtime must expose a pause gate for 2D system views");
+assert(world3dRuntime.includes("isPaused:()=>paused"),"3D runtime must expose authoritative pause state");
+for(const fn of ["inventory","character","investigation","market","quests","openSimulation","phoneApp"]){assert(worldRuntime.includes("function "+fn+"(") && worldRuntime.includes("ensureSystemPause();"),fn+" must route its 2D system view through pause state");}
 
 console.log("ESCIE 3D interior lifecycle contracts OK");
 
