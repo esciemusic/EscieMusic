@@ -31,7 +31,7 @@ function createGround(){
  for(let z=-54;z<54;z+=8){const m=box(.18,.025,3.6,0xc7c8bd,0,.07,z);m.userData.laneMarking=true;laneMarkings.push(m);}
 }
 function door(x,z,w,h,seed,building){
- const mat=makeMat(seed%2?0x292a2e:0x101114,.72,seed%2?.2:0);
+ const mat=makeMat(seed%2?0x292a2e:0x101114,.72,(seed%2 ? .2 : 0));
  const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,.08),mat);m.position.set(x, h/2, z);worldGroup.add(m);
  const sign=new THREE.Mesh(new THREE.BoxGeometry(w*.7,.08,.02),makeMat(0x2f80ff,.7));sign.position.set(x,h*.78,z-.06);worldGroup.add(sign);
  doors.push({mesh:m,x,z,w:.9,h:2.2,id:"door-"+seed,open:false,building});
@@ -310,7 +310,7 @@ function updateEnvironment(t){
  if(scene?.fog)scene.fog.density=.008+night*.010+(fogWeather ? .008 :0)+(snowWeather ? .003 :0)+(stormWeather ? .004 :0);
  if(renderer){const exposure=stormWeather ? .94 :(fogWeather ? .99 :(snowWeather?1.02:(night>.72?1.1:1.05)));renderer.toneMappingExposure+=(exposure-renderer.toneMappingExposure)*.04;}
  lights.forEach((l,i)=>{if(!l.isPointLight)return;const isSignal=l===lights[0];if(isSignal)l.intensity=(1.15+night*1.1)*(stormWeather ? .82 :1);else {const base=Number(l.userData.baseIntensity||.35);l.intensity=base*(.18+night*.82)*(snowWeather?1.08:1)*(stormWeather ? .78 :1);}});
- const visibilityPool=poorVisibility?.22:0;
+ const visibilityPool=poorVisibility ? .22 : 0;
  readabilityLights.forEach(l=>{const base=Number(l.userData.baseIntensity||.35);l.intensity=base*(.2+night*.8+visibilityPool);});
  windowLights.forEach(o=>{const base=Number(o.userData.baseEmissive||.35);o.material.emissiveIntensity=base*(.12+night*.88);});
  streetMarkings.forEach(o=>{o.material.emissive=new THREE.Color(0x252b28);o.material.emissiveIntensity=.015+night*.035;});
