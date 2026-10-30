@@ -42,7 +42,7 @@ function related(id){
 function inverse(t){const inv={created_by:"created",part_of:"contains",located_at:"location_of",recorded_at:"recording_location_of",performed_at:"performance_location_of",inspired_by:"inspires",supports:"supported_by",contradicts:"contradicted_by"};return inv[t]||t||"related"}
 function filtered(){
  const q=state.q.toLowerCase().trim();
- return records().filter(r=>(state.type==="ALL"||type(r)===state.type)&&(state.reality==="ALL"||realityLevel(r)===state.reality)&&(!q||searchText(r).includes(q)));
+ return records().filter(r=>(state.type==="ALL"||type(r)===state.type)&&(!q||searchText(r).includes(q)));
 }
 function card(r){
  return '<button type="button" class="world-card world-node-card" data-node="'+esc(r.id)+'"><div class="world-card-main"><span class="world-kicker">'+esc(type(r))+'</span><h3>'+esc(title(r))+'</h3><p>'+esc(String(r.description||r.summary||r.story||"A doorway into the ESCIE universe.").slice(0,220))+'</p></div><span class="world-arrow" aria-hidden="true">↗</span></button>';
