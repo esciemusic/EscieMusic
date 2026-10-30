@@ -603,6 +603,20 @@ assert(!simRuntime.includes("const WORLD_STREETS={"),"simulation must not own th
 assert(!simRuntime.includes("const NPC_POPULATIONS={"),"simulation must not own authored NPC populations");
 assert(worldIndex.indexOf('../data/world-content.js')<worldIndex.indexOf('world.js'),"canonical world content must load before world runtime");
 assert(worldIndex.indexOf('../data/world-city.js')<worldIndex.indexOf('world-simulation.js'),"canonical city data must load before simulation runtime");
+assert(simRuntime.includes("const CITY=window.ESCIE_WORLD_CITY||{};"),"simulation must bind to canonical city data");
+assert(simRuntime.includes("const WORLD_BUILDINGS=CITY.buildings||{};"),"simulation must consume canonical building data");
+assert(simRuntime.includes("const INTERIORS=CITY.interiors||{};"),"simulation must consume canonical interior data");
+assert(simRuntime.includes("const PUBLIC_TRANSIT=CITY.publicTransit||{};"),"simulation must consume canonical transit data");
+assert(!simRuntime.includes("const WORLD_BUILDINGS={"),"simulation must not own authored building definitions");
+assert(!simRuntime.includes("const INTERIORS={"),"simulation must not own authored interior definitions");
+assert(!simRuntime.includes("const PUBLIC_TRANSIT={"),"simulation must not own authored transit definitions");
+assert(!simRuntime.includes("const WORLD_LANDMARKS={"),"simulation must not own authored landmark definitions");
+assert(fs.readFileSync("data/world-city.js","utf8").includes("world_buildings"),"canonical city data must own building definitions");
+assert(fs.readFileSync("data/world-city.js","utf8").includes("public_transit"),"canonical city data must own transit definitions");
+const worldEngine=fs.readFileSync("world-engine.js","utf8");
+assert(!worldEngine.includes("world-public-reality"),"public World Engine must not expose a reality filter");
+assert(!worldEngine.includes("realityLevel"),"public World Engine must not classify/filter the world through a reality-level control");
+
 console.log("ESCIE file-based world ownership contracts OK");
 
 
