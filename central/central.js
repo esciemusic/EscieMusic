@@ -47,10 +47,28 @@ function genericView(title,body){return '<div class="attention"><strong>'+esc(ti
 function openComposer(){document.getElementById("post-dialog").showModal();document.getElementById("post-text").focus()}
 function analyze(){
   const text=document.getElementById("post-text").value.trim(),type=document.getElementById("post-type").value,context=document.getElementById("post-context").value.trim();
-  const routes=routesFor(type,text+" "+context);
+  const mediaFile=document.getElementById("post-file")?.files?.[0]||null;
+  const mediaRecord=type==="photo"||type==="video"?window.ESCIE_CENTRAL_MEDIA?.toWritePlan({
+    id:mediaFile?("media-"+Date.now()):"",
+    type,
+    asset:mediaFile?("assets/media/"+mediaFile.name):"",
+    title:text.split("\n")[0]||context||"UNTITLED MEDIA",
+    caption:text,
+    location:{
+      label:document.getElementById("post-location")?.value||"",
+      district:document.getElementById("post-district")?.value||""
+    },
+    coordinates:{
+      lat:document.getElementById("post-lat")?.value||null,
+      lng:document.getElementById("post-lng")?.value||null
+    },
+    publicSections:["THE WORLD","ARCHIVE"],
+    worldDistricts:[document.getElementById("post-district")?.value||""].filter(Boolean)
+  }):null;
+  const routes=mediaRecord?mediaRecord.destinations.map(d=>d.file):routesFor(type,text+" "+context);
   document.getElementById("routing-output").innerHTML=routes.map(r=>'<span class="route-chip">'+esc(r)+'</span>').join("");
   if(!text){document.getElementById("post-text").focus();return}
-  state.drafts.push({id:"draft-"+Date.now(),text,type,context,routes,createdAt:new Date().toISOString()});
+  state.drafts.push({id:"draft-"+Date.now(),text,type,context,routes,media:mediaRecord,createdAt:new Date().toISOString()});
   saveDrafts();render();
   document.getElementById("post-dialog").close();
 }
