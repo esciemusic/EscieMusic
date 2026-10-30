@@ -374,24 +374,26 @@ function crimeInteract(){
  const sim=root.ESCIE_WORLD_SIMULATION;
  const st=sim?.state?.()||{};
  const night=Number(st.hour||12)>=22||Number(st.hour||12)<6;
- if(!night)return false;
+ const kind=night?"BURGLARY":(interior==="SHOP"?"ROBBERY":null);
+ if(!kind)return false;
  let job=st.crime_job;
  if(!job){
-   const accepted=sim?.crimeJobAccept?.("BURGLARY",b.id);
+   const accepted=sim?.crimeJobAccept?.(kind,b.id);
    if(accepted?.ok){say3D("CRIME JOB · "+accepted.job.title+" · PREPARE FIRST");return true}
    return false;
  }
  if(String(job.target||"").toUpperCase()!==String(b.id||"").toUpperCase())return false;
+ if(job.id!==kind)return false;
  if(job.step==="PREPARE"){
    const prepared=sim?.crimeJobProgress?.("PREPARE",{target:b.id});
-   if(prepared?.ok){say3D("BURGLARY · GEAR READY · RETURN TO ENTRY");return true}
+   if(prepared?.ok){say3D(kind+" · GEAR READY · RETURN TO ENTRY");return true}
  }
  if(job.step==="ENTER"){
    const entered=sim?.crimeJobProgress?.("ENTER",{target:b.id});
    if(entered?.ok){
-     sim?.commitCrime?.("BURGLARY",{target:b.id,risk:2,witnessed:false});
+     sim?.commitCrime?.(kind,{target:b.id,risk:kind==="ROBBERY"?3:2,witnessed:false});
      const result=sim?.enterBuilding?.(st.neighbourhood,b.id);
-     if(result?.ok){enter3DInterior(b);root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(10,"BURGLARY ENTRY");say3D("BURGLARY · "+interior+" · INSIDE");return true}
+     if(result?.ok){enter3DInterior(b);root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(10,kind+" ENTRY");say3D(kind+" · "+interior+" · INSIDE");return true}
    }
  }
  return false;
