@@ -730,16 +730,16 @@ assert(world3dRuntime.includes("api?.jobAccept?.(best.id)"),"3D NPC jobs must be
 assert(world3dRuntime.includes("interactionCooldown"),"NPC rewards must have an interaction cooldown");
 console.log("ESCIE NPC job/favor gameplay OK");
 
-assert(sim.includes("const commitCrime="), "simulation must expose systemic crime consequences");
+assert(simRuntime.includes("const commitCrime="), "simulation must expose systemic crime consequences");
 assert(world3dRuntime.includes("commitCrime?.(\"BURGLARY\""), "3D world must support burglary crime");
 assert(world3dRuntime.includes("commitCrime?.(\"ASSAULT\""), "3D combat must record assault crime");
 assert(world3dRuntime.includes("commitCrime?.(\"VEHICLE_THEFT\""), "vehicle theft must record crime");
-assert(sim.includes("const crimeJobAccept="), "simulation must support multi-step crime jobs");
-assert(sim.includes("const crimeJobProgress="), "crime jobs must have physical progression steps");
+assert(simRuntime.includes("const crimeJobAccept="), "simulation must support multi-step crime jobs");
+assert(simRuntime.includes("const crimeJobProgress="), "crime jobs must have physical progression steps");
 assert(world3dRuntime.includes("function crimeInteract()"), "3D world must expose physical crime entry");
 assert(world3dRuntime.includes("crimeJobProgress?.(\"TAKE\""), "crime interiors must support physical loot taking");
 assert(world3dRuntime.includes("crimeJobProgress?.(\"ESCAPE\""), "crime exits must progress the heist");
-assert(sim.includes("ROBBERY:{id:\"ROBBERY\""), "crime jobs must include robbery");
+assert(simRuntime.includes("ROBBERY:{id:\"ROBBERY\""), "crime jobs must include robbery");
 assert(world3dRuntime.includes('const kind=night?"BURGLARY":(interior==="SHOP"?"ROBBERY":null)'), "3D crime must distinguish burglary and daytime robbery");
 assert(world3dRuntime.includes('commitCrime?.("ROBBERY"'), "robbery must create a systemic crime record");
 assert(law.includes("caseFiles"), "law system must maintain crime case files");
