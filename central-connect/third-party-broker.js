@@ -1,5 +1,6 @@
 (()=>{
   "use strict";
+  const SERVICE_CONTRACT=window.ESCIE_SERVICE_CONTRACT||null;
   const PROVIDERS=Object.freeze({
     STORAGE:{id:"supabase-storage",kind:"STORAGE",mode:"CONNECTED",label:"Central private storage",purpose:"Private intake and media storage"},
     RESEARCH:{id:"web-research",kind:"RESEARCH",mode:"EXTERNAL_READY",label:"Web research",purpose:"Fresh research when Central needs information"},
@@ -24,5 +25,5 @@
     return {provider:PROVIDERS.STORAGE.id,bucket:"central-private",storage_path:path};
   }
   function handoff(kind,request,extra){return plan(kind,request,extra)}
-  window.ESCIE_THIRD_PARTY_BROKER=Object.freeze({version:"1.0.0",providers:PROVIDERS,plan,handoff,uploadPrivate});
+  window.ESCIE_THIRD_PARTY_BROKER=Object.freeze({version:"1.1.0",contract:SERVICE_CONTRACT,providers:PROVIDERS,plan,handoff,uploadPrivate});
 })();
