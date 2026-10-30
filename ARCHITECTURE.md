@@ -78,3 +78,15 @@ The game remains one layer of the same ESCIE reality, not a separate universe.
 - player/game state cannot silently rewrite canonical truth.
 
 Any future change that violates this contract is a regression, not a stylistic variation.
+
+
+## Performance distribution
+
+Performance is treated as an architectural resource, not a single global optimization target.
+
+- `core/performance.js` owns shared timing primitives and budgets; it does not own gameplay or content.
+- The public layer prioritizes first paint, interaction and readable navigation. Noncritical resize work is throttled and script loading is deferred in dependency order.
+- THE WORLD reserves the hottest frame budget for movement, camera and rendering. Expensive environment updates are sampled below frame frequency, mobile pixel ratio is capped, and the existing adaptive quality system can shed noncritical effects when frame time rises.
+- World simulation remains event/heartbeat driven rather than frame driven wherever possible. Player saves are state-transition work, not render-loop work.
+- Central prioritizes correctness and auditability; it does not compete with the public/game render loop.
+- Every performance contract must remain testable without changing the canonical ownership boundaries.
