@@ -64,3 +64,17 @@ When a new feature needs data, create/update a data/config file first, then make
 File data → canonical simulation → NPC/life → law → RPG/economy → 3D presentation → player action → consequences → save state.
 
 The game remains one layer of the same ESCIE reality, not a separate universe.
+
+## Cross-layer universe contract
+
+`data/universe-contract.js` is the shared architectural contract consumed by Central, the public site and THE WORLD. It defines ownership boundaries and protects the confirmed design invariants:
+
+- the public ESCIE site is the canonical doorway;
+- THE WORLD is an extension of the same reality, not a separate universe;
+- gameplay remains 3D;
+- the map/pause interface is the only 2D game interface;
+- the removed Reality Filter stays removed;
+- Central may observe/correlate/propose, but important canonical changes require human approval;
+- player/game state cannot silently rewrite canonical truth.
+
+Any future change that violates this contract is a regression, not a stylistic variation.
