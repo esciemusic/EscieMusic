@@ -6,7 +6,7 @@
 "use strict";
 const root=window;
 let renderer,scene,camera,clock,avatar,worldGroup,thirdPerson=true,started=false,paused=false,raf=0,dayLight,ambientLight,playerLight,resizeObserver,visibilityHandler;
-const obstacles=[],actors=[],doors=[],lights=[],evidence=[],interiorActors=[],interiorStations=[];
+const obstacles=[],actors=[],doors=[],lights=[],evidence=[],interiorActors=[],interiorStations=[],securityCameras=[];
 const windowLights=[],streetMarkings=[],laneMarkings=[],groundMeshes=[],readabilityLights=[],facadeMeshes=[],playerRimLights=[],doorSignals=[],actorReadabilityMeshes=[],traffic=[];
 const vehicleImpacts={last:0,cooldown:900}; const perf={quality:"auto",frameMs:16,lowFrames:0,last:performance.now(),hud:0}; let lastEnvironmentKey="";let lastDistrictKey="";let snowMesh=null;
 const keys=new Set();
@@ -197,7 +197,7 @@ function streetProps(){
  }
 }
 function clearWorld(){
- interiorActors.length=0;interiorStations.length=0;traffic.lastImpact=0;if(typeof updateVehicles==="function")updateVehicles.car=null;if(typeof updatePolice==="function")updatePolice.group=null;obstacles.length=0;actors.length=0;doors.length=0;lights.length=0;evidence.length=0;windowLights.length=0;streetMarkings.length=0;laneMarkings.length=0;groundMeshes.length=0;readabilityLights.length=0;facadeMeshes.length=0;playerRimLights.length=0;doorSignals.length=0;traffic.length=0;lastEnvironmentKey="";snowMesh=null;}
+ interiorActors.length=0;interiorStations.length=0;securityCameras.length=0;traffic.lastImpact=0;if(typeof updateVehicles==="function")updateVehicles.car=null;if(typeof updatePolice==="function")updatePolice.group=null;obstacles.length=0;actors.length=0;doors.length=0;lights.length=0;evidence.length=0;windowLights.length=0;streetMarkings.length=0;laneMarkings.length=0;groundMeshes.length=0;readabilityLights.length=0;facadeMeshes.length=0;playerRimLights.length=0;doorSignals.length=0;traffic.length=0;lastEnvironmentKey="";snowMesh=null;}
 function createTraffic(){
  for(let i=0;i<6;i++){
    const g=new THREE.Group();g.userData.traffic=true;g.userData.lane=i%2===0?-2.35:2.35;g.userData.speed=.9+(i%3)*.18;g.userData.offset=i*19;
@@ -308,6 +308,43 @@ function createCanonicalBuildings(){
  });
 }
 
+function createSecurityCamera(building, index, count, coverage){
+ const door=building?.__worldDoor;if(!door)return;
+ const g=new THREE.Group();g.userData.securityCamera=true;g.userData.buildingId=building.id;g.userData.coverage=coverage;g.userData.alertDelay=Number(root.ESCIE_WORLD_CITY?.buildingSecurity?.[building.id]?.alertDelay||1800);
+ const body=new THREE.Mesh(new THREE.BoxGeometry(.16,.12,.28),makeMat(0x171918,.7,.2));g.add(body);
+ const lens=new THREE.Mesh(new THREE.CylinderGeometry(.045,.045,.08,10),makeMat(0x2f80ff,.4));lens.rotation.x=Math.PI/2;lens.position.z=-.16;g.add(lens);
+ const side=index%2?-.72:.72;g.position.set(door.x+side,2.45,door.z+.25);g.rotation.y=index%2?Math.PI*.18:-Math.PI*.18;worldGroup.add(g);
+ securityCameras.push(g);
+}
+function createSecurityCameras(){
+ securityCameras.length=0;
+ const list=root.ESCIE_WORLD_SIMULATION?.districtBuildings?.(root.ESCIE_WORLD_SIMULATION?.state?.().neighbourhood)||[];
+ const defs=root.ESCIE_WORLD_CITY?.buildingSecurity||{};
+ list.forEach(b=>{const d=defs[b.id];if(!d?.cameras)return;for(let i=0;i<Number(d.cameras);i++)createSecurityCamera(b,i,Number(d.cameras),Number(d.coverage||9));});
+}
+function updateSecurityCameras(){
+ if(interiorMode)return;
+ const sim=root.ESCIE_WORLD_SIMULATION,st=sim?.state?.()||{},now=performance.now();
+ const crime=st.crime_job;
+ const suspicious=Number(st.wanted||0)>0||!!crime;
+ securityCameras.forEach(cam=>{
+   if(!cam.visible)return;
+   const dx=player.x-cam.position.x,dz=player.z-cam.position.z,d=Math.hypot(dx,dz),coverage=Number(cam.userData.coverage||9);
+   const facing=Math.cos(Math.atan2(dx,dz)-cam.rotation.y);
+   const watching=suspicious&&d<=coverage&&facing>.05;
+   if(watching){
+     if(!cam.userData.firstSeen)cam.userData.firstSeen=now;
+     if(now-cam.userData.firstSeen>=Number(cam.userData.alertDelay||1800)&&now-Number(cam.userData.lastReport||0)>9000){
+       cam.userData.lastReport=now;
+       root.ESCIE_WORLD_SIMULATION?.detect?.("SECURITY CAMERA · "+String(cam.userData.buildingId||"UNKNOWN"),1);
+       root.ESCIE_WORLD_LAW?.reportCrime?.("CAMERA "+String(cam.userData.buildingId||"UNKNOWN"),1);
+       root.ESCIE_WORLD_NPC?.rememberInteraction?.(crime?.target||"WORLD",{channel:"SURVEILLANCE",type:"CAMERA_CAPTURE",building:cam.userData.buildingId});
+       say3D("SECURITY CAMERA · ACTIVITY RECORDED · POLICE RISK");
+     }
+   }else cam.userData.firstSeen=0;
+ });
+}
+
 function buildScene(){
  clearWorld();scene=new THREE.Scene();scene.background=new THREE.Color(0x101714);scene.fog=new THREE.FogExp2(0x151a18,.012);
  worldGroup=new THREE.Group();scene.add(worldGroup);
@@ -319,7 +356,7 @@ function buildScene(){
  const rimA=new THREE.PointLight(0x9aa6a1,.12,5,2);rimA.userData.baseIntensity=.12;scene.add(rimA);playerRimLights.push(rimA);
  const rimB=new THREE.PointLight(0x2f80ff,.08,4,2);rimB.userData.baseIntensity=.08;scene.add(rimB);playerRimLights.push(rimB);
  dayLight=moon;ambientLight=hemi;
- createGround();createMontrealStreetLayer();createCanonicalBuildings();
+ createGround();createMontrealStreetLayer();createCanonicalBuildings();createSecurityCameras();
  let seed=1;
  for(let x=-34;x<=34;x+=12)for(let z=-52;z<=52;z+=13){
    if(Math.abs(x)<10)continue;
@@ -612,7 +649,7 @@ function updateActors(t){
 function render(){
  updateStreetEncounters(performance.now());
  updateStreetIncident(performance.now());
- const dt=Math.min(clock.getDelta(),.05);updateQuality(dt);move(dt);worldHeartbeat();updateLaw();updateActors(clock.elapsedTime);updateHostileNPCs(performance.now());syncCanonicalNPCs(clock.elapsedTime);updateTraffic(clock.elapsedTime);updateVehicles(clock.elapsedTime);updatePolice();policeCollision();updateEnvironment(clock.elapsedTime);if(performance.now()-perf.hud>120){updateHud();syncPauseMap();perf.hud=performance.now();}
+ const dt=Math.min(clock.getDelta(),.05);updateQuality(dt);move(dt);worldHeartbeat();updateLaw();updateActors(clock.elapsedTime);updateHostileNPCs(performance.now());syncCanonicalNPCs(clock.elapsedTime);updateTraffic(clock.elapsedTime);updateVehicles(clock.elapsedTime);updatePolice();policeCollision();updateEnvironment(clock.elapsedTime);updateSecurityCameras();if(performance.now()-perf.hud>120){updateHud();syncPauseMap();perf.hud=performance.now();}
  if(thirdPerson){
    const vehicle=player.inVehicle,dist=vehicle?6.2:4.8,height=vehicle?2.9:2.45;
    const shoulder=new THREE.Vector3(Math.sin(player.yaw)*dist,height,Math.cos(player.yaw)*dist);
