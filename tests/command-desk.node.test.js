@@ -1,8 +1,7 @@
 const test=require("node:test");const assert=require("node:assert/strict");const fs=require("node:fs");const vm=require("node:vm");
 const centralHtml=fs.readFileSync("central-connect/app.html","utf8");
 assertNoMalformedCentralNewlines();
-function assertNoMalformedCentralNewlines(){ assert(!centralHtml.includes("\
-"),"Central HTML must not contain malformed literal newline escapes"); for(const src of [...centralHtml.matchAll(/<script>([\\s\\S]*?)<\\/script>/g)].map(m=>m[1])){ new vm.Script(src,{filename:"central-connect/app.html"}); } }
+function assertNoMalformedCentralNewlines(){ assert(!centralHtml.includes("\\n"),"Central HTML must not contain malformed literal newline escapes"); let start=0; while((start=centralHtml.indexOf("<script>",start))!==-1){ const end=centralHtml.indexOf("</script>",start+8); assert(end!==-1,"Central script tag must close"); new vm.Script(centralHtml.slice(start+8,end),{filename:"central-connect/app.html"}); start=end+9; } }
 
 const desk=fs.readFileSync("central-connect/command-desk.js","utf8");
 new vm.Script(desk,{filename:"central-connect/command-desk.js"});
