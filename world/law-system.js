@@ -8,7 +8,9 @@ const dispatch=(source="UNKNOWN",level=1)=>{const s=read(),sim=window.ESCIE_WORL
 const tick=()=>{const s=read(),sim=window.ESCIE_WORLD_SIMULATION?.state?.()||{},wanted=Math.max(0,Number(sim.wanted)||0);if(!wanted){if(!s.active&&Number(s.level||0)===0&&!(s.units||[]).length)return {ok:true,...s};s.active=false;s.level=0;s.units=[];if(!save(s))return {ok:false,reason:"SAVE_FAILED"};return {ok:true,...s}}if(s.active&&Number(s.level||0)===wanted&&(s.units||[]).length===Math.max(1,Math.min(4,Math.ceil(wanted/2))))return {ok:true,...s};return dispatch("WANTED_STATE",wanted)};
 const arrest=()=>{const s=read(),sim=window.ESCIE_WORLD_SIMULATION;if(!sim)return {ok:false,reason:"SIMULATION_UNAVAILABLE"};const st=sim.state();if(!st.wanted)return {ok:false,reason:"NOT_WANTED"};s.arrests++;s.active=false;s.units=[];if(!save(s))return {ok:false,reason:"SAVE_FAILED"};const served=sim.serve(Math.max(15,st.wanted*30));sim.change({wanted:-Number(st.wanted||0)});return {ok:true,sentence:served?.sentence_minutes||0}};
 const escape=()=>{const s=read();s.escapes++;s.active=false;s.level=0;s.units=[];return save(s)};
+const cases=()=>read().caseFiles||[];
+const investigate=(id,action="REVIEW",meta={})=>{const s=read(),c=(s.caseFiles||[]).find(x=>x.id===id);if(!c)return {ok:false,reason:"CASE_NOT_FOUND"};const a=String(action).toUpperCase();c.status=a==="CLOSE"?"CLOSED":"INVESTIGATING";c.phase=a==="SEARCH"?"SEARCH":a==="TRACE"?"TRACE":a==="CLOSE"?"RESOLVED":"REVIEW";c.lastAction=a;c.evidence=(c.evidence||[]).concat(meta.evidence||[]).slice(-20);if(!save(s))return {ok:false,reason:"SAVE_FAILED"};return {ok:true,case:c}};
 const state=read;const reportCrime=(source="UNKNOWN",level=1)=>dispatch("REPORT_"+String(source).toUpperCase(),level);
-window.ESCIE_WORLD_LAW={state,dispatch,tick,arrest,escape,reportCrime};
+window.ESCIE_WORLD_LAW={state,dispatch,tick,arrest,escape,reportCrime,cases,investigate};
 addEventListener("escie:world-detection",e=>dispatch(e.detail?.source||"DETECTION",e.detail?.level||1));
 })();
