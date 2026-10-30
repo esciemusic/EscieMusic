@@ -209,6 +209,10 @@ assert(rpgRuntime.includes("function setClass"),"RPG must expose starting class 
 assert(rpgRuntime.includes("CLASS LOCKED AFTER PROGRESSION"),"RPG class choice must lock after progression");
 assert(rpgRuntime.includes("function gainXP"),"RPG must support XP progression");
 assert(rpgRuntime.includes("function spendPoint"),"RPG must support attribute/skill progression");
+assert(rpgRuntime.includes('if(!["ATTRIBUTE","SKILL"].includes(t))return {ok:false,state:s,reason:"INVALID POINT TYPE"}'),"RPG point spending must reject unknown point types");
+assert(rpgRuntime.includes('||s.unspent_points>0||Object.values(s.attributes).some(v=>Number(v)>1)'),"RPG class selection must lock after character advancement, not only XP gain");
+assert(rpgRuntime.includes('(key==="COMBAT"||key==="STEALTH")&&perks.includes("IRON_NERVES")'),"IRON_NERVES must affect NERVE-based combat and stealth checks");
+assert(rpgRuntime.includes('if(!["hit","kill","knockout"].includes(k))return s'),"RPG combat recorder must reject unknown combat event types");
 assert(rpgRuntime.includes("function check"),"RPG must expose skill checks");
 assert(rpgRuntime.includes("function recordCombat"),"RPG must persist combat progression");
 const worldRpgRuntime=fs.readFileSync("world/world.js","utf8");
