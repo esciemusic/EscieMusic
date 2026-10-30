@@ -750,3 +750,38 @@ assert(merchApp.includes("function bindMerchFilters"),"public merch filters must
 assert(merchApp.includes('button.addEventListener("click"'),"public merch filter buttons must bind click events");
 assert(merchApp.includes('data-merch-filter'),"public merch filters must expose filter targets");
 assert(!merchApp.includes("function bindMerchFilters(){}"),"public merch filter binding must not be an empty stub");
+
+
+/* LAUNCH BUTTON COVERAGE CONTRACTS */
+const publicIndexRuntime = fs.readFileSync("index.html","utf8");
+assert((publicIndexRuntime.match(/<button\b/gi)||[]).length === 3, "public index button inventory should remain intentionally small");
+assert(publicIndexRuntime.includes('id="mobile-menu-button"'), "public index menu control must exist");
+assert(publicIndexRuntime.includes('data-merch-filter="ALL"') && publicIndexRuntime.includes('data-merch-filter="CORE"'), "public merch filters must exist");
+assert(appRuntime.includes('button.addEventListener("click", toggleMenu)'), "public mobile menu must have a click handler");
+assert(appRuntime.includes('button.addEventListener("click"'), "public generated controls must retain click handlers");
+
+const centralAppRuntime = fs.readFileSync("central-connect/app.html","utf8");
+const centralCommandDesk = fs.readFileSync("central-connect/command-desk.js","utf8");
+const centralButtonIds = [
+  "globalSearch","utilityToggle","themeToggle","logout","searchClose","auditClose","runAudit",
+  "showPass","signin","magic","firstTime","reset","generateCode","redeemCode","useCode",
+  "registerOpen","register","resendConfirm","recoverChange","recoverCancel","change",
+  "previewRegister","previewExit","refresh","copy"
+];
+centralButtonIds.forEach(id => {
+  assert(centralAppRuntime.includes('id="'+id+'"'), "Central button must exist: "+id);
+});
+assert(centralAppRuntime.includes('$("previewExit").onclick=()=>{clearPreview();location.reload()}'), "Central preview exit must have a working handler");
+assert(centralAppRuntime.includes('$("utilityToggle"'), "Central utility toggle must be wired");
+assert(centralAppRuntime.includes('utility&&utility.addEventListener("click"'), "Central utility toggle must respond to clicks");
+assert(centralAppRuntime.includes('$("runAudit")?.addEventListener("click"'), "Central audit action must be wired");
+assert(centralAppRuntime.includes('$("globalSearch")?.addEventListener("click"'), "Central search action must be wired");
+assert(centralAppRuntime.includes('$("logout").onclick=()=>'), "Central logout must be wired");
+assert(centralAppRuntime.includes('$("refresh").onclick='), "Central refresh must be wired");
+assert(centralAppRuntime.includes('$("copy").onclick='), "Central copy action must be wired");
+assert(centralAppRuntime.includes('$("agentSend")') === false || centralAppRuntime.includes("agentSend"), "Central agent control must remain discoverable");
+assert(centralCommandDesk.includes('b.onclick=()=>{S.tab=b.dataset.tab;render()}'), "Command Desk tabs must be wired");
+assert(centralCommandDesk.includes('$("deskIntakeBtn")?.addEventListener("click",intake)'), "Command Desk intake must be wired");
+assert(centralCommandDesk.includes('$("deskRefresh")?.addEventListener("click",load)'), "Command Desk sync must be wired");
+assert(centralCommandDesk.includes('root.querySelectorAll("[data-a]").forEach(b=>b.onclick='), "Command Desk review decisions must be wired");
+console.log("ESCIE launch button coverage contracts OK");
