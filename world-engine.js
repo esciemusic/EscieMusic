@@ -76,7 +76,6 @@ function gameMemory(){
  try{return api.getMemory()}catch(e){return null}
 }
 function gameUnlockedNodes(){const m=gameMemory();if(!m)return [];const keys=Array.isArray(m.world_unlocks)?m.world_unlocks.map(String).filter(x=>x.indexOf("query:")===0).map(x=>x.slice(6).toLowerCase()):[];if(!keys.length)return [];return records().map(r=>{const text=searchText(r);let score=0;keys.forEach(q=>{if(text.includes(q))score+=q.length>=6?3:1;if(String(title(r)).toLowerCase()===q)score+=8});return {r,score}}).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,12).map(x=>x.r)}
-function realityLevel(r){return String(r.reality_level||r.realityLevel||r.level||r.certainty||"UNKNOWN").replace(/_/g," ").toUpperCase()}
 function playableLayer(){
  const m=gameMemory();
  if(!m)return "";
