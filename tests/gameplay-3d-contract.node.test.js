@@ -6,12 +6,16 @@ const assert=(v,m)=>{if(!v)throw new Error(m);};
 
 const html=read("world/index.html");
 const runtime=read("world/3d-reality.js");
+const world=read("world/world.js");
+const dream=read("world/dream-play.js");
 
 assert(html.includes('id="world-pause"'),"3D world must retain the map/pause system view");
 assert(html.includes('class="world-pause-head"'),"map/pause menu must remain the designated 2D system view");
 assert(!html.includes('id="mobile-gamepad"'),"gameplay must not expose a 2D virtual gamepad");
 assert(!html.includes('class="world-controls"'),"gameplay must not expose a 2D control bar");
 assert(!html.includes('data-3d-camera'),"camera mode must be part of 3D gameplay, not a 2D gameplay toolbar");
+assert(!html.includes('dream-play-layer'),"dream gameplay must not create a separate 2D gameplay layer");
+for(const id of ["world-inventory","world-quests","world-rpg","world-market","world-investigation","world-phone","world-simulation"]) assert(html.indexOf(`id="${id}"`)>html.indexOf('id="world-pause"'),`${id} must remain inside the pause/system interface`);
 assert(runtime.includes('let touchGesture='),"touch gameplay must use direct gestures instead of a 2D controller");
 assert(runtime.includes('touchGesture.mode==="move"'),"touch must support direct movement in the 3D world");
 assert(runtime.includes('player.yaw-=dx*.006'),"touch must support direct 3D camera look");
@@ -22,4 +26,7 @@ const css=read("world/world.css");
 assert(!css.includes("mobile-gamepad"),"legacy mobile gamepad CSS must stay removed");
 assert(!css.includes("world-controls"),"legacy 2D gameplay control CSS must stay removed");
 assert(!css.includes("world-3d-tools"),"legacy 3D toolbar CSS must stay removed");
+assert(!world.includes("dream-play-layer"),"world runtime must not render a 2D dream map");
+assert(!dream.includes("dream-touch-controls"),"dream system must not recreate a 2D controller");
+assert(!dream.includes("dream-map-grid"),"dream system must not recreate a 2D gameplay map");
 console.log("ESCIE 3D-only gameplay contract OK");
