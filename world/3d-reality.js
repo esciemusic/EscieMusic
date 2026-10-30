@@ -308,38 +308,26 @@ function createCanonicalBuildings(){
  });
 }
 
-function createSecurityCamera(building, index, count, coverage){
+function createSecurityCamera(building,index,coverage){
  const door=building?.__worldDoor;if(!door)return;
  const g=new THREE.Group();g.userData.securityCamera=true;g.userData.buildingId=building.id;g.userData.coverage=coverage;g.userData.alertDelay=Number(root.ESCIE_WORLD_CITY?.buildingSecurity?.[building.id]?.alertDelay||1800);
  const body=new THREE.Mesh(new THREE.BoxGeometry(.16,.12,.28),makeMat(0x171918,.7,.2));g.add(body);
  const lens=new THREE.Mesh(new THREE.CylinderGeometry(.045,.045,.08,10),makeMat(0x2f80ff,.4));lens.rotation.x=Math.PI/2;lens.position.z=-.16;g.add(lens);
- const side=index%2?-.72:.72;g.position.set(door.x+side,2.45,door.z+.25);g.rotation.y=index%2?Math.PI*.18:-Math.PI*.18;worldGroup.add(g);
- securityCameras.push(g);
+ const side=index%2?-.72:.72;g.position.set(door.x+side,2.45,door.z+.25);g.rotation.y=index%2?Math.PI*.18:-Math.PI*.18;worldGroup.add(g);securityCameras.push(g);
 }
 function createSecurityCameras(){
- securityCameras.length=0;
- const list=root.ESCIE_WORLD_SIMULATION?.districtBuildings?.(root.ESCIE_WORLD_SIMULATION?.state?.().neighbourhood)||[];
- const defs=root.ESCIE_WORLD_CITY?.buildingSecurity||{};
- list.forEach(b=>{const d=defs[b.id];if(!d?.cameras)return;for(let i=0;i<Number(d.cameras);i++)createSecurityCamera(b,i,Number(d.cameras),Number(d.coverage||9));});
+ securityCameras.length=0;const list=root.ESCIE_WORLD_SIMULATION?.districtBuildings?.(root.ESCIE_WORLD_SIMULATION?.state?.().neighbourhood)||[],defs=root.ESCIE_WORLD_CITY?.buildingSecurity||{};
+ list.forEach(b=>{const d=defs[b.id];if(!d?.cameras)return;for(let i=0;i<Number(d.cameras);i++)createSecurityCamera(b,i,Number(d.coverage||9));});
 }
 function updateSecurityCameras(){
  if(interiorMode)return;
- const sim=root.ESCIE_WORLD_SIMULATION,st=sim?.state?.()||{},now=performance.now();
- const crime=st.crime_job;
- const suspicious=Number(st.wanted||0)>0||!!crime;
+ const sim=root.ESCIE_WORLD_SIMULATION,st=sim?.state?.()||{},now=performance.now(),crime=st.crime_job,suspicious=Number(st.wanted||0)>0||!!crime;
  securityCameras.forEach(cam=>{
-   if(!cam.visible)return;
-   const dx=player.x-cam.position.x,dz=player.z-cam.position.z,d=Math.hypot(dx,dz),coverage=Number(cam.userData.coverage||9);
-   const facing=Math.cos(Math.atan2(dx,dz)-cam.rotation.y);
-   const watching=suspicious&&d<=coverage&&facing>.05;
-   if(watching){
-     if(!cam.userData.firstSeen)cam.userData.firstSeen=now;
+   const dx=player.x-cam.position.x,dz=player.z-cam.position.z,d=Math.hypot(dx,dz),facing=Math.cos(Math.atan2(dx,dz)-cam.rotation.y);
+   if(suspicious&&d<=Number(cam.userData.coverage||9)&&facing>.05){
+     cam.userData.firstSeen??=now;
      if(now-cam.userData.firstSeen>=Number(cam.userData.alertDelay||1800)&&now-Number(cam.userData.lastReport||0)>9000){
-       cam.userData.lastReport=now;
-       root.ESCIE_WORLD_SIMULATION?.detect?.("SECURITY CAMERA · "+String(cam.userData.buildingId||"UNKNOWN"),1);
-       root.ESCIE_WORLD_LAW?.reportCrime?.("CAMERA "+String(cam.userData.buildingId||"UNKNOWN"),1);
-       root.ESCIE_WORLD_NPC?.rememberInteraction?.(crime?.target||"WORLD",{channel:"SURVEILLANCE",type:"CAMERA_CAPTURE",building:cam.userData.buildingId});
-       say3D("SECURITY CAMERA · ACTIVITY RECORDED · POLICE RISK");
+       cam.userData.lastReport=now;root.ESCIE_WORLD_SIMULATION?.detect?.("SECURITY CAMERA · "+String(cam.userData.buildingId||"UNKNOWN"),1);say3D("SECURITY CAMERA · ACTIVITY RECORDED · POLICE RISK");
      }
    }else cam.userData.firstSeen=0;
  });
@@ -416,24 +404,23 @@ function crimeInteract(){
  const b=near.building,interior=String(b?.interior||"").toUpperCase();
  if(!b)return false;
  const night=Number(st.hour||12)>=22||Number(st.hour||12)<6;
- let job=j;
- if(!job){
+ if(!j){
    const kind=night?"BURGLARY":(interior==="SHOP"?"ROBBERY":null);
    if(!kind)return false;
    const accepted=sim?.crimeJobAccept?.(kind,b.id);
    if(accepted?.ok){say3D("CRIME JOB · "+accepted.job.title+" · PREPARE FIRST");return true}
    return false;
  }
- if(String(job.target||"").toUpperCase()!==String(b.id||"").toUpperCase())return false;
- if(job.step==="PREPARE"){
+ if(String(j.target||"").toUpperCase()!==String(b.id||"").toUpperCase())return false;
+ if(j.step==="PREPARE"){
    const prepared=sim?.crimeJobProgress?.("PREPARE",{target:b.id});
-   if(prepared?.ok){say3D(job.id==="ROBBERY"?"ROBBERY · GEAR READY · RETURN TO ENTRY":"BURGLARY · GEAR READY · RETURN TO ENTRY");return true}
+   if(prepared?.ok){say3D(j.id==="ROBBERY"?"ROBBERY · GEAR READY · RETURN TO ENTRY":"BURGLARY · GEAR READY · RETURN TO ENTRY");return true}
  }
- if(job.step==="ENTER"){
+ if(j.step==="ENTER"){
    const entered=sim?.crimeJobProgress?.("ENTER",{target:b.id});
    if(entered?.ok){
      const result=sim?.enterBuilding?.(st.neighbourhood,b.id);
-     if(result?.ok){enter3DInterior(b);root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(10,job.id+" ENTRY");say3D(job.id+" · "+interior+" · INSIDE");return true}
+     if(result?.ok){enter3DInterior(b);root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(10,j.id+" ENTRY");say3D(j.id+" · "+interior+" · INSIDE");return true}
    }
  }
  return false;
