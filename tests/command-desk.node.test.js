@@ -52,3 +52,5 @@ test("command desk provides human review controls for specialist results",()=>{f
 
 
 test("command desk preserves review history and creates controlled follow-up tasks",()=>{for(const x of ['review_history','REVISION_REQUESTED','RESULT_REVISION_REQUEST','APPROVED_EXECUTION_PREPARATION','requires_human_approval:true','Do not execute external side effects or change canon.','data-jd="MODIFY"'])assert(desk.includes(x),x)});
+
+test("command desk review is workspace-scoped and modification requires operator feedback",()=>{for(const x of ['workspace_id=eq.','RESULT ALREADY REVIEWED','MODIFY requires operator feedback.','feedback,at:now,actor:"HUMAN_OPERATOR"','operator_feedback:feedback'])assert(desk.includes(x),x)});
