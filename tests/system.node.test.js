@@ -391,7 +391,7 @@ const interiorRuntime = fs.readFileSync("world/interior-system.js", "utf8");
 const dreamPlayRuntime=fs.readFileSync("world/dream-play.js","utf8");
 assert(worldRuntime.includes('const parsed=JSON.parse(localStorage.getItem(KEY)||"{}");return parsed&&typeof parsed==="object"&&!Array.isArray(parsed)?parsed:{}'),"world save state must reject null and array-shaped corruption");
 assert(worldRuntime.includes('if(!target){say("Nothing nearby to interact with.");return false}'),"world interaction must safely handle no target");
-assert(worldRuntime.includes('window.ESCIE_WORLD_DREAM_STATE?.active'),"dream controls must only intercept input while dream play is active");
+assert(dreamPlayRuntime.includes('if(!s?.active)return null'),"dream controls must only intercept input while dream play is active");
 assert(worldRuntime.includes('const SAVE_KEY="escie_world_save_v1",SAVE_VERSION=2'),"world save must use a versioned snapshot format");
 assert(worldRuntime.includes("world_position={x:Number(pos.x)||0,y:Number(pos.y)||0"),"world save must persist the playable position");
 assert(worldRuntime.includes("simulation_state:sim&&typeof sim==="+"\"object\""),"world save must snapshot simulation state");
