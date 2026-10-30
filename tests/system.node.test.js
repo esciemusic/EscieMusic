@@ -7,6 +7,7 @@ const history = require("../core/history.js");
 const control = require("../control/control.js");
 const proposals = require("../control/proposals.js");
 const media = require("../data/media.js");
+const centralMedia = require("../central/media-intake.js");
 const visuals = require("../data/visuals.js");
 
 global.window = { ESCIE_EVENTS: events };
@@ -46,6 +47,12 @@ assert(media.get("photo-parc-extension-example-001").location.locationId === "DA
 assert(media.get("photo-parc-extension-example-001").game.useAsReference === true, "media records must expose world reference usage");
 assert(visuals.normalizeEscieVisualAsset({mediaId:"photo-parc-extension-example-001"}) === null, "visual registry should fail safely without a browser media catalog");
 console.log("ESCIE media library contracts OK");
+const mediaPlan = centralMedia.toWritePlan({id:"dante-park-001",type:"photo",asset:"assets/media/dante-park-001.jpg",location:{label:"Dante Park",district:"Little Italy"},publicSections:["THE WORLD"],worldDistricts:["LITTLE_ITALY"]});
+assert(mediaPlan.status === "PENDING_APPROVAL", "Central media intake must require approval");
+assert(mediaPlan.destinations.some(d=>d.file === "data/media.js"), "Central media intake must route visual metadata to media registry");
+assert(mediaPlan.destinations.some(d=>d.file === "data/world-city.js"), "Central media intake must route geographic world metadata to city registry");
+assert(mediaPlan.record.location.label === "Dante Park", "Central media intake must preserve place metadata");
+console.log("CENTRAL media intake contracts OK");
 
 const source = sources.createSource({
   id: "source-test",
