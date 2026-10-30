@@ -18,6 +18,9 @@ jobs:
           - health.node.test.js
           - ingestion.node.test.js
           - module-references.node.test.js
+          - performance.node.test.js
+          - layer-balance.node.test.js
+          - universe-contract.node.test.js
           - publishing.node.test.js
           - record.node.test.js
           - release-firewall.node.test.js
