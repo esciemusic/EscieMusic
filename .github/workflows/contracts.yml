@@ -15,6 +15,7 @@ jobs:
       matrix:
         test:
           - central.node.test.js
+          - command-desk.node.test.js
           - central-agent-orchestration.node.test.js
           - central-world-engine-syntax.node.test.js
           - health.node.test.js
