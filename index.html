@@ -35,7 +35,7 @@
   <main id="main-content" tabindex="-1">
     <section id="entry" class="site-section entry-section">
       <div class="section-inner">
-        <div class="signal-chamber" aria-hidden="true"><div class="signal-window"><span class="signal-city"></span><span class="signal-light signal-light-a"></span><span class="signal-light signal-light-b"></span><span class="signal-light signal-light-c"></span></div><span class="signal-scan"></span><span class="signal-status">SIGNAL // WAITING</span></div>
+        <div class="signal-chamber" aria-hidden="true"><div class="signal-window"><span class="signal-city"></span><span class="signal-light signal-light-a"></span><span class="signal-light signal-light-b"></span><span class="signal-light signal-light-c"></span></div><span class="signal-scan"></span><span class="signal-status">SIGNAL // WAITING</span><div class="escie-countdown" data-escie-countdown hidden aria-live="polite"><span class="countdown-status" data-countdown-status>NEXT TRANSMISSION</span><strong class="countdown-value" data-countdown-value>00:00:00:00</strong></div></div>
         <div id="entry-container" class="content-container">
           <div class="entry-inner">
             <div id="entry-social" class="entry-social" aria-label="External signal"></div>
@@ -243,6 +243,7 @@
   <script src="ingestion/deduplicate.js" defer></script>
   <script src="signal/signal.js" defer></script>
   <script src="signal/countdown.js" defer></script>
+  <script src="signal/countdown-ui.js" defer></script>
   <script src="signal/visual.js" defer></script>
   <script src="signal/audio.js" defer></script>
   <script src="signal/transmission.js" defer></script>
