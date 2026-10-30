@@ -753,11 +753,30 @@ function updateInteriorOccupants(t){
        const role=g.userData.occupation;
        const speed=g.userData.reacting?.9:((role==="SHOPKEEPER"||role==="BARISTA"||role==="OFFICE_WORKER")?.32:.38);
        const step=Math.min(dist,speed*.016);
-       g.position.x+=dx/dist*step;g.position.z+=dz/dist*step;
+       const nx=g.position.x+dx/dist*step,nz=g.position.z+dz/dist*step;
+       // Interior room movement uses the same physical collision envelope as the player.
+       // Door openings are represented by narrow corridor gates between authored room anchors.
+       const roomIndex=Number(g.userData.roomIndex||0),targetRoomIndex=Number(g.userData.targetStation?.roomIndex??roomIndex);
+       const crossing=roomIndex!==targetRoomIndex&&Math.abs(nx-g.position.x)+Math.abs(nz-g.position.z)>0;
+       const gateBlocked=(x,z)=>{
+         if(!crossing)return false;
+         const corridor=Math.abs(x)<=.75||Math.abs(z)<=.75;
+         return !corridor&&((roomIndex%2)!==(targetRoomIndex%2))&&Math.abs(x)<2.75&&Math.abs(z)<.9;
+       };
+       if(!gateBlocked(nx,nz)){g.position.x=nx;g.position.z=nz;}
+       else{
+         const corridorX=Math.abs(g.position.x)<=.75?g.position.x:0;
+         const corridorZ=Math.abs(g.position.z)<=.75?g.position.z:0;
+         if(Math.abs(g.position.x-corridorX)>.2)g.position.x+=(corridorX-g.position.x)*.08;
+         if(Math.abs(g.position.z-corridorZ)>.2)g.position.z+=(corridorZ-g.position.z)*.08;
+       }
        g.rotation.y=Math.atan2(dx,dz);
        g.position.y=Math.sin(t*8+i)*.018;
+       g.userData.walking=true;
+       g.userData.doorTransition=crossing?"ROOM_TRANSIT":"WALK";
      }else{
        g.position.y=Math.sin(t*2+i)*.008;
+       g.userData.walking=false;
        if(g.userData.reacting)g.rotation.y=Math.atan2(player.x-g.position.x,player.z-g.position.z);
        g.userData.stationHold=Math.floor(minute/15);
        const nextRoom=g.userData.targetRoom||g.userData.room||"MAIN";
@@ -765,6 +784,7 @@ function updateInteriorOccupants(t){
        if(String(g.userData.room||"")!==String(nextRoom)||Number(g.userData.roomIndex||0)!==nextRoomIndex){
          g.userData.room=nextRoom;g.userData.roomIndex=nextRoomIndex;
          g.userData.roomTransition=nextRoom;
+         g.userData.doorTransition="ARRIVED";
          root.ESCIE_WORLD_NPC?.setInteriorPresence?.(g.userData.id,{building_id:interiorBuilding?.id,interior:interiorBuilding?.interior,room:nextRoom,room_index:nextRoomIndex,entered:true,activity});
        }else g.userData.roomTransition=nextRoom;
        g.userData.socialPair=activity==="SOCIAL"&&interiorActors.some(o=>o!==g&&o.visible);
