@@ -1,5 +1,6 @@
 const balance=require("../data/layer-balance.js");
 const contract=require("../data/universe-contract.js");
+const manifest=require("../data/file-manifest.js");
 function assert(v,m){if(!v)throw new Error(m);}
 assert(balance.validate().ok,"Layer balance must validate");
 assert(manifest.contracts.includes("layer-balance"),"layer balance must be registered");
