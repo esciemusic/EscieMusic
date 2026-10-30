@@ -580,7 +580,43 @@ function encounterInteract(){
  streetEncounter.npcId=null;streetEncounter.type=null;streetEncounter.expires=0;
  return true;
 }
-function npcInteract(){const live=root.ESCIE_WORLD_NPC?.state?.().npcs||{};let best=null,bd=2.4;const pool=interiorMode?interiorActors:actors;pool.forEach(a=>{if(!a.userData.canonical||!a.visible)return;const n=live[a.userData.id];if(!n||Number(n.health??100)<=0)return;const d=Math.hypot(player.x-a.position.x,player.z-a.position.z);if(d<bd){bd=d;best=n}});if(!best)return false;const sim=root.ESCIE_WORLD_SIMULATION?.state?.()||{};const raw=root.ESCIE_WORLD_DIALOGUE?.generate?.(best,{id:"player",name:"YOU"},{day:sim.day||1,hour:sim.hour||12,minute:sim.minute||0,language:best.native_language||"en",community:best.community||"LOCAL"})?.line||("LOCAL · "+(best.occupation||best.role||"RESIDENT"));const line=root.ESCIE_WORLD_LANGUAGE?.speakToPlayer?.(best,raw)||raw;root.ESCIE_WORLD_NPC?.rememberInteraction?.(best.id,{channel:"3D",text:raw});root.ESCIE_WORLD_NPC?.relationship?.(best.id,1,"3D CONVERSATION");root.ESCIE_WORLD_ACTIONS?.discover?.({id:"npc:"+best.id,label:best.name||best.role||best.id,discovery:"NPC CONTACT",queries:[best.occupation||best.role||"LOCAL"]});root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(5,"NPC CONTACT");say3D((best.name||best.role||"LOCAL")+" · "+line);return true}
+function npcInteract(){
+ const live=root.ESCIE_WORLD_NPC?.state?.().npcs||{};let best=null,bestActor=null,bd=2.4;
+ const pool=interiorMode?interiorActors:actors;
+ pool.forEach(a=>{if(!a.userData.canonical||!a.visible)return;const n=live[a.userData.id];if(!n||Number(n.health??100)<=0)return;const d=Math.hypot(player.x-a.position.x,player.z-a.position.z);if(d<bd){bd=d;best=n;bestActor=a}});
+ if(!best)return false;
+ const sim=root.ESCIE_WORLD_SIMULATION?.state?.()||{};
+ const api=root.ESCIE_WORLD_NPC;
+ const now=performance.now();
+ if(bestActor&&now>Number(bestActor.userData.interactionCooldown||0)){
+   const rel=Number(best.relationship||0);
+   const favor=api?.favor?.(best.id,"FAVOR");
+   if(rel>=10&&favor?.ok){
+     bestActor.userData.interactionCooldown=now+90000;
+     root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(20,"NPC FAVOR");
+     say3D((best.name||best.role||"LOCAL")+" · FAVOR COMPLETE · +$"+Number(favor.reward||0)+" · TRUST "+Number(favor.relationship||0));
+     return true;
+   }
+   const offer=api?.jobOffer?.(best.id);
+   if(offer?.ok&&offer.available){
+     const job=api?.jobAccept?.(best.id);
+     if(job?.ok){
+       bestActor.userData.interactionCooldown=now+90000;
+       root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(15,"NPC JOB");
+       say3D((best.name||best.role||"LOCAL")+" · "+String(job.offer?.label||"SHIFT")+" COMPLETE · +$"+Number(job.offer?.pay||0));
+       return true;
+     }
+   }
+ }
+ const raw=root.ESCIE_WORLD_DIALOGUE?.generate?.(best,{id:"player",name:"YOU"},{day:sim.day||1,hour:sim.hour||12,minute:sim.minute||0,language:best.native_language||"en",community:best.community||"LOCAL"})?.line||("LOCAL · "+(best.occupation||best.role||"RESIDENT"));
+ const line=root.ESCIE_WORLD_LANGUAGE?.speakToPlayer?.(best,raw)||raw;
+ api?.rememberInteraction?.(best.id,{channel:"3D",text:raw});
+ api?.relationship?.(best.id,1,"3D CONVERSATION");
+ root.ESCIE_WORLD_ACTIONS?.discover?.({id:"npc:"+best.id,label:best.name||best.role||best.id,discovery:"NPC CONTACT",queries:[best.occupation||best.role||"LOCAL"]});
+ root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(5,"NPC CONTACT");
+ say3D((best.name||best.role||"LOCAL")+" · "+line);
+ return true;
+}
 function nearestTraffic(max=3){
  let best=null,bd=max;
  traffic.forEach(g=>{if(!g.visible||g.userData.occupied)return;const d=Math.hypot(player.x-g.position.x,player.z-g.position.z);if(d<bd){bd=d;best={car:g,d}}});
