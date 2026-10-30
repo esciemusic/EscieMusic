@@ -350,10 +350,43 @@ function setup(){
  document.addEventListener("keyup",e=>keys.delete(e.key.toLowerCase()));
  document.addEventListener("keydown",e=>{if(e.key==="Escape"){e.preventDefault();if(interiorMode){exit3DInterior();return}togglePause();}});
  document.addEventListener("keydown",e=>{if(e.key.toLowerCase()==="e"){if(!interact())document.querySelector("[data-action-primary]")?.click();}});
- let touchLook=null;
- renderer.domElement.addEventListener("touchstart",e=>{if(e.touches.length===1)touchLook={x:e.touches[0].clientX,y:e.touches[0].clientY};},{passive:true});
- renderer.domElement.addEventListener("touchmove",e=>{if(!touchLook||e.touches.length!==1)return;const t=e.touches[0];player.yaw-=(t.clientX-touchLook.x)*.006;player.pitch=clamp(player.pitch-(t.clientY-touchLook.y)*.004,-1.2,1.2);touchLook={x:t.clientX,y:t.clientY};},{passive:true});
- renderer.domElement.addEventListener("touchend",()=>touchLook=null,{passive:true});
+ let touchGesture=null,lastTap=0,tapTimer=0,sprintTimer=0;
+ renderer.domElement.style.touchAction="none";
+ renderer.domElement.addEventListener("touchstart",e=>{
+   if(e.touches.length>1){touchGesture={mode:"pause",moved:false};clearTimeout(sprintTimer);move._touchSprint=false;return;}
+   const t=e.touches[0],r=renderer.domElement.getBoundingClientRect(),left=t.clientX-r.left<r.width*.45;
+   touchGesture={mode:left?"move":"look",x:t.clientX,y:t.clientY,lastX:t.clientX,lastY:t.clientY,moved:false};
+   activeInputDevice("TOUCH");
+   if(left)sprintTimer=setTimeout(()=>{if(touchGesture?.mode==="move"&&!touchGesture.moved)move._touchSprint=true;},520);
+ },{passive:false});
+ renderer.domElement.addEventListener("touchmove",e=>{
+   e.preventDefault();
+   if(e.touches.length>1){touchGesture&&(touchGesture.moved=true);return;}
+   if(!touchGesture)return;
+   const t=e.touches[0],dx=t.clientX-touchGesture.lastX,dy=t.clientY-touchGesture.lastY;
+   touchGesture.lastX=t.clientX;touchGesture.lastY=t.clientY;
+   if(Math.hypot(t.clientX-touchGesture.x,t.clientY-touchGesture.y)>12)touchGesture.moved=true;
+   if(touchGesture.mode==="move"){
+     touchPad.moveX=clamp(dx/22,-1,1);
+     touchPad.moveY=clamp(dy/22,-1,1);
+   }else{
+     player.yaw-=dx*.006;
+     player.pitch=clamp(player.pitch-dy*.004,-1.2,1.2);
+   }
+ },{passive:false});
+ renderer.domElement.addEventListener("touchend",e=>{
+   clearTimeout(sprintTimer);
+   touchPad.moveX=touchPad.moveY=0;
+   move._touchSprint=false;
+   if(e.touches.length){touchGesture={mode:"pause",moved:false};return;}
+   const g=touchGesture;touchGesture=null;
+   if(!g)return;
+   if(g.mode==="pause"){togglePause();return;}
+   if(g.moved)return;
+   const now=performance.now();
+   if(now-lastTap<280){clearTimeout(tapTimer);lastTap=0;fight3D();}
+   else{lastTap=now;tapTimer=setTimeout(()=>{if(lastTap===now){lastTap=0;interact();}},280);}
+ },{passive:false});
  document.addEventListener("blur",()=>keys.clear());
  visibilityHandler=()=>{if(document.hidden){root.ESCIE_WORLD_SIMULATION?.flush?.();if(raf)cancelAnimationFrame(raf);raf=0}else if(started&&!paused&&!raf){clock.start();render();}};document.addEventListener("visibilitychange",visibilityHandler);
  return true;
@@ -1170,11 +1203,7 @@ function bind(){
    const p=e.target.closest("[data-pause]");if(p)togglePause();
    const r=e.target.closest("[data-world-resume]");if(r)togglePause(false);const s=e.target.closest("[data-save]");if(s&&paused){root.ESCIE_WORLD_ACTIONS?.save?.();}const x=e.target.closest("[data-return-pause]");if(x&&paused){window.location.href="../";} const open=e.target.closest("[data-pause-open]");if(open&&paused){const api=root.ESCIE_WORLD_UI,type=open.dataset.pauseOpen;if(type==="inventory")api?.inventory?.();else if(type==="character")api?.character?.();else if(type==="investigation")api?.investigation?.();else if(type==="market")api?.market?.();else if(type==="phone")api?.phoneApp?.("notifications");else if(type==="quests")api?.quests?.();else if(type==="simulation")api?.openSimulation?.();else if(type==="system")api?.systemMenu?.();else if(type==="profile")api?.profileMenu?.();else if(type==="preferences")api?.preferences?.();else if(type==="glass")api?.glass?.();}
  });
- const mobilePad=document.getElementById("mobile-gamepad");if(mobilePad){mobilePad.querySelectorAll("[data-stick]").forEach(zone=>{const kind=zone.dataset.stick,knob=zone.querySelector(".mobile-stick");let id=null,cx=0,cy=0,max=1;const reset=()=>{id=null;knob.style.transform="translate(-50%,-50%)";if(kind==="move"){touchPad.moveX=touchPad.moveY=0}else{touchPad.lookX=touchPad.lookY=0}};zone.addEventListener("pointerdown",e=>{e.preventDefault();activeInputDevice("TOUCH");id=e.pointerId;const r=zone.getBoundingClientRect();cx=r.left+r.width/2;cy=r.top+r.height/2;max=Math.min(r.width,r.height)*.32;zone.setPointerCapture?.(id)});zone.addEventListener("pointermove",e=>{if(id!==e.pointerId)return;const dx=e.clientX-cx,dy=e.clientY-cy,len=Math.hypot(dx,dy)||1,x=Math.max(-1,Math.min(1,dx/max)),y=Math.max(-1,Math.min(1,dy/max));knob.style.transform="translate(calc(-50% + "+Math.max(-max,Math.min(max,dx))+"px),calc(-50% + "+Math.max(-max,Math.min(max,dy))+"px))";if(kind==="move"){touchPad.moveX=x;touchPad.moveY=y}else{touchPad.lookX=x;touchPad.lookY=y}});["pointerup","pointercancel","lostpointercapture"].forEach(ev=>zone.addEventListener(ev,reset))});mobilePad.querySelectorAll("[data-pad-button]").forEach(btn=>{const k=btn.dataset.padButton;const down=e=>{e.preventDefault();activeInputDevice("TOUCH");touchPad.buttons[k]=true;btn.classList.add("pressed")};const up=e=>{e.preventDefault();touchPad.buttons[k]=false;btn.classList.remove("pressed")};btn.addEventListener("pointerdown",down);["pointerup","pointercancel","pointerleave"].forEach(ev=>btn.addEventListener(ev,up))})}document.querySelectorAll("[data-dir]").forEach(b=>{
-   const map={up:"w",down:"s",left:"a",right:"d"};const k=map[b.dataset.dir];
-   const on=e=>{e.preventDefault();keys.add(k)},off=e=>{e.preventDefault();keys.delete(k)};
-   b.addEventListener("pointerdown",on);b.addEventListener("pointerup",off);b.addEventListener("pointerleave",off);b.addEventListener("pointercancel",off);
- });
+
 }
 function start(){
  if(started)return;
