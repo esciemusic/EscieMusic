@@ -171,5 +171,132 @@ const npcDayPlan=[
   {start:1320,end:1440,activity:"SLEEP",target:"home"}
 ];
 ;
-window.ESCIE_WORLD_CITY={streetNodes,streetEdges,streetRealism,npcPopulations,npcDayPlan};
+/* Extended city authoring: buildings, interiors, transit, landmarks and travel graph. */
+const interiors={
+  ROOM_HOME:{name:"HOME",rooms:["MAIN","BEDROOM","BATHROOM"],actions:["SLEEP","REST","PHONE","INVENTORY"]},
+  SHOP:{name:"SHOP",rooms:["FRONT","STOCK"],actions:["BUY","TALK","LEAVE"]},
+  CAFE:{name:"CAFE",rooms:["DINING","COUNTER"],actions:["EAT","SOCIAL","TALK","LEAVE"]},
+  SIGNAL_ROOM:{name:"SIGNAL ROOM",rooms:["ENTRY","ARCHIVE","TERMINAL"],actions:["INVESTIGATE","LISTEN","TRACE","LEAVE"]},
+  STUDIO:{name:"STUDIO",rooms:["CONTROL","RECORDING","LOUNGE"],actions:["RECORD","LISTEN","SOCIAL","LEAVE"]},
+  CLUB:{name:"CLUB",rooms:["FLOOR","BAR","BACK"],actions:["SOCIAL","DANCE","TALK","LEAVE"]},
+  GYM:{name:"GYM",rooms:["FLOOR","LOCKER"],actions:["TRAIN","REST","LEAVE"]},
+  APARTMENT:{name:"APARTMENT",rooms:["ENTRY","LIVING","BEDROOM"],actions:["REST","SLEEP","PHONE","LEAVE"]},
+  CLINIC:{name:"CLINIC",rooms:["WAITING","TREATMENT"],actions:["HEAL","TALK","LEAVE"]},
+  OFFICE:{name:"OFFICE",rooms:["LOBBY","WORKSPACE"],actions:["WORK","TALK","LEAVE"]},
+  VENUE:{name:"VENUE",rooms:["ENTRY","MAIN","BACK"],actions:["SOCIAL","LISTEN","LEAVE"]},
+  ARCHIVE:{name:"ARCHIVE",rooms:["FOYER","STACKS","RECORDS"],actions:["INVESTIGATE","READ","LEAVE"]}
+};
+const world_buildings={
+  "PARC-EXTENSION":[
+    {id:"HOME_01",name:"HOME",landmark:"HOME_LANE",type:"RESIDENTIAL",access:"OWNED",interior:"ROOM_HOME"},
+    {id:"SHOP_01",name:"CORNER SHOP",landmark:"JEAN_TALON_STRIP",type:"SHOP",access:"PUBLIC",interior:"SHOP"},
+    {id:"CAFE_01",name:"CAFE",landmark:"JEAN_TALON_STRIP",type:"FOOD",access:"PUBLIC",interior:"CAFE"},
+    {id:"SIGNAL_01",name:"SIGNAL ROOM",landmark:"SIGNAL_LANE",type:"INVESTIGATION",access:"DISCOVERED",interior:"SIGNAL_ROOM"}
+  ],
+  "MILE END":[
+    {id:"CAFE_ME",name:"CAFE",landmark:"SAINT_VIATEUR",type:"FOOD",access:"PUBLIC",interior:"CAFE"},
+    {id:"STUDIO_ME",name:"STUDIO",landmark:"SAINT_VIATEUR",type:"MUSIC",access:"EARNED",interior:"STUDIO"},
+    {id:"SHOP_ME",name:"SHOP",landmark:"SAINT_VIATEUR",type:"SHOP",access:"PUBLIC",interior:"SHOP"}
+  ],
+  "PLATEAU":[
+    {id:"SHOP_PL",name:"SHOP",landmark:"SAINT_DENIS",type:"SHOP",access:"PUBLIC",interior:"SHOP"},
+    {id:"CLUB_PL",name:"CLUB",landmark:"MONT_ROYAL",type:"SOCIAL",access:"PUBLIC",interior:"CLUB"},
+    {id:"GYM_PL",name:"GYM",landmark:"SHERBROOKE",type:"TRAINING",access:"PUBLIC",interior:"GYM"}
+  ],
+  "ROSEMONT":[
+    {id:"SHOP_RO",name:"SHOP",landmark:"BEAUBIEN",type:"SHOP",access:"PUBLIC",interior:"SHOP"},
+    {id:"APARTMENT_RO",name:"APARTMENT",landmark:"IBERVILLE",type:"RESIDENTIAL",access:"LOCKED",interior:"APARTMENT"},
+    {id:"CLINIC_RO",name:"CLINIC",landmark:"JEAN_TALON",type:"HEALTH",access:"PUBLIC",interior:"CLINIC"}
+  ],
+  "DOWNTOWN":[
+    {id:"OFFICE_DT",name:"OFFICE",landmark:"MCGILL",type:"WORK",access:"EARNED",interior:"OFFICE"},
+    {id:"SHOP_DT",name:"SHOP",landmark:"PEEL",type:"SHOP",access:"PUBLIC",interior:"SHOP"},
+    {id:"VENUE_DT",name:"VENUE",landmark:"GUY_CONCORDIA",type:"ENTERTAINMENT",access:"PUBLIC",interior:"VENUE"}
+  ],
+  "OLD MONTREAL":[
+    {id:"ARCHIVE_OM",name:"ARCHIVE",landmark:"PLACE_DARMES",type:"HISTORY",access:"DISCOVERED",interior:"ARCHIVE"},
+    {id:"VENUE_OM",name:"VENUE",landmark:"OLD_PORT",type:"ENTERTAINMENT",access:"PUBLIC",interior:"VENUE"}
+  ],
+  "SAINT-HENRI":[
+    {id:"CAFE_SH",name:"CAFE",landmark:"NOTRE_DAME",type:"FOOD",access:"PUBLIC",interior:"CAFE"},
+    {id:"CLINIC_SH",name:"CLINIC",landmark:"VENDOME",type:"HEALTH",access:"PUBLIC",interior:"CLINIC"},
+    {id:"STUDIO_SH",name:"STUDIO",landmark:"NOTRE_DAME",type:"MUSIC",access:"EARNED",interior:"STUDIO"}
+  ],
+  "VERDUN":[
+    {id:"SHOP_VE",name:"SHOP",landmark:"WELLINGTON",type:"SHOP",access:"PUBLIC",interior:"SHOP"},
+    {id:"GYM_VE",name:"GYM",landmark:"WELLINGTON",type:"TRAINING",access:"PUBLIC",interior:"GYM"},
+    {id:"APARTMENT_VE",name:"APARTMENT",landmark:"VERDUN_METRO",type:"RESIDENTIAL",access:"LOCKED",interior:"APARTMENT"}
+  ]
+};
+const city_reference={
+ source:"MONTRÉAL_REFERENCE_LAYER",
+ real_city:"Montréal, Québec, Canada",
+ method:"REAL_GEOGRAPHY_REFERENCE_WITH_FICTIONALIZED_BUSINESSES",
+ references:{
+  civic:"https://montreal.ca/en/services/land-use-planning-interactive-maps",
+  toponymy:"https://montreal.ca/en/services/learn-about-place-names",
+  heritage:"https://montreal.ca/en/services/view-heritage-databases"
+ },
+ districts:["PARC-EXTENSION","MILE END","PLATEAU","ROSEMONT","DOWNTOWN","OLD MONTREAL","SAINT-HENRI","VERDUN"],
+ rules:[
+  "Use recognizable Montréal street names, transit relationships and urban form as spatial reference.",
+  "Keep player-facing businesses and invented characters fictional unless explicitly licensed/appropriate.",
+  "Use real civic geography as reference, not a claim that the simulated street grid is survey-grade.",
+  "Layer ESCIE signal distortion on top of recognizable real-world geography."
+ ],
+ landmarks:{
+  "PARC-EXTENSION":["Parc metro","Acadie metro","Jean-Talon corridor"],
+  "MILE END":["Laurier","Saint-Viateur","Mont-Royal"],
+  "PLATEAU":["Saint-Denis","Mont-Royal","Sherbrooke"],
+  "ROSEMONT":["Beaubien","Jean-Talon","Rosemont"],
+  "DOWNTOWN":["Berri-UQAM","McGill","Peel","Guy-Concordia"],
+  "OLD MONTREAL":["Champ-de-Mars","Place-d'Armes","Old Port"],
+  "SAINT-HENRI":["Saint-Henri","Notre-Dame","Vendôme"],
+  "VERDUN":["De l'Église","Verdun","Wellington"]
+ }
+};
+const world_landmarks={"PARC-EXTENSION":[{id:"PARC_METRO",name:"PARC METRO",node:"PARC",type:"TRANSIT"},{id:"JEAN_TALON_STRIP",name:"JEAN-TALON STRIP",node:"JEAN_TALON",type:"COMMERCE"},{id:"HOME_LANE",name:"HOME LANE",node:"HOME",type:"RESIDENTIAL"},{id:"SIGNAL_LANE",name:"SIGNAL LANE",node:"ACADIE",type:"INVESTIGATION"}],"MILE END":[{id:"LAURIER_METRO",name:"LAURIER METRO",node:"LAURIER",type:"TRANSIT"},{id:"SAINT_VIATEUR",name:"SAINT-VIATEUR",node:"SAINT_VIATEUR",type:"COMMERCE"},{id:"MONT_ROYAL_METRO",name:"MONT-ROYAL METRO",node:"MONT_ROYAL",type:"TRANSIT"}],"PLATEAU":[{id:"SAINT_DENIS",name:"SAINT-DENIS",node:"SAINT_DENIS",type:"COMMERCE"},{id:"MONT_ROYAL",name:"MONT-ROYAL",node:"MONT_ROYAL",type:"SOCIAL"},{id:"SHERBROOKE",name:"SHERBROOKE",node:"SHERBROOKE",type:"TRANSIT"}],"ROSEMONT":[{id:"BEAUBIEN",name:"BEAUBIEN",node:"BEAUBIEN",type:"COMMERCE"},{id:"IBERVILLE",name:"IBERVILLE",node:"IBERVILLE",type:"RESIDENTIAL"},{id:"JEAN_TALON",name:"JEAN-TALON",node:"JEAN_TALON",type:"TRANSIT"}],"DOWNTOWN":[{id:"BERRI_UQAM",name:"BERRI-UQAM",node:"BERRI_UQAM",type:"TRANSIT"},{id:"MCGILL",name:"MCGILL",node:"MCGILL",type:"WORK"},{id:"PEEL",name:"PEEL",node:"PEEL",type:"COMMERCE"},{id:"GUY_CONCORDIA",name:"GUY-CONCORDIA",node:"GUY_CONCORDIA",type:"ENTERTAINMENT"}],"OLD MONTREAL":[{id:"CHAMP_DE_MARS",name:"CHAMP-DE-MARS",node:"CHAMP_DE_MARS",type:"TRANSIT"},{id:"PLACE_DARMES",name:"PLACE-D'ARMES",node:"PLACE_DARMES",type:"HISTORY"},{id:"OLD_PORT",name:"OLD PORT",node:"OLD_PORT",type:"ENTERTAINMENT"}],"SAINT-HENRI":[{id:"SAINT_HENRI",name:"SAINT-HENRI",node:"SAINT_HENRI",type:"TRANSIT"},{id:"NOTRE_DAME",name:"NOTRE-DAME",node:"NOTRE_DAME",type:"COMMERCE"},{id:"VENDOME",name:"VENDÔME",node:"VENDOME",type:"HEALTH"}],"VERDUN":[{id:"DE_LEGLISE",name:"DE L'ÉGLISE",node:"DE_LEGLISE",type:"TRANSIT"},{id:"WELLINGTON",name:"WELLINGTON",node:"WELLINGTON",type:"COMMERCE"},{id:"VERDUN_METRO",name:"VERDUN METRO",node:"VERDUN",type:"TRANSIT"}]};
+const city_backbone={
+  "PARC-EXTENSION":["PARC","ACADIE"],
+  "MILE END":["LAURIER","MONT_ROYAL"],
+  "PLATEAU":["LAURIER","MONT_ROYAL","SHERBROOKE"],
+  "ROSEMONT":["ROSEMONT","BEAUBIEN","JEAN_TALON"],
+  "DOWNTOWN":["BERRI_UQAM","MCGILL","PEEL","GUY_CONCORDIA"],
+  "OLD MONTREAL":["CHAMP_DE_MARS","PLACE_DARMES"],
+  "SAINT-HENRI":["SAINT_HENRI","PLACE_SAINT_HENRI","VENDOME"],
+  "VERDUN":["DE_LEGLISE","VERDUN"]
+};
+const city_connections=[
+  ["PARC-EXTENSION","MILE END","ACADIE","LAURIER","BLUE"],
+  ["MILE END","PLATEAU","LAURIER","LAURIER","ORANGE"],
+  ["MILE END","ROSEMONT","MONT_ROYAL","ROSEMONT","ORANGE"],
+  ["PLATEAU","DOWNTOWN","SHERBROOKE","BERRI_UQAM","ORANGE"],
+  ["ROSEMONT","DOWNTOWN","JEAN_TALON","BERRI_UQAM","ORANGE"],
+  ["DOWNTOWN","OLD MONTREAL","BERRI_UQAM","CHAMP_DE_MARS","ORANGE"],
+  ["DOWNTOWN","SAINT-HENRI","GUY_CONCORDIA","SAINT_HENRI","ORANGE"],
+  ["DOWNTOWN","VERDUN","BERRI_UQAM","DE_LEGLISE","GREEN"]
+];
+const public_transit={
+  "PARC-EXTENSION":{metro:["Parc","Acadie"],bus:["51","80"],lines:["BLUE","ORANGE"],baseFare:3.75},
+  "PLATEAU":{metro:["Mont-Royal","Sherbrooke","Laurier"],bus:["11","14","55"],lines:["ORANGE"],baseFare:3.75},
+  "DOWNTOWN":{metro:["Berri-UQAM","McGill","Guy-Concordia","Peel"],bus:["24","105","55"],lines:["GREEN","ORANGE","YELLOW"],baseFare:3.75},
+  "OLD MONTREAL":{metro:["Champ-de-Mars","Place-d'Armes"],bus:["55","715"],lines:["ORANGE"],baseFare:3.75},
+  "SAINT-HENRI":{metro:["Saint-Henri","Place-Saint-Henri","Vendôme"],bus:["35","90"],lines:["ORANGE"],baseFare:3.75},
+  "VERDUN":{metro:["De l'Église","Verdun"],bus:["37","58"],lines:["GREEN"],baseFare:3.75},
+  "ROSEMONT":{metro:["Rosemont","Beaubien","Jean-Talon"],bus:["18","197"],lines:["ORANGE"],baseFare:3.75},
+  "MILE END":{metro:["Laurier","Rosemont","Mont-Royal"],bus:["51","55"],lines:["ORANGE","BLUE"],baseFare:3.75}
+};
+const districts={
+ "PARC-EXTENSION":{spawn:{x:2,y:7}},
+ "MILE END":{spawn:{x:4,y:5}},
+ "PLATEAU":{spawn:{x:3,y:5}},
+ "ROSEMONT":{spawn:{x:4,y:5}},
+ "DOWNTOWN":{spawn:{x:4,y:7}},
+ "OLD MONTREAL":{spawn:{x:5,y:5}},
+ "SAINT-HENRI":{spawn:{x:4,y:6}},
+ "VERDUN":{spawn:{x:5,y:5}}
+};
+Object.assign(window.ESCIE_WORLD_CITY,{landmarks:world_landmarks,buildings:world_buildings,interiors,cityReference:city_reference,cityBackbone:city_backbone,cityConnections:city_connections,publicTransit:public_transit,districts});
+
+
 })();
