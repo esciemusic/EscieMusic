@@ -30,7 +30,12 @@
     if(!item) return null;
     if(typeof item==="string") return {url:item};
     if(typeof item!=="object") return null;
-    return Object.assign({},item,{url:item.url||item.src||item.href||item.embed||null});
+    const mediaId=String(item.mediaId||item.registryId||"").trim();
+    const catalog=window.ESCIE_MEDIA_CATALOG;
+    const registered=mediaId&&catalog&&typeof catalog.get==="function"?catalog.get(mediaId):null;
+    const source=registered?Object.assign({},registered,item):item;
+    const url=source.url||source.src||source.href||source.embed||source.asset||null;
+    return Object.assign({},source,{mediaId:mediaId||source.id||null,url});
   }
 
   function safeURL(value){
