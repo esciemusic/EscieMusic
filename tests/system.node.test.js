@@ -42,7 +42,7 @@ assert(sanitize.sanitizeAttribute('a"b') === "a&quot;b", "attribute text must be
 
 const mediaAudit = media.validate();
 assert(mediaAudit.ok === true, "media library metadata must validate");
-assert(media.get("photo-parc-extension-example-001").location.locationId === "PARC_EXTENSION", "media records must retain canonical location metadata");
+assert(media.get("photo-parc-extension-example-001").location.locationId === "LITTLE_ITALY", "media records must retain canonical location metadata");
 assert(media.get("photo-parc-extension-example-001").game.useAsReference === true, "media records must expose world reference usage");
 assert(visuals.normalizeEscieVisualAsset({mediaId:"photo-parc-extension-example-001"}) === null, "visual registry should fail safely without a browser media catalog");
 console.log("ESCIE media library contracts OK");
