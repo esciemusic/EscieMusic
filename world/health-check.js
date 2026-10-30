@@ -16,7 +16,8 @@
       ["law runtime",!!root.ESCIE_LAW],
       ["universe contract",contract.ok],
       ["layer balance",!!root.ESCIE_LAYER_BALANCE?.validate?.().ok],
-      ["3D runtime",!!root.ESCIE_3D_WORLD]
+      ["3D runtime",!!root.ESCIE_3D_WORLD],
+      ["performance budget",!!root.ESCIE_PERFORMANCE?.validate?.().ok]
     ];
     const missing=required.filter(x=>!x[1]).map(x=>x[0]);
     const result={ok:missing.length===0,missing,timestamp:new Date().toISOString()};
