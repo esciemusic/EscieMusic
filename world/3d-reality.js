@@ -113,13 +113,21 @@ function updateTraffic(t){
    if(g.position.z>56)g.position.z=-56;
    if(g.position.z<-56)g.position.z=56;
    g.rotation.y=direction>0?0:Math.PI;
-   if(!player.inVehicle&&dx<1.45&&dz<1.7&&performance.now()-traffic.lastImpact>1800){
+   if(dx<1.45&&dz<1.7&&performance.now()-traffic.lastImpact>1800){
      traffic.lastImpact=performance.now();
      const hit=Math.max(3,Math.min(12,Math.round(8+speed*2)));
-     root.ESCIE_WORLD_SIMULATION?.applyDamage?.(hit,"TRAFFIC");
-     root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(1,"TRAFFIC CONSEQUENCE");
-     root.dispatchEvent(new CustomEvent("escie:world-detection",{detail:{source:"TRAFFIC COLLISION",level:1}}));
-     say3D("TRAFFIC · COLLISION · HEALTH -"+hit);
+     if(player.inVehicle){
+       const result=root.ESCIE_WORLD_VEHICLES?.impact?.(Math.max(2,Math.round(hit*.7)),"TRAFFIC_COLLISION");
+       root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(1,"TRAFFIC CONSEQUENCE");
+       reactToCrime("VEHICLE COLLISION",1,9);
+       say3D("TRAFFIC · COLLISION · VEHICLE "+Number(result?.condition??100)+"%");
+       if(result?.disabled){root.ESCIE_WORLD_VEHICLES?.exit?.();player.inVehicle=false;player.vehicleId=null;say3D("VEHICLE · DISABLED · ON FOOT");}
+     }else{
+       root.ESCIE_WORLD_SIMULATION?.applyDamage?.(hit,"TRAFFIC");
+       root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(1,"TRAFFIC CONSEQUENCE");
+       reactToCrime("TRAFFIC COLLISION",1,9);
+       say3D("TRAFFIC · COLLISION · HEALTH -"+hit);
+     }
    }
  });
 }
