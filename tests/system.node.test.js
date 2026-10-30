@@ -608,6 +608,9 @@ assert(world3dInterior.includes("g.userData.roomTransition"),"interior NPCs must
 assert(world3dRuntime.includes("currentWindow=n=>Array.isArray(n.schedule)"),"street NPC runtime must consume persistent schedule windows");
 assert(world3dRuntime.includes('scheduledActivity==="COMMUTE"'),"street NPC runtime must visibly route commute behavior");
 assert(world3dRuntime.includes("n.x=Number(target.x)"),"street NPC schedule targets must resolve back into canonical NPC position state");
+assert(world3dRuntime.includes("buildingRef.__worldDoor"),"authored buildings must expose runtime door coordinates for NPC routing");
+assert(world3dRuntime.includes("current_building_id"),"NPC runtime must persist street/interior building state");
+assert(world3dRuntime.includes("lastWorldX"),"NPC runtime must preserve the last world position across interior transitions");
 
 
 const worldContent=fs.readFileSync("data/world-content.js","utf8");
