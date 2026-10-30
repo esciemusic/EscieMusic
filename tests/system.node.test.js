@@ -680,3 +680,8 @@ console.log("ESCIE public index hierarchy and compact accordion contracts OK");
 assert(world3dRuntime.includes("const pool=interiorMode?interiorActors:actors"),"NPC interaction must route to interior occupants while inside a building");
 assert(world3dRuntime.includes("!a.userData.canonical||!a.visible"),"NPC interaction must ignore hidden interior occupants");
 console.log("ESCIE interior NPC interaction routing OK");
+
+assert(world3dRuntime.includes("g.userData.doorTransition=crossing?"ROOM_TRANSIT":"WALK""),"interior NPC movement must expose physical room transitions");
+assert(world3dRuntime.includes("g.userData.doorTransition="ARRIVED""),"interior NPCs must mark arrival into the destination room");
+assert(world3dRuntime.includes("const gateBlocked=(x,z)=>"),"interior room movement must pass through a physical corridor gate");
+console.log("ESCIE physical interior room transitions OK");
