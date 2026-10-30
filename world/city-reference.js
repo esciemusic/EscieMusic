@@ -60,7 +60,7 @@ const BOROUGHS={
 "LE PLATEAU-MONT-ROYAL":{borough:"Le Plateau-Mont-Royal",character:"dense plexes / cafés / storefronts / nightlife",urban:["Mont-Royal","Saint-Denis","Saint-Laurent","Rachel"],transit:["Mont-Royal","Sherbrooke","Laurier"]},
 "LE SUD-OUEST":{borough:"Le Sud-Ouest",character:"industrial-transition / brick rowhouses / canal",urban:["Notre-Dame","Atwater","Saint-Henri","Wellington"],transit:["Atwater","Lionel-Groulx","Saint-Henri"]},
 "L'ÎLE-BIZARD–SAINTE-GENEVIÈVE":{borough:"L'Île-Bizard–Sainte-Geneviève",character:"island-edge / low-density / natural",urban:["Boulevard Gouin","Jacques-Bizard"],transit:[]},
-"MERCİER–HOCHELAGA-MAISONNEUVE":{borough:"Mercier–Hochelaga-Maisonneuve",character:"working-class residential / industrial / Olympic corridor",urban:["Ontario","Pie-IX","Sherbrooke"],transit:["Pie-IX","Joliette","Préfontaine"]},
+"MERCIER–HOCHELAGA-MAISONNEUVE":{borough:"Mercier–Hochelaga-Maisonneuve",character:"working-class residential / industrial / Olympic corridor",urban:["Ontario","Pie-IX","Sherbrooke"],transit:["Pie-IX","Joliette","Préfontaine"]},
 "MONTRÉAL-NORD":{borough:"Montréal-Nord",character:"dense residential / commercial / river-edge",urban:["Pie-IX","Henri-Bourassa","Lacordaire"],transit:["Henri-Bourassa","Sauvé"]},
 "OUTREMONT":{borough:"Outremont",character:"stone-and-brick residential / institutional",urban:["Bernard","Van Horne","Laurier"],transit:["Outremont","Édouard-Montpetit"]},
 "PIERREFONDS-ROXBORO":{borough:"Pierrefonds-Roxboro",character:"low-density residential / green corridors",urban:["Boulevard de Pierrefonds","Gouin"],transit:["Côte-Vertu"]},
