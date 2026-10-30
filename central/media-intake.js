@@ -44,7 +44,7 @@
     if(r.location.locationId||r.location.landmarkId) destinations.push({file:DEST.locations,reason:"place/landmark relationship"});
     if(r.placement.worldDistricts.length||r.placement.worldBuildings.length||r.location.landmarkId) destinations.push({file:DEST.city,reason:"THE WORLD geographic placement"});
     if(r.game.useAsEvidence) destinations.push({file:DEST.investigation,reason:"explicit evidence usage"});
-    if(r.publicSections.includes("ARCHIVE")||r.type==="archive") destinations.push({file:DEST.archive,reason:"archive placement"});
+    if(r.placement.publicSections.includes("ARCHIVE")||r.type==="archive") destinations.push({file:DEST.archive,reason:"archive placement"});
     return {record:r,destinations:[...new Map(destinations.map(d=>[d.file,d])).values()],status:"PENDING_APPROVAL"};
   }
   function toWritePlan(record){
