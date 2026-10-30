@@ -92,7 +92,29 @@ function syncCanonicalNPCs(t){
   const buildings=root.ESCIE_WORLD_SIMULATION?.districtBuildings?.(district)||[];
   const destinationId=scheduledActivity==="WORK"?(n.workplace_id||n.work_building?.id):scheduledActivity==="SOCIAL"?(n.social_place_id||n.social_building?.id):["SLEEP","HOME"].includes(scheduledActivity)?(n.home_building?.id||n.home?.id):null;
   const destination=destinationId?buildings.find(b=>String(b.id)===String(destinationId)):null;
+  const currentBuilding=n.current_building_id?buildings.find(b=>String(b.id)===String(n.current_building_id)):null;
   const destinationDoor=destination?.__worldDoor||null;
+  if(scheduledActivity==="COMMUTE"&&currentBuilding?.__worldDoor){
+    const exitDoor=currentBuilding.__worldDoor;
+    const dx=exitDoor.x-a.position.x,dz=exitDoor.z-a.position.z,dist=Math.hypot(dx,dz);
+    a.visible=Number(n.health??100)>0;
+    n.current_building_state="EXITING";
+    a.userData.doorTransition="EXIT";
+    if(exitDoor.mesh){exitDoor.open=true;exitDoor.mesh.rotation.y=Math.PI/2;}
+    if(dist>.9){
+      a.position.x+=dx/dist*Math.min(dist,.075);a.position.z+=dz/dist*Math.min(dist,.075);
+      a.rotation.y=Math.atan2(dx,dz);
+      a.userData.lastWorldX=a.position.x;a.userData.lastWorldZ=a.position.z;
+      a.userData.traveling=true;
+    }else{
+      n.current_building_id=null;n.current_building_state="OUTSIDE";
+      a.userData.traveling=false;a.userData.doorTransition="OUTSIDE";
+      if(exitDoor.mesh){exitDoor.open=false;exitDoor.mesh.rotation.y=0;}
+    }
+    a.userData.activity=scheduledActivity;
+    a.userData.scheduleWindow=scheduleWindow?.end!=null?String(scheduleWindow.start)+"-"+String(scheduleWindow.end):"ROUTINE";
+    return;
+  }
   const target=scheduleWindow?.target;
   const routeTarget=destinationDoor||((target&&Number.isFinite(Number(target.x))&&Number.isFinite(Number(target.y)))?{...gridToWorld(target)}:null);
   if(routeTarget&&Number.isFinite(Number(routeTarget.x))&&Number.isFinite(Number(routeTarget.z??routeTarget.y))){
@@ -611,7 +633,9 @@ function enter3DInterior(building){
  const stationPositions=[[-4,-4],[4,-4],[-4,3],[4,3]];
  stationActions.forEach((action,i)=>{
    const p=stationPositions[i%stationPositions.length],m=cylProp(.35,.08,action==="TRACE"||action==="INVESTIGATE"?0x6f3faf:0x2f80ff,p[0],.12,p[1]);
-   m.userData.interiorStation={action:String(action).toUpperCase(),building:building.id,room:rooms[i%Math.max(1,rooms.length)]||"MAIN",occupiedBy:null,holdUntil:0};
+   const stationRoom=rooms[i%Math.max(1,rooms.length)]||"MAIN";
+   m.userData.interiorStation={action:String(action).toUpperCase(),building:building.id,room:stationRoom,occupiedBy:null,holdUntil:0};
+   m.userData.interiorStation.roomIndex=i%Math.max(1,rooms.length);
    interiorStations.push(m);
  });
  // Occupants come only from canonical NPC population data already present in the simulation.
