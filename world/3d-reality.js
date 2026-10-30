@@ -144,14 +144,45 @@ function cityProfile(){
  const texture=sim?.districtTexture?.(district)||root.ESCIE_CITY_REFERENCE?.district_texture?.[district]||{};
  return {district,ref,texture,season:sim?.seasonalSurface?.()||null};
 }
+function streetWorldPoint(n){
+ if(!n)return {x:0,z:0};
+ return {x:Number(n.x||0)/15*108-54,z:Number(n.y||0)/9*108-54};
+}
+function createStreetSegment(a,b,meta,index){
+ const p1=streetWorldPoint(a),p2=streetWorldPoint(b),dx=p2.x-p1.x,dz=p2.z-p1.z;
+ const length=Math.max(.1,Math.hypot(dx,dz)),angle=Math.atan2(dx,dz);
+ const width=meta?.classification==="ARTERIAL"?7.2:meta?.classification==="COLLECTOR"?5.2:meta?.classification==="LANEWAY"?2.8:4.2;
+ const road=box(width,.09,length,0x222524,(p1.x+p2.x)/2,.055,(p1.z+p2.z)/2);
+ road.rotation.y=angle;road.userData.streetSegment={from:a.id,to:b.id,label:a.label+" / "+b.label,classification:meta?.classification||"LOCAL"};
+ if(meta?.parking){for(const side of[-1,1]){const curb=box(.12,.13,length,(index+side)%2?0x454845:0x3b3e3c,(p1.x+p2.x)/2+Math.cos(angle)*side*(width/2+.08),.13,(p1.z+p2.z)/2-Math.sin(angle)*side*(width/2+.08));curb.rotation.y=angle;curb.userData.curb=true;}}
+ if(meta?.sidewalk){for(const side of[-1,1]){const sw=box(.65,.16,length,0x3b3e3d,(p1.x+p2.x)/2+Math.cos(angle)*side*(width/2+.48),.1,(p1.z+p2.z)/2-Math.sin(angle)*side*(width/2+.48));sw.rotation.y=angle;sw.userData.sidewalk=true;}}
+ if(meta?.lanes>=4){for(const side of[-.25,.25]){const mark=box(.06,.02,length*.92,0x777a73,(p1.x+p2.x)/2+Math.cos(angle)*side*width,.16,(p1.z+p2.z)/2-Math.sin(angle)*side*width);mark.rotation.y=angle;mark.userData.laneMarking=true;laneMarkings.push(mark);}}
+}
 function createMontrealStreetLayer(){
- const p=cityProfile(),t=p.texture||{};
+ const p=cityProfile(),t=p.texture||{},api=root.ESCIE_WORLD_SIMULATION;
  const commercial=(t.activity||[]).some(x=>/shops|storefront|commercial|caf|bars|markets|takeout|restaurants/i.test(x));
  const cycling=(t.street||[]).some(x=>/bike|cycling/i.test(x))||p.season?.cycling;
  const waterfront=(t.activity||[]).some(x=>/waterfront|canal/i.test(x));
  const alley=(t.street||[]).some(x=>/alley|back lane|narrow/i.test(x));
- box(3.8,.16,130,0x242827,-6.5,.09,0);
- box(3.8,.16,130,0x242827,6.5,.09,0);
+ const graph=api?.streetGraph?.(p.district),nodes=graph?.nodes||[],byId={};nodes.forEach(n=>byId[n.id]=n);
+ (graph?.edges||[]).forEach((edge,i)=>{
+   const a=byId[edge[0]],b=byId[edge[1]];if(!a||!b)return;
+   const meta=api?.streetContext?.(p.district,a.id)||{classification:"LOCAL",lanes:2,sidewalk:true,parking:true};
+   createStreetSegment(a,b,meta,i);
+ });
+ nodes.forEach((n,i)=>{
+   const q=streetWorldPoint(n),size=n.type==="METRO"?1.35:.8;
+   const crossing=box(size,.045,size,0x4a4d49,q.x,.16,q.z);crossing.userData.intersection=true;
+   if(n.type==="METRO"){
+     const marker=cyl(.28,.08,0x2f80ff,q.x,.24,q.z);
+     marker.userData.transitStation=n.station||n.label;
+     const pole=box(.05,1.6,.05,0x5b605b,q.x,.98,q.z);
+     pole.userData.transitPole=true;
+   }
+   if(n.type==="STREET"&&commercial){
+     const sign=box(.32,.08,.04,0x6b6d68,q.x,.22,q.z);sign.userData.streetSign=n.label;
+   }
+ });
  if(commercial){for(let z=-50;z<=50;z+=10){box(.7,.12,.45,0x4b4e4a,-7.15,.2,z);box(.7,.12,.45,0x4b4e4a,7.15,.2,z);}}
  if(cycling){for(let z=-48;z<=48;z+=7){const m=box(.08,.025,2.2,0x5b6a60,-3.25,.12,z);m.userData.cyclingMarking=true;laneMarkings.push(m);}}
  if(waterfront){box(18,.18,1.2,0x33413d,0,.16,-49);for(let x=-8;x<=8;x+=2)box(.06,.5,.06,0x52635b,x,.35,-49);}
