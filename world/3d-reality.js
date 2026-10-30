@@ -39,7 +39,8 @@ function door(x,z,w,h,seed,building){
 }
 function building(x,z,w,d,h,seed,buildingRef){
  const wall=[0x1b1c1f,0x292a2e,0x303235,0x101114][seed%4];
- const facade=box(w,h,d,wall,x,h/2,z,{roughness:.96,solid:true});\n facade.userData.facade=true;facade.userData.baseFacadeColor=wall;facadeMeshes.push(facade);
+ const facade=box(w,h,d,wall,x,h/2,z,{roughness:.96,solid:true});
+ facade.userData.facade=true;facade.userData.baseFacadeColor=wall;facadeMeshes.push(facade);
  const rows=Math.max(2,Math.floor(h/3)), cols=Math.max(2,Math.floor(w/2.8));
  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
    const px=x-w/2+1.2+c*((w-2.4)/Math.max(1,cols-1));
