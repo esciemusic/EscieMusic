@@ -18,7 +18,7 @@
     if(!file||!path)throw Error("STORAGE_UPLOAD_INPUT_MISSING");
     const s=session(); if(!s?.access_token)throw Error("CENTRAL_SESSION_UNAVAILABLE");
     const base="https://ljdkjzvnwnaluevtzker.supabase.co/storage/v1/object/central-private/";
-    const safe=String(path).replace(/^\\/+/,"").split("/").map(x=>encodeURIComponent(x)).join("/");
+    const safe=String(path).replace(/^\/+/,"").split("/").map(x=>encodeURIComponent(x)).join("/");
     const r=await fetch(base+safe,{method:"POST",headers:{Authorization:"Bearer "+s.access_token,x_upsert:"false"},body:file});
     if(!r.ok)throw Error("FILE_UPLOAD_FAILED_HTTP_"+r.status);
     return {provider:PROVIDERS.STORAGE.id,bucket:"central-private",storage_path:path};
