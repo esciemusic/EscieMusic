@@ -672,6 +672,20 @@ assert(worldHealth.includes("ESCIE_WORLD_ITEMS"),"world health must verify canon
 assert(worldHealth.includes("ESCIE_WORLD_QUESTS"),"world health must verify canonical quest data");
 assert(worldHealth.includes("ESCIE_WORLD_ACTIONS"),"world health must verify runtime boot");
 assert(worldIndex.indexOf("health-check.js")>worldIndex.indexOf("3d-reality.js"),"world health check must load after core runtime dependencies");
+const citySecurity=fs.readFileSync("data/world-city.js","utf8");
+assert(citySecurity.includes("building_security"),"city data must define building security metadata");
+assert(citySecurity.includes("SHOP_01"),"city security metadata must cover canonical shops");
+const investigationRuntime=fs.readFileSync("world/investigation-system.js","utf8");
+assert(investigationRuntime.includes("ESCIE_WORLD_INVESTIGATION"),"investigation runtime must expose a gameplay API");
+assert(investigationRuntime.includes("CAMERA"),"investigation runtime must recognize camera reports");
+assert(investigationRuntime.includes("SEARCH"),"investigation runtime must support case search");
+assert(investigationRuntime.includes("TRACE"),"investigation runtime must support case tracing");
+assert(investigationRuntime.includes("CLOSE"),"investigation runtime must support case closure");
+const lawRuntime=fs.readFileSync("world/law-system.js","utf8");
+assert(lawRuntime.includes("caseFiles"),"law system must persist investigation cases");
+assert(lawRuntime.includes("reportCrime"),"law system must accept delayed witness/camera reports");
+console.log("ESCIE witness/camera investigation contracts OK");
+
 console.log("ESCIE file-based world ownership contracts OK");
 
 
