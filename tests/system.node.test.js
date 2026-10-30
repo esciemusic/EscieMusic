@@ -276,7 +276,7 @@ assert(gameRuntime.includes("function applyGameEvent"),"game registry must norma
 
 
 assert(fs.readFileSync("data/registry.js","utf8").includes('["game",()=>collection("ESCIE_GAMES")]'),"canonical registry must ingest game records");
-assert(fs.readFileSync("index.html","utf8").includes('<script src="data/games.js"></script>'),"public runtime must load the game registry");
+assert(/<script\s+src="data\/games\.js"[^>]*><\/script>/.test(fs.readFileSync("index.html","utf8")),"public runtime must load the game registry");
 
 
 
