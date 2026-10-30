@@ -1472,7 +1472,8 @@ function renderClothing(){
     const responsive = window.ESCIE_UI_RESPONSIVE;
     if (responsive && typeof responsive.apply === "function") {
       responsive.apply(document.documentElement);
-      window.addEventListener("resize", () => responsive.apply(document.documentElement));
+      const resizeApply = window.ESCIE_PERFORMANCE?.throttle ? window.ESCIE_PERFORMANCE.throttle(() => responsive.apply(document.documentElement), 100) : () => responsive.apply(document.documentElement);
+      window.addEventListener("resize", resizeApply, { passive: true });
     }
 
     const events = getEvents();
