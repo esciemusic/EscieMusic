@@ -148,6 +148,12 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
 .greeting-copy{position:relative;z-index:2;padding:32px 34px;align-self:center;max-width:720px}.greeting-copy h2{font-size:clamp(28px,4vw,48px);letter-spacing:-.055em;margin:6px 0}.greeting-copy p{font-size:14px;line-height:1.75;max-width:610px;color:#aeb7b0}.greeting-meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:20px}.greeting-meta span{font-size:9px;letter-spacing:.12em;color:#7e8b81;padding:7px 9px;border:1px solid rgba(190,215,198,.1);border-radius:999px;background:rgba(255,255,255,.018)}
 @media(max-width:700px){.central-greeting{grid-template-columns:1fr;min-height:0}.greeting-window{min-height:155px;border-right:0;border-bottom:1px solid rgba(190,215,198,.1)}.greeting-copy{padding:24px}.heroMain,.pulse{border-radius:22px}.heroMain{min-height:285px}}
 @media(prefers-reduced-motion:reduce){.quick{transition:none}}
+
+.central-crew{position:relative;display:grid;grid-template-columns:minmax(220px,.8fr) minmax(0,1.7fr);gap:20px;align-items:center;margin:16px 0 2px;padding:24px 26px;overflow:hidden;border:1px solid rgba(190,215,198,.1);border-radius:24px;background:radial-gradient(circle at 78% 50%,rgba(93,135,105,.10),transparent 38%),rgba(10,14,12,.48);box-shadow:inset 0 1px rgba(255,255,255,.03)}
+.central-crew:before{content:"";position:absolute;width:420px;height:420px;right:4%;top:50%;transform:translateY(-50%);border:1px solid rgba(180,208,188,.07);border-radius:50%;box-shadow:0 0 0 45px rgba(180,208,188,.012),0 0 0 90px rgba(180,208,188,.008)}
+.crew-intro{position:relative;z-index:2}.crew-intro h2{font-size:clamp(24px,3vw,38px);letter-spacing:-.05em;margin:7px 0}.crew-intro p{max-width:420px;line-height:1.7}.crew-orbit{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:8px}.crew-node{padding:14px 15px;border:1px solid rgba(190,215,198,.09);border-radius:16px;background:rgba(7,10,8,.42);display:grid;grid-template-columns:auto 1fr;column-gap:10px;align-items:center}.crew-node b{grid-row:1/3;font:10px ui-monospace,SFMono-Regular,Menlo,monospace;color:#6f7d73}.crew-node strong{font-size:11px;letter-spacing:.12em}.crew-node span{font-size:10px;color:#707a73;margin-top:2px}.crew-node:hover{border-color:rgba(190,215,198,.2);background:rgba(26,34,29,.5)}
+@media(max-width:760px){.central-crew{grid-template-columns:1fr}.crew-orbit{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.central-crew{padding:20px 17px}.crew-orbit{grid-template-columns:1fr}.crew-node{padding:12px}}
 </style>
 </head>
 <body>
@@ -281,6 +287,15 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
         <h2>You're back.</h2>
         <p>I have the workspace open. Tell me what needs to happen next and I'll help organize the work, surface what matters, and prepare the next move.</p>
         <div class="greeting-meta"><span>HEART: ESCIE</span><span>BRAIN: ACTIVE</span><span>HUMAN: FINAL AUTHORITY</span></div>
+      </div>
+    </div>
+    <div class="central-crew">
+      <div class="crew-intro"><div class="kicker">THE TEAM YOU DON'T HAVE TO HIRE</div><h2>Central carries the workload.</h2><p>One surface, multiple specialist minds. They observe, organize, prepare and report back. You remain the final voice.</p></div>
+      <div class="crew-orbit" aria-label="Central specialist roles">
+        <div class="crew-node"><b>01</b><strong>OPERATOR</strong><span>turns intent into tasks</span></div>
+        <div class="crew-node"><b>02</b><strong>ARCHIVIST</strong><span>protects history and source</span></div>
+        <div class="crew-node"><b>03</b><strong>INVESTIGATOR</strong><span>finds links and gaps</span></div>
+        <div class="crew-node"><b>04</b><strong>PRODUCER</strong><span>prepares work for release</span></div>
       </div>
     </div>
     <div class="dashboard">
