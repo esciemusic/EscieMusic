@@ -582,6 +582,9 @@ assert(worldContent.includes("window.ESCIE_WORLD_CONTENT"),"canonical world cont
 assert(worldContent.includes("game-item-baby-shoe"),"canonical world content must retain authored world objects");
 assert(worldContent.includes("POCKET_KNIFE"),"canonical world content must retain authored loot");
 assert(worldContent.includes("TRACE CORE"),"canonical world content must retain authored room definitions");
+assert(worldContent.includes("runtimeNPC"),"canonical world content must retain runtime NPC profiles");
+assert(worldRuntime.includes("CONTENT.runtimeNPC"),"world runtime must consume canonical runtime NPC profiles");
+assert(!worldRuntime.includes("registerSurveillance({id:\"lane-camera\""),"world runtime must not own the authored surveillance profile");
 assert(worldCity.includes("window.ESCIE_WORLD_CITY"),"canonical city file must publish the city simulation registry");
 assert(worldCity.includes("PARC-EXTENSION"),"canonical city file must retain Montréal district street data");
 assert(worldCity.includes("npcPopulations"),"canonical city file must own authored NPC population data");
