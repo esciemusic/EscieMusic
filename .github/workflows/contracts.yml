@@ -15,6 +15,7 @@ jobs:
       matrix:
         test:
           - central.node.test.js
+          - central-agent-orchestration.node.test.js
           - health.node.test.js
           - ingestion.node.test.js
           - module-references.node.test.js
