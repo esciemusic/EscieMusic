@@ -711,18 +711,18 @@ assert(world3dRuntime.includes("const pool=interiorMode?interiorActors:actors"),
 assert(world3dRuntime.includes("!a.userData.canonical||!a.visible"),"NPC interaction must ignore hidden interior occupants");
 console.log("ESCIE interior NPC interaction routing OK");
 
-assert(world3dRuntime.includes("g.userData.doorTransition=crossing?"ROOM_TRANSIT":"WALK""),"interior NPC movement must expose physical room transitions");
-assert(world3dRuntime.includes("g.userData.doorTransition="ARRIVED""),"interior NPCs must mark arrival into the destination room");
+assert(world3dRuntime.includes('g.userData.doorTransition=crossing?"ROOM_TRANSIT":"WALK"'),"interior NPC movement must expose physical room transitions");
+assert(world3dRuntime.includes('g.userData.doorTransition="ARRIVED"'),"interior NPCs must mark arrival into the destination room");
 assert(world3dRuntime.includes("const gateBlocked=(x,z)=>"),"interior room movement must pass through a physical corridor gate");
 console.log("ESCIE physical interior room transitions OK");
 
 assert(world3dRuntime.includes("function updateHostileNPCs(now)"),"3D gameplay must include active hostile NPC AI");
-assert(world3dRuntime.includes("a.userData.combatState="CHASING""),"hostile NPCs must chase the player");
-assert(world3dRuntime.includes("sim?.applyDamage?.(damage,"NPC_ATTACK")"),"hostile NPCs must be able to damage the player");
-assert(world3dRuntime.includes("a.userData.combatState="ATTACKING""),"hostile NPCs must enter an attacking state");
+assert(world3dRuntime.includes('a.userData.combatState="CHASING"'),"hostile NPCs must chase the player");
+assert(world3dRuntime.includes('sim?.applyDamage?.(damage,"NPC_ATTACK")'),"hostile NPCs must be able to damage the player");
+assert(world3dRuntime.includes('a.userData.combatState="ATTACKING"'),"hostile NPCs must enter an attacking state");
 console.log("ESCIE active NPC combat gameplay OK");
 
-assert(world3dRuntime.includes("api?.favor?.(best.id,"FAVOR")"),"3D NPC encounters must support favors");
+assert(world3dRuntime.includes('api?.favor?.(best.id,"FAVOR")'),"3D NPC encounters must support favors");
 assert(world3dRuntime.includes("api?.jobOffer?.(best.id)"),"3D NPC encounters must surface playable jobs");
 assert(world3dRuntime.includes("api?.jobAccept?.(best.id)"),"3D NPC jobs must be completable from gameplay");
 assert(world3dRuntime.includes("interactionCooldown"),"NPC rewards must have an interaction cooldown");
