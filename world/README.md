@@ -4,8 +4,8 @@ The world/ directory is the playable ESCIE layer. It is a separate full-screen e
 
 ## Entry / presentation
 
-- index.html — game shell, entry gate, HUD, touch controller, pause/map structure.
-- world.css — world UI and mobile controller presentation.
+- index.html — game shell, entry gate, HUD, 3D stage, pause/map structure.
+- world.css — world UI and mobile-safe presentation.
 - game-shell.css — full-screen shell and boot presentation.
 - manifest.webmanifest — installable web-app metadata.
 - sw.js — service-worker/offline shell behavior.
@@ -34,4 +34,4 @@ The world/ directory is the playable ESCIE layer. It is a separate full-screen e
 
 ## Hard rule
 
-The 3D renderer consumes world state. It is not a second database. The pause/map is the only 2D system interface. Mobile touch controls and hardware controllers are input devices, not alternate world representations.
+The 3D renderer consumes world state. It is not a second database. The pause/map is the only 2D system interface. Direct touch gestures and hardware/Bluetooth controllers are input devices, not alternate world representations. Gameplay has no 2D virtual controller.
