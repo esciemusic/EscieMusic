@@ -57,7 +57,7 @@ function building(x,z,w,d,h,seed,buildingRef){
    interiorLight.userData.readabilityLight=true;
    worldGroup.add(interiorLight);lights.push(interiorLight);readabilityLights.push(interiorLight);
  }
- if(seed%2===0) door(x,z-d/2-.055,1.15,2.2,seed,buildingRef);
+ if(seed%2===0 || buildingRef) door(x,z-d/2-.055,1.15,2.2,seed,buildingRef);
 }
 function actor(x,z,seed){
  const g=new THREE.Group();
