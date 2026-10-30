@@ -213,17 +213,40 @@ function incidentType(a,b){
  return Math.random()<.5?"THEFT_WITNESS":"MINOR_ACCIDENT";
 }
 function updateStreetIncident(now){
- if(interiorMode||now<streetIncident.nextAt)return;
+ if(interiorMode)return;
  const live=root.ESCIE_WORLD_NPC?.state?.().npcs||{};
+ if(streetIncident.type){
+   const a=live[streetIncident.aId],b=live[streetIncident.bId];
+   const aa=actors.find(x=>x.userData.id===streetIncident.aId),bb=actors.find(x=>x.userData.id===streetIncident.bId);
+   if(!a||!b||Number(a.health??100)<=0||Number(b.health??100)<=0){streetIncident.type=null;streetIncident.aId=null;streetIncident.bId=null;streetIncident.resolved=true;streetIncident.nextAt=now+12000;return;}
+   const da=aa?Math.hypot(player.x-aa.position.x,player.z-aa.position.z):99;
+   const db=bb?Math.hypot(player.x-bb.position.x,player.z-bb.position.z):99;
+   const playerClose=Math.min(da,db)<7;
+   const label={ARGUMENT:"ARGUMENT",THEFT_WITNESS:"POSSIBLE THEFT",MINOR_ACCIDENT:"MINOR ACCIDENT",DELIVERY_CONFLICT:"DELIVERY CONFLICT",POLICE_STOP:"POLICE STOP"}[streetIncident.type]||"STREET INCIDENT";
+   if(playerClose&&now-streetIncident.lastPrompt>4200){streetIncident.lastPrompt=now;say3D(label+" · APPROACH TO INTERVENE");}
+   if(now>streetIncident.expires){
+     const actions=root.ESCIE_WORLD_ACTIONS,law=root.ESCIE_WORLD_LAW;
+     if(streetIncident.type==="ARGUMENT"){root.ESCIE_WORLD_NPC?.npcLink?.(a.id,b.id,-2,"ARGUMENT ESCALATED");root.ESCIE_WORLD_NPC?.rememberInteraction?.(a.id,{channel:"STREET_INCIDENT",type:"ARGUMENT",outcome:"ESCALATED WITHOUT INTERVENTION"});}
+     else if(streetIncident.type==="THEFT_WITNESS"){root.dispatchEvent(new CustomEvent("escie:world-detection",{detail:{source:"STREET THEFT",level:1}}));law?.dispatch?.("STREET THEFT",1);actions?.awardRPGXP?.(2,"OBSERVED CONSEQUENCE");}
+     else if(streetIncident.type==="MINOR_ACCIDENT"){root.ESCIE_WORLD_NPC?.npcLink?.(a.id,b.id,1,"ACCIDENT RESOLVED");}
+     else if(streetIncident.type==="DELIVERY_CONFLICT"){root.ESCIE_WORLD_NPC?.relationship?.(a.id,-1,"DELIVERY CONFLICT");root.ESCIE_WORLD_NPC?.relationship?.(b.id,-1,"DELIVERY CONFLICT");}
+     else if(streetIncident.type==="POLICE_STOP"){law?.dispatch?.("POLICE STOP",1);}
+     [aa,bb].forEach(x=>{if(x){x.userData.incident=null;x.userData.reaction="ALERT";x.userData.reactionUntil=now+1800;}});
+     say3D(label+" · THE CITY MOVED ON");
+     streetIncident.type=null;streetIncident.aId=null;streetIncident.bId=null;streetIncident.expires=0;streetIncident.resolved=true;streetIncident.nextAt=now+16000;
+   }
+   return;
+ }
+ if(now<streetIncident.nextAt)return;
  const nearby=actors.filter(a=>a.userData.canonical&&live[a.userData.id]&&Number(live[a.userData.id].health??100)>0).map(a=>({actor:a,npc:live[a.userData.id],d:Math.hypot(player.x-a.position.x,player.z-a.position.z)})).filter(v=>v.d<15).sort((a,b)=>a.d-b.d);
  if(nearby.length<2){streetIncident.nextAt=now+7000;return;}
- const pair=nearby.slice(0,5);
- let first=null,second=null,best=99;
+ const pair=nearby.slice(0,6);let first=null,second=null,best=99;
  for(let i=0;i<pair.length;i++)for(let j=i+1;j<pair.length;j++){const d=Math.hypot(pair[i].actor.position.x-pair[j].actor.position.x,pair[i].actor.position.z-pair[j].actor.position.z);if(d<best){best=d;first=pair[i];second=pair[j];}}
  if(!first||!second||best>5){streetIncident.nextAt=now+7000;return;}
- streetIncident.type=incidentType(first.npc,second.npc);streetIncident.aId=first.npc.id;streetIncident.bId=second.npc.id;streetIncident.expires=now+14000;streetIncident.nextAt=now+22000;streetIncident.resolved=false;
+ streetIncident.type=incidentType(first.npc,second.npc);streetIncident.aId=first.npc.id;streetIncident.bId=second.npc.id;streetIncident.expires=now+14000;streetIncident.nextAt=now+22000;streetIncident.lastPrompt=0;streetIncident.resolved=false;
  first.actor.userData.incident="INCIDENT";second.actor.userData.incident="INCIDENT";
- first.actor.userData.reaction="ALERT";second.actor.userData.reaction="ALERT";
+ first.actor.userData.reaction=streetIncident.type==="POLICE_STOP"?"ALERT":"HOSTILE";second.actor.userData.reaction="ALERT";
+ root.ESCIE_WORLD_NPC?.observe?.(streetIncident.type,{x:0,y:0},{radius:10,speed:"ALERT",blocked:()=>false});
  const labels={ARGUMENT:"ARGUMENT IN PROGRESS",THEFT_WITNESS:"POSSIBLE THEFT",MINOR_ACCIDENT:"MINOR ACCIDENT",DELIVERY_CONFLICT:"DELIVERY CONFLICT",POLICE_STOP:"POLICE STOP"};
  say3D((labels[streetIncident.type]||"STREET INCIDENT")+" · APPROACH TO INTERVENE");
 }
