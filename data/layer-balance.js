@@ -4,12 +4,12 @@
 (function(root){
   "use strict";
   const BALANCE={
-    version:"1.0.0",
+    version:"1.1.0",
     principle:"DEPTH IS DISTRIBUTED; CANON REMAINS CENTRALIZED.",
     layers:{
       central:{
         role:"CONTROL / BRAIN / APPROVAL",
-        owns:["ingestion","normalization","correlation","evidence","audit","proposals","decisions","connectors","release-control","operator-workflow"],
+        owns:["ingestion","normalization","correlation","evidence","audit","proposals","decisions","connectors","release-control","operator-workflow","service-delegation","third-party-handoffs","human-gates"],
         doesNotOwn:["player-experience","gameplay","public-navigation","player-progression"],
         weight:"LOW-VISUAL / HIGH-INTELLIGENCE"
       },
@@ -27,6 +27,7 @@
       }
     },
     flow:[
+      "YOU -> CENTRAL -> specialist or third-party service -> CENTRAL -> YOU",
       "CENTRAL -> approved canonical projection -> PUBLIC",
       "PUBLIC -> doorway -> GAME",
       "GAME -> observed player experience/state -> CENTRAL diagnostics only",
@@ -46,6 +47,8 @@
       }
       if(this.layers.public.owns.includes("private-operator-control"))errors.push("public must not own private operator control");
       if(this.layers.game.owns.includes("canonical-truth-authoring"))errors.push("game must not author canonical truth");
+      if(!this.layers.central.owns.includes("service-delegation"))errors.push("central must own service delegation");
+      if(!this.layers.central.owns.includes("human-gates"))errors.push("central must own human approval gates");
       return {ok:errors.length===0,errors,version:this.version};
     }
   };
