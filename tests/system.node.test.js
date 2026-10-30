@@ -363,6 +363,7 @@ assert(gameShopRuntime.includes("renderGameItemInspector"),"public game doorway 
 
 const worldRuntime = fs.readFileSync("world/world.js", "utf8");
 const world3dRuntime = fs.readFileSync("world/3d-reality.js", "utf8");
+const simRuntime = fs.readFileSync("world/world-simulation.js", "utf8");
 const worldIndex = fs.readFileSync("world/index.html", "utf8");
 const style=fs.readFileSync("style.css","utf8");
 const world=fs.readFileSync("world/world.css","utf8");
