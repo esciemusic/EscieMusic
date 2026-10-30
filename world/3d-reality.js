@@ -108,6 +108,7 @@ function syncCanonicalNPCs(t){
       a.userData.traveling=true;
     }else{
       n.current_building_id=null;n.current_building_state="OUTSIDE";
+      root.ESCIE_WORLD_NPC?.setInteriorPresence?.(n.id,{clear:true});
       a.userData.traveling=false;a.userData.doorTransition="OUTSIDE";
       if(exitDoor.mesh){exitDoor.open=false;exitDoor.mesh.rotation.y=0;}
     }
@@ -137,6 +138,7 @@ function syncCanonicalNPCs(t){
           a.userData.enteringUntil=now+850;
           n.current_building_id=destination.id;
           n.current_building_state="ARRIVING";
+          root.ESCIE_WORLD_NPC?.setInteriorPresence?.(n.id,{building_id:destination.id,interior:destination.interior,entered:false,activity:scheduledActivity});
           const entryDoor=destination.__worldDoor;
           if(entryDoor?.mesh){
             entryDoor.open=true;
@@ -147,6 +149,7 @@ function syncCanonicalNPCs(t){
         }else if(now>=Number(a.userData.enteringUntil||0)){
           n.current_building_id=destination.id;
           n.current_building_state="INSIDE";
+          root.ESCIE_WORLD_NPC?.setInteriorPresence?.(n.id,{building_id:destination.id,interior:destination.interior,entered:true,activity:scheduledActivity});
           a.visible=false;
           a.userData.doorTransition="INSIDE";
           const entryDoor=destination.__worldDoor;
@@ -607,11 +610,24 @@ function enter3DInterior(building){
  const actions=Array.isArray(def.actions)?def.actions:[];
  const prop=(w,h,d,color,x,y,z,opts={})=>{const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),makeMat(color,opts.roughness??.9,opts.metalness??0));m.position.set(x,y,z);interiorGroup.add(m);return m};
  const cylProp=(r,h,color,x,y,z)=>{const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,16),makeMat(color,.86));m.position.set(x,y,z);interiorGroup.add(m);return m};
- const roomAnchors=[[-4,-3],[4,-3],[-4,3],[4,3],[0,0],[0,3],[-3,0],[3,0]];
+ const roomLayout={
+   MAIN:[0,0],ENTRY:[0,4],FRONT:[-4,-3],STOCK:[4,-3],DINING:[-4,-3],COUNTER:[4,-3],
+   ARCHIVE:[4,3],TERMINAL:[0,3],CONTROL:[-4,-3],RECORDING:[4,-3],LOUNGE:[0,3],
+   FLOOR:[0,0],BAR:[4,-3],BACK:[0,3],LOCKER:[4,3],LIVING:[0,-1],BEDROOM:[4,3],
+   BATHROOM:[-4,3],WAITING:[-4,-3],TREATMENT:[4,-3],LOBBY:[-4,0],WORKSPACE:[3,0],
+   FOYER:[-4,0],STACKS:[0,3],RECORDS:[4,3]
+ };
+ const roomAnchor=(room,index=0)=>{
+   const key=String(room||"MAIN").toUpperCase();
+   const base=roomLayout[key]||roomLayout.MAIN;
+   if(roomLayout[key])return {x:base[0],z:base[1]};
+   const fallback=[[-4,-3],[4,-3],[-4,3],[4,3],[0,0],[0,3]];
+   const p=fallback[index%fallback.length];return {x:p[0],z:p[1]};
+ };
  rooms.slice(0,6).forEach((room,i)=>{
-   const p=roomAnchors[i%roomAnchors.length];
-   const label=prop(Math.min(3.8,Math.max(1.8,String(room).length*.18)),.05,.05,0x70747a,p[0],2.35,p[1]);
-   label.userData.room=String(room);label.userData.interiorLabel=true;
+   const p=roomAnchor(room,i);
+   const label=prop(Math.min(3.8,Math.max(1.8,String(room).length*.18)),.05,.05,0x70747a,p.x,2.35,p.z);
+   label.userData.room=String(room);label.userData.roomIndex=i;label.userData.interiorLabel=true;
  });
  // Canonical room structure: partitions deliberately leave walkable openings between room zones.
  if(rooms.length>1){
@@ -630,10 +646,11 @@ function enter3DInterior(building){
  // Usable 3D stations: actions are physical locations, not 2D menu commands.
  const preferred={SHOP:"BUY",CAFE:"EAT",STUDIO:"LISTEN",CLUB:"SOCIAL",GYM:"TRAIN",APARTMENT:"REST",CLINIC:"HEAL",OFFICE:"WORK",VENUE:"LISTEN",ARCHIVE:"INVESTIGATE",SIGNAL_ROOM:"TRACE",ROOM_HOME:"REST"};
  const stationActions=[...new Set([preferred[type],...actions].filter(Boolean))].slice(0,4);
- const stationPositions=[[-4,-4],[4,-4],[-4,3],[4,3]];
  stationActions.forEach((action,i)=>{
-   const p=stationPositions[i%stationPositions.length],m=cylProp(.35,.08,action==="TRACE"||action==="INVESTIGATE"?0x6f3faf:0x2f80ff,p[0],.12,p[1]);
    const stationRoom=rooms[i%Math.max(1,rooms.length)]||"MAIN";
+   const anchor=roomAnchor(stationRoom,i);
+   const p={x:anchor.x,z:anchor.z};
+   const m=cylProp(.35,.08,action==="TRACE"||action==="INVESTIGATE"?0x6f3faf:0x2f80ff,p.x,.12,p.z);
    m.userData.interiorStation={action:String(action).toUpperCase(),building:building.id,room:stationRoom,occupiedBy:null,holdUntil:0};
    m.userData.interiorStation.roomIndex=i%Math.max(1,rooms.length);
    interiorStations.push(m);
@@ -643,11 +660,14 @@ function enter3DInterior(building){
  const population=(root.ESCIE_WORLD_CITY?.npcPopulations?.[district]||[]).filter(n=>{const live=root.ESCIE_WORLD_NPC?.state?.().npcs?.[n.id];return n&&(n.home===building.id||n.work===building.id||live?.workplace_id===building.id||live?.social_place_id===building.id||live?.current_building_id===building.id);});
  population.slice(0,5).forEach((profile,i)=>{
    const live=root.ESCIE_WORLD_NPC?.state?.().npcs?.[profile.id];if(!live)return;
-   const p=[[-4,1],[4,1],[-4,-1],[4,-1],[0,3]][i];
+   const savedInterior=live.interior&&String(live.interior.building_id)===String(building.id)?live.interior:null;
+   const savedRoom=rooms[Number(savedInterior?.room_index)||0]||savedInterior?.room||null;
+   const spawnAnchor=savedRoom?roomAnchor(savedRoom,Number(savedInterior?.room_index)||0):roomAnchor(rooms[i%Math.max(1,rooms.length)]||"MAIN",i);
+   const p=[spawnAnchor.x,spawnAnchor.z];
    const g=new THREE.Group();const coat=[0x141918,0x202726,0x303735][i%3];
    const body=new THREE.Mesh(new THREE.CapsuleGeometry(.2,.65,4,8),makeMat(coat,.95));body.position.y=.62;g.add(body);
    const head=new THREE.Mesh(new THREE.SphereGeometry(.17,12,8),makeMat(0x373b38,.98));head.position.y=1.3;g.add(head);
-   g.position.set(p[0],0,p[1]);g.userData={id:profile.id,canonical:true,npc:live,interiorActivity:live.activity||"WORK",room:rooms[i%Math.max(1,rooms.length)]||"MAIN"};
+   g.position.set(p[0],0,p[1]);g.userData={id:profile.id,canonical:true,npc:live,interiorActivity:live.activity||"WORK",room:savedRoom||rooms[i%Math.max(1,rooms.length)]||"MAIN",roomIndex:Number(savedInterior?.room_index)||i%Math.max(1,rooms.length)};
    interiorGroup.add(g);interiorActors.push(g);
  });
  const signal=new THREE.Mesh(new THREE.BoxGeometry(.7,.08,.7),makeMat(type==="SIGNAL_ROOM"||type==="ARCHIVE"?0x6f3faf:0x2f80ff,.55,.2));signal.position.set(0,.95,-2);interiorGroup.add(signal);
@@ -740,7 +760,13 @@ function updateInteriorOccupants(t){
        g.position.y=Math.sin(t*2+i)*.008;
        if(g.userData.reacting)g.rotation.y=Math.atan2(player.x-g.position.x,player.z-g.position.z);
        g.userData.stationHold=Math.floor(minute/15);
-       g.userData.roomTransition=(g.userData.targetRoom||"MAIN");
+       const nextRoom=g.userData.targetRoom||g.userData.room||"MAIN";
+       const nextRoomIndex=Number(g.userData.targetStation?.roomIndex??g.userData.roomIndex??0);
+       if(String(g.userData.room||"")!==String(nextRoom)||Number(g.userData.roomIndex||0)!==nextRoomIndex){
+         g.userData.room=nextRoom;g.userData.roomIndex=nextRoomIndex;
+         g.userData.roomTransition=nextRoom;
+         root.ESCIE_WORLD_NPC?.setInteriorPresence?.(g.userData.id,{building_id:interiorBuilding?.id,interior:interiorBuilding?.interior,room:nextRoom,room_index:nextRoomIndex,entered:true,activity});
+       }else g.userData.roomTransition=nextRoom;
        g.userData.socialPair=activity==="SOCIAL"&&interiorActors.some(o=>o!==g&&o.visible);
      }
    }
