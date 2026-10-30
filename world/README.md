@@ -12,8 +12,9 @@ The world/ directory is the playable ESCIE layer. It is a separate full-screen e
 
 ## World definition / simulation
 
-- city-reference.js — Montreal reference layer and district texture.
-- world-simulation.js — canonical player/world state, activities, time, environment and city graph.
+- `../data/world-city.js` — canonical authored city graph, districts, transit, landmarks, buildings, interiors and travel connections.
+- city-reference.js — Montréal reference layer and district texture derived from documented real-world sources.
+- world-simulation.js — canonical player/world state and simulation behavior; consumes city data rather than owning authored city definitions.
 - npc-system.js — canonical NPC state and interactions.
 - npc-identity-system.js — NPC identity.
 - npc-life-system.js — NPC routines/life state.
