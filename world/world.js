@@ -184,9 +184,35 @@ function enterNearbyBuilding(){
  return true;
 }
 function interactNPC(n){const d=npcDialogue(n);d.choices.forEach(ch=>ch.text=ch.text);dialogue=d;openDialogue(d);dialogue._npc=true;return d;}
-function chooseDialogue(i){if(!dialogue)return;const c=(dialogue.choices||[])[i];if(!c)return;const sim=window.ESCIE_WORLD_SIMULATION;
-if(dialogue._npc&&dialogue.id!=="witness"){const type=c.label==="GIVE"?"GIFT":c.label;const result=sim?.npcInteraction?.(dialogue.id,type)||{};say((result.reaction||"OBSERVANT")+" · "+(result.relationship??0)+" RELATIONSHIP");if(window.ESCIE_PHONE_GAMEPLAY?.relationshipMessage)window.ESCIE_PHONE_GAMEPLAY.relationshipMessage(dialogue.id,c.text);dialogue=null;render();return;}
-if(sim){if(c.label==="WHO ARE YOU?")sim.choice("witness_identity","WHO ARE YOU?",{stress:1,social:2});else if(c.label==="WHAT IS THIS PLACE?")sim.choice("witness_place","WHAT IS THIS PLACE?",{stress:-1,social:1});else if(c.label==="I NEED THE KEY.")sim.choice("witness_key","I NEED THE KEY.",{stress:2,reputation:1});}say(window.ESCIE_WORLD_LANGUAGE?.speakToPlayer?.(dialogue,c.text)||c.text);window.ESCIE_WORLD_NPC?.rememberInteraction?.("witness",{choice:c.label,text:c.text});window.ESCIE_WORLD_NPC?.relationship?.("witness",c.label==="I NEED THE KEY."?5:2,c.label);if(c.discovery){const o={discovery:c.discovery,queries:c.queries||[]};discover(o);if(c.discovery==="game-discovery-witness"){const s=state();s.inventory=Array.isArray(s.inventory)?s.inventory:[];if(!s.inventory.includes("game-item-signal-key")){s.inventory.push("game-item-signal-key");save(s);say(c.text+" The Witness places the Signal Key in your hand.");}}}dialogue=null;render();}
+function chooseDialogue(i){if(!dialogue)return;const c=(dialogue.choices||[])[i];if(!c)return;
+ const dialogueXP=()=>{const result=window.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(10,"DIALOGUE");if(!result)return;const s=state(),r=rpgState(s);r.dialogue=Object.assign({},r.dialogue,{choices:Number(r.dialogue?.choices||0)+1,successes:Number(r.dialogue?.successes||0)+(c.discovery?1:0)});s.rpg=r;save(s)};
+ const sim=window.ESCIE_WORLD_SIMULATION;
+ if(dialogue._npc&&dialogue.id!=="witness"){
+   dialogueXP();
+   const type=c.label==="GIVE"?"GIFT":c.label;
+   const result=sim?.npcInteraction?.(dialogue.id,type)||{};
+   say((result.reaction||"OBSERVANT")+" · "+(result.relationship??0)+" RELATIONSHIP");
+   if(window.ESCIE_PHONE_GAMEPLAY?.relationshipMessage)window.ESCIE_PHONE_GAMEPLAY.relationshipMessage(dialogue.id,c.text);
+   dialogue=null;render();return;
+ }
+ dialogueXP();
+ if(sim){if(c.label==="WHO ARE YOU?")sim.choice("witness_identity","WHO ARE YOU?",{stress:1,social:2});else if(c.label==="WHAT IS THIS PLACE?")sim.choice("witness_place","WHAT IS THIS PLACE?",{stress:-1,social:1});else if(c.label==="I NEED THE KEY.")sim.choice("witness_key","I NEED THE KEY.",{stress:2,reputation:1});}
+ say(window.ESCIE_WORLD_LANGUAGE?.speakToPlayer?.(dialogue,c.text)||c.text);
+ window.ESCIE_WORLD_NPC?.rememberInteraction?.("witness",{choice:c.label,text:c.text});
+ window.ESCIE_WORLD_NPC?.relationship?.("witness",c.label==="I NEED THE KEY."?5:2,c.label);
+ if(c.discovery){
+   const o={discovery:c.discovery,queries:c.queries||[]};discover(o);
+   if(c.discovery==="game-discovery-witness"){
+     const s=state();s.inventory=Array.isArray(s.inventory)?s.inventory:[];
+     if(!s.inventory.includes("game-item-signal-key")){
+       s.inventory.push("game-item-signal-key");
+       if(!save(s)){say("SIGNAL KEY · SAVE FAILED");return}
+       say(c.text+" The Witness places the Signal Key in your hand.");
+     }
+   }
+ }
+ dialogue=null;render();
+}
 function isWall(x,y){return walls.has(x+","+y)}
 function hasItem(id){const s=state();return Array.isArray(s.inventory)&&s.inventory.includes(id)}
 function interactNow(){if(!target){say("Nothing nearby to interact with.");return false}const targetType=target.lines||target.choices||target.role||target.id==="witness"?"NPC":"OBJECT";if(targetType==="OBJECT"&&target.equipment){const eq=window.ESCIE_WORLD_EQUIPMENT;if(!eq){say("EQUIPMENT · SYSTEM UNAVAILABLE");return false}if(eq.owned(target.equipment)){say("ALREADY OWNED · "+target.label);return true}const got=eq.acquire(target.equipment);if(!got.ok){say("EQUIPMENT · "+got.reason);return false}const equipped=eq.equip(target.equipment);say(equipped.ok?"PICKED UP · "+target.label+" · EQUIPPED":"PICKED UP · "+target.label);discover(target);render();return true}if(targetType==="OBJECT"&&target.id!=="chair"&&!rpgCapability("INVESTIGATION",1,"EXAMINE"))return false;const sim=window.ESCIE_WORLD_SIMULATION;if(sim){if(target.id==="camera")sim.change({stress:2});if(target.id==="shoe")sim.change({stress:1,social:1});if(target.id==="signal")sim.change({stress:-2,reputation:1});}say(target.text||target.label||"INTERACTION");discover(target);if(room==="room01"&&(target.id==="tv"||target.id==="tape")){unlockFromEvidence();say(target.id==="tv"?"The audio resolves into a date. Something in the archive is now reachable.":"The tape is now yours. Its date matches the signal thread.");}if(target.id==="door"||target.id==="green-door"||target.id==="trace-gate"){if(enterDoor())return true}if(room==="room02"&&target.id==="console"){terminalChoices();return true}if(room==="trace"&&target.id==="return-frame"){leaveRoom();return true}render();return true}
