@@ -362,6 +362,25 @@ function investigation(){
  rel.forEach(([a,b,why])=>{const an=nodes.find(n=>n[0]===a),bn=nodes.find(n=>n[0]===b),ok=found(an[1])&&found(bn[1]),btn=document.createElement("button");btn.type="button";btn.className="investigation-link "+(ok?"active":"");btn.disabled=!ok;btn.innerHTML="<span>"+a+"</span><b>↔</b><span>"+b+"</span><small>"+(ok?"EXAMINE CONNECTION":"LOCKED · FIND BOTH")+"</small>";if(ok)btn.onclick=()=>openEvidence(a+" ↔ "+b,["RELATIONSHIP",why,"CONNECTED IN THE GAME · NOT CONFIRMED AS CANONICAL PROOF","Connections are suggestions. The player decides what the evidence means."]);wrap.appendChild(btn)});
  board.appendChild(wrap);
  if(u.length){const un=document.createElement("article");un.className="investigation-node unresolved";un.innerHTML="<span>UNRESOLVED</span><strong>"+esc(u.join(" · ").toUpperCase())+"</strong><small>DO NOT ASSUME · INVESTIGATE</small>";board.appendChild(un)}
+// Live police / witness / camera cases sit below the authored investigation threads.
+const live=window.ESCIE_WORLD_INVESTIGATION?.summary?.();
+if(live?.cases?.length){
+ const cases=document.createElement("section");cases.className="investigation-cases";
+ cases.innerHTML="<span class=\"world-kicker\">LIVE CASE FILES</span><h3>"+live.open+" OPEN · "+live.investigating+" INVESTIGATING · "+live.resolved+" RESOLVED</h3>";
+ live.cases.slice().reverse().forEach(c=>{
+   const card=document.createElement("article");card.className="investigation-case";
+   const source=String(c.source||"UNKNOWN"),target=c.target||"LOCATION UNKNOWN",status=String(c.status||"OPEN");
+   card.innerHTML="<strong>"+esc(source)+"</strong><small>"+esc(target)+" · LEVEL "+Number(c.level||0)+" · "+esc(status)+"</small>";
+   const actions=document.createElement("div");actions.className="investigation-case-actions";
+   [["REVIEW","REVIEW"],["SEARCH","SEARCH"],["TRACE","TRACE"],["CLOSE","CLOSE"]].forEach(([label,action])=>{
+     const b=document.createElement("button");b.type="button";b.textContent=label;b.disabled=status==="CLOSED"||status==="ARRESTED"||status==="EXPIRED";
+     b.addEventListener("click",()=>{const api=window.ESCIE_WORLD_INVESTIGATION;if(!api)return;const fn=action==="SEARCH"?api.search:action==="TRACE"?api.trace:action==="CLOSE"?api.close:api.review;const out=fn?.(c.id,action,[]);say(out?.ok?"CASE "+c.id+" · "+action:"CASE ACTION FAILED");investigation();});
+     actions.appendChild(b);
+   });
+   card.appendChild(actions);cases.appendChild(card);
+ });
+ board.appendChild(cases);
+}
  const panel=document.createElement("div");panel.id="investigation-detail";panel.className="investigation-detail";panel.hidden=true;board.appendChild(panel);
  document.getElementById("world-investigation").hidden=false;
 }
