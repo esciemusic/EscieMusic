@@ -12,7 +12,8 @@
   const ESCIE_RUNTIME = {
     version: "1.0.0",
     initialized: false,
-    ready: false
+    ready: false,
+    universeContract: null
   };
 
   function byId(id) {
@@ -30,6 +31,17 @@
 
   function getGlobal(name, fallback) {
     return window[name] !== undefined ? window[name] : fallback;
+  }
+
+  function validateUniverseContract() {
+    const contract = getGlobal("ESCIE_UNIVERSE_CONTRACT", null);
+    ESCIE_RUNTIME.universeContract = contract;
+    if (contract && typeof contract.validate === "function") {
+      const result = contract.validate();
+      if (!result.ok) console.error("ESCIE UNIVERSE CONTRACT FAILURE", result.errors);
+      return result;
+    }
+    return { ok: false, errors: ["universe contract unavailable"] };
   }
 
   function getSite() {
@@ -1751,6 +1763,7 @@ function renderClothing(){
   function initialize() {
     if (ESCIE_RUNTIME.initialized) return ESCIE_RUNTIME;
 
+    validateUniverseContract();
     ESCIE_RUNTIME.initialized = true;
     initializeSystemContracts();
     render();
