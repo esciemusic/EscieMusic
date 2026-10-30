@@ -8,12 +8,22 @@ ESCIE is file-based. Content, world definitions, records, configuration, and sys
 
 1. Public experience — index.html, style.css, app.js, navigation and UI modules.
 2. Canonical content — data/*.js. These files define music, projects, people, places, moments, fragments, bodies, paths, investigation, archive, symbols, signals, games and related records.
+   - `data/world-content.js` owns authored game objects/rooms/NPC profiles.
+   - `data/world-city.js` owns authored Montréal street, district, transit, landmark, building, interior and travel data.
+   - `data/world-items.js` owns authored equipment/vehicle definitions.
+   - `data/world-quests.js` owns authored quest definitions.
 3. Record composition / validation — data/registry.js and data/record-contract.js.
 4. World definition — world/city-reference.js, world/world-simulation.js, NPC, law, vehicle, equipment, RPG and dialogue files.
 5. 3D presentation — world/3d-reality.js. It renders the canonical world; it does not become a second database.
 6. World interface — world/index.html, world/world.css, world/game-shell.css. The pause/map is the only 2D system interface.
 7. Persistence — the world save/state layer. Saved player state is runtime state, not canonical editorial content.
 8. External/reference data — documented source references remain identifiable in data/config files.
+9. Central operations — `central-connect/` is an operational control surface. Backend/session data there is workspace state, not a second public/game canon. The Brain may observe, correlate and propose; explicit human approval remains required for important canonical changes.
+
+## Public-world presentation rule
+
+The public World Engine is exploratory: search, type, connections, trails and Glass Eye context are allowed. It does not expose a reality-level filter. Ambiguity belongs in the records and their context, not in a player-facing sorting control.
+
 
 ## Communication contract
 
