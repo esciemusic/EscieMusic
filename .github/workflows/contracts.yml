@@ -24,6 +24,7 @@ jobs:
           - countdown.node.test.js
           - syntax-all.node.test.js
           - surface-architecture.node.test.js
+          - gameplay-3d-contract.node.test.js
           - publishing.node.test.js
           - record.node.test.js
           - release-firewall.node.test.js
