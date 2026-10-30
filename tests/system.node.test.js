@@ -600,6 +600,12 @@ assert(fs.readFileSync("world/3d-reality.js","utf8").includes('const type=String
 assert(fs.readFileSync("world/3d-reality.js","utf8").includes('type==="SHOP"' ) && fs.readFileSync("world/3d-reality.js","utf8").includes('type==="STUDIO"'),"3D interiors must provide distinct authored visual treatments");
 assert(fs.readFileSync("world/3d-reality.js","utf8").includes('say3D("EXITED · BACK ON THE STREET")'),"3D interior exit must return the player to the street layer");
 console.log("ESCIE 3D interior door lifecycle contracts OK");
+const world3dInterior=fs.readFileSync("world/3d-reality.js","utf8");
+assert(world3dInterior.includes("occupiedBy:null,holdUntil:0"),"interior stations must track occupant holds");
+assert(world3dInterior.includes('activity==="COMMUTE"'),"interior NPCs must leave active interior state during commute windows");
+assert(world3dInterior.includes("g.userData.occupation"),"interior NPC runtime must preserve occupation context");
+assert(world3dInterior.includes("g.userData.roomTransition"),"interior NPCs must retain room-transition state");
+
 
 const worldContent=fs.readFileSync("data/world-content.js","utf8");
 const worldCity=fs.readFileSync("data/world-city.js","utf8");
