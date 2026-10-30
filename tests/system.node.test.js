@@ -598,6 +598,7 @@ assert(worldItems.includes("STREET_CAR"),"canonical world item file must retain 
 assert(worldItems.includes("VAN") && worldItems.includes("SUV"),"canonical world item file must retain expanded vehicle classes");
 assert((worldCity.match(/id:"resident_[a-z_0-9]+"/g)||[]).length>=8,"canonical city data must retain baseline residential NPC coverage");
 assert(worldCity.includes("densityNPCs"),"canonical city data must expose authored population density expansion");
+assert(worldCity.includes("LAUNDROMAT_PE") && worldCity.includes("REHEARSAL_ME") && worldCity.includes("DINER_VE"),"canonical city data must retain secondary district buildings");
 assert(worldItems.includes("POCKET_KNIFE"),"canonical world item file must retain equipment definitions");
 assert(fs.readFileSync("world/equipment.js","utf8").includes("window.ESCIE_WORLD_ITEMS?.equipment"),"equipment system must consume canonical item data");
 assert(fs.readFileSync("world/vehicle-system.js","utf8").includes("window.ESCIE_WORLD_ITEMS?.vehicles"),"vehicle system must consume canonical vehicle data");
