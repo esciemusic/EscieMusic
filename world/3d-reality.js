@@ -202,13 +202,13 @@ function createCanonicalBuildings(){
 }
 
 function buildScene(){
- clearWorld();scene=new THREE.Scene();scene.background=new THREE.Color(0x050505);scene.fog=new THREE.FogExp2(0x101114,.018);
+ clearWorld();scene=new THREE.Scene();scene.background=new THREE.Color(0x101714);scene.fog=new THREE.FogExp2(0x151a18,.012);
  worldGroup=new THREE.Group();scene.add(worldGroup);
- const hemi=new THREE.HemisphereLight(0xd8d4ca,0x101114,.95);scene.add(hemi);
- const moon=new THREE.DirectionalLight(0x8a96a3,1.25);moon.position.set(-18,30,12);scene.add(moon);
- const fill=new THREE.DirectionalLight(0x43504a,.28);fill.position.set(22,10,-18);scene.add(fill);
- const signal=new THREE.PointLight(0x2f80ff,1.6,24,2);signal.userData.criticalSignal=true;signal.position.set(0,5,6);scene.add(signal);lights.push(signal);
- playerLight=new THREE.PointLight(0xd8d4ca,.2,8,2);scene.add(playerLight);
+ const hemi=new THREE.HemisphereLight(0xe7e1d4,0x18211c,1.35);scene.add(hemi);
+ const moon=new THREE.DirectionalLight(0xb8c4d0,1.7);moon.position.set(-18,30,12);scene.add(moon);
+ const fill=new THREE.DirectionalLight(0x62736a,.55);fill.position.set(22,10,-18);scene.add(fill);
+ const signal=new THREE.PointLight(0x2f80ff,2.1,28,2);signal.userData.criticalSignal=true;signal.position.set(0,5,6);scene.add(signal);lights.push(signal);
+ playerLight=new THREE.PointLight(0xe5dfd2,.42,10,2);scene.add(playerLight);
  const rimA=new THREE.PointLight(0x9aa6a1,.12,5,2);rimA.userData.baseIntensity=.12;scene.add(rimA);playerRimLights.push(rimA);
  const rimB=new THREE.PointLight(0x2f80ff,.08,4,2);rimB.userData.baseIntensity=.08;scene.add(rimB);playerRimLights.push(rimB);
  dayLight=moon;ambientLight=hemi;
