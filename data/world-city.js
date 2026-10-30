@@ -229,6 +229,21 @@ const world_buildings={
   ]
 };
 const secondaryBuildings={"PARC-EXTENSION":[{id:"LAUNDROMAT_PE",name:"LAUNDROMAT",landmark:"DUROCHER",type:"SERVICE",access:"PUBLIC",interior:"SHOP"}],"MILE END":[{id:"REHEARSAL_ME",name:"REHEARSAL ROOM",landmark:"SAINT_VIATEUR",type:"MUSIC",access:"PUBLIC",interior:"STUDIO"}],"PLATEAU":[{id:"BOOKSHOP_PL",name:"BOOKSHOP",landmark:"SAINT_DENIS",type:"SHOP",access:"PUBLIC",interior:"SHOP"}],"ROSEMONT":[{id:"DINER_RO",name:"DINER",landmark:"BEAUBIEN",type:"FOOD",access:"PUBLIC",interior:"CAFE"}],"DOWNTOWN":[{id:"APARTMENT_DT",name:"APARTMENT",landmark:"SAINT_DENIS",type:"RESIDENTIAL",access:"LOCKED",interior:"APARTMENT"}],"OLD MONTREAL":[{id:"WORKSHOP_OM",name:"WORKSHOP",landmark:"OLD_PORT",type:"SERVICE",access:"PUBLIC",interior:"SHOP"}],"SAINT-HENRI":[{id:"LAUNDROMAT_SH",name:"LAUNDROMAT",landmark:"NOTRE_DAME",type:"SERVICE",access:"PUBLIC",interior:"SHOP"}],"VERDUN":[{id:"DINER_VE",name:"DINER",landmark:"WELLINGTON",type:"FOOD",access:"PUBLIC",interior:"CAFE"}]};Object.keys(secondaryBuildings).forEach(d=>{world_buildings[d]=(world_buildings[d]||[]).concat(secondaryBuildings[d]);});
+/* CANONICAL SECURITY CONTEXT
+ * Security metadata belongs to the authored city model; the 3D layer only renders/observes it.
+ */
+const building_security={
+ "SHOP_01":{cameras:2,coverage:10,alertDelay:1800},
+ "SHOP_ME":{cameras:2,coverage:9,alertDelay:1800},
+ "SHOP_PL":{cameras:2,coverage:10,alertDelay:1600},
+ "SHOP_RO":{cameras:2,coverage:10,alertDelay:1600},
+ "SHOP_DT":{cameras:3,coverage:12,alertDelay:1400},
+ "SHOP_VE":{cameras:2,coverage:10,alertDelay:1800},
+ "BOOKSHOP_PL":{cameras:2,coverage:9,alertDelay:2000},
+ "WORKSHOP_OM":{cameras:2,coverage:10,alertDelay:1900},
+ "LAUNDROMAT_PE":{cameras:1,coverage:8,alertDelay:2200},
+ "LAUNDROMAT_SH":{cameras:1,coverage:8,alertDelay:2200}
+};
 const world_landmarks={"PARC-EXTENSION":[{id:"PARC_METRO",name:"PARC METRO",node:"PARC",type:"TRANSIT"},{id:"JEAN_TALON_STRIP",name:"JEAN-TALON STRIP",node:"JEAN_TALON",type:"COMMERCE"},{id:"HOME_LANE",name:"HOME LANE",node:"HOME",type:"RESIDENTIAL"},{id:"SIGNAL_LANE",name:"SIGNAL LANE",node:"ACADIE",type:"INVESTIGATION"}],"MILE END":[{id:"LAURIER_METRO",name:"LAURIER METRO",node:"LAURIER",type:"TRANSIT"},{id:"SAINT_VIATEUR",name:"SAINT-VIATEUR",node:"SAINT_VIATEUR",type:"COMMERCE"},{id:"MONT_ROYAL_METRO",name:"MONT-ROYAL METRO",node:"MONT_ROYAL",type:"TRANSIT"}],"PLATEAU":[{id:"SAINT_DENIS",name:"SAINT-DENIS",node:"SAINT_DENIS",type:"COMMERCE"},{id:"MONT_ROYAL",name:"MONT-ROYAL",node:"MONT_ROYAL",type:"SOCIAL"},{id:"SHERBROOKE",name:"SHERBROOKE",node:"SHERBROOKE",type:"TRANSIT"}],"ROSEMONT":[{id:"BEAUBIEN",name:"BEAUBIEN",node:"BEAUBIEN",type:"COMMERCE"},{id:"IBERVILLE",name:"IBERVILLE",node:"IBERVILLE",type:"RESIDENTIAL"},{id:"JEAN_TALON",name:"JEAN-TALON",node:"JEAN_TALON",type:"TRANSIT"}],"DOWNTOWN":[{id:"BERRI_UQAM",name:"BERRI-UQAM",node:"BERRI_UQAM",type:"TRANSIT"},{id:"MCGILL",name:"MCGILL",node:"MCGILL",type:"WORK"},{id:"PEEL",name:"PEEL",node:"PEEL",type:"COMMERCE"},{id:"GUY_CONCORDIA",name:"GUY-CONCORDIA",node:"GUY_CONCORDIA",type:"ENTERTAINMENT"}],"OLD MONTREAL":[{id:"CHAMP_DE_MARS",name:"CHAMP-DE-MARS",node:"CHAMP_DE_MARS",type:"TRANSIT"},{id:"PLACE_DARMES",name:"PLACE-D'ARMES",node:"PLACE_DARMES",type:"HISTORY"},{id:"OLD_PORT",name:"OLD PORT",node:"OLD_PORT",type:"ENTERTAINMENT"}],"SAINT-HENRI":[{id:"SAINT_HENRI",name:"SAINT-HENRI",node:"SAINT_HENRI",type:"TRANSIT"},{id:"NOTRE_DAME",name:"NOTRE-DAME",node:"NOTRE_DAME",type:"COMMERCE"},{id:"VENDOME",name:"VENDÔME",node:"VENDOME",type:"HEALTH"}],"VERDUN":[{id:"DE_LEGLISE",name:"DE L'ÉGLISE",node:"DE_LEGLISE",type:"TRANSIT"},{id:"WELLINGTON",name:"WELLINGTON",node:"WELLINGTON",type:"COMMERCE"},{id:"VERDUN_METRO",name:"VERDUN METRO",node:"VERDUN",type:"TRANSIT"}]};
 const city_backbone={
   "PARC-EXTENSION":["PARC","ACADIE"],
@@ -319,7 +334,7 @@ Object.keys(densityNPCs).forEach(d=>{
   npcPopulations[d]=(npcPopulations[d]||[]).concat(densityNPCs[d]);
 });
 
-Object.assign(window.ESCIE_WORLD_CITY,{landmarks:world_landmarks,buildings:world_buildings,interiors,cityBackbone:city_backbone,cityConnections:city_connections,publicTransit:public_transit,districts});
+Object.assign(window.ESCIE_WORLD_CITY,{landmarks:world_landmarks,buildings:world_buildings,interiors,buildingSecurity:building_security,cityBackbone:city_backbone,cityConnections:city_connections,publicTransit:public_transit,districts});
 
 
 })();
