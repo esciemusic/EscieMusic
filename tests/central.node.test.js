@@ -1,4 +1,5 @@
 const fs=require("fs"),assert=require("assert"),vm=require("vm");
+const universeContract=require("../data/universe-contract.js");
 const files=["central-connect/app.html","central-connect/operator.js","central-connect/agent-protocol.js","central-connect/agent-runtime.js","central-connect/agent-dispatcher.js","central-connect/agent-ui.js"];
 for(const f of files){assert(fs.existsSync(f),f+" missing");const s=fs.readFileSync(f,"utf8");assert(!s.includes("operator-ui.js"),f+" references removed duplicate UI");if(f.endsWith(".js"))new vm.Script(s,{filename:f});}
 const html=fs.readFileSync("central-connect/app.html","utf8");
