@@ -52,6 +52,8 @@ assert(mediaPlan.status === "PENDING_APPROVAL", "Central media intake must requi
 assert(mediaPlan.destinations.some(d=>d.file === "data/media.js"), "Central media intake must route visual metadata to media registry");
 assert(mediaPlan.destinations.some(d=>d.file === "data/world-city.js"), "Central media intake must route geographic world metadata to city registry");
 assert(mediaPlan.record.location.label === "Dante Park", "Central media intake must preserve place metadata");
+const archivePlan=centralMedia.toWritePlan({id:"archive-001",type:"photo",asset:"assets/media/archive-001.jpg",publicSections:["ARCHIVE"]});
+assert(archivePlan.destinations.some(d=>d.file === "data/archive.js"), "Central media intake must route archive placements");
 console.log("CENTRAL media intake contracts OK");
 
 const source = sources.createSource({
