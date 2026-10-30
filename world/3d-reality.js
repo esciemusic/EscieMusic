@@ -87,7 +87,7 @@ function syncCanonicalNPCs(t){
   a.visible=Number(n.health??100)>0;
   const scheduleWindow=currentWindow(n),scheduledActivity=String(scheduleWindow?.activity||n.activity||"IDLE").toUpperCase();
   const district=String(n.district||sim.neighbourhood||"").toUpperCase();
-  if(!["WORK","SOCIAL","SLEEP","HOME","COMMUTE"].includes(scheduledActivity)){a.visible=Number(n.health??100)>0;n.current_building_id=null;n.current_building_state="OUTSIDE";}
+  if(!["WORK","SOCIAL","SLEEP","HOME","COMMUTE"].includes(scheduledActivity)){a.visible=Number(n.health??100)>0;n.current_building_id=null;n.current_building_state="OUTSIDE";a.userData.enteringBuilding=null;a.userData.enteringUntil=0;a.userData.doorTransition="OUTSIDE";}
 
   const buildings=root.ESCIE_WORLD_SIMULATION?.districtBuildings?.(district)||[];
   const destinationId=scheduledActivity==="WORK"?(n.workplace_id||n.work_building?.id):scheduledActivity==="SOCIAL"?(n.social_place_id||n.social_building?.id):["SLEEP","HOME"].includes(scheduledActivity)?(n.home_building?.id||n.home?.id):null;
@@ -110,9 +110,26 @@ function syncCanonicalNPCs(t){
       a.userData.traveling=false;
       a.userData.destinationBuilding=destination?.id||null;
       if(destination){
-        n.current_building_id=destination.id;
-        n.current_building_state=scheduledActivity==="COMMUTE"?"ARRIVING":"INSIDE";
-        a.visible=false;
+        if(a.userData.enteringBuilding!==destination.id){
+          a.userData.enteringBuilding=destination.id;
+          a.userData.enteringUntil=now+850;
+          n.current_building_id=destination.id;
+          n.current_building_state="ARRIVING";
+          const entryDoor=destination.__worldDoor;
+          if(entryDoor?.mesh){
+            entryDoor.open=true;
+            entryDoor.mesh.rotation.y=Math.PI/2;
+          }
+          a.visible=true;
+          a.userData.doorTransition="ENTER";
+        }else if(now>=Number(a.userData.enteringUntil||0)){
+          n.current_building_id=destination.id;
+          n.current_building_state="INSIDE";
+          a.visible=false;
+          a.userData.doorTransition="INSIDE";
+          const entryDoor=destination.__worldDoor;
+          if(entryDoor?.mesh){entryDoor.open=false;entryDoor.mesh.rotation.y=0;}
+        }
       }else{
         if(Number.isFinite(Number(target?.x)))n.x=Number(target.x);
         if(Number.isFinite(Number(target?.y)))n.y=Number(target.y);
