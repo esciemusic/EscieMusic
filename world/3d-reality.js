@@ -8,7 +8,7 @@ const root=window;
 let renderer,scene,camera,clock,avatar,worldGroup,thirdPerson=true,started=false,paused=false,raf=0,dayLight,ambientLight,playerLight,resizeObserver,visibilityHandler;
 const obstacles=[],actors=[],doors=[],lights=[],evidence=[],interiorActors=[],interiorStations=[];
 const windowLights=[],streetMarkings=[],laneMarkings=[],groundMeshes=[],readabilityLights=[],facadeMeshes=[],playerRimLights=[],doorSignals=[],actorReadabilityMeshes=[],traffic=[];
-const vehicleImpacts={last:0,cooldown:900}; const perf={quality:"auto",frameMs:16,lowFrames:0,last:performance.now(),hud:0}; let lastEnvironmentKey="";let lastDistrictKey="";let snowMesh=null;
+const vehicleImpacts={last:0,cooldown:900}; const perf={quality:"auto",frameMs:16,lowFrames:0,last:performance.now(),hud:0,environment:0,pixelRatio:1.7}; let lastEnvironmentKey="";let lastDistrictKey="";let snowMesh=null;
 const keys=new Set();
 const player={x:0,z:8,y:1.7,yaw:0,pitch:0,speed:4.2,sprint:7.5,lastSync:0,lastGridX:null,lastGridY:null,inVehicle:false,vehicleId:null,npcSync:0,lawSync:0,lastSprintDrain:0,worldTick:0};
 let interiorMode=false,interiorGroup=null,interiorBuilding=null,interiorSaved=null;
@@ -341,7 +341,7 @@ function setup(){
  const initial=root.ESCIE_WORLD_SIMULATION?.state?.()?.position||{x:2,y:7};player.x=Number(initial.x||0)/15*108-54;player.z=Number(initial.y||0)/9*108-54;
  if(renderer)return true;const stale=s.querySelector(".escie-3d-canvas");if(stale)stale.remove();const staleStatus=s.querySelector("#escie-3d-status");if(staleStatus)staleStatus.remove();
  try{renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:"high-performance"});}catch(e){say3D("3D UNAVAILABLE · WEBGL REQUIRED");return false}
- renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.7));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
+ perf.pixelRatio=Math.min(devicePixelRatio||1,/Mobi|Android/i.test(navigator.userAgent)?1.35:1.7);renderer.setPixelRatio(perf.pixelRatio);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
  renderer.domElement.className="escie-3d-canvas";renderer.domElement.setAttribute("aria-label","ESCIE 3D playable world");s.appendChild(renderer.domElement);const status=document.createElement("div");status.id="escie-3d-status";status.setAttribute("aria-live","polite");status.textContent="ESCIE WORLD · INITIALIZING";s.appendChild(status);
  camera=new THREE.PerspectiveCamera(70,1,.05,180);clock=new THREE.Clock();buildScene();resize();resizeObserver=window.ResizeObserver?new ResizeObserver(resize):null;resizeObserver?.observe(s);window.addEventListener("resize",resize);
  renderer.domElement.addEventListener("click",()=>renderer.domElement.requestPointerLock?.());
@@ -1108,7 +1108,7 @@ function updateQuality(dt){
      }
    });
    if(snowMesh)snowMesh.visible=false;
-   renderer?.setPixelRatio(Math.min(devicePixelRatio||1,1));
+   renderer?.setPixelRatio(Math.min(perf.pixelRatio,1));
  }else if(perf.quality==="low"&&perf.frameMs<20&&perf.lowFrames===0){
    perf.quality="auto";
    worldGroup?.traverse(o=>{
@@ -1117,7 +1117,7 @@ function updateQuality(dt){
        o.visible=true;
      }
    });
-   renderer?.setPixelRatio(Math.min(devicePixelRatio||1,1.7));
+   renderer?.setPixelRatio(perf.pixelRatio);
  }
 } 
 function updateActors(t){
