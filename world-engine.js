@@ -3,7 +3,7 @@
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
 const coll=(name,fallback=[])=>{const v=window[name];return Array.isArray(v)?v:(v&&Array.isArray(v.records)?v.records:fallback)};
-const state={tab:"atlas",q:"",type:"ALL",reality:"ALL",selected:null,trail:[],visited:[],eyeOpen:false};
+const state={tab:"atlas",q:"",type:"ALL",selected:null,trail:[],visited:[],eyeOpen:false};
 const tabs=[["atlas","ATLAS"],["timeline","TIMELINE"],["symbols","SYMBOLS"],["trails","TRAILS"]];
 const raf=typeof requestAnimationFrame==="function"?requestAnimationFrame:fn=>setTimeout(fn,0);
 const caf=typeof cancelAnimationFrame==="function"?cancelAnimationFrame:clearTimeout;
