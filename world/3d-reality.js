@@ -7,7 +7,7 @@
 const root=window;
 let renderer,scene,camera,clock,avatar,worldGroup,thirdPerson=false,started=false,paused=false,raf=0,dayLight,ambientLight,playerLight,resizeObserver,visibilityHandler;
 const obstacles=[],actors=[],doors=[],lights=[],evidence=[];
-const windowLights=[],streetMarkings=[],laneMarkings=[],groundMeshes=[],readabilityLights=[],facadeMeshes=[],playerRimLights=[],doorSignals=[];
+const windowLights=[],streetMarkings=[],laneMarkings=[],groundMeshes=[],readabilityLights=[],facadeMeshes=[],playerRimLights=[],doorSignals=[],actorReadabilityMeshes=[];
 const vehicleImpacts={last:0,cooldown:900}; const perf={quality:"auto",frameMs:16,lowFrames:0,last:performance.now(),hud:0}; let lastEnvironmentKey="";
 const keys=new Set();
 const player={x:0,z:8,y:1.7,yaw:0,pitch:0,speed:4.2,sprint:7.5,lastSync:0,lastGridX:null,lastGridY:null,inVehicle:false,vehicleId:null,npcSync:0,lawSync:0,lastSprintDrain:0,worldTick:0};
@@ -63,7 +63,7 @@ function actor(x,z,seed){
  const coat=[0x141918,0x202726,0x303735][seed%3];
  const b=new THREE.Mesh(new THREE.CapsuleGeometry(.2,.65,4,8),makeMat(coat,.95));b.position.y=.62;g.add(b);
  const h=new THREE.Mesh(new THREE.SphereGeometry(.17,12,8),makeMat(0x373b38,.98));h.position.y=1.3;g.add(h);
- g.position.set(x,0,z);g.userData={id:"street-person-"+seed,drift:(seed%2?1:-1),base:x,phase:seed};
+ g.position.set(x,0,z);g.userData={id:"street-person-"+seed,drift:(seed%2?1:-1),base:x,phase:seed,readabilityMeshes:[b,h],baseCoatColor:coat,baseHeadColor:0x373b38};actorReadabilityMeshes.push(g);
  worldGroup.add(g);actors.push(g);
 }
 function gridToWorld(p){return {x:Number(p?.x||0)/15*108-54,z:Number(p?.y||0)/9*108-54}}
@@ -120,6 +120,7 @@ function buildScene(){
  const body=new THREE.Mesh(new THREE.CapsuleGeometry(.28,.9,5,10),makeMat(0x101114,.9));
  body.position.y=.8;avatar.add(body);
  const head=new THREE.Mesh(new THREE.SphereGeometry(.22,16,12),makeMat(0x70747a,.95));head.position.y=1.55;avatar.add(head);
+ avatar.userData.readabilityMeshes=[body,head];avatar.userData.baseBodyColor=0x101114;avatar.userData.baseHeadColor=0x70747a;
  avatar.position.set(player.x,.0,player.z);scene.add(avatar);
 }
 function resize(){
@@ -316,7 +317,7 @@ function updateEnvironment(t){
  windowLights.forEach(o=>{const base=Number(o.userData.baseEmissive||.35);o.material.emissiveIntensity=base*(.12+night*.88);}); doorSignals.forEach(o=>{const base=Number(o.userData.baseEmissive||.12);o.material.emissiveIntensity=base*(.08+night*.92+(poorVisibility ? .18 : 0));});
  streetMarkings.forEach(o=>{o.material.emissiveIntensity=.015+night*.035;});
  laneMarkings.forEach(o=>{o.material.emissiveIntensity=.02+night*.06;});
- if(environmentChanged){groundMeshes.forEach(o=>o.material.color.set(night>.65?0x171a1b:0x242728)); const facadeNight=night*.12+(poorVisibility ? .025 : 0); facadeMeshes.forEach(o=>{const base=Number(o.userData.baseFacadeColor||0x202224),r=((base>>16)&255)/255,g=((base>>8)&255)/255,b=(base&255)/255,scale=1-facadeNight;o.material.color.setRGB(r*scale,g*scale,b*scale);}); lastEnvironmentKey=environmentKey;}
+ if(environmentChanged){groundMeshes.forEach(o=>o.material.color.set(night>.65?0x171a1b:0x242728)); const facadeNight=night*.12+(poorVisibility ? .025 : 0); facadeMeshes.forEach(o=>{const base=Number(o.userData.baseFacadeColor||0x202224),r=((base>>16)&255)/255,g=((base>>8)&255)/255,b=(base&255)/255,scale=1-facadeNight;o.material.color.setRGB(r*scale,g*scale,b*scale);}); const actorLift=night*.12+(poorVisibility ? .04 : 0); actorReadabilityMeshes.forEach(g=>{const coat=Number(g.userData.baseCoatColor||0x202726),head=Number(g.userData.baseHeadColor||0x373b38),cr=((coat>>16)&255)/255,cg=((coat>>8)&255)/255,cb=(coat&255)/255,hr=((head>>16)&255)/255,hg=((head>>8)&255)/255,hb=(head&255)/255,scale=1+actorLift;g.userData.readabilityMeshes?.[0]?.material.color.setRGB(Math.min(1,cr*scale),Math.min(1,cg*scale),Math.min(1,cb*scale));g.userData.readabilityMeshes?.[1]?.material.color.setRGB(Math.min(1,hr*scale),Math.min(1,hg*scale),Math.min(1,hb*scale));}); const playerLift=night*.08+(poorVisibility ? .04 : 0); const pm=avatar?.userData?.readabilityMeshes||[]; if(pm[0]&&pm[1]){const body=Number(avatar.userData.baseBodyColor||0x101114),head=Number(avatar.userData.baseHeadColor||0x70747a),br=((body>>16)&255)/255,bg=((body>>8)&255)/255,bb=(body&255)/255,hr=((head>>16)&255)/255,hg=((head>>8)&255)/255,hb=(head&255)/255,bs=1+playerLift,hs=1+playerLift*.7;pm[0].material.color.setRGB(Math.min(1,br*bs),Math.min(1,bg*bs),Math.min(1,bb*bs));pm[1].material.color.setRGB(Math.min(1,hr*hs),Math.min(1,hg*hs),Math.min(1,hb*hs));} lastEnvironmentKey=environmentKey;}
  const headlights=updateVehicles.car?.userData?.headlights||[];headlights.forEach(l=>{const base=Number(l.userData.baseIntensity||.7);const visibilityBoost=poorVisibility ? .55 :0;const daylightCut=daylight>.58 ? .12 :1;l.intensity=base*(.25+night*.9+visibilityBoost)*daylightCut;});
 }
 function syncPauseMap(){const map=document.getElementById("world-map"),p=document.getElementById("world-player");if(!map||!p)return;const x=Math.max(0,Math.min(100,(player.x+54)/108*100)),y=Math.max(0,Math.min(100,(player.z+54)/108*100));p.style.left=x+"%";p.style.top=y+"%";p.title="PLAYER · "+Math.round(player.x+54)+" · "+Math.round(player.z+54);const sim=root.ESCIE_WORLD_SIMULATION?.state?.()||{};map.dataset.neighbourhood=String(sim.neighbourhood||"PARC-EXTENSION");map.dataset.transport=String(sim.transport||"FOOT");}
