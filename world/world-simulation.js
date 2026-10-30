@@ -26,69 +26,13 @@ const DREAM_STATES={
 };
 const evaluateDream=(s)=>{const reasons=[];if(Number(s.damage)>=35)reasons.push("DAMAGE");if(Number(s.sleep)>=70)reasons.push("SLEEP");if(Number(s.drug_effect)>0)reasons.push("DRUG_EFFECT");if(Number(s.alcohol_effect)>0)reasons.push("ALCOHOL_EFFECT");if(Number(s.stress)>=70)reasons.push("STRESS");if(!reasons.length)return null;const nightmare=reasons.includes("DAMAGE")||reasons.includes("STRESS")||reasons.includes("DRUG_EFFECT");return nightmare?DREAM_STATES.NIGHTMARE:DREAM_STATES.MEMORY};
 const enterDream=(type)=>{const s=read(),d=DREAM_STATES[type]||DREAM_STATES.NIGHTMARE;s.dreams=s.dreams||[];const event={type:d.id,title:d.title,reasons:evaluateDream(s)?.causes||[],day:s.day,hour:s.hour,intensity:d.intensity,horror:!!d.horror};s.dreams.unshift(event);s.dream=s.dreams.slice(0,25);s.sleep=0;s.drug_effect=Math.max(0,Number(s.drug_effect)-1);s.alcohol_effect=Math.max(0,Number(s.alcohol_effect)-1);if(!save(s))return null;return event};
-const WORLD_STREETS={
-  "PARC-EXTENSION":[
-    {id:"HOME",label:"HOME",x:2,y:7,type:"STREET"},
-    {id:"DUROCHER",label:"DUROCHER",x:3,y:7,type:"STREET"},
-    {id:"HUTCHISON",label:"HUTCHISON",x:3,y:6,type:"STREET"},
-    {id:"JEAN_TALON",label:"JEAN-TALON",x:4,y:5,type:"STREET"},
-    {id:"PARC",label:"PARC METRO",x:4,y:6,type:"METRO",station:"Parc"},
-    {id:"BEAUMONT",label:"BEAUMONT",x:5,y:5,type:"STREET"},
-    {id:"ACADIE",label:"ACADIE METRO",x:6,y:4,type:"METRO",station:"Acadie"},
-    {id:"OGILVY",label:"OGILVY",x:7,y:5,type:"STREET"}
-  ],
-  "MILE END":[
-    {id:"LAURIER",label:"LAURIER",x:4,y:5,type:"METRO",station:"Laurier"},
-    {id:"SAINT_VIATEUR",label:"SAINT-VIATEUR",x:6,y:5,type:"STREET"},
-    {id:"MONT_ROYAL",label:"MONT-ROYAL",x:8,y:5,type:"METRO",station:"Mont-Royal"},
-    {id:"SAINT_URBAIN",label:"SAINT-URBAIN",x:8,y:6,type:"STREET"},
-    {id:"ROSEMONT",label:"ROSEMONT EDGE",x:11,y:6,type:"STREET"}
-  ],
-  "PLATEAU":[
-    {id:"LAURIER",label:"LAURIER",x:3,y:5,type:"METRO",station:"Laurier"},
-    {id:"SAINT_DENIS",label:"SAINT-DENIS",x:5,y:5,type:"STREET"},
-    {id:"MONT_ROYAL",label:"MONT-ROYAL",x:7,y:5,type:"METRO",station:"Mont-Royal"},
-    {id:"SAINT_LAURENT",label:"SAINT-LAURENT",x:8,y:6,type:"STREET"},
-    {id:"SHERBROOKE",label:"SHERBROOKE",x:10,y:7,type:"METRO",station:"Sherbrooke"}
-  ],
-  "ROSEMONT":[
-    {id:"ROSEMONT",label:"ROSEMONT",x:4,y:5,type:"METRO",station:"Rosemont"},
-    {id:"BEAUBIEN",label:"BEAUBIEN",x:8,y:6,type:"METRO",station:"Beaubien"},
-    {id:"JEAN_TALON",label:"JEAN-TALON",x:11,y:4,type:"METRO",station:"Jean-Talon"},
-    {id:"IBERVILLE",label:"IBERVILLE",x:10,y:6,type:"STREET"}
-  ],
-  "DOWNTOWN":[
-    {id:"BERRI_UQAM",label:"BERRI-UQAM",x:4,y:7,type:"METRO",station:"Berri-UQAM"},
-    {id:"SAINT_DENIS",label:"SAINT-DENIS",x:5,y:6,type:"STREET"},
-    {id:"MCGILL",label:"MCGILL",x:7,y:5,type:"METRO",station:"McGill"},
-    {id:"PEEL",label:"PEEL",x:10,y:5,type:"METRO",station:"Peel"},
-    {id:"GUY_CONCORDIA",label:"GUY-CONCORDIA",x:12,y:7,type:"METRO",station:"Guy-Concordia"}
-  ],
-  "OLD MONTREAL":[
-    {id:"CHAMP_DE_MARS",label:"CHAMP-DE-MARS",x:5,y:5,type:"METRO",station:"Champ-de-Mars"},
-    {id:"PLACE_DARMES",label:"PLACE-D'ARMES",x:9,y:7,type:"METRO",station:"Place-d'Armes"},
-    {id:"OLD_PORT",label:"OLD PORT",x:11,y:8,type:"STREET"}
-  ],
-  "SAINT-HENRI":[
-    {id:"SAINT_HENRI",label:"SAINT-HENRI",x:4,y:6,type:"METRO",station:"Saint-Henri"},
-    {id:"PLACE_SAINT_HENRI",label:"PLACE-SAINT-HENRI",x:7,y:4,type:"METRO",station:"Place-Saint-Henri"},
-    {id:"NOTRE_DAME",label:"NOTRE-DAME",x:8,y:6,type:"STREET"},
-    {id:"VENDOME",label:"VENDÔME",x:11,y:6,type:"METRO",station:"Vendôme"}
-  ],
-  "VERDUN":[
-    {id:"DE_LEGLISE",label:"DE L'ÉGLISE",x:5,y:5,type:"METRO",station:"De l'Église"},
-    {id:"WELLINGTON",label:"WELLINGTON",x:7,y:6,type:"STREET"},
-    {id:"VERDUN",label:"VERDUN",x:9,y:6,type:"METRO",station:"Verdun"}
-  ]
-};
+const CITY=window.ESCIE_WORLD_CITY||{};
+const WORLD_STREETS=CITY.streetNodes||{};
+const STREET_REALISM=CITY.streetRealism||{};
+const STREET_EDGES=CITY.streetEdges||{};
+const NPC_POPULATIONS=CITY.npcPopulations||{};
+const NPC_DAY_PLAN=CITY.npcDayPlan||[];
 
-// Montréal street realism metadata: used to generate believable surface conditions and traversal context.
-const STREET_REALISM={
- "LOCAL":{lanes:2,sidewalk:true,parking:true,speed:30},
- "COLLECTOR":{lanes:2,sidewalk:true,parking:true,speed:40},
- "ARTERIAL":{lanes:4,sidewalk:true,parking:false,speed:50},
- "LANEWAY":{lanes:1,sidewalk:false,parking:false,speed:10}
-};
 const montrealReference=()=>window.ESCIE_CITY_REFERENCE||null;
 const districtTexture=(district)=>{
  const r=montrealReference(),d=String(district||"").toUpperCase();
