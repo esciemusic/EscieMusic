@@ -601,17 +601,16 @@
   }
 
   function getPublicRelationshipRecords(filters){
-    const registry=getGlobal("ESCIE_RECORD_REGISTRY",null);
-    const records=getAllPublicRecords();
+    const registry=getGlobal("ESCIE_RECORD_REGISTRY",null),records=getAllPublicRecords();
     const byIdMap=new Map(records.filter(Boolean).map(record=>[recordId(record),record]));
-    if(registry&&typeof registry.publicRelationships==="function"){
-      return registry.publicRelationships(filters||{}).filter(r=>byIdMap.has(r.from)&&byIdMap.has(r.to));
-    }
-    return normalizeCollection(getRelationships()).filter(relationship=>
-      relationship&&relationship.public_disclosure===true&&
-      relationship.visibility!=="private"&&relationship.visibility!=="withheld"&&
-      byIdMap.has(relationship.from)&&byIdMap.has(relationship.to)
-    );
+    const base=registry&&typeof registry.publicRelationships==="function"
+      ? registry.publicRelationships(filters||{})
+      : normalizeCollection(getRelationships()).filter(relationship=>relationship&&relationship.public_disclosure===true&&relationship.visibility!=="private"&&relationship.visibility!=="withheld");
+    const live=normalizeCollection(getGlobal("ESCIE_LIVE_RELATIONSHIPS",[])).map(r=>({
+      id:r.id,from:r.from_record_id||r.from,to:r.to_record_id||r.to,type:r.type||"connection",category:r.category||null,
+      public_disclosure:true,visibility:"public"
+    }));
+    return base.concat(live).filter(r=>r&&byIdMap.has(r.from)&&byIdMap.has(r.to));
   }
 
   function renderWorld(){
@@ -926,18 +925,21 @@ function renderClothing(){
 
   function getAllRecords() {
     const registry = getGlobal("ESCIE_RECORD_REGISTRY", null);
-    if (registry && typeof registry.records === "function") {
-      return normalizeCollection(registry.records());
-    }
-    return [
-      { id: "escie", type: "identity", title: "ESCIE", description: "The Father / the Man.", status: "active", published: true, visibility: "public" },
-      ...normalizeCollection(getMusic()),
-      ...normalizeCollection(getProjects()),
-      ...normalizeCollection(getArchive()),
-      ...normalizeCollection(getInvestigation()),
-      ...normalizeCollection(getPeople()),
-      ...normalizeCollection(getLocations())
-    ].filter(record => record && recordId(record));
+    const base = registry && typeof registry.records === "function"
+      ? normalizeCollection(registry.records())
+      : [
+          { id: "escie", type: "identity", title: "ESCIE", description: "The Father / the Man.", status: "active", published: true, visibility: "public" },
+          ...normalizeCollection(getMusic()),
+          ...normalizeCollection(getProjects()),
+          ...normalizeCollection(getArchive()),
+          ...normalizeCollection(getInvestigation()),
+          ...normalizeCollection(getPeople()),
+          ...normalizeCollection(getLocations())
+        ];
+    const live = normalizeCollection(getGlobal("ESCIE_LIVE_RECORDS", []));
+    const map = new Map(base.filter(record => record && recordId(record)).map(record => [recordId(record), record]));
+    live.filter(record => record && recordId(record)).forEach(record => map.set(recordId(record), record));
+    return Array.from(map.values());
   }
 
   function getAllPublicRecords() {
