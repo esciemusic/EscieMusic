@@ -85,7 +85,7 @@ function updateInteriorOccupants(t){
  if(!interiorMode||!interiorActors.length)return;
  const sim=root.ESCIE_WORLD_SIMULATION?.state?.()||{};
  interiorActors.forEach((g,i)=>{
-   const live=g.userData.npc||root.ESCIE_WORLD_NPC?.state?.().npcs?.[g.userData.id);
+   const live=g.userData.npc||root.ESCIE_WORLD_NPC?.state?.().npcs?.[g.userData.id]);
    if(!live)return;
    const activity=String(live.activity||g.userData.interiorActivity||"WORK").toUpperCase();
    let target=null;
