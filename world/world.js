@@ -5,6 +5,7 @@ let npcs=Array.isArray(CONTENT.npcs)?CONTENT.npcs.map(n=>Object.assign({},n)):[]
 objects=Array.isArray(CONTENT.objects)?CONTENT.objects.map(o=>Object.assign({},o)):[];
 const walls=CONTENT.walls instanceof Set?CONTENT.walls:new Set(CONTENT.walls||[]);
 const MARKET=Array.isArray(CONTENT.market)?CONTENT.market.map(x=>Object.assign({},x)):[];
+const WORLD_LOOT_TABLE=Array.isArray(CONTENT.lootTable)?CONTENT.lootTable.map(x=>Object.assign({},x)):[];
 if(window.ESCIE_WORLD_NPC){const runtimeNPC=CONTENT.runtimeNPC||{};if(runtimeNPC.witness)window.ESCIE_WORLD_NPC.registerNPC(Object.assign({},runtimeNPC.witness));(runtimeNPC.surveillance||[]).forEach(item=>window.ESCIE_WORLD_NPC.registerSurveillance(Object.assign({},item)));}window.ESCIE_WORLD_SIMULATION?.seedWorldNPCs?.();
 const syncNPCVisuals=()=>{const sim=window.ESCIE_WORLD_SIMULATION,npcApi=window.ESCIE_WORLD_NPC;if(!sim||!npcApi)return;try{sim.seedWorldNPCs?.();const d=String(sim.state()?.neighbourhood||"PARC-EXTENSION").toUpperCase();const live=npcApi.state?.().npcs||{};const locals=Object.values(live).filter(n=>String(n.district||"").toUpperCase()===d&&n.id!=="witness").map(n=>Object.assign({},n,{label:n.role||"RESIDENT",text:(n.activity||"IDLE")+" · "+(n.role||"LOCAL"),lines:[]}));const witness=npcs.find(n=>n.id==="witness");npcs=witness?[witness,...locals]:locals}catch(e){}}
 let pos={...start},target=null,gamepadPrev={},dialogue=null,room="lane",roomObjects=[],roomState={},inventoryCursor=0;
