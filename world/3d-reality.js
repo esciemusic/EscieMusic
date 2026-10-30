@@ -258,9 +258,9 @@ function updateVehicles(t){
    updateVehicles.car.clear();
    const isCar=type==="CAR",isBike=type==="BIKE",isBoard=type==="BOARD";
    if(isCar){
-     const body=new THREE.Mesh(new THREE.BoxGeometry(1.7,.55,3.4),makeMat(0x101114,.65,.35));body.position.y=.55;updateVehicles.car.add(body);
+     const body=new THREE.Mesh(new THREE.BoxGeometry(1.7,.55,3.4),makeMat(0x101114,.65,.35));body.position.y=.55;updateVehicles.car.add(body);updateVehicles.car.userData.headlights=[];
      const roof=new THREE.Mesh(new THREE.BoxGeometry(1.2,.35,1.6),makeMat(0x111615,.6));roof.position.y=.98;updateVehicles.car.add(roof);
-     [-.52,.52].forEach(x=>{const lamp=new THREE.SpotLight(0xdde8d8,.7,16,Math.PI/7,.45,1.5);lamp.position.set(x,.62,-1.75);lamp.target.position.set(x,.35,-8);updateVehicles.car.add(lamp);updateVehicles.car.add(lamp.target);});
+     [-.52,.52].forEach(x=>{const lamp=new THREE.SpotLight(0xdde8d8,.7,16,Math.PI/7,.45,1.5);lamp.position.set(x,.62,-1.75);lamp.target.position.set(x,.35,-8);lamp.userData.baseIntensity=.7;updateVehicles.car.add(lamp);updateVehicles.car.add(lamp.target);updateVehicles.car.userData.headlights.push(lamp);});
    }else if(isBike){
      const frame=new THREE.Mesh(new THREE.BoxGeometry(.16,.16,2.4),makeMat(0x2f80ff,.55,.3));frame.position.y=.7;updateVehicles.car.add(frame);
      [-.82,.82].forEach(z=>{const wheel=new THREE.Mesh(new THREE.TorusGeometry(.38,.06,8,16),makeMat(0x101114,.8));wheel.rotation.x=Math.PI/2;wheel.position.set(0,.38,z);updateVehicles.car.add(wheel);});
@@ -301,6 +301,7 @@ function updateEnvironment(t){
  if(scene?.fog)scene.fog.density=.008+night*.010+(poorVisibility ? .006 : 0);
  if(renderer){const exposure=poorVisibility?.98:(night>.72?1.1:1.05);renderer.toneMappingExposure+=(exposure-renderer.toneMappingExposure)*.04;}
  lights.forEach((l,i)=>{if(!l.isPointLight)return;const isSignal=l===lights[0];if(isSignal)l.intensity=1.15+night*1.1;else l.intensity=.22+night*.85;});
+ const headlights=updateVehicles.car?.userData?.headlights||[];headlights.forEach(l=>{const base=Number(l.userData.baseIntensity||.7);const visibilityBoost=poorVisibility?.55:0;const daylightCut=daylight>.58?.12:1;l.intensity=base*(.25+night*.9+visibilityBoost)*daylightCut;});
 }
 function syncPauseMap(){const map=document.getElementById("world-map"),p=document.getElementById("world-player");if(!map||!p)return;const x=Math.max(0,Math.min(100,(player.x+54)/108*100)),y=Math.max(0,Math.min(100,(player.z+54)/108*100));p.style.left=x+"%";p.style.top=y+"%";p.title="PLAYER · "+Math.round(player.x+54)+" · "+Math.round(player.z+54);const sim=root.ESCIE_WORLD_SIMULATION?.state?.()||{};map.dataset.neighbourhood=String(sim.neighbourhood||"PARC-EXTENSION");map.dataset.transport=String(sim.transport||"FOOT");}
 function updateHud(){
