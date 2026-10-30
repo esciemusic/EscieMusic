@@ -383,7 +383,7 @@ function render(){
  if(thirdPerson){
    const vehicle=player.inVehicle,dist=vehicle?6.2:4.8,height=vehicle?2.9:2.45;
    const shoulder=new THREE.Vector3(Math.sin(player.yaw)*dist,height,Math.cos(player.yaw)*dist);
-   const target=new THREE.Vector3(player.x,vehicle?.9:1.15,player.z);
+   const target=new THREE.Vector3(player.x,vehicle?0.9:1.15,player.z);
    const desired=new THREE.Vector3(player.x+shoulder.x,shoulder.y,player.z+shoulder.z);
    camera.position.lerp(desired,.16);camera.lookAt(target);
    camera.fov+=(vehicle?74:70-camera.fov)*.08;camera.updateProjectionMatrix();
