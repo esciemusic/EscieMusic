@@ -779,7 +779,6 @@ assert(centralAppRuntime.includes('$("globalSearch")?.addEventListener("click"')
 assert(centralAppRuntime.includes('$("logout").onclick=()=>'), "Central logout must be wired");
 assert(centralAppRuntime.includes('$("refresh").onclick='), "Central refresh must be wired");
 assert(centralAppRuntime.includes('$("copy").onclick='), "Central copy action must be wired");
-assert(centralAppRuntime.includes('$("agentSend")') === false || centralAppRuntime.includes("agentSend"), "Central agent control must remain discoverable");
 assert(centralCommandDesk.includes('b.onclick=()=>{S.tab=b.dataset.tab;render()}'), "Command Desk tabs must be wired");
 assert(centralCommandDesk.includes('$("deskIntakeBtn")?.addEventListener("click",intake)'), "Command Desk intake must be wired");
 assert(centralCommandDesk.includes('$("deskRefresh")?.addEventListener("click",load)'), "Command Desk sync must be wired");
