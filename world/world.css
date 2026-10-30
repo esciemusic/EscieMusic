@@ -386,7 +386,7 @@ body.escie-world-page,.world-device,.world-device .world-shell{background:#05070
 .rpg-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem}
 .rpg-grid>div>div{display:flex;justify-content:space-between;border-top:1px solid rgba(216,212,202,.08);padding:.32rem 0}
 .rpg-grid span{color:var(--world-cold-grey,#70747A);font-size:.75rem;letter-spacing:.08em}
-.rpg-grid strong{color:var(--world-paper,#F0EDE4)}
+.rpg-grid strong{color:var(--world-paper,#F0EDE4)}.rpg-spend{margin-left:8px;min-width:28px;min-height:28px;padding:2px 7px;border:1px solid var(--world-line);background:transparent;color:inherit;cursor:pointer;border-radius:3px;font:inherit;font-weight:700}.rpg-spend:hover,.rpg-spend:focus-visible{background:var(--world-line);color:#050505;outline:none}
 @media(max-width:600px){.rpg-grid{grid-template-columns:1fr}.world-rpg{padding:.75rem}}
 
 /* 3D REALITY — canonical ESCIE foundation / cold Montréal signal */
