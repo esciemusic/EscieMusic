@@ -140,7 +140,7 @@ const crimeJobOffer=(type="BURGLARY",target=null)=>{
 const crimeJobAccept=(type="BURGLARY",target=null)=>{
  const q=crimeJobOffer(type,target);if(!q.ok)return q;
  const s=read(),c=q.job;
- s.crime_job={id:c.id,title:c.title,item:c.item,pay:c.pay,wanted:c.wanted,target:c.target,step:"PREPARE",prepared:false,taken:false,escaped:false,fenced:false,started:{day:s.day,hour:s.hour,minute:s.minute}};
+ s.crime_job={id:c.id,title:c.title,item:c.item,pay:c.pay,wanted:c.wanted,target:c.target,step:"PREPARE",prepared:false,taken:false,escaped:false,fenced:false,fenceBuilding:null,started:{day:s.day,hour:s.hour,minute:s.minute}};
  s.events=(s.events||[]).concat([{type:"CRIME_JOB_ACCEPTED",crime:c.id,target:c.target,day:s.day,hour:s.hour}]).slice(-300);
  save(s);return {ok:true,job:s.crime_job};
 };
