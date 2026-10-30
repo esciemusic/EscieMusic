@@ -40,7 +40,8 @@ body.is-world-paused .world-map{display:block}body.is-world-paused .world-player
 .world-market{width:min(1100px,calc(100% - 2rem));margin:-1.5rem auto 3rem;border:1px solid var(--world-line);background:var(--escie-void);padding:1rem}.market-board{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.8rem;padding:1rem 0}.market-item{border:1px solid rgba(47,128,255,.24);padding:1rem;background:rgba(47,128,255,.24);display:flex;flex-direction:column;gap:.55rem}.market-item h3{margin:0;font-size:1rem}.market-item p{margin:0;font-size:.68rem;line-height:1.5;opacity:.65}.market-price{font:600 .58rem monospace;letter-spacing:.1em;color:var(--world-green)}.market-item button{border:1px solid rgba(47,128,255,.24);background:transparent;color:inherit;padding:.7rem;font:600 .58rem monospace;letter-spacing:.08em}.market-item button:disabled{opacity:.35;cursor:not-allowed}.market-item.owned{border-color:rgba(47,128,255,.24)}.market-status{font:600 .52rem monospace;letter-spacing:.08em;opacity:.6}
 .evidence-node-button{appearance:none;width:100%;text-align:left;color:inherit;font:inherit}.evidence-node-button:focus-visible{outline:1px solid var(--world-green);outline-offset:2px}.evidence-detail-actions{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.7rem}.evidence-detail-actions button{border:1px solid rgba(47,128,255,.24);background:transparent;color:inherit;padding:.5rem .65rem;font:600 .52rem monospace;letter-spacing:.08em}
 @media(max-width:700px){.world-market{width:calc(100% - 2rem);box-sizing:border-box}}
-\n.world-quests,.quest-board{display:block}.quest-board{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}.world-quest{border:1px solid rgba(47,128,255,.24);padding:14px;background:rgba(47,128,255,.24)}.world-quest span{font-size:.68rem;letter-spacing:.14em}.world-quest h3{margin:.45rem 0}.world-quest p{opacity:.78}.world-quest small{opacity:.62}.world-quest.complete{border-color:rgba(47,128,255,.24)}.world-quest.ready{border-color:rgba(47,128,255,.24)}.world-quest.locked{opacity:.72}
+
+.world-quests,.quest-board{display:block}.quest-board{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}.world-quest{border:1px solid rgba(47,128,255,.24);padding:14px;background:rgba(47,128,255,.24)}.world-quest span{font-size:.68rem;letter-spacing:.14em}.world-quest h3{margin:.45rem 0}.world-quest p{opacity:.78}.world-quest small{opacity:.62}.world-quest.complete{border-color:rgba(47,128,255,.24)}.world-quest.ready{border-color:rgba(47,128,255,.24)}.world-quest.locked{opacity:.72}
 /* HANDHELD GAME MODE */
 body.escie-world-page{overscroll-behavior:none}
 .world-game{position:relative}
@@ -53,7 +54,6 @@ body.escie-world-page{overscroll-behavior:none}
 .world-handheld-top{display:none}
 .handheld-mode .world-handheld-top{display:flex;position:absolute;top:8px;left:50%;transform:translateX(-50%);z-index:20;gap:.5rem}
 .handheld-mode .world-handheld-top button{min-width:44px;min-height:34px}
-.world-controls button:focus-visible,.world-back:focus-visible{outline:2px solid var(--world-green);outline-offset:3px}
 @media (orientation:portrait) and (max-width:900px){
  body.escie-world-page:has(.handheld-mode) .world-shell{min-height:100dvh}
  body.escie-world-page:has(.handheld-mode) .world-intro,
@@ -226,9 +226,6 @@ body.escie-world-page,.world-device,.world-device .world-shell,.world-game,.worl
  .world-tile.floor,.investigation-node,.market-item,.world-quest,.sim-card,.phone-card,.system-card,.life-stat,.profile-id{background:rgba(111,63,175,.045)}
  .world-tile.wall{background:linear-gradient(135deg,var(--escie-concrete),var(--escie-asphalt));box-shadow:inset 0 0 12px rgba(111,63,175,.10)}
  .world-player{background:var(--escie-asphalt)}
- .world-interact,.world-controls button,
- .world-controls button:hover,.world-controls button:focus-visible,
- .world-phone{color:var(--escie-paper);box-shadow:0 25px 80px rgba(50,80,55,.18)}
  .world-preferences,.world-pause,.world-system,.world-profile,.world-life,.simulation-panel{background:rgba(0,0,0,.78)}
  .world-save-indicator{background:rgba(5,8,7,.92)}
  .dream-overlay{background:radial-gradient(circle at center,rgba(111,63,175,.10),rgba(0,0,0,.94))}
@@ -245,9 +242,6 @@ body.escie-world-page,.world-device,.world-device .world-shell{background:#05070
 .world-tile.floor,.investigation-node,.market-item,.world-quest,.sim-card,.phone-card,.system-card,.life-stat,.profile-id{background:rgba(47,128,255,.045)}
 .world-tile.wall{background:linear-gradient(135deg,var(--escie-concrete),var(--escie-asphalt));box-shadow:inset 0 0 12px rgba(111,63,175,.10)}
 .world-player{background:var(--escie-asphalt)}
-.world-interact,.world-controls button,
-.world-controls button:hover,.world-controls button:focus-visible,
-.world-phone{color:var(--escie-paper);box-shadow:0 25px 80px rgba(111,63,175,.12)}
 .world-preferences,.world-pause,.world-system,.world-profile,.world-life,.simulation-panel{background:rgba(0,0,0,.78)}
 .world-save-indicator{background:rgba(5,7,10,.92)}
 .dream-overlay{background:radial-gradient(circle at center,rgba(111,63,175,.10),rgba(0,0,0,.94))}
@@ -259,7 +253,10 @@ body.escie-world-page,.world-device,.world-device .world-shell{background:#05070
 .world-action-cluster [data-control-action]{min-height:48px;font-weight:700;letter-spacing:.08em}
 .world-action-cluster [data-control-action="FIGHT"]{border-style:dashed}.world-action-cluster [data-control-action="STEAL"]{border-style:dotted}
 @media(max-width:700px){.world-action-cluster{justify-self:stretch;grid-template-columns:repeat(2,1fr)}.world-action-cluster [data-control-action]{min-height:52px}}
-\n/* MULTILINGUAL WORLD UI */\n.world-language-control{display:inline-flex;align-items:center;gap:.45rem;margin:.35rem 0;font:600 .55rem monospace;letter-spacing:.08em}.world-language-control select{border:1px solid var(--world-line);background:#05070a;color:var(--escie-paper);padding:.35rem .5rem;font:inherit}\n
+
+/* MULTILINGUAL WORLD UI */
+.world-language-control{display:inline-flex;align-items:center;gap:.45rem;margin:.35rem 0;font:600 .55rem monospace;letter-spacing:.08em}.world-language-control select{border:1px solid var(--world-line);background:#05070a;color:var(--escie-paper);padding:.35rem .5rem;font:inherit}
+
 /* Secondary autobiographical blue accent */
 :root{--world-blue:#2f80ff;--world-blue-soft:rgba(47,128,255,.18);}
 
@@ -396,9 +393,6 @@ body.escie-world-page,.world-device,.world-device .world-shell{background:#05070
 .world-game:has(.three-active){background:var(--escie-void);border-color:rgba(47,128,255,.42);box-shadow:0 0 90px rgba(47,128,255,.16)}
 .world-game:has(.three-active) .world-hud{color:var(--escie-blue-bright);border-color:rgba(47,128,255,.34)}
 .world-game:has(.three-active) .world-log{color:var(--escie-paper);border-color:rgba(47,128,255,.28)}
-.world-game:has(.three-active) .world-controls button{border-color:rgba(47,128,255,.32);background:rgba(16,17,20,.82);color:var(--escie-paper)}
-.world-game:has(.three-active) .world-controls button:hover,
-.world-game:has(.three-active) .world-controls button:focus-visible{border-color:var(--escie-blue);background:var(--escie-blue-soft);outline:none}
 .world-game:has(.three-active) .world-stage{box-shadow:inset 0 0 100px rgba(0,0,0,.3),0 0 55px rgba(47,128,255,.12)}
 /* 3D LIVE STATUS */
 #escie-3d-status{position:absolute;left:12px;top:12px;z-index:8;pointer-events:none;padding:.42rem .58rem;border:1px solid rgba(47,128,255,.42);background:rgba(5,5,5,.82);color:var(--escie-blue-bright);font:700 .58rem/1.2 monospace;letter-spacing:.09em;text-transform:uppercase;text-shadow:0 0 8px rgba(47,128,255,.24);backdrop-filter:blur(4px)}
