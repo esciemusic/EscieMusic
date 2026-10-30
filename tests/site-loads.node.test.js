@@ -8,6 +8,8 @@ function assert(condition, message) {
 }
 
 assert(scripts.length > 0, "index.html should load JavaScript modules");
+assert(!html.includes("\\\\n"), "index.html must not contain malformed literal newline escapes");
+assert(/<section id="world"[^>]*hidden[^>]*aria-hidden="true"/.test(html), "future game section must remain hidden until externally hosted");
 
 const counts = new Map();
 scripts.forEach((src) => counts.set(src, (counts.get(src) || 0) + 1));
