@@ -614,6 +614,9 @@ assert(world3dRuntime.includes("lastWorldX"),"NPC runtime must preserve the last
 assert(world3dRuntime.includes("enteringUntil"),"NPC building transitions must have a visible arrival phase before street actors disappear");
 assert(world3dRuntime.includes("doorTransition"),"NPC building transitions must expose explicit door transition state");
 assert(world3dRuntime.includes('n.current_building_state="INSIDE"'),"NPC runtime must persist an inside-building state after the door transition");
+assert(world3dRuntime.includes('n.current_building_state="EXITING"'),"NPC runtime must persist an exiting-building state during commute transitions");
+assert(world3dRuntime.includes('a.userData.doorTransition="EXIT"'),"NPC exits must expose explicit door transition state");
+assert(world3dRuntime.includes("roomIndex"),"interior stations must retain canonical room placement metadata");
 
 
 const worldContent=fs.readFileSync("data/world-content.js","utf8");
