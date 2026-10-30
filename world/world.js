@@ -5,6 +5,30 @@ let npcs=Array.isArray(CONTENT.npcs)?CONTENT.npcs.map(n=>Object.assign({},n)):[]
 objects=Array.isArray(CONTENT.objects)?CONTENT.objects.map(o=>Object.assign({},o)):[];
 const walls=CONTENT.walls instanceof Set?CONTENT.walls:new Set(CONTENT.walls||[]);
 const MARKET=Array.isArray(CONTENT.market)?CONTENT.market.map(x=>Object.assign({},x)):[];
+if(window.ESCIE_WORLD_NPC){const runtimeNPC=CONTENT.runtimeNPC||{};if(runtimeNPC.witness)window.ESCIE_WORLD_NPC.registerNPC(Object.assign({},runtimeNPC.witness));(runtimeNPC.surveillance||[]).forEach(item=>window.ESCIE_WORLD_NPC.registerSurveillance(Object.assign({},item)));}window.ESCIE_WORLD_SIMULATION?.seedWorldNPCs?.();
+const syncNPCVisuals=()=>{const sim=window.ESCIE_WORLD_SIMULATION,npcApi=window.ESCIE_WORLD_NPC;if(!sim||!npcApi)return;try{sim.seedWorldNPCs?.();const d=String(sim.state()?.neighbourhood||"PARC-EXTENSION").toUpperCase();const live=npcApi.state?.().npcs||{};const locals=Object.values(live).filter(n=>String(n.district||"").toUpperCase()===d&&n.id!=="witness").map(n=>Object.assign({},n,{label:n.role||"RESIDENT",text:(n.activity||"IDLE")+" · "+(n.role||"LOCAL"),lines:[]}));const witness=npcs.find(n=>n.id==="witness");npcs=witness?[witness,...locals]:locals}catch(e){}}
+let pos={...start},target=null,gamepadPrev={},dialogue=null,room="lane",roomObjects=[],roomState={},inventoryCursor=0;
+const stage=document.getElementById("world-stage"),player=document.getElementById("world-player"),map=document.getElementById("world-map"),log=document.getElementById("world-log"),interact=document.getElementById("world-interact");
+function esc(v){return String(v??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]))}
+function syncSimulationPosition(){const s=window.ESCIE_WORLD_SIMULATION?.state?.();if(s?.position&&Number.isFinite(s.position.x)&&Number.isFinite(s.position.y)&&s.neighbourhood==="PARC-EXTENSION"&&pos.x===2&&pos.y===7)return;window.ESCIE_WORLD_SIMULATION?.setPosition?.(pos.x,pos.y)}
+function state(){try{const parsed=JSON.parse(localStorage.getItem(KEY)||"{}");return parsed&&typeof parsed==="object"&&!Array.isArray(parsed)?parsed:{}}catch(e){return {}}}
+function registryState(seed){const registry=window.ESCIE_GAME_REGISTRY;if(!registry?.createPlayerState)return seed&&typeof seed==="object"?seed:{};const s=seed&&typeof seed==="object"?seed:{};return registry.createPlayerState({session_id:s.session_id||"local-world",player_id:s.player_id||window.ESCIE_GAME_PROFILE?.id||null,episode_id:s.episode_id||"the-world",current_scene:s.world_room||room,current_location:s.neighbourhood||"PARC-EXTENSION",observed:s.observed,interacted:s.interacted,heard:s.heard,seen:s.seen,collected:s.collected,connections:s.connections,discoveries:s.discoveries,missed:s.missed,visited_scenes:s.visited_scenes,visited_locations:s.visited_locations,signals:s.signal_ids,unknown:s.unknown,unresolved:s.unresolved,unlocked:s.unlocked||s.world_unlocks,path:s.path,event_count:s.event_count});}
+function syncRegistryState(local){if(!local||!window.ESCIE_GAME_REGISTRY?.createPlayerState)return local;const r=registryState(local);local.observed=r.observed;local.interacted=r.interacted;local.heard=r.heard;local.seen=r.seen;local.collected=r.collected;local.connections=r.connections;local.discoveries=r.discoveries;local.missed=r.missed;local.visited_scenes=r.visited_scenes;local.visited_locations=r.visited_locations;local.unknown=r.unknown;local.unresolved=r.unresolved;local.unlocked=r.unlocked;local.path=r.path;local.event_count=r.event_count;local.last_seen_at=r.last_seen_at;return local;}
+function save(s){try{syncRegistryState(s);return commitStorageBatch({[KEY]:s})}catch(e){return false}}
+function say(t){log.textContent=t;const text=String(t||"");if(text)worldEventFeed(text)}
+function worldEventFeed(text){
+ const feed=document.getElementById("world-event-feed");if(!feed)return;
+ const item=document.createElement("div");item.className="world-event";item.textContent=text;feed.prepend(item);
+ while(feed.children.length>5)feed.removeChild(feed.lastChild);
+}
+function worldPulse(cls,ms=700){const b=document.body;if(!b)return;b.classList.remove(cls);void b.offsetWidth;b.classList.add(cls);clearTimeout(b["__escie_"+cls]);b["__escie_"+cls]=setTimeout(()=>b.classList.remove(cls),ms)}
+function rpgState(s){
+ const current=s&&typeof s==="object"?s:{};
+ if(window.ESCIE_RPG&&!current.rpg){current.rpg=window.ESCIE_RPG.default();}
+ if(window.ESCIE_RPG&&current.rpg){current.rpg=window.ESCIE_RPG.state(current.rpg);}
+ if(!current.rpg&&typeof current==="object")current.rpg={version:1,class_id:"DRIFTER",level:1,xp:0,unspent_points:0,attributes:{BODY:1,MIND:1,NERVE:1,SOCIAL:1},skills:{ATHLETICS:0,PARKOUR:0,STREETWISE:0,INVESTIGATION:0,TECH:0,CHARISMA:0,COMBAT:0,STEALTH:0},perks:[],quests:{active:[],completed:[],failed:[]},rewards:[],loot:[],equipment:{head:null,body:null,hands:null,feet:null,weapon:null,accessory:null},combat:{kills:0,knockouts:0,damage_dealt:0,damage_taken:0},dialogue:{choices:0,successes:0},discoveries:0};
+ return current.rpg;
+}
 function contextualLootTable(source,reason){
  const s=state(),room=String(s.world_room||roomState.room||"lane"),skill=Number(rpgState(s)?.skills?.INVESTIGATION||0);
  const sourceText=String(source||"").toLowerCase(),reasonText=String(reason||"").toLowerCase();
