@@ -32,6 +32,7 @@ const STREET_REALISM=CITY.streetRealism||{};
 const STREET_EDGES=CITY.streetEdges||{};
 const NPC_POPULATIONS=CITY.npcPopulations||{};
 const NPC_DAY_PLAN=CITY.npcDayPlan||[];
+const CITY_DISTRICTS=CITY.districts||{};
 
 const montrealReference=()=>window.ESCIE_CITY_REFERENCE||null;
 const districtTexture=(district)=>{
