@@ -5,7 +5,7 @@
     content:["media","about","archive","bodies","clothing","fragments","games","glass-eye-journey","glass-eye-memory","investigation","locations","merch","moments","music","nodes","paths","people","projects","record-contract","relationships","release-runtime","registry","signals","site","social","symbols","visuals","world-quests"],
     world:["world-content","world-city","world-items","city-reference","world-simulation","npc-identity-system","npc-life-system","npc-system","npc-dialogue-system","language-system","law-system","vehicle-system","equipment","rpg-system","interior-system","dream-play","world-quests","world","3d-reality","health-check"],
     presentation:["index","world.css","game-shell.css"],
-    contracts:["data/record-contract.js","data/universe-contract.js","data/layer-balance.js","core/performance.js","tests/"]
+    contracts:["record-contract","universe-contract","layer-balance","core/performance.js","tests/"]
   };
   root.ESCIE_FILE_MANIFEST=manifest;
   if(typeof module!=="undefined"&&module.exports)module.exports=manifest;
