@@ -44,9 +44,16 @@ function building(x,z,w,d,h,seed,buildingRef){
    const px=x-w/2+1.2+c*((w-2.4)/Math.max(1,cols-1));
    const py=1.8+r*((h-3)/Math.max(1,rows-1));
    const lit=(seed+r*7+c*3)%5===0;
-   box(.55,.85,.035,lit?0x70747a:0x101114,px,py,z-d/2-.02);
+   const window=box(.55,.85,.035,lit?0x70747a:0x101114,px,py,z-d/2-.02);
+   if(lit){window.userData.windowLight=true;window.material.emissive=new THREE.Color(0x3d4039);window.material.emissiveIntensity=.35;}
  }
- if(seed%3===0) box(w*.65,.12,d*.7,0x1e2020,x,h+.08,z);
+ if(seed%3===0){
+   box(w*.65,.12,d*.7,0x1e2020,x,h+.08,z);
+   const interiorLight=new THREE.PointLight(0xc7d6c0,.35,7,2);
+   interiorLight.position.set(x,Math.min(h-1.2,Math.max(2.2,h*.55)),z-d/2+.5);
+   interiorLight.userData.baseIntensity=.35;
+   worldGroup.add(interiorLight);lights.push(interiorLight);
+ }
  if(seed%2===0) door(x,z-d/2-.055,1.15,2.2,seed,buildingRef);
 }
 function actor(x,z,seed){
@@ -300,7 +307,7 @@ function updateEnvironment(t){
  if(playerLight){playerLight.intensity=.12+night*.72+(poorVisibility ? .18 : 0);playerLight.position.set(player.x,1.9,player.z);}
  if(scene?.fog)scene.fog.density=.008+night*.010+(poorVisibility ? .006 : 0);
  if(renderer){const exposure=poorVisibility?.98:(night>.72?1.1:1.05);renderer.toneMappingExposure+=(exposure-renderer.toneMappingExposure)*.04;}
- lights.forEach((l,i)=>{if(!l.isPointLight)return;const isSignal=l===lights[0];if(isSignal)l.intensity=1.15+night*1.1;else l.intensity=.22+night*.85;});
+ lights.forEach((l,i)=>{if(!l.isPointLight)return;const isSignal=l===lights[0];if(isSignal)l.intensity=1.15+night*1.1;else l.intensity=.08+night*.9;});
  const headlights=updateVehicles.car?.userData?.headlights||[];headlights.forEach(l=>{const base=Number(l.userData.baseIntensity||.7);const visibilityBoost=poorVisibility?.55:0;const daylightCut=daylight>.58?.12:1;l.intensity=base*(.25+night*.9+visibilityBoost)*daylightCut;});
 }
 function syncPauseMap(){const map=document.getElementById("world-map"),p=document.getElementById("world-player");if(!map||!p)return;const x=Math.max(0,Math.min(100,(player.x+54)/108*100)),y=Math.max(0,Math.min(100,(player.z+54)/108*100));p.style.left=x+"%";p.style.top=y+"%";p.title="PLAYER · "+Math.round(player.x+54)+" · "+Math.round(player.z+54);const sim=root.ESCIE_WORLD_SIMULATION?.state?.()||{};map.dataset.neighbourhood=String(sim.neighbourhood||"PARC-EXTENSION");map.dataset.transport=String(sim.transport||"FOOT");}
