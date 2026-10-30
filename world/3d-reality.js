@@ -5,7 +5,7 @@
 (function(){
 "use strict";
 const root=window;
-let renderer,scene,camera,clock,avatar,worldGroup,thirdPerson=false,started=false,paused=false,raf=0,dayLight,ambientLight,resizeObserver,visibilityHandler;
+let renderer,scene,camera,clock,avatar,worldGroup,thirdPerson=false,started=false,paused=false,raf=0,dayLight,ambientLight,playerLight,resizeObserver,visibilityHandler;
 const obstacles=[],actors=[],doors=[],lights=[],evidence=[];
 const vehicleImpacts={last:0,cooldown:900}; const perf={quality:"auto",frameMs:16,lowFrames:0,last:performance.now(),hud:0};
 const keys=new Set();
@@ -98,6 +98,7 @@ function buildScene(){
  const moon=new THREE.DirectionalLight(0x8a96a3,1.25);moon.position.set(-18,30,12);scene.add(moon);
  const fill=new THREE.DirectionalLight(0x43504a,.28);fill.position.set(22,10,-18);scene.add(fill);
  const signal=new THREE.PointLight(0x2f80ff,1.6,24,2);signal.position.set(0,5,6);scene.add(signal);lights.push(signal);
+ playerLight=new THREE.PointLight(0xd8d4ca,.25,8,2);playerLight.position.set(0,1.8,0);scene.add(playerLight);
  dayLight=moon;ambientLight=hemi;
  createGround();createCanonicalBuildings();
  let seed=1;
@@ -301,6 +302,7 @@ function updateEnvironment(t){
    dayLight.color.set(daylight>.45?0xd8d4ca:0x758394);
  }
  if(ambientLight)ambientLight.intensity=.34+daylight*.68;
+ if(playerLight){playerLight.intensity=.12+night*.72+(poorVisibility?.18:0);playerLight.position.set(player.x,1.9,player.z);}
  if(scene?.fog){
    const target=.008+night*.010+(poorVisibility?.006:0);
    scene.fog.density+=(target-scene.fog.density)*.06;
