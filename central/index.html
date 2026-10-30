@@ -75,6 +75,23 @@
       <label>PROJECT / CONTEXT
         <input id="post-context" type="text" placeholder="e.g. Montréal, current transmission">
       </label>
+      <label>MEDIA FILE
+        <input id="post-file" type="file" accept="image/*,video/*">
+      </label>
+      <div class="formgrid">
+        <label>PLACE / LANDMARK
+          <input id="post-location" type="text" placeholder="e.g. Dante Park">
+        </label>
+        <label>DISTRICT / NEIGHBOURHOOD
+          <input id="post-district" type="text" placeholder="e.g. Little Italy">
+        </label>
+        <label>LATITUDE
+          <input id="post-lat" inputmode="decimal" placeholder="Optional / verified">
+        </label>
+        <label>LONGITUDE
+          <input id="post-lng" inputmode="decimal" placeholder="Optional / verified">
+        </label>
+      </div>
       <div class="routing-preview">
         <p class="eyebrow">SUGGESTED ROUTING</p>
         <div id="routing-output">Start writing and Central will suggest destinations.</div>
@@ -86,6 +103,7 @@
     </form>
   </dialog>
 
+  <script src="./media-intake.js"></script>
   <script src="./central.js"></script>
 </body>
 </html>
