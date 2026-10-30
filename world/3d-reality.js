@@ -279,7 +279,7 @@ function blocked(x,z){
 function move(dt){
  const gp=gamepadInput();
  if(gp.start&&!move._lastStart){togglePause();} move._lastStart=gp.start;
- if(gp.back&&!move._lastBack){document.querySelector("[data-system]")?.click?.();} move._lastBack=gp.back;
+ if(gp.back&&!move._lastBack){togglePause(true);} move._lastBack=gp.back;
  player.yaw+=gp.lookX*dt*2.4;player.pitch=clamp(player.pitch-gp.lookY*dt*1.8,-1.2,1.2);
  if(gp.action&&!move._lastAction){interact()} move._lastAction=gp.action;if(gp.fight&&!move._lastFight){fight3D()} move._lastFight=gp.fight;if(gp.open&&!move._lastOpen){interact()} move._lastOpen=gp.open;
  let f=(keys.has("w")||keys.has("arrowup")?1:0)-(keys.has("s")||keys.has("arrowdown")?1:0);
