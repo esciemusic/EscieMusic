@@ -430,3 +430,6 @@ body.escie-game-page.is-world-paused #world-interact{display:none !important;}
 .world-pause-actions button{width:100%;min-height:44px;padding:.85rem;text-align:left;cursor:pointer;touch-action:manipulation}
 .world-pause-actions button:focus-visible{outline:2px solid var(--world-green);outline-offset:2px}
 @media(max-width:560px){.world-pause{padding:.75rem}.world-pause-actions{max-height:84dvh}.world-pause-actions button{min-height:46px;padding:.8rem .75rem}}
+
+.world-pause-head{width:min(520px,100%);display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:.8rem}
+.world-pause-head h2{font-size:clamp(2rem,9vw,4rem);line-height:.8;margin:.4rem 0 0}
