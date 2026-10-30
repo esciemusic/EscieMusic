@@ -1,7 +1,7 @@
 const fs = require("fs");
 
 const html = fs.readFileSync("index.html", "utf8");
-const scripts = [...html.matchAll(/<script\s+src="([^"]+)"><\/script>/g)].map((match) => match[1]);
+const scripts = [...html.matchAll(/<script\s+src="([^"]+)"[^>]*><\/script>/g)].map((match) => match[1]);
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
