@@ -697,3 +697,8 @@ assert(world3dRuntime.includes("api?.jobOffer?.(best.id)"),"3D NPC encounters mu
 assert(world3dRuntime.includes("api?.jobAccept?.(best.id)"),"3D NPC jobs must be completable from gameplay");
 assert(world3dRuntime.includes("interactionCooldown"),"NPC rewards must have an interaction cooldown");
 console.log("ESCIE NPC job/favor gameplay OK");
+
+assert(sim.includes("const commitCrime="), "simulation must expose systemic crime consequences");
+assert(world3dRuntime.includes("commitCrime?.(\"BURGLARY\""), "3D world must support burglary crime");
+assert(world3dRuntime.includes("commitCrime?.(\"ASSAULT\""), "3D combat must record assault crime");
+assert(world3dRuntime.includes("commitCrime?.(\"VEHICLE_THEFT\""), "vehicle theft must record crime");
