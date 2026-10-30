@@ -19,6 +19,15 @@ const CORE=[
  "./world.js",
  "./3d-reality.js",
  "./dream-play.js",
+ "../core/performance.js",
+ "../data/universe-contract.js",
+ "../data/layer-balance.js",
+ "../data/file-manifest.js",
+ "../data/media.js",
+ "../data/world-quests.js",
+ "../data/world-content.js",
+ "../data/world-city.js",
+ "../data/world-items.js",
  "../data/games.js"
 ];
 self.addEventListener("install",event=>{event.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()).catch(()=>self.skipWaiting()));});
