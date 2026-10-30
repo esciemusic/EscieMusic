@@ -462,7 +462,7 @@ console.log("ESCIE world runtime contracts OK");
 const worldHtml=fs.readFileSync("world/index.html","utf8");
 assert((worldHtml.match(/\bdata-action(?=\s|=|>)/g)||[]).length===0,"world HTML must not expose legacy 2D interact controls");
 
-const requiredControls=["data-dir","data-control-action","data-action","data-fullscreen","data-rotate","data-device","data-preferences","data-pause","data-system","data-save","data-profile","data-life","data-life-systems","data-inventory","data-glass","data-investigation","data-market","data-phone-open","data-quests"];
+const requiredControls=["data-game-enter","data-game-continue","data-game-fullscreen","data-game-return","data-system-control","data-inventory-control","data-world-resume","data-save","data-pause-open","data-character","data-investigation","data-market","data-phone-open","data-quests","data-life","data-life-systems","data-profile","data-preferences","data-glass","data-return-pause"];
 assert(!worldHtml.match(/<button(?![^>]*\btype=)[^>]*>/),"world HTML buttons must declare explicit type");
 assert(worldRuntime.includes("function worldEntryGate()"),"world must expose a first-entry gate");
 assert(worldRuntime.includes("data-entry-continue"),"world entry must support continue");
