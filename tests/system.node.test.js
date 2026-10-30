@@ -574,4 +574,24 @@ console.log("ESCIE public music renderer contracts OK");
 assert(fs.readFileSync("world/3d-reality.js","utf8").includes("doors.forEach(d=>{d.open=false;d.mesh.rotation.y=0;});"),"3D interior exit must close street doors before restoring street play");
 assert(fs.readFileSync("world/3d-reality.js","utf8").includes('say3D("EXITED · BACK ON THE STREET")'),"3D interior exit must return the player to the street layer");
 console.log("ESCIE 3D interior door lifecycle contracts OK");
+
+const worldContent=fs.readFileSync("data/world-content.js","utf8");
+const worldCity=fs.readFileSync("data/world-city.js","utf8");
+assert(worldContent.includes("window.ESCIE_WORLD_CONTENT"),"canonical world content file must publish the world content registry");
+assert(worldContent.includes("game-item-baby-shoe"),"canonical world content must retain authored world objects");
+assert(worldContent.includes("POCKET_KNIFE"),"canonical world content must retain authored loot");
+assert(worldCity.includes("window.ESCIE_WORLD_CITY"),"canonical city file must publish the city simulation registry");
+assert(worldCity.includes("PARC-EXTENSION"),"canonical city file must retain Montréal district street data");
+assert(worldCity.includes("npcPopulations"),"canonical city file must own authored NPC population data");
+assert(worldRuntime.includes("window.ESCIE_WORLD_CONTENT"),"world runtime must consume canonical world content");
+assert(!worldRuntime.includes("let npcs=[{id:\"witness\""),"world runtime must not own the authored NPC definition");
+assert(!worldRuntime.includes("const WORLD_LOOT_TABLE=["),"world runtime must not own the authored loot table");
+assert(simRuntime.includes("window.ESCIE_WORLD_CITY"),"simulation must consume canonical city data");
+assert(!simRuntime.includes("const WORLD_STREETS={"),"simulation must not own the authored street graph");
+assert(!simRuntime.includes("const NPC_POPULATIONS={"),"simulation must not own authored NPC populations");
+assert(worldIndex.indexOf('../data/world-content.js')<worldIndex.indexOf('world.js'),"canonical world content must load before world runtime");
+assert(worldIndex.indexOf('../data/world-city.js')<worldIndex.indexOf('world-simulation.js'),"canonical city data must load before simulation runtime");
+console.log("ESCIE file-based world ownership contracts OK");
+
+
 console.log("ESCIE public index hierarchy and compact accordion contracts OK");
