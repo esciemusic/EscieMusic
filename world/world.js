@@ -88,7 +88,8 @@ function grantLoot(reason="",source="",opts={}){
  worldPulse("is-loot",900);
  return {ok:true,reward,state:s};
 }
-function recordRPGCombat(kind,data){const s=state(),r=rpgState(s),result=window.ESCIE_RPG?.recordCombat?.(r,kind,data||{});if(!result)return false;s.rpg=result;if(!save(s)){say("RPG · SAVE FAILED");return false}return result}\nfunction awardRPGXP(amount,reason){
+function recordRPGCombat(kind,data){const s=state(),r=rpgState(s),result=window.ESCIE_RPG?.recordCombat?.(r,kind,data||{});if(!result)return false;s.rpg=result;if(!save(s)){say("RPG · SAVE FAILED");return false}return result}
+function awardRPGXP(amount,reason){
  const s=state(),r=rpgState(s),result=window.ESCIE_RPG?.gainXP?.(r,amount,reason);
  if(!result)return false;
  s.rpg=result.state;
