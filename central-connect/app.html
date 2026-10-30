@@ -154,14 +154,36 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
 .crew-intro{position:relative;z-index:2}.crew-intro h2{font-size:clamp(24px,3vw,38px);letter-spacing:-.05em;margin:7px 0}.crew-intro p{max-width:420px;line-height:1.7}.crew-orbit{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:8px}.crew-node{padding:14px 15px;border:1px solid rgba(190,215,198,.09);border-radius:16px;background:rgba(7,10,8,.42);display:grid;grid-template-columns:auto 1fr;column-gap:10px;align-items:center}.crew-node b{grid-row:1/3;font:10px ui-monospace,SFMono-Regular,Menlo,monospace;color:#6f7d73}.crew-node strong{font-size:11px;letter-spacing:.12em}.crew-node span{font-size:10px;color:#707a73;margin-top:2px}.crew-node:hover{border-color:rgba(190,215,198,.2);background:rgba(26,34,29,.5)}
 @media(max-width:760px){.central-crew{grid-template-columns:1fr}.crew-orbit{grid-template-columns:1fr 1fr}}
 @media(max-width:480px){.central-crew{padding:20px 17px}.crew-orbit{grid-template-columns:1fr}.crew-node{padding:12px}}
-<style id="central-responsive-fix">.topbar{overflow:visible}.utilityMenu{z-index:120;max-height:min(70vh,520px);overflow:auto;box-sizing:border-box}.utilityMenu button strong,.utilityMenu button .ey{overflow-wrap:anywhere}.auditRunMeta{margin-top:10px;color:#777;font-size:10px;letter-spacing:.08em}.auditState.neutral{color:#777;border-color:#343430}@media(max-width:700px){.topbar{padding:10px 11px;gap:8px}.brandtext{max-width:42vw}.brandname{font-size:11px}.topactions{gap:5px}.utilityMenu{position:fixed;top:72px;left:12px;right:12px;width:auto;max-height:calc(100vh - 88px);border-radius:14px}.utilityMenu button{padding:13px 12px}.utilityMenu button strong{font-size:12px;display:block}.utilityMenu button .ey{font-size:9px;line-height:1.45}.nav{gap:4px;padding:8px 0}.nav button{flex:0 0 auto}.hero{grid-template-columns:1fr}.status.headStatus{top:68px}.auditPanel{padding:14px}.sectionTitle{align-items:flex-start;flex-direction:column}.dashboard{grid-template-columns:1fr 1fr}.tile{grid-column:span 1}.tile.wide,.tile.full{grid-column:1/-1}}</style></head>
+<style id="central-responsive-fix">.topbar{overflow:visible}.utilityMenu{z-index:120;max-height:min(70vh,520px);overflow:auto;box-sizing:border-box}.utilityMenu button strong,.utilityMenu button .ey{overflow-wrap:anywhere}.auditRunMeta{margin-top:10px;color:#777;font-size:10px;letter-spacing:.08em}.auditState.neutral{color:#777;border-color:#343430}@media(max-width:700px){.topbar{padding:10px 11px;gap:8px}.brandtext{max-width:42vw}.brandname{font-size:11px}.topactions{gap:5px}.utilityMenu{position:fixed;top:72px;left:12px;right:12px;width:auto;max-height:calc(100vh - 88px);border-radius:14px}.utilityMenu button{padding:13px 12px}.utilityMenu button strong{font-size:12px;display:block}.utilityMenu button .ey{font-size:9px;line-height:1.45}.nav{gap:4px;padding:8px 0}.nav button{flex:0 0 auto}.hero{grid-template-columns:1fr}.status.headStatus{top:68px}.auditPanel{padding:14px}.sectionTitle{align-items:flex-start;flex-direction:column}.dashboard{grid-template-columns:1fr 1fr}.tile{grid-column:span 1}.tile.wide,.tile.full{grid-column:1/-1}}</style>
+<style>
+.mobile-nav-label{display:none}
+.mobile-nav{display:none}
+.top-connect{display:none}
+@media(max-width:760px){
+  .shell{padding:10px 10px 44px}
+  .topbar{top:6px;padding:9px 10px;border-radius:14px;gap:8px}
+  .brand{min-width:0;flex:1}.brandname{font-size:11px;letter-spacing:.12em}.mark{width:34px;height:34px}
+  .topactions{gap:5px;flex:0 0 auto}.topactions .iconbtn{width:38px;height:38px}.top-connect{display:block;padding:9px 10px;font-size:9px}
+  .nav{display:none}
+  .mobile-nav-label{display:block;margin:10px 2px 5px;font-size:8px;letter-spacing:.16em;color:#777}
+  .mobile-nav{display:block;width:100%;height:42px;border:1px solid rgba(190,205,194,.16);border-radius:11px;background:rgba(12,15,13,.9);color:#e9eee9;padding:0 12px;font-size:10px;letter-spacing:.1em}
+  .headStatus{top:64px!important}
+  .hero{grid-template-columns:1fr}
+  .heroMain,.pulse{min-height:240px}
+  .sectionTitle{margin-top:24px}
+  .utilityMenu{right:-6px;top:44px;width:min(330px,calc(100vw - 20px));max-height:70vh;overflow:auto}
+  .utilityMenu button{padding:13px 11px}
+  .desk-head{padding-top:10px}
+}
+</style>
+</head>
 </head>
 <body>
 <div class="shell">
 <header class="topbar">
   <div class="brand"><div class="mark">E</div><div class="brandtext"><div class="brandname">ESCIE CENTRAL</div><div class="ey">PRIVATE CONTROL SURFACE</div></div></div>
   <div class="topactions">
-  <button class="iconbtn" id="globalSearch" aria-label="Search Central" title="Search">⌕</button>
+  <button class="iconbtn" id="globalSearch" aria-label="Search Central" title="Search">⌕</button><button id="connectTop" class="btn ghost top-connect" type="button">CONNECT</button>
   <div class="utility"><button class="iconbtn" id="utilityToggle" aria-expanded="false" aria-controls="utilityMenu" aria-label="Open utilities">⋯</button>
     <div id="utilityMenu" class="utilityMenu hidden" role="menu">
       <button data-utility="audit"><strong>AUDIT</strong><span class="ey">System health, security, integrity, agents, connectors</span></button>
@@ -276,6 +298,10 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
   <nav class="nav" id="mainNav">
     <button class="active" data-target="home">OVERVIEW</button><button data-target="work">WORK</button><button data-target="brain">BRAIN</button><button data-target="tasks">TASKS</button><button data-target="suggestions">SUGGESTIONS</button><button data-target="review">REVIEW</button><button data-target="archive">ARCHIVE</button><button data-target="agents">AGENTS</button><button data-target="insights">INSIGHTS</button><button data-target="destinations">CONNECT</button><button data-target="settings">SETTINGS</button>
   </nav>
+  <label class="mobile-nav-label" for="mobileNav">CENTRAL / NAVIGATE</label>
+  <select id="mobileNav" class="mobile-nav" aria-label="Central navigation">
+    <option value="home">OVERVIEW</option><option value="commandDesk">COMMAND DESK</option><option value="work">WORK</option><option value="brain">BRAIN</option><option value="tasks">TASKS</option><option value="suggestions">SUGGESTIONS</option><option value="review">REVIEW</option><option value="archive">ARCHIVE</option><option value="agents">AGENTS</option><option value="insights">INSIGHTS</option><option value="destinations">CONNECT</option><option value="settings">SETTINGS</option>
+  </select>
   <div id="home">
     <div class="hero"><div class="panel heroMain"><div><div class="kicker">ESCIE / OWNER WORKSPACE</div><h1>CONTROL<br>THE SIGNAL.</h1><p id="acct" class="heroCopy"></p><div class="heroMeta"><span class="chip">CANONICAL SOURCE</span><span class="chip">HUMAN APPROVAL</span><span class="chip">PRIVATE BY DEFAULT</span></div></div><div class="heroMeta"><span class="chip">CREATE ONCE</span><span class="chip">APPROVE ONCE</span><span class="chip">DISTRIBUTE MANY</span></div></div>
     <div class="panel pulse"><div><div class="kicker">SYSTEM SIGNAL</div><h2>Operator online.</h2><p>Central is ready. Connections remain optional.</p></div><div class="signal"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="ey">WORKSPACE <span id="wid">—</span></div></div></div>
@@ -399,11 +425,29 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
   function show(target){
     ["home","work","brain","tasks","suggestions","review","archive","agents","insights","destinations","settings"].forEach(id=>{const e=$(id);if(e)e.classList.toggle("hidden",id!==target)});
     document.querySelectorAll("#mainNav button").forEach(b=>b.classList.toggle("active",b.dataset.target===target));
+    if(document.getElementById("mobileNav"))document.getElementById("mobileNav").value=target;
     window.scrollTo({top:0,left:0,behavior:"auto"});if(document.scrollingElement)document.scrollingElement.scrollTop=0;document.documentElement.scrollTop=0;document.body.scrollTop=0;
   }
   document.querySelectorAll("#mainNav button[data-target]").forEach(b=>b.addEventListener("click",()=>show(b.dataset.target)));
   document.addEventListener("click",e=>{const b=e.target.closest(".quick[data-target],.quick[data-section],button[data-target]");if(!b||b.closest("#mainNav"))return;const target=b.dataset.target||b.dataset.section;if(!target)return;if(target==="commandDesk"){const command=document.querySelector("#mainNav button[data-target=\"commandDesk\"]");if(command){command.click();return;}document.querySelector("#commandDesk")?.classList.remove("hidden");document.querySelector("#commandDesk")?.scrollIntoView({behavior:"smooth",block:"start"});return;}if($(target))show(target);});
   // Agent routing is owned by agent-ui.js; keep one authoritative runtime.  document.querySelectorAll("[data-target]").forEach(b=>{if(!b.closest("#mainNav"))b.addEventListener("click",()=>show(b.dataset.target))});
+  const mobileNav=$("mobileNav");
+  function syncMobileNav(target){if(mobileNav&&target)mobileNav.value=target}
+  mobileNav?.addEventListener("change",()=>{
+    const target=mobileNav.value;
+    const button=document.querySelector("#mainNav button[data-target='"+target+"']");
+    if(button){button.click();return}
+    if(target==="commandDesk"){
+      const desk=document.querySelector("#mainNav button[data-target='commandDesk']");
+      if(desk){desk.click();return}
+      document.querySelector("#commandDesk")?.scrollIntoView({behavior:"smooth",block:"start"});
+    }
+  });
+  $("connectTop")?.addEventListener("click",()=>{
+    const button=document.querySelector("#mainNav button[data-target='destinations']");
+    if(button)button.click();
+    else document.querySelector("#destinations")?.classList.remove("hidden");
+  });
   const theme=$("themeToggle");
   theme&&theme.addEventListener("click",()=>{
     const light=document.body.dataset.light==="1";
@@ -423,7 +467,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
   function closeAudit(){const d=$("auditDrawer");if(d){d.classList.add("hidden");d.setAttribute("aria-hidden","true")}}
   document.querySelectorAll("[data-utility='audit']").forEach(b=>b.addEventListener("click",openAudit));
   document.querySelectorAll("[data-utility='command']").forEach(b=>b.addEventListener("click",()=>{menu?.classList.add("hidden");openSearch();setTimeout(()=>{if(searchInput)searchInput.value="";searchInput?.focus()},30)}));
-  document.querySelectorAll("[data-utility='connect']").forEach(b=>b.addEventListener("click",()=>{menu?.classList.add("hidden");show("destinations");}));
+  document.querySelectorAll("[data-utility='connect']").forEach(b=>b.addEventListener("click",()=>{menu?.classList.add("hidden");show("destinations");if(document.getElementById("mobileNav"))document.getElementById("mobileNav").value="destinations";}));
   document.querySelectorAll("[data-utility='activity']").forEach(b=>b.addEventListener("click",()=>{menu?.classList.add("hidden");document.querySelector("#diag")?.scrollIntoView({behavior:"smooth",block:"center"});}));
   document.querySelectorAll("[data-utility='shortcuts']").forEach(b=>b.addEventListener("click",()=>{menu?.classList.add("hidden");openSearch();setTimeout(()=>{if(searchInput){searchInput.value="shortcut";doSearch("shortcut")}},30)}));
   $("auditClose")?.addEventListener("click",closeAudit);
@@ -437,29 +481,41 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
     const workspace=window.ESCIE_CENTRAL_API?.getWorkspaceId?.();
     const auth=session?.access_token;
     const headers=auth?{apikey:K,Authorization:"Bearer "+auth,Accept:"application/json"}:{apikey:K,Accept:"application/json"};
-    async function probe(url){const t=performance.now();try{const response=await fetch(url,{headers,cache:"no-store"});return {ok:response.ok,status:response.status,ms:Math.round(performance.now()-t)};}catch(error){return {ok:false,status:0,error:String(error?.message||error),ms:Math.round(performance.now()-t)};}}
-    const checks=[
-      !!auth,
-      !!window.ESCIE_AGENT_PROTOCOL&&!window.ESCIE_AGENT_PROTOCOL.canWriteCanonical("central-orchestrator"),
-      !/service[_-]?role|secret[_-]?key/i.test(document.documentElement.innerHTML),
-      false,
-      false,
-      !!window.ESCIE_AGENT_RUNTIME&&!!window.ESCIE_CENTRAL_API?.enqueueAgentJob,
-      !!window.ESCIE_UNIVERSE_CONTRACT?.validate?.().ok,
-      false
-    ];
-    const workspaceProbe=workspace?await probe(R+"/workspaces?id=eq."+encodeURIComponent(workspace)+"&select=id&limit=1"):null;
-    checks[4]=!!workspaceProbe?.ok;
+    const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+    async function probe(url){
+      const t=performance.now();
+      try{
+        const response=await fetch(url,{headers,cache:"no-store"});
+        return {ok:response.ok,status:response.status,ms:Math.round(performance.now()-t)};
+      }catch(error){
+        return {ok:false,status:0,error:String(error?.message||error),ms:Math.round(performance.now()-t)};
+      }
+    }
+    const results=[];
+    const run=(i,label,fn)=>Promise.resolve().then(fn).then(ok=>{setState(i,ok?"pass":"warn",ok?"PASS":"WATCH");if(!ok)failures.push(label);results[i]=!!ok;return !!ok;}).catch(()=>{setState(i,"warn","WATCH");failures.push(label);results[i]=false;return false;});
+    await run(0,"Session boundary",()=>!!auth);
+    await run(1,"Human approval",()=>!!window.ESCIE_AGENT_PROTOCOL&&!window.ESCIE_AGENT_PROTOCOL.canWriteCanonical("central-orchestrator"));
+    await run(2,"Provider secrets",()=>!/service[_-]?role|secret[_-]?key/i.test(document.documentElement.innerHTML));
     const connectorProbe=auth?await probe(C):null;
-    checks[3]=!!connectorProbe?.ok;
+    await run(3,"Destinations",()=>!!connectorProbe?.ok);
+    const workspaceProbe=workspace?await probe(R+"/workspaces?id=eq."+encodeURIComponent(workspace)+"&select=id&limit=1"):null;
+    await run(4,"Workspace isolation",()=>!!workspaceProbe?.ok);
+    await run(5,"Agent history",()=>!!window.ESCIE_AGENT_RUNTIME&&!!window.ESCIE_CENTRAL_API?.enqueueAgentJob);
+    await run(6,"Universe contract",()=>!!window.ESCIE_UNIVERSE_CONTRACT?.validate?.().ok);
     const publicProbe=await probe(R+"/records?select=id&visibility=eq.PUBLIC&publication_state=eq.PUBLISHED&limit=1");
-    checks[7]=!!publicProbe?.ok;
-    checks.forEach((ok,i)=>{if(ok)setState(i,"pass","PASS");else{setState(i,"warn","WATCH");failures.push(items[i]?.querySelector("strong")?.textContent||"CHECK");}});
+    await run(7,"Live public bridge",()=>!!publicProbe?.ok);
+    await run(8,"Command Desk",()=>!!document.getElementById("commandDesk")&&!!document.querySelector("#commandDesk .desk-tabs"));
+    await run(9,"Review controls",()=>!!document.querySelector("#review")&&/Approval queue/i.test(document.querySelector("#review")?.textContent||""));
+    await run(10,"Connect surface",()=>!!document.getElementById("destinations")&&!!document.getElementById("connectTop"));
+    await run(11,"Operator controls",()=>["home","work","brain","tasks","suggestions","review","archive","agents","insights","destinations","settings"].every(id=>!!document.getElementById(id)));
+    // A full audit should not collapse into an instant flash on a fast local device.
+    const elapsedBefore=Math.round(performance.now()-started);
+    if(elapsedBefore<1200)await wait(1200-elapsedBefore);
     const elapsed=Math.max(1,Math.round(performance.now()-started));
     const overall=$("auditOverall"),summary=$("auditSummary"),meta=$("auditRunMeta");
-    if(overall)overall.textContent=failures.length?"ATTENTION":"ALL CLEAR";
-    if(summary)summary.textContent=failures.length?failures.join(" • ")+" require attention. No automatic changes were made.":"Live checks completed. No automatic changes were made.";
-    if(meta)meta.textContent="LAST RUN · "+new Date().toLocaleTimeString()+" · "+elapsed+"ms"+(connectorProbe?" · CONNECTOR "+connectorProbe.status:"")+" · PUBLIC "+publicProbe.status;
+    if(overall)overall.textContent=failures.length?"ATTENTION":"AUDIT PASSED";
+    if(summary)summary.textContent=failures.length?failures.join(" • ")+" require attention. No automatic changes were made.":"12 live checks completed across auth, permissions, connectors, agents, workspace, public bridge and control surfaces.";
+    if(meta)meta.textContent="LAST RUN · "+new Date().toLocaleTimeString()+" · "+elapsed+"ms · "+(connectorProbe?"CONNECTOR "+connectorProbe.status:"CONNECTOR NOT PROBED")+" · PUBLIC "+publicProbe.status;
     L("AUDIT",(failures.length?"Warnings: ":"Passed: ")+failures.join(", "));
   });
   const searchDock=$("searchDock"),searchInput=$("globalSearchInput"),searchResults=$("searchResults");
