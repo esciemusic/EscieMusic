@@ -25,5 +25,22 @@ const WORLD_LOOT_TABLE=[
  {id:"BAT",kind:"EQUIPMENT",weight:6,reason:"RARE FIND",contexts:["room02","trace"]},
  {id:"SIGNAL",kind:"SIGNAL",weight:22,amount:1,reason:"SIGNAL FRAGMENT",contexts:["lane","room01","room02","trace"]}
 ];
-window.ESCIE_WORLD_CONTENT={start,walls,npcs,objects,market:MARKET,lootTable:WORLD_LOOT_TABLE};
+const rooms={
+ room01:[
+  {id:"tv",x:5,y:2,label:"TELEVISION",text:"The television has no picture. The audio is a low recording of street noise.",discovery:"game-discovery-tv",queries:["query:television","query:audio"]},
+  {id:"tape",x:2,y:5,label:"TAPE",text:"A VHS tape marked only with a date. No name.",discovery:"game-discovery-tape",queries:["query:tape","query:archive"],item:"game-item-vhs-tape"},
+  {id:"green-door",x:7,y:6,label:"GREEN DOOR",text:"A second door. The lock has a green indicator and no handle.",discovery:null}
+ ],
+ room02:[
+  {id:"console",x:5,y:3,label:"GREEN TERMINAL",text:"A green terminal wakes when it recognizes the pass. It displays three options: LISTEN, TRACE, OPEN.",discovery:"game-discovery-terminal",queries:["query:terminal","query:deeper"]},
+  {id:"archive",x:2,y:6,label:"ARCHIVE CABINET",text:"The cabinet contains an index of places, people and moments. Several entries are deliberately blank.",discovery:"game-discovery-deeper-archive",queries:["query:archive","query:places","query:people"]},
+  {id:"trace-gate",x:6,y:6,label:"TRACE GATE",text:"A narrow green frame has appeared in the wall. It has no handle. The terminal may be the only way through.",discovery:null}
+ ],
+ trace:[
+  {id:"trace-core",x:4,y:4,label:"TRACE CORE",text:"The signal has stopped behaving like a clue. It is behaving like a path.",discovery:"game-discovery-trace-core",queries:["query:trace-core","query:path","query:signal"]},
+  {id:"exit-signal",x:6,y:2,label:"SIGNAL EXIT",text:"A final marker points toward something outside the playable layer.",discovery:"game-discovery-exit",queries:["query:exit","query:outside"]},
+  {id:"return-frame",x:1,y:1,label:"RETURN FRAME",text:"A frame back to ROOM 02.",discovery:null}
+ ]
+};
+window.ESCIE_WORLD_CONTENT={start,walls,npcs,objects,market:MARKET,lootTable:WORLD_LOOT_TABLE,rooms};
 })();
