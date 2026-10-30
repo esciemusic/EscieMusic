@@ -302,9 +302,9 @@ function updateEnvironment(t){
    dayLight.color.set(daylight>.45?0xd8d4ca:0x758394);
  }
  if(ambientLight)ambientLight.intensity=.34+daylight*.68;
- if(playerLight){playerLight.intensity=.12+night*.72+(poorVisibility?.18:0);playerLight.position.set(player.x,1.9,player.z);}
+ if(playerLight){playerLight.intensity=.12+night*.72+(poorVisibility ? .18 : 0);playerLight.position.set(player.x,1.9,player.z);}
  if(scene?.fog){
-   const target=.008+night*.010+(poorVisibility?.006:0);
+   const target=.008+night*.010+(poorVisibility ? .006 : 0);
    scene.fog.density+=(target-scene.fog.density)*.06;
  }
  lights.forEach((l,i)=>{
