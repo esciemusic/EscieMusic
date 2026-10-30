@@ -15,7 +15,9 @@ const vehicles={
  SEDAN:{id:"SEDAN",type:"CAR",label:"SEDAN",price:6000,owned:false,speed:3,risk:1,radio:true},
  BIKE:{id:"BIKE",type:"BIKE",label:"BIKE",price:250,speed:2,risk:0,radio:false},
  SKATEBOARD:{id:"SKATEBOARD",type:"BOARD",label:"SKATEBOARD",price:100,speed:1,risk:0,radio:false},
- ROLLERBLADES:{id:"ROLLERBLADES",type:"BOARD",label:"ROLLERBLADES",price:140,speed:1,risk:0,radio:false}
+ ROLLERBLADES:{id:"ROLLERBLADES",type:"BOARD",label:"ROLLERBLADES",price:140,speed:1,risk:0,radio:false},
+ VAN:{id:"VAN",type:"CAR",label:"UTILITY VAN",price:8500,owned:false,speed:3,risk:2,radio:true},
+ SUV:{id:"SUV",type:"CAR",label:"SUV",price:11000,owned:false,speed:3,risk:2,radio:true}
 };
 window.ESCIE_WORLD_ITEMS={equipment,vehicles};
 })();
