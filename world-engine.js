@@ -9,7 +9,7 @@ const raf=typeof requestAnimationFrame==="function"?requestAnimationFrame:fn=>se
 const caf=typeof cancelAnimationFrame==="function"?cancelAnimationFrame:clearTimeout;
 const reduceMotion=()=>typeof window.matchMedia==="function"&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 function records(){
- const sources=[coll("ESCIE_MUSIC"),coll("ESCIE_PEOPLE"),coll("ESCIE_LOCATIONS"),coll("ESCIE_MOMENTS"),coll("ESCIE_FRAGMENTS"),coll("ESCIE_BODIES"),coll("ESCIE_PATHS"),coll("ESCIE_NODES"),coll("ESCIE_PROJECTS"),coll("ESCIE_ARCHIVE"),coll("ESCIE_INVESTIGATION"),coll("ESCIE_SYMBOLS")];
+ const sources=[coll("ESCIE_LIVE_RECORDS"),coll("ESCIE_MUSIC"),coll("ESCIE_PEOPLE"),coll("ESCIE_LOCATIONS"),coll("ESCIE_MOMENTS"),coll("ESCIE_FRAGMENTS"),coll("ESCIE_BODIES"),coll("ESCIE_PATHS"),coll("ESCIE_NODES"),coll("ESCIE_PROJECTS"),coll("ESCIE_ARCHIVE"),coll("ESCIE_INVESTIGATION"),coll("ESCIE_SYMBOLS")];
  const seen=new Set(),out=[];
  sources.flat().forEach(r=>{if(!r||typeof r!=="object")return;const id=r.id||r.recordId||r.slug||r.title;if(id&&!seen.has(id)){seen.add(id);out.push({...r,id})}});
  return out;
@@ -18,7 +18,7 @@ function type(r){return String(r.type||r.kind||r.category||"WORK").trim().toUppe
 function title(r){return String(r.title||r.name||r.label||"UNTITLED").trim()||"UNTITLED"}
 function searchText(r){return [r.id,r.type,r.kind,r.category,r.title,r.name,r.label,r.description,r.summary,r.story,r.date,r.release_date,r.moment_date,r.created_at,Array.isArray(r.tags)?r.tags.join(" "):""] .map(v=>String(v??"")).join(" ").toLowerCase()}
 function rels(){
- const local=coll("ESCIE_RELATIONSHIPS");
+ const local=coll("ESCIE_RELATIONSHIPS").concat(coll("ESCIE_LIVE_RELATIONSHIPS"));
  const seen=new Set();
  return local.concat(coll("ESCIE_RELATIONSHIPS_PUBLIC")).map(r=>r&&({...r,from:r.from||r.source_id||r.sourceId,to:r.to||r.target_id||r.targetId})).filter(r=>{
    if(!r||!r.from||!r.to)return false;
@@ -52,6 +52,11 @@ function pathContext(){const rs=records(),out=[];for(let i=1;i<state.trail.lengt
 function investigationSummary(){const p=pathContext();const unknowns=state.visited.map(id=>records().find(r=>String(r.id)===String(id))).filter(Boolean).filter(r=>String(r.certainty||"").toUpperCase()==="UNKNOWN").length;return {steps:p.length,unknowns};}
 function loadTrail(){try{const a=JSON.parse(sessionStorage.getItem("escie_world_trail")||"[]");const b=JSON.parse(sessionStorage.getItem("escie_world_visited")||"[]");if(Array.isArray(a))state.trail=a.filter(v=>typeof v==="string"&&v.trim()).slice(-12);if(Array.isArray(b))state.visited=b.filter(v=>typeof v==="string"&&v.trim()).slice(-100)}catch(e){state.trail=[];state.visited=[]}}
 function detail(r){
+ const symbol=r&&String(r.id||"").indexOf("symbol-")===0?coll("ESCIE_SYMBOLS").find(x=>x&&String(x.id)===String(r.id)):null;
+ if(symbol){
+   const trail=coll("ESCIE_LIVE_RECORDS").concat(coll("ESCIE_MUSIC"),coll("ESCIE_ARCHIVE"),coll("ESCIE_INVESTIGATION")).filter(x=>x&&Array.isArray(x.symbols)&&x.symbols.includes(symbol.id));
+   return '<aside class="world-detail" aria-live="polite"><div class="world-detail-head"><div><span class="world-kicker">MOTIF // RECURRING</span><h3>'+esc(symbol.name||"SYMBOL")+'</h3></div><button type="button" class="world-close" data-close-node aria-label="Close symbol">×</button></div><div class="world-detail-meta"><span>'+esc(symbol.status||"RECURRING")+'</span><span>'+esc((symbol.placements||[]).join(" / ")||"UNPLACED")+'</span></div><p>'+esc(symbol.motif||"Meaning intentionally left open.")+'</p><div class="world-kicker">PUBLIC RECORD LINKS · '+trail.length+'</div><div class="world-connections">'+(trail.length?trail.map(x=>'<button type="button" data-node="'+esc(x.id)+'"><strong>'+esc(title(x))+'</strong><small>carries motif</small></button>').join(""):'<span class="world-empty">No public record is explicitly carrying this motif yet.</span>')+'</div><div class="world-detail-actions"><button type="button" data-copy-node>COPY NODE LINK</button></div></aside>';
+ }
  const links=related(r.id);
  const connections=links.length?links.map(x=>'<button type="button" data-node="'+esc(x.node.id)+'"><strong>'+esc(title(x.node))+'</strong><small>'+esc(x.r.type||"related")+'</small></button>').join(""):'<span class="world-empty">No public connection recorded yet.</span>';
  return '<aside class="world-detail" aria-live="polite"><div class="world-detail-head"><div><span class="world-kicker">NODE // '+esc(type(r))+'</span><h3>'+esc(title(r))+'</h3></div><button type="button" class="world-close" data-close-node aria-label="Close node">×</button></div><div class="world-detail-meta"><span>'+esc(String(r.certainty||"UNKNOWN").toUpperCase())+'</span><span>'+esc(String(r.status||"UNKNOWN").toUpperCase())+'</span></div><p>'+esc(r.description||r.summary||r.story||"No public description yet.")+'</p><div class="world-kicker">CONNECTIONS · '+links.length+'</div><div class="world-connections">'+connections+'</div><div class="world-detail-actions"><button type="button" data-focus-search>SEARCH THIS NODE</button><button type="button" data-copy-node>COPY NODE LINK</button></div><div class="world-path"><span class="world-kicker">YOUR PATH</span><div id="world-path-items">START HERE</div></div></aside>';
