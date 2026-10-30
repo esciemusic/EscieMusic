@@ -10,7 +10,9 @@ const arrest=()=>{const s=read(),sim=window.ESCIE_WORLD_SIMULATION;if(!sim)retur
 const escape=()=>{const s=read();s.escapes++;s.active=false;s.level=0;s.units=[];return save(s)};
 const cases=()=>read().caseFiles||[];
 const investigate=(id,action="REVIEW",meta={})=>{const s=read(),c=(s.caseFiles||[]).find(x=>x.id===id);if(!c)return {ok:false,reason:"CASE_NOT_FOUND"};const a=String(action).toUpperCase();c.status=a==="CLOSE"?"CLOSED":"INVESTIGATING";c.phase=a==="SEARCH"?"SEARCH":a==="TRACE"?"TRACE":a==="CLOSE"?"RESOLVED":"REVIEW";c.lastAction=a;c.evidence=(c.evidence||[]).concat(meta.evidence||[]).slice(-20);if(!save(s))return {ok:false,reason:"SAVE_FAILED"};return {ok:true,case:c}};
+const addCaseEvidence=(id,item={})=>{const s=read(),c=(s.caseFiles||[]).find(x=>x.id===id);if(!c)return {ok:false,reason:"CASE_NOT_FOUND"};c.evidence=(c.evidence||[]).concat([Object.assign({timestamp:new Date().toISOString()},item)]).slice(-50);if(!save(s))return {ok:false,reason:"SAVE_FAILED"};return {ok:true,case:c}};
+const linkCase=(id,related=[])=>{const s=read(),c=(s.caseFiles||[]).find(x=>x.id===id);if(!c)return {ok:false,reason:"CASE_NOT_FOUND"};c.related=Array.from(new Set((c.related||[]).concat(Array.isArray(related)?related:[related]).filter(Boolean))).slice(-20);if(!save(s))return {ok:false,reason:"SAVE_FAILED"};return {ok:true,case:c}};
 const state=read;const reportCrime=(source="UNKNOWN",level=1)=>dispatch("REPORT_"+String(source).toUpperCase(),level);
-window.ESCIE_WORLD_LAW={state,dispatch,tick,arrest,escape,reportCrime,cases,investigate};
+window.ESCIE_WORLD_LAW={version:"1.1.0",state,dispatch,tick,arrest,escape,reportCrime,cases,investigate,addCaseEvidence,linkCase};
 addEventListener("escie:world-detection",e=>dispatch(e.detail?.source||"DETECTION",e.detail?.level||1));
 })();
