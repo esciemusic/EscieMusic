@@ -501,7 +501,7 @@ assert(worldRuntime.includes("function transitionRoom(nextRoom,nextPos,message)"
 assert(worldRuntime.includes("window.ESCIE_WORLD_SIMULATION?.advance?.(5)"),"room transitions must advance simulation time");
 assert(worldRuntime.includes("syncSimulationPosition();persistRoom();"),"room transitions must synchronize simulation position before saving");
 assert(worldRuntime.includes("s.world_position={x:Number(pos.x)||0,y:Number(pos.y)||0}"),"room persistence must include runtime position");
-assert(worldRuntime.includes("if(s?.cancelled)return"),"dream completion must ignore cancelled sessions");
+assert(dreamPlayRuntime.includes("if(!s||s.cancelled)return;"),"dream completion must ignore cancelled sessions");
 assert(dreamPlayRuntime.includes('cancel=function(reason="CANCELLED")'),"dream play must expose lifecycle cancellation");
 assert(dreamPlayRuntime.includes("s.cancelled=true;s.active=false"),"dream cancellation must invalidate active state");
 console.log("ESCIE world lifecycle contracts OK");
