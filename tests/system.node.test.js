@@ -6,6 +6,8 @@ const sources = require("../core/sources.js");
 const history = require("../core/history.js");
 const control = require("../control/control.js");
 const proposals = require("../control/proposals.js");
+const media = require("../data/media.js");
+const visuals = require("../data/visuals.js");
 
 global.window = { ESCIE_EVENTS: events };
 const decisions = require("../control/decisions.js");
@@ -37,6 +39,13 @@ assert(disclosure.publicView(privateRecord) === null, "private records must not 
 
 assert(sanitize.escapeHTML("<script>") === "&lt;script&gt;", "HTML must be escaped");
 assert(sanitize.sanitizeAttribute('a"b') === "a&quot;b", "attribute text must be escaped");
+
+const mediaAudit = media.validate();
+assert(mediaAudit.ok === true, "media library metadata must validate");
+assert(media.get("photo-parc-extension-example-001").location.locationId === "PARC_EXTENSION", "media records must retain canonical location metadata");
+assert(media.get("photo-parc-extension-example-001").game.useAsReference === true, "media records must expose world reference usage");
+assert(visuals.normalizeEscieVisualAsset({mediaId:"photo-parc-extension-example-001"}) === null, "visual registry should fail safely without a browser media catalog");
+console.log("ESCIE media library contracts OK");
 
 const source = sources.createSource({
   id: "source-test",
