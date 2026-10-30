@@ -47,7 +47,6 @@
             <div class="entry-actions">
               <a href="#now">CURRENT SIGNAL</a>
               <a href="#art">ENTER THE WORK</a>
-              <a href="world/" aria-label="Enter the dedicated ESCIE World game">ENTER THE WORLD</a>
             </div>
           </div>
         </div>
@@ -95,16 +94,7 @@
         <div id="merch-container" class="content-container" aria-live="polite"></div>
       </div>
     </section>
-    <section id="world" class="site-section world-section">
-      <div class="section-inner">
-        <div class="section-visual section-visual-world" data-visual-section="world" aria-hidden="true"><span class="world-grid"></span><span class="world-pulse"></span><span class="world-node world-node-a"></span><span class="world-node world-node-b"></span><span class="world-node world-node-c"></span></div>
-        <h2>THE WORLD</h2>
-        <p class="section-lede">PEOPLE. PLACES. MOMENTS. FRAGMENTS. BODIES. PATHS. CONNECTIONS. THE WORLD AROUND THE WORK.</p>
-        <div id="world-container" class="content-container"></div>
-      </div>
-    </section>
-
-    <section id="web" class="site-section web-section">
+    <section id="world" class="site-section world-section" hidden aria-hidden="true"><div class="section-inner"><h2>THE WORLD</h2><div id="world-container" class="content-container"></div></div></section>\n\n    <section id="web" class="site-section web-section">
       <div class="section-inner">
         <div class="section-visual section-visual-web" data-visual-section="the-web" aria-hidden="true"><span class="visual-key">⌕</span><span class="visual-node n1"></span><span class="visual-node n2"></span><span class="visual-node n3"></span><span class="visual-wire w1"></span><span class="visual-wire w2"></span><span class="visual-wire w3"></span></div>
         <h2>THE WEB</h2>
@@ -137,16 +127,7 @@
         <h2>GLASS EYE</h2>
         <p class="section-lede">YOUR SIDE OF THE SCREEN. THE AUDIENCE EYE. LOOK, LISTEN, FOLLOW, RETURN.</p>
         <div id="glass-eye-container" class="content-container"></div>
-        <div class="glass-eye-game-entry">
-          <a href="world/" class="world-controller-link" aria-label="Enter ESCIE World game">
-            <span class="world-controller-icon" aria-hidden="true">🎮</span>
-            <span class="world-controller-label">ENTER THE WORLD</span>
-          </a>
-        </div>
-        
-        <div id="glass-eye-memory" class="content-container" aria-live="polite"></div>
-      </div>
-    </section>
+        <div class="glass-eye-game-entry" hidden aria-hidden="true"></div>\n      </div>\n    </section>
 
     <section id="escie" class="site-section escie-section">
       <div class="section-inner">
@@ -167,8 +148,7 @@
     <div id="footer-social" class="footer-social" aria-label="External signal"></div>
   </footer>
 
-  <script>
-  /* ESCIE SECTION ACCORDION — one world, one readable layer at a time */
+  <script>\n  /* ESCIE GAME TEMPORARILY HIDDEN — playable build remains archived for later external hosting. */\n  document.documentElement.dataset.gameStatus="offline";\n  /* ESCIE SECTION ACCORDION — one world, one readable layer at a time */
   (function(){
     "use strict";
     function initSectionAccordion(){
