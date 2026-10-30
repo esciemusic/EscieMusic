@@ -32,7 +32,7 @@
       {id:"two",label:"TWO",platform:"instagram",url:"https://instagram.com/two"}
     ]);
     assert(duplicateAudit.duplicates===1&&duplicateAudit.ok===false,"social audit must flag duplicate platforms");
-    assert(normalized.every(item=>/^https?:\\/\\//i.test(item.url)),"normalized links must use http or https");
+    assert(normalized.every(item=>/^https?:\/\//i.test(item.url)),"normalized links must use http or https");
     return {passed:true,configured:normalized.length};
   }
   if(typeof window!=="undefined")window.ESCIE_TEST_SOCIAL={run};
