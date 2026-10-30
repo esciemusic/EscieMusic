@@ -228,33 +228,6 @@ const world_buildings={
     {id:"APARTMENT_VE",name:"APARTMENT",landmark:"VERDUN_METRO",type:"RESIDENTIAL",access:"LOCKED",interior:"APARTMENT"}
   ]
 };
-const city_reference={
- source:"MONTRÉAL_REFERENCE_LAYER",
- real_city:"Montréal, Québec, Canada",
- method:"REAL_GEOGRAPHY_REFERENCE_WITH_FICTIONALIZED_BUSINESSES",
- references:{
-  civic:"https://montreal.ca/en/services/land-use-planning-interactive-maps",
-  toponymy:"https://montreal.ca/en/services/learn-about-place-names",
-  heritage:"https://montreal.ca/en/services/view-heritage-databases"
- },
- districts:["PARC-EXTENSION","MILE END","PLATEAU","ROSEMONT","DOWNTOWN","OLD MONTREAL","SAINT-HENRI","VERDUN"],
- rules:[
-  "Use recognizable Montréal street names, transit relationships and urban form as spatial reference.",
-  "Keep player-facing businesses and invented characters fictional unless explicitly licensed/appropriate.",
-  "Use real civic geography as reference, not a claim that the simulated street grid is survey-grade.",
-  "Layer ESCIE signal distortion on top of recognizable real-world geography."
- ],
- landmarks:{
-  "PARC-EXTENSION":["Parc metro","Acadie metro","Jean-Talon corridor"],
-  "MILE END":["Laurier","Saint-Viateur","Mont-Royal"],
-  "PLATEAU":["Saint-Denis","Mont-Royal","Sherbrooke"],
-  "ROSEMONT":["Beaubien","Jean-Talon","Rosemont"],
-  "DOWNTOWN":["Berri-UQAM","McGill","Peel","Guy-Concordia"],
-  "OLD MONTREAL":["Champ-de-Mars","Place-d'Armes","Old Port"],
-  "SAINT-HENRI":["Saint-Henri","Notre-Dame","Vendôme"],
-  "VERDUN":["De l'Église","Verdun","Wellington"]
- }
-};
 const world_landmarks={"PARC-EXTENSION":[{id:"PARC_METRO",name:"PARC METRO",node:"PARC",type:"TRANSIT"},{id:"JEAN_TALON_STRIP",name:"JEAN-TALON STRIP",node:"JEAN_TALON",type:"COMMERCE"},{id:"HOME_LANE",name:"HOME LANE",node:"HOME",type:"RESIDENTIAL"},{id:"SIGNAL_LANE",name:"SIGNAL LANE",node:"ACADIE",type:"INVESTIGATION"}],"MILE END":[{id:"LAURIER_METRO",name:"LAURIER METRO",node:"LAURIER",type:"TRANSIT"},{id:"SAINT_VIATEUR",name:"SAINT-VIATEUR",node:"SAINT_VIATEUR",type:"COMMERCE"},{id:"MONT_ROYAL_METRO",name:"MONT-ROYAL METRO",node:"MONT_ROYAL",type:"TRANSIT"}],"PLATEAU":[{id:"SAINT_DENIS",name:"SAINT-DENIS",node:"SAINT_DENIS",type:"COMMERCE"},{id:"MONT_ROYAL",name:"MONT-ROYAL",node:"MONT_ROYAL",type:"SOCIAL"},{id:"SHERBROOKE",name:"SHERBROOKE",node:"SHERBROOKE",type:"TRANSIT"}],"ROSEMONT":[{id:"BEAUBIEN",name:"BEAUBIEN",node:"BEAUBIEN",type:"COMMERCE"},{id:"IBERVILLE",name:"IBERVILLE",node:"IBERVILLE",type:"RESIDENTIAL"},{id:"JEAN_TALON",name:"JEAN-TALON",node:"JEAN_TALON",type:"TRANSIT"}],"DOWNTOWN":[{id:"BERRI_UQAM",name:"BERRI-UQAM",node:"BERRI_UQAM",type:"TRANSIT"},{id:"MCGILL",name:"MCGILL",node:"MCGILL",type:"WORK"},{id:"PEEL",name:"PEEL",node:"PEEL",type:"COMMERCE"},{id:"GUY_CONCORDIA",name:"GUY-CONCORDIA",node:"GUY_CONCORDIA",type:"ENTERTAINMENT"}],"OLD MONTREAL":[{id:"CHAMP_DE_MARS",name:"CHAMP-DE-MARS",node:"CHAMP_DE_MARS",type:"TRANSIT"},{id:"PLACE_DARMES",name:"PLACE-D'ARMES",node:"PLACE_DARMES",type:"HISTORY"},{id:"OLD_PORT",name:"OLD PORT",node:"OLD_PORT",type:"ENTERTAINMENT"}],"SAINT-HENRI":[{id:"SAINT_HENRI",name:"SAINT-HENRI",node:"SAINT_HENRI",type:"TRANSIT"},{id:"NOTRE_DAME",name:"NOTRE-DAME",node:"NOTRE_DAME",type:"COMMERCE"},{id:"VENDOME",name:"VENDÔME",node:"VENDOME",type:"HEALTH"}],"VERDUN":[{id:"DE_LEGLISE",name:"DE L'ÉGLISE",node:"DE_LEGLISE",type:"TRANSIT"},{id:"WELLINGTON",name:"WELLINGTON",node:"WELLINGTON",type:"COMMERCE"},{id:"VERDUN_METRO",name:"VERDUN METRO",node:"VERDUN",type:"TRANSIT"}]};
 const city_backbone={
   "PARC-EXTENSION":["PARC","ACADIE"],
@@ -296,7 +269,7 @@ const districts={
  "SAINT-HENRI":{spawn:{x:4,y:6}},
  "VERDUN":{spawn:{x:5,y:5}}
 };
-Object.assign(window.ESCIE_WORLD_CITY,{landmarks:world_landmarks,buildings:world_buildings,interiors,cityReference:city_reference,cityBackbone:city_backbone,cityConnections:city_connections,publicTransit:public_transit,districts});
+Object.assign(window.ESCIE_WORLD_CITY,{landmarks:world_landmarks,buildings:world_buildings,interiors,cityBackbone:city_backbone,cityConnections:city_connections,publicTransit:public_transit,districts});
 
 
 })();
