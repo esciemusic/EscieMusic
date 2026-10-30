@@ -204,6 +204,66 @@ function policeCollision(){
 }
 function updatePolice(){const law=root.ESCIE_WORLD_LAW?.state?.();if(!law?.active){if(updatePolice.group)updatePolice.group.visible=false;return}const count=Math.max(1,Math.min(4,Number(law.units?.length||law.level||1)));if(!updatePolice.group){updatePolice.group=new THREE.Group();updatePolice.group.userData.policeResponse=true;worldGroup.add(updatePolice.group)}const group=updatePolice.group;while(group.children.length<count){const g=new THREE.Group();g.userData.police=true;const body=new THREE.Mesh(new THREE.BoxGeometry(1.45,.5,2.8),makeMat(0x292a2e,.7,.25));body.position.y=.5;g.add(body);const roof=new THREE.Mesh(new THREE.BoxGeometry(1.1,.28,1.1),makeMat(0x101114,.65));roof.position.y=.88;g.add(roof);const light=new THREE.Mesh(new THREE.BoxGeometry(.18,.08,.32),makeMat(0x2f80ff,.45));light.position.set(.28,1.08,0);g.add(light);const beacon=new THREE.PointLight(0x2f80ff,.45,7,2);beacon.position.set(0,1.12,0);beacon.userData.baseIntensity=.45;beacon.userData.policeBeacon=true;g.add(beacon);g.userData.beacon=beacon;group.add(g)}group.visible=true;const baseAng=Math.atan2(player.z,player.x);for(let i=0;i<group.children.length;i++){const g=group.children[i],active=i<count;g.visible=active;if(!active)continue;const spread=i===0?0:(i%2?1:-1)*(0.35+Math.floor(i/2)*0.18);const ang=baseAng+Math.PI+spread;const radius=Math.max(9,24-Number(law.level||1)*2-i*2);const tx=player.x+Math.cos(ang)*radius,tz=player.z+Math.sin(ang)*radius;g.position.x+=(tx-g.position.x)*.025;g.position.z+=(tz-g.position.z)*.025;g.rotation.y=Math.atan2(player.x-g.position.x,player.z-g.position.z);if(i===0&&Math.hypot(player.x-g.position.x,player.z-g.position.z)<3.2){const r=root.ESCIE_WORLD_LAW?.arrest?.();if(r?.ok)say3D("POLICE · ARRESTED · SENTENCE "+Number(r.sentence||0)+" MIN");}}}
 const streetEncounter={npcId:null,type:null,expires:0,nextAt:0};
+const streetIncident={type:null,aId:null,bId:null,expires:0,nextAt:0,resolved:false};
+function incidentType(a,b){
+ const ar=String(a?.occupation||a?.role||"").toUpperCase(),br=String(b?.occupation||b?.role||"").toUpperCase();
+ if(/SECURITY|POLICE/.test(ar)||/SECURITY|POLICE/.test(br))return "POLICE_STOP";
+ if(/DELIVERY|COURIER|DRIVER/.test(ar)||/DELIVERY|COURIER|DRIVER/.test(br))return "DELIVERY_CONFLICT";
+ if(Number(a?.relationship||0)<-30||Number(b?.relationship||0)<-30)return "ARGUMENT";
+ return Math.random()<.5?"THEFT_WITNESS":"MINOR_ACCIDENT";
+}
+function updateStreetIncident(now){
+ if(interiorMode||now<streetIncident.nextAt)return;
+ const live=root.ESCIE_WORLD_NPC?.state?.().npcs||{};
+ const nearby=actors.filter(a=>a.userData.canonical&&live[a.userData.id]&&Number(live[a.userData.id].health??100)>0).map(a=>({actor:a,npc:live[a.userData.id],d:Math.hypot(player.x-a.position.x,player.z-a.position.z)})).filter(v=>v.d<15).sort((a,b)=>a.d-b.d);
+ if(nearby.length<2){streetIncident.nextAt=now+7000;return;}
+ const pair=nearby.slice(0,5);
+ let first=null,second=null,best=99;
+ for(let i=0;i<pair.length;i++)for(let j=i+1;j<pair.length;j++){const d=Math.hypot(pair[i].actor.position.x-pair[j].actor.position.x,pair[i].actor.position.z-pair[j].actor.position.z);if(d<best){best=d;first=pair[i];second=pair[j];}}
+ if(!first||!second||best>5){streetIncident.nextAt=now+7000;return;}
+ streetIncident.type=incidentType(first.npc,second.npc);streetIncident.aId=first.npc.id;streetIncident.bId=second.npc.id;streetIncident.expires=now+14000;streetIncident.nextAt=now+22000;streetIncident.resolved=false;
+ first.actor.userData.incident="INCIDENT";second.actor.userData.incident="INCIDENT";
+ first.actor.userData.reaction="ALERT";second.actor.userData.reaction="ALERT";
+ const labels={ARGUMENT:"ARGUMENT IN PROGRESS",THEFT_WITNESS:"POSSIBLE THEFT",MINOR_ACCIDENT:"MINOR ACCIDENT",DELIVERY_CONFLICT:"DELIVERY CONFLICT",POLICE_STOP:"POLICE STOP"};
+ say3D((labels[streetIncident.type]||"STREET INCIDENT")+" · APPROACH TO INTERVENE");
+}
+function resolveStreetIncident(){
+ if(!streetIncident.type||streetIncident.resolved||performance.now()>streetIncident.expires)return false;
+ const live=root.ESCIE_WORLD_NPC?.state?.().npcs||{},a=live[streetIncident.aId],b=live[streetIncident.bId];if(!a||!b)return false;
+ const nearA=actors.find(x=>x.userData.id===a.id),nearB=actors.find(x=>x.userData.id===b.id);
+ const da=nearA?Math.hypot(player.x-nearA.position.x,player.z-nearA.position.z):99,db=nearB?Math.hypot(player.x-nearB.position.x,player.z-nearB.position.z):99;
+ if(Math.min(da,db)>3.2)return false;
+ const sim=root.ESCIE_WORLD_SIMULATION,actions=root.ESCIE_WORLD_ACTIONS;
+ let line="STREET INCIDENT · YOU STEPPED IN";
+ if(streetIncident.type==="ARGUMENT"){
+   root.ESCIE_WORLD_NPC?.npcLink?.(a.id,b.id,-4,"STREET ARGUMENT");
+   root.ESCIE_WORLD_NPC?.relationship?.(a.id,1,"INTERVENED");
+   root.ESCIE_WORLD_NPC?.relationship?.(b.id,1,"INTERVENED");
+   actions?.awardRPGXP?.(6,"STREET INTERVENTION");line="ARGUMENT · DE-ESCALATED · +6 XP";
+ }else if(streetIncident.type==="THEFT_WITNESS"){
+   root.ESCIE_WORLD_NPC?.observe?.("THEFT",{x:0,y:0},{radius:12,speed:"ALERT",blocked:()=>false});
+   root.ESCIE_WORLD_NPC?.relationship?.(b.id,2,"WITNESS ASSISTED");
+   actions?.awardRPGXP?.(8,"WITNESS ASSIST");line="POSSIBLE THEFT · WITNESS RECORD UPDATED · +8 XP";
+ }else if(streetIncident.type==="MINOR_ACCIDENT"){
+   sim?.applyDamage?.(2,"STREET ACCIDENT",{});
+   root.ESCIE_WORLD_NPC?.npcLink?.(a.id,b.id,1,"MINOR ACCIDENT");
+   actions?.awardRPGXP?.(5,"STREET INCIDENT");line="MINOR ACCIDENT · CHECKED · +5 XP";
+ }else if(streetIncident.type==="DELIVERY_CONFLICT"){
+   root.ESCIE_WORLD_NPC?.relationship?.(a.id,-2,"DELIVERY CONFLICT");
+   root.ESCIE_WORLD_NPC?.relationship?.(b.id,2,"DELIVERY HELP");
+   actions?.awardRPGXP?.(7,"STREET HELP");line="DELIVERY CONFLICT · ROUTE CLEARED · +7 XP";
+ }else{
+   root.ESCIE_WORLD_LAW?.dispatch?.("POLICE STOP",1);
+   actions?.awardRPGXP?.(4,"POLICE OBSERVATION");line="POLICE STOP · OBSERVED · LAW RESPONSE ACTIVE";
+ }
+ root.ESCIE_WORLD_NPC?.rememberInteraction?.(a.id,{channel:"STREET_INCIDENT",type:streetIncident.type,outcome:line});
+ root.ESCIE_WORLD_NPC?.rememberInteraction?.(b.id,{channel:"STREET_INCIDENT",type:streetIncident.type,outcome:line});
+ say3D(line);
+ [nearA,nearB].forEach(x=>{if(x){x.userData.incident=null;x.userData.reaction="ALERT";x.userData.reactionUntil=performance.now()+2600;}});
+ streetIncident.type=null;streetIncident.aId=null;streetIncident.bId=null;streetIncident.expires=0;streetIncident.resolved=true;
+ return true;
+}
+
 function encounterType(npc){
  const role=String(npc?.occupation||npc?.role||"").toUpperCase();
  if(/DELIVERY|COURIER|DRIVER|COURIER/.test(role))return "DELIVERY";
@@ -288,7 +348,7 @@ function vehicleInteract(){const vs=root.ESCIE_WORLD_VEHICLES;if(!vs)return fals
    return true
  }
  const r=vs.enter?.(id);if(r?.ok){player.inVehicle=true;player.vehicleId=id;say3D("VEHICLE · "+String(r.vehicle?.label||id)+" · DRIVE");return true}say3D("VEHICLE · "+String(r?.reason||"UNAVAILABLE"));return true}
-function interact(){if(interiorMode)return exit3DInterior();if(evidenceInteract())return true;if(encounterInteract())return true;if(npcInteract())return true;if(vehicleInteract())return true;
+function interact(){if(interiorMode)return exit3DInterior();if(evidenceInteract())return true;if(resolveStreetIncident())return true;if(encounterInteract())return true;if(npcInteract())return true;if(vehicleInteract())return true;
  const near=doors.find(d=>Math.hypot(player.x-d.x,player.z-d.z)<2.4);
  if(near){if(near.open){root.ESCIE_WORLD_INTERIOR?.exit?.();near.open=false;near.mesh.rotation.y=0;say3D("EXITED · BACK ON THE STREET");return true}const st=root.ESCIE_WORLD_SIMULATION?.state?.(),b=near.building;if(b&&String(b.type||"").toUpperCase()==="SHOP"){const buy=root.ESCIE_WORLD_ACTIONS?.purchaseGameItem?.("game-item-green-pass");if(buy?.ok){say3D("SHOP · GREEN PASS PURCHASED · -3 SIGNAL");return true}if(buy?.reason==="INSUFFICIENT_SIGNAL"){say3D("SHOP · GREEN PASS · 3 SIGNAL REQUIRED");return true}if(buy?.reason==="ALREADY_OWNED")say3D("SHOP · GREEN PASS · ALREADY OWNED");}if(b){const result=root.ESCIE_WORLD_SIMULATION?.enterBuilding?.(st?.neighbourhood,b.id);if(!result?.ok){say3D("ACCESS · "+String(result?.reason||"DENIED"));return true}enter3DInterior(b);}near.open=true;near.mesh.rotation.y=Math.PI/2;say3D(b?"ENTERED · "+b.name:"DOOR OPEN · INTERIOR LAYER AVAILABLE");return true}
  return false;
@@ -483,6 +543,7 @@ function updateActors(t){
 }
 function render(){
  updateStreetEncounters(performance.now());
+ updateStreetIncident(performance.now());
  const dt=Math.min(clock.getDelta(),.05);updateQuality(dt);move(dt);worldHeartbeat();updateLaw();updateActors(clock.elapsedTime);syncCanonicalNPCs(clock.elapsedTime);updateTraffic(clock.elapsedTime);updateVehicles(clock.elapsedTime);updatePolice();policeCollision();updateEnvironment(clock.elapsedTime);if(performance.now()-perf.hud>120){updateHud();syncPauseMap();perf.hud=performance.now();}
  if(thirdPerson){
    const vehicle=player.inVehicle,dist=vehicle?6.2:4.8,height=vehicle?2.9:2.45;
