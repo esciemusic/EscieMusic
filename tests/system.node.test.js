@@ -522,6 +522,17 @@ assert(world3dRuntime.includes("isPaused:()=>paused"),"3D runtime must expose au
 for(const fn of ["inventory","character","investigation","market","quests","openSimulation","phoneApp","glass","systemMenu","preferences","profileMenu"]){assert(worldRuntime.includes("function "+fn+"(") && worldRuntime.includes("ensureSystemPause();"),fn+" must route its 2D system view through pause state");} assert(worldRuntime.includes("const world=window.ESCIE_3D_WORLD"),"pause gate must use the browser global 3D runtime"); assert(worldRuntime.includes("window.ESCIE_WORLD_UI={inventory,character,investigation,market,quests,openSimulation,phoneApp,systemMenu,preferences,profileMenu,glass}"),"2D system views must be reachable through the world UI bridge"); assert(worldIndex.includes("data-pause-open=\"inventory\""),"pause menu must own inventory access"); assert(worldIndex.includes("data-pause-open=\"system\""),"pause menu must own system access"); assert(!worldIndex.includes("data-system>SYSTEM"),"system access must not remain in active gameplay controls"); assert(!worldIndex.includes("data-inventory>INVENTORY"),"inventory access must not remain in active gameplay controls"); assert(world3dRuntime.includes('if(e.key==="Escape"){e.preventDefault();togglePause();}'),"Escape must pause the authoritative 3D runtime"); assert(world3dRuntime.includes("data-pause-open"),"3D runtime must route pause-system actions");
 
 console.log("ESCIE 3D interior lifecycle contracts OK");
+assert(world3dRuntime.includes("const schedule=Array.isArray(live.schedule)?live.schedule:[]"),"interior NPCs must consume persistent canonical NPC schedules");
+assert(world3dRuntime.includes("const expectedBuilding="),"interior NPC visibility must follow schedule target buildings");
+assert(world3dRuntime.includes('activity==="WORK" ? live.work_building?.id'),"working NPCs must resolve their authored workplace");
+assert(world3dRuntime.includes('activity==="SOCIAL" ? live.social_building?.id'),"social NPCs must resolve their authored social place");
+assert(world3dRuntime.includes('["SLEEP","HOME"].includes(activity)'),"home NPC routines must resolve authored home buildings");
+assert(world3dRuntime.includes("g.userData.targetStation=station.userData.interiorStation"),"interior NPCs must persist their current station target");
+assert(world3dRuntime.includes("g.userData.targetRoom=station.userData.interiorStation.room"),"interior NPCs must retain their current room target");
+assert(world3dRuntime.includes("Math.floor(minute/15)+hashId(g.userData.id)"),"interior station selection must remain deterministic across frames");
+console.log("ESCIE contextual interior schedule contracts OK");
+
+
 
 
 /* ROOM TRANSITION NPC TIME-SCALE CONTRACT */
