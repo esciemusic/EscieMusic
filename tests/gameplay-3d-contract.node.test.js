@@ -18,4 +18,8 @@ assert(runtime.includes('player.yaw-=dx*.006'),"touch must support direct 3D cam
 assert(runtime.includes('if(g.mode==="pause"){togglePause();return;}'),"two-touch gesture must retain pause access");
 assert(runtime.includes('fight3D();'),"touch input must retain combat access");
 assert(runtime.includes('interact();'),"touch input must retain interaction access");
+const css=read("world/world.css");
+assert(!css.includes("mobile-gamepad"),"legacy mobile gamepad CSS must stay removed");
+assert(!css.includes("world-controls"),"legacy 2D gameplay control CSS must stay removed");
+assert(!css.includes("world-3d-tools"),"legacy 3D toolbar CSS must stay removed");
 console.log("ESCIE 3D-only gameplay contract OK");
