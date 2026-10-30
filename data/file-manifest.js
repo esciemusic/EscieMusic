@@ -1,5 +1,5 @@
 /* ESCIE FILE MANIFEST — canonical ownership map */
-(function(){
+(function(root){
   "use strict";
   const manifest={
     content:["media","about","archive","bodies","clothing","fragments","games","glass-eye-journey","glass-eye-memory","investigation","locations","merch","moments","music","nodes","paths","people","projects","record-contract","relationships","release-runtime","registry","signals","site","social","symbols","visuals","world-quests"],
@@ -7,5 +7,6 @@
     presentation:["index","world.css","game-shell.css"],
     contracts:["data/record-contract.js","tests/"]
   };
-  window.ESCIE_FILE_MANIFEST=manifest;
-})();
+  root.ESCIE_FILE_MANIFEST=manifest;
+  if(typeof module!=="undefined"&&module.exports)module.exports=manifest;
+})(typeof window!=="undefined"?window:globalThis);
