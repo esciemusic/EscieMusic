@@ -20,13 +20,13 @@
       caption:"",
       tags:["montreal","graffiti","street","autumn","architecture","benches"],
       location:{
-        locationId:"PARC_EXTENSION",
-        label:"PARC-EXTENSION",
+        locationId:"LITTLE_ITALY",
+        label:"DANTE PARK · LITTLE ITALY",
         coordinates:{lat:null,lng:null,accuracyM:null},
-        coordinateSource:"user_verified",
-        district:"Parc-Extension",
+        coordinateSource:"user_provided",
+        district:"Little Italy",
         address:"",
-        notes:"Enter coordinates only when verified. Do not infer them from the image."
+        notes:"User identified this photograph as Dante Park in Little Italy. Exact coordinates can be added when available."
       },
       capture:{
         date:null,
@@ -41,7 +41,7 @@
       },
       placement:{
         publicSections:["WORK","THE WORLD","ARCHIVE","INVESTIGATION"],
-        worldDistricts:["PARC_EXTENSION"],
+        worldDistricts:["LITTLE_ITALY"],
         worldBuildings:[],
         visualRoles:["environment","reference","archive"],
         priority:50
