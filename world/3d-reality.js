@@ -241,7 +241,7 @@ function setup(){
  renderer.domElement.addEventListener("mousemove",e=>{if(document.pointerLockElement!==renderer.domElement)return;player.yaw-=e.movementX*.0022;player.pitch=clamp(player.pitch-e.movementY*.0018,-1.2,1.2);});
  document.addEventListener("keydown",e=>{keys.add(e.key.toLowerCase());if(["w","a","s","d","shift","arrowup","arrowdown","arrowleft","arrowright"].includes(e.key.toLowerCase()))e.preventDefault();});
  document.addEventListener("keyup",e=>keys.delete(e.key.toLowerCase()));
- document.addEventListener("keydown",e=>{if(e.key==="Escape"){e.preventDefault();togglePause();}});
+ document.addEventListener("keydown",e=>{if(e.key==="Escape"){e.preventDefault();if(interiorMode){exit3DInterior();return}togglePause();}});
  document.addEventListener("keydown",e=>{if(e.key.toLowerCase()==="e"){if(!interact())document.querySelector("[data-action-primary]")?.click();}});
  let touchLook=null;
  renderer.domElement.addEventListener("touchstart",e=>{if(e.touches.length===1)touchLook={x:e.touches[0].clientX,y:e.touches[0].clientY};},{passive:true});
@@ -468,7 +468,7 @@ function vehicleInteract(){const vs=root.ESCIE_WORLD_VEHICLES;if(!vs)return fals
    return true
  }
  const r=vs.enter?.(id);if(r?.ok){player.inVehicle=true;player.vehicleId=id;say3D("VEHICLE · "+String(r.vehicle?.label||id)+" · DRIVE");return true}say3D("VEHICLE · "+String(r?.reason||"UNAVAILABLE"));return true}
-function interact(){if(interiorMode)return exit3DInterior();if(evidenceInteract())return true;if(resolveStreetIncident())return true;if(encounterInteract())return true;if(npcInteract())return true;if(vehicleInteract())return true;
+function interact(){if(interiorMode)return use3DInteriorAction();if(evidenceInteract())return true;if(resolveStreetIncident())return true;if(encounterInteract())return true;if(npcInteract())return true;if(vehicleInteract())return true;
  const near=doors.find(d=>Math.hypot(player.x-d.x,player.z-d.z)<2.4);
  if(near){if(near.open){root.ESCIE_WORLD_INTERIOR?.exit?.();near.open=false;near.mesh.rotation.y=0;say3D("EXITED · BACK ON THE STREET");return true}const st=root.ESCIE_WORLD_SIMULATION?.state?.(),b=near.building;if(b&&String(b.type||"").toUpperCase()==="SHOP"){const buy=root.ESCIE_WORLD_ACTIONS?.purchaseGameItem?.("game-item-green-pass");if(buy?.ok){say3D("SHOP · GREEN PASS PURCHASED · -3 SIGNAL");return true}if(buy?.reason==="INSUFFICIENT_SIGNAL"){say3D("SHOP · GREEN PASS · 3 SIGNAL REQUIRED");return true}if(buy?.reason==="ALREADY_OWNED")say3D("SHOP · GREEN PASS · ALREADY OWNED");}if(b){const result=root.ESCIE_WORLD_SIMULATION?.enterBuilding?.(st?.neighbourhood,b.id);if(!result?.ok){say3D("ACCESS · "+String(result?.reason||"DENIED"));return true}enter3DInterior(b);}near.open=true;near.mesh.rotation.y=Math.PI/2;say3D(b?"ENTERED · "+b.name:"DOOR OPEN · INTERIOR LAYER AVAILABLE");return true}
  return false;
@@ -501,6 +501,19 @@ function enter3DInterior(building){
  const light=new THREE.PointLight(0x4da3ff,2,18);light.position.set(0,3,0);interiorGroup.add(light);
  player.x=0;player.z=4.4;player.y=1.7;player.yaw=Math.PI;avatar.position.set(player.x,0,player.z);
  say3D("ENTERED · "+String(building?.name||"INTERIOR")+" · 3D");
+}
+function use3DInteriorAction(){
+ const b=interiorBuilding,sim=root.ESCIE_WORLD_SIMULATION,def=b&&root.ESCIE_WORLD_CITY?.interiors?.[b.interior];
+ if(!b||!def)return false;
+ const actions=Array.isArray(def.actions)?def.actions:[];
+ const preferred={SHOP:"BUY",CAFE:"EAT",STUDIO:"LISTEN",CLUB:"SOCIAL",GYM:"TRAIN",APARTMENT:"REST",CLINIC:"HEAL",OFFICE:"WORK",VENUE:"LISTEN",ARCHIVE:"INVESTIGATE",SIGNAL_ROOM:"TRACE",ROOM_HOME:"REST"};
+ const action=preferred[b.interior]||actions.find(Boolean)||"LOOK";
+ let result={ok:true};
+ if(["EAT","SLEEP","REST","SOCIAL","WORK","TRAIN"].includes(action)) result=sim?.activity?.(action,{id:b.id,skill:action==="TRAIN"?"fitness":undefined,pay:action==="WORK"?30:undefined})||{ok:false,reason:"SIMULATION_UNAVAILABLE"};
+ else { const s=sim?.state?.(); if(s){s.events=(s.events||[]).concat([{type:"INTERIOR_ACTION",action,building:b.id,day:s.day,hour:s.hour}]).slice(-200); sim?.save?.();} result={ok:true}; }
+ if(result?.ok!==false) root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(2,"INTERIOR "+action);
+ say3D(String(b.name||"INTERIOR")+" · "+action+(result?.ok===false?" · "+String(result.reason||"UNAVAILABLE"):" · DONE"));
+ return true;
 }
 function exit3DInterior(){
  if(!interiorMode)return false;
