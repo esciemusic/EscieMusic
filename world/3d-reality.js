@@ -895,8 +895,9 @@ function use3DInteriorAction(){
    const target=String(b?.interior||"").toUpperCase();
    const mission=root.ESCIE_WORLD_SIMULATION?.state?.()?.active_mission;
    if(mission){
-     const p=root.ESCIE_WORLD_SIMULATION?.npcMissionProgress?.(action,target);
-     if(p?.ok){result=p;root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(12,"MISSION OBJECTIVE");}
+     const interiorType=String(b?.interior||"").toUpperCase();
+     const p=root.ESCIE_WORLD_SIMULATION?.npcMissionProgress?.(action,interiorType);
+     if(p?.ok){result=p;root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(12,"MISSION OBJECTIVE");say3D("MISSION · OBJECTIVE COMPLETE");}
    }
  else if(action==="HEAL") result=sim?.buildingAction?.(b.interior,"HEAL",{cost:20})||{ok:false,reason:"SIMULATION_UNAVAILABLE"};
  else {const s=sim?.state?.();if(s){s.events=(s.events||[]).concat([{type:"INTERIOR_ACTION",action,building:b.id,room:station.room,day:s.day,hour:s.hour}]).slice(-200);sim?.save?.();}}
