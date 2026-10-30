@@ -455,7 +455,8 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
     const acct=$("acct"),sa=$("settingsAccount");
     if(acct&&sa&&acct.textContent&&sa.textContent!==acct.textContent)sa.textContent=acct.textContent;
   }
-  window.addEventListener("escie:central-ready",syncOperatorIdentity);\n  window.addEventListener("error",e=>{const msg=e?.error?.message||e?.message||"Unexpected browser error";L("BROWSER_ERROR",msg);if(!load())st("CENTRAL ENCOUNTERED A BROWSER ERROR — SEE ACTIVITY","bad")});\n  window.addEventListener("unhandledrejection",e=>{const msg=e?.reason?.message||String(e?.reason||"Unhandled promise rejection");L("PROMISE_ERROR",msg);if(!load())st("CENTRAL ENCOUNTERED AN ASYNC ERROR — SEE ACTIVITY","bad")});
+  window.addEventListener("escie:central-ready",syncOperatorIdentity);
+  window.addEventListener("error",e=>{const msg=e?.error?.message||e?.message||"Unexpected browser error";L("BROWSER_ERROR",msg);if(!load())st("CENTRAL ENCOUNTERED A BROWSER ERROR — SEE ACTIVITY","bad")});\n  window.addEventListener("unhandledrejection",e=>{const msg=e?.reason?.message||String(e?.reason||"Unhandled promise rejection");L("PROMISE_ERROR",msg);if(!load())st("CENTRAL ENCOUNTERED AN ASYNC ERROR — SEE ACTIVITY","bad")});
   setTimeout(syncOperatorIdentity,500);
 })();
 </script>
