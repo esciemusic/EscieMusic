@@ -549,7 +549,7 @@ console.log("ESCIE 3D interior runtime integrity contracts OK");
 
 assert(world3dRuntime.includes("const schedule=Array.isArray(live.schedule)?live.schedule:[]"),"interior NPCs must consume persistent canonical NPC schedules");
 assert(world3dRuntime.includes("const expectedBuilding="),"interior NPC visibility must follow schedule target buildings");
-assert(world3dRuntime.includes('activity==="WORK" ? live.work_building?.id'),"working NPCs must resolve their authored workplace");
+assert(/activity==="WORK"\s*\?\s*\(live\.work_building\?\.id\|\|live\.workplace_id\)/.test(world3dRuntime),"working NPCs must resolve their authored workplace");
 assert(world3dRuntime.includes('activity==="SOCIAL" ? live.social_building?.id'),"social NPCs must resolve their authored social place");
 assert(world3dRuntime.includes('["SLEEP","HOME"].includes(activity)'),"home NPC routines must resolve authored home buildings");
 assert(world3dRuntime.includes("g.userData.targetStation=station.userData.interiorStation"),"interior NPCs must persist their current station target");
