@@ -391,7 +391,8 @@ function crimeInteract(){
  if(job.step==="ENTER"){
    const entered=sim?.crimeJobProgress?.("ENTER",{target:b.id});
    if(entered?.ok){
-     const crimeRecord={target:b.id,risk:kind==="ROBBERY"?3:2,witnessed:false};\n     if(kind==="ROBBERY")sim?.commitCrime?.("ROBBERY",crimeRecord);else sim?.commitCrime?.("BURGLARY",crimeRecord);
+     const crimeRecord={target:b.id,risk:kind==="ROBBERY"?3:2,witnessed:false};
+     if(kind==="ROBBERY")sim?.commitCrime?.("ROBBERY",crimeRecord);else sim?.commitCrime?.("BURGLARY",crimeRecord);
      const result=sim?.enterBuilding?.(st.neighbourhood,b.id);
      if(result?.ok){enter3DInterior(b);root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(10,kind+" ENTRY");say3D(kind+" · "+interior+" · INSIDE");return true}
    }
