@@ -31,7 +31,7 @@ original.cancel=function(reason="CANCELLED"){const s=window.ESCIE_WORLD_DREAM_ST
 original.hide=function(){const s=window.ESCIE_WORLD_DREAM_STATE;if(!s?.active)return null;s.hidden=!s.hidden;window.ESCIE_PHONE_GAMEPLAY?.notify?.(s.hidden?"DREAM · YOU ARE HIDING":"DREAM · YOU STEP OUT OF COVER","DREAM");return s;};
 document.addEventListener("escie-dream-play-start",e=>{const s=e.detail;if(s){s.hidden=false;s.clues=[];s.lastDetection=0;}});
 document.addEventListener("escie-dream-complete",e=>{
- const s=e.detail;if(!s)return;
+ const s=e.detail;if(!s||s.cancelled)return;
  try{const key="escie_world_simulation_v1",data=JSON.parse(localStorage.getItem(key)||"{}");data.dream_history=Array.isArray(data.dream_history)?data.dream_history:[];data.dream_history.unshift({level:s.level?.label||"DREAM",result:s.result||"WAKE",detected:!!s.detected,clue:s.found||null,turns:s.turns||0,day:data.day||1});data.dream_history=data.dream_history.slice(0,30);if(s.found){data.dream_clues=Array.isArray(data.dream_clues)?data.dream_clues:[];if(!data.dream_clues.includes(s.found))data.dream_clues.push(s.found);}localStorage.setItem(key,JSON.stringify(data));}catch(e){}
 });
 })();
