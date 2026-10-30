@@ -45,3 +45,6 @@ test("command desk keeps uploaded content private until explicitly approved",()=
 });
 
 console.log("ESCIE Command Desk end-to-end contracts OK");
+
+
+test("command desk provides human review controls for specialist results",()=>{for(const x of ['data-jd="APPROVE"','data-jd="REJECT"','data-jd="QUARANTINE"','function reviewJob','state:next','human_review','S.tab==="REVIEW"','RESULTS AWAITING YOU'])assert(desk.includes(x),x)});
