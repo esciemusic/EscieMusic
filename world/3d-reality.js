@@ -75,7 +75,7 @@ function createStreetLife(){
  if(list.length){list.forEach((n,i)=>{const q=gridToWorld(n);actor(q.x,q.z,i);const a=actors[actors.length-1];a.userData.id=n.id;a.userData.canonical=true;a.userData.npc=n});}
  for(let i=list.length;i<18;i++){const x=(i%2?1:-1)*(6.5+(i%4)*1.1),z=-45+i*5.2;actor(x,z,i+100);}
 }
-function syncCanonicalNPCs(t){const api=root.ESCIE_WORLD_NPC;if(!api)return;const live=api.state?.().npcs||{};const now=performance.now();actors.forEach(a=>{if(!a.userData.canonical)return;const n=live[a.userData.id];if(!n){a.visible=false;return}a.visible=Number(n.health??100)>0;const q=gridToWorld(n);a.position.x+=(q.x-a.position.x)*.18;a.position.z+=(q.z-a.position.z)*.18;const reaction=a.userData.reaction&&now<Number(a.userData.reactionUntil||0)?a.userData.reaction:null;if(reaction){const dx=player.x-a.position.x,dz=player.z-a.position.z,d=Math.hypot(dx,dz)||1;if(reaction==="HOSTILE"){a.rotation.y=Math.atan2(dx,dz);a.userData.activity="CONFRONT";}else{const away=1/d;a.position.x-=dx*away*.28;a.position.z-=dz*away*.28;a.rotation.y=Math.atan2(-dx,-dz);a.userData.activity="ALERT";}}else{a.rotation.y=n.facing==="E"?Math.PI/2:n.facing==="W"?-Math.PI/2:n.facing==="N"?Math.PI:0;a.userData.activity=n.activity||"IDLE";}});player.npcSync=now;}
+function syncCanonicalNPCs(t){const api=root.ESCIE_WORLD_NPC;if(!api)return;const live=api.state?.().npcs||{};const now=performance.now();actors.forEach(a=>{if(!a.userData.canonical)return;const n=live[a.userData.id];if(!n){a.visible=false;return}a.visible=Number(n.health??100)>0;const q=gridToWorld(n);a.position.x+=(q.x-a.position.x)*.18;a.position.z+=(q.z-a.position.z)*.18;const reaction=a.userData.reaction&&now<Number(a.userData.reactionUntil||0)?a.userData.reaction:null;if(reaction){const dx=player.x-a.position.x,dz=player.z-a.position.z,d=Math.hypot(dx,dz)||1;if(reaction==="HOSTILE"){a.rotation.y=Math.atan2(dx,dz);if(d>2.4){a.position.x+=dx/d*.045;a.position.z+=dz/d*.045;}a.userData.activity="CONFRONT";}else{const away=1/d;a.position.x-=dx*away*.42;a.position.z-=dz*away*.42;a.rotation.y=Math.atan2(-dx,-dz);a.userData.activity="ALERT";}}else{a.rotation.y=n.facing==="E"?Math.PI/2:n.facing==="W"?-Math.PI/2:n.facing==="N"?Math.PI:0;a.userData.activity=n.activity||"IDLE";}});player.npcSync=now;}
 
 function streetProps(){
  for(let z=-48;z<=48;z+=12){
@@ -104,8 +104,11 @@ function updateTraffic(t){
  traffic.forEach((g,i)=>{
    const direction=i%2===0?1:-1;
    const dz=Math.abs(player.z-g.position.z),dx=Math.abs(player.x-g.position.x);
+   const incidentDistance=streetIncident.type?Math.hypot(g.position.x-streetIncident.x,g.position.z-streetIncident.z):99;
    const nearPlayer=dx<2.2&&dz<8&&!player.inVehicle;
-   const speed=nearPlayer?g.userData.speed*.34:g.userData.speed;
+   const nearIncident=incidentDistance<8;
+   if(nearIncident)g.userData.incidentSlow=.45; else g.userData.incidentSlow=1;
+   const speed=g.userData.speed*(nearPlayer?.34:1)*Number(g.userData.incidentSlow||1);
    g.position.z+=direction*speed*.035;
    if(g.position.z>56)g.position.z=-56;
    if(g.position.z<-56)g.position.z=56;
@@ -202,9 +205,9 @@ function policeCollision(){
  }
  return false;
 }
-function updatePolice(){const law=root.ESCIE_WORLD_LAW?.state?.();if(!law?.active){if(updatePolice.group)updatePolice.group.visible=false;return}const count=Math.max(1,Math.min(4,Number(law.units?.length||law.level||1)));if(!updatePolice.group){updatePolice.group=new THREE.Group();updatePolice.group.userData.policeResponse=true;worldGroup.add(updatePolice.group)}const group=updatePolice.group;while(group.children.length<count){const g=new THREE.Group();g.userData.police=true;const body=new THREE.Mesh(new THREE.BoxGeometry(1.45,.5,2.8),makeMat(0x292a2e,.7,.25));body.position.y=.5;g.add(body);const roof=new THREE.Mesh(new THREE.BoxGeometry(1.1,.28,1.1),makeMat(0x101114,.65));roof.position.y=.88;g.add(roof);const light=new THREE.Mesh(new THREE.BoxGeometry(.18,.08,.32),makeMat(0x2f80ff,.45));light.position.set(.28,1.08,0);g.add(light);const beacon=new THREE.PointLight(0x2f80ff,.45,7,2);beacon.position.set(0,1.12,0);beacon.userData.baseIntensity=.45;beacon.userData.policeBeacon=true;g.add(beacon);g.userData.beacon=beacon;group.add(g)}group.visible=true;const baseAng=Math.atan2(player.z,player.x);for(let i=0;i<group.children.length;i++){const g=group.children[i],active=i<count;g.visible=active;if(!active)continue;const spread=i===0?0:(i%2?1:-1)*(0.35+Math.floor(i/2)*0.18);const ang=baseAng+Math.PI+spread;const radius=Math.max(9,24-Number(law.level||1)*2-i*2);const tx=player.x+Math.cos(ang)*radius,tz=player.z+Math.sin(ang)*radius;g.position.x+=(tx-g.position.x)*.025;g.position.z+=(tz-g.position.z)*.025;g.rotation.y=Math.atan2(player.x-g.position.x,player.z-g.position.z);if(i===0&&Math.hypot(player.x-g.position.x,player.z-g.position.z)<3.2){const r=root.ESCIE_WORLD_LAW?.arrest?.();if(r?.ok)say3D("POLICE · ARRESTED · SENTENCE "+Number(r.sentence||0)+" MIN");}}}
+function updatePolice(){const law=root.ESCIE_WORLD_LAW?.state?.();if(!law?.active){if(updatePolice.group)updatePolice.group.visible=false;return}const count=Math.max(1,Math.min(4,Number(law.units?.length||law.level||1)));if(!updatePolice.group){updatePolice.group=new THREE.Group();updatePolice.group.userData.policeResponse=true;worldGroup.add(updatePolice.group)}const group=updatePolice.group;while(group.children.length<count){const g=new THREE.Group();g.userData.police=true;const body=new THREE.Mesh(new THREE.BoxGeometry(1.45,.5,2.8),makeMat(0x292a2e,.7,.25));body.position.y=.5;g.add(body);const roof=new THREE.Mesh(new THREE.BoxGeometry(1.1,.28,1.1),makeMat(0x101114,.65));roof.position.y=.88;g.add(roof);const light=new THREE.Mesh(new THREE.BoxGeometry(.18,.08,.32),makeMat(0x2f80ff,.45));light.position.set(.28,1.08,0);g.add(light);const beacon=new THREE.PointLight(0x2f80ff,.45,7,2);beacon.position.set(0,1.12,0);beacon.userData.baseIntensity=.45;beacon.userData.policeBeacon=true;g.add(beacon);g.userData.beacon=beacon;group.add(g)}group.visible=true;const targetX=streetIncident.type?streetIncident.x:player.x,targetZ=streetIncident.type?streetIncident.z:player.z;const baseAng=Math.atan2(targetZ,targetX);for(let i=0;i<group.children.length;i++){const g=group.children[i],active=i<count;g.visible=active;if(!active)continue;const spread=i===0?0:(i%2?1:-1)*(0.35+Math.floor(i/2)*0.18);const ang=baseAng+Math.PI+spread;const radius=Math.max(9,24-Number(law.level||1)*2-i*2);const tx=targetX+Math.cos(ang)*radius,tz=targetZ+Math.sin(ang)*radius;g.position.x+=(tx-g.position.x)*.025;g.position.z+=(tz-g.position.z)*.025;g.rotation.y=Math.atan2(targetX-g.position.x,targetZ-g.position.z);if(i===0&&Math.hypot(player.x-g.position.x,player.z-g.position.z)<3.2){const r=root.ESCIE_WORLD_LAW?.arrest?.();if(r?.ok)say3D("POLICE · ARRESTED · SENTENCE "+Number(r.sentence||0)+" MIN");}}}
 const streetEncounter={npcId:null,type:null,expires:0,nextAt:0};
-const streetIncident={type:null,aId:null,bId:null,expires:0,nextAt:0,resolved:false};
+const streetIncident={type:null,aId:null,bId:null,expires:0,nextAt:0,resolved:false,x:0,z:0};
 function incidentType(a,b){
  const ar=String(a?.occupation||a?.role||"").toUpperCase(),br=String(b?.occupation||b?.role||"").toUpperCase();
  if(/SECURITY|POLICE/.test(ar)||/SECURITY|POLICE/.test(br))return "POLICE_STOP";
@@ -233,7 +236,7 @@ function updateStreetIncident(now){
      else if(streetIncident.type==="POLICE_STOP"){law?.dispatch?.("POLICE STOP",1);}
      [aa,bb].forEach(x=>{if(x){x.userData.incident=null;x.userData.reaction="ALERT";x.userData.reactionUntil=now+1800;}});
      say3D(label+" · THE CITY MOVED ON");
-     streetIncident.type=null;streetIncident.aId=null;streetIncident.bId=null;streetIncident.expires=0;streetIncident.resolved=true;streetIncident.nextAt=now+16000;
+     streetIncident.type=null;streetIncident.aId=null;streetIncident.bId=null;streetIncident.expires=0;streetIncident.resolved=true;streetIncident.x=0;streetIncident.z=0;streetIncident.nextAt=now+16000;
    }
    return;
  }
@@ -243,7 +246,7 @@ function updateStreetIncident(now){
  const pair=nearby.slice(0,6);let first=null,second=null,best=99;
  for(let i=0;i<pair.length;i++)for(let j=i+1;j<pair.length;j++){const d=Math.hypot(pair[i].actor.position.x-pair[j].actor.position.x,pair[i].actor.position.z-pair[j].actor.position.z);if(d<best){best=d;first=pair[i];second=pair[j];}}
  if(!first||!second||best>5){streetIncident.nextAt=now+7000;return;}
- streetIncident.type=incidentType(first.npc,second.npc);streetIncident.aId=first.npc.id;streetIncident.bId=second.npc.id;streetIncident.expires=now+14000;streetIncident.nextAt=now+22000;streetIncident.lastPrompt=0;streetIncident.resolved=false;
+ streetIncident.type=incidentType(first.npc,second.npc);streetIncident.aId=first.npc.id;streetIncident.bId=second.npc.id;streetIncident.x=(first.actor.position.x+second.actor.position.x)/2;streetIncident.z=(first.actor.position.z+second.actor.position.z)/2;streetIncident.expires=now+14000;streetIncident.nextAt=now+22000;streetIncident.lastPrompt=0;streetIncident.resolved=false;
  first.actor.userData.incident="INCIDENT";second.actor.userData.incident="INCIDENT";
  first.actor.userData.reaction=streetIncident.type==="POLICE_STOP"?"ALERT":"HOSTILE";second.actor.userData.reaction="ALERT";
  root.ESCIE_WORLD_NPC?.observe?.(streetIncident.type,{x:0,y:0},{radius:10,speed:"ALERT",blocked:()=>false});
@@ -283,7 +286,7 @@ function resolveStreetIncident(){
  root.ESCIE_WORLD_NPC?.rememberInteraction?.(b.id,{channel:"STREET_INCIDENT",type:streetIncident.type,outcome:line});
  say3D(line);
  [nearA,nearB].forEach(x=>{if(x){x.userData.incident=null;x.userData.reaction="ALERT";x.userData.reactionUntil=performance.now()+2600;}});
- streetIncident.type=null;streetIncident.aId=null;streetIncident.bId=null;streetIncident.expires=0;streetIncident.resolved=true;
+ streetIncident.type=null;streetIncident.aId=null;streetIncident.bId=null;streetIncident.expires=0;streetIncident.resolved=true;streetIncident.x=0;streetIncident.z=0;
  return true;
 }
 
