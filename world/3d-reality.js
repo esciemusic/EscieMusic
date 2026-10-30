@@ -1197,6 +1197,9 @@ function setMode(v){
  const log=document.getElementById("world-log");if(log)log.textContent=thirdPerson?"3D REALITY · THIRD PERSON":"3D REALITY · FIRST PERSON";
 }
 function bind(){
+ document.addEventListener("keydown",e=>{
+   if(e.key==="Escape"&&!e.repeat){e.preventDefault();togglePause(!paused);}
+ });
  document.addEventListener("click",e=>{
    const p=e.target.closest("[data-pause]");if(p)togglePause();
    const r=e.target.closest("[data-world-resume]");if(r)togglePause(false);
