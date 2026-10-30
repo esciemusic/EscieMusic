@@ -2,6 +2,7 @@ const balance=require("../data/layer-balance.js");
 const contract=require("../data/universe-contract.js");
 function assert(v,m){if(!v)throw new Error(m);}
 assert(balance.validate().ok,"Layer balance must validate");
+assert(manifest.contracts.includes("layer-balance"),"layer balance must be registered");
 assert(contract.validate().ok,"Universe contract must validate");
 assert(balance.layers.central.owns.includes("correlation"),"Central owns correlation");
 assert(balance.layers.public.owns.includes("music"),"Public owns music");
