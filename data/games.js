@@ -155,6 +155,27 @@
     "CONTRADICTS"
   ];
 
+  const ESCIE_GAME_HOSTING={
+    status:"EXTERNAL_PLATFORM_EVALUATION",
+    public_link:null,
+    preferred:{
+      platform:"ITCH_IO",
+      reason:"strong fit for independent HTML5 builds, ownership-friendly distribution, and direct browser play",
+      source:"https://itch.io/docs/creators/html5"
+    },
+    engine_candidate:{
+      platform:"GODOT",
+      reason:"free/open-source 3D engine with browser export; a better foundation for the full RPG than the current custom browser prototype",
+      source:"https://godotengine.org/"
+    },
+    alternatives:[
+      {platform:"GD_GAMES",reason:"free browser publishing route for GDevelop builds"},
+      {platform:"GAME_JOLT",reason:"independent game community and browser distribution"},
+      {platform:"NEWGROUNDS",reason:"HTML5 browser game publishing and community feedback"}
+    ],
+    rule:"The public ESCIE site remains canonical. A future playable build is linked from ESCIE and reported to Central; game state never becomes canonical automatically."
+  };
+
   const ESCIE_GAMES=[];
   const ESCIE_GAME_ITEMS=[];
   const ESCIE_GAME_INVENTORIES=[];
@@ -393,7 +414,7 @@
     return state;
   }
 
-  const API={
+  const API={\n    hosting:()=>JSON.parse(JSON.stringify(ESCIE_GAME_HOSTING)),
     version:"1.1.0",
     itemTypes:()=>GAME_ITEM_TYPES.slice(),
     priceTypes:()=>GAME_PRICE_TYPES.slice(),
