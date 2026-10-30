@@ -2,6 +2,7 @@
 (function(root){
   "use strict";
   function run(){
+    const contract=root.ESCIE_UNIVERSE_CONTRACT?.validate?.()||{ok:false,errors:["universe contract unavailable"]};
     const required=[
       ["Three.js",!!root.THREE],
       ["world content",!!root.ESCIE_WORLD_CONTENT],
@@ -12,7 +13,9 @@
       ["RPG runtime",!!root.ESCIE_RPG],
       ["equipment runtime",!!root.ESCIE_EQUIPMENT],
       ["vehicle runtime",!!root.ESCIE_VEHICLES],
-      ["law runtime",!!root.ESCIE_LAW]
+      ["law runtime",!!root.ESCIE_LAW],
+      ["universe contract",contract.ok],
+      ["3D runtime",!!root.ESCIE_3D_WORLD]
     ];
     const missing=required.filter(x=>!x[1]).map(x=>x[0]);
     const result={ok:missing.length===0,missing,timestamp:new Date().toISOString()};
