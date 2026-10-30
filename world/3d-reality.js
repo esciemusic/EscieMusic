@@ -367,6 +367,38 @@ function gamepadInput(){
 function evidenceInteract(){const m=updateEvidence();if(!m)return false;const o=m.userData.evidence;const r=root.ESCIE_WORLD_ACTIONS?.interactObject?.(o);if(r!==false){say3D("EVIDENCE · "+String(o.label||o.id)+" · LOGGED");return true}return false}
 function nearestNPC(max=2.8){const live=root.ESCIE_WORLD_NPC?.state?.().npcs||{};let best=null,bd=max;actors.forEach(a=>{if(!a.userData.canonical)return;const n=live[a.userData.id];if(!n||Number(n.health??100)<=0)return;const d=Math.hypot(player.x-a.position.x,player.z-a.position.z);if(d<bd){bd=d;best={npc:n,actor:a,d}}});return best}
 function fight3D(){const hit=nearestNPC(2.8);if(!hit){say3D("COMBAT · NO TARGET IN RANGE");return false}const sim=root.ESCIE_WORLD_SIMULATION,weapon=root.ESCIE_WORLD_EQUIPMENT?.weapon?.()?.id||"FISTS",attack=sim?.combatAttack?.(hit.npc.id,{weapon});if(attack?.reason==="EXHAUSTED"){say3D("COMBAT · TOO EXHAUSTED");return true}if(!attack?.ok){say3D("COMBAT · "+String(attack?.reason||"FAILED"));return true}root.ESCIE_WORLD_ACTIONS?.recordRPGCombat?.("hit",{dealt:Number(attack.hit||0)});root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(3,"COMBAT HIT");hit.actor.userData.reaction=attack.target?.down?"DOWN":"HOSTILE";hit.actor.userData.reactionUntil=performance.now()+2200;root.ESCIE_WORLD_NPC?.relationship?.(hit.npc.id,-8,"3D FIGHT");if(attack.target?.down){root.ESCIE_WORLD_ACTIONS?.recordRPGCombat?.("knockout",{dealt:Number(attack.hit||0)});root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(40,"COMBAT KNOCKOUT");say3D("TARGET DOWN · +40 XP · CONSEQUENCE REGISTERED");}else{reactToCrime("3D COMBAT",1);const retaliation=Math.max(2,Math.min(12,Math.round((100-(attack.target?.health??100))/12)));const hurt=sim?.applyDamage?.(retaliation,"NPC_RETALIATION");if(hurt?.dead){const rr=sim.respawn?.();say3D(rr?.ok?"YOU DIED · RESPAWNED":"YOU DIED");}else if(hurt?.hospital)say3D("SERIOUS INJURY · HOSPITAL REQUIRED");else say3D("COMBAT · TARGET HP "+Number(attack.target?.health??0)+" · WANTED RESPONSE");}return true}
+function updateHostileNPCs(now){
+ if(interiorMode)return;
+ const live=root.ESCIE_WORLD_NPC?.state?.().npcs||{},sim=root.ESCIE_WORLD_SIMULATION;
+ actors.forEach(a=>{
+   if(!a.userData.canonical||!a.visible)return;
+   const n=live[a.userData.id];if(!n||Number(n.health??100)<=0)return;
+   if(String(a.userData.reaction||"").toUpperCase()!=="HOSTILE")return;
+   if(Number(a.userData.reactionUntil||0)<now){a.userData.reaction="ALERT";a.userData.combatState="SEARCHING";return;}
+   const d=Math.hypot(player.x-a.position.x,player.z-a.position.z);
+   if(d>14){a.userData.reaction="ALERT";a.userData.combatState="SEARCHING";return;}
+   if(d>1.7){
+     const dx=player.x-a.position.x,dz=player.z-a.position.z,step=Math.min(d,.055);
+     const nx=a.position.x+dx/d*step,nz=a.position.z+dz/d*step;
+     if(!blocked(nx,a.position.z))a.position.x=nx;
+     if(!blocked(a.position.x,nz))a.position.z=nz;
+     a.rotation.y=Math.atan2(dx,dz);a.userData.combatState="CHASING";
+   }else{
+     a.userData.combatState="ATTACKING";
+     if(now-Number(a.userData.lastAttack||0)>1200){
+       a.userData.lastAttack=now;
+       const armor=root.ESCIE_WORLD_EQUIPMENT?.armor?.()||0;
+       const damage=Math.max(1,Math.round(5*(1-Math.min(.55,armor/100))));
+       const hurt=sim?.applyDamage?.(damage,"NPC_ATTACK");
+       root.ESCIE_WORLD_ACTIONS?.recordRPGCombat?.("hit",{taken:damage});
+       if(hurt?.dead){const rr=sim?.respawn?.();say3D(rr?.ok?"YOU WERE DROPPED · RESPAWNED":"YOU WERE DROPPED");}
+       else if(hurt?.hospital)say3D("NPC ATTACK · SERIOUS INJURY · HOSPITAL");
+       else say3D("NPC ATTACK · -"+damage+" HP");
+     }
+   }
+   a.userData.hostileTarget="PLAYER";
+ });
+}
 function policeCollision(){
  const g=updatePolice.group;if(!g?.visible||!player.inVehicle)return false;
  for(const u of g.children){if(!u.visible)continue;const d=Math.hypot(player.x-u.position.x,player.z-u.position.z);
@@ -975,7 +1007,7 @@ function updateActors(t){
 function render(){
  updateStreetEncounters(performance.now());
  updateStreetIncident(performance.now());
- const dt=Math.min(clock.getDelta(),.05);updateQuality(dt);move(dt);worldHeartbeat();updateLaw();updateActors(clock.elapsedTime);syncCanonicalNPCs(clock.elapsedTime);updateTraffic(clock.elapsedTime);updateVehicles(clock.elapsedTime);updatePolice();policeCollision();updateEnvironment(clock.elapsedTime);if(performance.now()-perf.hud>120){updateHud();syncPauseMap();perf.hud=performance.now();}
+ const dt=Math.min(clock.getDelta(),.05);updateQuality(dt);move(dt);worldHeartbeat();updateLaw();updateActors(clock.elapsedTime);updateHostileNPCs(performance.now());syncCanonicalNPCs(clock.elapsedTime);updateTraffic(clock.elapsedTime);updateVehicles(clock.elapsedTime);updatePolice();policeCollision();updateEnvironment(clock.elapsedTime);if(performance.now()-perf.hud>120){updateHud();syncPauseMap();perf.hud=performance.now();}
  if(thirdPerson){
    const vehicle=player.inVehicle,dist=vehicle?6.2:4.8,height=vehicle?2.9:2.45;
    const shoulder=new THREE.Vector3(Math.sin(player.yaw)*dist,height,Math.cos(player.yaw)*dist);
