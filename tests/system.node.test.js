@@ -702,3 +702,8 @@ assert(sim.includes("const commitCrime="), "simulation must expose systemic crim
 assert(world3dRuntime.includes("commitCrime?.(\"BURGLARY\""), "3D world must support burglary crime");
 assert(world3dRuntime.includes("commitCrime?.(\"ASSAULT\""), "3D combat must record assault crime");
 assert(world3dRuntime.includes("commitCrime?.(\"VEHICLE_THEFT\""), "vehicle theft must record crime");
+assert(sim.includes("const crimeJobAccept="), "simulation must support multi-step crime jobs");
+assert(sim.includes("const crimeJobProgress="), "crime jobs must have physical progression steps");
+assert(world3dRuntime.includes("function crimeInteract()"), "3D world must expose physical crime entry");
+assert(world3dRuntime.includes("crimeJobProgress?.(\"TAKE\""), "crime interiors must support physical loot taking");
+assert(world3dRuntime.includes("crimeJobProgress?.(\"ESCAPE\""), "crime exits must progress the heist");
