@@ -159,7 +159,7 @@ const crimeJobProgress=(step,opts={})=>{
  else if(j.step==="ENTER"){if(j.target&&target&&j.target.toUpperCase()!==target)return {ok:false,reason:"WRONG_TARGET"};j.step="TAKE";}
  else if(j.step==="TAKE"){j.taken=true;s.inventory=s.inventory||[];s.inventory.push(j.item);j.step="ESCAPE";}
  else if(j.step==="ESCAPE"){j.escaped=true;j.step="FENCE";}
- else if(j.step==="FENCE"){if(!j.taken||!j.escaped)return {ok:false,reason:"NOT_READY"};j.fenced=true;s.money+=Number(j.pay||0);s.reputation=Math.max(-100,Number(s.reputation||0)-1);s.crime_history=(s.crime_history||[]).concat([{type:j.id,target:j.target,completed:true,day:s.day,hour:s.hour}]).slice(-100);s.events=(s.events||[]).concat([{type:"CRIME_JOB_COMPLETE",crime:j.id,target:j.target,pay:j.pay,day:s.day,hour:s.hour}]).slice(-300);s.crime_job=null;save(s);return {ok:true,complete:true,reward:j.pay};}
+ else if(j.step==="FENCE"){if(!j.taken||!j.escaped)return {ok:false,reason:"NOT_READY"};j.fenced=true;s.money+=Number(j.pay||0);s.reputation=Math.max(-100,Number(s.reputation||0)-1);s.inventory=(s.inventory||[]).filter(x=>x!==j.item);s.crime_history=(s.crime_history||[]).concat([{type:j.id,target:j.target,completed:true,day:s.day,hour:s.hour}]).slice(-100);s.events=(s.events||[]).concat([{type:"CRIME_JOB_COMPLETE",crime:j.id,target:j.target,pay:j.pay,day:s.day,hour:s.hour}]).slice(-300);s.crime_job=null;save(s);return {ok:true,complete:true,reward:j.pay};}
  s.events=(s.events||[]).concat([{type:"CRIME_JOB_STEP",crime:j.id,step:j.step,target:j.target,day:s.day,hour:s.hour}]).slice(-300);
  save(s);return {ok:true,job:j};
 };
