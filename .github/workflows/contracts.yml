@@ -23,6 +23,7 @@ jobs:
           - performance.node.test.js
           - layer-balance.node.test.js
           - universe-contract.node.test.js
+          - service-contract.node.test.js
           - countdown.node.test.js
           - syntax-all.node.test.js
           - surface-architecture.node.test.js
