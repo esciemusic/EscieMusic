@@ -589,6 +589,26 @@ function npcInteract(){
  const api=root.ESCIE_WORLD_NPC;
  const now=performance.now();
  if(bestActor&&now>Number(bestActor.userData.interactionCooldown||0)){
+   const mission=root.ESCIE_WORLD_SIMULATION?.npcMissionOffer?.(best.id);
+   if(mission?.ok&&mission.available){
+     const accepted=root.ESCIE_WORLD_SIMULATION?.npcMissionAccept?.(best.id);
+     if(accepted?.ok){
+       bestActor.userData.interactionCooldown=now+30000;
+       root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(10,"MISSION ACCEPTED");
+       say3D((best.name||best.role||"LOCAL")+" · "+accepted.mission.title+" · "+accepted.mission.objective);
+       return true;
+     }
+   }
+   const active=root.ESCIE_WORLD_SIMULATION?.state?.()?.active_mission;
+   if(active?.npcId===best.id&&active.completed){
+     const done=root.ESCIE_WORLD_SIMULATION?.npcMissionComplete?.();
+     if(done?.ok){
+       bestActor.userData.interactionCooldown=now+30000;
+       root.ESCIE_WORLD_ACTIONS?.awardRPGXP?.(25,"MISSION COMPLETE");
+       say3D((best.name||best.role||"LOCAL")+" · MISSION COMPLETE · +$"+Number(done.reward?.money||0)+" · +"+Number(done.reward?.rep||0)+" REP");
+       return true;
+     }
+   }
    const rel=Number(best.relationship||0);
    const favor=api?.favor?.(best.id,"FAVOR");
    if(rel>=10&&favor?.ok){
