@@ -350,6 +350,6 @@ function start(){
  if(started)return;started=true;if(!setup()){started=false;return;}
  bind();const s=stage();s.classList.add("three-active");setMode(false);togglePause(false);render();
 }
-root.ESCIE_3D_WORLD={start,stop,ready:()=>!!renderer,toggleCamera:()=>setMode(!thirdPerson),interact,fight:fight3D,setSprint:(v)=>{move._touchSprint=!!v},status:()=>({ready:!!renderer,quality:perf.quality,frameMs:Math.round(perf.frameMs)})};
+root.ESCIE_3D_WORLD={start,stop,ready:()=>!!renderer,toggleCamera:()=>setMode(!thirdPerson),pause:()=>togglePause(true),resume:()=>togglePause(false),isPaused:()=>paused,interact,fight:fight3D,setSprint:(v)=>{move._touchSprint=!!v},status:()=>({ready:!!renderer,paused,quality:perf.quality,frameMs:Math.round(perf.frameMs)})};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",start);else start();
 })();
