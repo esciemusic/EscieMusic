@@ -90,7 +90,7 @@ function streetProps(){
    box(1.55,.3,1.9,0x101114,side,1.0,z);
  }
 }
-function clearWorld(){traffic.lastImpact=0;obstacles.length=0;actors.length=0;doors.length=0;lights.length=0;evidence.length=0;windowLights.length=0;streetMarkings.length=0;laneMarkings.length=0;groundMeshes.length=0;readabilityLights.length=0;facadeMeshes.length=0;playerRimLights.length=0;doorSignals.length=0;traffic.length=0;lastEnvironmentKey="";snowMesh=null;}
+function clearWorld(){traffic.lastImpact=0;if(typeof updateVehicles==="function")updateVehicles.car=null;if(typeof updatePolice==="function")updatePolice.group=null;obstacles.length=0;actors.length=0;doors.length=0;lights.length=0;evidence.length=0;windowLights.length=0;streetMarkings.length=0;laneMarkings.length=0;groundMeshes.length=0;readabilityLights.length=0;facadeMeshes.length=0;playerRimLights.length=0;doorSignals.length=0;traffic.length=0;lastEnvironmentKey="";snowMesh=null;}
 function createTraffic(){
  for(let i=0;i<6;i++){
    const g=new THREE.Group();g.userData.traffic=true;g.userData.lane=i%2===0?-2.35:2.35;g.userData.speed=.9+(i%3)*.18;g.userData.offset=i*19;
