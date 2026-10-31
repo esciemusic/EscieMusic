@@ -26,6 +26,15 @@
     const p=PROVIDERS[kind];
     return {provider:p?.id||null,kind,mode:p?.mode||"UNAVAILABLE",request:String(request||""),workspace_id:workspace(),requires_human_approval:true,...extra};
   }
+  async function deletePrivate(path){
+    if(!path)throw Error("STORAGE_DELETE_INPUT_MISSING");
+    const s=session(); if(!s?.access_token)throw Error("CENTRAL_SESSION_UNAVAILABLE");
+    const base="https://ljdkjzvnwnaluevtzker.supabase.co/storage/v1/object/central-private/";
+    const safe=String(path).replace(/^\\/+ /,"").replace(/^\\/+ /,"").split("/").map(x=>encodeURIComponent(x)).join("/");
+    const r=await fetch(base+safe,{method:"DELETE",headers:{Authorization:"Bearer "+s.access_token}});
+    if(!r.ok&&r.status!==404)throw Error("FILE_DELETE_FAILED_HTTP_"+r.status);
+    return {provider:PROVIDERS.STORAGE.id,bucket:"central-private",storage_path:path};
+  }
   async function uploadPrivate(file,path){
     if(!file||!path)throw Error("STORAGE_UPLOAD_INPUT_MISSING");
     const s=session(); if(!s?.access_token)throw Error("CENTRAL_SESSION_UNAVAILABLE");
@@ -36,5 +45,5 @@
     return {provider:PROVIDERS.STORAGE.id,bucket:"central-private",storage_path:path};
   }
   function handoff(kind,request,extra){return plan(kind,request,extra)}
-  window.ESCIE_THIRD_PARTY_BROKER=Object.freeze({version:"1.2.0",contract:SERVICE_CONTRACT,providers:PROVIDERS,plan,handoff,uploadPrivate});
+  window.ESCIE_THIRD_PARTY_BROKER=Object.freeze({version:"1.3.0",contract:SERVICE_CONTRACT,providers:PROVIDERS,plan,handoff,uploadPrivate,deletePrivate});
 })();
