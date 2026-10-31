@@ -191,7 +191,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
   <div class="utility"><button class="iconbtn" id="utilityToggle" aria-expanded="false" aria-controls="utilityMenu" aria-label="Open utilities">⋯</button>
     <div id="utilityMenu" class="utilityMenu hidden" role="menu">
       <button data-utility="audit"><strong>AUDIT</strong><span class="ey">System health, security, integrity, agents, connectors</span></button>
-      <button data-utility="connect"><strong>CONNECT SERVICES</strong><span class="ey">Instagram, TikTok, YouTube and future destinations</span></button><button data-utility="command"><strong>COMMAND PALETTE</strong><span class="ey">Jump, create, review, audit or distribute</span></button>
+      <button data-utility="connect"><strong>CONNECT SERVICES</strong><span class="ey">Instagram, TikTok, YouTube, SoundCloud and future destinations</span></button><button data-utility="command"><strong>COMMAND PALETTE</strong><span class="ey">Jump, create, review, audit or distribute</span></button>
       <button data-utility="activity"><strong>ACTIVITY</strong><span class="ey">Recent Central events and agent operations</span></button>
       <button data-utility="shortcuts"><strong>SHORTCUTS</strong><span class="ey">Fast controls and navigation</span></button>
     </div>
@@ -295,9 +295,12 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
     </div>
   </div>
   <div class="section"><div class="sectionTitle"><div><h2>Destinations</h2><p>Connections intentionally stay locked until the surface is ready.</p></div></div>
-    <div class="stack"><div class="rowcard"><div class="rowleft"><div class="rowtitle">INSTAGRAM</div><div class="rowmeta">Provider connection</div></div><div class="rowright"><span class="pill lock">LOCKED IN PREVIEW</span></div></div>
-    <div class="rowcard"><div class="rowleft"><div class="rowtitle">TIKTOK</div><div class="rowmeta">Provider connection</div></div><div class="rowright"><span class="pill lock">LOCKED IN PREVIEW</span></div></div>
-    <div class="rowcard"><div class="rowleft"><div class="rowtitle">YOUTUBE</div><div class="rowmeta">Provider connection</div></div><div class="rowright"><span class="pill lock">LOCKED IN PREVIEW</span></div></div></div>
+    <div class="stack"><div class="rowcard"><div class="rowleft"><div class="rowtitle">INSTAGRAM</div><div class="rowmeta">Social distribution</div></div><div class="rowright"><span class="pill lock">PROVIDER READY</span></div></div>
+    <div class="rowcard"><div class="rowleft"><div class="rowtitle">TIKTOK</div><div class="rowmeta">Social distribution</div></div><div class="rowright"><span class="pill lock">PROVIDER READY</span></div></div>
+    <div class="rowcard"><div class="rowleft"><div class="rowtitle">YOUTUBE</div><div class="rowmeta">Video distribution</div></div><div class="rowright"><span class="pill lock">PROVIDER READY</span></div></div>
+    <div class="rowcard"><div class="rowleft"><div class="rowtitle">SOUNDCLOUD</div><div class="rowmeta">Direct audio publishing</div></div><div class="rowright"><span class="pill lock">CONTRACT ADDED</span></div></div>
+    <div class="rowcard"><div class="rowleft"><div class="rowtitle">BANDCAMP</div><div class="rowmeta">Music + merchandise</div></div><div class="rowright"><span class="pill lock">API ACCESS REQUIRED</span></div></div>
+    <div class="rowcard"><div class="rowleft"><div class="rowtitle">MUSIC DISTRIBUTOR</div><div class="rowmeta">Spotify / Apple Music / DSP delivery</div></div><div class="rowright"><span class="pill lock">EVALUATE PROVIDER</span></div></div></div>
   </div>
   <div class="section panel"><div class="kicker">NEXT</div><h2>Build the control surface first.</h2><p>Registration unlocks the operating layer. Provider credentials and publishing can be connected after the visual system and workflows are approved.</p><div class="authActions"><button id="previewRegister" class="btn primary">REGISTER TO UNLOCK COMPLETE OS</button><button id="previewExit" class="btn ghost">EXIT PREVIEW</button></div></div>
 </section>
