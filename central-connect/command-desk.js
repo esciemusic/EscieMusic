@@ -4,7 +4,7 @@ function resultCard(j){
  const chain=S.jobs.filter(x=>x.conversation_id&&x.conversation_id===j.conversation_id).sort((a,b)=>String(a.created_at||"").localeCompare(String(b.created_at||"")));
  const first=chain[0]||j;
  const q=first.payload?.text||first.payload?.instruction||first.message_type||"Conversation";
- const detail=chain.map((x,i)=>'<div class="thread-event"><b>'+esc(String(i+1).padStart(2,"0"))+' · '+esc(x.message_type||"EVENT")+'</b><span>'+esc(x.state||"")+'</span><p>'+esc(String(x.payload?.text||x.payload?.summary||x.payload?.instruction||"").slice(0,500))+'</p></div>').join("");
+ const detail=chain.map((x,i)=>'<div class="thread-event"><b>'+esc(String(i+1).padStart(2,"0"))+' · '+esc(x.message_type||"EVENT")+'</b><span>'+esc(x.state||"")+'</span><p>'+esc(String(x.payload?.text||x.payload?.summary||x.payload?.instruction||"").slice(0,500))+'</p>'+((x.payload?.operator_feedback||x.payload?.human_review?.latest?.feedback)?'<div class="thread-feedback"><strong>OPERATOR FEEDBACK</strong><br>'+esc(String(x.payload?.operator_feedback||x.payload?.human_review?.latest?.feedback))+'</div>':'')+'</div>').join("");
  const tid=esc(String(j.conversation_id||j.id));
  return '<article class="desk-item thread-card"><div class="thread-head"><div><div class="desk-title">'+esc(String(q).slice(0,180))+'</div><div class="desk-meta">THREAD · '+esc(String(j.conversation_id||j.id))+' · '+esc(String(chain.length||1))+' EVENTS</div></div><button class="btn small" type="button" data-thread-toggle="'+tid+'">OPEN THREAD</button></div><div class="thread-preview"><div class="desk-meta">'+esc(j.from_role||"SPECIALIST")+' → '+esc(j.to_role||"CENTRAL")+' · '+esc(s)+'</div><p>'+esc(String(j.payload?.text||j.payload?.summary||"Specialist result").slice(0,260))+'</p></div><div class="thread-detail hidden" id="thread-'+tid+'">'+detail+'<div class="desk-actions"><button class="btn small primary" data-j="'+esc(j.id)+'" data-jd="APPROVE">APPROVE</button><button class="btn small" data-j="'+esc(j.id)+'" data-jd="REJECT">REJECT</button><button class="btn small" data-j="'+esc(j.id)+'" data-jd="QUARANTINE">QUARANTINE</button><button class="btn small" data-j="'+esc(j.id)+'" data-jd="MODIFY">MODIFY</button></div></div></article>';
 }
@@ -32,6 +32,7 @@ function populateConversationPicker(){
  if([...sel.options].some(o=>o.value===current))sel.value=current;
 }
 function conversationSummary(id){
+
  const chain=S.jobs.filter(j=>j.conversation_id===id).sort((a,b)=>String(a.created_at||"").localeCompare(String(b.created_at||"")));
  if(!chain.length)return "";
  const first=chain[0],last=chain[chain.length-1];
