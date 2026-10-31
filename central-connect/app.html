@@ -185,6 +185,17 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
 .central-modal-backdrop.open{display:flex}.central-modal{width:min(620px,100%);max-height:90vh;overflow:auto;background:#111;border:1px solid rgba(150,130,255,.45);box-shadow:0 24px 80px rgba(0,0,0,.5);padding:20px;border-radius:14px}
 .central-modal h3{margin:0 0 8px}.central-modal p{opacity:.72;margin:0 0 16px}.central-modal label{display:block;font-size:.78rem;opacity:.72;margin:12px 0 6px}.central-modal input,.central-modal textarea{width:100%;box-sizing:border-box;background:#080808;color:inherit;border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:11px;font:inherit}.central-modal textarea{min-height:110px;resize:vertical}.central-modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}.central-modal-actions button{min-width:90px}
 @media(max-width:600px){.central-modal{padding:16px}.central-modal-actions{position:sticky;bottom:0;background:#111;padding-top:10px}}
+</style><style id="central-constant-node-style">
+.central-constant-node{position:fixed;right:18px;bottom:18px;z-index:900;display:flex;align-items:center;gap:9px;padding:10px 13px 10px 10px;border:1px solid rgba(190,215,198,.22);border-radius:999px;background:rgba(7,11,9,.82);color:#e9f0ea;box-shadow:0 18px 55px rgba(0,0,0,.42),0 0 30px rgba(120,170,132,.08);backdrop-filter:blur(18px);font:800 10px/1 Inter,ui-sans-serif,system-ui;letter-spacing:.14em;cursor:pointer;transition:transform .2s ease,border-color .2s ease,background .2s ease}
+.central-constant-node:hover{transform:translateY(-2px);border-color:rgba(190,220,198,.42);background:rgba(18,27,21,.92)}
+.central-constant-node:focus-visible{outline:2px solid #b9d8bf;outline-offset:3px}
+.central-constant-node .central-node-orbit{width:22px;height:22px;position:relative;border:1px solid rgba(185,216,191,.45);border-radius:50%;display:grid;place-items:center}
+.central-constant-node .central-node-orbit:before{content:"";width:6px;height:6px;border-radius:50%;background:#c8e4cd;box-shadow:0 0 14px 4px rgba(150,200,160,.22)}
+.central-constant-node .central-node-orbit:after{content:"";position:absolute;inset:4px;border:1px solid rgba(185,216,191,.18);border-radius:50%;animation:central-node-pulse 2.2s ease-in-out infinite}
+.central-node-label{white-space:nowrap}
+@keyframes central-node-pulse{0%,100%{transform:scale(.82);opacity:.35}50%{transform:scale(1.2);opacity:.9}}
+@media(max-width:620px){.central-constant-node{right:10px;bottom:10px;padding:9px 11px 9px 9px}.central-node-label{font-size:9px}}
+@media(prefers-reduced-motion:reduce){.central-constant-node .central-node-orbit:after{animation:none}}
 </style></head>
 </head>
 <body>
@@ -582,5 +593,18 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
 <script src="../data/layer-balance.js"></script>
 <script src="./agent-protocol.js"></script><script src="./agent-runtime.js"></script><script src="./agent-dispatcher.js"></script><script src="./agent-ui.js"></script><script src="./operator.js"></script><script src="./central-world-engine.js"></script><script src="./clothing-workflow.js"></script><script src="./third-party-broker.js"></script>
 <script src="./command-desk.js"></script>
-<div id="centralModal" class="central-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="centralModalTitle"><div class="central-modal"><h3 id="centralModalTitle">Central</h3><p id="centralModalHint"></p><div id="centralModalFields"></div><div class="central-modal-actions"><button type="button" id="centralModalCancel">CANCEL</button><button type="button" id="centralModalConfirm">CONTINUE</button></div></div></div></body>
+<button id="centralConstantNode" class="central-constant-node hidden" type="button" aria-label="Open Central Orchestrator request window" title="Talk to Central"><span class="central-node-orbit" aria-hidden="true"></span><span class="central-node-label">CENTRAL</span></button><div id="centralModal" class="central-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="centralModalTitle"><div class="central-modal"><h3 id="centralModalTitle">Central</h3><p id="centralModalHint"></p><div id="centralModalFields"></div><div class="central-modal-actions"><button type="button" id="centralModalCancel">CANCEL</button><button type="button" id="centralModalConfirm">CONTINUE</button></div></div></div><script>
+(function(){
+  const node=document.getElementById("centralConstantNode"),app=document.getElementById("app");
+  if(!node||!app)return;
+  function sync(){node.classList.toggle("hidden",app.classList.contains("hidden"))}
+  node.addEventListener("click",function(){
+    if(typeof window.ESCIE_CENTRAL_OPEN_REQUEST==="function"){window.ESCIE_CENTRAL_OPEN_REQUEST("QUESTION");return}
+    window.addEventListener("escie:central-ready",function(){window.ESCIE_CENTRAL_OPEN_REQUEST?.("QUESTION")},{once:true});
+  });
+  new MutationObserver(sync).observe(app,{attributes:true,attributeFilter:["class"]});
+  window.addEventListener("escie:central-ready",sync);
+  sync();
+})();
+</script></body>
 </html>
