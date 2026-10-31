@@ -68,3 +68,26 @@ test("command desk preserves review history and creates controlled follow-up tas
 
 test("command desk review is workspace-scoped and modification requires operator feedback",()=>{for(const x of ['workspace_id=eq.','RESULT ALREADY REVIEWED','MODIFY requires operator feedback.','const now=new Date().toISOString(),review={decision:d,at:now,actor:"HUMAN_OPERATOR",feedback}','operator_feedback:feedback'])assert(desk.includes(x),x)});
 
+
+test("command desk enforces grant package readiness and resets approval after edits",()=>{for(const x of [
+  'PACKAGE NOT READY',
+  'PRIMARY SOURCE IS NOT VERIFIED',
+  'REQUIREMENT(S) INCOMPLETE',
+  'CHECKLIST ITEM(S) INCOMPLETE',
+  'DRAFT ANSWER(S) EMPTY',
+  'BUDGET TOTAL DOES NOT MATCH COMPONENTS',
+  'status:"READY_FOR_SUBMISSION"',
+  'approval:{state:"APPROVED",required:false',
+  'status:nextStatus',
+  'approval:nextApproval',
+  'approval:{state:"NOT_APPROVED",required:true}'
+])assert(desk.includes(x),x)});
+
+test("command desk persists failed requests for recovery",()=>{for(const x of [
+  'kind:"CENTRAL_REQUEST_FAILURE"',
+  'human_followup_required:true',
+  'state:"FAILED"',
+  'to_role:"audit-guardian"',
+  'route_mode:plan?.route?.mode||"FAILED_REQUEST"',
+  'REQUEST FAILED — AUDIT LOG ALSO FAILED'
+])assert(desk.includes(x),x)});
