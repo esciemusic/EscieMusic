@@ -173,6 +173,13 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
 .central-flow strong{display:block;font-size:11px;letter-spacing:.1em}
 .central-flow small{display:block;color:var(--muted);font-size:9px;line-height:1.45;margin-top:5px}
 @media(max-width:700px){.central-flow{grid-template-columns:1fr}.central-flow>div{padding:12px 14px}.central-flow span{display:inline-block;margin:0 8px 0 0}.central-flow small{display:inline;font-size:9px}}
+.central-presence-top{display:grid;grid-template-columns:110px 1fr;gap:20px;align-items:center;margin-top:10px;padding:18px 20px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(145deg,rgba(20,20,19,.96),rgba(10,10,10,.96));box-shadow:var(--shadow)}
+.presence-visual{position:relative;width:82px;height:82px;border:1px solid #2c2c29;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle,rgba(255,255,255,.08),transparent 62%)}
+.presence-orbit{position:absolute;inset:9px;border:1px solid #33332f;border-radius:50%;transform:rotate(-18deg) scaleX(1.35)}
+.presence-core{width:7px;height:7px;border-radius:50%;background:#d8d8d2;box-shadow:0 0 18px rgba(255,255,255,.25)}
+.presence-copy h2{font-size:clamp(24px,4vw,38px);margin:5px 0 4px;letter-spacing:-.04em}
+.presence-copy p{max-width:680px;margin:0}
+@media(max-width:620px){.central-presence-top{grid-template-columns:1fr;gap:12px;padding:15px}.presence-visual{width:64px;height:64px}.presence-copy h2{font-size:28px}}
 </style>
 <style>
 .mobile-nav-label{display:none}
@@ -349,6 +356,15 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
     <option value="home">OVERVIEW</option><option value="commandDesk">COMMAND DESK</option><option value="work">WORK</option><option value="brain">BRAIN</option><option value="tasks">TASKS</option><option value="suggestions">SUGGESTIONS</option><option value="review">REVIEW</option><option value="archive">ARCHIVE</option><option value="agents">AGENTS</option><option value="insights">INSIGHTS</option><option value="destinations">CONNECT</option><option value="settings">SETTINGS</option>
   </select>
   <div id="home">
+    <div class="central-presence-top">
+      <div class="presence-visual" aria-hidden="true"><span class="presence-orbit"></span><span class="presence-core"></span></div>
+      <div class="presence-copy">
+        <div class="kicker">CENTRAL / PRESENCE</div>
+        <h2>Operator online.</h2>
+        <p>Central is awake and ready. Tell it what needs to happen; the system organizes the work around you.</p>
+        <div class="greeting-meta"><span>HEART: ESCIE</span><span>BRAIN: ACTIVE</span><span>HUMAN: FINAL AUTHORITY</span></div>
+      </div>
+    </div>
     <div class="hero"><div class="panel heroMain"><div><div class="kicker">ESCIE / OWNER WORKSPACE</div><h1>CONTROL<br>THE SIGNAL.</h1><p id="acct" class="heroCopy"></p><div class="heroMeta"><span class="chip">CANONICAL SOURCE</span><span class="chip">HUMAN APPROVAL</span><span class="chip">PRIVATE BY DEFAULT</span></div></div><div class="heroMeta"><span class="chip">CREATE ONCE</span><span class="chip">APPROVE ONCE</span><span class="chip">DISTRIBUTE MANY</span></div></div>
     <div class="panel pulse"><div><div class="kicker">SYSTEM SIGNAL</div><h2>Operator online.</h2><p>Central is ready. Connections remain optional.</p></div><div class="signal"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="ey">WORKSPACE <span id="wid">—</span></div></div></div>
     <div class="central-map section">
@@ -375,18 +391,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
         <div><span>05</span><strong>AUTHORIZE</strong><small>You approve consequential changes or actions.</small></div>
       </div>
     </div>
-    <div class="central-greeting">
-      <div class="greeting-window" aria-hidden="true">
-        <span class="window-orbit orbit-a"></span><span class="window-orbit orbit-b"></span>
-        <span class="window-signal"></span><span class="window-city"></span>
-      </div>
-      <div class="greeting-copy">
-        <div class="kicker">CENTRAL / PRESENCE</div>
-        <h2>You're back.</h2>
-        <p>I have the workspace open. Tell me what needs to happen next and I'll help organize the work, surface what matters, and prepare the next move.</p>
-        <div class="greeting-meta"><span>HEART: ESCIE</span><span>BRAIN: ACTIVE</span><span>HUMAN: FINAL AUTHORITY</span></div>
-      </div>
-    </div>
+
     <div class="central-crew">
       <div class="crew-intro"><div class="kicker">THE TEAM YOU DON'T HAVE TO HIRE</div><h2>Central carries the workload.</h2><p>One surface, multiple specialist minds. They observe, organize, prepare and report back. You remain the final voice.</p></div>
       <div class="crew-orbit" aria-label="Central specialist roles">
