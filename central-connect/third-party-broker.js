@@ -13,7 +13,12 @@
     BANDCAMP:{id:"bandcamp",kind:"BANDCAMP",mode:"EXTERNAL_READY",availability:"AWAITING_PROVIDER",label:"Bandcamp",purpose:"Music and merchandise account operations when API access is approved"},
     MUSIC_DISTRIBUTOR:{id:"music-distributor",kind:"MUSIC_DISTRIBUTOR",mode:"EXTERNAL_EVALUATION",availability:"AWAITING_PROVIDER",label:"Music distributor",purpose:"Delivery to Spotify, Apple Music, Amazon Music and other DSPs"},
     GAME:{id:"external-game-platform",kind:"GAME",mode:"EXTERNAL_EVALUATION",availability:"PLANNED",label:"External game platform",purpose:"Future 3D RPG hosting/distribution"},
-    AUTOMATION:{id:"external-automation",kind:"AUTOMATION",mode:"EXTERNAL_READY",availability:"READY",label:"External automation",purpose:"Scheduled or platform-specific automation when it is better than rebuilding it"}
+    AUTOMATION:{id:"external-automation",kind:"AUTOMATION",mode:"EXTERNAL_READY",availability:"READY",label:"External automation",purpose:"Scheduled or platform-specific automation when it is better than rebuilding it"},
+    LEGAL:{id:"central-legal",kind:"LEGAL",mode:"INTERNAL",availability:"READY",label:"Legal and contracts",purpose:"Contract analysis, drafting, comparison and legal-risk triage with human authorization"},
+    RIGHTS:{id:"central-rights",kind:"RIGHTS",mode:"INTERNAL",availability:"READY",label:"Rights and clearance",purpose:"Permissions, releases, licenses, samples and ownership tracking"},
+    FUNDING:{id:"grants-funding",kind:"FUNDING",mode:"EXTERNAL_READY",availability:"READY",label:"Grants and funding",purpose:"Grant research, eligibility, deadlines, applications and budgets"},
+    EDITOR:{id:"central-editor",kind:"EDITOR",mode:"INTERNAL",availability:"READY",label:"Proofreading and editorial",purpose:"Proofreading, consistency and multilingual copy review"},
+    ADMIN:{id:"central-admin",kind:"ADMIN",mode:"INTERNAL",availability:"READY",label:"IP and business administration",purpose:"IP records, renewals, invoices, deliverables and administrative deadlines"}
   });
   function session(){return window.ESCIE_CENTRAL_API?.getSession?.()||null}
   function workspace(){return window.ESCIE_CENTRAL_API?.getWorkspaceId?.()||null}
