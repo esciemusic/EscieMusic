@@ -598,7 +598,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
   const node=document.getElementById("centralConstantNode"),app=document.getElementById("app");
   if(!node||!app)return;
   function sync(){node.classList.toggle("hidden",app.classList.contains("hidden"))}
-  node.addEventListener("click",function(){
+  node.addEventListener("click",function(){node.dataset.active="true";
     if(typeof window.ESCIE_CENTRAL_OPEN_REQUEST==="function"){window.ESCIE_CENTRAL_OPEN_REQUEST("QUESTION");return}
     window.addEventListener("escie:central-ready",function(){window.ESCIE_CENTRAL_OPEN_REQUEST?.("QUESTION")},{once:true});
   });
