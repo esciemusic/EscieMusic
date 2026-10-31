@@ -378,7 +378,23 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
         <button class="priority-card" data-target="archive"><span class="map-number">06 / MEMORY</span><strong>ARCHIVE</strong><small>Evidence, history, provenance and decisions.</small><em>OPEN ARCHIVE ↗</em></button>
       </div>
     </div>
-    <div class="central-map section">
+    <div class="dashboard">
+      <button class="panel tile metric-link" data-target="work"><div class="kicker">WORK</div><div class="big">READY</div><div class="sub">Canonical source layer ↗</div></button>
+      <button class="panel tile metric-link" data-target="brain"><div class="kicker">BRAIN</div><div class="big">IDLE</div><div class="sub">Analysis layer ↗</div></button>
+      <button class="panel tile metric-link" data-target="review"><div class="kicker">REVIEW</div><div class="big">0</div><div class="sub">Pending decisions ↗</div></button>
+      <button class="panel tile metric-link" data-target="tasks"><div class="kicker">TASKS</div><div class="big">READY</div><div class="sub">Operator queue ↗</div></button>
+    </div>
+    <div class="section"><div class="sectionTitle"><div><h2>Operator shortcuts</h2><p>The controls that should matter most.</p></div></div>
+      <div class="quickgrid">
+        <button class="quick" data-target="work" data-command="create"><strong>＋ NEW WORK</strong><span>Create a canonical item once, then classify it.</span></button>
+        <button class="quick" data-target="brain" data-command="brain"><strong>◌ RUN BRAIN</strong><span>Find relationships, gaps and suggested actions.</span></button>
+        <button class="quick" data-target="review" data-command="review"><strong>✓ REVIEW QUEUE</strong><span>Approve or reject proposed changes.</span></button>
+        <button class="quick" data-target="destinations" data-command="distribute"><strong>⇧ DISTRIBUTE</strong><span>Prepare destinations without making them the source.</span></button>
+      </div>
+    </div>
+  </div>
+
+      <div class="central-map section">
       <div class="sectionTitle"><div><div class="kicker">CENTRAL / MAP</div><h2>Know where everything lives.</h2><p>Central is one control surface. Each layer has a job. Open the part you need without losing the rest of the system.</p></div><span class="pill ok">OPERATOR MAP</span></div>
       <div class="central-map-grid">
         <button class="map-card" data-target="commandDesk"><span class="map-number">01</span><strong>COMMAND DESK</strong><span>Upload, ask Central, give tasks, continue conversations, review results and make decisions.</span><em>OPEN COMMAND DESK ↗</em></button>
@@ -412,23 +428,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
         <div class="crew-node"><b>04</b><strong>PRODUCER</strong><span>prepares work for release</span></div>
       </div>
     </div>
-    <div class="dashboard">
-      <button class="panel tile metric-link" data-target="work"><div class="kicker">WORK</div><div class="big">READY</div><div class="sub">Canonical source layer ↗</div></button>
-      <button class="panel tile metric-link" data-target="brain"><div class="kicker">BRAIN</div><div class="big">IDLE</div><div class="sub">Analysis layer ↗</div></button>
-      <button class="panel tile metric-link" data-target="review"><div class="kicker">REVIEW</div><div class="big">0</div><div class="sub">Pending decisions ↗</div></button>
-      <button class="panel tile metric-link" data-target="tasks"><div class="kicker">TASKS</div><div class="big">READY</div><div class="sub">Operator queue ↗</div></button>
-    </div>
-    <div class="section"><div class="sectionTitle"><div><h2>Operator shortcuts</h2><p>The controls that should matter most.</p></div></div>
-      <div class="quickgrid">
-        <button class="quick" data-target="work" data-command="create"><strong>＋ NEW WORK</strong><span>Create a canonical item once, then classify it.</span></button>
-        <button class="quick" data-target="brain" data-command="brain"><strong>◌ RUN BRAIN</strong><span>Find relationships, gaps and suggested actions.</span></button>
-        <button class="quick" data-target="review" data-command="review"><strong>✓ REVIEW QUEUE</strong><span>Approve or reject proposed changes.</span></button>
-        <button class="quick" data-target="destinations" data-command="distribute"><strong>⇧ DISTRIBUTE</strong><span>Prepare destinations without making them the source.</span></button>
-      </div>
-    </div>
-  </div>
-
-  <div id="work" class="section hidden"><div class="sectionTitle"><div><div class="kicker">CANONICAL SOURCE</div><h2>WORK</h2><p>Music, art, people, places, moments, fragments and evidence will live here.</p></div></div><div class="panel"><h2>Workspace layer</h2><p>This is the next functional surface: create once, attach relationships, add media and preserve history.</p><div class="quickgrid" style="margin-top:14px"><button class="quick" data-target="commandDesk"><strong>＋ CREATE / INTAKE</strong><span>Open Command Desk to upload and classify a new source.</span></button><button class="quick" data-target="commandDesk"><strong>⇱ IMPORT</strong><span>Bring an existing source into Central.</span></button><button class="quick" data-target="agents"><strong>⊕ RELATE</strong><span>Ask Central to connect records without duplicating them.</span></button><button class="quick" data-target="archive"><strong>▤ HISTORY</strong><span>Review durable Central activity and decisions.</span></button></div></div></div>
+<div id="work" class="section hidden"><div class="sectionTitle"><div><div class="kicker">CANONICAL SOURCE</div><h2>WORK</h2><p>Music, art, people, places, moments, fragments and evidence will live here.</p></div></div><div class="panel"><h2>Workspace layer</h2><p>This is the next functional surface: create once, attach relationships, add media and preserve history.</p><div class="quickgrid" style="margin-top:14px"><button class="quick" data-target="commandDesk"><strong>＋ CREATE / INTAKE</strong><span>Open Command Desk to upload and classify a new source.</span></button><button class="quick" data-target="commandDesk"><strong>⇱ IMPORT</strong><span>Bring an existing source into Central.</span></button><button class="quick" data-target="agents"><strong>⊕ RELATE</strong><span>Ask Central to connect records without duplicating them.</span></button><button class="quick" data-target="archive"><strong>▤ HISTORY</strong><span>Review durable Central activity and decisions.</span></button></div></div></div>
 
   <div id="tasks" class="section hidden"><div class="sectionTitle"><div><div class="kicker">OPERATOR QUEUE</div><h2>TASKS</h2><p>Work that Central has prepared, delegated or is waiting for you to decide.</p></div></div><div class="panel"><div class="quickgrid"><button class="quick" data-target="commandDesk"><strong>＋ COMMAND DESK</strong><span>Upload, ask Central, give a task, review results and make the human decision.</span></button><button class="quick" data-target="agents"><strong>◌ TALK TO CENTRAL</strong><span>Describe the outcome you need. Central routes it.</span></button></div><div class="stack" style="margin-top:14px"><div class="rowcard"><div class="rowleft"><div class="rowtitle">HUMAN GATE</div><div class="rowmeta">External publishing, canonical changes and irreversible actions remain blocked until you approve them.</div></div><span class="pill">REQUIRED</span></div><div class="rowcard"><div class="rowleft"><div class="rowtitle">RESULTS</div><div class="rowmeta">Specialist results return to Central and appear in REVIEW before execution.</div></div><span class="pill">CENTRAL</span></div></div></div></div>
 
