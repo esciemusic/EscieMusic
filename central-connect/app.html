@@ -180,7 +180,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
 .presence-copy h2{font-size:clamp(24px,4vw,38px);margin:5px 0 4px;letter-spacing:-.04em}
 .presence-copy p{max-width:680px;margin:0}
 @media(max-width:620px){.central-presence-top{grid-template-columns:1fr;gap:12px;padding:15px}.presence-visual{width:64px;height:64px}.presence-copy h2{font-size:28px}}
-</style>
+.priority-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:10px}.priority-card{grid-column:span 3;min-height:150px;padding:17px;text-align:left;border:1px solid var(--line);border-radius:16px;background:linear-gradient(145deg,#11110f,#0b0b0a);color:var(--text);transition:transform .18s,border-color .18s,background .18s;display:flex;flex-direction:column;justify-content:flex-start}.priority-card.priority-main{grid-column:span 6;min-height:175px;background:linear-gradient(145deg,#181815,#0d0d0c)}.priority-card:hover{transform:translateY(-2px);border-color:var(--line2);background:#151513}.priority-card strong{font-size:15px;letter-spacing:.06em}.priority-card small{color:var(--muted);font-size:10px;line-height:1.5;margin-top:8px;max-width:42ch}.priority-card em{font-style:normal;font-size:9px;letter-spacing:.12em;margin-top:auto;padding-top:16px}.metric-link{display:block;width:100%;text-align:left;cursor:pointer;color:inherit}.metric-link:hover{border-color:var(--line2);background:#151513}@media(max-width:900px){.priority-card,.priority-card.priority-main{grid-column:span 6}}@media(max-width:620px){.priority-grid{grid-template-columns:1fr}.priority-card,.priority-card.priority-main{grid-column:1/-1;min-height:125px}.priority-card.priority-main{min-height:145px}}</style>
 <style>
 .mobile-nav-label{display:none}
 .mobile-nav{display:none}
@@ -366,7 +366,18 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
       </div>
     </div>
     <div class="hero"><div class="panel heroMain"><div><div class="kicker">ESCIE / OWNER WORKSPACE</div><h1>CONTROL<br>THE SIGNAL.</h1><p id="acct" class="heroCopy"></p><div class="heroMeta"><span class="chip">CANONICAL SOURCE</span><span class="chip">HUMAN APPROVAL</span><span class="chip">PRIVATE BY DEFAULT</span></div></div><div class="heroMeta"><span class="chip">CREATE ONCE</span><span class="chip">APPROVE ONCE</span><span class="chip">DISTRIBUTE MANY</span></div></div>
-    <div class="panel pulse"><div><div class="kicker">SYSTEM SIGNAL</div><h2>Operator online.</h2><p>Central is ready. Connections remain optional.</p></div><div class="signal"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="ey">WORKSPACE <span id="wid">—</span></div></div></div>
+    <div class="panel pulse"><div><div class="kicker">SYSTEM SIGNAL</div><h2>READY</h2><p>Central is online. Connections remain optional.</p></div><div class="signal"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="ey">WORKSPACE <span id="wid">—</span></div></div></div>
+    <div class="priority-work section">
+      <div class="sectionTitle"><div><div class="kicker">OPERATOR / PRIORITY</div><h2>What matters first.</h2><p>Start with the surfaces that move work forward. Everything else supports them.</p></div><span class="pill ok">LIVE CONTROL</span></div>
+      <div class="priority-grid">
+        <button class="priority-card priority-main" data-target="commandDesk"><span class="map-number">01 / COMMAND</span><strong>COMMAND DESK</strong><small>Upload. Ask. Give a task. Continue a thread. Review results.</small><em>OPEN COMMAND DESK ↗</em></button>
+        <button class="priority-card" data-target="review"><span class="map-number">02 / HUMAN GATE</span><strong>REVIEW</strong><small>Your approval queue for proposed changes and consequential actions.</small><em>OPEN REVIEW ↗</em></button>
+        <button class="priority-card" data-target="tasks"><span class="map-number">03 / QUEUE</span><strong>TASKS</strong><small>See what is active, waiting, prepared or needs your decision.</small><em>OPEN TASKS ↗</em></button>
+        <button class="priority-card" data-target="work"><span class="map-number">04 / SOURCE</span><strong>WORK</strong><small>The canonical material Central works from.</small><em>OPEN WORK ↗</em></button>
+        <button class="priority-card" data-target="brain"><span class="map-number">05 / INTELLIGENCE</span><strong>BRAIN</strong><small>Relationships, gaps, contradictions and patterns.</small><em>OPEN BRAIN ↗</em></button>
+        <button class="priority-card" data-target="archive"><span class="map-number">06 / MEMORY</span><strong>ARCHIVE</strong><small>Evidence, history, provenance and decisions.</small><em>OPEN ARCHIVE ↗</em></button>
+      </div>
+    </div>
     <div class="central-map section">
       <div class="sectionTitle"><div><div class="kicker">CENTRAL / MAP</div><h2>Know where everything lives.</h2><p>Central is one control surface. Each layer has a job. Open the part you need without losing the rest of the system.</p></div><span class="pill ok">OPERATOR MAP</span></div>
       <div class="central-map-grid">
@@ -402,10 +413,10 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
       </div>
     </div>
     <div class="dashboard">
-      <div class="panel tile"><div class="kicker">WORK</div><div class="big">READY</div><div class="sub">Canonical source layer</div></div>
-      <div class="panel tile"><div class="kicker">BRAIN</div><div class="big">IDLE</div><div class="sub">Analysis layer</div></div>
-      <div class="panel tile"><div class="kicker">REVIEW</div><div class="big">0</div><div class="sub">Pending decisions</div></div>
-      <div class="panel tile"><div class="kicker">TASKS</div><div class="big">READY</div><div class="sub">Operator queue</div></div>
+      <button class="panel tile metric-link" data-target="work"><div class="kicker">WORK</div><div class="big">READY</div><div class="sub">Canonical source layer ↗</div></button>
+      <button class="panel tile metric-link" data-target="brain"><div class="kicker">BRAIN</div><div class="big">IDLE</div><div class="sub">Analysis layer ↗</div></button>
+      <button class="panel tile metric-link" data-target="review"><div class="kicker">REVIEW</div><div class="big">0</div><div class="sub">Pending decisions ↗</div></button>
+      <button class="panel tile metric-link" data-target="tasks"><div class="kicker">TASKS</div><div class="big">READY</div><div class="sub">Operator queue ↗</div></button>
     </div>
     <div class="section"><div class="sectionTitle"><div><h2>Operator shortcuts</h2><p>The controls that should matter most.</p></div></div>
       <div class="quickgrid">
