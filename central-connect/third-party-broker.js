@@ -44,6 +44,13 @@
     if(!r.ok)throw Error("FILE_UPLOAD_FAILED_HTTP_"+r.status);
     return {provider:PROVIDERS.STORAGE.id,bucket:"central-private",storage_path:path};
   }
-  async function research(query,limit=8){\n    if(!String(query||"").trim())throw Error("RESEARCH_QUERY_MISSING");\n    const s=session(); if(!s?.access_token)throw Error("CENTRAL_SESSION_UNAVAILABLE");\n    const r=await fetch("https://ljdkjzvnwnaluevtzker.supabase.co/functions/v1/central-research",{method:"POST",headers:{Authorization:"Bearer "+s.access_token,"Content-Type":"application/json"},body:JSON.stringify({query:String(query),limit})});\n    const data=await r.json().catch(()=>({}));\n    if(!r.ok)throw Error(data?.error||"RESEARCH_FAILED_HTTP_"+r.status);\n    return data;\n  }\n  function handoff(kind,request,extra){return plan(kind,request,extra)}
+  async function research(query,limit=12){
+    if(!String(query||"").trim())throw Error("RESEARCH_QUERY_MISSING");
+    const s=session(); if(!s?.access_token)throw Error("CENTRAL_SESSION_UNAVAILABLE");
+    const r=await fetch("https://ljdkjzvnwnaluevtzker.supabase.co/functions/v1/central-research",{method:"POST",headers:{Authorization:"Bearer "+s.access_token,"Content-Type":"application/json"},body:JSON.stringify({query:String(query),limit})});
+    const data=await r.json().catch(()=>({}));
+    if(!r.ok)throw Error(data?.error||"RESEARCH_FAILED_HTTP_"+r.status);
+    return data;
+  }\n  function handoff(kind,request,extra){return plan(kind,request,extra)}
   window.ESCIE_THIRD_PARTY_BROKER=Object.freeze({version:"1.4.0",contract:SERVICE_CONTRACT,providers:PROVIDERS,plan,handoff,research,uploadPrivate,deletePrivate});
 })();
