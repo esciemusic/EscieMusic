@@ -6,6 +6,9 @@
     RESEARCH:{id:"web-research",kind:"RESEARCH",mode:"EXTERNAL_READY",label:"Web research",purpose:"Fresh research when Central needs information"},
     IMAGE:{id:"image-generation",kind:"IMAGE",mode:"EXTERNAL_READY",label:"Image generation",purpose:"Production-ready visual asset generation when requested"},
     DISTRIBUTION:{id:"external-distribution",kind:"DISTRIBUTION",mode:"EXTERNAL_READY",label:"External distribution",purpose:"Specialist publishing and platform delivery"},
+    SOUNDCLOUD:{id:"soundcloud",kind:"SOUNDCLOUD",mode:"EXTERNAL_READY",label:"SoundCloud",purpose:"Direct audio upload, metadata and playlist management"},
+    BANDCAMP:{id:"bandcamp",kind:"BANDCAMP",mode:"EXTERNAL_READY",label:"Bandcamp",purpose:"Music and merchandise account operations when API access is approved"},
+    MUSIC_DISTRIBUTOR:{id:"music-distributor",kind:"MUSIC_DISTRIBUTOR",mode:"EXTERNAL_EVALUATION",label:"Music distributor",purpose:"Delivery to Spotify, Apple Music, Amazon Music and other DSPs"},
     GAME:{id:"external-game-platform",kind:"GAME",mode:"EXTERNAL_EVALUATION",label:"External game platform",purpose:"Future 3D RPG hosting/distribution"},
     AUTOMATION:{id:"external-automation",kind:"AUTOMATION",mode:"EXTERNAL_READY",label:"External automation",purpose:"Scheduled or platform-specific automation when it is better than rebuilding it"}
   });
