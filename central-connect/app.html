@@ -167,6 +167,12 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
 .central-map-rule strong{font-size:12px;letter-spacing:.08em}
 .central-map-rule span:last-child{font-size:10px;letter-spacing:.05em;line-height:1.5}
 @media(max-width:700px){.central-map-grid{grid-template-columns:1fr;gap:8px}.map-card{min-height:0;padding:16px}.central-map-rule{grid-template-columns:1fr;gap:5px}.central-map-rule span:last-child{margin-top:3px}}
+.central-flow{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;margin-top:10px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--line)}
+.central-flow>div{background:#10100f;padding:13px 12px;min-width:0}
+.central-flow span{display:block;font-size:8px;letter-spacing:.16em;color:var(--dim);margin-bottom:8px}
+.central-flow strong{display:block;font-size:11px;letter-spacing:.1em}
+.central-flow small{display:block;color:var(--muted);font-size:9px;line-height:1.45;margin-top:5px}
+@media(max-width:700px){.central-flow{grid-template-columns:1fr}.central-flow>div{padding:12px 14px}.central-flow span{display:inline-block;margin:0 8px 0 0}.central-flow small{display:inline;font-size:9px}}
 </style>
 <style>
 .mobile-nav-label{display:none}
@@ -361,6 +367,13 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
         <button class="map-card" data-target="settings"><span class="map-number">11</span><strong>SETTINGS</strong><span>Operator, workspace, account and system controls.</span><em>OPEN SETTINGS ↗</em></button>
       </div>
       <div class="central-map-rule"><span>THE RULE</span><strong>Central prepares. You authorize.</strong><span>Specialists work behind the main conversation; consequential actions remain human-controlled.</span></div>
+      <div class="central-flow" aria-label="How Central works">
+        <div><span>01</span><strong>ASK</strong><small>You describe what needs to happen.</small></div>
+        <div><span>02</span><strong>ROUTE</strong><small>Central chooses the right specialist path.</small></div>
+        <div><span>03</span><strong>WORK</strong><small>Specialists research, analyze or prepare.</small></div>
+        <div><span>04</span><strong>RETURN</strong><small>Central brings the result back to you.</small></div>
+        <div><span>05</span><strong>AUTHORIZE</strong><small>You approve consequential changes or actions.</small></div>
+      </div>
     </div>
     <div class="central-greeting">
       <div class="greeting-window" aria-hidden="true">
