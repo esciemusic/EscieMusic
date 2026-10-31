@@ -5,7 +5,7 @@
  * No specialist writes canonical state directly.
  */
 window.ESCIE_AGENT_PROTOCOL = Object.freeze({
-  version: "1.1",
+  version: "1.2",
   messageTypes: Object.freeze(["READ","ANALYZE","SUGGEST","RESEARCH","TASK","HANDOFF","RESULT","APPROVAL_REQUEST"]),
   roles: Object.freeze({
     ORCHESTRATOR: "central-orchestrator",
@@ -13,7 +13,12 @@ window.ESCIE_AGENT_PROTOCOL = Object.freeze({
     RELATIONSHIPS: "brain-relationships",
     ARCHIVE: "archive-evidence",
     DISTRIBUTION: "release-distribution",
-    GUARDIAN: "audit-guardian"
+    GUARDIAN: "audit-guardian",
+    LEGAL: "legal-contract",
+    RIGHTS: "rights-clearance",
+    FUNDING: "grants-funding",
+    EDITOR: "editor-proofreading",
+    ADMIN: "ip-business-admin"
   }),
   states: Object.freeze([
     "REQUESTED","ROUTED","RECEIVED","WORKING","HANDOFF",
