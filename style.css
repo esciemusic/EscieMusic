@@ -1843,6 +1843,10 @@ body.inspector-open{overflow:hidden}
 
 @media(prefers-reduced-motion:reduce){.now-state::after{animation:none}}
 
+.entry-guide{max-width:680px;margin:34px auto 0;padding-top:18px;border-top:1px solid rgba(255,255,255,.1);color:var(--muted);font-size:9px;letter-spacing:.12em;line-height:1.9;text-transform:uppercase;text-align:left}
+.entry-guide p{margin:0;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.entry-guide span{display:inline-block;margin-right:.8em;color:var(--white);letter-spacing:.18em}
+@media(max-width:700px){.entry-guide{margin-top:26px;font-size:8px;line-height:1.8}.entry-guide p{padding:9px 0}.entry-guide span{display:block;margin:0 0 4px}}
 .entry-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin-top:34px}
 .entry-actions a{display:inline-flex;align-items:center;min-height:42px;padding:0 18px;border:1px solid var(--line);color:var(--muted);font-size:8px;letter-spacing:.2em;text-transform:uppercase;transition:background 250ms ease,color 250ms ease,border-color 250ms ease}
 .entry-actions a:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.3);color:var(--white)}
