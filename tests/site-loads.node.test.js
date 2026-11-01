@@ -13,6 +13,9 @@ assert(/<section id="world"[^>]*>/.test(html), "THE WORLD section must remain pa
 const games = fs.readFileSync("data/games.js", "utf8");
 assert(games.includes('status:"EXTERNAL_PLATFORM_EVALUATION"'), "playable game hosting must remain externally evaluated");
 assert(games.includes("public_link:null"), "playable game must remain unlinked until an external host is chosen");
+const merch=fs.readFileSync("data/merch.js","utf8");
+assert(!merch.includes("bam-tee-blue")&&!merch.includes("bam-poster")&&!merch.includes("BAM / BY ANY MEANS TEE"),"unreleased BAM merchandise must not be exposed in public merch metadata");
+assert(html.includes("SEE · HEAR · FOLLOW · MISS · RETURN"),"Glass Eye must retain the confirmed audience-eye descriptor");
 
 const counts = new Map();
 scripts.forEach((src) => counts.set(src, (counts.get(src) || 0) + 1));
