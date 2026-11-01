@@ -14,6 +14,10 @@ assert(gameIndex >= 0, "data/games.js must be loaded");
 
 const providers = new Map();
 
+[...html.matchAll(/(?:window|root)\.(ESCIE_[A-Z0-9_]+)\s*=/g)].forEach((match) => {
+  providers.set(match[1], { src: "index.html:inline", index: -1 });
+});
+
 scripts.forEach((src, index) => {
   const content = fs.readFileSync(src, "utf8");
   const exports = [
