@@ -800,7 +800,9 @@ assert(centralAppRuntime.includes('$("globalSearch")?.addEventListener("click"')
 assert(centralAppRuntime.includes('$("logout").onclick=()=>'), "Central logout must be wired");
 assert(centralAppRuntime.includes('$("refresh").onclick='), "Central refresh must be wired");
 assert(centralAppRuntime.includes('$("copy").onclick='), "Central copy action must be wired");
-assert(centralCommandDesk.includes('b.onclick=()=>{S.tab=b.dataset.tab;render()}'), "Command Desk tabs must be wired");
+assert(centralCommandDesk.includes('root.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>'), "Command Desk tabs must be wired");
+assert(centralCommandDesk.includes("S.tab=b.dataset.tab"), "Command Desk tab selection must update state");
+assert(centralCommandDesk.includes("render()"), "Command Desk tab selection must rerender");
 assert(centralCommandDesk.includes('$("deskIntakeBtn")?.addEventListener("click",intake)'), "Command Desk intake must be wired");
 assert(centralCommandDesk.includes('$("deskRefresh")?.addEventListener("click",load)'), "Command Desk sync must be wired");
 assert(centralCommandDesk.includes('root.querySelectorAll("[data-a]").forEach(b=>b.onclick='), "Command Desk review decisions must be wired");
