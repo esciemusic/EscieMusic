@@ -231,7 +231,26 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
 @media(max-width:900px){.central-nav{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.central-nav button{font-size:10px}}
 @media(max-width:620px){.central-nav{display:none}.mobile-nav{display:block}}
 </style>
-</head>
+<style>
+/* CENTRAL CONTROL-ROOM LAYOUT */
+.topbar{position:sticky;top:0;z-index:1000;backdrop-filter:blur(18px)}
+.central-compass-wrap{position:relative;display:flex;align-items:center}
+.central-compass{width:38px;height:38px;border:1px solid rgba(255,255,255,.18);border-radius:50%;background:rgba(255,255,255,.04);color:inherit;cursor:pointer;font-size:20px;display:grid;place-items:center;transition:transform .2s,background .2s}
+.central-compass:hover,.central-compass[aria-expanded="true"]{background:rgba(255,255,255,.1);transform:rotate(18deg)}
+.compass-menu{position:absolute;right:0;top:46px;width:240px;display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:10px;border:1px solid rgba(255,255,255,.14);border-radius:14px;background:rgba(12,12,16,.96);box-shadow:0 20px 60px rgba(0,0,0,.35);opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .18s,transform .18s}
+.compass-menu.open{opacity:1;pointer-events:auto;transform:translateY(0)}
+.compass-title{grid-column:1/-1;padding:4px 5px 8px;display:flex;justify-content:space-between;align-items:end;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:2px}.compass-title span{font-size:10px;letter-spacing:.14em}.compass-title small{font-size:8px;opacity:.55}
+.compass-menu button{min-height:34px;border:0;border-radius:8px;background:rgba(255,255,255,.035);color:inherit;cursor:pointer;font-size:9px;letter-spacing:.08em}.compass-menu button:hover,.compass-menu button.active{background:rgba(255,255,255,.1)}
+.central-overview{max-width:1120px;margin:0 auto;padding:42px 0 80px}.central-overview-head{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:30px}.central-overview-head h1{margin:.2rem 0 .6rem;font-size:clamp(32px,6vw,68px);letter-spacing:-.04em}.central-overview-head p{max-width:650px;margin:0;opacity:.68}
+.operator-node{display:flex;align-items:center;gap:10px;white-space:nowrap;padding:10px 13px;border:1px solid rgba(255,255,255,.12);border-radius:999px;background:rgba(255,255,255,.025)}.operator-node strong{display:block;font-size:9px;letter-spacing:.12em}.operator-node small{display:block;opacity:.5;margin-top:2px}
+.operator-pulse{width:8px;height:8px;border-radius:50%;background:#59d98a;box-shadow:0 0 0 0 rgba(89,217,138,.55);animation:centralPulse 2.2s infinite;flex:none}@keyframes centralPulse{0%{box-shadow:0 0 0 0 rgba(89,217,138,.5)}70%{box-shadow:0 0 0 8px rgba(89,217,138,0)}100%{box-shadow:0 0 0 0 rgba(89,217,138,0)}}
+.central-node-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.central-drop{border:1px solid rgba(255,255,255,.12);border-radius:14px;background:rgba(255,255,255,.025);overflow:hidden}.central-drop[open]{background:rgba(255,255,255,.04)}
+.central-drop summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:36px 1fr 22px;align-items:center;gap:12px;padding:18px;min-height:76px}.central-drop summary::-webkit-details-marker{display:none}.central-drop summary i{font-style:normal;font-size:18px;opacity:.5;text-align:center}.central-drop[open] summary i{transform:rotate(45deg)}
+.node-index{font-size:9px;opacity:.4;align-self:start;padding-top:2px}.central-drop summary strong{display:block;font-size:12px;letter-spacing:.08em}.central-drop summary small{display:block;margin-top:4px;opacity:.55}
+.node-body{padding:0 18px 18px 66px}.node-body p{margin:0 0 13px;opacity:.62;font-size:13px;line-height:1.5}.node-links{display:grid;gap:6px}.node-links button{border:1px solid rgba(255,255,255,.09);background:rgba(0,0,0,.12);color:inherit;text-align:left;border-radius:9px;padding:10px 12px;cursor:pointer}.node-links button:hover{background:rgba(255,255,255,.08)}.node-links strong{display:block;font-size:9px;letter-spacing:.1em}.node-links span{display:block;font-size:11px;opacity:.55;margin-top:3px}
+.central-principle-node{display:flex;align-items:center;gap:12px;margin-top:12px;padding:14px 17px;border:1px solid rgba(255,255,255,.1);border-radius:12px}.central-principle-node strong{display:block;font-size:10px;letter-spacing:.12em}.central-principle-node small{display:block;opacity:.5;margin-top:3px}
+@media(max-width:720px){.central-overview{padding:28px 14px 60px}.central-overview-head{display:block}.operator-node{display:inline-flex;margin-top:18px}.central-node-grid{grid-template-columns:1fr}.node-body{padding-left:18px}.compass-menu{right:-8px;width:230px}}
+</style></head>
 </head>
 <body>
 <div class="shell">
@@ -357,86 +376,30 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
 </section>
 
 <section id="app" class="hidden">
-  <nav class="nav central-nav" id="mainNav" aria-label="Central primary navigation">
-    <button class="active" data-target="home">OVERVIEW</button><button data-target="commandDesk">COMMAND</button><button data-target="work">WORK</button><button data-target="brain">BRAIN</button><button data-target="tasks">TASKS</button><button data-target="review">REVIEW</button><button data-target="destinations">CONNECT</button><button data-target="settings">SETTINGS</button>
-  </nav>
-  <label class="mobile-nav-label" for="mobileNav">CENTRAL / NAVIGATE</label>
+  <div class="central-compass-wrap">
+    <button class="central-compass" id="centralCompass" type="button" aria-label="Open Central navigation" aria-expanded="false" aria-controls="mainNav" title="Central navigation">✧</button>
+    <nav class="nav central-nav compass-menu" id="mainNav" aria-label="Central navigation">
+      <div class="compass-title"><span>ESCIE CENTRAL</span><small>NAVIGATE</small></div>
+      <button class="active" data-target="home">OVERVIEW</button><button data-target="commandDesk">COMMAND</button><button data-target="work">WORK</button><button data-target="brain">BRAIN</button><button data-target="tasks">TASKS</button><button data-target="review">REVIEW</button><button data-target="destinations">CONNECT</button><button data-target="settings">SETTINGS</button>
+    </nav>
+  </div>
   <select id="mobileNav" class="mobile-nav" aria-label="Central navigation">
     <option value="home">OVERVIEW</option><option value="commandDesk">COMMAND</option><option value="work">WORK</option><option value="brain">BRAIN</option><option value="tasks">TASKS</option><option value="review">REVIEW</option><option value="destinations">CONNECT</option><option value="settings">SETTINGS</option>
-  </select>
-  <div id="home">
-    <div class="central-presence-top">
-      <div class="presence-visual" aria-hidden="true"><span class="presence-orbit"></span><span class="presence-core"></span></div>
-      <div class="presence-copy">
-        <div class="kicker">CENTRAL / PRESENCE</div>
-        <h2>Operator online.</h2>
-        <p>Central is awake and ready. Tell it what needs to happen; the system organizes the work around you.</p>
-        <div class="greeting-meta"><span>HEART: ESCIE</span><span>BRAIN: ACTIVE</span><span>HUMAN: FINAL AUTHORITY</span></div>
-      </div>
-    </div>
-    <div class="hero"><div class="panel heroMain"><div><div class="kicker">ESCIE / OWNER WORKSPACE</div><h1>CONTROL<br>THE SIGNAL.</h1><p id="acct" class="heroCopy"></p><div class="heroMeta"><span class="chip">CANONICAL SOURCE</span><span class="chip">HUMAN APPROVAL</span><span class="chip">PRIVATE BY DEFAULT</span></div></div><div class="heroMeta"><span class="chip">CREATE ONCE</span><span class="chip">APPROVE ONCE</span><span class="chip">DISTRIBUTE MANY</span></div></div>
-    <div class="panel pulse"><div><div class="kicker">SYSTEM SIGNAL</div><h2>READY</h2><p>Central is online. Connections remain optional.</p></div><div class="signal"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="ey">WORKSPACE <span id="wid">—</span></div></div></div>
-    <div class="priority-work section">
-      <div class="sectionTitle"><div><div class="kicker">OPERATOR / PRIORITY</div><h2>What matters first.</h2><p>Start with the surfaces that move work forward. Everything else supports them.</p></div><span class="pill ok">LIVE CONTROL</span></div>
-      <div class="priority-grid">
-        <button class="priority-card priority-main" data-target="commandDesk"><span class="map-number">01 / COMMAND</span><strong>COMMAND DESK</strong><small>Upload. Ask. Give a task. Continue a thread. Review results.</small><em>OPEN COMMAND DESK ↗</em></button>
-        <button class="priority-card" data-target="review"><span class="map-number">02 / HUMAN GATE</span><strong>REVIEW</strong><small>Your approval queue for proposed changes and consequential actions.</small><em>OPEN REVIEW ↗</em></button>
-        <button class="priority-card" data-target="tasks"><span class="map-number">03 / QUEUE</span><strong>TASKS</strong><small>See what is active, waiting, prepared or needs your decision.</small><em>OPEN TASKS ↗</em></button>
-        <button class="priority-card" data-target="work"><span class="map-number">04 / SOURCE</span><strong>WORK</strong><small>The canonical material Central works from.</small><em>OPEN WORK ↗</em></button>
-        <button class="priority-card" data-target="brain"><span class="map-number">05 / INTELLIGENCE</span><strong>BRAIN</strong><small>Relationships, gaps, contradictions and patterns.</small><em>OPEN BRAIN ↗</em></button>
-        <button class="priority-card" data-target="archive"><span class="map-number">06 / MEMORY</span><strong>ARCHIVE</strong><small>Evidence, history, provenance and decisions.</small><em>OPEN ARCHIVE ↗</em></button>
-      </div>
-    </div>
-    <div class="dashboard">
-      <button class="panel tile metric-link" data-target="work"><div class="kicker">WORK</div><div class="big">READY</div><div class="sub">Canonical source layer ↗</div></button>
-      <button class="panel tile metric-link" data-target="brain"><div class="kicker">BRAIN</div><div class="big">IDLE</div><div class="sub">Analysis layer ↗</div></button>
-      <button class="panel tile metric-link" data-target="review"><div class="kicker">REVIEW</div><div class="big">0</div><div class="sub">Pending decisions ↗</div></button>
-      <button class="panel tile metric-link" data-target="tasks"><div class="kicker">TASKS</div><div class="big">READY</div><div class="sub">Operator queue ↗</div></button>
-    </div>
-    <div class="section"><div class="sectionTitle"><div><h2>Operator shortcuts</h2><p>The controls that should matter most.</p></div></div>
-      <div class="quickgrid">
-        <button class="quick" data-target="work" data-command="create"><strong>＋ NEW WORK</strong><span>Create a canonical item once, then classify it.</span></button>
-        <button class="quick" data-target="brain" data-command="brain"><strong>◌ RUN BRAIN</strong><span>Find relationships, gaps and suggested actions.</span></button>
-        <button class="quick" data-target="review" data-command="review"><strong>✓ REVIEW QUEUE</strong><span>Approve or reject proposed changes.</span></button>
-        <button class="quick" data-target="destinations" data-command="distribute"><strong>⇧ DISTRIBUTE</strong><span>Prepare destinations without making them the source.</span></button>
-      </div>
-    </div>
-  </div>
+  </select>  <div id="home">
+<section class="central-overview">
+<div class="central-overview-head"><div><div class="kicker">ESCIE CENTRAL / OVERVIEW</div><h1>THE CONTROL ROOM.</h1><p>Everything here is a doorway. Open a node, understand what it does, then enter the actual function.</p></div><div class="operator-node" aria-label="Operator online"><span class="operator-pulse"></span><div><strong>OPERATOR ONLINE</strong><small>Central is ready</small></div></div></div>
+<div class="central-node-grid">
+<details class="central-drop node-primary"><summary><span class="node-index">01</span><span><strong>WHAT MATTERS FIRST</strong><small>Your primary working paths.</small></span><i>+</i></summary><div class="node-body"><p>Start here. Each doorway takes you directly to the place where the work actually happens.</p><div class="node-links"><button data-target="commandDesk"><strong>COMMAND</strong><span>Upload content, ask Central, give tasks and continue work.</span></button><button data-target="review"><strong>REVIEW</strong><span>Approve, decline, quarantine or modify proposed work.</span></button><button data-target="tasks"><strong>TASKS</strong><span>See active work and items waiting for you.</span></button><button data-target="work"><strong>WORK</strong><span>Open the canonical source layer.</span></button></div></div></details>
+<details class="central-drop"><summary><span class="node-index">02</span><span><strong>CENTRAL CARRIES THE LOAD</strong><small>One doorway into the specialist network.</small></span><i>+</i></summary><div class="node-body"><p>Central routes requests to the right specialist, verifies the result and returns it to you. Specialists prepare; you authorize.</p><div class="node-links"><button data-target="brain"><strong>BRAIN</strong><span>Relationships, patterns, gaps and contradictions.</span></button><button data-target="agents"><strong>AGENTS</strong><span>The specialist workforce behind Central.</span></button><button data-target="insights"><strong>INSIGHTS</strong><span>Higher-level observations from the workspace.</span></button></div></div></details>
+<details class="central-drop"><summary><span class="node-index">03</span><span><strong>NEW CANONICAL RECORD</strong><small>Create once. Preserve the source.</small></span><i>+</i></summary><div class="node-body"><p>Canonical records are the source layer. Start intake in Command, then keep the approved record and its history in Central.</p><div class="node-links"><button data-target="commandDesk" data-command="create"><strong>CREATE RECORD</strong><span>Open the intake and creation workflow.</span></button><button data-target="commandDesk" data-command="import"><strong>IMPORT SOURCE</strong><span>Bring existing material into Central privately.</span></button><button data-target="work"><strong>OPEN WORK</strong><span>Browse the canonical source layer.</span></button></div></div></details>
+<details class="central-drop"><summary><span class="node-index">04</span><span><strong>CONNECT</strong><small>External destinations, kept downstream.</small></span><i>+</i></summary><div class="node-body"><p>Connect external providers here. Central remains the source of truth and external execution stays human-approved.</p><div class="node-links"><button data-target="destinations"><strong>OPEN CONNECTIONS</strong><span>Instagram, TikTok, YouTube and available providers.</span></button><button data-target="review"><strong>APPROVAL GATE</strong><span>Review consequential publishing actions.</span></button></div></div></details>
+<details class="central-drop"><summary><span class="node-index">05</span><span><strong>MEMORY</strong><small>History, evidence and provenance.</small></span><i>+</i></summary><div class="node-body"><p>Nothing becomes canon silently. Central keeps the trail of work, decisions, evidence and changes.</p><div class="node-links"><button data-target="archive"><strong>ARCHIVE</strong><span>History, evidence, provenance and decisions.</span></button><button data-target="review"><strong>REVIEW HISTORY</strong><span>Human decisions and controlled follow-up.</span></button></div></div></details>
+<details class="central-drop"><summary><span class="node-index">06</span><span><strong>OPERATOR CONTROL</strong><small>Account and system controls.</small></span><i>+</i></summary><div class="node-body"><p>Use settings for account, workspace, password security and Central controls.</p><div class="node-links"><button data-target="settings"><strong>OPEN SETTINGS</strong><span>Account and system controls.</span></button><button data-target="review"><strong>OPEN REVIEW</strong><span>Return to the human decision gate.</span></button></div></div></details>
+</div>
+<div class="central-principle-node"><span class="operator-pulse"></span><div><strong>CENTRAL PREPARES. YOU AUTHORIZE.</strong><small>Specialists cannot publish, delete, alter canon or make binding external changes without the human gate.</small></div></div>
+</section>
+</div>
 
-      <div class="central-map section">
-      <div class="sectionTitle"><div><div class="kicker">CENTRAL / MAP</div><h2>Know where everything lives.</h2><p>Central is one control surface. Each layer has a job. Open the part you need without losing the rest of the system.</p></div><span class="pill ok">OPERATOR MAP</span></div>
-      <div class="central-map-grid">
-        <button class="map-card" data-target="commandDesk"><span class="map-number">01</span><strong>COMMAND DESK</strong><span>Upload, ask Central, give tasks, continue conversations, review results and make decisions.</span><em>OPEN COMMAND DESK ↗</em></button>
-        <button class="map-card" data-target="work"><span class="map-number">02</span><strong>WORK</strong><span>Your canonical songs, art, people, places, moments, fragments, evidence and media.</span><em>OPEN WORK ↗</em></button>
-        <button class="map-card" data-target="brain"><span class="map-number">03</span><strong>BRAIN</strong><span>Find relationships, patterns, gaps and contradictions. The Brain assists; it does not canonize.</span><em>OPEN BRAIN ↗</em></button>
-        <button class="map-card" data-target="tasks"><span class="map-number">04</span><strong>TASKS</strong><span>Work Central has prepared, delegated or is waiting for you to decide.</span><em>OPEN TASKS ↗</em></button>
-        <button class="map-card" data-target="suggestions"><span class="map-number">05</span><strong>SUGGESTIONS</strong><span>Proposals from the Brain and specialists, kept separate from approved canon.</span><em>OPEN SUGGESTIONS ↗</em></button>
-        <button class="map-card" data-target="review"><span class="map-number">06</span><strong>REVIEW</strong><span>Your human gate. Accept, reject, quarantine or modify proposed work before it becomes canonical or external.</span><em>OPEN REVIEW ↗</em></button>
-        <button class="map-card" data-target="archive"><span class="map-number">07</span><strong>ARCHIVE</strong><span>History, evidence, provenance, versions, decisions, quarantine states and unknown gaps.</span><em>OPEN ARCHIVE ↗</em></button>
-        <button class="map-card" data-target="agents"><span class="map-number">08</span><strong>AGENTS</strong><span>The specialist workforce behind Central. Talk to Central; it routes the work.</span><em>OPEN AGENTS ↗</em></button>
-        <button class="map-card" data-target="insights"><span class="map-number">09</span><strong>INSIGHTS</strong><span>Higher-level signals, patterns and system observations surfaced from the workspace.</span><em>OPEN INSIGHTS ↗</em></button>
-        <button class="map-card" data-target="destinations"><span class="map-number">10</span><strong>CONNECT</strong><span>Provider connections and external destinations. External execution remains gated and fail-closed when unavailable.</span><em>OPEN CONNECT ↗</em></button>
-        <button class="map-card" data-target="settings"><span class="map-number">11</span><strong>SETTINGS</strong><span>Operator, workspace, account and system controls.</span><em>OPEN SETTINGS ↗</em></button>
-      </div>
-      <div class="central-map-rule"><span>THE RULE</span><strong>Central prepares. You authorize.</strong><span>Specialists work behind the main conversation; consequential actions remain human-controlled.</span></div>
-      <div class="central-flow" aria-label="How Central works">
-        <div><span>01</span><strong>ASK</strong><small>You describe what needs to happen.</small></div>
-        <div><span>02</span><strong>ROUTE</strong><small>Central chooses the right specialist path.</small></div>
-        <div><span>03</span><strong>WORK</strong><small>Specialists research, analyze or prepare.</small></div>
-        <div><span>04</span><strong>RETURN</strong><small>Central brings the result back to you.</small></div>
-        <div><span>05</span><strong>AUTHORIZE</strong><small>You approve consequential changes or actions.</small></div>
-      </div>
-    </div>
-
-    <div class="central-crew">
-      <div class="crew-intro"><div class="kicker">THE TEAM YOU DON'T HAVE TO HIRE</div><h2>Central carries the workload.</h2><p>One surface, multiple specialist minds. They observe, organize, prepare and report back. You remain the final voice.</p></div>
-      <div class="crew-orbit" aria-label="Central specialist roles">
-        <div class="crew-node"><b>01</b><strong>OPERATOR</strong><span>turns intent into tasks</span></div>
-        <div class="crew-node"><b>02</b><strong>ARCHIVIST</strong><span>protects history and source</span></div>
-        <div class="crew-node"><b>03</b><strong>INVESTIGATOR</strong><span>finds links and gaps</span></div>
-        <div class="crew-node"><b>04</b><strong>PRODUCER</strong><span>prepares work for release</span></div>
-      </div>
-    </div>
 <div id="work" class="section hidden"><div class="sectionTitle"><div><div class="kicker">CANONICAL SOURCE</div><h2>WORK</h2><p>Music, art, people, places, moments, fragments and evidence will live here.</p></div></div><div class="panel"><h2>Workspace layer</h2><p>This is the next functional surface: create once, attach relationships, add media and preserve history.</p><div class="quickgrid" style="margin-top:14px"><button class="quick" data-target="commandDesk"><strong>＋ CREATE / INTAKE</strong><span>Open Command Desk to upload and classify a new source.</span></button><button class="quick" data-target="commandDesk"><strong>⇱ IMPORT</strong><span>Bring an existing source into Central.</span></button><button class="quick" data-target="agents"><strong>⊕ RELATE</strong><span>Ask Central to connect records without duplicating them.</span></button><button class="quick" data-target="archive"><strong>▤ HISTORY</strong><span>Review durable Central activity and decisions.</span></button></div></div></div>
 
   <div id="tasks" class="section hidden"><div class="sectionTitle"><div><div class="kicker">OPERATOR QUEUE</div><h2>TASKS</h2><p>Work that Central has prepared, delegated or is waiting for you to decide.</p></div></div><div class="panel"><div class="quickgrid"><button class="quick" data-target="commandDesk"><strong>＋ COMMAND DESK</strong><span>Upload, ask Central, give a task, review results and make the human decision.</span></button><button class="quick" data-target="agents"><strong>◌ TALK TO CENTRAL</strong><span>Describe the outcome you need. Central routes it.</span></button></div><div class="stack" style="margin-top:14px"><div class="rowcard"><div class="rowleft"><div class="rowtitle">HUMAN GATE</div><div class="rowmeta">External publishing, canonical changes and irreversible actions remain blocked until you approve them.</div></div><span class="pill">REQUIRED</span></div><div class="rowcard"><div class="rowleft"><div class="rowtitle">RESULTS</div><div class="rowmeta">Specialist results return to Central and appear in REVIEW before execution.</div></div><span class="pill">CENTRAL</span></div></div></div></div>
@@ -546,7 +509,9 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
     return true;
   }
   window.ESCIE_CENTRAL_SHOW=show;
-  document.querySelectorAll("#mainNav button[data-target]").forEach(b=>b.addEventListener("click",()=>show(b.dataset.target)));
+  document.querySelectorAll("#mainNav button[data-target]").forEach(b=>b.addEventListener("click",()=>{show(b.dataset.target);document.getElementById("mainNav")?.classList.remove("open");document.getElementById("centralCompass")?.setAttribute("aria-expanded","false");}));
+  document.getElementById("centralCompass")?.addEventListener("click",()=>{const n=document.getElementById("mainNav"),open=!n?.classList.contains("open");n?.classList.toggle("open",open);document.getElementById("centralCompass")?.setAttribute("aria-expanded",String(open));});
+  document.addEventListener("click",e=>{if(!e.target.closest(".central-compass-wrap")){document.getElementById("mainNav")?.classList.remove("open");document.getElementById("centralCompass")?.setAttribute("aria-expanded","false");}});
   document.addEventListener("click",e=>{
     const b=e.target.closest("[data-target],[data-section]");
     if(!b||b.closest("#mainNav")||b.closest("#mobileNav"))return;
