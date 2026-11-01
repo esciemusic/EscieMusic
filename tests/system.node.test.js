@@ -770,7 +770,8 @@ assert(publicAppArchive.includes("function renderArchive()"), "public archive re
 assert(publicAppArchive.includes('byId("archive-container")'), "public archive renderer must target the archive container");
 assert(publicAppArchive.includes('router.register("entry", null);'), "public navigation must register the entry route before resolving hashes");
 assert(publicAppArchive.includes('router.register(route, null);'), "public navigation must register declared section routes before resolving hashes");
-assert(publicAppArchive.includes('const hasRoute = route => router.routes && typeof router.routes.has === "function"'), "public navigation must preserve existing router registrations");\nassert(publicAppArchive.includes('const accordion = window.ESCIE_SECTION_ACCORDION;'), "public navigation must hand the resolved route to the accordion after deferred boot");
+assert(publicAppArchive.includes('const hasRoute = route => router.routes && typeof router.routes.has === "function"'), "public navigation must preserve existing router registrations");
+assert(publicAppArchive.includes('const accordion = window.ESCIE_SECTION_ACCORDION;'), "public navigation must hand the resolved route to the accordion after deferred boot");
 assert(publicAppArchive.includes('accordion.open(activeRoute, false);'), "public navigation must open the initial deep-linked accordion section");
 const publicIndex = fs.readFileSync("index.html","utf8");
 assert((publicIndex.match(/var raw=link\\.getAttribute\\("href"\\)\\.slice\\(1\\),router=window\\.ESCIE_UI_ROUTER/g) || []).length === 2, "accordion link handlers must resolve targets through the shared router");assert(publicIndexRuntime.includes('(router.resolve(raw)||raw)'), "accordion deep-link API must resolve legacy route aliases");assert(publicIndexRuntime.includes('window.location.hash=link.getAttribute("href")'), "public index accordion navigation must update the hash for route synchronization");
