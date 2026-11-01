@@ -1640,6 +1640,20 @@ function renderClothing(){
     const router = getRouter();
     if (!router) return;
 
+    // Register the public section routes before resolving the current hash.
+    // The shared router is intentionally content-agnostic, so the public shell
+    // owns the list of navigable section IDs.
+    if (typeof router.register === "function") {
+      router.register("entry", null);
+      normalizeCollection(getGlobal("ESCIE_NAVIGATION", [])).forEach(node => {
+        const route = String(node && node.target || "").replace(/^#/, "");
+        if (route) router.register(route, null);
+      });
+      document.querySelectorAll("main > section[id]").forEach(section => {
+        if (section.id) router.register(section.id, null);
+      });
+    }
+
     const navigate = () => {
       const route = window.location.hash.replace(/^#/, "") || "entry";
       const resolved = typeof router.resolve === "function" ? router.resolve(route) : null;
