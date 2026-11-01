@@ -1215,6 +1215,13 @@ function renderClothing(){
       renderWeb();
     });
 
+    document.addEventListener("keydown", event => {
+      const trigger = event.target.closest("[data-record-id][role=\"button\"]");
+      if (!trigger || (event.key !== "Enter" && event.key !== " ")) return;
+      event.preventDefault();
+      trigger.click();
+    });
+
     document.addEventListener("click", event => {
       const webClear=event.target.closest("[data-web-filter-clear]");
       if(webClear){ ESCIE_RUNTIME.webFilters={}; renderWeb(); return; }
