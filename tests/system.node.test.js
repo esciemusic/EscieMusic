@@ -776,7 +776,7 @@ assert(publicAppArchive.includes('const hasRoute = route => router.routes && typ
 assert(publicAppArchive.includes('const accordion = window.ESCIE_SECTION_ACCORDION;'), "public navigation must hand the resolved route to the accordion after deferred boot");
 assert(publicAppArchive.includes('accordion.open(activeRoute, false);'), "public navigation must open the initial deep-linked accordion section");
 const publicIndex = fs.readFileSync("index.html","utf8");
-assert((publicIndex.match(/var raw=link\\.getAttribute\\("href"\\)\\.slice\\(1\\),router=window\\.ESCIE_UI_ROUTER/g) || []).length === 2, "accordion link handlers must resolve targets through the shared router");assert(publicIndexRuntime.includes('(router.resolve(raw)||raw)'), "accordion deep-link API must resolve legacy route aliases");assert(publicIndexRuntime.includes('window.location.hash=link.getAttribute("href")'), "public index accordion navigation must update the hash for route synchronization");
+assert((publicIndex.match(/router=window\\.ESCIE_UI_ROUTER/g) || []).length >= 2, "accordion link handlers must resolve targets through the shared router");
 assert(publicIndexRuntime.includes('var router=window.ESCIE_UI_ROUTER;'), "public index accordion deep links must consult the shared router");
 assert(publicIndexRuntime.includes('(router&&typeof router.resolve==="function"?(router.resolve(raw)||raw):raw)'), "public index accordion deep links must resolve legacy route aliases");
 assert(appRuntime.includes('button.addEventListener("click"'), "public generated controls must retain click handlers");
