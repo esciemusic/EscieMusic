@@ -345,18 +345,8 @@ main > .site-section:not(#entry) .section-visual{
 main > .site-section:not(#entry).section-open .section-visual{
   height:clamp(120px,20vw,210px);
   margin:0 0 18px;
-  opacity:.72;
-  background:
-    linear-gradient(90deg,rgba(5,5,5,.86),rgba(5,5,5,.28),rgba(5,5,5,.86)),
-    var(--escie-visual-atlas),
-    linear-gradient(135deg,#17191b,#0d1013 55%,#17130f);
-  background-size:auto,cover,auto;
-  background-position:center,center,center;
-  background-blend-mode:normal,normal,normal;
-}
-main > .site-section.section-open .section-visual::before{
-  content:"MONTRÉAL / ESCIE / SIGNAL";
-  letter-spacing:.2em;
+  opacity:.78;
+  overflow:hidden;
 }
 .merch-heading{
   display:grid;
