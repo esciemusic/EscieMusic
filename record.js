@@ -174,6 +174,24 @@ const ESCIE_RECORD = {
 
   },
 
+  TRANSFORMATIONS: {
+
+    NONE: "none",
+
+    EDITED: "edited",
+
+    ADAPTED: "adapted",
+
+    TRANSLATED: "translated",
+
+    COMBINED: "combined",
+
+    EXTRACTED: "extracted",
+
+    GENERATED: "generated"
+
+  },
+
 
   /*
   ==========================================================
