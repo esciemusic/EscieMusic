@@ -1644,13 +1644,17 @@ function renderClothing(){
     // The shared router is intentionally content-agnostic, so the public shell
     // owns the list of navigable section IDs.
     if (typeof router.register === "function") {
-      router.register("entry", null);
+      const hasRoute = route => router.routes && typeof router.routes.has === "function"
+        ? router.routes.has(route)
+        : false;
+
+      if (!hasRoute("entry")) router.register("entry", null);
       normalizeCollection(getGlobal("ESCIE_NAVIGATION", [])).forEach(node => {
         const route = String(node && node.target || "").replace(/^#/, "");
-        if (route) router.register(route, null);
+        if (route && !hasRoute(route)) router.register(route, null);
       });
       document.querySelectorAll("main > section[id]").forEach(section => {
-        if (section.id) router.register(section.id, null);
+        if (section.id && !hasRoute(section.id)) router.register(section.id, null);
       });
     }
 
