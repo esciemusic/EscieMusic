@@ -9,7 +9,7 @@
       id:"clothing-escie-tee-001",
       type:"CLOTHING",
       title:"ESCIE HEAVY TEE",
-      collection:"HEART ON MY SLEEVE — DROP 001",
+      collection:"THE WORLD YOU CAN WEAR — DROP 001",
       category:"CORE",
       garment:"Heavyweight oversized T-shirt",
       status:"DESIGN_READY",
