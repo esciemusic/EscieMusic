@@ -29,7 +29,7 @@
       centralHumanApproval:true,
       canonicalGameWriteFromPlayer:false
     }),
-    publicSections:Object.freeze(["NOW","WORK","THE WORLD","THE WEB","ARCHIVE","INVESTIGATION","GLASS EYE","ESCIE"]),
+    publicSections:Object.freeze(["NOW","WORK","THE WORLD","THE WEB","ARCHIVE","INVESTIGATION","THE WORLD YOU CAN WEAR","GLASS EYE","ESCIE"]),
     worldClasses:Object.freeze(["DRIFTER","RUNNER","INVESTIGATOR","SURVIVOR"]),
     worldNodes:Object.freeze(["ART","THE PEOPLE","PLACES","MOMENTS","FRAGMENTS","PROOF","BODIES","PATH","THE WEB","THE ARCHIVES"]),
     requiredGameSystems:Object.freeze(["simulation","npc-life","npc","law","investigation","rpg","vehicles","interiors","dialogue","3d"]),
