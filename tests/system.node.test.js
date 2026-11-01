@@ -762,7 +762,9 @@ assert(appRuntime.includes('function bindMerchFilters'), "public merch filters m
 assert(appRuntime.includes('data-merch-filter'), "public generated merch filters must expose filter targets");
 assert(appRuntime.includes('button.addEventListener("click", toggleMenu)'), "public mobile menu must have a click handler");
 assert(!publicIndexRuntime.includes('history.replaceState(null,"",link.getAttribute("href"))'), "public index accordion navigation must not bypass hashchange routing");
-assert(publicIndexRuntime.includes('window.location.hash=link.getAttribute("href")'), "public index accordion navigation must update the hash for route synchronization");
+
+assert(publicIndexRuntime.includes('var router=window.ESCIE_UI_ROUTER;'), "accordion deep-link API must consult the shared router");
+assert(publicIndexRuntime.includes('(router.resolve(raw)||raw)'), "accordion deep-link API must resolve legacy route aliases");assert(publicIndexRuntime.includes('window.location.hash=link.getAttribute("href")'), "public index accordion navigation must update the hash for route synchronization");
 assert(publicIndexRuntime.includes('var router=window.ESCIE_UI_ROUTER;'), "public index accordion deep links must consult the shared router");
 assert(publicIndexRuntime.includes('(router&&typeof router.resolve==="function"?(router.resolve(raw)||raw):raw)'), "public index accordion deep links must resolve legacy route aliases");
 assert(appRuntime.includes('button.addEventListener("click"'), "public generated controls must retain click handlers");
