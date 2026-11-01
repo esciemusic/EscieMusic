@@ -1669,6 +1669,10 @@ function renderClothing(){
       }
       renderNavigation();
       refreshNavigationState();
+      const accordion = window.ESCIE_SECTION_ACCORDION;
+      if (accordion && typeof accordion.open === "function" && activeRoute !== "entry") {
+        accordion.open(activeRoute, false);
+      }
       if (resolved && typeof router.navigate === "function") {
         router.navigate(resolved);
       }
