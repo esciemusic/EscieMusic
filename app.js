@@ -902,7 +902,7 @@ function renderClothing(){
           about.principle || site.philosophy || "The music does not create the universe. The universe creates the music."
         ) + "</p>" +
         '<p><span>IDENTITY</span>' + escapeHTML(
-          Array.isArray(about.role) ? about.role.join(" / ") : (about.role || "father / man / central presence")
+          Array.isArray(about.role) ? about.role.join(" / ") : (about.role || "artist / writer / central consciousness")
         ) + "</p>" +
       '</div>' +
       socialMarkup +
