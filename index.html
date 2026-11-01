@@ -170,7 +170,9 @@
       function openFromHash(shouldScroll){
         var raw=(window.location.hash||"").replace(/^#/,"");
         if(!raw||raw==="top"||raw==="entry")return;
-        var target=document.getElementById(raw);
+        var router=window.ESCIE_UI_ROUTER;
+        var resolved=router&&typeof router.resolve==="function"?(router.resolve(raw)||raw):raw;
+        var target=document.getElementById(resolved);
         if(!target)return;
         var button=target.querySelector(".section-drop-trigger");
         if(button&&!target.classList.contains("section-open")){
