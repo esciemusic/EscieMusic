@@ -1019,7 +1019,7 @@ function renderClothing(){
     const base = registry && typeof registry.records === "function"
       ? normalizeCollection(registry.records())
       : [
-          { id: "escie", type: "identity", title: "ESCIE", description: "The artist, writer and central consciousness of the work.", status: "active", published: true, visibility: "public" },
+          { id: "escie", type: "identity", title: "ESCIE", description: "ESCIE IS THE ARTIST. THE WORK SPEAKS FROM HERE.", status: "active", published: true, visibility: "public" },
           ...normalizeCollection(getMusic()),
           ...normalizeCollection(getProjects()),
           ...normalizeCollection(getArchive()),
@@ -1439,7 +1439,7 @@ function renderClothing(){
     const records = (registry && typeof registry.records === "function"
       ? registry.records()
       : [
-          { id: "escie", type: "identity", title: "ESCIE", description: "The artist, writer and central consciousness of the work.", status: "active", published: true, visibility: "public" },
+          { id: "escie", type: "identity", title: "ESCIE", description: "ESCIE IS THE ARTIST. THE WORK SPEAKS FROM HERE.", status: "active", published: true, visibility: "public" },
           ...normalizeCollection(getMusic()),
           ...normalizeCollection(getProjects()),
           ...normalizeCollection(getArchive()),
