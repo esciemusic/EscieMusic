@@ -39,7 +39,7 @@ test("command desk routes questions and tasks through the Central dispatcher",()
   assert(desk.includes("dispatchPlan"));
   assert(desk.includes("CENTRAL_DISPATCHER_UNAVAILABLE"));
   assert(desk.includes("message_type:\"HANDOFF\""));
-  assert(desk.includes("message_type:\"APPROVAL_REQUEST\""));assert(desk.includes("requestedRole:selectedRole"));assert(desk.includes("id=\"deskService\""));assert(desk.includes("plan.results.map"));assert(desk.includes('message_type:"RESULT"'));assert(desk.includes('state:"PROPOSED"'));
+  assert(desk.includes("message_type:\"APPROVAL_REQUEST\""));assert(desk.includes("requestedRole:selectedRole"));assert(desk.includes("id=\"deskService\""));assert(desk.includes("plan.results.map"));assert(desk.includes('message_type:"RESULT"'));assert(desk.includes('state:"PENDING"'));
 });
 
 test("command desk delegates services through Central broker",()=>{
