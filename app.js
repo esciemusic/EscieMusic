@@ -516,12 +516,16 @@
   function renderWorkFilters(){
     const container=byId("work-filters"); if(!container)return;
     const work=getWorkRecords(), filtered=getFilteredWorkRecords(), f=ESCIE_RUNTIME.workFilters||{};
+    if(!work.length){
+      container.innerHTML='<div class="record-filters-empty"><span>METADATA / PUBLIC WORK</span><strong>NO PUBLIC WORK RECORDS YET.</strong><p>Released work will appear here with its metadata filters when it enters the public record.</p></div>';
+      return;
+    }
     const vals=k=>Array.from(new Set(work.map(r=>r&&r[k]).filter(Boolean))).sort();
     const options=(a,v,l)=>`<option value="">${escapeHTML(l)}</option>`+a.map(x=>`<option value="${escapeHTML(x)}"${v===x?" selected":""}>${escapeHTML(x)}</option>`).join("");
     const loc=Array.from(new Set(work.flatMap(r=>Array.isArray(r.locations)?r.locations:[]))).sort();
     const sym=Array.from(new Set(work.flatMap(r=>Array.isArray(r.symbols)?r.symbols:[]))).sort();
     const projects=Array.from(new Set(work.flatMap(r=>{const p=r&&r.project; if(p)return [p]; return r&&r.type==="project"&&r.id?[r.id]:[];}))).sort();
-        container.innerHTML=`<div class="record-filters-heading"><span>DISCOVER BY METADATA</span><button type="button" class="record-filter-clear">CLEAR</button></div><div class="record-filter-grid"><label>TYPE<select data-work-filter="type">${options(vals("type"),f.type,"ALL TYPES")}</select></label><label>STATUS<select data-work-filter="status">${options(vals("status"),f.status,"ALL STATUS")}</select></label><label>PROJECT<select data-work-filter="project">${options(projects,f.project,"ALL PROJECTS")}</select></label>${loc.length?`<label>LOCATION<select data-work-filter="location">${options(loc,f.location,"ALL LOCATIONS")}</select></label>`:""}${sym.length?`<label>MOTIF<select data-work-filter="symbol">${options(sym,f.symbol,"ALL MOTIFS")}</select></label>`:""}</div><p class="record-filter-count">${filtered.length} OF ${work.length} PUBLIC WORK RECORD${work.length===1?"":"S"}</p>`;
+    container.innerHTML=`<div class="record-filters-heading"><span>DISCOVER BY METADATA</span><button type="button" class="record-filter-clear">CLEAR</button></div><div class="record-filter-grid"><label>TYPE<select data-work-filter="type">${options(vals("type"),f.type,"ALL TYPES")}</select></label><label>STATUS<select data-work-filter="status">${options(vals("status"),f.status,"ALL STATUS")}</select></label><label>PROJECT<select data-work-filter="project">${options(projects,f.project,"ALL PROJECTS")}</select></label>${loc.length?`<label>LOCATION<select data-work-filter="location">${options(loc,f.location,"ALL LOCATIONS")}</select></label>`:""}${sym.length?`<label>MOTIF<select data-work-filter="symbol">${options(sym,f.symbol,"ALL MOTIFS")}</select></label>`:""}</div><p class="record-filter-count">${filtered.length} OF ${work.length} PUBLIC WORK RECORD${work.length===1?"":"S"}</p>`;
   }
 
 
