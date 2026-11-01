@@ -931,7 +931,7 @@ function renderClothing(){
           '<span class="glass-dot"></span>'+
           '<strong>THIS IS YOUR SIDE OF THE SCREEN.</strong>'+
           '<span class="glass-core-line">SEE · HEAR · FOLLOW · MISS · RETURN</span>'+
-          '<p>The Glass Eye remembers your journey on this device. It does not decide what is real, write canon, or send your path to Central.</p>'+
+          '<p>The Glass Eye is your side of the screen. What you notice, hear and follow belongs to your journey here.</p>'+
           '<div class="glass-eye-actions" role="group" aria-label="Glass Eye actions">'+
             '<button type="button" data-glass-eye-action="observe">SEE WHAT I SAW</button>'+
             '<button type="button" data-glass-eye-action="follow">FOLLOW MY THREAD</button>'+
@@ -941,14 +941,7 @@ function renderClothing(){
         '</div>'+
         '<div class="glass-memory-inline">'+
           '<div><span>YOUR MEMORY</span><strong>LOCAL · PRIVATE · NON-CANONICAL</strong></div>'+
-          '<div class="glass-memory-stats">'+
-            '<span>SAW <b>'+esc(summary.observed||0)+'</b></span>'+
-            '<span>DID <b>'+esc(summary.interacted||0)+'</b></span>'+
-            '<span>MISSED <b>'+esc(summary.missed||0)+'</b></span>'+
-            '<span>CONNECTED <b>'+esc(summary.connections||0)+'</b></span>'+
-            '<span>UNKNOWN <b>'+esc(summary.unknown||unknowns.length||0)+'</b></span>'+
-            '<span>QUESTIONS <b>'+esc(summary.unresolved||questions.length||0)+'</b></span>'+
-          '</div>'+
+          ''+
           '<div class="glass-path-line"><span>LAST SIGNAL</span><em>'+esc(lastSignal||"NONE RECORDED")+'</em></div>'+
           '<div class="glass-path-line"><span>RECENT PATH</span><em>'+esc(last?(last.type+" / "+(last.target_id||"—")):"NO PATH YET")+'</em></div>'+
           (recent.length?'<div class="glass-path-events">'+recent.map(e=>'<span>'+esc(e.type)+" / "+esc(e.target_id||"—")+'</span>').join("")+'</div>':'')+
