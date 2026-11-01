@@ -87,6 +87,10 @@ main > .site-section:not(#entry) .section-inner{
   width:min(100%,var(--max-width));
 }
 
+main > .site-section:not(#entry) .section-drop-content{
+  min-height:0;
+  overflow:hidden;
+}
 main > .site-section:not(#entry) .section-drop-panel{
   padding:0;
   transition:
