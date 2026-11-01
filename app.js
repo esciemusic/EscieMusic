@@ -398,8 +398,11 @@
       nodes.map(node => {
         const target = node.target || "#";
         const route = target.replace(/^#/, "");
+        const targetId = route;
+        const exists = targetId === "entry" || !!byId(targetId);
+        if (!exists) return "";
         return '<a class="nav-link node-link' + (route === currentRoute ? ' is-current' : '') + '" href="' + escapeHTML(target) + '"' +
-          (route === currentRoute ? ' aria-current="page"' : '') + '>' +
+          (route === currentRoute ? ' aria-current="page"' : '') + ' data-node-target="' + escapeHTML(targetId) + '">' +
           '<span class="node-link-label">' + escapeHTML(node.label || node.id || "") + '</span>' +
           '<span class="node-link-symbol" aria-hidden="true">' + escapeHTML(node.symbol || "·") + '</span>' +
           '</a>';
