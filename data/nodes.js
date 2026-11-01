@@ -11,6 +11,6 @@ const ESCIE_NODES=[
 {id:"node-archive",label:"ARCHIVE",target:"#archives",kind:"evidence",section:"archive",role:"PUBLIC TRACE",description:"Preserved public traces and source material.",metric:"archive",symbol:"▣",order:5,public:true},
 {id:"node-investigation",label:"INVESTIGATION",target:"#investigation",kind:"question",section:"investigation",role:"OPEN QUESTIONS",description:"Questions, evidence and unresolved connections.",metric:"investigation",symbol:"?",order:6,public:true},
 {id:"node-glass-eye",label:"GLASS EYE",target:"#glass-eye",kind:"observation",section:"glass-eye",role:"OBSERVATION",description:"Your side of the screen — the audience eye.",metric:"media",symbol:"◎",order:8,public:true},
-{id:"node-escie",label:"ESCIE",target:"#escie",kind:"identity",section:"escie",role:"CENTRAL PRESENCE",description:"ESCIE is the human center of the work and world.",metric:"identity",symbol:"◇",order:7,public:true},
+{id:"node-escie",label:"ESCIE",target:"#escie",kind:"identity",section:"escie",role:"CENTRAL PRESENCE",description:"ESCIE is the human center of the work and world.",metric:"identity",symbol:"◇",order:9,public:true},
 ];
 if(typeof window!=="undefined")window.ESCIE_NODES=ESCIE_NODES;
