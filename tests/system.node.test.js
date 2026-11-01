@@ -767,7 +767,9 @@ assert(publicIndexRuntime.includes('var router=window.ESCIE_UI_ROUTER;'), "accor
 
 const publicAppArchive = fs.readFileSync("app.js","utf8");
 assert(publicAppArchive.includes("function renderArchive()"), "public archive renderer must exist because render() invokes it");
-assert(publicAppArchive.includes('byId("archive-container")'), "public archive renderer must target the archive container");assert(publicIndexRuntime.includes('(router.resolve(raw)||raw)'), "accordion deep-link API must resolve legacy route aliases");assert(publicIndexRuntime.includes('window.location.hash=link.getAttribute("href")'), "public index accordion navigation must update the hash for route synchronization");
+assert(publicAppArchive.includes('byId("archive-container")'), "public archive renderer must target the archive container");
+assert(publicAppArchive.includes('router.register("entry", null);'), "public navigation must register the entry route before resolving hashes");
+assert(publicAppArchive.includes('router.register(route, null);'), "public navigation must register declared section routes before resolving hashes");assert(publicIndexRuntime.includes('(router.resolve(raw)||raw)'), "accordion deep-link API must resolve legacy route aliases");assert(publicIndexRuntime.includes('window.location.hash=link.getAttribute("href")'), "public index accordion navigation must update the hash for route synchronization");
 assert(publicIndexRuntime.includes('var router=window.ESCIE_UI_ROUTER;'), "public index accordion deep links must consult the shared router");
 assert(publicIndexRuntime.includes('(router&&typeof router.resolve==="function"?(router.resolve(raw)||raw):raw)'), "public index accordion deep links must resolve legacy route aliases");
 assert(appRuntime.includes('button.addEventListener("click"'), "public generated controls must retain click handlers");
