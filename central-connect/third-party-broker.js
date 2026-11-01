@@ -51,6 +51,7 @@
     const data=await r.json().catch(()=>({}));
     if(!r.ok)throw Error(data?.error||"RESEARCH_FAILED_HTTP_"+r.status);
     return data;
-  }\n  function handoff(kind,request,extra){return plan(kind,request,extra)}
+  }
+  function handoff(kind,request,extra){return plan(kind,request,extra)}
   window.ESCIE_THIRD_PARTY_BROKER=Object.freeze({version:"1.4.0",contract:SERVICE_CONTRACT,providers:PROVIDERS,plan,handoff,research,uploadPrivate,deletePrivate});
 })();
