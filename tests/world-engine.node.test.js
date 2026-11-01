@@ -7,7 +7,7 @@ function assert(c,m){if(!c)throw new Error(m)}
 assert(!/\\nfunction/.test(src),"world-engine contains an escaped newline regression");
 assert(/function pathContext\(\)/.test(src),"world-engine missing pathContext");
 assert(/function investigationSummary\(\)/.test(src),"world-engine missing investigationSummary");
-assert(/YOUR INVESTIGATION/.test(src),"Glass Eye investigation context missing");
+assert(/SEE · HEAR · FOLLOW · MISS · RETURN/.test(src),"Glass Eye audience-eye descriptor missing");
 assert(/NEXT SIGNALS/.test(src),"Glass Eye discovery surface missing");
 assert(!/\beval\s*\(|new Function\s*\(/.test(src),"dynamic code execution is forbidden");
 assert(/const raf=typeof requestAnimationFrame==="function"\?requestAnimationFrame:fn=>setTimeout\(fn,0\)/.test(src),"world-engine needs a requestAnimationFrame fallback");
