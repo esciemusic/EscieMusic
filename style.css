@@ -2833,17 +2833,31 @@ body.inspector-open{overflow:hidden}
   letter-spacing:.18em;
 }
 .index-trigger-glyph{
-  display:inline-grid;
-  place-items:center;
+  position:relative;
+  display:inline-block;
   width:22px;
   height:22px;
-  border:1px solid rgba(242,242,237,.36);
+  border:1px solid currentColor;
   border-radius:50%;
-  font-size:12px;
-  line-height:1;
-  letter-spacing:0;
   opacity:.9;
   transition:transform .45s var(--ease),border-color .35s ease;
+}
+.index-trigger-glyph::before,
+.index-trigger-glyph::after{
+  content:"";
+  position:absolute;
+  inset:3px 6px;
+  border:1px solid currentColor;
+  border-top:0;
+  border-bottom:0;
+  border-radius:50%;
+  opacity:.7;
+}
+.index-trigger-glyph::after{
+  inset:9px 3px;
+  border:0;
+  border-top:1px solid currentColor;
+  border-radius:50%;
 }
 .index-trigger-label{
   display:inline-block;
