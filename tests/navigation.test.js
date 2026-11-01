@@ -20,6 +20,12 @@
     });
 
     assert(N.filter(item => item.primary === true).length === 7, "public primary navigation should contain seven nodes");
+
+    const sectionOrder = Array.from(document.querySelectorAll("main > section")).map(function (section) {
+      return section.id;
+    });
+    const expectedSectionOrder = ["entry", "now", "art", "world", "web", "archives", "investigation", "merch", "glass-eye", "escie"];
+    assert(JSON.stringify(sectionOrder) === JSON.stringify(expectedSectionOrder), "public section order must match the universe contract");
     assert(new Set(N.map(item => item.id)).size === N.length, "navigation IDs should be unique");
     assert(new Set(N.map(item => item.target)).size === N.length, "navigation targets should be unique");
     assert(N.some(item => item.id === "now" && item.target === "#now"), "NOW route should target #now");
