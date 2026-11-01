@@ -560,3 +560,50 @@ button,a,input,select{max-width:100%}
 @media(min-width:701px){
   main > .site-section:not(#entry) .section-drop-content{overflow:visible}
 }
+
+/* WORLD VISUAL — Montréal as the physical anchor */
+.section-visual-world{
+  background:
+    linear-gradient(135deg,rgba(9,13,16,.98),rgba(4,5,6,.98)),
+    repeating-linear-gradient(0deg,transparent 0 7px,rgba(216,212,202,.018) 8px);
+}
+.section-visual-world .visual-map-grid{
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(30deg,transparent 48%,rgba(47,128,255,.10) 49%,transparent 50%),
+    linear-gradient(150deg,transparent 48%,rgba(155,89,255,.08) 49%,transparent 50%),
+    linear-gradient(rgba(216,212,202,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(216,212,202,.035) 1px,transparent 1px);
+  background-size:100% 100%,100% 100%,34px 34px,34px 34px;
+  opacity:.75;
+}
+.section-visual-world .visual-montreal-mark{
+  position:absolute;
+  left:9%;
+  top:20%;
+  color:rgba(240,237,228,.12);
+  font:800 clamp(3rem,10vw,7rem)/1 var(--escie-font-display);
+  letter-spacing:.12em;
+}
+.section-visual-world .visual-route-line{
+  position:absolute;
+  left:24%;
+  right:14%;
+  top:56%;
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--escie-blue),rgba(155,89,255,.5),transparent);
+  transform:rotate(-8deg);
+  transform-origin:left center;
+  box-shadow:0 0 14px rgba(47,128,255,.12);
+}
+.section-visual-world .visual-location-dot{
+  position:absolute;
+  left:62%;
+  top:45%;
+  width:9px;
+  height:9px;
+  border:1px solid var(--escie-blue-bright);
+  border-radius:50%;
+  box-shadow:0 0 0 7px rgba(47,128,255,.06),0 0 20px rgba(47,128,255,.25);
+}
