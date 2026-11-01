@@ -778,7 +778,7 @@ assert(publicAppArchive.includes('accordion.open(activeRoute, false);'), "public
 const publicIndex = fs.readFileSync("index.html","utf8");
 assert((publicIndex.match(/router=window\.ESCIE_UI_ROUTER/g) || []).length >= 2, "accordion link handlers must resolve targets through the shared router");
 assert(publicIndexRuntime.includes('var router=window.ESCIE_UI_ROUTER;'), "public index accordion deep links must consult the shared router");
-assert(publicIndexRuntime.includes('(router&&typeof router.resolve==="function"?(router.resolve(raw)||raw):raw)'), "public index accordion deep links must resolve legacy route aliases");
+assert(publicIndexRuntime.includes('router&&typeof router.resolve==="function"?(router.resolve(raw)||raw):raw'), "public index accordion deep links must resolve legacy route aliases");
 assert(appRuntime.includes('button.addEventListener("click"'), "public generated controls must retain click handlers");
 
 const centralAppRuntime = fs.readFileSync("central-connect/app.html","utf8");
