@@ -766,7 +766,7 @@ assert(!publicIndexRuntime.includes('history.replaceState(null,"",link.getAttrib
 assert(publicIndexRuntime.includes('var router=window.ESCIE_UI_ROUTER;'), "accordion deep-link API must consult the shared router");
 
 const commandDeskSource = fs.readFileSync("central-connect/command-desk.js","utf8");
-assert.doesNotThrow(() => new Function(commandDeskSource), "Central command desk must remain syntactically valid");
+try { new Function(commandDeskSource); } catch (error) { throw new Error("Central command desk must remain syntactically valid"); }
 const publicAppArchive = fs.readFileSync("app.js","utf8");
 assert(publicAppArchive.includes("function renderArchive()"), "public archive renderer must exist because render() invokes it");
 assert(publicAppArchive.includes('byId("archive-container")'), "public archive renderer must target the archive container");
