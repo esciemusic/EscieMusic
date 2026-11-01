@@ -504,8 +504,9 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
     if(target==="commandDesk"&&!$(target)){st("COMMAND DESK IS NOT READY — COMPLETE CENTRAL ACCESS / WORKSPACE SETUP FIRST.","preview");return false;}
     NAV_SECTIONS.forEach(id=>{const e=$(id);if(e)e.classList.toggle("hidden",id!==target)});
     document.querySelectorAll("#mainNav button[data-target]").forEach(b=>b.classList.toggle("active",b.dataset.target===target));
-    const mobile=$( "mobileNav"); if(mobile)mobile.value=target;
-    window.scrollTo({top:0,left:0,behavior:"auto"});if(document.scrollingElement)document.scrollingElement.scrollTop=0;document.documentElement.scrollTop=0;document.body.scrollTop=0;
+    const mobile=$("mobileNav"); if(mobile)mobile.value=target;
+    const scroller=document.scrollingElement||document.documentElement;
+    scroller.scrollTo({top:0,left:0,behavior:"auto"});
     window.dispatchEvent(new CustomEvent("escie:central-view",{detail:{target}}));
     return true;
   }
@@ -526,22 +527,14 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
     if(NAV_SECTIONS.includes(target))show(target);
   });
   const mobileNav=$("mobileNav");
-  function syncMobileNav(target){if(mobileNav&&target)mobileNav.value=target}
   mobileNav?.addEventListener("change",()=>{
     const target=mobileNav.value;
-    const button=document.querySelector("#mainNav button[data-target='"+target+"']");
-    if(button){button.click();return}
-    if(target==="commandDesk"){
-      const desk=document.querySelector("#mainNav button[data-target='commandDesk']");
-      if(desk){desk.click();return}
-      document.querySelector("#commandDesk")?.scrollIntoView({behavior:"smooth",block:"start"});
+    if(show(target))return;
+    if(target==="commandDesk"&&!document.getElementById("commandDesk")){
+      st("COMMAND DESK IS NOT READY — COMPLETE CENTRAL ACCESS / WORKSPACE SETUP FIRST.","preview");
     }
   });
-  $("connectTop")?.addEventListener("click",()=>{
-    const button=document.querySelector("#mainNav button[data-target='destinations']");
-    if(button)button.click();
-    else document.querySelector("#destinations")?.classList.remove("hidden");
-  });
+  $("connectTop")?.addEventListener("click",()=>show("destinations"));
   const theme=$("themeToggle");
   theme&&theme.addEventListener("click",()=>{
     const light=document.body.dataset.light==="1";
@@ -602,14 +595,19 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
     await run(9,"Review controls",()=>!!document.querySelector("#review")&&/Approval queue/i.test(document.querySelector("#review")?.textContent||""));
     await run(10,"Connect surface",()=>!!document.getElementById("destinations")&&!!document.getElementById("connectTop"));
     await run(11,"Operator controls",()=>["home","work","brain","tasks","suggestions","review","archive","agents","insights","destinations","settings"].every(id=>!!document.getElementById(id)));
+    await run(12,"Navigation contract",()=>{
+      const allowed=new Set(NAV_SECTIONS);
+      const targets=[...document.querySelectorAll("#app [data-target]")].map(el=>el.dataset.target).filter(Boolean);
+      return targets.every(target=>allowed.has(target))&&[...document.querySelectorAll("#app [data-command]")].every(el=>["create","import"].includes(el.dataset.command));
+    });
     // A full audit should not collapse into an instant flash on a fast local device.
     const elapsedBefore=Math.round(performance.now()-started);
     if(elapsedBefore<1200)await wait(1200-elapsedBefore);
     const elapsed=Math.max(1,Math.round(performance.now()-started));
     const overall=$("auditOverall"),summary=$("auditSummary"),meta=$("auditRunMeta");
     if(overall)overall.textContent=failures.length?"ATTENTION":"AUDIT PASSED";
-    if(summary)summary.textContent=failures.length?failures.join(" • ")+" require attention. No automatic changes were made.":"12 live checks completed across auth, permissions, connectors, agents, workspace, public bridge and control surfaces.";
-    if(meta)meta.textContent="LAST RUN · "+new Date().toLocaleTimeString()+" · "+elapsed+"ms · "+(connectorProbe?"CONNECTOR "+connectorProbe.status:"CONNECTOR NOT PROBED")+" · PUBLIC "+publicProbe.status;
+    if(summary)summary.textContent=failures.length?failures.join(" • ")+" require attention. No automatic changes were made.":"13 live checks completed across auth, permissions, connectors, agents, workspace, navigation, public bridge and control surfaces.";
+    if(meta)meta.textContent="LAST RUN · "+new Date().toLocaleTimeString()+" · "+elapsed+"ms · "+(connectorProbe?"CONNECTOR "+connectorProbe.status:"CONNECTOR NOT PROBED")+" · PUBLIC "+publicProbe.status+" · NAV "+(results[12]?"PASS":"WATCH");
     L("AUDIT",(failures.length?"Warnings: ":"Passed: ")+failures.join(", "));
   });
   const searchDock=$("searchDock"),searchInput=$("globalSearchInput"),searchResults=$("searchResults");
