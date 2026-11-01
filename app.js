@@ -918,52 +918,66 @@ function renderClothing(){
   function renderGlassEye() {
     const container=byId("glass-eye-container"); if(!container)return;
     const memory=getGlobal("ESCIE_GLASS_EYE_MEMORY",null),journey=getGlobal("ESCIE_GLASS_EYE_JOURNEY",null);
-    const summary=memory&&typeof memory.summary==="function"?memory.summary():{observed:0,interacted:0,discoveries:0,connections:0,missed:0,unknown:0,unresolved:0,visited:0,events:0};
     const state=memory&&typeof memory.state==="function"?memory.state():{};
     const path=journey&&typeof journey.journey==="function"?(journey.journey().path||[]):(Array.isArray(state.path)?state.path:[]);
-    const last=path.length?path[path.length-1]:null;
     const journeyState=journey&&typeof journey.journey==="function"?journey.journey():{};
     const lastSignal=journeyState.last_signal||null;
-    const questions=Array.isArray(journeyState.questions)?journeyState.questions:(Array.isArray(state.unresolved)?state.unresolved:[]);
-    const unknowns=Array.isArray(journeyState.unknown)?journeyState.unknown:(Array.isArray(state.unknown)?state.unknown:[]);
     const recent=path.slice(-6).reverse();
     const esc=v=>escapeHTML(v==null?"":v);
+    const language=String(ESCIE_RUNTIME.glassLanguage||"en").toLowerCase();
+    const copy={
+      en:{side:"THIS IS YOUR SIDE OF THE SCREEN.",core:"SEE · HEAR · FOLLOW · MISS · RETURN",body:"What you notice, hear and follow belongs to your journey here.",see:"SEE WHAT I SAW",follow:"FOLLOW MY THREAD",return:"RETURN TO THE WORLD",info:"ⓘ INFO",clear:"CLEAR MY MEMORY",local:"LOCAL MEMORY / NON-CANONICAL",memory:"YOUR MEMORY",private:"LOCAL · PRIVATE · NON-CANONICAL",last:"LAST SIGNAL",recent:"RECENT PATH",footer:["YOUR PATH","YOUR MEMORY","NO CANON","NO CENTRAL HISTORY"],infoMsg:"The Glass Eye is the audience eye: a place to look through the screen, follow what catches you, and leave with your own path."},
+      fr:{side:"C'EST VOTRE CÔTÉ DE L'ÉCRAN.",core:"VOIR · ENTENDRE · SUIVRE · MANQUER · REVENIR",body:"Ce que vous remarquez, entendez et suivez appartient à votre parcours ici.",see:"VOIR CE QUE J'AI VU",follow:"SUIVRE MON FIL",return:"RETOURNER AU MONDE",info:"ⓘ INFO",clear:"EFFACER MA MÉMOIRE",local:"MÉMOIRE LOCALE / NON CANONIQUE",memory:"VOTRE MÉMOIRE",private:"LOCALE · PRIVÉE · NON CANONIQUE",last:"DERNIER SIGNAL",recent:"PARCOURS RÉCENT",footer:["VOTRE PARCOURS","VOTRE MÉMOIRE","AUCUN CANON","AUCUN HISTORIQUE CENTRAL"],infoMsg:"Le Glass Eye est l'œil du public : un endroit pour regarder à travers l'écran, suivre ce qui vous accroche et repartir avec votre propre parcours."},
+      es:{side:"ESTE ES TU LADO DE LA PANTALLA.",core:"VER · OÍR · SEGUIR · PERDER · VOLVER",body:"Lo que notas, escuchas y sigues pertenece a tu recorrido aquí.",see:"VER LO QUE VI",follow:"SEGUIR MI HILO",return:"VOLVER AL MUNDO",info:"ⓘ INFO",clear:"BORRAR MI MEMORIA",local:"MEMORIA LOCAL / NO CANÓNICA",memory:"TU MEMORIA",private:"LOCAL · PRIVADA · NO CANÓNICA",last:"ÚLTIMA SEÑAL",recent:"RECORRIDO RECIENTE",footer:["TU RECORRIDO","TU MEMORIA","SIN CANON","SIN HISTORIAL CENTRAL"],infoMsg:"Glass Eye es el ojo del público: un lugar para mirar a través de la pantalla, seguir lo que te llama y salir con tu propio recorrido."}
+    }[language]||null;
+    const t=copy||({}); 
     container.innerHTML=
       '<div class="glass-frame glass-eye-interface">'+
         '<div class="glass-readout"><span>THE GLASS EYE</span><span>VIEWER LAYER / LOCAL MEMORY</span></div>'+
+        '<div class="glass-language" role="group" aria-label="Glass Eye language">'+
+          ["en","fr","es"].map(code=>'<button type="button" data-glass-language="'+code+'" class="'+(language===code?"is-active":"")+'">'+code.toUpperCase()+'</button>').join("")+
+        '</div>'+
         '<div class="glass-center">'+
           '<span class="glass-dot"></span>'+
-          '<strong>THIS IS YOUR SIDE OF THE SCREEN.</strong>'+
-          '<span class="glass-core-line">SEE · HEAR · FOLLOW · MISS · RETURN</span>'+
-          '<p>The Glass Eye is your side of the screen. What you notice, hear and follow belongs to your journey here.</p>'+
+          '<strong>'+esc(t.side)+'</strong>'+
+          '<span class="glass-core-line">'+esc(t.core)+'</span>'+
+          '<p>'+esc(t.body)+'</p>'+
           '<div class="glass-eye-actions" role="group" aria-label="Glass Eye actions">'+
-            '<button type="button" data-glass-eye-action="observe">SEE WHAT I SAW</button>'+
-            '<button type="button" data-glass-eye-action="follow">FOLLOW MY THREAD</button>'+
-            '<button type="button" data-glass-eye-action="return">RETURN TO THE WORLD</button>'+
+            '<button type="button" data-glass-eye-action="observe">'+esc(t.see)+'</button>'+
+            '<button type="button" data-glass-eye-action="follow">'+esc(t.follow)+'</button>'+
+            '<button type="button" data-glass-eye-action="return">'+esc(t.return)+'</button>'+
+            '<button type="button" data-glass-eye-action="info">'+esc(t.info)+'</button>'+
           '</div>'+
-          '<p class="glass-eye-response" aria-live="polite">LOCAL MEMORY / NON-CANONICAL</p>'+
+          '<p class="glass-eye-response" aria-live="polite">'+esc(t.local)+'</p>'+
         '</div>'+
         '<div class="glass-memory-inline">'+
-          '<div><span>YOUR MEMORY</span><strong>LOCAL · PRIVATE · NON-CANONICAL</strong></div>'+
-          ''+
-          '<div class="glass-path-line"><span>LAST SIGNAL</span><em>'+esc(lastSignal||"NONE RECORDED")+'</em></div>'+
-          '<div class="glass-path-line"><span>RECENT PATH</span><em>'+esc(last?(last.type+" / "+(last.target_id||"—")):"NO PATH YET")+'</em></div>'+
+          '<div><span>'+esc(t.memory)+'</span><strong>'+esc(t.private)+'</strong></div>'+
+          '<div class="glass-path-line"><span>'+esc(t.last)+'</span><em>'+esc(lastSignal||"NONE RECORDED")+'</em></div>'+
+          '<div class="glass-path-line"><span>'+esc(t.recent)+'</span><em>'+esc(path.length?(path[path.length-1].type+" / "+(path[path.length-1].target_id||"—")):"NO PATH YET")+'</em></div>'+
           (recent.length?'<div class="glass-path-events">'+recent.map(e=>'<span>'+esc(e.type)+" / "+esc(e.target_id||"—")+'</span>').join("")+'</div>':'')+
-          '<button type="button" class="glass-memory-clear-inline" data-glass-eye-action="clear-memory">CLEAR MY MEMORY</button>'+
+          '<button type="button" class="glass-memory-clear-inline" data-glass-eye-action="clear-memory">'+esc(t.clear)+'</button>'+
         '</div>'+
-        '<div class="glass-footer"><span>YOUR PATH</span><span>YOUR MEMORY</span><span>NO CANON</span><span>NO CENTRAL HISTORY</span></div>'+
+        '<div class="glass-footer">'+t.footer.map(esc).map(item=>'<span>'+item+'</span>').join("")+'</div>'+
       '</div>';
+    container.querySelectorAll("[data-glass-language]").forEach(button=>button.addEventListener("click",()=>{
+      ESCIE_RUNTIME.glassLanguage=button.getAttribute("data-glass-language")||"en";
+      renderGlassEye();
+    }));
     const response=container.querySelector(".glass-eye-response");
     container.querySelectorAll("[data-glass-eye-action]").forEach(button=>button.addEventListener("click",()=>{
       const action=button.getAttribute("data-glass-eye-action");
       if(action==="clear-memory"){if(memory&&typeof memory.clear==="function")memory.clear();renderGlassEye();return;}
-      const messages={observe:"LOCAL VIEW · your observations stay on this device.",follow:"THREAD OPEN · follow connections without turning your path into canon.",return:"RETURNING · the public world is unchanged by your journey."};
-      if(response)response.textContent=messages[action]||"THE GLASS EYE IS OPEN.";
-      if(memory&&typeof memory.record==="function")memory.record({type:"GLASS_EYE_"+String(action||"").toUpperCase(),target_id:"glass-eye",timestamp:new Date().toISOString()});
+      const messages={observe:t.local,follow:t.local,return:t.return,info:t.infoMsg};
+      if(response)response.textContent=messages[action]||t.local;
+      if(action!=="info"&&memory&&typeof memory.record==="function")memory.record({type:"GLASS_EYE_"+String(action||"").toUpperCase(),target_id:"glass-eye",timestamp:new Date().toISOString()});
+      if(action==="return"){
+        const world=byId("world"),trigger=world&&world.querySelector(".section-drop-trigger");
+        if(trigger&&!world.classList.contains("section-open"))trigger.click();
+        if(world)world.scrollIntoView({behavior:reduceMotion()?"auto":"smooth",block:"start"});
+      }
       setTimeout(renderGlassEye,0);
     }));
   }
-
   function getAllRecords() {
     const registry = getGlobal("ESCIE_RECORD_REGISTRY", null);
     const base = registry && typeof registry.records === "function"
