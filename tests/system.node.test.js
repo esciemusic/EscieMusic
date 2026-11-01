@@ -345,7 +345,7 @@ assert(glassMemoryRuntime.includes("CLEAR MY MEMORY"),"Glass Eye memory must pro
 assert(glassMemoryRuntime.includes("LOCAL / PRIVATE / NON-CANONICAL"),"Glass Eye memory must disclose its local non-canonical status");
 assert(fs.readFileSync("index.html","utf8").includes('id="glass-eye-container"'),"public site must expose Glass Eye surface");
 const glassAppRuntime=fs.readFileSync("app.js","utf8");
-assert(glassAppRuntime.includes("LOOK. LISTEN. FOLLOW. RETURN."),"Glass Eye must retain its audience-facing core function");
+assert(glassAppRuntime.includes("SEE · HEAR · FOLLOW · MISS · RETURN"),"Glass Eye must retain its audience-facing core function");
 assert(glassAppRuntime.includes("data-glass-eye-action"),"Glass Eye must expose audience interaction controls");
 assert(glassAppRuntime.includes("YOUR SIDE OF THE SCREEN"),"Glass Eye must remain the audience side of the screen");
 
