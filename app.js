@@ -807,6 +807,40 @@ function renderClothing(){
     });
   }
 
+  function renderArchive() {
+    const container = byId("archive-container");
+    if (!container) return;
+
+    const records = getAllPublicRecords().filter(record => {
+      const manifest = recordManifest(record);
+      return manifest ? manifest.sections && manifest.sections.archive === true : record.type === "archive";
+    }).filter(isPublic);
+
+    if (!records.length) {
+      renderEmpty(container, "THE ARCHIVE IS BEING PRESERVED. PUBLIC TRACES WILL APPEAR WHEN THEY ENTER THE ARCHIVE.");
+      return;
+    }
+
+    const ordered = records.slice().sort((a, b) =>
+      recordTitle(a).localeCompare(recordTitle(b))
+    );
+
+    container.innerHTML =
+      '<div class="archive-index">' +
+        motifMarkup("archive") +
+        '<p class="eyebrow">PUBLIC TRACE / ' + escapeHTML(String(ordered.length)) + ' RECORD' + (ordered.length === 1 ? '' : 'S') + '</p>' +
+        '<div class="archive-list">' +
+          ordered.map(record =>
+            '<article class="archive-record" data-record-id="' + escapeHTML(recordId(record)) + '">' +
+              '<p class="eyebrow">' + escapeHTML(String(record.type || "record").toUpperCase()) + '</p>' +
+              '<h3>' + escapeHTML(recordTitle(record)) + '</h3>' +
+              (record.description ? '<p>' + escapeHTML(record.description) + '</p>' : '') +
+            '</article>'
+          ).join("") +
+        '</div>' +
+      '</div>';
+  }
+
   function renderInvestigation() {
     const container = byId("investigation-container");
     if (!container) return;
