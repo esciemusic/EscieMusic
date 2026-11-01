@@ -1,5 +1,5 @@
 /* ESCIE CLOTHING REGISTRY
- * Drop 001 is the first physical expression of HEART ON MY SLEEVE.
+ * Drop 001 is the first physical expression of THE WORLD YOU CAN WEAR.
  * Clothing remains useful without digital connections; digital metadata is secondary.
  */
 (function(){
