@@ -936,7 +936,7 @@ function renderClothing(){
 
     container.innerHTML =
       '<p class="about-lead">' + escapeHTML(
-        about.description || "ESCIE is the artist, writer and central consciousness of the work."
+        about.description || "ESCIE IS THE ARTIST. THE WORK SPEAKS FROM HERE."
       ) + "</p>" +
       '<div class="about-principles">' +
         '<p><span>PRINCIPLE</span>' + escapeHTML(
