@@ -159,7 +159,9 @@
         button.innerHTML='<span class="section-drop-index">'+String(index+1).padStart(2,"0")+'</span><span class="section-drop-title"></span><span class="section-drop-symbol" aria-hidden="true">+</span>';
         button.querySelector(".section-drop-title").textContent=heading.textContent.trim();heading.hidden=true;
         var panel=document.createElement("div");panel.className="section-drop-panel";panel.id=section.id+"-panel";panel.setAttribute("role","region");panel.hidden=true;
-        Array.from(inner.children).forEach(function(child){if(child!==heading)panel.appendChild(child);});
+        var content=document.createElement("div");content.className="section-drop-content";
+        Array.from(inner.children).forEach(function(child){if(child!==heading)content.appendChild(child);});
+        panel.appendChild(content);
         inner.appendChild(button);inner.appendChild(panel);section.dataset.accordionReady="1";section.classList.add("section-collapsed");
         function setOpen(open,scroll){
           sections.forEach(function(other){var p=other.querySelector(".section-drop-panel"),b=other.querySelector(".section-drop-trigger"),active=other===section&&open;other.classList.toggle("section-open",active);other.classList.toggle("section-collapsed",!active);if(p)p.hidden=!active;if(b){b.setAttribute("aria-expanded",String(active));var s=b.querySelector(".section-drop-symbol");if(s)s.textContent=active?"−":"+";}});
