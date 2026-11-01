@@ -183,7 +183,10 @@
         }
       }
       window.ESCIE_SECTION_ACCORDION={open:function(id,shouldScroll){
-        var target=document.getElementById(String(id||"").replace(/^#/,""));
+        var raw=String(id||"").replace(/^#/,"");
+        var router=window.ESCIE_UI_ROUTER;
+        var resolved=router&&typeof router.resolve==="function"?(router.resolve(raw)||raw):raw;
+        var target=document.getElementById(resolved);
         var button=target&&target.querySelector(".section-drop-trigger");
         if(button&&!target.classList.contains("section-open"))button.click();
         if(target&&shouldScroll)requestAnimationFrame(function(){target.scrollIntoView({behavior:window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});});
