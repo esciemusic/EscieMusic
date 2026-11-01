@@ -1,5 +1,5 @@
 /* ESCIE CLOTHING REGISTRY
- * Drop 001 is the first physical expression of THE WORLD YOU CAN WEAR.
+ * Drop 001 is the first physical expression of HEART ON MY SLEEVE.
  * Clothing remains useful without digital connections; digital metadata is secondary.
  */
 (function(){
@@ -9,7 +9,7 @@
       id:"clothing-escie-tee-001",
       type:"CLOTHING",
       title:"ESCIE HEAVY TEE",
-      collection:"THE WORLD YOU CAN WEAR — DROP 001",
+      collection:"HEART ON MY SLEEVE — DROP 001",
       category:"CORE",
       garment:"Heavyweight oversized T-shirt",
       status:"DESIGN_READY",
@@ -34,13 +34,13 @@
       fit_reference:"",
     },
     production_packet:{sample_priority:1,quote_required:true,approval_gate:"HUMAN",qc:["fit","fabric","print","wash","shrinkage","seams"],photo_required:true,quantity_decision:"POST-SAMPLE"},
-      notes:"Master garment for the THE WORLD YOU CAN WEAR clothing system."
+      notes:"Master garment for the HEART ON MY SLEEVE clothing system."
     },
     {
       id:"clothing-escie-hood-001",
       type:"CLOTHING",
       title:"ESCIE HEAVY HOODIE",
-      collection:"THE WORLD YOU CAN WEAR — DROP 001",
+      collection:"HEART ON MY SLEEVE — DROP 001",
       category:"CORE",
       garment:"Heavy pullover hoodie",
       status:"DESIGN_READY",
@@ -58,7 +58,7 @@
       digital_connection:false,
       priority:"HIGHEST",
       production_packet:{sample_priority:2,quote_required:true,approval_gate:"HUMAN",qc:["fit","fabric","print","embroidery","wash","shrinkage","seams"],photo_required:true,quantity_decision:"POST-SAMPLE"},
-      notes:"Flagship THE WORLD YOU CAN WEAR garment."
+      notes:"Flagship HEART ON MY SLEEVE garment."
     },  ];
   window.ESCIE_CLOTHING_AUDIT={
   version:"1.0",
