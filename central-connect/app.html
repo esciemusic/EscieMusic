@@ -501,6 +501,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
   function show(target){
     if(target==="systemCheck"){document.querySelector("#mainNav button[data-target=\"commandDesk\"]")?.click();return;}
     if(!NAV_SECTIONS.includes(target))return false;
+    if(target==="commandDesk"&&!$(target)){st("COMMAND DESK IS NOT READY — COMPLETE CENTRAL ACCESS / WORKSPACE SETUP FIRST.","preview");return false;}
     NAV_SECTIONS.forEach(id=>{const e=$(id);if(e)e.classList.toggle("hidden",id!==target)});
     document.querySelectorAll("#mainNav button[data-target]").forEach(b=>b.classList.toggle("active",b.dataset.target===target));
     const mobile=$( "mobileNav"); if(mobile)mobile.value=target;
