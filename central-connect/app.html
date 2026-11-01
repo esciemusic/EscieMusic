@@ -224,7 +224,14 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
 @keyframes central-node-pulse{0%,100%{transform:scale(.82);opacity:.35}50%{transform:scale(1.2);opacity:.9}}
 @media(max-width:620px){.central-constant-node{right:10px;bottom:10px;padding:9px 11px 9px 9px}.central-node-label{font-size:9px}}
 @media(prefers-reduced-motion:reduce){.central-constant-node .central-node-orbit:after{animation:none}}
-</style></head>
+</style><style>
+/* CENTRAL NAVIGATION SIMPLIFICATION */
+.central-nav{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px;padding:9px 2px 3px}
+.central-nav button{width:100%;text-align:center;min-height:38px}
+@media(max-width:900px){.central-nav{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.central-nav button{font-size:10px}}
+@media(max-width:620px){.central-nav{display:none}.mobile-nav{display:block}}
+</style>
+</head>
 </head>
 <body>
 <div class="shell">
@@ -350,12 +357,12 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
 </section>
 
 <section id="app" class="hidden">
-  <nav class="nav" id="mainNav">
-    <button class="active" data-target="home">OVERVIEW</button><button data-target="commandDesk">COMMAND DESK</button><button data-target="work">WORK</button><button data-target="brain">BRAIN</button><button data-target="tasks">TASKS</button><button data-target="suggestions">SUGGESTIONS</button><button data-target="review">REVIEW</button><button data-target="archive">ARCHIVE</button><button data-target="agents">AGENTS</button><button data-target="insights">INSIGHTS</button><button data-target="destinations">CONNECT</button><button data-target="settings">SETTINGS</button>
+  <nav class="nav central-nav" id="mainNav" aria-label="Central primary navigation">
+    <button class="active" data-target="home">OVERVIEW</button><button data-target="commandDesk">COMMAND</button><button data-target="work">WORK</button><button data-target="brain">BRAIN</button><button data-target="tasks">TASKS</button><button data-target="review">REVIEW</button><button data-target="destinations">CONNECT</button><button data-target="settings">SETTINGS</button>
   </nav>
   <label class="mobile-nav-label" for="mobileNav">CENTRAL / NAVIGATE</label>
   <select id="mobileNav" class="mobile-nav" aria-label="Central navigation">
-    <option value="home">OVERVIEW</option><option value="commandDesk">COMMAND DESK</option><option value="work">WORK</option><option value="brain">BRAIN</option><option value="tasks">TASKS</option><option value="suggestions">SUGGESTIONS</option><option value="review">REVIEW</option><option value="archive">ARCHIVE</option><option value="agents">AGENTS</option><option value="insights">INSIGHTS</option><option value="destinations">CONNECT</option><option value="settings">SETTINGS</option>
+    <option value="home">OVERVIEW</option><option value="commandDesk">COMMAND</option><option value="work">WORK</option><option value="brain">BRAIN</option><option value="tasks">TASKS</option><option value="review">REVIEW</option><option value="destinations">CONNECT</option><option value="settings">SETTINGS</option>
   </select>
   <div id="home">
     <div class="central-presence-top">
@@ -527,15 +534,31 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
 <script>
 (function(){
   const $=id=>document.getElementById(id);
+  const NAV_SECTIONS=["home","commandDesk","work","brain","tasks","suggestions","review","archive","agents","insights","destinations","settings"];
   function show(target){
-    ["home","work","brain","tasks","suggestions","review","archive","agents","insights","destinations","settings"].forEach(id=>{const e=$(id);if(e)e.classList.toggle("hidden",id!==target)});
-    document.querySelectorAll("#mainNav button").forEach(b=>b.classList.toggle("active",b.dataset.target===target));
-    if(document.getElementById("mobileNav"))document.getElementById("mobileNav").value=target;
+    if(target==="systemCheck"){document.querySelector("#mainNav button[data-target=\"commandDesk\"]")?.click();return;}
+    if(!NAV_SECTIONS.includes(target))return false;
+    NAV_SECTIONS.forEach(id=>{const e=$(id);if(e)e.classList.toggle("hidden",id!==target)});
+    document.querySelectorAll("#mainNav button[data-target]").forEach(b=>b.classList.toggle("active",b.dataset.target===target));
+    const mobile=$( "mobileNav"); if(mobile)mobile.value=target;
     window.scrollTo({top:0,left:0,behavior:"auto"});if(document.scrollingElement)document.scrollingElement.scrollTop=0;document.documentElement.scrollTop=0;document.body.scrollTop=0;
+    window.dispatchEvent(new CustomEvent("escie:central-view",{detail:{target}}));
+    return true;
   }
+  window.ESCIE_CENTRAL_SHOW=show;
   document.querySelectorAll("#mainNav button[data-target]").forEach(b=>b.addEventListener("click",()=>show(b.dataset.target)));
-  document.addEventListener("click",e=>{const b=e.target.closest(".quick[data-target],.quick[data-section],button[data-target]");if(!b||b.closest("#mainNav"))return;const target=b.dataset.target||b.dataset.section;if(!target)return;if(target==="commandDesk"){const command=document.querySelector("#mainNav button[data-target=\"commandDesk\"]");if(command){command.click();return;}document.querySelector("#commandDesk")?.classList.remove("hidden");document.querySelector("#commandDesk")?.scrollIntoView({behavior:"smooth",block:"start"});return;}if($(target))show(target);});
-  // Agent routing is owned by agent-ui.js; keep one authoritative runtime.  document.querySelectorAll("[data-target]").forEach(b=>{if(!b.closest("#mainNav"))b.addEventListener("click",()=>show(b.dataset.target))});
+  document.addEventListener("click",e=>{
+    const b=e.target.closest("[data-target],[data-section]");
+    if(!b||b.closest("#mainNav")||b.closest("#mobileNav"))return;
+    let target=b.dataset.target||b.dataset.section;
+    if(!target)return;
+    const command=b.dataset.command;
+    if(command==="create"||command==="import")target="commandDesk";
+    else if(command==="brain")target="brain";
+    else if(command==="review")target="review";
+    else if(command==="distribute")target="destinations";
+    if(NAV_SECTIONS.includes(target))show(target);
+  });
   const mobileNav=$("mobileNav");
   function syncMobileNav(target){if(mobileNav&&target)mobileNav.value=target}
   mobileNav?.addEventListener("change",()=>{
@@ -635,10 +658,11 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
     document.querySelectorAll("#app .panel,#app .rowcard,#app .quick,#app h2,#app .rowtitle").forEach(el=>{
       const txt=(el.textContent||"").trim(),norm=txt.toLowerCase();if(!txt||seen.has(txt)||!norm.includes(q))return;seen.add(txt);out.push(el)
     });
-    searchResults.innerHTML=out.slice(0,30).map(el=>{const t=(el.querySelector(".rowtitle,.kicker,h2,strong")?.textContent||"RESULT").trim(),m=el.querySelector(".rowmeta,.sub,p,span")?.textContent?.trim()||"Central surface";return '<button class="searchResult" type="button"><span><strong>'+escSearch(t)+'</strong><span class="ey" style="display:block">'+escSearch(m.slice(0,140))+'</span></span><span class="pill">MATCH</span></button>'}).join("")||'<div class="rowcard"><div class="rowleft"><div class="rowtitle">NO MATCHES</div><div class="rowmeta">Try a project, person, place, task, agent or destination.</div></div></div>'
+    searchResults.innerHTML=out.slice(0,30).map(el=>{const t=(el.querySelector(".rowtitle,.kicker,h2,strong")?.textContent||"RESULT").trim(),m=el.querySelector(".rowmeta,.sub,p,span")?.textContent?.trim()||"Central surface";const section=el.closest("#app > section[id]")?.id||el.closest("#home")?.id||"home";return '<button class="searchResult" type="button" data-search-target="'+escSearch(section)+'"><span><strong>'+escSearch(t)+'</strong><span class="ey" style="display:block">'+escSearch(m.slice(0,140))+'</span></span><span class="pill">OPEN</span></button>'}).join("")||'<div class="rowcard"><div class="rowleft"><div class="rowtitle">NO MATCHES</div><div class="rowmeta">Try a project, person, place, task, agent or destination.</div></div></div>';
   }
   function escSearch(x){return String(x).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]))}
   searchInput?.addEventListener("input",()=>doSearch(searchInput.value));
+  searchResults?.addEventListener("click",e=>{const b=e.target.closest("[data-search-target]");if(!b)return;closeSearch();show(b.dataset.searchTarget)});
   document.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();openSearch()}if(e.key==="Escape"){closeSearch();closeAudit()}});
   function syncOperatorIdentity(){
     const acct=$("acct"),sa=$("settingsAccount");
