@@ -1214,13 +1214,6 @@ function renderClothing(){
       renderWeb();
     });
 
-    document.addEventListener("keydown", event => {
-      const trigger = event.target.closest("[data-record-id][role=\"button\"]");
-      if (!trigger || (event.key !== "Enter" && event.key !== " ")) return;
-      event.preventDefault();
-      trigger.click();
-    });
-
     document.addEventListener("click", event => {
       const webClear=event.target.closest("[data-web-filter-clear]");
       if(webClear){ ESCIE_RUNTIME.webFilters={}; renderWeb(); return; }
@@ -1322,15 +1315,24 @@ function renderClothing(){
     });
 
     document.addEventListener("keydown", event => {
-      if ((event.key === "Enter" || event.key === " ") && event.target.closest("[data-record-id]") && !event.target.closest("button,a,input,select,textarea")) {
-        event.preventDefault();
-        event.target.closest("[data-record-id]").click();
-        return;
-      }
       if (event.key === "Escape" && !modal.hidden) {
+        event.preventDefault();
         modal.hidden = true;
         document.body.classList.remove("inspector-open");
+        return;
       }
+
+      if (event.key !== "Enter" && event.key !== " ") return;
+
+      const trigger = event.target.closest("[data-record-id]");
+      if (!trigger) return;
+
+      // Native controls already receive keyboard activation. Handle only
+      // record surfaces that are not themselves interactive controls.
+      if (event.target.closest("button,a,input,select,textarea")) return;
+
+      event.preventDefault();
+      trigger.click();
     });
   }
 
