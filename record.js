@@ -177,35 +177,6 @@ const ESCIE_RECORD = {
 
   /*
   ==========================================================
-  TRANSFORMATIONS
-  ==========================================================
-  */
-
-  TRANSFORMATIONS: {
-
-    NONE: "none",
-
-    SELECTED: "selected",
-
-    EDITED: "edited",
-
-    COMBINED: "combined",
-
-    RECONSTRUCTED: "reconstructed",
-
-    DRAMATIZED: "dramatized",
-
-    EXAGGERATED: "exaggerated",
-
-    FICTIONALIZED: "fictionalized",
-
-    REIMAGINED: "reimagined"
-
-  },
-
-
-  /*
-  ==========================================================
   CERTAINTY
   ==========================================================
   */
