@@ -978,7 +978,6 @@ function renderClothing(){
         if(trigger&&!world.classList.contains("section-open"))trigger.click();
         if(world)world.scrollIntoView({behavior:reduceMotion()?"auto":"smooth",block:"start"});
       }
-      setTimeout(renderGlassEye,0);
     }));
   }
   function getAllRecords() {
