@@ -514,25 +514,43 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
   document.querySelectorAll("#mainNav button[data-target]").forEach(b=>b.addEventListener("click",()=>{show(b.dataset.target);document.getElementById("mainNav")?.classList.remove("open");document.getElementById("centralCompass")?.setAttribute("aria-expanded","false");}));
   document.getElementById("centralCompass")?.addEventListener("click",()=>{const n=document.getElementById("mainNav"),open=!n?.classList.contains("open");n?.classList.toggle("open",open);document.getElementById("centralCompass")?.setAttribute("aria-expanded",String(open));});
   document.addEventListener("click",e=>{if(!e.target.closest(".central-compass-wrap")){document.getElementById("mainNav")?.classList.remove("open");document.getElementById("centralCompass")?.setAttribute("aria-expanded","false");}});
-  document.querySelectorAll("#home .central-drop > summary").forEach(summary=>summary.addEventListener("click",e=>{
-    e.preventDefault();
-    const drop=summary.parentElement;
-    if(!drop)return;
-    const wasOpen=drop.hasAttribute("open");
-    document.querySelectorAll("#home .central-drop[open]").forEach(other=>{if(other!==drop)other.removeAttribute("open")});
-    drop.toggleAttribute("open",!wasOpen);
-  }));
-  document.addEventListener("click",e=>{
-    const b=e.target.closest("[data-target],[data-section]");
-    if(!b||b.closest("#mainNav")||b.closest("#mobileNav")||b.closest(".central-drop > summary"))return;
+  function routeCentralLink(b){
+    if(!b)return false;
     let target=b.dataset.target||b.dataset.section;
-    if(!target)return;
     const command=b.dataset.command;
     if(command==="create"||command==="import")target="commandDesk";
     else if(command==="brain")target="brain";
     else if(command==="review")target="review";
     else if(command==="distribute")target="destinations";
-    show(target);
+    if(!target)return false;
+    if(target==="commandDesk"&&!$(target)){
+      st("COMMAND DESK IS NOT READY — COMPLETE CENTRAL ACCESS / WORKSPACE SETUP FIRST.","preview");
+      return false;
+    }
+    if(!NAV_SECTIONS.includes(target)){
+      st("CENTRAL LINK IS NOT AVAILABLE YET: "+target.toUpperCase(),"preview");
+      return false;
+    }
+    return show(target);
+  }
+  document.querySelectorAll("#home .central-drop > summary").forEach(summary=>summary.addEventListener("click",e=>{
+    e.preventDefault();
+    e.stopPropagation();
+    const drop=summary.parentElement;
+    if(!drop)return;
+    const wasOpen=drop.hasAttribute("open");
+    document.querySelectorAll("#home .central-drop[open]").forEach(other=>{if(other!==drop)other.removeAttribute("open")});
+    if(!wasOpen)drop.setAttribute("open","");
+  }));
+  document.querySelectorAll("#home .node-links button[data-target],#home .node-links button[data-section]").forEach(b=>b.addEventListener("click",e=>{
+    e.preventDefault();
+    e.stopPropagation();
+    routeCentralLink(b);
+  }));
+  document.addEventListener("click",e=>{
+    const b=e.target.closest("[data-target],[data-section]");
+    if(!b||b.closest("#mainNav")||b.closest("#mobileNav")||b.closest("#home .node-links")||b.closest(".central-drop > summary"))return;
+    routeCentralLink(b);
   });
   const mobileNav=$("mobileNav");
   mobileNav?.addEventListener("change",()=>{
