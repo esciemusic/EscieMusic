@@ -9,7 +9,10 @@ function assert(condition, message) {
 
 assert(scripts.length > 0, "index.html should load JavaScript modules");
 assert(!html.includes("\\\\n"), "index.html must not contain malformed literal newline escapes");
-assert(/<section id="world"[^>]*hidden[^>]*aria-hidden="true"/.test(html), "future game section must remain hidden until externally hosted");
+assert(/<section id="world"[^>]*>/.test(html), "THE WORLD section must remain part of the public doorway");
+const games = fs.readFileSync("data/games.js", "utf8");
+assert(games.includes('status:"EXTERNAL_PLATFORM_EVALUATION"'), "playable game hosting must remain externally evaluated");
+assert(games.includes("public_link:null"), "playable game must remain unlinked until an external host is chosen");
 
 const counts = new Map();
 scripts.forEach((src) => counts.set(src, (counts.get(src) || 0) + 1));
