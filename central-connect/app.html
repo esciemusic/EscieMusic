@@ -21,7 +21,7 @@ a{color:inherit}
 .brand{display:flex;align-items:center;gap:12px;min-width:0}
 .mark{width:38px;height:38px;border:1px solid #444;border-radius:11px;display:grid;place-items:center;font-weight:900;letter-spacing:-.08em;background:linear-gradient(145deg,#1d1d1a,#090909)}
 .brandtext{min-width:0}.brandname{font-weight:850;letter-spacing:.18em;font-size:13px}.ey{font-size:10px;line-height:1.2;letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
-.topactions{display:flex;gap:8px;align-items:center;flex-wrap:nowrap}.utility{position:relative;display:flex;align-items:center}.utilityMenu{position:absolute;right:0;top:calc(100% + 8px);width:min(360px,calc(100vw - 28px));padding:10px;border:1px solid var(--line2);border-radius:16px;background:rgba(12,12,11,.98);box-shadow:0 24px 70px rgba(0,0,0,.5);display:grid;gap:5px}.utilityMenu button{width:100%;text-align:left;border:1px solid transparent;background:transparent;color:var(--text);padding:11px 12px;border-radius:10px}.utilityMenu button:hover{background:#181816;border-color:var(--line)}.utilityMenu .ey{display:block;margin-top:2px}.searchDock{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.62);backdrop-filter:blur(10px);display:grid;place-items:start center;padding:9vh 14px}.searchPanel{width:min(760px,100%);background:#10100f;border:1px solid var(--line2);border-radius:20px;padding:16px;box-shadow:0 30px 100px rgba(0,0,0,.55)}.searchResults{display:grid;gap:6px;margin-top:10px;max-height:55vh;overflow:auto}.searchResult{display:flex;justify-content:space-between;gap:12px;padding:12px;border:1px solid var(--line);border-radius:12px;background:#0b0b0a;text-align:left}.searchResult:hover{background:#171715}.auditDrawer{position:fixed;inset:0;z-index:95;background:rgba(0,0,0,.58);backdrop-filter:blur(8px);display:flex;justify-content:flex-end}.auditPanel{width:min(560px,100%);height:100%;overflow:auto;background:#0b0b0a;border-left:1px solid var(--line2);padding:18px;box-shadow:-25px 0 80px rgba(0,0,0,.45)}.auditGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.auditItem{padding:13px;border:1px solid var(--line);border-radius:13px;background:#10100f}.auditItem strong{display:block}.auditItem span{font-size:11px;color:#777}.auditState{float:right;font-size:9px;letter-spacing:.1em;border:1px solid #343430;border-radius:999px;padding:4px 7px}.auditState.pass{color:var(--good);border-color:#405845}.auditState.warn{color:var(--warn);border-color:#6a552e}@media(max-width:620px){.auditGrid{grid-template-columns:1fr}}
+.topactions{display:flex;gap:8px;align-items:center;flex-wrap:nowrap}.utility{position:relative;display:flex;align-items:center}.utilityMenu{position:absolute;right:0;top:calc(100% + 8px);width:min(360px,calc(100vw - 28px));padding:10px;border:1px solid var(--line2);border-radius:16px;background:rgba(12,12,11,.98);box-shadow:0 24px 70px rgba(0,0,0,.5);display:grid;gap:5px}.utilityMenu button{width:100%;text-align:left;border:1px solid transparent;background:transparent;color:var(--text);padding:11px 12px;border-radius:10px}.utilityMenu button:hover{background:#181816;border-color:var(--line)}.utilityMenu .ey{display:block;margin-top:2px}.searchDock{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.62);backdrop-filter:blur(10px);display:grid;place-items:start center;padding:9vh 14px}.searchPanel{width:min(760px,100%);background:#10100f;border:1px solid var(--line2);border-radius:20px;padding:16px;box-shadow:0 30px 100px rgba(0,0,0,.55)}.searchResults{display:grid;gap:6px;margin-top:10px;max-height:55vh;overflow:auto}.searchResult{display:flex;justify-content:space-between;gap:12px;padding:12px;border:1px solid var(--line);border-radius:12px;background:#0b0b0a;text-align:left}.searchResult:hover{background:#171715}.verification-page{max-width:1180px;margin:0 auto;padding:10px 0 42px}.verification-page .verificationPanel{margin-top:18px}.verification-page .auditGrid{grid-template-columns:repeat(2,minmax(0,1fr))}@media(max-width:620px){.verification-page .auditGrid{grid-template-columns:1fr}}.auditGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.auditItem{padding:13px;border:1px solid var(--line);border-radius:13px;background:#10100f}.auditItem strong{display:block}.auditItem span{font-size:11px;color:#777}.auditState{float:right;font-size:9px;letter-spacing:.1em;border:1px solid #343430;border-radius:999px;padding:4px 7px}.auditState.pass{color:var(--good);border-color:#405845}.auditState.warn{color:var(--warn);border-color:#6a552e}@media(max-width:620px){.auditGrid{grid-template-columns:1fr}}
 .iconbtn,.btn{border:1px solid var(--line2);background:#171715;color:var(--text);border-radius:11px;padding:10px 13px;font-weight:750}
 .iconbtn{width:42px;height:42px;padding:0;display:grid;place-items:center}
 .btn.primary{background:#e7e7e1;color:#080808;border-color:#e7e7e1}
@@ -437,45 +437,6 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
     <div id="searchResults" class="searchResults"><div class="rowcard"><div class="rowleft"><div class="rowtitle">SEARCH CENTRAL</div><div class="rowmeta">Type to search the current control surface.</div></div></div></div>
   </div>
 </div>
-<div id="auditDrawer" class="auditDrawer hidden" aria-hidden="true">
-  <aside class="auditPanel">
-    <div class="sectionTitle" style="margin:0 0 8px"><div><div class="kicker">GUARDIAN / SYSTEM</div><h2>AUDIT</h2><p>Audit observes. It does not silently change canon.</p></div><button id="auditClose" class="btn ghost">CLOSE</button></div>
-    <div class="panel" style="padding:15px"><div class="kicker">AUDIT STATE</div><h2 id="auditOverall" style="margin-top:6px">READY</h2><p id="auditSummary">Run a full check to inspect the current surface.</p><button id="runAudit" class="btn primary" style="margin-top:8px">RUN FULL AUDIT</button></div>
-    <div class="auditGrid" id="auditGrid">
-      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Session boundary</strong><span>Authentication surface will be checked.</span></div>
-      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Human approval</strong><span>Canonical writes remain human-gated.</span></div>
-      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Provider secrets</strong><span>Browser surface will be checked for exposed secrets.</span></div>
-      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Destinations</strong><span>Connector service and provider configuration will be checked.</span></div>
-      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Workspace isolation</strong><span>Authenticated workspace access will be checked.</span></div>
-      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Agent history</strong><span>Agent runtime and durable job access will be checked.</span></div>
-      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Universe contract</strong><span>Central/public/game boundaries will be checked.</span></div>
-      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Live public bridge</strong><span>Published public records will be checked.</span></div>
-      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Command Desk</strong><span>Receive, ask, task, review and activity surfaces will be checked.</span></div>
-      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Review controls</strong><span>Accept, decline, quarantine and revision paths will be checked.</span></div>
-      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Connect surface</strong><span>Provider connection controls will be present and reachable.</span></div>
-      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Operator controls</strong><span>Core Central workspaces will be checked for presence.</span></div>
-      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Navigation contract</strong><span>Every declared navigation target and command will be checked.</span></div>
-      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Audit persistence</strong><span>The audit result must be saved and readable from the database.</span></div>
-    </div>
-    <div class="auditRunMeta" id="auditRunMeta">NO AUDIT HAS RUN YET.</div><div id="auditRunDetails" class="stack" style="margin-top:10px"><div class="rowcard"><div class="rowleft"><div class="rowtitle">NO CHECK DETAILS</div><div class="rowmeta">Run the audit to see what each test actually checked.</div></div></div></div><div class="verificationPanel" id="verificationPanel">
-  <div class="sectionTitle" style="margin:0 0 8px"><div><div class="kicker">OPERATOR VERIFICATION</div><h2>VERIFY THE SYSTEM</h2><p>Click something. Watch what Central records. Confirm the intended function actually happened.</p></div></div>
-  <div class="verifyControls">
-    <button id="verifyRefresh" class="btn primary">REFRESH LIVE TRACE</button>
-    <button id="verifyClear" class="btn ghost">CLEAR LOCAL TRACE</button>
-  </div>
-  <div class="verifySummary" id="verifySummary"><span class="pill">READY</span><span>Local interaction trace + durable agent jobs.</span></div>
-  <div class="sectionTitle"><div><h3>LIVE INTERACTION TRACE</h3><p>Browser actions captured on this Central session.</p></div></div>
-  <div class="stack" id="verifyClicks"><div class="rowcard"><div class="rowleft"><div class="rowtitle">NO CLICKS CAPTURED</div><div class="rowmeta">Use a Central button, node or navigation control and return here.</div></div><span class="pill">IDLE</span></div></div>
-  <div class="sectionTitle"><div><h3>AGENT EXECUTION TRACE</h3><p>Durable jobs prove whether the agent network actually received and processed work.</p></div></div>
-  <div class="stack" id="verifyAgents"><div class="rowcard"><div class="rowleft"><div class="rowtitle">LOADING AGENT JOBS…</div><div class="rowmeta">Reading the durable Central job queue.</div></div></div></div>
-  <div class="sectionTitle"><div><h3>PERSISTENT AUDIT HISTORY</h3><p>Audit runs saved in Supabase. Local clicks are not audit evidence.</p></div></div>
-  <div class="stack" id="verifyAuditEvents"><div class="rowcard"><div class="rowleft"><div class="rowtitle">LOADING AUDIT EVENTS…</div><div class="rowmeta">Checking the durable audit ledger.</div></div></div></div>
-  <div class="sectionTitle"><div><h3>WHAT EACH RESULT MEANS</h3><p>CLICKED = interaction observed · EXECUTED = handler returned · SAVED = backend confirmed persistence · VERIFIED = expected outcome independently checked. A missing stage is a failure or an unknown—not a pass.</p></div></div>
-  <div class="sectionTitle"><div><h3>HOW TO VERIFY</h3><p>1. Click a function. 2. Return here. 3. Confirm the click and resulting job/event. 4. If nothing appears, the function is not wired.</p></div></div>
-</div>
-  </aside>
-</div>
-
 <section id="login" class="auth">
   <div class="panel">
     <div class="kicker">CENTRAL ACCESS / PRIVATE</div>
@@ -556,11 +517,11 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
     <button class="central-compass" id="centralCompass" type="button" aria-label="Open Central navigation" aria-expanded="false" aria-controls="mainNav" title="Central navigation">✧</button>
     <nav class="nav central-nav compass-menu" id="mainNav" aria-label="Central navigation">
       <div class="compass-title"><span>ESCIE CENTRAL</span><small>NAVIGATE</small></div>
-      <button class="active" data-target="home">OVERVIEW</button><button data-target="commandDesk">COMMAND</button><button data-target="work">WORK</button><button data-target="brain">BRAIN</button><button data-target="tasks">TASKS</button><button data-target="review">REVIEW</button><button data-target="destinations">CONNECT</button><button data-target="settings">SETTINGS</button>
+      <button class="active" data-target="home">OVERVIEW</button><button data-target="commandDesk">COMMAND</button><button data-target="work">WORK</button><button data-target="brain">BRAIN</button><button data-target="tasks">TASKS</button><button data-target="review">REVIEW</button><button data-target="destinations">CONNECT</button><button data-target="settings">SETTINGS</button><button data-target="activity">ACTIVITY</button><button data-target="verify">VERIFY</button>
     </nav>
   </div>
   <select id="mobileNav" class="mobile-nav" aria-label="Central navigation">
-    <option value="home">OVERVIEW</option><option value="commandDesk">COMMAND</option><option value="work">WORK</option><option value="brain">BRAIN</option><option value="tasks">TASKS</option><option value="review">REVIEW</option><option value="destinations">CONNECT</option><option value="settings">SETTINGS</option>
+    <option value="home">OVERVIEW</option><option value="commandDesk">COMMAND</option><option value="work">WORK</option><option value="brain">BRAIN</option><option value="tasks">TASKS</option><option value="review">REVIEW</option><option value="destinations">CONNECT</option><option value="settings">SETTINGS</option><option value="activity">ACTIVITY</option><option value="verify">VERIFY</option>
   </select>  <div id="home">
 <section class="central-overview">
 <div class="central-overview-head"><div><div class="kicker">ESCIE CENTRAL / OVERVIEW</div><h1>THE CONTROL ROOM.</h1><p>Everything here is a doorway. Open a node, understand what it does, then enter the actual function.</p></div><div class="operator-node" aria-label="Operator online"><span class="operator-pulse"></span><div><strong>OPERATOR ONLINE</strong><small>Central is ready</small></div></div></div>
@@ -663,7 +624,44 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
 
   <div id="settings" class="section hidden"><div class="sectionTitle"><div><div class="kicker">CONTROL</div><h2>SETTINGS</h2><p>Workspace identity, security and future connector configuration.</p></div></div><div class="panel"><h2>Operator</h2><p>Account: <strong id="settingsAccount">—</strong></p><p>Publishing remains fail-closed until provider authorization and execution are fully configured.</p></div></div>
 
-  <div class="section panel"><div class="sectionTitle" style="margin:0 0 10px"><div><div class="kicker">AUDIT</div><h2>Activity</h2></div></div><div id="diag" class="diag">No events yet.</div><div class="authActions"><button id="refresh" class="btn ghost">REFRESH</button><button id="copy" class="btn ghost">COPY</button></div></div>
+  <div id="activity" class="section hidden"><div class="sectionTitle"><div><div class="kicker">OPERATOR HISTORY</div><h2>ACTIVITY</h2><p>Events recorded during this Central session. Durable audit history lives in VERIFY.</p></div></div><div class="panel"><div id="diag" class="diag">No events yet.</div><div class="authActions"><button id="refresh" class="btn ghost">REFRESH</button><button id="copy" class="btn ghost">COPY</button></div></div></div>
+<div id="verify" class="section hidden verification-page">
+    <div class="sectionTitle" style="margin:0 0 8px"><div><div class="kicker">GUARDIAN / SYSTEM</div><h2>AUDIT</h2><p>Audit observes. It does not silently change canon.</p></div><button id="auditClose" class="btn ghost" data-target="home">BACK TO OVERVIEW</button></div>
+    <div class="panel" style="padding:15px"><div class="kicker">AUDIT STATE</div><h2 id="auditOverall" style="margin-top:6px">READY</h2><p id="auditSummary">Run a full check to inspect the current surface.</p><button id="runAudit" class="btn primary" style="margin-top:8px">RUN FULL AUDIT</button></div>
+    <div class="auditGrid" id="auditGrid">
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Session boundary</strong><span>Authentication surface will be checked.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Human approval</strong><span>Canonical writes remain human-gated.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Provider secrets</strong><span>Browser surface will be checked for exposed secrets.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Destinations</strong><span>Connector service and provider configuration will be checked.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Workspace isolation</strong><span>Authenticated workspace access will be checked.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Agent history</strong><span>Agent runtime and durable job access will be checked.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Universe contract</strong><span>Central/public/game boundaries will be checked.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Live public bridge</strong><span>Published public records will be checked.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Command Desk</strong><span>Receive, ask, task, review and activity surfaces will be checked.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Review controls</strong><span>Accept, decline, quarantine and revision paths will be checked.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Connect surface</strong><span>Provider connection controls will be present and reachable.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Operator controls</strong><span>Core Central workspaces will be checked for presence.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Navigation contract</strong><span>Every declared navigation target and command will be checked.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Audit persistence</strong><span>The audit result must be saved and readable from the database.</span></div>
+    </div>
+    <div class="auditRunMeta" id="auditRunMeta">NO AUDIT HAS RUN YET.</div><div id="auditRunDetails" class="stack" style="margin-top:10px"><div class="rowcard"><div class="rowleft"><div class="rowtitle">NO CHECK DETAILS</div><div class="rowmeta">Run the audit to see what each test actually checked.</div></div></div></div><div class="verificationPanel" id="verificationPanel">
+  <div class="sectionTitle" style="margin:0 0 8px"><div><div class="kicker">OPERATOR VERIFICATION</div><h2>VERIFY THE SYSTEM</h2><p>Click something. Watch what Central records. Confirm the intended function actually happened.</p></div></div>
+  <div class="verifyControls">
+    <button id="verifyRefresh" class="btn primary">REFRESH LIVE TRACE</button>
+    <button id="verifyClear" class="btn ghost">CLEAR LOCAL TRACE</button>
+  </div>
+  <div class="verifySummary" id="verifySummary"><span class="pill">READY</span><span>Local interaction trace + durable agent jobs.</span></div>
+  <div class="sectionTitle"><div><h3>LIVE INTERACTION TRACE</h3><p>Browser actions captured on this Central session.</p></div></div>
+  <div class="stack" id="verifyClicks"><div class="rowcard"><div class="rowleft"><div class="rowtitle">NO CLICKS CAPTURED</div><div class="rowmeta">Use a Central button, node or navigation control and return here.</div></div><span class="pill">IDLE</span></div></div>
+  <div class="sectionTitle"><div><h3>AGENT EXECUTION TRACE</h3><p>Durable jobs prove whether the agent network actually received and processed work.</p></div></div>
+  <div class="stack" id="verifyAgents"><div class="rowcard"><div class="rowleft"><div class="rowtitle">LOADING AGENT JOBS…</div><div class="rowmeta">Reading the durable Central job queue.</div></div></div></div>
+  <div class="sectionTitle"><div><h3>PERSISTENT AUDIT HISTORY</h3><p>Audit runs saved in Supabase. Local clicks are not audit evidence.</p></div></div>
+  <div class="stack" id="verifyAuditEvents"><div class="rowcard"><div class="rowleft"><div class="rowtitle">LOADING AUDIT EVENTS…</div><div class="rowmeta">Checking the durable audit ledger.</div></div></div></div>
+  <div class="sectionTitle"><div><h3>WHAT EACH RESULT MEANS</h3><p>CLICKED = interaction observed · EXECUTED = handler returned · SAVED = backend confirmed persistence · VERIFIED = expected outcome independently checked. A missing stage is a failure or an unknown—not a pass.</p></div></div>
+  <div class="sectionTitle"><div><h3>HOW TO VERIFY</h3><p>1. Click a function. 2. Return here. 3. Confirm the click and resulting job/event. 4. If nothing appears, the function is not wired.</p></div></div>
+</div>
+</div>
+
 </section>
 
 <footer class="ey">ESCIE CENTRAL / THE SIGNAL REMAINS DISTORTED.</footer>
@@ -689,7 +687,7 @@ function showForce(s){hidden("login",true);hidden("preview",true);hidden("app",t
 <script>
 (function(){
   const $=id=>document.getElementById(id);
-  const NAV_SECTIONS=["home","commandDesk","work","brain","tasks","suggestions","review","archive","agents","insights","destinations","settings"];
+  const NAV_SECTIONS=["home","commandDesk","work","brain","tasks","suggestions","review","archive","agents","insights","destinations","settings","activity","verify"];
   function show(target){
     if(target==="systemCheck"){document.querySelector("#mainNav button[data-target=\"commandDesk\"]")?.click();return;}
     if(!NAV_SECTIONS.includes(target))return false;
@@ -700,8 +698,6 @@ function showForce(s){hidden("login",true);hidden("preview",true);hidden("app",t
     const scroller=document.scrollingElement||document.documentElement;
     scroller.scrollTo({top:0,left:0,behavior:"auto"});
     window.dispatchEvent(new CustomEvent("escie:central-view",{detail:{target}}));
-    const destination=$(target);
-    if(destination){requestAnimationFrame(()=>window.scrollTo({top:Math.max(0,destination.getBoundingClientRect().top+window.scrollY-116),left:0,behavior:"smooth"}));}
     return true;
   }
   window.ESCIE_CENTRAL_SHOW=show;
@@ -1104,6 +1100,6 @@ function showForce(s){hidden("login",true);hidden("preview",true);hidden("app",t
 })();
 </script><button id="verifyNode" class="hidden" type="button" aria-label="Open verification and audit console" title="Verify system">◉</button>
 <script id="central-verify-node">
-(function(){const node=document.getElementById("verifyNode"),app=document.getElementById("app");if(!node||!app)return;const sync=()=>node.classList.toggle("hidden",app.classList.contains("hidden"));new MutationObserver(sync).observe(app,{attributes:true,attributeFilter:["class"]});window.addEventListener("escie:central-ready",sync);sync();node.addEventListener("click",()=>{const drawer=document.getElementById("auditDrawer");if(drawer){drawer.classList.remove("hidden");drawer.setAttribute("aria-hidden","false");setTimeout(()=>{document.getElementById("verificationPanel")?.scrollIntoView({behavior:"smooth",block:"start"});window.ESCIE_CENTRAL_VERIFY?.();window.ESCIE_CENTRAL_VERIFY_AUDIT?.()},80)}})})();
+(function(){const node=document.getElementById("verifyNode"),app=document.getElementById("app");if(!node||!app)return;const sync=()=>node.classList.toggle("hidden",app.classList.contains("hidden"));new MutationObserver(sync).observe(app,{attributes:true,attributeFilter:["class"]});window.addEventListener("escie:central-ready",sync);sync();node.addEventListener("click",()=>{show("verify");window.ESCIE_CENTRAL_VERIFY?.();window.ESCIE_CENTRAL_VERIFY_AUDIT?.()})})();
 </script></body>
 </html>
