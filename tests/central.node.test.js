@@ -18,7 +18,7 @@ assert(universeContract.validate().ok, "Central must respect the shared universe
 assert(html.includes("function openConnectorSetup(provider,s,w)"),"provider SET UP must open the guided popup");
 for(const token of ["setupClientId","setupClientSecret","copyProviderConfig","CHECK CONFIGURATION","CONNECT ACCOUNT","CENTRAL_CONNECTOR_CONFIG","CENTRAL_TOKEN_ENCRYPTION_KEY"])assert(html.includes(token),"guided connector setup missing "+token);
 assert(html.indexOf('id="customExternalLinks"')<html.indexOf('id="connectors"'),"custom external links must sit near the top of Destinations, before provider cards");
-assert(html.includes("navigator.clipboard.writeText(block)"),"provider credential handoff must be explicit and operator initiated");
+assert(html.includes("copyText(block)"),"provider credential handoff must be explicit and operator initiated");
 assert(html.includes("Credentials were not transmitted")||html.includes("credentials were not transmitted"),"credential handoff must explain that secrets are not sent to Central");
 
 console.log("CENTRAL AUDIT PASS — syntax, navigation, runtime wiring, duplicate UI removal, storage hardening");
