@@ -1102,8 +1102,8 @@ function showForce(s){hidden("login",true);hidden("preview",true);hidden("app",t
   window.addEventListener("escie:central-ready",()=>{renderClicks();refreshAgents();refreshAuditEvents()});
   setTimeout(()=>{renderClicks();refreshAgents();refreshAuditEvents()},1200);
 })();
-</script><button id="verifyNode" type="button" aria-label="Open verification and audit console" title="Verify system">◉</button>
+</script><button id="verifyNode" class="hidden" type="button" aria-label="Open verification and audit console" title="Verify system">◉</button>
 <script id="central-verify-node">
-(function(){const node=document.getElementById("verifyNode");if(!node)return;node.addEventListener("click",()=>{const drawer=document.getElementById("auditDrawer");if(drawer){drawer.classList.remove("hidden");drawer.setAttribute("aria-hidden","false");setTimeout(()=>{document.getElementById("verificationPanel")?.scrollIntoView({behavior:"smooth",block:"start"});window.ESCIE_CENTRAL_VERIFY?.();window.ESCIE_CENTRAL_VERIFY_AUDIT?.()},80)}})})();
+(function(){const node=document.getElementById("verifyNode"),app=document.getElementById("app");if(!node||!app)return;const sync=()=>node.classList.toggle("hidden",app.classList.contains("hidden"));new MutationObserver(sync).observe(app,{attributes:true,attributeFilter:["class"]});window.addEventListener("escie:central-ready",sync);sync();node.addEventListener("click",()=>{const drawer=document.getElementById("auditDrawer");if(drawer){drawer.classList.remove("hidden");drawer.setAttribute("aria-hidden","false");setTimeout(()=>{document.getElementById("verificationPanel")?.scrollIntoView({behavior:"smooth",block:"start"});window.ESCIE_CENTRAL_VERIFY?.();window.ESCIE_CENTRAL_VERIFY_AUDIT?.()},80)}})})();
 </script></body>
 </html>
