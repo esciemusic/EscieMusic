@@ -316,6 +316,50 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
 .central-constant-node{right:14px!important;bottom:14px!important;width:32px!important;height:32px!important;padding:0!important;justify-content:center!important;border:0!important;background:transparent!important;box-shadow:none!important;backdrop-filter:none!important}
 .central-constant-node .central-node-orbit{width:28px!important;height:28px!important}.central-node-label{display:none!important}
 @media(max-width:620px){.topbar{top:7px!important}.topbar.open{width:auto!important;max-width:calc(100vw - 20px)!important}.central-constant-node{right:10px!important;bottom:10px!important}}
+</style><style id="central-compass-placement-pass">
+/* Navigation is a quiet floating instrument, not part of the content stack. */
+.central-compass-wrap{
+  position:fixed!important;
+  top:12px!important;
+  right:12px!important;
+  z-index:940!important;
+  margin:0!important;
+}
+.central-compass{
+  width:32px!important;
+  height:32px!important;
+  padding:0!important;
+  border:1px solid rgba(190,215,198,.22)!important;
+  background:rgba(7,10,9,.18)!important;
+  box-shadow:0 0 18px rgba(120,170,132,.06)!important;
+  backdrop-filter:blur(8px)!important;
+  font-size:15px!important;
+}
+.central-compass:hover,
+.central-compass[aria-expanded="true"]{
+  background:rgba(18,27,21,.48)!important;
+  border-color:rgba(190,220,198,.38)!important;
+  transform:rotate(18deg)!important;
+}
+.compass-menu{
+  position:absolute!important;
+  right:0!important;
+  top:40px!important;
+  width:220px!important;
+  padding:7px!important;
+  background:rgba(9,12,10,.9)!important;
+  backdrop-filter:blur(18px)!important;
+  border-color:rgba(190,215,198,.14)!important;
+  box-shadow:0 18px 55px rgba(0,0,0,.35)!important;
+}
+.compass-menu button{
+  min-height:31px!important;
+}
+@media(max-width:620px){
+  .central-compass-wrap{top:8px!important;right:8px!important}
+  .central-compass{width:30px!important;height:30px!important;font-size:14px!important}
+  .compass-menu{top:37px!important;width:min(210px,calc(100vw - 20px))!important}
+}
 </style></head>
 <body>
 <div class="shell">
