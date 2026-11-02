@@ -403,6 +403,12 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
     overflow:auto!important;
   }
 }
+</style><style id="central-verification-lab">
+.verificationPanel{margin-top:18px;padding-top:18px;border-top:1px solid var(--line)}
+.verifyControls{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}
+.verifySummary{display:flex;gap:9px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#10100f;font-size:11px;color:#85857f}
+.verifySummary .pill{flex:none}.verificationPanel .sectionTitle{margin-top:18px}
+@media(max-width:620px){.verifySummary{align-items:flex-start;flex-direction:column;gap:5px}}
 </style></head>
 <body>
 <div class="shell">
@@ -448,7 +454,19 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
       <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Connect surface</strong><span>Provider connection controls will be present and reachable.</span></div>
       <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Operator controls</strong><span>Core Central workspaces will be checked for presence.</span></div>
     </div>
-    <div class="auditRunMeta" id="auditRunMeta">NO AUDIT HAS RUN YET.</div>
+    <div class="auditRunMeta" id="auditRunMeta">NO AUDIT HAS RUN YET.</div><div class="verificationPanel" id="verificationPanel">
+  <div class="sectionTitle" style="margin:0 0 8px"><div><div class="kicker">OPERATOR VERIFICATION</div><h2>VERIFY THE SYSTEM</h2><p>Click something. Watch what Central records. Confirm the intended function actually happened.</p></div></div>
+  <div class="verifyControls">
+    <button id="verifyRefresh" class="btn primary">REFRESH LIVE TRACE</button>
+    <button id="verifyClear" class="btn ghost">CLEAR LOCAL TRACE</button>
+  </div>
+  <div class="verifySummary" id="verifySummary"><span class="pill">READY</span><span>Local interaction trace + durable agent jobs.</span></div>
+  <div class="sectionTitle"><div><h3>LIVE INTERACTION TRACE</h3><p>Browser actions captured on this Central session.</p></div></div>
+  <div class="stack" id="verifyClicks"><div class="rowcard"><div class="rowleft"><div class="rowtitle">NO CLICKS CAPTURED</div><div class="rowmeta">Use a Central button, node or navigation control and return here.</div></div><span class="pill">IDLE</span></div></div>
+  <div class="sectionTitle"><div><h3>AGENT EXECUTION TRACE</h3><p>Durable jobs prove whether the agent network actually received and processed work.</p></div></div>
+  <div class="stack" id="verifyAgents"><div class="rowcard"><div class="rowleft"><div class="rowtitle">LOADING AGENT JOBS…</div><div class="rowmeta">Reading the durable Central job queue.</div></div></div></div>
+  <div class="sectionTitle"><div><h3>HOW TO VERIFY</h3><p>1. Click a function. 2. Return here. 3. Confirm the click and resulting job/event. 4. If nothing appears, the function is not wired.</p></div></div>
+</div>
   </aside>
 </div>
 
@@ -1014,6 +1032,50 @@ function showForce(s){hidden("login",true);hidden("preview",true);hidden("app",t
   });
   window.ESCIE_CENTRAL_REFRESH_AGENTS=refresh;
   setTimeout(()=>refresh().catch(()=>{}),900);
+})();
+</script><script id="central-verification-lab-script">
+(function(){
+  const KEY="escie_central_verification_trace";
+  const $=id=>document.getElementById(id);
+  function read(){try{return JSON.parse(sessionStorage.getItem(KEY)||"[]")}catch(_){return[]}}
+  function write(v){sessionStorage.setItem(KEY,JSON.stringify(v.slice(-80)))}
+  function label(el){
+    return (el.getAttribute("aria-label")||el.getAttribute("title")||el.dataset.target||el.dataset.command||el.dataset.utility||el.textContent||el.id||"CONTROL").replace(/\s+/g," ").trim().slice(0,120)
+  }
+  function capture(el){
+    if(!el||el.id==="verifyRefresh"||el.id==="verifyClear")return;
+    const trace=read();trace.push({at:new Date().toISOString(),label:label(el),id:el.id||"",target:el.dataset.target||el.dataset.section||"",command:el.dataset.command||"",utility:el.dataset.utility||""});write(trace);renderClicks();
+  }
+  function renderClicks(){
+    const host=$("verifyClicks");if(!host)return;
+    const data=read();
+    if(!data.length){host.innerHTML='<div class="rowcard"><div class="rowleft"><div class="rowtitle">NO CLICKS CAPTURED</div><div class="rowmeta">Use a Central button, node or navigation control and return here.</div></div><span class="pill">IDLE</span></div>';return}
+    host.innerHTML=data.slice().reverse().slice(0,25).map(x=>'<div class="rowcard"><div class="rowleft"><div class="rowtitle">'+esc(x.label)+'</div><div class="rowmeta">'+esc(new Date(x.at).toLocaleTimeString())+(x.target?" · TARGET "+esc(x.target.toUpperCase()):"")+(x.command?" · COMMAND "+esc(x.command.toUpperCase()):"")+(x.utility?" · UTILITY "+esc(x.utility.toUpperCase()):"")+'</div></div><span class="pill ok">CLICKED</span></div>').join("");
+  }
+  function esc(x){return String(x).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]))}
+  async function refreshAgents(){
+    const host=$("verifyAgents"),summary=$("verifySummary");if(!host)return;
+    const s=window.ESCIE_CENTRAL_API?.getSession?.(),w=window.ESCIE_CENTRAL_API?.getWorkspaceId?.();
+    if(!s?.access_token||!w){host.innerHTML='<div class="rowcard"><div class="rowleft"><div class="rowtitle">SESSION NOT READY</div><div class="rowmeta">Sign in and initialize the workspace before reading durable jobs.</div></div><span class="pill warn">WATCH</span></div>';return}
+    try{
+      const u="https://ljdkjzvnwnaluevtzker.supabase.co/rest/v1/agent_jobs?workspace_id=eq."+encodeURIComponent(w)+"&select=id,state,from_role,to_role,message_type,route_id,route_mode,route_reason,attempt_count,last_error_code,last_error_message,result,created_at,updated_at&order=created_at.desc&limit=25";
+      const r=await fetch(u,{headers:{apikey:"sb_publishable_ICPqqxh3c32b7eb5PYqUaA_Cem3vvB9",Authorization:"Bearer "+s.access_token,Accept:"application/json"},cache:"no-store"});
+      if(!r.ok)throw Error("HTTP "+r.status);
+      const jobs=await r.json();
+      if(!jobs.length){host.innerHTML='<div class="rowcard"><div class="rowleft"><div class="rowtitle">NO DURABLE JOBS YET</div><div class="rowmeta">Send a request to Central, then return here. A real agent interaction should appear.</div></div><span class="pill">EMPTY</span></div>'}
+      else host.innerHTML=jobs.map(j=>{const result=j.result&&typeof j.result==="object"?j.result:{};const err=j.last_error_message||"";const meta=[new Date(j.created_at).toLocaleTimeString(),j.from_role+" → "+j.to_role,j.message_type,j.route_id||"",j.route_mode||"",result.summary||result.message||err||""].filter(Boolean).join(" · ");const state=j.state||"UNKNOWN";const cls=state==="FAILED"?"warn":state==="SUCCEEDED"||state==="VERIFIED_RECOMMENDATION"?"ok":"";return '<div class="rowcard"><div class="rowleft"><div class="rowtitle">'+esc(state)+' · '+esc(j.to_role||"CENTRAL")+'</div><div class="rowmeta">'+esc(meta.slice(0,260))+'</div></div><span class="pill '+cls+'">'+esc(state)+'</span></div>'}).join("");
+      if(summary)summary.innerHTML='<span class="pill ok">LIVE</span><span>'+jobs.length+' durable agent job'+(jobs.length===1?"":"s")+" visible.</span>";
+    }catch(e){
+      host.innerHTML='<div class="rowcard"><div class="rowleft"><div class="rowtitle">AGENT TRACE UNAVAILABLE</div><div class="rowmeta">'+esc(e.message||"Could not read agent jobs.")+'</div></div><span class="pill warn">WATCH</span></div>';
+      if(summary)summary.innerHTML='<span class="pill warn">WATCH</span><span>Could not read durable agent jobs.</span>';
+    }
+  }
+  document.addEventListener("click",e=>{const el=e.target.closest("button,a,[data-target],[data-section],[data-command],[data-utility]");if(el)capture(el)},true);
+  $("verifyRefresh")?.addEventListener("click",()=>{renderClicks();refreshAgents()});
+  $("verifyClear")?.addEventListener("click",()=>{sessionStorage.removeItem(KEY);renderClicks()});
+  window.ESCIE_CENTRAL_VERIFY=refreshAgents;
+  window.addEventListener("escie:central-ready",()=>{renderClicks();refreshAgents()});
+  setTimeout(()=>{renderClicks();refreshAgents()},1200);
 })();
 </script></body>
 </html>
