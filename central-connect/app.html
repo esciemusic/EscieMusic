@@ -263,6 +263,43 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
 @media(max-width:720px){.central-overview{padding:28px 14px 60px}.central-overview-head{display:block}.operator-node{display:inline-flex;margin-top:18px}.central-node-grid{grid-template-columns:1fr}.node-body{padding-left:18px}.compass-menu{right:-8px;width:230px}}
 </style><style id="central-custom-links">
 .custom-links{padding-top:2px}.custom-link-form{display:grid;grid-template-columns:1fr 1.5fr auto;gap:7px;margin-top:10px}.custom-link-form input{min-width:0;border:1px solid var(--line2);background:#0d0d0c;color:var(--text);border-radius:10px;padding:10px 11px}.custom-link-list{display:grid;gap:7px;margin-top:10px}.custom-link-row{display:grid;grid-template-columns:minmax(100px,.45fr) minmax(0,1.5fr) auto;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.02)}.custom-link-row a{font-weight:800;text-decoration:none}.custom-link-row a:hover{text-decoration:underline}.custom-link-row .ey{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}@media(max-width:700px){.custom-link-form{grid-template-columns:1fr}.custom-link-row{grid-template-columns:1fr auto}.custom-link-row .ey{grid-column:1/-1;grid-row:2}}
+</style><style id="central-space-optimizer">
+/* Final usable-space pass: the header is a node, so the canvas stays compact. */
+.shell{padding-top:78px;padding-bottom:36px}
+.status.headStatus{margin:6px 0 0;padding:7px 10px;font-size:11px;line-height:1.35;min-height:0}
+.nav{padding:5px 2px 1px}
+.hero{margin-top:6px;gap:8px}
+.heroMain,.pulse{min-height:250px}
+.heroMain{padding:22px}
+.heroMain h1{margin:10px 0 9px}
+.heroMeta{margin-top:12px}
+.dashboard{margin-top:8px;gap:7px}
+.tile{min-height:105px}
+.section{margin-top:9px}
+.sectionTitle{margin-top:18px;margin-bottom:7px}
+.quick{padding:13px}
+.central-greeting{min-height:190px;margin:8px 0 2px}
+.greeting-window{min-height:190px}
+.central-drop .node-summary{padding:14px;min-height:64px}
+.central-node-grid{gap:7px}
+.central-principle-node{margin-top:8px!important;padding:12px!important}
+@media(max-width:700px){
+  .shell{padding:72px 10px 30px}
+  .status.headStatus{margin-top:5px}
+  .heroMain,.pulse{min-height:225px}
+  .heroMain{padding:18px}
+  .central-greeting{margin-top:6px}
+  .greeting-window{min-height:135px}
+  .greeting-copy{padding:18px!important}
+  .sectionTitle{margin-top:15px}
+}
+@media(max-width:480px){
+  .shell{padding:68px 8px 28px}
+  .panel{padding:13px}
+  .heroMain{min-height:215px}
+  .heroMain h1{font-size:clamp(38px,13vw,46px)}
+  .central-drop .node-summary{padding:12px;min-height:58px}
+}
 </style></head>
 <body>
 <div class="shell">
