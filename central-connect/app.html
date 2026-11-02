@@ -300,6 +300,22 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
   .heroMain h1{font-size:clamp(38px,13vw,46px)}
   .central-drop .node-summary{padding:12px;min-height:58px}
 }
+</style><style id="central-node-minimal-pass">
+/* Minimal-node pass: nodes float in the canvas instead of becoming opaque rectangles. */
+.topbar{top:10px!important;width:30px!important;height:30px!important;min-width:30px!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;backdrop-filter:none!important;border-radius:50%!important}
+.topbar .brand{width:30px;height:30px;display:grid;place-items:center}
+.topbar .mark{width:30px!important;height:30px!important;padding:0!important;border:1px solid rgba(190,215,198,.24)!important;border-radius:50%!important;background:rgba(7,10,9,.22)!important;box-shadow:0 0 18px rgba(120,170,132,.08)!important;font-size:13px!important}
+.topbar.open{width:auto!important;height:auto!important;min-width:0!important;padding:7px 9px!important;border:1px solid rgba(190,205,194,.13)!important;background:rgba(7,10,9,.68)!important;box-shadow:0 12px 35px rgba(0,0,0,.28)!important;backdrop-filter:blur(18px)!important;border-radius:999px!important}
+.topbar.open .brand{width:auto;height:auto;display:flex}.topbar.open .mark{width:30px!important;height:30px!important}
+.topbar.open .brandtext{display:block!important}.topbar.open .topactions{display:flex!important}
+.central-node-grid{gap:6px}.central-drop{border-color:rgba(190,215,198,.09)!important;background:transparent!important;border-radius:12px!important}.central-drop.expanded{background:rgba(190,215,198,.035)!important}
+.central-drop .node-summary{grid-template-columns:28px 1fr 18px!important;gap:8px!important;padding:10px 11px!important;min-height:52px!important}.central-drop .node-summary i{font-size:14px!important}
+.node-body{padding:0 11px 11px 47px!important}.node-body p{font-size:11px!important;margin-bottom:9px!important}.node-links{gap:4px}.node-links button{padding:8px 9px!important;border-color:rgba(190,215,198,.07)!important;background:rgba(0,0,0,.08)!important}
+.central-principle-node{margin-top:6px!important;padding:8px 10px!important;border:0!important;background:transparent!important;border-radius:0!important}
+.operator-node{padding:6px 9px!important;margin-top:8px!important;border-color:rgba(190,215,198,.09)!important;background:rgba(190,215,198,.025)!important;border-radius:999px!important}
+.central-constant-node{right:14px!important;bottom:14px!important;width:32px!important;height:32px!important;padding:0!important;justify-content:center!important;border:0!important;background:transparent!important;box-shadow:none!important;backdrop-filter:none!important}
+.central-constant-node .central-node-orbit{width:28px!important;height:28px!important}.central-node-label{display:none!important}
+@media(max-width:620px){.topbar{top:7px!important}.topbar.open{width:auto!important;max-width:calc(100vw - 20px)!important}.central-constant-node{right:10px!important;bottom:10px!important}}
 </style></head>
 <body>
 <div class="shell">
