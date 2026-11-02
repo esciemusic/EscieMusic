@@ -384,6 +384,25 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
     width:min(210px,calc(100vw - 20px))!important;
   }
 }
+</style><style id="central-compass-menu-final-position">
+/* The compass is a floating node; its menu is a viewport-level panel aligned to the Central canvas. */
+.compass-menu{
+  position:fixed!important;
+  top:52px!important;
+  right:max(18px,calc((100vw - 1180px)/2 + 18px))!important;
+  left:auto!important;
+}
+@media(max-width:700px){
+  .compass-menu{
+    position:fixed!important;
+    top:47px!important;
+    right:10px!important;
+    left:auto!important;
+    width:min(210px,calc(100vw - 20px))!important;
+    max-height:calc(100vh - 60px)!important;
+    overflow:auto!important;
+  }
+}
 </style></head>
 <body>
 <div class="shell">
