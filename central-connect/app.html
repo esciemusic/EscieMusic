@@ -404,6 +404,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
   }
 }
 </style><style id="central-verification-lab">
+#verifyNode{position:fixed;left:14px;bottom:max(14px,env(safe-area-inset-bottom));z-index:140;width:38px;height:38px;border:1px solid rgba(190,205,194,.26);border-radius:50%;background:rgba(10,12,10,.74);backdrop-filter:blur(12px);color:#c3d1c5;display:grid;place-items:center;font-size:16px;box-shadow:0 8px 26px rgba(0,0,0,.28);opacity:.82}#verifyNode:hover{opacity:1;border-color:rgba(190,215,198,.55);background:rgba(24,31,25,.92)}#verifyNode:focus-visible{outline:2px solid #a8c4ac;outline-offset:3px}
 .verificationPanel{margin-top:18px;padding-top:18px;border-top:1px solid var(--line)}
 .verifyControls{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}
 .verifySummary{display:flex;gap:9px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#10100f;font-size:11px;color:#85857f}
@@ -453,6 +454,8 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
       <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Review controls</strong><span>Accept, decline, quarantine and revision paths will be checked.</span></div>
       <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Connect surface</strong><span>Provider connection controls will be present and reachable.</span></div>
       <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Operator controls</strong><span>Core Central workspaces will be checked for presence.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Navigation contract</strong><span>Every declared navigation target and command will be checked.</span></div>
+      <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Audit persistence</strong><span>The audit result must be saved and readable from the database.</span></div>
     </div>
     <div class="auditRunMeta" id="auditRunMeta">NO AUDIT HAS RUN YET.</div><div class="verificationPanel" id="verificationPanel">
   <div class="sectionTitle" style="margin:0 0 8px"><div><div class="kicker">OPERATOR VERIFICATION</div><h2>VERIFY THE SYSTEM</h2><p>Click something. Watch what Central records. Confirm the intended function actually happened.</p></div></div>
@@ -465,6 +468,9 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
   <div class="stack" id="verifyClicks"><div class="rowcard"><div class="rowleft"><div class="rowtitle">NO CLICKS CAPTURED</div><div class="rowmeta">Use a Central button, node or navigation control and return here.</div></div><span class="pill">IDLE</span></div></div>
   <div class="sectionTitle"><div><h3>AGENT EXECUTION TRACE</h3><p>Durable jobs prove whether the agent network actually received and processed work.</p></div></div>
   <div class="stack" id="verifyAgents"><div class="rowcard"><div class="rowleft"><div class="rowtitle">LOADING AGENT JOBS…</div><div class="rowmeta">Reading the durable Central job queue.</div></div></div></div>
+  <div class="sectionTitle"><div><h3>PERSISTENT AUDIT HISTORY</h3><p>Audit runs saved in Supabase. Local clicks are not audit evidence.</p></div></div>
+  <div class="stack" id="verifyAuditEvents"><div class="rowcard"><div class="rowleft"><div class="rowtitle">LOADING AUDIT EVENTS…</div><div class="rowmeta">Checking the durable audit ledger.</div></div></div></div>
+  <div class="sectionTitle"><div><h3>WHAT EACH RESULT MEANS</h3><p>CLICKED = interaction observed · EXECUTED = handler returned · SAVED = backend confirmed persistence · VERIFIED = expected outcome independently checked. A missing stage is a failure or an unknown—not a pass.</p></div></div>
   <div class="sectionTitle"><div><h3>HOW TO VERIFY</h3><p>1. Click a function. 2. Return here. 3. Confirm the click and resulting job/event. 4. If nothing appears, the function is not wired.</p></div></div>
 </div>
   </aside>
@@ -820,10 +826,18 @@ function showForce(s){hidden("login",true);hidden("preview",true);hidden("app",t
     const elapsedBefore=Math.round(performance.now()-started);
     if(elapsedBefore<1200)await wait(1200-elapsedBefore);
     const elapsed=Math.max(1,Math.round(performance.now()-started));
+    let auditPersisted=false,auditPersistError="";
+    try{
+      if(!auth||!session?.user?.id)throw Error("Authenticated actor ID unavailable");
+      const auditResponse=await fetch(R+"/audit_events",{method:"POST",headers:{...headers,"Content-Type":"application/json",Prefer:"return=representation"},body:JSON.stringify({owner_id:session.user.id,actor_id:session.user.id,action:"CENTRAL_AUDIT_RUN",payload:{status:failures.length?"ATTENTION":"GREEN",checks:items.slice(0,13).map((item,i)=>({name:item.querySelector("strong")?.textContent||("CHECK_"+i),passed:!!results[i]})),failures,audit_persisted:true,elapsed_ms:elapsed,completed_at:new Date().toISOString()}})});
+      if(!auditResponse.ok)throw Error("AUDIT_EVENT_HTTP_"+auditResponse.status+" "+(await auditResponse.text()).slice(0,240));
+      const savedRows=await auditResponse.json();if(!Array.isArray(savedRows)||!savedRows.length)throw Error("AUDIT_EVENT_NOT_CONFIRMED");auditPersisted=true;
+    }catch(error){auditPersistError=String(error?.message||error);failures.push("Audit persistence");}
+    setState(13,auditPersisted?"pass":"warn",auditPersisted?"SAVED":"NOT SAVED");
     const overall=$("auditOverall"),summary=$("auditSummary"),meta=$("auditRunMeta");
-    if(overall)overall.textContent=failures.length?"ATTENTION":"AUDIT PASSED";
-    if(summary)summary.textContent=failures.length?failures.join(" • ")+" require attention. No automatic changes were made.":"13 live checks completed across auth, permissions, connectors, agents, workspace, navigation, public bridge and control surfaces.";
-    if(meta)meta.textContent="LAST RUN · "+new Date().toLocaleTimeString()+" · "+elapsed+"ms · "+(connectorProbe?"CONNECTOR "+connectorProbe.status:"CONNECTOR NOT PROBED")+" · PUBLIC "+publicProbe.status+" · NAV "+(results[12]?"PASS":"WATCH");
+    if(overall)overall.textContent=!auditPersisted?"AUDIT NOT PERSISTED":failures.length?"ATTENTION":"AUDIT PASSED";
+    if(summary)summary.textContent=failures.length?failures.join(" • ")+" require attention. "+(auditPersisted?"Audit result saved to the durable ledger.":"Audit result could not be saved: "+auditPersistError)+" No automatic changes were made.":"13 live checks completed and the audit record was saved to Supabase.";
+    if(meta)meta.textContent="LAST RUN · "+new Date().toLocaleTimeString()+" · "+elapsed+"ms · "+(connectorProbe?"CONNECTOR "+connectorProbe.status:"CONNECTOR NOT PROBED")+" · PUBLIC "+publicProbe.status+" · NAV "+(results[12]?"PASS":"WATCH")+" · LEDGER "+(auditPersisted?"SAVED":"FAILED");
     L("AUDIT",(failures.length?"Warnings: ":"Passed: ")+failures.join(", "));
   });
   const searchDock=$("searchDock"),searchInput=$("globalSearchInput"),searchResults=$("searchResults");
@@ -1054,6 +1068,11 @@ function showForce(s){hidden("login",true);hidden("preview",true);hidden("app",t
     host.innerHTML=data.slice().reverse().slice(0,25).map(x=>'<div class="rowcard"><div class="rowleft"><div class="rowtitle">'+esc(x.label)+'</div><div class="rowmeta">'+esc(new Date(x.at).toLocaleTimeString())+(x.target?" · TARGET "+esc(x.target.toUpperCase()):"")+(x.command?" · COMMAND "+esc(x.command.toUpperCase()):"")+(x.utility?" · UTILITY "+esc(x.utility.toUpperCase()):"")+'</div></div><span class="pill ok">CLICKED</span></div>').join("");
   }
   function esc(x){return String(x).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]))}
+  async function refreshAuditEvents(){
+    const host=$("verifyAuditEvents");if(!host)return;
+    const s=window.ESCIE_CENTRAL_API?.getSession?.();if(!s?.access_token){host.innerHTML="<div class=\"rowcard\"><div class=\"rowleft\"><div class=\"rowtitle\">SESSION NOT READY</div><div class=\"rowmeta\">Sign in to read the audit ledger.</div></div><span class=\"pill warn\">WATCH</span></div>";return;}
+    try{const u="https://ljdkjzvnwnaluevtzker.supabase.co/rest/v1/audit_events?select=id,action,payload,created_at&action=eq.CENTRAL_AUDIT_RUN&order=created_at.desc&limit=20";const r=await fetch(u,{headers:{apikey:"sb_publishable_ICPqqxh3c32b7eb5PYqUaA_Cem3vvB9",Authorization:"Bearer "+s.access_token,Accept:"application/json"},cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);const rows=await r.json();if(!rows.length){host.innerHTML="<div class=\"rowcard\"><div class=\"rowleft\"><div class=\"rowtitle\">NO PERSISTED AUDIT RUNS</div><div class=\"rowmeta\">The ledger is empty. A completed-looking screen is not proof of an audit record.</div></div><span class=\"pill warn\">EMPTY</span></div>";return;}host.innerHTML=rows.map(x=>{const p=x.payload||{};const status=p.status||"UNKNOWN";const count=Array.isArray(p.checks)?p.checks.length:0;const failed=Array.isArray(p.failures)?p.failures.length:0;return "<div class=\"rowcard\"><div class=\"rowleft\"><div class=\"rowtitle\">"+esc(status)+" · "+esc(x.action)+"</div><div class=\"rowmeta\">"+esc(new Date(x.created_at).toLocaleString())+" · "+count+" checks · "+failed+" warnings · "+esc(x.id)+"</div></div><span class=\"pill "+(status==="GREEN"?"ok":"warn")+"\">"+esc(status)+"</span></div>"}).join("");}catch(e){host.innerHTML="<div class=\"rowcard\"><div class=\"rowleft\"><div class=\"rowtitle\">AUDIT LEDGER UNAVAILABLE</div><div class=\"rowmeta\">"+esc(e.message||"Read failed")+"</div></div><span class=\"pill warn\">ERROR</span></div>";}
+  }
   async function refreshAgents(){
     const host=$("verifyAgents"),summary=$("verifySummary");if(!host)return;
     const s=window.ESCIE_CENTRAL_API?.getSession?.(),w=window.ESCIE_CENTRAL_API?.getWorkspaceId?.();
@@ -1074,9 +1093,13 @@ function showForce(s){hidden("login",true);hidden("preview",true);hidden("app",t
   document.addEventListener("click",e=>{const el=e.target.closest("button,a,[data-target],[data-section],[data-command],[data-utility]");if(el)capture(el)},true);
   $("verifyRefresh")?.addEventListener("click",()=>{renderClicks();refreshAgents()});
   $("verifyClear")?.addEventListener("click",()=>{sessionStorage.removeItem(KEY);renderClicks()});
-  window.ESCIE_CENTRAL_VERIFY=refreshAgents;
-  window.addEventListener("escie:central-ready",()=>{renderClicks();refreshAgents()});
-  setTimeout(()=>{renderClicks();refreshAgents()},1200);
+  window.ESCIE_CENTRAL_VERIFY=()=>{renderClicks();refreshAgents();refreshAuditEvents()};
+  window.ESCIE_CENTRAL_VERIFY_AUDIT=refreshAuditEvents;
+  window.addEventListener("escie:central-ready",()=>{renderClicks();refreshAgents();refreshAuditEvents()});
+  setTimeout(()=>{renderClicks();refreshAgents();refreshAuditEvents()},1200);
 })();
+</script><button id="verifyNode" type="button" aria-label="Open verification and audit console" title="Verify system">◉</button>
+<script id="central-verify-node">
+(function(){const node=document.getElementById("verifyNode");if(!node)return;node.addEventListener("click",()=>{const drawer=document.getElementById("auditDrawer");if(drawer){drawer.classList.remove("hidden");drawer.setAttribute("aria-hidden","false");setTimeout(()=>{document.getElementById("verificationPanel")?.scrollIntoView({behavior:"smooth",block:"start"});window.ESCIE_CENTRAL_VERIFY?.();window.ESCIE_CENTRAL_VERIFY_AUDIT?.()},80)}})})();
 </script></body>
 </html>
