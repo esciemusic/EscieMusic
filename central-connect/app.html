@@ -418,7 +418,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
   <button class="iconbtn" id="globalSearch" aria-label="Search Central" title="Search">⌕</button><button id="connectTop" class="btn ghost top-connect" type="button">CONNECT</button>
   <div class="utility"><button class="iconbtn" id="utilityToggle" aria-expanded="false" aria-controls="utilityMenu" aria-label="Open utilities">⋯</button>
     <div id="utilityMenu" class="utilityMenu hidden" role="menu">
-      <button data-utility="audit"><strong>AUDIT</strong><span class="ey">System health, security, integrity, agents, connectors</span></button>
+      <button data-utility="audit"><strong>AUDIT</strong><span class="ey">System health, security, integrity, agents, connectors</span></button><button data-utility="verify"><strong>VERIFY</strong><span class="ey">Watch button actions, agent jobs and execution traces</span></button>
       <button data-utility="connect"><strong>CONNECT SERVICES</strong><span class="ey">Instagram, TikTok, YouTube, SoundCloud and future destinations</span></button><button data-utility="command"><strong>COMMAND PALETTE</strong><span class="ey">Jump, create, review, audit or distribute</span></button>
       <button data-utility="activity"><strong>ACTIVITY</strong><span class="ey">Recent Central events and agent operations</span></button>
       <button data-utility="shortcuts"><strong>SHORTCUTS</strong><span class="ey">Fast controls and navigation</span></button>
@@ -768,7 +768,7 @@ function showForce(s){hidden("login",true);hidden("preview",true);hidden("app",t
   document.addEventListener("click",e=>{if(menu&&!e.target.closest(".utility")){menu.classList.add("hidden");utility?.setAttribute("aria-expanded","false")}});
   function openAudit(){menu?.classList.add("hidden");const d=$("auditDrawer");if(d){d.classList.remove("hidden");d.setAttribute("aria-hidden","false")}}
   function closeAudit(){const d=$("auditDrawer");if(d){d.classList.add("hidden");d.setAttribute("aria-hidden","true")}}
-  document.querySelectorAll("[data-utility='audit']").forEach(b=>b.addEventListener("click",openAudit));
+  document.querySelectorAll("[data-utility='audit']").forEach(b=>b.addEventListener("click",openAudit));document.querySelectorAll("[data-utility='verify']").forEach(b=>b.addEventListener("click",()=>{openAudit();setTimeout(()=>{$("verificationPanel")?.scrollIntoView({behavior:"smooth",block:"start"});window.ESCIE_CENTRAL_VERIFY?.()},50)}));
   document.querySelectorAll("[data-utility='command']").forEach(b=>b.addEventListener("click",()=>{menu?.classList.add("hidden");openSearch();setTimeout(()=>{if(searchInput)searchInput.value="";searchInput?.focus()},30)}));
   document.querySelectorAll("[data-utility='connect']").forEach(b=>b.addEventListener("click",()=>{menu?.classList.add("hidden");show("destinations");if(document.getElementById("mobileNav"))document.getElementById("mobileNav").value="destinations";}));
   document.querySelectorAll("[data-utility='activity']").forEach(b=>b.addEventListener("click",()=>{menu?.classList.add("hidden");document.querySelector("#diag")?.scrollIntoView({behavior:"smooth",block:"center"});}));
