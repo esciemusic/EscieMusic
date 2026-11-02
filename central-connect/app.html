@@ -1023,7 +1023,8 @@ function showForce(s){hidden("login",true);hidden("preview",true);hidden("app",t
       if(state)state.textContent="ERROR";
       if(hint)hint.textContent=e.message||"Agent network error.";
       window.ESCIE_CENTRAL_SHOW_STATUS?.("AGENT NETWORK ERROR — "+(e.message||"UNKNOWN"),"bad");
-      const d=$("diag");if(d)d.textContent+=(d.textContent?"\n":"")+"AGENT | "+new Date().toISOString()+" | "+(e.message||"UNKNOWN");
+      const d=$("diag");if(d)d.textContent+=(d.textContent?"
+":"")+"AGENT | "+new Date().toISOString()+" | "+(e.message||"UNKNOWN");
     }finally{button.disabled=false}
   }
   document.addEventListener("click",e=>{
