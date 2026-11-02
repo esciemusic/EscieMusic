@@ -923,5 +923,97 @@ function showForce(s){hidden("login",true);hidden("preview",true);hidden("app",t
     }
   },true);
 })();
+</script><script id="central-agent-live-bridge">
+(function(){
+  const SUPA="https://ljdkjzvnwnaluevtzker.supabase.co";
+  const KEY="sb_publishable_ICPqqxh3c32b7eb5PYqUaA_Cem3vvB9";
+  const SESSION_KEY="escie_central_session";
+  const $=id=>document.getElementById(id);
+  const session=()=>{try{return JSON.parse(sessionStorage.getItem(SESSION_KEY)||"null")}catch(_){return null}};
+  const wait=ms=>new Promise(r=>setTimeout(r,ms));
+  async function call(path,method,token,body){
+    const r=await fetch(SUPA+"/functions/v1/central-agent"+path,{
+      method:method||"GET",
+      headers:{apikey:KEY,Authorization:"Bearer "+token,"Content-Type":"application/json"},
+      body:body?JSON.stringify(body):undefined
+    });
+    let d=null;try{d=await r.json()}catch(_){}
+    if(!r.ok)throw Error(d?.detail||d?.message||d?.error||("CENTRAL_AGENT_HTTP_"+r.status));
+    return d;
+  }
+  async function wakeWorker(token){
+    const r=await fetch(SUPA+"/functions/v1/central-agent-worker",{
+      method:"POST",
+      headers:{apikey:KEY,Authorization:"Bearer "+token,"Content-Type":"application/json"},
+      body:JSON.stringify({limit:10})
+    });
+    let d=null;try{d=await r.json()}catch(_){}
+    if(!r.ok)throw Error(d?.detail||d?.message||d?.error||("CENTRAL_AGENT_WORKER_HTTP_"+r.status));
+    return d;
+  }
+  function bus(jobs){
+    const el=$("agentBus");if(!el)return;
+    if(!jobs?.length){el.innerHTML='<div class="rowcard"><div class="rowleft"><div class="rowtitle">NO ACTIVE CONVERSATION</div><div class="rowmeta">Central will show each handoff, response and decision here.</div></div><span class="pill">IDLE</span></div>';return}
+    el.innerHTML="";
+    jobs.slice(-12).forEach(j=>{
+      const row=document.createElement("div");row.className="rowcard";
+      const left=document.createElement("div");left.className="rowleft";
+      const title=document.createElement("div");title.className="rowtitle";title.textContent=(j.from_role||"USER")+" → "+(j.to_role||"CENTRAL");
+      const meta=document.createElement("div");meta.className="rowmeta";
+      const result=j.result&&typeof j.result==="object"?j.result:{};
+      meta.textContent=[j.state,result.route?("ROUTE: "+result.route):"",result.kind||"",result.summary||result.message||""].filter(Boolean).join(" • ");
+      left.append(title,meta);
+      const pill=document.createElement("span");pill.className="pill"+(j.state==="WAITING"?" warn":j.state==="SUCCEEDED"?" ok":"");pill.textContent=j.state||"UNKNOWN";
+      row.append(left,pill);el.appendChild(row);
+    });
+  }
+  async function refresh(){
+    const s=session(),w=window.ESCIE_CENTRAL_API?.getWorkspaceId?.();
+    if(!s?.access_token||!w)return;
+    const d=await call("?workspace_id="+encodeURIComponent(w),"GET",s.access_token);
+    bus(d.jobs||[]);
+    return d.jobs||[];
+  }
+  async function send(){
+    const input=$("agentMessage"),button=$("agentSend");
+    const message=(input?.value||"").trim();
+    const s=session(),w=window.ESCIE_CENTRAL_API?.getWorkspaceId?.();
+    if(!message)return window.ESCIE_CENTRAL_SHOW_STATUS?.("TELL CENTRAL WHAT YOU NEED FIRST.","bad");
+    if(!s?.access_token||!w)return window.ESCIE_CENTRAL_SHOW_STATUS?.("CENTRAL SESSION OR WORKSPACE IS NOT READY.","bad");
+    button.disabled=true;
+    const state=$("agentRouteState"),hint=$("agentRouteHint");
+    if(state)state.textContent="ROUTING";
+    if(hint)hint.textContent="Central is receiving your request…";
+    try{
+      const created=await call("","POST",s.access_token,{workspace_id:w,to_role:"CENTRAL_AGENT",message_type:"TASK",priority:"normal",payload:{message}});
+      if(state)state.textContent="CENTRAL";
+      if(hint)hint.textContent="Request accepted. Waking the specialist network…";
+      await wakeWorker(s.access_token);
+      let jobs=await refresh();
+      const root=created?.id;
+      for(let i=0;i<8;i++){
+        const rootJob=(jobs||[]).find(j=>j.id===root);
+        if(rootJob?.state==="WAITING"||rootJob?.state==="SUCCEEDED"||rootJob?.state==="FAILED")break;
+        await wait(650);
+        await wakeWorker(s.access_token);
+        jobs=await refresh();
+      }
+      if(state)state.textContent="READY";
+      if(hint)hint.textContent="Request processed. Review the conversation bus and REVIEW queue.";
+      window.ESCIE_CENTRAL_SHOW_STATUS?.("CENTRAL REQUEST PROCESSED — CHECK THE AGENT BUS / REVIEW.","ok");
+    }catch(e){
+      if(state)state.textContent="ERROR";
+      if(hint)hint.textContent=e.message||"Agent network error.";
+      window.ESCIE_CENTRAL_SHOW_STATUS?.("AGENT NETWORK ERROR — "+(e.message||"UNKNOWN"),"bad");
+      const d=$("diag");if(d)d.textContent+=(d.textContent?"\n":"")+"AGENT | "+new Date().toISOString()+" | "+(e.message||"UNKNOWN");
+    }finally{button.disabled=false}
+  }
+  document.addEventListener("click",e=>{
+    if(e.target?.id==="agentSend")send();
+    if(e.target?.id==="agentClear"){const i=$("agentMessage");if(i)i.value="";const st=$("agentRouteState"),h=$("agentRouteHint");if(st)st.textContent="READY";if(h)h.textContent="Waiting for an instruction."}
+  });
+  window.ESCIE_CENTRAL_REFRESH_AGENTS=refresh;
+  setTimeout(()=>refresh().catch(()=>{}),900);
+})();
 </script></body>
 </html>
