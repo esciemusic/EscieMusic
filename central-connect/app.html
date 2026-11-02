@@ -457,7 +457,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;ba
       <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Navigation contract</strong><span>Every declared navigation target and command will be checked.</span></div>
       <div class="auditItem"><span class="auditState neutral">NOT RUN</span><strong>Audit persistence</strong><span>The audit result must be saved and readable from the database.</span></div>
     </div>
-    <div class="auditRunMeta" id="auditRunMeta">NO AUDIT HAS RUN YET.</div><div class="verificationPanel" id="verificationPanel">
+    <div class="auditRunMeta" id="auditRunMeta">NO AUDIT HAS RUN YET.</div><div id="auditRunDetails" class="stack" style="margin-top:10px"><div class="rowcard"><div class="rowleft"><div class="rowtitle">NO CHECK DETAILS</div><div class="rowmeta">Run the audit to see what each test actually checked.</div></div></div></div><div class="verificationPanel" id="verificationPanel">
   <div class="sectionTitle" style="margin:0 0 8px"><div><div class="kicker">OPERATOR VERIFICATION</div><h2>VERIFY THE SYSTEM</h2><p>Click something. Watch what Central records. Confirm the intended function actually happened.</p></div></div>
   <div class="verifyControls">
     <button id="verifyRefresh" class="btn primary">REFRESH LIVE TRACE</button>
@@ -795,21 +795,23 @@ function showForce(s){hidden("login",true);hidden("preview",true);hidden("app",t
       const t=performance.now();
       try{
         const response=await fetch(url,{headers,cache:"no-store"});
-        return {ok:response.ok,status:response.status,ms:Math.round(performance.now()-t)};
+        let body=null;try{body=await response.clone().json()}catch(_){}
+        return {ok:response.ok,status:response.status,count:Array.isArray(body)?body.length:null,ms:Math.round(performance.now()-t)};
       }catch(error){
         return {ok:false,status:0,error:String(error?.message||error),ms:Math.round(performance.now()-t)};
       }
     }
-    const results=[];
-    const run=(i,label,fn)=>Promise.resolve().then(fn).then(ok=>{setState(i,ok?"pass":"warn",ok?"PASS":"WATCH");if(!ok)failures.push(label);results[i]=!!ok;return !!ok;}).catch(()=>{setState(i,"warn","WATCH");failures.push(label);results[i]=false;return false;});
+    const results=[],details=[];
+    const run=(i,label,fn)=>Promise.resolve().then(fn).then(value=>{const ok=typeof value==="object"&&value!==null?!!value.ok:!!value;const detail=typeof value==="object"&&value!==null?String(value.detail||""):(ok?"Expected condition was present.":"Expected condition was not met.");setState(i,ok?"pass":"warn",ok?"PASS":"WATCH");if(!ok)failures.push(label);results[i]=ok;details[i]={name:label,passed:ok,detail};return ok;}).catch(error=>{const detail=String(error?.message||error||"Unexpected check error");setState(i,"warn","WATCH");failures.push(label);results[i]=false;details[i]={name:label,passed:false,detail};return false;});
     await run(0,"Session boundary",()=>!!auth);
     await run(1,"Human approval",()=>!!window.ESCIE_AGENT_PROTOCOL&&!window.ESCIE_AGENT_PROTOCOL.canWriteCanonical("central-orchestrator"));
     await run(2,"Provider secrets",()=>!/service[_-]?role|secret[_-]?key/i.test(document.documentElement.innerHTML));
     const connectorProbe=auth?await probe(C):null;
     await run(3,"Destinations",()=>!!connectorProbe?.ok);
     const workspaceProbe=workspace?await probe(R+"/workspaces?id=eq."+encodeURIComponent(workspace)+"&select=id&limit=1"):null;
-    await run(4,"Workspace isolation",()=>!!workspaceProbe?.ok);
-    await run(5,"Agent history",()=>!!window.ESCIE_AGENT_RUNTIME&&!!window.ESCIE_CENTRAL_API?.enqueueAgentJob);
+    await run(4,"Workspace isolation",()=>({ok:!!workspaceProbe?.ok&&workspaceProbe.count===1,detail:workspaceProbe?("HTTP "+workspaceProbe.status+" · matching workspace rows: "+workspaceProbe.count):"No workspace probe; session/workspace missing."}));
+    const agentProbe=auth&&workspace?await probe(R+"/agent_jobs?select=id&workspace_id=eq."+encodeURIComponent(workspace)+"&limit=1"):null;
+    await run(5,"Agent history",()=>({ok:!!window.ESCIE_AGENT_RUNTIME&&!!window.ESCIE_CENTRAL_API?.enqueueAgentJob&&!!agentProbe?.ok,detail:"Runtime "+(window.ESCIE_AGENT_RUNTIME?"loaded":"missing")+" · durable job read "+(agentProbe?("HTTP "+agentProbe.status):"not attempted")}));
     await run(6,"Universe contract",()=>!!window.ESCIE_UNIVERSE_CONTRACT?.validate?.().ok);
     const publicProbe=await probe(R+"/records?select=id&visibility=eq.PUBLIC&publication_state=eq.PUBLISHED&limit=1");
     await run(7,"Live public bridge",()=>!!publicProbe?.ok);
@@ -829,12 +831,14 @@ function showForce(s){hidden("login",true);hidden("preview",true);hidden("app",t
     let auditPersisted=false,auditPersistError="";
     try{
       if(!auth||!session?.user?.id)throw Error("Authenticated actor ID unavailable");
-      const auditResponse=await fetch(R+"/audit_events",{method:"POST",headers:{...headers,"Content-Type":"application/json",Prefer:"return=representation"},body:JSON.stringify({owner_id:session.user.id,actor_id:session.user.id,action:"CENTRAL_AUDIT_RUN",payload:{status:failures.length?"ATTENTION":"GREEN",checks:items.slice(0,13).map((item,i)=>({name:item.querySelector("strong")?.textContent||("CHECK_"+i),passed:!!results[i]})),failures,audit_persisted:true,elapsed_ms:elapsed,completed_at:new Date().toISOString()}})});
+      const auditResponse=await fetch(R+"/audit_events",{method:"POST",headers:{...headers,"Content-Type":"application/json",Prefer:"return=representation"},body:JSON.stringify({owner_id:session.user.id,actor_id:session.user.id,action:"CENTRAL_AUDIT_RUN",payload:{status:failures.length?"ATTENTION":"GREEN",checks:details.slice(0,13),failures,audit_persisted:true,elapsed_ms:elapsed,completed_at:new Date().toISOString()}})});
       if(!auditResponse.ok)throw Error("AUDIT_EVENT_HTTP_"+auditResponse.status+" "+(await auditResponse.text()).slice(0,240));
       const savedRows=await auditResponse.json();if(!Array.isArray(savedRows)||!savedRows.length)throw Error("AUDIT_EVENT_NOT_CONFIRMED");auditPersisted=true;
     }catch(error){auditPersistError=String(error?.message||error);failures.push("Audit persistence");}
     setState(13,auditPersisted?"pass":"warn",auditPersisted?"SAVED":"NOT SAVED");
     const overall=$("auditOverall"),summary=$("auditSummary"),meta=$("auditRunMeta");
+    details[13]={name:"Audit persistence",passed:auditPersisted,detail:auditPersisted?"Audit row insert returned a confirmed database row.":auditPersistError};
+    const detailHost=$("auditRunDetails");if(detailHost)detailHost.innerHTML=details.map(x=>"<div class=\"rowcard\"><div class=\"rowleft\"><div class=\"rowtitle\">"+(x.passed?"PASS":"WATCH")+" · "+String(x.name).replace(/[&<>]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[m]))+"</div><div class=\"rowmeta\">"+String(x.detail||"").replace(/[&<>]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[m]))+"</div></div><span class=\"pill "+(x.passed?"ok":"warn")+"\">"+(x.passed?"PASS":"WATCH")+"</span></div>").join("");
     if(overall)overall.textContent=!auditPersisted?"AUDIT NOT PERSISTED":failures.length?"ATTENTION":"AUDIT PASSED";
     if(summary)summary.textContent=failures.length?failures.join(" • ")+" require attention. "+(auditPersisted?"Audit result saved to the durable ledger.":"Audit result could not be saved: "+auditPersistError)+" No automatic changes were made.":"13 live checks completed and the audit record was saved to Supabase.";
     if(meta)meta.textContent="LAST RUN · "+new Date().toLocaleTimeString()+" · "+elapsed+"ms · "+(connectorProbe?"CONNECTOR "+connectorProbe.status:"CONNECTOR NOT PROBED")+" · PUBLIC "+publicProbe.status+" · NAV "+(results[12]?"PASS":"WATCH")+" · LEDGER "+(auditPersisted?"SAVED":"FAILED");
@@ -1071,7 +1075,7 @@ function showForce(s){hidden("login",true);hidden("preview",true);hidden("app",t
   async function refreshAuditEvents(){
     const host=$("verifyAuditEvents");if(!host)return;
     const s=window.ESCIE_CENTRAL_API?.getSession?.();if(!s?.access_token){host.innerHTML="<div class=\"rowcard\"><div class=\"rowleft\"><div class=\"rowtitle\">SESSION NOT READY</div><div class=\"rowmeta\">Sign in to read the audit ledger.</div></div><span class=\"pill warn\">WATCH</span></div>";return;}
-    try{const u="https://ljdkjzvnwnaluevtzker.supabase.co/rest/v1/audit_events?select=id,action,payload,created_at&action=eq.CENTRAL_AUDIT_RUN&order=created_at.desc&limit=20";const r=await fetch(u,{headers:{apikey:"sb_publishable_ICPqqxh3c32b7eb5PYqUaA_Cem3vvB9",Authorization:"Bearer "+s.access_token,Accept:"application/json"},cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);const rows=await r.json();if(!rows.length){host.innerHTML="<div class=\"rowcard\"><div class=\"rowleft\"><div class=\"rowtitle\">NO PERSISTED AUDIT RUNS</div><div class=\"rowmeta\">The ledger is empty. A completed-looking screen is not proof of an audit record.</div></div><span class=\"pill warn\">EMPTY</span></div>";return;}host.innerHTML=rows.map(x=>{const p=x.payload||{};const status=p.status||"UNKNOWN";const count=Array.isArray(p.checks)?p.checks.length:0;const failed=Array.isArray(p.failures)?p.failures.length:0;return "<div class=\"rowcard\"><div class=\"rowleft\"><div class=\"rowtitle\">"+esc(status)+" · "+esc(x.action)+"</div><div class=\"rowmeta\">"+esc(new Date(x.created_at).toLocaleString())+" · "+count+" checks · "+failed+" warnings · "+esc(x.id)+"</div></div><span class=\"pill "+(status==="GREEN"?"ok":"warn")+"\">"+esc(status)+"</span></div>"}).join("");}catch(e){host.innerHTML="<div class=\"rowcard\"><div class=\"rowleft\"><div class=\"rowtitle\">AUDIT LEDGER UNAVAILABLE</div><div class=\"rowmeta\">"+esc(e.message||"Read failed")+"</div></div><span class=\"pill warn\">ERROR</span></div>";}
+    try{const u="https://ljdkjzvnwnaluevtzker.supabase.co/rest/v1/audit_events?select=id,action,payload,created_at&action=eq.CENTRAL_AUDIT_RUN&order=created_at.desc&limit=20";const r=await fetch(u,{headers:{apikey:"sb_publishable_ICPqqxh3c32b7eb5PYqUaA_Cem3vvB9",Authorization:"Bearer "+s.access_token,Accept:"application/json"},cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);const rows=await r.json();if(!rows.length){host.innerHTML="<div class=\"rowcard\"><div class=\"rowleft\"><div class=\"rowtitle\">NO PERSISTED AUDIT RUNS</div><div class=\"rowmeta\">The ledger is empty. A completed-looking screen is not proof of an audit record.</div></div><span class=\"pill warn\">EMPTY</span></div>";return;}host.innerHTML=rows.map(x=>{const p=x.payload||{};const status=p.status||"UNKNOWN";const count=Array.isArray(p.checks)?p.checks.length:0;const failed=Array.isArray(p.failures)?p.failures.length:0;const detail=Array.isArray(p.failures)&&p.failures.length?p.failures.join(", "):"No failed checks recorded";return "<div class=\"rowcard\"><div class=\"rowleft\"><div class=\"rowtitle\">"+esc(status)+" · "+esc(x.action)+"</div><div class=\"rowmeta\">"+esc(new Date(x.created_at).toLocaleString())+" · "+count+" checks · "+failed+" warnings · "+esc(detail)+" · "+esc(x.id)+"</div></div><span class=\"pill "+(status==="GREEN"?"ok":"warn")+"\">"+esc(status)+"</span></div>"}).join("");}catch(e){host.innerHTML="<div class=\"rowcard\"><div class=\"rowleft\"><div class=\"rowtitle\">AUDIT LEDGER UNAVAILABLE</div><div class=\"rowmeta\">"+esc(e.message||"Read failed")+"</div></div><span class=\"pill warn\">ERROR</span></div>";}
   }
   async function refreshAgents(){
     const host=$("verifyAgents"),summary=$("verifySummary");if(!host)return;
