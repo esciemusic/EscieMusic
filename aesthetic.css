@@ -646,3 +646,67 @@ button,a,input,select{max-width:100%}
 @media(prefers-reduced-motion:reduce){
   .index-trigger-glyph{transition:none}
 }
+
+
+/* =========================================================
+   PUBLIC POLISH / UNIVERSE INDEX
+   ========================================================= */
+main > .site-section:not(#entry) .section-drop-trigger{
+  display:grid;
+  grid-template-columns:30px minmax(0,1fr) 24px 24px;
+  align-items:center;
+  gap:12px;
+  width:100%;
+  padding:10px 12px;
+  border:1px solid rgba(216,212,202,.08);
+  background:rgba(7,7,8,.42);
+  color:var(--escie-paper);
+  text-align:left;
+  cursor:pointer;
+}
+main > .site-section:not(#entry) .section-drop-index{
+  color:var(--escie-aesthetic-purple);
+  font:700 8px/1 var(--escie-font-mono);
+  letter-spacing:.12em;
+}
+main > .site-section:not(#entry) .section-drop-title{
+  font:500 clamp(12px,2.4vw,16px)/1.15 var(--escie-font-display);
+  letter-spacing:.14em;
+}
+.section-drop-universe-symbol{
+  display:grid;
+  place-items:center;
+  width:22px;
+  height:22px;
+  color:var(--escie-blue-bright);
+  font:400 15px/1 var(--escie-font-display);
+  opacity:.86;
+}
+main > .site-section:not(#entry) .section-drop-symbol{
+  display:grid;
+  place-items:center;
+  width:22px;
+  height:22px;
+  color:var(--faint);
+  font:400 16px/1 var(--escie-font-display);
+}
+main > .site-section:not(#entry).section-open .section-drop-universe-symbol{
+  color:var(--escie-aesthetic-purple);
+}
+main > .site-section:not(#entry).section-open .section-drop-symbol{
+  color:var(--escie-blue-bright);
+}
+#now[hidden]{display:none!important}
+
+@media(max-width:700px){
+  main > .site-section:not(#entry) .section-drop-trigger{
+    grid-template-columns:26px minmax(0,1fr) 22px 22px;
+    gap:8px;
+    min-height:46px;
+    padding:10px 11px;
+  }
+  main > .site-section:not(#entry) .section-drop-title{
+    font-size:clamp(11px,3.2vw,14px);
+    letter-spacing:.11em;
+  }
+}
