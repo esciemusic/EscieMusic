@@ -623,18 +623,25 @@
   function renderWorld(){
     const container=byId("world-container"); if(!container)return;
     const locations=normalizeCollection(getLocations()).filter(isPublic).filter(place=>recordId(place)==="montreal");
+    const records=getAllPublicRecords().filter(isPublic);
+    const counts={};
+    ["person","place","moment","fragment","proof","investigation"].forEach(type=>counts[type]=records.filter(r=>String(r.type||"").toLowerCase()===type).length);
     const nowRecord=getGlobal("ESCIE_SITE",{});
-    const ordered=locations;
     container.innerHTML='<div class="world-index">'+motifMarkup("world")+
       '<p class="eyebrow">CURRENT WORLD / MONTRÉAL</p>'+
-      '<div class="world-now-strip"><span>NOW</span><strong>'+escapeHTML(nowRecord.location||"MONTRÉAL, QUÉBEC")+'</strong><em>THE WORLD EXPANDS AS THE RECORD PROGRESSES.</em></div>'+
-      '<div class="world-place-list">'+ordered.map((place,index)=>
+      '<div class="world-now-strip"><span>NOW</span><strong>'+escapeHTML(nowRecord.location||"MONTRÉAL, QUÉBEC")+'</strong><em>THE WORLD STARTS HERE. IT EXPANDS ONLY AS THE RECORD DOES.</em></div>'+
+      '<div class="world-place-list">'+locations.map((place,index)=>
         '<article class="world-place world-place-current" role="button" tabindex="0" aria-label="Open '+escapeHTML(recordTitle(place))+'" data-record-id="'+escapeHTML(recordId(place))+'">'+
           '<span class="world-place-index">'+String(index+1).padStart(2,"0")+'</span>'+
           '<div class="world-place-copy"><h3>'+escapeHTML(recordTitle(place))+'</h3><p>'+escapeHTML(place.description||"THE CITY ANCHOR.")+'</p></div>'+
           '<span class="world-place-state">CURRENT</span>'+
         '</article>').join("")+'</div>'+
-      '<p class="world-progression-note">FINDINGS, FAN SOURCES, PHOTOS, MENTIONS, PEOPLE, MOMENTS AND NEW LOCATIONS ENTER THE WORLD AS ESCIE ESTABLISHES THEM.</p>'+
+      '<div class="world-record-pulse"><span class="eyebrow">THE CITY RECORD</span>'+
+        '<div class="world-record-stats">'+
+          '<span><strong>'+counts.person+'</strong> PEOPLE</span><span><strong>'+counts.moment+'</strong> MOMENTS</span><span><strong>'+counts.fragment+'</strong> FRAGMENTS</span><span><strong>'+counts.proof+'</strong> PROOF</span>'+
+        '</div>'+
+      '</div>'+
+      '<p class="world-progression-note">FINDINGS, FAN SOURCES, PHOTOS, MENTIONS, PEOPLE, MOMENTS AND NEW LOCATIONS ENTER THE WORLD WHEN THEY ARE ESTABLISHED, REVIEWED OR RELEASED.</p>'+
       '</div>';
   }
 
@@ -650,23 +657,30 @@
     const nodeRecords=Array.from(allNodes).map(id=>byIdMap.get(id)).filter(Boolean);
     const types=registry&&typeof registry.relationshipTypes==="function"?registry.relationshipTypes():Array.from(new Set(all.map(r=>r.type).filter(Boolean))).sort();
     const categories=registry&&typeof registry.relationshipCategories==="function"?registry.relationshipCategories():[];
+    const recordTypes=Array.from(new Set(records.map(r=>String(r.type||"record")).filter(Boolean))).sort();
     const nodeOptions=nodeRecords.sort((x,y)=>recordTitle(x).localeCompare(recordTitle(y))).map(r=>'<option value="'+escapeHTML(recordId(r))+'"'+(state.record===recordId(r)?" selected":"")+'>'+escapeHTML(recordTitle(r))+'</option>').join("");
     const typeOptions=types.map(t=>'<option value="'+escapeHTML(t)+'"'+(state.type===t?" selected":"")+'> '+escapeHTML(t.replace(/_/g," "))+'</option>').join("");
     const categoryOptions=categories.map(t=>'<option value="'+escapeHTML(t)+'"'+(state.category===t?" selected":"")+'> '+escapeHTML(t.replace(/_/g," "))+'</option>').join("");
-    const count=registry&&typeof registry.relationshipCounts==="function"?registry.relationshipCounts(state):{relationships:relationships.length,nodes:new Set(relationships.flatMap(r=>[r.from,r.to])).size};
+    const recordTypeOptions=recordTypes.map(t=>'<option value="'+escapeHTML(t)+'">'+escapeHTML(t.replace(/_/g," "))+'</option>').join("");
     const recordSearch=String(state.search||"").trim().toLowerCase();
-    const searchable=records.filter(r=>!recordSearch||recordTitle(r).toLowerCase().includes(recordSearch)||(r.description||"").toLowerCase().includes(recordSearch)).slice(0,12);
-    const recordResults=searchable.map(r=>'<button type="button" class="web-record-result" data-record-id="'+escapeHTML(recordId(r))+'"><strong>'+escapeHTML(recordTitle(r))+'</strong><span>'+escapeHTML(r.type||"record")+'</span></button>').join("");
+    const searchable=records.filter(r=>!recordSearch||recordTitle(r).toLowerCase().includes(recordSearch)||(r.description||"").toLowerCase().includes(recordSearch)).slice(0,16);
+    const recordResults=searchable.map(r=>{
+      const connected=all.some(link=>link.from===recordId(r)||link.to===recordId(r));
+      return '<button type="button" class="web-record-result" data-record-id="'+escapeHTML(recordId(r))+'"><strong>'+escapeHTML(recordTitle(r))+'</strong><span>'+escapeHTML(r.type||"record")+' · '+(connected?"CONNECTED":"UNCONNECTED")+'</span></button>';
+    }).join("");
+    const count=registry&&typeof registry.relationshipCounts==="function"?registry.relationshipCounts(state):{relationships:relationships.length,nodes:new Set(relationships.flatMap(r=>[r.from,r.to])).size};
     container.innerHTML=
       '<div class="web-intro">'+motifMarkup("the-web")+
       '<p class="eyebrow">THE WEB / CONNECTION LEDGER</p>'+
-      '<p>Explore the links ESCIE has actually established between records. Nothing is invented to fill an empty graph.</p>'+
-      '<div class="record-filters web-filters"><div class="record-filters-heading"><span>EXPLORE CONNECTIONS</span><button type="button" class="record-filter-clear" data-web-filter-clear>CLEAR</button></div>'+
-      '<div class="record-filter-grid"><label>RECORD<select data-web-filter="record"><option value="">ALL RECORDS</option>'+nodeOptions+'</select></label>'+
-      '<label>TYPE<select data-web-filter="type"><option value="">ALL TYPES</option>'+typeOptions+'</select></label>'+
-      '<label>CATEGORY<select data-web-filter="category"><option value="">ALL CATEGORIES</option>'+categoryOptions+'</select></label></div>'+
-      '<p class="record-filter-count">'+escapeHTML(String(relationships.length))+' OF '+escapeHTML(String(all.length))+' PUBLIC CONNECTION'+(all.length===1?"":"S")+'</p></div>'+
-      '<div class="web-record-search"><label>SEARCH THE PUBLIC RECORD<input type="search" data-web-search value="'+escapeHTML(state.search||"")+'" placeholder="People, places, moments, fragments…"></label><div class="web-record-results">'+(recordResults||'<span class="inspector-note">NO MATCHES.</span>')+'</div></div></div>'+
+      '<p>THE WEB is where established relationships become visible. Search the public record, inspect records, filter the network, and follow only connections that actually exist.</p>'+
+      '<div class="record-filters web-filters"><div class="record-filters-heading"><span>EXPLORE THE NETWORK</span><button type="button" class="record-filter-clear" data-web-filter-clear>CLEAR</button></div>'+
+      '<div class="record-filter-grid"><label>RECORD<select data-web-filter="record"><option value="">ALL CONNECTED RECORDS</option>'+nodeOptions+'</select></label>'+
+      '<label>TYPE<select data-web-filter="type"><option value="">ALL CONNECTION TYPES</option>'+typeOptions+'</select></label>'+
+      '<label>CATEGORY<select data-web-filter="category"><option value="">ALL CATEGORIES</option>'+categoryOptions+'</select></label>'+
+      '</div><p class="record-filter-count">'+escapeHTML(String(relationships.length))+' OF '+escapeHTML(String(all.length))+' ESTABLISHED CONNECTION'+(all.length===1?"":"S")+'</p></div>'+
+      '<div class="web-record-search"><label>SEARCH THE PUBLIC RECORD<input type="search" data-web-search value="'+escapeHTML(state.search||"")+'" placeholder="People, places, moments, fragments…"></label>'+
+      '<div class="web-record-tools"><span class="eyebrow">BROWSE RECORD TYPE</span><select data-web-record-type><option value="">ALL PUBLIC RECORDS</option>'+recordTypeOptions+'</select></div>'+
+      '<div class="web-record-results">'+(recordResults||'<span class="inspector-note">NO MATCHES.</span>')+'</div></div></div>'+
       (relationships.length?'<div class="web-list">'+relationships.map(relationship=>{
         const from=byIdMap.get(relationship.from),to=byIdMap.get(relationship.to);
         return '<article class="web-connection" data-relationship-id="'+escapeHTML(relationship.id||"")+'">'+
@@ -674,7 +688,7 @@
           '<span class="web-arrow" aria-hidden="true">→</span><span class="web-type">'+escapeHTML((relationship.type||"CONNECTION").replace(/_/g," "))+'</span><span class="web-arrow" aria-hidden="true">→</span>'+
           '<button class="web-node web-node-button" type="button" data-record-id="'+escapeHTML(relationship.to)+'"><strong>'+escapeHTML(recordTitle(to))+'</strong><span>'+escapeHTML(to.type||"record")+'</span></button>'+
         '</article>';}).join("")+'</div>':
-        '<div class="archive-status web-empty-state"><p class="eyebrow">NO PUBLIC CONNECTIONS YET</p><h3>THE WEB IS WAITING.</h3><p>Search the public record above. Connections appear here when ESCIE establishes them or when approved audience material changes the record.</p><button type="button" class="web-participate-link" data-web-participate>ADD A FINDING THROUGH GLASS EYE</button></div>');
+        '<div class="archive-status web-empty-state"><p class="eyebrow">NO PUBLIC CONNECTIONS YET</p><h3>THE WEB IS WAITING.</h3><p>There are no established links to draw yet. The record search above still lets you inspect what is public. Connections appear when ESCIE establishes them or approved audience material creates a reviewed relationship.</p><button type="button" class="web-participate-link" data-web-participate>ADD A FINDING THROUGH GLASS EYE</button></div>');
   }
 
 
@@ -844,34 +858,27 @@ function renderClothing(){
   function renderInvestigation() {
     const container = byId("investigation-container");
     if (!container) return;
-
     const investigations=getAllPublicRecords().filter(record=>{
       const manifest=recordManifest(record);
       return manifest ? manifest.sections.investigation : record.type==="investigation";
     });
     const visible=investigations.filter(isPublic);
-
     if (!visible.length) {
-      container.innerHTML =
-        '<div class="investigation-status">' + motifMarkup("investigation") + '' +
-          '<p class="eyebrow">CASE STATE / OPEN</p>' +
-          '<h3>THE QUESTIONS ARE HERE BEFORE THE ANSWERS.</h3>' +
-          '<p>No public case has been established yet. When one is opened, this layer will distinguish questions, evidence, contradictions, context and unresolved material rather than presenting speculation as fact.</p>' +
-          '' +
-        '</div>';
+      container.innerHTML='<div class="investigation-status">'+motifMarkup("investigation")+
+        '<p class="eyebrow">THE CASE FILES / OPEN</p>'+
+        '<h3>QUESTIONS BEFORE ANSWERS.</h3>'+
+        '<p>This is the place for questions that matter. A case can gather evidence, contradictions, sources, context and unresolved material without forcing a conclusion.</p>'+
+        '<div class="case-file-tools">'+
+          '<div><span class="eyebrow">FOLLOW</span><strong>QUESTIONS</strong><p>What does the record still not explain?</p></div>'+
+          '<div><span class="eyebrow">CHECK</span><strong>EVIDENCE</strong><p>What can be documented, sourced or reviewed?</p></div>'+
+          '<div><span class="eyebrow">LEAVE</span><strong>UNRESOLVED</strong><p>What remains open without being turned into fact?</p></div>'+
+        '</div>'+
+        '<button type="button" class="case-participate-link" data-web-participate>BRING A FINDING THROUGH GLASS EYE</button>'+
+      '</div>';
       return;
     }
-
-    container.innerHTML =
-      '<div class="investigation-status"><p class="eyebrow">' + visible.length + ' ACTIVE PUBLIC CASE' + (visible.length === 1 ? '' : 'S') + '</p><p>Questions are separated from evidence. A public case can remain unresolved without the interface inventing an answer.</p></div>' +
-      visible.map(item =>
-      '<article class="investigation-case" data-record-id="' +
-      escapeHTML(recordId(item)) + '"' + narrationAttributes(item) + '>' +
-        '<p class="eyebrow">' + escapeHTML(item.status || "OPEN") + '</p>' +
-        '<h3>' + escapeHTML(recordTitle(item)) + "</h3>" +
-        (item.description ? '<p>' + escapeHTML(item.description) + '</p>' : '') +
-      "</article>"
-    ).join("");
+    container.innerHTML='<div class="investigation-status"><p class="eyebrow">'+visible.length+' OPEN CASE FILE'+(visible.length===1?'':'S')+'</p><p>Questions are separated from evidence. A case can remain unresolved without the interface inventing an answer.</p></div>'+
+      '<div class="case-file-list">'+visible.map(item=>'<article class="investigation-case" data-record-id="'+escapeHTML(recordId(item))+'"'+narrationAttributes(item)+'><p class="eyebrow">'+escapeHTML(item.status||"OPEN")+'</p><h3>'+escapeHTML(recordTitle(item))+'</h3>'+(item.description?'<p>'+escapeHTML(item.description)+'</p>':'')+'</article>').join("")+'</div>';
   }
 
   function socialIconMarkup(platform) {
