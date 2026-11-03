@@ -6,7 +6,7 @@ const result=contract.validate();
 const manifest=require("../data/file-manifest.js");
 assert(result.ok,"ESCIE universe contract must validate");
 assert(manifest.contracts.includes("universe-contract"),"file manifest must register the shared universe contract");
-assert(contract.boundaries.realityFilter===false,"Reality Filter must remain removed");
+assert(!Object.prototype.hasOwnProperty.call(contract.boundaries,"realityFilter"),"Reality Filter must remain removed");
 assert(contract.boundaries.gameplay2D===false,"gameplay must remain 3D");
 assert(contract.boundaries.pauseMap2DOnly===true,"pause/map must remain the only 2D interface");
 assert(contract.boundaries.publicIsCanonicalDoorway===true,"public site must remain canonical doorway");
