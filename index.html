@@ -151,8 +151,10 @@
       sections.forEach(function(section,index){
         if(section.dataset.accordionReady==="1")return;
         var heading=section.querySelector("h2"),inner=section.querySelector(".section-inner")||section,button=document.createElement("button");
-        button.type="button";button.className="section-drop-trigger";button.setAttribute("aria-controls",section.id+"-panel");button.setAttribute("aria-expanded","false");
-        button.dataset.section=section.id;button.innerHTML='<span class="section-drop-index">'+String(index+1).padStart(2,"0")+'</span><span class="section-drop-title"></span><span class="section-drop-symbol" aria-hidden="true">+</span>';
+        var symbols={art:"✳",world:"◌",web:"⌕",archives:"▣",investigation:"?",merch:"♥","glass-eye":"◎",escie:"◇"};
+        var symbol=symbols[section.id]||"·";
+        button.type="button";button.className="section-drop-trigger";button.setAttribute("aria-controls",section.id+"-panel");button.setAttribute("aria-expanded","false");button.setAttribute("aria-label","Open "+heading.textContent.trim());
+        button.dataset.section=section.id;button.innerHTML='<span class="section-drop-index">'+String(index+1).padStart(2,"0")+'</span><span class="section-drop-title"></span><span class="section-drop-symbol" aria-hidden="true">'+symbol+'</span><span class="section-drop-state" aria-hidden="true">+</span>';
         button.querySelector(".section-drop-title").textContent=heading.textContent.trim();heading.hidden=true;
         var panel=document.createElement("div");panel.className="section-drop-panel";panel.id=section.id+"-panel";panel.setAttribute("role","region");panel.hidden=true;
         var content=document.createElement("div");content.className="section-drop-content";
@@ -160,7 +162,7 @@
         panel.appendChild(content);
         inner.appendChild(button);inner.appendChild(panel);section.dataset.accordionReady="1";section.classList.add("section-collapsed");
         function setOpen(open,scroll){
-          sections.forEach(function(other){var p=other.querySelector(".section-drop-panel"),b=other.querySelector(".section-drop-trigger"),active=other===section&&open;other.classList.toggle("section-open",active);other.classList.toggle("section-collapsed",!active);if(p)p.hidden=!active;if(b){b.setAttribute("aria-expanded",String(active));var s=b.querySelector(".section-drop-symbol");if(s)s.textContent=active?"−":"+";}});
+          sections.forEach(function(other){var p=other.querySelector(".section-drop-panel"),b=other.querySelector(".section-drop-trigger"),active=other===section&&open;other.classList.toggle("section-open",active);other.classList.toggle("section-collapsed",!active);if(p)p.hidden=!active;if(b){b.setAttribute("aria-expanded",String(active));var s=b.querySelector(".section-drop-state");if(s)s.textContent=active?"−":"+";b.setAttribute("aria-label",(active?"Close ":"Open ")+heading.textContent.trim());}});
           if(open&&scroll)requestAnimationFrame(function(){section.scrollIntoView({behavior:window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});});
         }
         button.addEventListener("click",function(){setOpen(!section.classList.contains("section-open"),true);});
