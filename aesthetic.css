@@ -919,3 +919,49 @@ main > .site-section:not(#entry) .section-drop-trigger[data-section="escie"]::be
 .section-drop-trigger .section-drop-symbol{font-size:15px;color:var(--escie-aesthetic-purple);opacity:.82;text-shadow:0 0 12px var(--escie-aesthetic-purple-soft)}
 .section-drop-trigger .section-drop-state{font:400 16px/1 var(--escie-font-mono);opacity:.48}
 .section-drop-trigger:hover .section-drop-symbol{opacity:1}
+
+
+/* =========================================================
+   HEART ON MY SLEEVE / THE WORLD YOU CAN OWN
+   Physical layer: universe-first, shop-second.
+   ========================================================= */
+.merch-section .section-visual-merch{
+  background-image:linear-gradient(180deg,rgba(7,8,9,.34),rgba(7,8,9,.82)),url("assets/merch/world-you-can-own.svg");
+  background-size:cover;
+  background-position:center;
+  opacity:.82;
+}
+.merch-world-intro{
+  display:grid;
+  grid-template-columns:minmax(0,1.5fr) minmax(190px,.7fr);
+  gap:24px;
+  margin:8px 0 24px;
+  padding:20px 0;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+}
+.merch-world-copy h3{margin:3px 0 10px;font-size:clamp(22px,4vw,42px);letter-spacing:.03em;line-height:1}
+.merch-world-copy p:not(.eyebrow){max-width:620px;margin:0;color:var(--muted);font-size:11px;line-height:1.8}
+.merch-universe-links{display:grid;align-content:start;gap:5px}
+.merch-universe-link{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid var(--line);
+  color:var(--white);font-size:9px;letter-spacing:.14em;text-decoration:none;
+}
+.merch-universe-link:hover{color:var(--escie-blue)}
+.merch-card-art{background:#090a0b}
+.merch-card-art img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  opacity:.92;transition:transform .7s ease,filter .7s ease;
+}
+.merch-card:hover .merch-card-art img{transform:scale(1.025);filter:contrast(1.06)}
+.merch-card-art:has(img) span,.merch-card-art:has(img) strong{opacity:0}
+.merch-card-art i{z-index:2}
+.merch-statusbar{
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+}
+@media(max-width:700px){
+  .merch-world-intro{grid-template-columns:1fr;gap:18px;padding:16px 0}
+  .merch-world-copy h3{font-size:29px}
+}
