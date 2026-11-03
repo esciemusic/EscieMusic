@@ -1005,7 +1005,7 @@ function renderClothing(){
       '</div>';
     container.insertAdjacentHTML("beforeend",
       '<section class="glass-participation" aria-labelledby="glass-participation-title">'+
-        '<div class="glass-participation-head"><p class="eyebrow">PARTICIPATION / THE RECORD IS OPEN</p><h3 id="glass-participation-title">LEAVE SOMETHING BEHIND.</h3><p>Post a comment, fan theory, finding, mention or media. Submissions are reviewed before anything enters the public record.</p></div>'+
+        '<div class="glass-participation-head"><p class="eyebrow">PARTICIPATION / THE RECORD IS OPEN</p><h3 id="glass-participation-title">LEAVE SOMETHING BEHIND.</h3><p>Post a comment, fan theory, finding, mention or media. Submissions are reviewed before anything enters the public record.</p></div><div class="glass-participation-path"><div><span class="eyebrow">01 / YOU NOTICE</span><strong>OBSERVE</strong><p>Something catches your eye, ear or memory.</p></div><div><span class="eyebrow">02 / YOU SEND</span><strong>CONTRIBUTE</strong><p>Leave a theory, finding, mention, comment or media.</p></div><div><span class="eyebrow">03 / WE REVIEW</span><strong>RECORD</strong><p>Approved material can enter the public record and create new connections.</p></div></div>'+
         '<form class="glass-participation-form" data-glass-participation-form>'+
           '<div class="glass-participation-types" role="group" aria-label="Submission type">'+
             ["COMMENT","THEORY","FINDING","MENTION"].map((kind,i)=>'<button type="button" class="'+(i===0?"is-active":"")+'" data-glass-kind="'+kind+'">'+kind+'</button>').join("")+
