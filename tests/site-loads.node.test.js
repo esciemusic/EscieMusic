@@ -48,4 +48,13 @@ const appIndex = scripts.indexOf("app.js");
 assert(scripts.indexOf("record.js") < appIndex, "record contract must load before app.js");
 assert(scripts.indexOf("relationship.js") < appIndex, "relationship contract must load before app.js");
 
+assert(fs.readFileSync("data/universe-contract.js","utf8").includes('version:"1.2.0"'),"universe contract should be current");
+const universeContract=fs.readFileSync("data/universe-contract.js","utf8");
+assert(!universeContract.includes("realityFilter"),"legacy Reality Filter contract must be removed entirely");
+assert(universeContract.includes("HEART ON MY SLEEVE"),"universe contract must use the current wardrobe identity");
+assert(fs.readFileSync("data/glass-eye-participation.js","utf8").includes("approvedEndpoint"),"Glass Eye must use the moderated approved-media endpoint");
+assert(fs.readFileSync("data/glass-eye-participation.js","utf8").includes("ONLY PHOTO, VIDEO OR AUDIO FILES ARE ACCEPTED"),"Glass Eye media input must enforce supported media types");
+assert(fs.readFileSync("app.js","utf8").includes("data-web-record-type"),"THE WEB record-type filter must be wired");
+assert(fs.readFileSync("app.js","utf8").includes("safeExternalURL"),"external storefront URLs must be protocol-validated");
+
 console.log("ESCIE site script-load contracts OK");
