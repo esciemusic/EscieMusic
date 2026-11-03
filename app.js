@@ -29,6 +29,17 @@
       .replace(/'/g, "&#39;");
   }
 
+  function safeExternalURL(value) {
+    const raw = String(value == null ? "" : value).trim();
+    if (!raw) return "";
+    try {
+      const parsed = new URL(raw, window.location.href);
+      return ["http:", "https:"].includes(parsed.protocol) ? parsed.href : "";
+    } catch (error) {
+      return "";
+    }
+  }
+
   function getGlobal(name, fallback) {
     return window[name] !== undefined ? window[name] : fallback;
   }
@@ -663,7 +674,12 @@
     const categoryOptions=categories.map(t=>'<option value="'+escapeHTML(t)+'"'+(state.category===t?" selected":"")+'> '+escapeHTML(t.replace(/_/g," "))+'</option>').join("");
     const recordTypeOptions=recordTypes.map(t=>'<option value="'+escapeHTML(t)+'">'+escapeHTML(t.replace(/_/g," "))+'</option>').join("");
     const recordSearch=String(state.search||"").trim().toLowerCase();
-    const searchable=records.filter(r=>!recordSearch||recordTitle(r).toLowerCase().includes(recordSearch)||(r.description||"").toLowerCase().includes(recordSearch)).slice(0,16);
+    const recordTypeFilter=String(state.recordType||"").trim().toLowerCase();
+    const searchable=records.filter(r=>{
+      const matchesType=!recordTypeFilter||String(r.type||"record").toLowerCase()===recordTypeFilter;
+      const matchesSearch=!recordSearch||recordTitle(r).toLowerCase().includes(recordSearch)||(r.description||"").toLowerCase().includes(recordSearch);
+      return matchesType&&matchesSearch;
+    }).slice(0,16);
     const recordResults=searchable.map(r=>{
       const connected=all.some(link=>link.from===recordId(r)||link.to===recordId(r));
       return '<button type="button" class="web-record-result" data-record-id="'+escapeHTML(recordId(r))+'"><strong>'+escapeHTML(recordTitle(r))+'</strong><span>'+escapeHTML(r.type||"record")+' · '+(connected?"CONNECTED":"UNCONNECTED")+'</span></button>';
@@ -677,9 +693,9 @@
       '<div class="record-filter-grid"><label>RECORD<select data-web-filter="record"><option value="">ALL CONNECTED RECORDS</option>'+nodeOptions+'</select></label>'+
       '<label>TYPE<select data-web-filter="type"><option value="">ALL CONNECTION TYPES</option>'+typeOptions+'</select></label>'+
       '<label>CATEGORY<select data-web-filter="category"><option value="">ALL CATEGORIES</option>'+categoryOptions+'</select></label>'+
-      '</div><p class="record-filter-count">'+escapeHTML(String(relationships.length))+' OF '+escapeHTML(String(all.length))+' ESTABLISHED CONNECTION'+(all.length===1?"":"S")+'</p></div>'+
+      '</div><p class="record-filter-count">'+escapeHTML(String(relationships.length))+' OF '+escapeHTML(String(all.length))+' ESTABLISHED CONNECTION'+(all.length===1?"":"S")+' · '+escapeHTML(String(count.nodes||0))+' NODES</p></div>'+
       '<div class="web-record-search"><label>SEARCH THE PUBLIC RECORD<input type="search" data-web-search value="'+escapeHTML(state.search||"")+'" placeholder="People, places, moments, fragments…"></label>'+
-      '<div class="web-record-tools"><span class="eyebrow">BROWSE RECORD TYPE</span><select data-web-record-type><option value="">ALL PUBLIC RECORDS</option>'+recordTypeOptions+'</select></div>'+
+      '<div class="web-record-tools"><span class="eyebrow">BROWSE RECORD TYPE</span><select data-web-record-type><option value="">ALL PUBLIC RECORDS</option>'+recordTypes.map(t=>'<option value="'+escapeHTML(t)+'"'+(recordTypeFilter===String(t).toLowerCase()?" selected":"")+'>'+escapeHTML(t.replace(/_/g," "))+'</option>').join("")+'</select></div>'+
       '<div class="web-record-results">'+(recordResults||'<span class="inspector-note">NO MATCHES.</span>')+'</div></div></div>'+
       (relationships.length?'<div class="web-list">'+relationships.map(relationship=>{
         const from=byIdMap.get(relationship.from),to=byIdMap.get(relationship.to);
@@ -756,7 +772,7 @@ function renderClothing(){
     const clothing=normalizeCollection(getGlobal("ESCIE_CLOTHING",[])).filter(item=>item&&item.type==="CLOTHING");
     const filterState=String(container.dataset.filter||"ALL").toUpperCase();
     const visible=clothing.filter(item=>filterState==="ALL"||String(item.category||"CORE").toUpperCase()===filterState);
-    const storeUrl=String(config.storefront_url||"").trim();
+    const storeUrl=safeExternalURL(config.storefront_url);
     const storeLabel=String(config.storefront_label||"OPEN THE STORE");
     const universeLinks=Array.isArray(config.universe_links)?config.universe_links:[];
     const intro='<div class="merch-world-intro">'+
@@ -1301,6 +1317,14 @@ function renderClothing(){
       renderWeb();
     });
 
+    document.addEventListener("change", event => {
+      const typeControl=event.target.closest("[data-web-record-type]");
+      if(!typeControl)return;
+      ESCIE_RUNTIME.webFilters=ESCIE_RUNTIME.webFilters||{};
+      ESCIE_RUNTIME.webFilters.recordType=typeControl.value||"";
+      renderWeb();
+    });
+
     let webSearchTimer=null;
     document.addEventListener("input", event => {
       const search=event.target.closest("[data-web-search]");
@@ -1370,6 +1394,8 @@ function renderClothing(){
         return;
       }
 
+      if (event.target.closest(".nested-drop-trigger")) return;
+      if (event.target.closest(".nested-drop-panel") && event.target.closest("a,button,input,select,textarea")) return;
       const trigger = event.target.closest("[data-record-id]");
       if (!trigger) return;
       const record = getAllPublicRecords().find(item => recordId(item) === trigger.getAttribute("data-record-id"));
