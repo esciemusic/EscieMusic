@@ -1108,3 +1108,119 @@ main > .site-section:not(#entry) .nested-drop-trigger:focus-visible{
   .glass-participation-path>div:first-child{border-top:0;}
 }
 .glass-approved-media{display:block;width:100%;max-height:420px;object-fit:cover;margin-top:10px;border:1px solid var(--line);background:rgba(0,0,0,.25)}.glass-approved-item audio.glass-approved-media{height:38px}.glass-approved-media-link{display:inline-flex;margin-top:10px;padding:8px 10px;border:1px solid var(--line);font-size:9px;letter-spacing:.1em;color:var(--text)}
+
+
+/* =========================================================
+   LANGUAGE / LIGHT-DARK PREFERENCES
+   Quiet utility controls live in the header without changing
+   the ESCIE visual language.
+   ========================================================= */
+.site-preferences{
+  pointer-events:auto;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin-left:auto;
+  margin-right:12px;
+}
+.language-toggle{
+  display:flex;
+  align-items:center;
+  border:1px solid var(--line);
+  background:rgba(5,5,5,.62);
+  backdrop-filter:blur(12px);
+}
+.preference-button{
+  appearance:none;
+  border:0;
+  border-right:1px solid var(--line);
+  min-width:31px;
+  min-height:30px;
+  padding:0 8px;
+  background:transparent;
+  color:var(--muted);
+  cursor:pointer;
+  font:700 8px/1 var(--escie-font-mono);
+  letter-spacing:.1em;
+  transition:background var(--escie-motion-fast),color var(--escie-motion-fast),box-shadow var(--escie-motion-fast);
+}
+.preference-button:last-child{border-right:0}
+.preference-button:hover,
+.preference-button:focus-visible,
+.preference-button.is-active{
+  color:var(--white);
+  background:rgba(155,89,255,.12);
+  box-shadow:inset 0 -1px 0 var(--escie-aesthetic-purple);
+}
+.theme-toggle{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  border:1px solid var(--line);
+  background:rgba(5,5,5,.62);
+  min-width:72px;
+}
+.theme-toggle-icon{font-size:13px;line-height:1}
+.theme-toggle-label{font-size:7px;letter-spacing:.12em}
+
+html[data-theme="light"]{
+  color-scheme:light;
+  --black:#f1eee7;
+  --deep-black:#e8e4db;
+  --white:#171719;
+  --muted:rgba(23,23,25,.62);
+  --faint:rgba(23,23,25,.38);
+  --line:rgba(23,23,25,.16);
+  --escie-void:#f1eee7;
+  --escie-black:#ebe7df;
+  --escie-asphalt:#dedbd4;
+  --escie-concrete:#d1cec7;
+  --escie-smoke:#b9b6af;
+  --escie-white:#171719;
+  --escie-paper:#171719;
+  --signal-purple:var(--escie-ultraviolet);
+}
+html[data-theme="light"] body{
+  background:linear-gradient(180deg,#f5f2eb 0%,#eeeae1 55%,#e5e1d8 100%);
+  color:var(--white);
+}
+html[data-theme="light"] .sky{
+  background:
+    radial-gradient(ellipse at 50% 0%,rgba(110,125,145,.16),transparent 48%),
+    linear-gradient(180deg,#e7ebef 0%,#f1eee7 55%,#e6e2d9 100%);
+}
+html[data-theme="light"] .grain{opacity:.035;mix-blend-mode:multiply}
+html[data-theme="light"] .site-header{
+  background:linear-gradient(180deg,rgba(245,242,235,.9),rgba(245,242,235,.35),transparent);
+}
+html[data-theme="light"] .language-toggle,
+html[data-theme="light"] .theme-toggle{
+  background:rgba(245,242,235,.78);
+}
+html[data-theme="light"] .site-preferences .preference-button.is-active{
+  background:rgba(111,63,175,.1);
+}
+html[data-theme="light"] main > .site-section.section-open .section-visual{
+  background:linear-gradient(90deg,rgba(245,242,235,.88),rgba(245,242,235,.38),rgba(245,242,235,.82)),
+    repeating-linear-gradient(0deg,transparent 0 5px,rgba(0,0,0,.025) 6px),
+    linear-gradient(135deg,#d9dcde 0%,#eef0f0 46%,#ddd8d0 100%);
+  box-shadow:inset 0 0 0 1px rgba(47,128,255,.08),0 18px 50px rgba(0,0,0,.1);
+}
+html[data-theme="light"] .skip-link{
+  background:rgba(245,242,235,.97);
+  color:#171719;
+  border-color:rgba(23,23,25,.35);
+}
+html[data-theme="light"] .site-footer{
+  background:rgba(220,216,208,.48);
+}
+@media(max-width:700px){
+  .site-preferences{gap:4px;margin-right:7px}
+  .preference-button{min-width:28px;min-height:28px;padding:0 6px}
+  .theme-toggle{min-width:31px;width:31px;padding:0}
+  .theme-toggle-label{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .preference-button{transition:none}
+}
