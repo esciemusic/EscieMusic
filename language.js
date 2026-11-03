@@ -233,6 +233,21 @@ const ESCIE_LANGUAGE_ENGINE = {
     Return information about a narration mode.
   */
 
+  setLanguage(language) {
+    const normalized = ["en","fr","es"].includes(String(language || "").toLowerCase()) ? String(language).toLowerCase() : "en";
+    if (window.ESCIE_STATE) window.ESCIE_STATE.language = normalized;
+    document.documentElement.lang = normalized;
+    try { localStorage.setItem("escie-language", normalized); } catch (error) {}
+    document.querySelectorAll("[data-language]").forEach(button => {
+      const active = button.getAttribute("data-language") === normalized;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", active ? "true" : "false");
+    });
+    const events = window.ESCIE_EVENTS;
+    if (events && typeof events.emit === "function") events.emit("language:changed", { language: normalized });
+    return normalized;
+  },
+
   mode(name) {
 
     return ESCIE_LANGUAGE_MODES[name]
