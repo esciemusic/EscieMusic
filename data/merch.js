@@ -10,12 +10,15 @@
     free_layers:["MUSIC","INVESTIGATION","ARCHIVE","QR","SOCIAL_PARTICIPATION","COMMENTS","VIDEO","WEBSITE"],
     categories:["HEART ON MY SLEEVE"],
     art_direction:"MONTRÉAL CONCRETE / VHS / DOCUMENTARY / GOTHIC / DAMAGED MEDIA",
+    shop_concept:"THE WORLD YOU CAN OWN",
+    universe_links:["THE WORLD","THE ARCHIVES","GLASS EYE","ART"],
+    presentation:"Physical objects carry traces of the universe into ordinary life; the site remains the doorway, not the checkout.",
     art_license:"ESCIE-owned original artwork; master files remain outside checkout metadata.",
     drops:[
       {id:"drop-001",title:"DROP 001 — THE FIRST WARDROBE",status:"READY_FOR_ART_PRODUCTION",category:"CORE",
        products:[
-        {id:"escie-tee-black",title:"ESCIE SIGNAL TEE",type:"tee",colorway:"black",art:"escie-signal-mark"},
-        {id:"escie-hoodie-black",title:"ESCIE SIGNAL HOODIE",type:"hoodie",colorway:"black",art:"escie-signal-mark"},
+        {id:"escie-tee-black",title:"ESCIE SIGNAL TEE",type:"tee",colorway:"black",art:"escie-signal-mark",image:"assets/merch/escie-tee.svg"},
+        {id:"escie-hoodie-black",title:"ESCIE SIGNAL HOODIE",type:"hoodie",colorway:"black",art:"escie-signal-mark",image:"assets/merch/escie-hoodie.svg"},
 
         {id:"signal-sticker-sheet",title:"SIGNAL STICKER SHEET",type:"sticker-sheet",colorway:"mixed",art:"signal-symbol-sheet"}
        ]},
