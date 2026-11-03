@@ -197,7 +197,75 @@
       window.addEventListener("hashchange",function(){openFromHash(true);});
       openFromHash(false);
     }
+    function initNestedDropdowns(){
+      var selector=".world-place,.archive-record,.investigation-case,.merch-card,.clothing-card";
+      function enhance(root){
+        if(!root)return;
+        root.querySelectorAll(selector).forEach(function(item){
+          if(item.dataset.nestedDropReady==="1")return;
+          var titleNode=item.querySelector("h3");
+          if(!titleNode)return;
+          var title=titleNode.textContent.trim()||"OPEN RECORD";
+          var eyebrow=item.querySelector(".eyebrow");
+          var status=item.querySelector(".world-place-state,.merch-status,.pill");
+          var original=Array.from(item.children);
+          var trigger=document.createElement("button");
+          trigger.type="button";
+          trigger.className="nested-drop-trigger";
+          trigger.setAttribute("aria-expanded","false");
+          trigger.setAttribute("aria-controls",(item.id||("nested-"+Math.random().toString(36).slice(2)))+"-panel");
+          trigger.innerHTML='<span class="nested-drop-index" aria-hidden="true">+</span><span class="nested-drop-title"></span><span class="nested-drop-meta"></span><span class="nested-drop-state" aria-hidden="true">+</span>';
+          trigger.querySelector(".nested-drop-title").textContent=title;
+          trigger.querySelector(".nested-drop-meta").textContent=(eyebrow?eyebrow.textContent.trim():"")+(status?" · "+status.textContent.trim():"");
+          var panel=document.createElement("div");
+          panel.className="nested-drop-panel";
+          panel.id=trigger.getAttribute("aria-controls");
+          panel.hidden=true;
+          var content=document.createElement("div");
+          content.className="nested-drop-content";
+          original.forEach(function(child){content.appendChild(child);});
+          panel.appendChild(content);
+          item.innerHTML="";
+          item.appendChild(trigger);
+          item.appendChild(panel);
+          item.dataset.nestedDropReady="1";
+          item.classList.add("nested-drop-collapsed");
+          trigger.addEventListener("click",function(){
+            var open=!item.classList.contains("nested-drop-open");
+            var group=item.parentElement;
+            if(group){
+              group.querySelectorAll(selector+".nested-drop-open").forEach(function(other){
+                if(other===item)return;
+                other.classList.remove("nested-drop-open");
+                other.classList.add("nested-drop-collapsed");
+                var p=other.querySelector(":scope > .nested-drop-panel"),b=other.querySelector(":scope > .nested-drop-trigger");
+                if(p)p.hidden=true;
+                if(b){b.setAttribute("aria-expanded","false");var s=b.querySelector(".nested-drop-state");if(s)s.textContent="+";}
+              });
+            }
+            item.classList.toggle("nested-drop-open",open);
+            item.classList.toggle("nested-drop-collapsed",!open);
+            panel.hidden=!open;
+            trigger.setAttribute("aria-expanded",String(open));
+            trigger.querySelector(".nested-drop-state").textContent=open?"−":"+";
+          });
+        });
+      }
+      enhance(document);
+      var observer=new MutationObserver(function(mutations){
+        mutations.forEach(function(mutation){
+          mutation.addedNodes.forEach(function(node){
+            if(node.nodeType===1)enhance(node);
+          });
+        });
+      });
+      document.querySelectorAll(".content-container").forEach(function(container){
+        observer.observe(container,{childList:true,subtree:true});
+      });
+      window.ESCIE_NESTED_DROPDOWNS={refresh:function(){enhance(document);}};
+    }
     if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initSectionAccordion,{once:true});else initSectionAccordion();
+    initNestedDropdowns();
   })();
   </script>
 
