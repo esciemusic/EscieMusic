@@ -1,10 +1,10 @@
 const ESCIE_NAVIGATION=[
-{id:"art",label:"ART",target:"#art",primary:true,order:1,symbol:"✳"},
-{id:"world",label:"THE WORLD",target:"#world",primary:true,order:2,symbol:"◌"},
-{id:"web",label:"THE WEB",target:"#web",primary:true,order:3,symbol:"⌕"},
-{id:"archives",label:"THE ARCHIVES",target:"#archives",primary:true,order:4,symbol:"▣"},
-{id:"investigation",label:"INVESTIGATION",target:"#investigation",primary:true,order:5,symbol:"?"},
-{id:"merch",label:"THE WORLD YOU CAN WEAR",target:"#merch",primary:true,order:6,symbol:"◇"},
+{id:"now",label:"NOW",target:"#now",primary:false,order:1,symbol:"◉"},
+{id:"art",label:"WORK",target:"#art",primary:true,order:2,symbol:"✳"},
+{id:"world",label:"THE WORLD",target:"#world",primary:true,order:3,symbol:"◌"},
+{id:"web",label:"THE WEB",target:"#web",primary:true,order:4,symbol:"⌕"},
+{id:"archives",label:"ARCHIVE",target:"#archives",primary:true,order:5,symbol:"▣"},
+{id:"investigation",label:"INVESTIGATION",target:"#investigation",primary:true,order:6,symbol:"?"},
 {id:"glass-eye",label:"GLASS EYE",target:"#glass-eye",primary:true,order:7,symbol:"◎"},
 {id:"escie",label:"ESCIE",target:"#escie",primary:true,order:8,symbol:"◇"}
 ];
