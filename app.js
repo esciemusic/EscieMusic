@@ -742,9 +742,20 @@ function renderClothing(){
     const clothing=normalizeCollection(getGlobal("ESCIE_CLOTHING",[])).filter(item=>item&&item.type==="CLOTHING");
     const filterState=String(container.dataset.filter||"ALL").toUpperCase();
     const visible=clothing.filter(item=>filterState==="ALL"||String(item.category||"CORE").toUpperCase()===filterState);
-    if(!visible.length){container.innerHTML='<div class="merch-empty"><p class="eyebrow">WARDROBE / '+escapeHTML(filterState)+'</p><h3>NOTHING IS PUBLIC HERE YET.</h3><p>The physical layer only shows garments that have a defined production path.</p></div>';return;}
     const storeUrl=String(config.storefront_url||"").trim();
     const storeLabel=String(config.storefront_label||"OPEN THE STORE");
+    const universeLinks=Array.isArray(config.universe_links)?config.universe_links:[];
+    const intro='<div class="merch-world-intro">'+
+      '<div class="merch-world-copy"><p class="eyebrow">THE PHYSICAL LAYER / '+escapeHTML(String(config.shop_concept||"THE WORLD YOU CAN OWN"))+'</p>'+
+      '<h3>TAKE A TRACE WITH YOU.</h3>'+
+      '<p>Clothing is where the ESCIE universe leaves the screen and enters ordinary life. Montréal, the signal, the archive and the eye become things you can carry.</p></div>'+
+      '<div class="merch-universe-links"><span class="eyebrow">CONNECTED RECORDS</span>'+
+      universeLinks.map(label=>{const id=String(label).toLowerCase().replace(/[^a-z0-9]+/g,"-");return '<a href="#'+escapeHTML(id)+'" class="merch-universe-link">'+escapeHTML(label)+' ↗</a>';}).join("")+
+      '</div></div>';
+    if(!visible.length){
+      container.innerHTML=intro+'<div class="merch-empty"><p class="eyebrow">WARDROBE / '+escapeHTML(filterState)+'</p><h3>NOTHING IS PUBLIC HERE YET.</h3><p>The physical layer only shows garments that have a defined production path.</p></div>';
+      return;
+    }
     const cards=visible.map(item=>{
       const packet=item.production_packet||{};
       const stage=String(item.production_stage||"DESIGN");
@@ -753,32 +764,25 @@ function renderClothing(){
       const details=[item.color,item.garment,item.fabric,item.gsm_target].filter(Boolean).join(" · ");
       const front=item.front&&item.front.text?item.front.text:"";
       const back=item.back&&item.back.text?item.back.text:"";
+      const image=item.image?String(item.image):"";
       const ready=String(item.status||"").toUpperCase()==="RELEASED"&&!!storeUrl;
-      const action=ready?'<a class="merch-card-action" href="'+escapeHTML(storeUrl)+'" target="_blank" rel="noopener noreferrer">BUY / '+escapeHTML(storeLabel)+'</a>':'<span class="merch-card-action is-quiet">SAMPLE / APPROVAL IN PROGRESS</span>';
-      return `
-        <article class="merch-card" data-merch-category="${escapeHTML(item.category || "CORE")}">
-          <div class="merch-card-top"><span class="eyebrow">${escapeHTML(item.category || "CORE")}</span><span class="merch-status">${escapeHTML(stage)}</span></div>
-          <div class="merch-card-art" aria-hidden="true"><span>${escapeHTML(front || "ESCIE")}</span><i></i><strong>${escapeHTML(back || item.title || "")}</strong></div>
-          <div class="merch-card-body">
-            <h3>${escapeHTML(item.title || "UNTITLED")}</h3>
-            <p>${escapeHTML(item.notes || "Physical ESCIE object.")}</p>
-            <dl class="merch-specs">
-              <div><dt>GARMENT</dt><dd>${escapeHTML(details || "SPECIFICATION PENDING")}</dd></div>
-              <div><dt>FIT / SIZE</dt><dd>${escapeHTML((item.fit || "FIT PENDING") + " · " + sizes)}</dd></div>
-              <div><dt>PRODUCTION</dt><dd>${escapeHTML(priority + " · " + (packet.quantity_decision || "HUMAN GATE"))}</dd></div>
-            </dl>
-            ${action}
-          </div>
-        </article>`;
+      const action=ready?'<a class="merch-card-action" href="'+escapeHTML(storeUrl)+'" target="_blank" rel="noopener noreferrer">BUY / '+escapeHTML(storeLabel)+'</a>':'<span class="merch-card-action is-quiet">SAMPLE / HUMAN APPROVAL</span>';
+      return '<article class="merch-card" data-merch-category="'+escapeHTML(item.category||"CORE")+'">'+
+        '<div class="merch-card-top"><span class="eyebrow">'+escapeHTML(item.category||"CORE")+'</span><span class="merch-status">'+escapeHTML(stage)+'</span></div>'+
+        '<div class="merch-card-art">'+(image?'<img src="'+escapeHTML(image)+'" alt="'+escapeHTML(item.title||"ESCIE garment")+'" loading="lazy">':'')+
+        '<span>'+escapeHTML(front||"ESCIE")+'</span><i></i><strong>'+escapeHTML(back||item.title||"")+'</strong></div>'+
+        '<div class="merch-card-body"><h3>'+escapeHTML(item.title||"UNTITLED")+'</h3>'+
+        '<p>'+escapeHTML(item.notes||"Physical ESCIE object.")+'</p>'+
+        '<dl class="merch-specs"><div><dt>GARMENT</dt><dd>'+escapeHTML(details||"SPECIFICATION PENDING")+'</dd></div>'+
+        '<div><dt>FIT / SIZE</dt><dd>'+escapeHTML((item.fit||"FIT PENDING")+" · "+sizes)+'</dd></div>'+
+        '<div><dt>PRODUCTION</dt><dd>'+escapeHTML(priority+" · "+(packet.quantity_decision||"HUMAN GATE"))+'</dd></div></dl>'+action+
+        '</div></article>';
     }).join("");
     const storeAction=storeUrl?'<a class="merch-store-link" href="'+escapeHTML(storeUrl)+'" target="_blank" rel="noopener noreferrer">'+escapeHTML(storeLabel)+' ↗</a>':'<span class="merch-store-link is-disabled">STORE LAYER / NOT CONNECTED</span>';
-    container.innerHTML=`
-      <div class="merch-statusbar">
-        <div><span class="eyebrow">DROP 001 / THE FIRST WARDROBE</span><strong>${visible.length} PHYSICAL RECORD${visible.length===1?"":"S"}</strong></div>
-        <p>Checkout, inventory, shipping and taxes stay outside the ESCIE site. This shell remains the archive and presentation layer.</p>
-        ${storeAction}
-      </div>
-      <div class="merch-grid-list">${cards}</div>`;
+    container.innerHTML=intro+
+      '<div class="merch-statusbar"><div><span class="eyebrow">DROP 001 / HEART ON MY SLEEVE</span><strong>'+visible.length+' PHYSICAL RECORD'+(visible.length===1?"":"S")+'</strong></div>'+
+      '<p>Presentation lives here. Checkout, inventory, shipping and taxes remain outside the universe interface.</p>'+storeAction+'</div>'+
+      '<div class="merch-grid-list">'+cards+'</div>';
   }
 
   function bindMerchFilters(){
