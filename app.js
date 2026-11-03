@@ -622,27 +622,20 @@
 
   function renderWorld(){
     const container=byId("world-container"); if(!container)return;
-    const locations=normalizeCollection(getLocations()).filter(isPublic);
-    if(!locations.length){
-      renderEmpty(container,"THE WORLD IS BEING RECORDED. PLACES WILL APPEAR WHEN THEY ENTER THE PUBLIC RECORD.");
-      return;
-    }
-    const ordered=locations.slice().sort((a,b)=>{
-      if(a.id==="montreal") return -1;
-      if(b.id==="montreal") return 1;
-      if(a.id==="parc-extension") return -1;
-      if(b.id==="parc-extension") return 1;
-      return recordTitle(a).localeCompare(recordTitle(b));
-    });
+    const locations=normalizeCollection(getLocations()).filter(isPublic).filter(place=>recordId(place)==="montreal");
+    const nowRecord=getGlobal("ESCIE_SITE",{});
+    const ordered=locations;
     container.innerHTML='<div class="world-index">'+motifMarkup("world")+
-      '<p class="eyebrow">GEOGRAPHIC RECORD / '+escapeHTML(String(ordered.length))+' PUBLIC PLACES</p>'+
-      '<p class="world-index-intro">MONTRÉAL IS THE ANCHOR. THE OTHER PLACES ARE REFERENCES WITHIN THE SAME PHYSICAL CITY, NOT SEPARATE WORLDS.</p>'+
+      '<p class="eyebrow">CURRENT WORLD / MONTRÉAL</p>'+
+      '<div class="world-now-strip"><span>NOW</span><strong>'+escapeHTML(nowRecord.location||"MONTRÉAL, QUÉBEC")+'</strong><em>THE WORLD EXPANDS AS THE RECORD PROGRESSES.</em></div>'+
       '<div class="world-place-list">'+ordered.map((place,index)=>
-        '<article class="world-place" role="button" tabindex="0" aria-label="Open '+escapeHTML(recordTitle(place))+'" data-record-id="'+escapeHTML(recordId(place))+'">'+
+        '<article class="world-place world-place-current" role="button" tabindex="0" aria-label="Open '+escapeHTML(recordTitle(place))+'" data-record-id="'+escapeHTML(recordId(place))+'">'+
           '<span class="world-place-index">'+String(index+1).padStart(2,"0")+'</span>'+
-          '<div class="world-place-copy"><h3>'+escapeHTML(recordTitle(place))+'</h3><p>'+escapeHTML(place.description||"PUBLIC GEOGRAPHIC REFERENCE.")+'</p></div>'+
-          '<span class="world-place-state">'+escapeHTML(String(place.status||"active").toUpperCase())+'</span>'+
-        '</article>').join("")+'</div></div>';
+          '<div class="world-place-copy"><h3>'+escapeHTML(recordTitle(place))+'</h3><p>'+escapeHTML(place.description||"THE CITY ANCHOR.")+'</p></div>'+
+          '<span class="world-place-state">CURRENT</span>'+
+        '</article>').join("")+'</div>'+
+      '<p class="world-progression-note">FINDINGS, FAN SOURCES, PHOTOS, MENTIONS, PEOPLE, MOMENTS AND NEW LOCATIONS ENTER THE WORLD AS ESCIE ESTABLISHES THEM.</p>'+
+      '</div>';
   }
 
   function renderWeb(){
@@ -661,16 +654,19 @@
     const typeOptions=types.map(t=>'<option value="'+escapeHTML(t)+'"'+(state.type===t?" selected":"")+'> '+escapeHTML(t.replace(/_/g," "))+'</option>').join("");
     const categoryOptions=categories.map(t=>'<option value="'+escapeHTML(t)+'"'+(state.category===t?" selected":"")+'> '+escapeHTML(t.replace(/_/g," "))+'</option>').join("");
     const count=registry&&typeof registry.relationshipCounts==="function"?registry.relationshipCounts(state):{relationships:relationships.length,nodes:new Set(relationships.flatMap(r=>[r.from,r.to])).size};
-    if(!all.length){renderEmpty(container,"THE WEB EXISTS. PUBLIC CONNECTIONS WILL APPEAR WHEN THEY ARE ESTABLISHED.");return;}
+    const recordSearch=String(state.search||"").trim().toLowerCase();
+    const searchable=records.filter(r=>!recordSearch||recordTitle(r).toLowerCase().includes(recordSearch)||(r.description||"").toLowerCase().includes(recordSearch)).slice(0,12);
+    const recordResults=searchable.map(r=>'<button type="button" class="web-record-result" data-record-id="'+escapeHTML(recordId(r))+'"><strong>'+escapeHTML(recordTitle(r))+'</strong><span>'+escapeHTML(r.type||"record")+'</span></button>').join("");
     container.innerHTML=
       '<div class="web-intro">'+motifMarkup("the-web")+
-      '<p class="eyebrow">RELATIONSHIP GRAPH / '+escapeHTML(String(count.nodes))+' NODES / '+escapeHTML(String(count.relationships))+' CONNECTIONS</p>'+
-      '<p>Nothing here is decorative. A connection is shown because the record system says it exists.</p>'+
-      '<div class="record-filters web-filters"><div class="record-filters-heading"><span>EXPLORE THE WEB</span><button type="button" class="record-filter-clear" data-web-filter-clear>CLEAR</button></div>'+
+      '<p class="eyebrow">THE WEB / CONNECTION LEDGER</p>'+
+      '<p>Explore the links ESCIE has actually established between records. Nothing is invented to fill an empty graph.</p>'+
+      '<div class="record-filters web-filters"><div class="record-filters-heading"><span>EXPLORE CONNECTIONS</span><button type="button" class="record-filter-clear" data-web-filter-clear>CLEAR</button></div>'+
       '<div class="record-filter-grid"><label>RECORD<select data-web-filter="record"><option value="">ALL RECORDS</option>'+nodeOptions+'</select></label>'+
       '<label>TYPE<select data-web-filter="type"><option value="">ALL TYPES</option>'+typeOptions+'</select></label>'+
       '<label>CATEGORY<select data-web-filter="category"><option value="">ALL CATEGORIES</option>'+categoryOptions+'</select></label></div>'+
-      '<p class="record-filter-count">'+escapeHTML(String(relationships.length))+' OF '+escapeHTML(String(all.length))+' PUBLIC CONNECTION'+(all.length===1?"":"S")+'</p></div></div>'+
+      '<p class="record-filter-count">'+escapeHTML(String(relationships.length))+' OF '+escapeHTML(String(all.length))+' PUBLIC CONNECTION'+(all.length===1?"":"S")+'</p></div>'+
+      '<div class="web-record-search"><label>SEARCH THE PUBLIC RECORD<input type="search" data-web-search value="'+escapeHTML(state.search||"")+'" placeholder="People, places, moments, fragments…"></label><div class="web-record-results">'+(recordResults||'<span class="inspector-note">NO MATCHES.</span>')+'</div></div></div>'+
       (relationships.length?'<div class="web-list">'+relationships.map(relationship=>{
         const from=byIdMap.get(relationship.from),to=byIdMap.get(relationship.to);
         return '<article class="web-connection" data-relationship-id="'+escapeHTML(relationship.id||"")+'">'+
@@ -678,7 +674,7 @@
           '<span class="web-arrow" aria-hidden="true">→</span><span class="web-type">'+escapeHTML((relationship.type||"CONNECTION").replace(/_/g," "))+'</span><span class="web-arrow" aria-hidden="true">→</span>'+
           '<button class="web-node web-node-button" type="button" data-record-id="'+escapeHTML(relationship.to)+'"><strong>'+escapeHTML(recordTitle(to))+'</strong><span>'+escapeHTML(to.type||"record")+'</span></button>'+
         '</article>';}).join("")+'</div>':
-        '<div class="archive-status"><p class="eyebrow">FILTER STATE</p><h3>NO CONNECTIONS MATCH.</h3><p>Clear or change the Web filters. No new relationship is inferred by an empty result.</p></div>');
+        '<div class="archive-status web-empty-state"><p class="eyebrow">NO PUBLIC CONNECTIONS YET</p><h3>THE WEB IS WAITING.</h3><p>Search the public record above. Connections appear here when ESCIE establishes them or when approved audience material changes the record.</p><button type="button" class="web-participate-link" data-web-participate>ADD A FINDING THROUGH GLASS EYE</button></div>');
   }
 
 
