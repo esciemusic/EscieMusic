@@ -1051,3 +1051,59 @@ main > .site-section:not(#entry) .nested-drop-trigger:focus-visible{
 @media(prefers-reduced-motion:reduce){
   .nested-drop-trigger,.nested-drop-panel{transition:none}
 }
+
+
+/* PUBLIC RECORD EXPANSION */
+.world-record-pulse,
+.case-file-tools,
+.glass-participation-path{
+  display:grid;
+  gap:0;
+  margin-top:1.25rem;
+  border-top:1px solid rgba(255,255,255,.14);
+  border-bottom:1px solid rgba(255,255,255,.14);
+}
+.world-record-stats,
+.case-file-tools,
+.glass-participation-path{grid-template-columns:repeat(4,minmax(0,1fr));}
+.world-record-stats span,
+.case-file-tools>div,
+.glass-participation-path>div{
+  padding:1rem;
+  border-right:1px solid rgba(255,255,255,.1);
+}
+.world-record-stats span:last-child,
+.case-file-tools>div:last-child,
+.glass-participation-path>div:last-child{border-right:0;}
+.world-record-stats strong{display:block;font-size:1.35rem;font-weight:500;margin-bottom:.2rem;}
+.world-record-pulse>.eyebrow{display:block;padding:.8rem 1rem 0;}
+.case-file-tools{grid-template-columns:repeat(3,minmax(0,1fr));}
+.case-file-tools strong,
+.glass-participation-path strong{display:block;font-size:1.05rem;margin:.35rem 0;}
+.case-file-tools p,
+.glass-participation-path p{margin:0;font-size:.85rem;line-height:1.5;opacity:.72;}
+.glass-participation-path{grid-template-columns:repeat(3,minmax(0,1fr));margin:1.25rem 0;}
+.web-record-tools{display:flex;align-items:center;gap:.75rem;margin-top:1rem;flex-wrap:wrap;}
+.web-record-tools select{min-width:12rem;}
+@media(max-width:700px){
+  .world-record-stats,
+  .case-file-tools,
+  .glass-participation-path{grid-template-columns:1fr 1fr;}
+  .world-record-stats span:nth-child(2n),
+  .case-file-tools>div:nth-child(2n),
+  .glass-participation-path>div:nth-child(2n){border-right:0;}
+  .world-record-stats span:nth-child(n+3),
+  .case-file-tools>div:nth-child(n+3),
+  .glass-participation-path>div:nth-child(n+3){border-top:1px solid rgba(255,255,255,.1);}
+}
+@media(max-width:460px){
+  .world-record-stats,
+  .case-file-tools,
+  .glass-participation-path{grid-template-columns:1fr;}
+  .world-record-stats span,
+  .case-file-tools>div,
+  .glass-participation-path>div{border-right:0;border-top:1px solid rgba(255,255,255,.1);}
+  .world-record-stats span:first-child,
+  .case-file-tools>div:first-child,
+  .glass-participation-path>div:first-child{border-top:0;}
+}
