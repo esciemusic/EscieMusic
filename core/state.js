@@ -16,6 +16,7 @@ const ESCIE_STATE = {
   status: ESCIE_STATE_STATUS.INITIALIZING,
   route: null,
   language: "en",
+  theme: "dark",
   activeRecordId: null,
   activeProjectId: null,
   activeSignalId: null,
@@ -35,6 +36,10 @@ const ESCIE_STATE_API = {
 
     if (state.language && !["en", "fr", "es"].includes(state.language)) {
       errors.push("Invalid runtime language.");
+    }
+
+    if (state.theme && !["light", "dark"].includes(state.theme)) {
+      errors.push("Invalid runtime theme.");
     }
 
     if (
@@ -58,6 +63,7 @@ const ESCIE_STATE_API = {
     ESCIE_STATE.status = ESCIE_STATE_STATUS.INITIALIZING;
     ESCIE_STATE.route = null;
     ESCIE_STATE.language = "en";
+    ESCIE_STATE.theme = "dark";
     ESCIE_STATE.activeRecordId = null;
     ESCIE_STATE.activeProjectId = null;
     ESCIE_STATE.activeSignalId = null;
