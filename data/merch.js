@@ -8,7 +8,7 @@
     storefront_label:"OPEN THE STORE",
     checkout_owner:"EXTERNAL_STOREFRONT",
     free_layers:["MUSIC","INVESTIGATION","ARCHIVE","QR","SOCIAL_PARTICIPATION","COMMENTS","VIDEO","WEBSITE"],
-    categories:["CORE"],
+    categories:["HEART ON MY SLEEVE"],
     art_direction:"MONTRÉAL CONCRETE / VHS / DOCUMENTARY / GOTHIC / DAMAGED MEDIA",
     art_license:"ESCIE-owned original artwork; master files remain outside checkout metadata.",
     drops:[
