@@ -992,6 +992,52 @@ function renderClothing(){
         '</div>'+
         '<div class="glass-footer">'+t.footer.map(esc).map(item=>'<span>'+item+'</span>').join("")+'</div>'+
       '</div>';
+    container.insertAdjacentHTML("beforeend",
+      '<section class="glass-participation" aria-labelledby="glass-participation-title">'+
+        '<div class="glass-participation-head"><p class="eyebrow">PARTICIPATION / THE RECORD IS OPEN</p><h3 id="glass-participation-title">LEAVE SOMETHING BEHIND.</h3><p>Post a comment, fan theory, finding, mention or media. Submissions are reviewed before anything enters the public record.</p></div>'+
+        '<form class="glass-participation-form" data-glass-participation-form>'+
+          '<div class="glass-participation-types" role="group" aria-label="Submission type">'+
+            ["COMMENT","THEORY","FINDING","MENTION"].map((kind,i)=>'<button type="button" class="'+(i===0?"is-active":"")+'" data-glass-kind="'+kind+'">'+kind+'</button>').join("")+
+          '</div>'+
+          '<input type="hidden" name="kind" value="COMMENT">'+
+          '<label>NAME / ALIAS<input name="displayName" maxlength="80" placeholder="ANONYMOUS"></label>'+
+          '<label>LOCATION / CONTEXT<input name="location" maxlength="160" placeholder="OPTIONAL"></label>'+
+          '<label>YOUR CONTRIBUTION<textarea name="body" maxlength="5000" rows="5" placeholder="What did you see, hear, find or think?"></textarea></label>'+
+          '<label>UPLOAD PHOTO / VIDEO / AUDIO<input name="file" type="file" accept="image/*,video/*,audio/*"></label>'+
+          '<button type="submit" class="glass-submit">SUBMIT TO THE GLASS EYE</button>'+
+          '<p class="glass-participation-status" data-glass-participation-status aria-live="polite"></p>'+
+        '</form>'+
+        '<div class="glass-approved" data-glass-approved><p class="eyebrow">APPROVED PUBLIC CONTRIBUTIONS</p><div data-glass-approved-list><span class="inspector-note">LOADING…</span></div></div>'+
+      '</section>');
+    const participation=window.ESCIE_GLASS_EYE_PARTICIPATION;
+    const form=container.querySelector("[data-glass-participation-form]");
+    const status=container.querySelector("[data-glass-participation-status]");
+    container.querySelectorAll("[data-glass-kind]").forEach(button=>button.addEventListener("click",()=>{
+      container.querySelectorAll("[data-glass-kind]").forEach(b=>b.classList.remove("is-active"));
+      button.classList.add("is-active");
+      form.querySelector('[name="kind"]').value=button.getAttribute("data-glass-kind")||"COMMENT";
+    }));
+    if(form&&participation&&typeof participation.submit==="function")form.addEventListener("submit",async event=>{
+      event.preventDefault();
+      const data=new FormData(form);
+      if(status)status.textContent="SENDING…";
+      try{
+        await participation.submit({kind:data.get("kind"),displayName:data.get("displayName"),location:data.get("location"),body:data.get("body"),file:data.get("file")});
+        form.reset();
+        form.querySelector('[name="kind"]').value="COMMENT";
+        container.querySelectorAll("[data-glass-kind]").forEach((b,i)=>b.classList.toggle("is-active",i===0));
+        if(status)status.textContent="RECEIVED. HELD FOR REVIEW — NOT CANON.";
+        loadApproved();
+      }catch(error){if(status)status.textContent=error&&error.message?error.message:"SUBMISSION FAILED.";}
+    });
+    async function loadApproved(){
+      if(!participation||typeof participation.approved!=="function")return;
+      const list=container.querySelector("[data-glass-approved-list]");
+      if(!list)return;
+      const rows=await participation.approved(12);
+      list.innerHTML=rows.length?rows.map(row=>'<article class="glass-approved-item"><div><strong>'+esc(row.display_name||"ANONYMOUS")+'</strong><span>'+esc(row.kind||"COMMENT")+(row.location_label?" / "+esc(row.location_label):"")+'</span></div>'+(row.body?'<p>'+esc(row.body)+'</p>':"")+'</article>').join(""):'<span class="inspector-note">NO APPROVED CONTRIBUTIONS YET.</span>';
+    }
+    loadApproved();
     container.querySelectorAll("[data-glass-language]").forEach(button=>button.addEventListener("click",()=>{
       ESCIE_RUNTIME.glassLanguage=button.getAttribute("data-glass-language")||"en";
       renderGlassEye();
