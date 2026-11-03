@@ -1290,12 +1290,18 @@ function renderClothing(){
       renderWeb();
     });
 
+    let webSearchTimer=null;
     document.addEventListener("input", event => {
       const search=event.target.closest("[data-web-search]");
       if(!search)return;
       ESCIE_RUNTIME.webFilters=ESCIE_RUNTIME.webFilters||{};
       ESCIE_RUNTIME.webFilters.search=search.value||"";
-      renderWeb();
+      clearTimeout(webSearchTimer);
+      webSearchTimer=setTimeout(()=>{
+        renderWeb();
+        const next=byId("web-container")&&byId("web-container").querySelector("[data-web-search]");
+        if(next){next.focus();next.setSelectionRange(next.value.length,next.value.length);}
+      },120);
     });
 
     document.addEventListener("click", event => {
