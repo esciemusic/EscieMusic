@@ -1107,4 +1107,4 @@ main > .site-section:not(#entry) .nested-drop-trigger:focus-visible{
   .case-file-tools>div:first-child,
   .glass-participation-path>div:first-child{border-top:0;}
 }
-\n.glass-approved-media{display:block;width:100%;max-height:420px;object-fit:cover;margin-top:10px;border:1px solid var(--line);background:rgba(0,0,0,.25)}.glass-approved-media audio{height:38px}.glass-approved-media-link{display:inline-flex;margin-top:10px;padding:8px 10px;border:1px solid var(--line);font-size:9px;letter-spacing:.1em;color:var(--text)}
+.glass-approved-media{display:block;width:100%;max-height:420px;object-fit:cover;margin-top:10px;border:1px solid var(--line);background:rgba(0,0,0,.25)}.glass-approved-media audio{height:38px}.glass-approved-media-link{display:inline-flex;margin-top:10px;padding:8px 10px;border:1px solid var(--line);font-size:9px;letter-spacing:.1em;color:var(--text)}
