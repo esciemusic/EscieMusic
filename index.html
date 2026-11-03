@@ -188,10 +188,10 @@
       languageButtons.forEach(function(button){
         button.addEventListener("click",function(){
           var language=button.getAttribute("data-language")||"en";
-          if(window.ESCIE_LANGUAGE_ENGINE&&typeof window.ESCIE_LANGUAGE_ENGINE.translate==="function"){
-            window.ESCIE_STATE.language=language;
-          }else if(window.ESCIE_STATE){window.ESCIE_STATE.language=language;}
-          document.documentElement.lang=language;
+          if(window.ESCIE_LANGUAGE_ENGINE&&typeof window.ESCIE_LANGUAGE_ENGINE.setLanguage==="function"){
+            window.ESCIE_LANGUAGE_ENGINE.setLanguage(language);
+          }else if(window.ESCIE_STATE){window.ESCIE_STATE.language=language;document.documentElement.lang=language;}
+          try{localStorage.setItem("escie-language",language);}catch(error){}
           languageButtons.forEach(function(item){
             var active=item.getAttribute("data-language")===language;
             item.classList.toggle("is-active",active);
