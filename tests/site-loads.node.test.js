@@ -19,6 +19,12 @@ assert(html.includes("SEE · HEAR · FOLLOW · MISS · RETURN"),"Glass Eye must 
 assert(html.includes('data/glass-eye-participation.js'),"Glass Eye participation bridge must load");
 assert(fs.readFileSync("data/locations.js","utf8").includes('id:"montreal"'),"World must retain Montréal as the geographic anchor");
 assert(fs.readFileSync("data/merch.js","utf8").includes("HEART ON MY SLEEVE"),"merch layer must use HEART ON MY SLEEVE");
+const nestedSource = html.slice(html.indexOf("function initNestedDropdowns"), html.indexOf("if(document.readyState"));
+assert(nestedSource.includes('root.matches(selector)'), "nested dropdown enhancer must handle dynamically inserted root nodes");
+assert(nestedSource.includes('querySelector(":scope > h3")'), "nested dropdown titles must only use direct card headings");
+assert(nestedSource.includes('Array.from(group.children).filter'), "nested dropdown sibling closing must stay scoped to direct siblings");
+assert(nestedSource.includes('nested-drop-index" aria-hidden="true">▸'), "nested dropdowns must use one directional node marker plus one open-state control");
+
 
 
 const counts = new Map();
