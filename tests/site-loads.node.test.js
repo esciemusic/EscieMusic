@@ -48,7 +48,7 @@ const appIndex = scripts.indexOf("app.js");
 assert(scripts.indexOf("record.js") < appIndex, "record contract must load before app.js");
 assert(scripts.indexOf("relationship.js") < appIndex, "relationship contract must load before app.js");
 
-assert(fs.readFileSync("data/universe-contract.js","utf8").includes('version:"1.2.0"'),"universe contract should be current");
+assert(fs.readFileSync("data/universe-contract.js","utf8").includes('version:"1.2.1"'),"universe contract should be current");
 const universeContract=fs.readFileSync("data/universe-contract.js","utf8");
 assert(!universeContract.includes("realityFilter"),"legacy Reality Filter contract must be removed entirely");
 assert(universeContract.includes("HEART ON MY SLEEVE"),"universe contract must use the current wardrobe identity");
