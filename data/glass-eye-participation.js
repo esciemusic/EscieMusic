@@ -12,7 +12,7 @@
     approvedEndpoint:"https://ljdkjzvnwnaluevtzker.supabase.co/functions/v1/glass-eye-public"
   };
   const allowedKinds=new Set(["COMMENT","THEORY","FINDING","MENTION"]);
-  const allowedMedia=/^(image|video|audio)\//i;
+  const allowedMedia=new Set(["image/jpeg","image/png","image/webp","image/gif","video/mp4","video/webm","audio/mpeg","audio/wav","audio/ogg"]);
   function headers(){
     return {apikey:CONFIG.publishableKey,Authorization:"Bearer "+CONFIG.publishableKey,"Content-Type":"application/json"};
   }
@@ -31,7 +31,7 @@
     if(!body && !file) throw new Error("ADD A COMMENT, THEORY, FINDING OR FILE FIRST.");
     if(file){
       if(file.size>CONFIG.maxBytes) throw new Error("FILE IS TOO LARGE. MAXIMUM 10 MB.");
-      if(!allowedMedia.test(String(file.type||""))) throw new Error("ONLY PHOTO, VIDEO OR AUDIO FILES ARE ACCEPTED.");
+      if(!allowedMedia.has(String(file.type||"").toLowerCase())) throw new Error("ONLY PHOTO, VIDEO OR AUDIO FILES ARE ACCEPTED.");
       const safeName=String(file.name||"upload").replace(/[^a-zA-Z0-9._-]/g,"-").slice(-120);
       const path=Date.now()+"-"+Math.random().toString(36).slice(2)+"-"+safeName;
       const upload=await fetch(CONFIG.endpoint+"/storage/v1/object/"+CONFIG.bucket+"/"+encodeURIComponent(path),{
