@@ -5,7 +5,7 @@
   "use strict";
   const CONTRACT={
     id:"ESCIE_UNIVERSE",
-    version:"1.2.0",
+    version:"1.2.1",
     layers:Object.freeze({
       CENTRAL:"central",
       PUBLIC:"public",
@@ -29,7 +29,7 @@
       centralHumanApproval:true,
       canonicalGameWriteFromPlayer:false
     }),
-    publicSections:Object.freeze(["NOW","WORK","THE WORLD","THE WEB","ARCHIVE","INVESTIGATION","HEART ON MY SLEEVE","GLASS EYE","ESCIE"]),
+    publicSections:Object.freeze(["NOW","ART","THE WORLD","THE WEB","THE ARCHIVES","THE CASE FILES","HEART ON MY SLEEVE","GLASS EYE","ESCIE"]),
     worldClasses:Object.freeze(["DRIFTER","RUNNER","INVESTIGATOR","SURVIVOR"]),
     worldNodes:Object.freeze(["ART","THE PEOPLE","PLACES","MOMENTS","FRAGMENTS","PROOF","BODIES","PATH","THE WEB","THE ARCHIVES"]),
     requiredGameSystems:Object.freeze(["simulation","npc-life","npc","law","investigation","rpg","vehicles","interiors","dialogue","3d"]),
