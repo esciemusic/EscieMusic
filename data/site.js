@@ -1,4 +1,4 @@
-const ESCIE_SITE={name:"ESCIE",location:"Montréal, Québec, Canada",publicYear:2026,tagline:"REALITY WITH THE SIGNAL DISTORTED.",philosophy:"The music does not create the universe. The universe creates the music.",premise:"ESCIE is the gateway to reality. The work is art, memory, life and proof.",status:"active",publicPreview:true,version:"0.2.3"};
+const ESCIE_SITE={name:"ESCIE",location:"Montréal, Québec, Canada",publicYear:2026,tagline:"REALITY WITH THE SIGNAL DISTORTED.",philosophy:"The music does not create the universe. The universe creates the music.",premise:"ESCIE is the doorway. The work is art, memory, life and proof.",status:"active",publicPreview:true,version:"0.2.3"};
 
 (function(root){
   if(typeof window!=="undefined") window.ESCIE_SITE=ESCIE_SITE;
