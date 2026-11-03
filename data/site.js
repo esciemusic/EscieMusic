@@ -10,7 +10,7 @@ const ESCIE_SITE={name:"ESCIE",location:"Montréal, Québec, Canada",publicYear:
     world:"THE WORLD",
     web:"THE WEB",
     archives:"THE ARCHIVES",
-    investigation:"INVESTIGATION",
+    investigation:"THE CASE FILES",
     merch:"THE WORLD YOU CAN WEAR",
     "glass-eye":"GLASS EYE",
     escie:"ESCIE"
