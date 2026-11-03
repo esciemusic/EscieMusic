@@ -201,20 +201,23 @@
       var selector=".world-place,.archive-record,.investigation-case,.merch-card,.clothing-card";
       function enhance(root){
         if(!root)return;
-        root.querySelectorAll(selector).forEach(function(item){
+        var items=[];
+        if(root.nodeType===1 && root.matches && root.matches(selector))items.push(root);
+        if(root.querySelectorAll)root.querySelectorAll(selector).forEach(function(item){items.push(item);});
+        items.forEach(function(item){
           if(item.dataset.nestedDropReady==="1")return;
-          var titleNode=item.querySelector("h3");
+          var titleNode=item.querySelector(":scope > h3");
           if(!titleNode)return;
           var title=titleNode.textContent.trim()||"OPEN RECORD";
-          var eyebrow=item.querySelector(".eyebrow");
-          var status=item.querySelector(".world-place-state,.merch-status,.pill");
+          var eyebrow=item.querySelector(":scope > .eyebrow,.world-place-state");
+          var status=item.querySelector(":scope > .world-place-state,:scope > .merch-card-top .merch-status,:scope > .clothing-card-head .pill");
           var original=Array.from(item.children);
           var trigger=document.createElement("button");
           trigger.type="button";
           trigger.className="nested-drop-trigger";
           trigger.setAttribute("aria-expanded","false");
           trigger.setAttribute("aria-controls",(item.id||("nested-"+Math.random().toString(36).slice(2)))+"-panel");
-          trigger.innerHTML='<span class="nested-drop-index" aria-hidden="true">+</span><span class="nested-drop-title"></span><span class="nested-drop-meta"></span><span class="nested-drop-state" aria-hidden="true">+</span>';
+          trigger.innerHTML='<span class="nested-drop-index" aria-hidden="true">▸</span><span class="nested-drop-title"></span><span class="nested-drop-meta"></span><span class="nested-drop-state" aria-hidden="true">+</span>';
           trigger.querySelector(".nested-drop-title").textContent=title;
           trigger.querySelector(".nested-drop-meta").textContent=(eyebrow?eyebrow.textContent.trim():"")+(status?" · "+status.textContent.trim():"");
           var panel=document.createElement("div");
@@ -234,7 +237,7 @@
             var open=!item.classList.contains("nested-drop-open");
             var group=item.parentElement;
             if(group){
-              group.querySelectorAll(selector+".nested-drop-open").forEach(function(other){
+              Array.from(group.children).filter(function(other){return other!==item && other.matches && other.matches(selector+".nested-drop-open");}).forEach(function(other){
                 if(other===item)return;
                 other.classList.remove("nested-drop-open");
                 other.classList.add("nested-drop-collapsed");
