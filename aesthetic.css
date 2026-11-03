@@ -965,3 +965,89 @@ main > .site-section:not(#entry) .section-drop-trigger[data-section="escie"]::be
   .merch-world-intro{grid-template-columns:1fr;gap:18px;padding:16px 0}
   .merch-world-copy h3{font-size:29px}
 }
+
+
+/* =========================================================
+   NESTED INDEX DROPDOWNS
+   Every meaningful node inside an open section follows the
+   same compact-row -> expanded-record language as the index.
+   ========================================================= */
+main > .site-section:not(#entry) .nested-drop-trigger{
+  width:100%;
+  min-height:48px;
+  display:grid;
+  grid-template-columns:28px minmax(0,1fr) auto 24px;
+  align-items:center;
+  gap:10px;
+  padding:11px 13px;
+  border:1px solid rgba(216,212,202,.11);
+  border-radius:0;
+  background:rgba(8,8,9,.72);
+  color:var(--white);
+  text-align:left;
+  cursor:pointer;
+  font:inherit;
+  transition:border-color var(--escie-motion-fast),background var(--escie-motion-standard),box-shadow var(--escie-motion-standard),opacity var(--escie-motion-standard);
+}
+main > .site-section:not(#entry) .nested-drop-trigger:hover,
+main > .site-section:not(#entry) .nested-drop-trigger:focus-visible{
+  border-color:rgba(155,89,255,.42);
+  background:rgba(20,16,27,.78);
+  outline:none;
+}
+.nested-drop-index,
+.nested-drop-state{
+  color:var(--escie-aesthetic-purple);
+  font:700 10px/1 var(--escie-font-mono);
+  text-align:center;
+}
+.nested-drop-title{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:11px;
+  letter-spacing:.1em;
+}
+.nested-drop-meta{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:var(--faint);
+  font:700 8px/1 var(--escie-font-mono);
+  letter-spacing:.12em;
+}
+.nested-drop-panel{
+  padding:0;
+  overflow:hidden;
+  transition:padding var(--escie-motion-standard),opacity var(--escie-motion-standard);
+}
+.nested-drop-open .nested-drop-panel{
+  padding:12px 0 2px;
+}
+.nested-drop-content{
+  min-width:0;
+}
+.nested-drop-open > .nested-drop-trigger{
+  border-color:var(--escie-aesthetic-purple-line);
+  border-left-color:var(--escie-aesthetic-purple);
+  background:linear-gradient(90deg,rgba(20,16,27,.9),rgba(8,8,9,.82));
+}
+.nested-drop-collapsed > .nested-drop-panel{
+  opacity:0;
+}
+.nested-drop-open > .nested-drop-panel{
+  opacity:1;
+}
+@media(max-width:700px){
+  main > .site-section:not(#entry) .nested-drop-trigger{
+    grid-template-columns:24px minmax(0,1fr) 20px;
+    min-height:46px;
+    padding:10px 11px;
+  }
+  .nested-drop-meta{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .nested-drop-trigger,.nested-drop-panel{transition:none}
+}
