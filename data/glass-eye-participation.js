@@ -8,13 +8,21 @@
     endpoint:"https://ljdkjzvnwnaluevtzker.supabase.co",
     publishableKey:"sb_publishable_ICPqqxh3c32b7eb5PYqUaA_Cem3vvB9",
     bucket:"glass-eye-submissions",
-    maxBytes:10*1024*1024
+    maxBytes:10*1024*1024,
+    approvedEndpoint:"https://ljdkjzvnwnaluevtzker.supabase.co/functions/v1/glass-eye-public"
   };
+  const allowedKinds=new Set(["COMMENT","THEORY","FINDING","MENTION"]);
+  const allowedMedia=/^(image|video|audio)\//i;
   function headers(){
     return {apikey:CONFIG.publishableKey,Authorization:"Bearer "+CONFIG.publishableKey,"Content-Type":"application/json"};
   }
+  let submitting=false;
   async function submit(input){
+    if(submitting)throw new Error("A SUBMISSION IS ALREADY BEING SENT.");
+    submitting=true;
+    try{
     const kind=String(input.kind||"COMMENT").toUpperCase();
+    if(!allowedKinds.has(kind))throw new Error("INVALID SUBMISSION TYPE.");
     const displayName=String(input.displayName||"ANONYMOUS").trim().slice(0,80)||"ANONYMOUS";
     const body=String(input.body||"").trim().slice(0,5000);
     const location=String(input.location||"").trim().slice(0,160)||null;
@@ -23,6 +31,7 @@
     if(!body && !file) throw new Error("ADD A COMMENT, THEORY, FINDING OR FILE FIRST.");
     if(file){
       if(file.size>CONFIG.maxBytes) throw new Error("FILE IS TOO LARGE. MAXIMUM 10 MB.");
+      if(!allowedMedia.test(String(file.type||""))) throw new Error("ONLY PHOTO, VIDEO OR AUDIO FILES ARE ACCEPTED.");
       const safeName=String(file.name||"upload").replace(/[^a-zA-Z0-9._-]/g,"-").slice(-120);
       const path=Date.now()+"-"+Math.random().toString(36).slice(2)+"-"+safeName;
       const upload=await fetch(CONFIG.endpoint+"/storage/v1/object/"+CONFIG.bucket+"/"+encodeURIComponent(path),{
@@ -37,12 +46,20 @@
     });
     if(!response.ok) throw new Error("THE SUBMISSION COULD NOT BE SAVED. TRY AGAIN.");
     return {ok:true};
+    }finally{
+      submitting=false;
+    }
   }
   async function approved(limit=20){
-    const query="?select=id,created_at,kind,display_name,body,media_path,location_label&status=eq.APPROVED&public_disclosure=eq.true&order=created_at.desc&limit="+encodeURIComponent(limit);
-    const response=await fetch(CONFIG.endpoint+"/rest/v1/glass_eye_submissions"+query,{headers:{apikey:CONFIG.publishableKey,Authorization:"Bearer "+CONFIG.publishableKey}});
-    if(!response.ok)return [];
-    return response.json();
+    const safeLimit=Math.max(1,Math.min(20,Number(limit)||20));
+    try{
+      const response=await fetch(CONFIG.approvedEndpoint+"?limit="+encodeURIComponent(safeLimit),{headers:{apikey:CONFIG.publishableKey,Authorization:"Bearer "+CONFIG.publishableKey}});
+      if(!response.ok)return [];
+      const payload=await response.json();
+      return Array.isArray(payload)?payload:(Array.isArray(payload.items)?payload.items:[]);
+    }catch(error){
+      return [];
+    }
   }
   root.ESCIE_GLASS_EYE_PARTICIPATION={submit,approved,config:CONFIG};
 })(typeof window!=="undefined"?window:globalThis);
