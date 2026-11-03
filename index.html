@@ -210,6 +210,8 @@
           if(!titleNode)return;
           var title=titleNode.textContent.trim()||"OPEN RECORD";
           var eyebrow=item.querySelector(":scope > .eyebrow,.world-place-state");
+          item.removeAttribute("role");
+          item.removeAttribute("tabindex");
           var status=item.querySelector(":scope > .world-place-state,:scope > .merch-card-top .merch-status,:scope > .clothing-card-head .pill");
           var original=Array.from(item.children);
           var trigger=document.createElement("button");
@@ -224,6 +226,8 @@
           panel.className="nested-drop-panel";
           panel.id=trigger.getAttribute("aria-controls");
           panel.hidden=true;
+          panel.setAttribute("role","region");
+          panel.setAttribute("aria-label",title);
           var content=document.createElement("div");
           content.className="nested-drop-content";
           original.forEach(function(child){content.appendChild(child);});
@@ -233,7 +237,8 @@
           item.appendChild(panel);
           item.dataset.nestedDropReady="1";
           item.classList.add("nested-drop-collapsed");
-          trigger.addEventListener("click",function(){
+          trigger.addEventListener("click",function(event){
+            event.stopPropagation();
             var open=!item.classList.contains("nested-drop-open");
             var group=item.parentElement;
             if(group){
