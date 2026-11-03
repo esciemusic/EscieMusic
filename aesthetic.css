@@ -780,3 +780,52 @@ main > .site-section:not(#entry) .section-drop-trigger[data-section="escie"]::be
     transition:none;
   }
 }
+
+
+/* =========================================================
+   WORLD / WEB / GLASS EYE PARTICIPATION
+   ========================================================= */
+.world-now-strip{
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  gap:14px;
+  align-items:baseline;
+  padding:14px 0;
+  border-top:1px solid rgba(216,212,202,.12);
+  border-bottom:1px solid rgba(216,212,202,.12);
+}
+.world-now-strip span{font:700 9px/1 var(--escie-font-mono);letter-spacing:.16em;color:var(--escie-aesthetic-purple)}
+.world-now-strip strong{font:500 clamp(18px,4vw,28px)/1 var(--escie-font-display);letter-spacing:.08em}
+.world-now-strip em{font:400 9px/1.4 var(--escie-font-mono);letter-spacing:.08em;opacity:.55;font-style:normal}
+.world-progression-note{margin:18px 0 0;max-width:68ch;font:400 10px/1.7 var(--escie-font-mono);letter-spacing:.06em;opacity:.62}
+.web-record-search{margin-top:16px;padding-top:16px;border-top:1px solid rgba(216,212,202,.1)}
+.web-record-search>label{display:block;font:700 9px/1.3 var(--escie-font-mono);letter-spacing:.13em}
+.web-record-search input{display:block;width:100%;margin-top:8px;padding:11px 12px;background:rgba(0,0,0,.2);border:1px solid rgba(216,212,202,.14);color:inherit;font:inherit}
+.web-record-results{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:7px;margin-top:10px}
+.web-record-result{display:flex;flex-direction:column;gap:5px;text-align:left;padding:10px;background:rgba(255,255,255,.025);border:1px solid rgba(216,212,202,.1);color:inherit;cursor:pointer}
+.web-record-result strong{font:600 11px/1.2 var(--escie-font-display);letter-spacing:.08em}
+.web-record-result span{font:400 8px/1 var(--escie-font-mono);opacity:.5}
+.web-participate-link{margin-top:10px;padding:10px 13px;background:transparent;border:1px solid rgba(77,163,255,.35);color:inherit;font:700 9px/1.2 var(--escie-font-mono);letter-spacing:.1em;cursor:pointer}
+.glass-participation{margin-top:20px;padding-top:20px;border-top:1px solid rgba(216,212,202,.12)}
+.glass-participation-head{max-width:65ch}
+.glass-participation-head h3{margin:.2rem 0 .5rem;font:500 clamp(18px,4vw,28px)/1.05 var(--escie-font-display);letter-spacing:.08em}
+.glass-participation-head p:not(.eyebrow){font-size:.9rem;line-height:1.65;opacity:.72}
+.glass-participation-form{display:grid;gap:10px;margin-top:16px}
+.glass-participation-types{display:flex;flex-wrap:wrap;gap:6px}
+.glass-participation-types button,.glass-submit{padding:9px 11px;background:transparent;border:1px solid rgba(216,212,202,.15);color:inherit;font:700 9px/1 var(--escie-font-mono);letter-spacing:.1em;cursor:pointer}
+.glass-participation-types button.is-active{border-color:rgba(77,163,255,.65);color:var(--escie-blue-bright)}
+.glass-participation-form label{display:grid;gap:6px;font:700 9px/1.2 var(--escie-font-mono);letter-spacing:.1em}
+.glass-participation-form input,.glass-participation-form textarea{width:100%;box-sizing:border-box;padding:11px 12px;background:rgba(0,0,0,.2);border:1px solid rgba(216,212,202,.14);color:inherit;font:400 13px/1.4 var(--escie-font-mono);resize:vertical}
+.glass-submit{border-color:rgba(155,89,255,.5);justify-self:start}
+.glass-participation-status{min-height:1.2em;margin:0;font:400 9px/1.4 var(--escie-font-mono);letter-spacing:.08em;opacity:.72}
+.glass-approved{margin-top:22px}
+.glass-approved-item{padding:12px 0;border-top:1px solid rgba(216,212,202,.08)}
+.glass-approved-item>div{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.glass-approved-item strong{font:600 11px/1 var(--escie-font-display);letter-spacing:.08em}
+.glass-approved-item span{font:400 8px/1 var(--escie-font-mono);opacity:.5}
+.glass-approved-item p{margin:.6rem 0 0;line-height:1.6;opacity:.82}
+.merch-mark::before{content:"♥";display:block;font-size:11px;line-height:1;margin-bottom:5px;opacity:.8}
+@media(max-width:700px){
+  .world-now-strip{grid-template-columns:auto 1fr}
+  .world-now-strip em{grid-column:1/-1}
+}
