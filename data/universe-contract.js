@@ -25,7 +25,6 @@
       gamePresentation:"3D",
       gameplay2D:false,
       pauseMap2DOnly:true,
-      realityFilter:false,
       centralHumanApproval:true,
       canonicalGameWriteFromPlayer:false
     }),
