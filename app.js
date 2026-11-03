@@ -1626,6 +1626,10 @@ function renderClothing(){
     }
 
     initializeLanguage();
+    const savedTheme = document.documentElement.dataset.theme;
+    if (savedTheme === "light" || savedTheme === "dark") {
+      if (state) state.theme = savedTheme;
+    }
     initializeCognitionBridge();
 
     const player = window.ESCIE_UI_PLAYER;
