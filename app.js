@@ -1030,7 +1030,7 @@ function renderClothing(){
           '<label>NAME / ALIAS<input name="displayName" maxlength="80" placeholder="ANONYMOUS"></label>'+
           '<label>LOCATION / CONTEXT<input name="location" maxlength="160" placeholder="OPTIONAL"></label>'+
           '<label>YOUR CONTRIBUTION<textarea name="body" maxlength="5000" rows="5" placeholder="What did you see, hear, find or think?"></textarea></label>'+
-          '<label>UPLOAD PHOTO / VIDEO / AUDIO<input name="file" type="file" accept="image/*,video/*,audio/*"></label>'+
+          '<label>UPLOAD PHOTO / VIDEO / AUDIO<input name="file" type="file" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,audio/mpeg,audio/wav,audio/ogg"></label>'+
           '<button type="submit" class="glass-submit">SUBMIT TO THE GLASS EYE</button>'+
           '<p class="glass-participation-status" data-glass-participation-status aria-live="polite"></p>'+
         '</form>'+
