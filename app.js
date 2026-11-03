@@ -1062,7 +1062,17 @@ function renderClothing(){
       const list=container.querySelector("[data-glass-approved-list]");
       if(!list)return;
       const rows=await participation.approved(12);
-      list.innerHTML=rows.length?rows.map(row=>'<article class="glass-approved-item"><div><strong>'+esc(row.display_name||"ANONYMOUS")+'</strong><span>'+esc(row.kind||"COMMENT")+(row.location_label?" / "+esc(row.location_label):"")+'</span></div>'+(row.body?'<p>'+esc(row.body)+'</p>':"")+'</article>').join(""):'<span class="inspector-note">NO APPROVED CONTRIBUTIONS YET.</span>';
+      list.innerHTML=rows.length?rows.map(row=>{
+        const media=String(row.media_url||"");
+        const path=String(row.media_path||"").toLowerCase();
+        const safeMedia=/^https:\/\//i.test(media)?escapeHTML(media):"";
+        let mediaMarkup="";
+        if(safeMedia&&/\.(png|jpe?g|gif|webp|avif)(?:$|\?)/i.test(path))mediaMarkup='<img class="glass-approved-media" src="'+safeMedia+'" alt="Approved Glass Eye contribution" loading="lazy" decoding="async">';
+        else if(safeMedia&&/\.(mp4|webm|mov|m4v)(?:$|\?)/i.test(path))mediaMarkup='<video class="glass-approved-media" controls preload="metadata" src="'+safeMedia+'"></video>';
+        else if(safeMedia&&/\.(mp3|wav|m4a|ogg|aac)(?:$|\?)/i.test(path))mediaMarkup='<audio class="glass-approved-media" controls preload="metadata" src="'+safeMedia+'"></audio>';
+        else if(safeMedia)mediaMarkup='<a class="glass-approved-media-link" href="'+safeMedia+'" target="_blank" rel="noopener noreferrer">OPEN APPROVED MEDIA ↗</a>';
+        return '<article class="glass-approved-item"><div><strong>'+esc(row.display_name||"ANONYMOUS")+'</strong><span>'+esc(row.kind||"COMMENT")+(row.location_label?" / "+esc(row.location_label):"")+'</span></div>'+(row.body?'<p>'+esc(row.body)+'</p>':"")+mediaMarkup+'</article>';
+      }).join(""):'<span class="inspector-note">NO APPROVED CONTRIBUTIONS YET.</span>';
     }
     loadApproved();
     container.querySelectorAll("[data-glass-language]").forEach(button=>button.addEventListener("click",()=>{
