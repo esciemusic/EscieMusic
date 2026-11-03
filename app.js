@@ -1290,7 +1290,22 @@ function renderClothing(){
       renderWeb();
     });
 
+    document.addEventListener("input", event => {
+      const search=event.target.closest("[data-web-search]");
+      if(!search)return;
+      ESCIE_RUNTIME.webFilters=ESCIE_RUNTIME.webFilters||{};
+      ESCIE_RUNTIME.webFilters.search=search.value||"";
+      renderWeb();
+    });
+
     document.addEventListener("click", event => {
+      const webParticipate=event.target.closest("[data-web-participate]");
+      if(webParticipate){
+        const glass=byId("glass-eye"),button=glass&&glass.querySelector(".section-drop-trigger");
+        if(button&&!glass.classList.contains("section-open"))button.click();
+        if(glass)glass.scrollIntoView({behavior:reduceMotion()?"auto":"smooth",block:"start"});
+        return;
+      }
       const webClear=event.target.closest("[data-web-filter-clear]");
       if(webClear){ ESCIE_RUNTIME.webFilters={}; renderWeb(); return; }
 
