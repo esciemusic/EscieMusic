@@ -17,6 +17,18 @@
   <header class="site-header">
     <a href="#top" class="site-logo" aria-label="ESCIE — return to top">ESCIE</a>
 
+    <div class="site-preferences" role="group" aria-label="Site preferences">
+      <div class="language-toggle" role="group" aria-label="Language">
+        <button type="button" class="preference-button language-option" data-language="en" aria-label="English">EN</button>
+        <button type="button" class="preference-button language-option" data-language="fr" aria-label="Français">FR</button>
+        <button type="button" class="preference-button language-option" data-language="es" aria-label="Español">ES</button>
+      </div>
+      <button type="button" id="theme-toggle" class="preference-button theme-toggle" aria-label="Light mode" aria-pressed="false">
+        <span class="theme-toggle-icon" aria-hidden="true">◐</span>
+        <span class="theme-toggle-label">LIGHT</span>
+      </button>
+    </div>
+
     <button
       id="mobile-menu-button"
       class="index-trigger"
@@ -146,6 +158,60 @@
   <script>
   (function(){
     "use strict";
+
+    function initPreferences(){
+      var root=document.documentElement;
+      var state=window.ESCIE_STATE||{};
+      var savedTheme="";
+      try{savedTheme=localStorage.getItem("escie-theme")||"";}catch(error){}
+      var theme=(savedTheme==="light"||savedTheme==="dark")?savedTheme:(state.theme||"dark");
+      root.dataset.theme=theme;
+      state.theme=theme;
+
+      var themeButton=document.getElementById("theme-toggle");
+      var languageButtons=[].slice.call(document.querySelectorAll("[data-language]"));
+
+      function applyTheme(next){
+        theme=next==="light"?"light":"dark";
+        root.dataset.theme=theme;
+        state.theme=theme;
+        try{localStorage.setItem("escie-theme",theme);}catch(error){}
+        if(themeButton){
+          themeButton.setAttribute("aria-pressed",theme==="light"?"true":"false");
+          themeButton.setAttribute("aria-label",theme==="light"?"Dark mode":"Light mode");
+          var label=themeButton.querySelector(".theme-toggle-label");
+          if(label)label.textContent=theme==="light"?"DARK":"LIGHT";
+        }
+      }
+
+      themeButton&&themeButton.addEventListener("click",function(){applyTheme(theme==="dark"?"light":"dark");});
+      languageButtons.forEach(function(button){
+        button.addEventListener("click",function(){
+          var language=button.getAttribute("data-language")||"en";
+          if(window.ESCIE_LANGUAGE_ENGINE&&typeof window.ESCIE_LANGUAGE_ENGINE.translate==="function"){
+            window.ESCIE_STATE.language=language;
+          }else if(window.ESCIE_STATE){window.ESCIE_STATE.language=language;}
+          document.documentElement.lang=language;
+          languageButtons.forEach(function(item){
+            var active=item.getAttribute("data-language")===language;
+            item.classList.toggle("is-active",active);
+            item.setAttribute("aria-pressed",active?"true":"false");
+          });
+          var events=window.ESCIE_EVENTS;
+          if(events&&typeof events.emit==="function")events.emit("language:changed",{language:language});
+        });
+      });
+      var initialLanguage=(state.language||navigator.language||"en").toLowerCase().slice(0,2);
+      if(["en","fr","es"].indexOf(initialLanguage)<0)initialLanguage="en";
+      languageButtons.forEach(function(item){
+        var active=item.getAttribute("data-language")===initialLanguage;
+        item.classList.toggle("is-active",active);
+        item.setAttribute("aria-pressed",active?"true":"false");
+      });
+      applyTheme(theme);
+    }
+
+    initPreferences();
     function initSectionAccordion(){
       var sections=[].slice.call(document.querySelectorAll("main > section")).filter(function(section){return section.id!=="entry"&&section.querySelector("h2");});
       sections.forEach(function(section,index){
