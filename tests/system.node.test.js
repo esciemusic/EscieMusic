@@ -588,7 +588,7 @@ assert(publicNavigationRuntime.includes('id:"art",label:"WORK"'),"public index m
 assert(publicNavigationRuntime.includes('id:"world",label:"THE WORLD"'),"public index must retain THE WORLD");
 assert(publicNavigationRuntime.includes('id:"web",label:"THE WEB"'),"public index must retain THE WEB");
 assert(publicNavigationRuntime.includes('id:"archives",label:"ARCHIVE"'),"public index must retain ARCHIVE");
-assert(publicNavigationRuntime.includes('id:"investigation",label:"INVESTIGATION"'),"public index must retain INVESTIGATION");
+assert(publicNavigationRuntime.includes('id:"investigation",label:"THE CASE FILES"'),"public index must retain THE CASE FILES");
 assert(publicNavigationRuntime.includes('id:"glass-eye",label:"GLASS EYE"'),"public index must retain GLASS EYE");
 assert(publicNavigationRuntime.includes('id:"escie",label:"ESCIE"'),"public index must retain ESCIE");
 assert(!publicNavigationRuntime.includes('id:"merch",label:"MERCH"'),"MERCH must not occupy a primary index slot");
