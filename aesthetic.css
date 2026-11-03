@@ -829,3 +829,89 @@ main > .site-section:not(#entry) .section-drop-trigger[data-section="escie"]::be
   .world-now-strip{grid-template-columns:auto 1fr}
   .world-now-strip em{grid-column:1/-1}
 }
+
+
+/* =========================================================
+   PARTICIPATION AS PART OF THE WORLD
+   Glass Eye and World feel like records, not generic forms.
+   ========================================================= */
+.world-section .section-drop-content,
+.glass-eye-section .section-drop-content,
+.web-section .section-drop-content{
+  position:relative;
+}
+.world-index{position:relative}
+.world-index::before{
+  content:"";position:absolute;left:-20px;top:0;bottom:0;width:1px;
+  background:linear-gradient(180deg,rgba(47,128,255,.5),transparent 75%);
+  opacity:.45;
+}
+.world-place-list{display:grid;gap:0;margin-top:18px;border-top:1px solid rgba(216,212,202,.1)}
+.world-place{
+  display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:14px;align-items:center;
+  padding:17px 0;border-bottom:1px solid rgba(216,212,202,.08);
+  transition:padding var(--escie-motion-standard),background var(--escie-motion-standard);
+}
+.world-place:hover{padding-left:9px;padding-right:9px;background:rgba(47,128,255,.025)}
+.world-place-index{font:400 9px/1 var(--escie-font-mono);letter-spacing:.1em;opacity:.4}
+.world-place-copy h3{margin:0;font:600 clamp(16px,3vw,23px)/1 var(--escie-font-display);letter-spacing:.09em}
+.world-place-copy p{margin:6px 0 0;font:400 9px/1.5 var(--escie-font-mono);letter-spacing:.05em;opacity:.58}
+.world-place-state{font:700 8px/1 var(--escie-font-mono);letter-spacing:.14em;color:var(--escie-aesthetic-purple);opacity:.75}
+.web-connection{
+  position:relative;overflow:hidden;
+  transition:transform var(--escie-motion-standard),border-color var(--escie-motion-standard),background var(--escie-motion-standard);
+}
+.web-connection:hover{transform:translateX(4px);background:rgba(47,128,255,.025);border-color:rgba(47,128,255,.2)}
+.web-node-button{cursor:pointer;transition:color var(--escie-motion-fast)}
+.web-node-button:hover{color:var(--escie-aesthetic-purple)}
+.glass-eye-section .section-drop-content::before{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.13;
+  background:
+    radial-gradient(circle at 82% 8%,rgba(155,89,255,.18),transparent 24%),
+    radial-gradient(circle at 15% 34%,rgba(47,128,255,.12),transparent 30%),
+    repeating-linear-gradient(0deg,transparent 0 8px,rgba(255,255,255,.018) 9px);
+}
+.glass-participation{
+  position:relative;
+  background:linear-gradient(180deg,rgba(255,255,255,.018),transparent);
+}
+.glass-participation-head::after{
+  content:"OPEN RECORD / HUMAN REVIEW";
+  display:block;margin-top:13px;
+  font:700 8px/1 var(--escie-font-mono);letter-spacing:.15em;
+  color:var(--escie-aesthetic-purple);opacity:.65;
+}
+.glass-participation-types button{
+  position:relative;overflow:hidden;
+  transition:border-color var(--escie-motion-fast),background var(--escie-motion-fast),color var(--escie-motion-fast);
+}
+.glass-participation-types button.is-active{
+  background:rgba(155,89,255,.08);
+  box-shadow:inset 0 0 18px rgba(155,89,255,.04);
+}
+.glass-participation-form input:focus,
+.glass-participation-form textarea:focus,
+.web-record-search input:focus{
+  outline:none;border-color:rgba(47,128,255,.62);
+  box-shadow:0 0 0 1px rgba(47,128,255,.12),0 0 22px rgba(47,128,255,.05);
+}
+.glass-submit:hover{
+  border-color:rgba(155,89,255,.85);
+  background:rgba(155,89,255,.08);
+}
+.glass-approved{
+  padding:15px 0 0;
+}
+.glass-approved::after{
+  content:"APPROVED MATERIAL CAN BECOME PART OF THE PUBLIC RECORD.";
+  display:block;margin-top:14px;
+  font:400 8px/1.5 var(--escie-font-mono);letter-spacing:.08em;opacity:.4;
+}
+@media(max-width:700px){
+  .world-place{grid-template-columns:30px minmax(0,1fr);gap:10px;padding:15px 0}
+  .world-place-state{grid-column:2;justify-self:start;margin-top:-4px}
+  .world-index::before{left:-10px}
+}
+@media(prefers-reduced-motion:reduce){
+  .world-place,.web-connection,.glass-participation-types button{transition:none}
+}
