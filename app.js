@@ -1146,7 +1146,7 @@ function renderClothing(){
       work:"WORK",
       web:"THE WEB",
       archive:"ARCHIVE",
-      investigation:"INVESTIGATION",
+      investigation:"THE CASE FILES",
       glassEye:"GLASS EYE"
     })[section] || String(section || "").toUpperCase();
   }
