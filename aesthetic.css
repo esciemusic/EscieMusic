@@ -915,3 +915,7 @@ main > .site-section:not(#entry) .section-drop-trigger[data-section="escie"]::be
 @media(prefers-reduced-motion:reduce){
   .world-place,.web-connection,.glass-participation-types button{transition:none}
 }
+
+.section-drop-trigger .section-drop-symbol{font-size:15px;color:var(--escie-aesthetic-purple);opacity:.82;text-shadow:0 0 12px var(--escie-aesthetic-purple-soft)}
+.section-drop-trigger .section-drop-state{font:400 16px/1 var(--escie-font-mono);opacity:.48}
+.section-drop-trigger:hover .section-drop-symbol{opacity:1}
