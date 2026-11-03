@@ -1,1 +1,12 @@
-const ESCIE_NAVIGATION=[{id:"now",label:"NOW",target:"#now",primary:true,order:1},{id:"art",label:"WORK",target:"#art",primary:true,order:2},{id:"world",label:"THE WORLD",target:"#world",primary:true,order:3},{id:"web",label:"THE WEB",target:"#web",primary:true,order:4},{id:"archives",label:"ARCHIVE",target:"#archives",primary:true,order:5},{id:"investigation",label:"INVESTIGATION",target:"#investigation",primary:true,order:6},{id:"merch",label:"THE WORLD YOU CAN WEAR",target:"#merch",primary:true,order:7},{id:"glass-eye",label:"GLASS EYE",target:"#glass-eye",primary:true,order:8},{id:"escie",label:"ESCIE",target:"#escie",primary:true,order:9}];if(typeof window!=="undefined")window.ESCIE_NAVIGATION=ESCIE_NAVIGATION;
+const ESCIE_NAVIGATION=[
+{id:"art",label:"ART",target:"#art",primary:true,order:1,symbol:"✳"},
+{id:"world",label:"THE WORLD",target:"#world",primary:true,order:2,symbol:"◌"},
+{id:"web",label:"THE WEB",target:"#web",primary:true,order:3,symbol:"⌕"},
+{id:"archives",label:"THE ARCHIVES",target:"#archives",primary:true,order:4,symbol:"▣"},
+{id:"investigation",label:"INVESTIGATION",target:"#investigation",primary:true,order:5,symbol:"?"},
+{id:"merch",label:"THE WORLD YOU CAN WEAR",target:"#merch",primary:true,order:6,symbol:"◇"},
+{id:"glass-eye",label:"GLASS EYE",target:"#glass-eye",primary:true,order:7,symbol:"◎"},
+{id:"escie",label:"ESCIE",target:"#escie",primary:true,order:8,symbol:"◇"}
+];
+if(typeof window!=="undefined")window.ESCIE_NAVIGATION=ESCIE_NAVIGATION;
+if(typeof module!=="undefined"&&module.exports)module.exports=ESCIE_NAVIGATION;
