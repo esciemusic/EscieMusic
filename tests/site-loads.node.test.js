@@ -16,6 +16,10 @@ assert(games.includes("public_link:null"), "playable game must remain unlinked u
 const merch=fs.readFileSync("data/merch.js","utf8");
 assert(!merch.includes("bam-tee-blue")&&!merch.includes("bam-poster")&&!merch.includes("BAM / BY ANY MEANS TEE"),"unreleased BAM merchandise must not be exposed in public merch metadata");
 assert(html.includes("SEE · HEAR · FOLLOW · MISS · RETURN"),"Glass Eye must retain the confirmed audience-eye descriptor");
+assert(html.includes('data/glass-eye-participation.js'),"Glass Eye participation bridge must load");
+assert(fs.readFileSync("data/locations.js","utf8").includes('id:"montreal"'),"World must retain Montréal as the geographic anchor");
+assert(fs.readFileSync("data/merch.js","utf8").includes("HEART ON MY SLEEVE"),"merch layer must use HEART ON MY SLEEVE");
+
 
 const counts = new Map();
 scripts.forEach((src) => counts.set(src, (counts.get(src) || 0) + 1));
