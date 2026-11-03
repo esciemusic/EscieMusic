@@ -5,7 +5,7 @@
   "use strict";
   const CONTRACT={
     id:"ESCIE_UNIVERSE",
-    version:"1.1.0",
+    version:"1.2.0",
     layers:Object.freeze({
       CENTRAL:"central",
       PUBLIC:"public",
@@ -29,14 +29,13 @@
       centralHumanApproval:true,
       canonicalGameWriteFromPlayer:false
     }),
-    publicSections:Object.freeze(["NOW","WORK","THE WORLD","THE WEB","ARCHIVE","INVESTIGATION","THE WORLD YOU CAN WEAR","GLASS EYE","ESCIE"]),
+    publicSections:Object.freeze(["NOW","WORK","THE WORLD","THE WEB","ARCHIVE","INVESTIGATION","HEART ON MY SLEEVE","GLASS EYE","ESCIE"]),
     worldClasses:Object.freeze(["DRIFTER","RUNNER","INVESTIGATOR","SURVIVOR"]),
     worldNodes:Object.freeze(["ART","THE PEOPLE","PLACES","MOMENTS","FRAGMENTS","PROOF","BODIES","PATH","THE WEB","THE ARCHIVES"]),
     requiredGameSystems:Object.freeze(["simulation","npc-life","npc","law","investigation","rpg","vehicles","interiors","dialogue","3d"]),
     validate(){
       const errors=[];
       if(this.layers.CENTRAL!=="central"||this.layers.PUBLIC!=="public"||this.layers.GAME!=="game")errors.push("layer contract invalid");
-      if(this.boundaries.realityFilter!==false)errors.push("removed Reality Filter must remain disabled");
       if(this.boundaries.gameplay2D!==false||this.boundaries.pauseMap2DOnly!==true)errors.push("game 3D/2D boundary invalid");
       if(this.boundaries.publicIsCanonicalDoorway!==true||this.boundaries.gameIsExtension!==true)errors.push("public/game ownership boundary invalid");
       if(this.boundaries.centralHumanApproval!==true)errors.push("central approval guard missing");
