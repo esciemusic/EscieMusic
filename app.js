@@ -158,7 +158,8 @@
 
   function detectLanguage() {
     const state = getRuntimeState();
-    const saved = state && state.language;
+    let saved = state && state.language;
+    try { saved = localStorage.getItem("escie-language") || saved; } catch (error) {}
     if (saved) {
       const normalizedSaved = normalizeLanguage(saved);
       if (["en", "fr", "es"].includes(normalizedSaved)) {
@@ -179,7 +180,14 @@
       state.language = normalized;
     }
 
+    try { localStorage.setItem("escie-language", normalized); } catch (error) {}
+
     document.documentElement.lang = normalized;
+    document.querySelectorAll("[data-language]").forEach(button => {
+      const active = button.getAttribute("data-language") === normalized;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", active ? "true" : "false");
+    });
     ESCIE_RUNTIME.language = normalized;
 
     const events = getEvents();
