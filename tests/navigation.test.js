@@ -14,7 +14,7 @@
   function run() {
     if (!N) return { skipped: true, reason: "ESCIE_NAVIGATION unavailable" };
 
-    const required = ["NOW", "WORK", "THE WEB", "ARCHIVE", "INVESTIGATION", "GLASS EYE", "ESCIE"];
+    const required = ["NOW", "WORK", "THE WEB", "ARCHIVE", "THE CASE FILES", "GLASS EYE", "ESCIE"];
     required.forEach(function (label) {
       assert(N.some(item => item.label === label), "missing navigation item: " + label);
     });
