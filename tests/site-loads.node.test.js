@@ -51,7 +51,7 @@ assert(scripts.indexOf("relationship.js") < appIndex, "relationship contract mus
 assert(fs.readFileSync("data/universe-contract.js","utf8").includes('version:"1.2.1"'),"universe contract should be current");
 const universeContract=fs.readFileSync("data/universe-contract.js","utf8");
 assert(!universeContract.includes("realityFilter"),"legacy Reality Filter contract must be removed entirely");
-assert(universeContract.includes("HEART ON MY SLEEVE"),"universe contract must use the current wardrobe identity");
+assert(!universeContract.includes("HEART ON MY SLEEVE"),"wardrobe identity must not occupy a primary public section");
 assert(fs.readFileSync("data/glass-eye-participation.js","utf8").includes("approvedEndpoint"),"Glass Eye must use the moderated approved-media endpoint");
 assert(fs.readFileSync("data/glass-eye-participation.js","utf8").includes("glass-eye-public"),"Glass Eye approved media must use the public moderation endpoint");
 assert(fs.readFileSync("app.js","utf8").includes("glass-approved-media"),"approved Glass Eye media must render in the public record");
