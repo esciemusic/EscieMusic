@@ -90,3 +90,37 @@ Performance is treated as an architectural resource, not a single global optimiz
 - World simulation remains event/heartbeat driven rather than frame driven wherever possible. Player saves are state-transition work, not render-loop work.
 - Central prioritizes correctness and auditability; it does not compete with the public/game render loop.
 - Every performance contract must remain testable without changing the canonical ownership boundaries.
+
+
+## Case Files / public discovery boundary
+
+The public site is the lived/exhibited ESCIE universe. It does not expose Central's private investigation state.
+
+The cross-repository flow is:
+
+CENTRAL → CASE FILES → PUBLIC ESCIE → AUDIENCE → CASE FILES
+
+- Central is private research, creation, source tracking, candidate relationships and editorial work.
+- Case Files are the controlled bridge for approved context, deeper investigation and release preparation.
+- Public sections receive finished artifacts, not raw investigation state.
+- Audience interpretation is allowed to remain open; the site does not require a single solution.
+- Public Case Files may eventually reveal deeper layers, but private material never becomes public automatically.
+
+### Public section roles
+
+- NOW — current pulse.
+- ART — things ESCIE makes.
+- THE WORLD — Montréal and physical reality.
+- THE WEB — genuine relationships only.
+- ARCHIVE — memory of released public work.
+- THE CASE FILES — deeper approved investigation layers.
+- GLASS EYE — seeing/hearing through the screen.
+- ESCIE — the artist and selected human context.
+
+### Discovery rule
+
+Public work should feel discovered rather than assigned as a puzzle. Do not manufacture relationships, force interpretations, expose internal evidence IDs prematurely, or use reality-classification labels.
+
+### November 22, 2026
+
+The first discovery sequence is a Case File output. D01–D12 are finished artifacts mapped into ART, THE WORLD and GLASS EYE, with NOW optionally surfacing the current artifact. The campaign remains manually published while Central connections are not operational. The BAM/Dallas '63 release gate remains sealed until explicit artist approval.
