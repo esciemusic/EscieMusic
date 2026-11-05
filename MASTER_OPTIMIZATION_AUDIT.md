@@ -245,3 +245,22 @@ No future optimization pass may violate these principles.
 - Deploy ESCIE to GitHub Pages run 2761: SUCCESS.
 - The previous failures were traced to stale/over-broad regression assertions, not a public runtime failure; the assertions were corrected to test the actual approved implementation.
 - Latest public release gate is GREEN at verification time.
+
+
+## Final master optimization — Pass 3 verification — 2026-11-05
+
+### Pass 3 changes
+- Added SYSTEM_MAP_AND_GAPS.md covering the complete public/Central system, missing capabilities, required dependency order and protected boundaries.
+- Added INTEGRATION_CONTRACT.md and a CI regression contract for the public/Central boundary.
+- CI now explicitly verifies that public source contains no Central service-role secret material.
+- Rechecked release firewall, game separation, Glass Eye audience boundary, Montréal-first THE WORLD and Father/Man/Monster identity.
+
+### Final verification
+- Final public commit: a333eaf5c54960a1b8308f57207f08448ff15ff7.
+- ESCIE Contracts run 2152: SUCCESS.
+- GitHub Pages deployment run 2767: SUCCESS.
+- Pages build/deployment run 2899: SUCCESS.
+- The immediately preceding contract failure was caused by an over-specific new regression assertion; the assertion was corrected and the final Pass 3 run passed.
+
+### Public master result
+GREEN. The public doorway, release firewall, integration boundary and deployment chain are passing at the final verified checkpoint.
