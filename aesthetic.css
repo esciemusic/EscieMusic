@@ -1242,3 +1242,37 @@ main > .site-section:not(#entry) .section-drop-content{width:min(100%,var(--esci
 #merch[hidden]{display:none!important}
 @media(max-width:700px){main > .site-section:not(#entry) .section-drop-trigger{min-height:46px;padding:9px 11px}main > .site-section:not(#entry).section-open .section-drop-trigger{min-height:48px}main > .site-section:not(#entry).section-open .section-drop-state::after{display:none}main > .site-section:not(#entry) .section-drop-content{width:100%}}
 @media(prefers-reduced-motion:reduce){main > .site-section:not(#entry) .section-drop-state::after{transition:none}}
+
+/* =========================================================
+   LIGHT MODE — PALETTE INVERSION
+   Same ESCIE materials, inverted for visibility; never plain white UI.
+   ========================================================= */
+html[data-theme="light"] {
+  --escie-void:#e7e1d6; --escie-black:#ddd7cc; --escie-asphalt:#d0c9bd;
+  --escie-concrete:#c2bbb0; --escie-smoke:#aaa298; --escie-paper:#171719; --escie-white:#171719;
+  --black:#e7e1d6; --deep-black:#d9d2c7; --white:#171719;
+  --muted:rgba(23,23,25,.68); --faint:rgba(23,23,25,.42); --line:rgba(23,23,25,.18);
+  --escie-blue:#1768d8; --escie-blue-bright:#145bd0; --escie-blue-soft:rgba(23,104,216,.13); --escie-blue-line:rgba(23,104,216,.42);
+  --escie-purple:#5b2e98; --escie-ultraviolet:#7438c2; --escie-purple-soft:rgba(91,46,152,.13); --signal-purple:var(--escie-purple);
+}
+html[data-theme="light"] body { background:linear-gradient(180deg,#e7e1d6 0%,#d8d1c5 52%,#c9c1b5 100%); color:var(--white); }
+html[data-theme="light"] .site-header { background:linear-gradient(180deg,rgba(231,225,214,.94),rgba(231,225,214,.56),transparent); }
+html[data-theme="light"] .site-logo, html[data-theme="light"] .index-trigger, html[data-theme="light"] .preference-button,
+html[data-theme="light"] .section-drop-trigger, html[data-theme="light"] .section-drop-state, html[data-theme="light"] .section-drop-symbol,
+html[data-theme="light"] h1, html[data-theme="light"] h2, html[data-theme="light"] h3, html[data-theme="light"] h4,
+html[data-theme="light"] p, html[data-theme="light"] button, html[data-theme="light"] a { text-shadow:none; }
+html[data-theme="light"] .signal-status { color:var(--escie-purple); }
+html[data-theme="light"] .signal-light { background:var(--escie-purple); box-shadow:0 0 9px rgba(91,46,152,.28); }
+html[data-theme="light"] .signal-scan { background:var(--escie-blue); box-shadow:0 0 18px rgba(23,104,216,.22); }
+html[data-theme="light"] .section-visual, html[data-theme="light"] .section-visual-world, html[data-theme="light"] .section-visual-work,
+html[data-theme="light"] .section-visual-web, html[data-theme="light"] .section-visual-archive, html[data-theme="light"] .section-visual-investigation,
+html[data-theme="light"] .section-visual-glass, html[data-theme="light"] .section-visual-escie {
+  color:var(--escie-purple); border-color:var(--escie-blue-line);
+  background:linear-gradient(135deg,rgba(194,187,176,.92),rgba(226,220,210,.88) 52%,rgba(170,162,152,.82));
+}
+html[data-theme="light"] .index-navigation { color:var(--white); background:rgba(215,208,197,.96); border-color:var(--escie-blue-line); box-shadow:0 18px 60px rgba(31,27,22,.18),inset 0 1px 0 rgba(255,255,255,.32); }
+html[data-theme="light"] .index-navigation a, html[data-theme="light"] .index-navigation button { color:var(--white); }
+html[data-theme="light"] .record-card, html[data-theme="light"] .world-card, html[data-theme="light"] .archive-record,
+html[data-theme="light"] .investigation-case, html[data-theme="light"] .glass-eye-interface, html[data-theme="light"] .nested-drop-panel {
+  color:var(--white); background:rgba(231,225,214,.72); border-color:var(--line);
+}
