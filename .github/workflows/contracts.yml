@@ -40,6 +40,7 @@ jobs:
           - public-site-a-z.node.test.js
           - system.node.test.js
           - world-engine.node.test.js
+          - integration-contract.node.test.js
     runs-on: ubuntu-latest
     name: Contract · ${{ matrix.test }}
     steps:
