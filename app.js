@@ -1997,6 +1997,22 @@ function renderClothing(){
     applyUIState();
   }
 
+  function bindEntryLogo() {
+    const logo = document.querySelector(".site-logo");
+    if (!logo || logo.dataset.topReturnReady === "1") return;
+    logo.dataset.topReturnReady = "1";
+    logo.addEventListener("click", function(event) {
+      event.preventDefault();
+      if (window.location.hash) history.replaceState(null, "", "#top");
+      window.scrollTo({ top: 0, behavior: reduceMotion() ? "auto" : "smooth" });
+      document.body.dataset.route = "entry";
+      document.documentElement.dataset.route = "entry";
+      const stateLabel = byId("entry-state");
+      if (stateLabel) stateLabel.dataset.route = "entry";
+      if (typeof renderEntry === "function") renderEntry();
+    });
+  }
+
   function initialize() {
     if (ESCIE_RUNTIME.initialized) return ESCIE_RUNTIME;
 
@@ -2005,6 +2021,7 @@ function renderClothing(){
     initializeSystemContracts();
     render();
     setupMobileMenu();
+    bindEntryLogo();
     setupRecordInspector();
     const live=getGlobal("ESCIE_PUBLIC_LIVE",null);
     if(live&&live.ready&&typeof live.ready.then==="function"){live.ready.then(function(){render();refreshNavigationState();}).catch(function(error){console.warn("ESCIE LIVE PUBLIC SOURCE UNAVAILABLE",error);});}
