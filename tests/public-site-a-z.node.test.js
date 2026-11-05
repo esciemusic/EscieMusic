@@ -323,9 +323,9 @@ test("A-Z Pass 1 visual selectors use canonical section IDs",()=>{
 
 test("A-Z Pass 1 symbols remain actionable controls",()=>{
   const app=read("app.js");
-  assert.match(app,/class=\\"section-motif-item\\" type=\\"button\\" data-symbol-id=/);
-  assert.match(app,/closest\\(\\"\\[data-symbol-id\\]\\"\\)/);
-  assert.match(app,/showSymbolInspector\\(symbolTrigger\.getAttribute\\(\\"data-symbol-id\\"\\)\\)/);
+  assert.ok(app.includes('class="section-motif-item" type="button" data-symbol-id='));
+  assert.ok(app.includes('closest("[data-symbol-id]")'));
+  assert.ok(app.includes('showSymbolInspector(symbolTrigger.getAttribute("data-symbol-id"))'));
 });
 
 
