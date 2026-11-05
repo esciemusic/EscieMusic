@@ -165,3 +165,9 @@ This is the standing audit contract for every subsequent public-site optimizatio
 - A remaining active-stylesheet selector for THE ARCHIVES used the legacy singular `section-visual-archive` class and was corrected to `section-visual-archives`.
 - A remaining Glass Eye presentation selector used `section-visual-glass` and was corrected to the canonical `section-visual-glass-eye` class.
 - Regression coverage now rejects these legacy selector forms.
+
+
+### Pass 1 — Glass Eye visual selector completion
+- Glass Eye pseudo-element and active-state selectors were still using the legacy `section-visual-glass` class.
+- They are now aligned with the canonical `section-visual-glass-eye` class used by the public section architecture.
+- Regression coverage remains locked against legacy Glass Eye selector usage.
