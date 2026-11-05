@@ -1,6 +1,6 @@
 /* ESCIE LIVE PUBLIC SOURCE
  * Read-only bridge from the public-safe Supabase records into the static ESCIE shell.
- * Only PUBLIC + PUBLISHED rows are exposed by RLS.
+ * Only PUBLIC + PUBLISHED + RELEASED rows are exposed by the release gate.
  */
 (function(){
   "use strict";
@@ -40,11 +40,11 @@
     return response.json();
   }
   async function load(){
-    const rows=await get("/records?select=*&visibility=eq.PUBLIC&publication_state=eq.PUBLISHED&order=updated_at.desc");
+    const rows=await get("/records?select=*&visibility=eq.PUBLIC&publication_state=eq.PUBLISHED&release_state=eq.RELEASED&order=updated_at.desc");
     const relationships=await get("/record_relationships?select=*&order=created_at.desc");
     root.ESCIE_LIVE_RECORDS=(Array.isArray(rows)?rows:[]).map(normalize).filter(x=>x.id);
     root.ESCIE_LIVE_RELATIONSHIPS=Array.isArray(relationships)?relationships:[];
     return {records:root.ESCIE_LIVE_RECORDS,relationships:root.ESCIE_LIVE_RELATIONSHIPS};
   }
-  root.ESCIE_PUBLIC_LIVE={version:"1.0.0",status:"LOADING",ready:load().then(function(result){root.ESCIE_PUBLIC_LIVE.status="READY";return result;}).catch(function(error){root.ESCIE_PUBLIC_LIVE.status="OFFLINE";root.ESCIE_PUBLIC_LIVE.error=String(error&&error.message||error);return {records:[],relationships:[]};})};
+  root.ESCIE_PUBLIC_LIVE={version:"1.1.0",status:"LOADING",ready:load().then(function(result){root.ESCIE_PUBLIC_LIVE.status="READY";return result;}).catch(function(error){root.ESCIE_PUBLIC_LIVE.status="OFFLINE";root.ESCIE_PUBLIC_LIVE.error=String(error&&error.message||error);return {records:[],relationships:[]};})};
 })();
