@@ -125,3 +125,10 @@ This is the standing audit contract for every subsequent public-site optimizatio
 - Nested controls expose a refresh hook without requiring a second global initializer.
 - Runtime initialization is guarded against duplicate setup, and merch filter controls are individually binding-guarded.
 - Regression coverage now locks these lifecycle/accessibility protections.
+
+
+### Pass 1 — inspector accessibility checkpoint
+- Record/symbol inspector now restores focus to the element that opened it when closed.
+- Escape and explicit close paths share the same close routine.
+- Inspector close control has an explicit visible keyboard focus treatment.
+- Regression coverage protects focus restoration and close visibility.
