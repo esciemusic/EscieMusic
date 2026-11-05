@@ -1864,6 +1864,22 @@ body.inspector-open{overflow:hidden}
 .archive-status,.investigation-status{max-width:900px;padding:42px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .archive-status h3,.investigation-status h3{margin:0;font-size:clamp(24px,5vw,54px);font-weight:400;letter-spacing:.04em;line-height:1.05}
 .archive-status p:not(.eyebrow),.investigation-status p:not(.eyebrow){max-width:680px;color:var(--muted);line-height:1.9}
+.archive-index{max-width:980px}
+.archive-index-head{display:flex;align-items:baseline;justify-content:space-between;gap:18px;padding:0 0 16px;border-bottom:1px solid var(--line)}
+.archive-index-head .eyebrow{margin:0}
+.archive-index-note{color:var(--faint);font-size:8px;letter-spacing:.14em;text-transform:uppercase;text-align:right}
+.archive-list{border-top:0}
+.archive-record{display:grid;grid-template-columns:46px 1fr;gap:20px;align-items:start;padding:22px 0;border-bottom:1px solid var(--line);transition:background 180ms ease,padding 180ms ease}
+.archive-record:hover{background:rgba(255,255,255,.014)}
+.archive-record-index{color:var(--faint);font:400 9px/1.4 var(--escie-font-mono);letter-spacing:.12em;padding-top:4px}
+.archive-record-body{min-width:0}
+.archive-record-body h3{margin:5px 0 0;font-size:clamp(20px,3.5vw,34px);font-weight:400;letter-spacing:.035em;line-height:1.08}
+.archive-record-body>p:not(.eyebrow){max-width:700px;margin:10px 0 0;color:var(--muted);font-size:12px;line-height:1.8}
+@media(max-width:700px){
+  .archive-index-head{display:grid;gap:8px}
+  .archive-index-note{text-align:left}
+  .archive-record{grid-template-columns:34px 1fr;gap:12px;padding:18px 0}
+}
 
 .nav-link.is-current{opacity:1;letter-spacing:.14em}
 .nav-link.is-current::before{content:"/ ";color:var(--faint)}
