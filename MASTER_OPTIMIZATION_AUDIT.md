@@ -236,3 +236,12 @@ The Central control room should feel:
 - capable of asking, analyzing, organizing and distributing without silently becoming canon.
 
 No future optimization pass may violate these principles.
+
+
+## Final verification checkpoint — 2026-11-05
+- Latest public commit: 65b23a0a3458d8549ee8f9c6b871b464c375f906.
+- ESCIE Contracts run 2146: SUCCESS.
+- GitHub Pages build run 2893: SUCCESS.
+- Deploy ESCIE to GitHub Pages run 2761: SUCCESS.
+- The previous failures were traced to stale/over-broad regression assertions, not a public runtime failure; the assertions were corrected to test the actual approved implementation.
+- Latest public release gate is GREEN at verification time.
