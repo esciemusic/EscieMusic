@@ -421,3 +421,17 @@ test("A-Z Pass 2 Glass Eye primary window contract stays approved and responsive
   assert.ok(css.includes("aspect-ratio:16/9"));
   assert.ok(css.includes(".glass-video-frame iframe{"));
 });
+
+
+test("A-Z Pass 2 World includes the physical clothing layer without exposing locked merchandise",()=>{
+  const app=read("app.js");
+  const css=read("aesthetic.css");
+  const merch=read("data/merch.js");
+  assert.ok(app.includes('id="merch-filters" class="merch-controls"'));
+  assert.ok(app.includes('id="merch-container" class="merch-container" hidden'));
+  assert.ok(app.includes('THE WORLD YOU CAN WEAR'));
+  assert.ok(css.includes(".world-wear-layer{"));
+  assert.ok(css.includes(".world-wear-layer .merch-container[hidden]{display:none!important}"));
+  assert.match(merch,/public_visibility:"hidden"/);
+  assert.match(merch,/release_status:"locked"/);
+});
