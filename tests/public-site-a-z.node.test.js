@@ -298,8 +298,8 @@ test("A-Z Pass 1 canonical visual selectors remain across public styles",()=>{
   const style=read("style.css");
   const aesthetic=read("aesthetic.css");
   for(const css of [style,aesthetic]){
-    assert.doesNotMatch(css,/\\.section-visual-work(?:\\b|[-:])/);
-    assert.doesNotMatch(css,/\\.section-visual-archive::before/);
+    assert.doesNotMatch(css,/\.section-visual-work(?:\b|[-:])/);
+    assert.doesNotMatch(css,/\.section-visual-archive::before/);
   }
   assert.ok(style.includes(".section-visual-art::before"));
   assert.ok(style.includes(".section-visual-archives::before"));
@@ -331,8 +331,8 @@ test("A-Z Pass 1 symbols remain actionable controls",()=>{
 
 test("A-Z Pass 1 theme selectors use canonical section visual IDs",()=>{
   const css=read("aesthetic.css");
-  assert.doesNotMatch(css,/\\.section-visual-archive(?!s)/);
-  assert.doesNotMatch(css,/\\.section-visual-glass(?!-eye)/);
+  assert.doesNotMatch(css,/\.section-visual-archive(?!s)/);
+  assert.doesNotMatch(css,/\.section-visual-glass(?!-eye)/);
   assert.ok(css.includes('html[data-theme="light"]'));
   assert.ok(css.includes('html[data-theme="light"] .section-visual-archives'));
   assert.ok(css.includes('html[data-theme="light"] .section-visual-glass-eye'));
@@ -341,7 +341,7 @@ test("A-Z Pass 1 theme selectors use canonical section visual IDs",()=>{
 
 test("A-Z Pass 1 external checkout URLs fail closed",()=>{
   const app=read("app.js");
-  assert.match(app,/const purchaseURL=safeExternalURL\\(item\.external_purchase_url\\)/);
+  assert.ok(app.includes("const purchaseURL=safeExternalURL(item.external_purchase_url)"));
   assert.ok(app.includes('type==="REAL_MONEY"&&purchaseURL'));
 });
 
