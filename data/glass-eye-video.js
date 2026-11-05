@@ -1,6 +1,6 @@
 /* ESCIE GLASS EYE PRIMARY VIDEO
  * Public configuration only.
- * The URL is intentionally empty until an artist-approved YouTube video is selected.
+ * The URL is intentionally empty until an artist-approved YouTube video is selected.\n * Only the artist-approved public video URL belongs here.
  */
 (function(root){
   "use strict";
