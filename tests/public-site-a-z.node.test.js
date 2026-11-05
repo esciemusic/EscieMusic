@@ -125,6 +125,19 @@ test("A-Z Pass 1 restores saved language preference on boot",()=>{
   assert.match(index,/document\.documentElement\.lang=initialLanguage/);
 });
 
+test("A-Z Pass 1 runtime initialization is idempotent",()=>{
+  const app=read("app.js");
+  assert.match(app,/if \(ESCIE_RUNTIME\.initialized\) return ESCIE_RUNTIME;/);
+  assert.strictEqual((app.match(/setupRecordInspector\(\);/g)||[]).length,1);
+  assert.strictEqual((app.match(/setupMobileMenu\(\);/g)||[]).length,1);
+});
+
+test("A-Z Pass 1 merch filter listeners are bound once per control",()=>{
+  const app=read("app.js");
+  assert.match(app,/button\.dataset\.bound==="1"/);
+  assert.match(app,/button\.dataset\.bound="1"/);
+});
+
 test("A-Z Pass 1 public audio playback accepts only safe URLs",()=>{
   const app=read("app.js");
   assert.match(app,/audio && safeExternalURL\(item\.url\)/);
