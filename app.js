@@ -868,7 +868,11 @@ function renderClothing(){
 
     const records = getAllPublicRecords().filter(record => {
       const manifest = recordManifest(record);
-      return manifest ? manifest.sections && manifest.sections.archive === true : record.type === "archive";
+      const archiveState = String(record.archive_state || record.archive?.state || "").toLowerCase();
+      const manifestArchive = !!(manifest && manifest.sections && manifest.sections.archive === true);
+      const archiveType = String(record.type || record.identity?.type || "").toLowerCase() === "archive";
+      const archivedState = archiveState === "archived";
+      return manifestArchive || archiveType || archivedState;
     }).filter(isPublic);
 
     if (!records.length) {
@@ -883,15 +887,21 @@ function renderClothing(){
     container.innerHTML =
       '<div class="archive-index">' +
         motifMarkup("archive") +
-        '<p class="eyebrow">PUBLIC TRACE / ' + escapeHTML(String(ordered.length)) + ' RECORD' + (ordered.length === 1 ? '' : 'S') + '</p>' +
+        '<div class="archive-index-head"><p class="eyebrow">PRESERVED TRACE / ' + escapeHTML(String(ordered.length)) + ' RECORD' + (ordered.length === 1 ? '' : 'S') + '</p><span class="archive-index-note">OPEN THE RECORD TO FOLLOW ITS TRACE.</span></div>' +
         '<div class="archive-list">' +
-          ordered.map(record =>
-            '<article class="archive-record" data-record-id="' + escapeHTML(recordId(record)) + '">' +
-              '<p class="eyebrow">' + escapeHTML(String(record.type || "record").toUpperCase()) + '</p>' +
+          ordered.map((record,index) => {
+            const type = String(record.type || record.identity?.type || "record").toUpperCase();
+            const year = record.year ? String(record.year) : "";
+            const location = record.location ? String(record.location) : "";
+            const meta = [type, year, location].filter(Boolean).join(" · ");
+            return '<article class="archive-record" data-record-id="' + escapeHTML(recordId(record)) + '">' +
+              '<div class="archive-record-index" aria-hidden="true">' + String(index + 1).padStart(2,"0") + '</div>' +
+              '<div class="archive-record-body"><p class="eyebrow">' + escapeHTML(meta || "RECORD") + '</p>' +
               '<h3>' + escapeHTML(recordTitle(record)) + '</h3>' +
               (record.description ? '<p>' + escapeHTML(record.description) + '</p>' : '') +
-            '</article>'
-          ).join("") +
+              '</div>' +
+            '</article>';
+          }).join("") +
         '</div>' +
       '</div>';
   }
