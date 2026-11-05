@@ -880,9 +880,12 @@ function renderClothing(){
       return;
     }
 
-    const ordered = records.slice().sort((a, b) =>
-      recordTitle(a).localeCompare(recordTitle(b))
-    );
+    const ordered = records.slice().sort((a, b) => {
+      const aTime = Date.parse(a.updated_at || a.created_at || a.date || "") || 0;
+      const bTime = Date.parse(b.updated_at || b.created_at || b.date || "") || 0;
+      if (aTime !== bTime) return bTime - aTime;
+      return recordTitle(a).localeCompare(recordTitle(b));
+    });
 
     container.innerHTML =
       '<div class="archive-index">' +
@@ -891,10 +894,12 @@ function renderClothing(){
         '<div class="archive-list">' +
           ordered.map((record,index) => {
             const type = String(record.type || record.identity?.type || "record").toUpperCase();
-            const year = record.year ? String(record.year) : "";
+            const dateSource = record.date || record.created_at || record.updated_at || "";
+            const dateValue = dateSource ? new Date(dateSource) : null;
+            const year = record.year ? String(record.year) : (dateValue && !Number.isNaN(dateValue.getTime()) ? String(dateValue.getFullYear()) : "");
             const location = record.location ? String(record.location) : "";
             const meta = [type, year, location].filter(Boolean).join(" · ");
-            return '<article class="archive-record" data-record-id="' + escapeHTML(recordId(record)) + '">' +
+            return '<article class="archive-record" role="button" tabindex="0" aria-label="Open ' + escapeHTML(recordTitle(record)) + '" data-record-id="' + escapeHTML(recordId(record)) + '">' +
               '<div class="archive-record-index" aria-hidden="true">' + String(index + 1).padStart(2,"0") + '</div>' +
               '<div class="archive-record-body"><p class="eyebrow">' + escapeHTML(meta || "RECORD") + '</p>' +
               '<h3>' + escapeHTML(recordTitle(record)) + '</h3>' +
@@ -1388,6 +1393,14 @@ function renderClothing(){
         const next=byId("web-container")&&byId("web-container").querySelector("[data-web-search]");
         if(next){next.focus();next.setSelectionRange(next.value.length,next.value.length);}
       },120);
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      const archiveTrigger = event.target.closest(".archive-record[data-record-id]");
+      if (!archiveTrigger) return;
+      event.preventDefault();
+      archiveTrigger.click();
     });
 
     document.addEventListener("click", event => {
