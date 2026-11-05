@@ -1541,7 +1541,7 @@ function renderClothing(){
                   : (Array.isArray(item.media) ? item.media : []);
                 const itemAudio = itemMedia.find(entry => {
                   const type = entry && String(entry.type || entry.kind || "").toLowerCase();
-                  return type === "audio" && entry.url;
+                  return type === "audio" && safeExternalURL(entry.url);
                 });
                 return itemAudio ? {
                   id: recordId(item),
