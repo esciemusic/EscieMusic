@@ -711,7 +711,7 @@
       '<label>CATEGORY<select data-web-filter="category"><option value="">ALL CATEGORIES</option>'+categoryOptions+'</select></label>'+
       '</div><p class="record-filter-count">'+escapeHTML(String(relationships.length))+' OF '+escapeHTML(String(all.length))+' ESTABLISHED CONNECTION'+(all.length===1?"":"S")+' · '+escapeHTML(String(count.nodes||0))+' NODES</p></div>'+
       '<div class="web-record-search"><label>SEARCH THE PUBLIC RECORD<input type="search" data-web-search value="'+escapeHTML(state.search||"")+'" placeholder="People, places, moments, fragments…"></label>'+
-      '<div class="web-record-tools"><span class="eyebrow">BROWSE RECORD TYPE</span><select data-web-record-type><option value="">ALL PUBLIC RECORDS</option>'+recordTypes.map(t=>'<option value="'+escapeHTML(t)+'"'+(recordTypeFilter===String(t).toLowerCase()?" selected":"")+'>'+escapeHTML(t.replace(/_/g," "))+'</option>').join("")+'</select></div>'+
+      (recordTypes.length>1?'<div class="web-record-tools"><span class="eyebrow">BROWSE RECORD TYPE</span><select data-web-record-type><option value="">ALL PUBLIC RECORDS</option>'+recordTypes.map(t=>'<option value="'+escapeHTML(t)+'"'+(recordTypeFilter===String(t).toLowerCase()?" selected":"")+'>'+escapeHTML(t.replace(/_/g," "))+'</option>').join("")+'</select></div>':"")+
       '<div class="web-record-results">'+(recordResults||'<span class="inspector-note">NO MATCHES.</span>')+'</div></div></div>'+
       (relationships.length?'<div class="web-list">'+relationships.map(relationship=>{
         const from=byIdMap.get(relationship.from),to=byIdMap.get(relationship.to);
