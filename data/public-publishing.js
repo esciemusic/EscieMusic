@@ -4,71 +4,46 @@
  */
 (function(){
   "use strict";
-
   const BLOCKED_VISIBILITY=new Set(["private","withheld","limited"]);
   const PUBLIC_SECTIONS=new Set(["now","art","world","web","archives","investigation","glass-eye","escie"]);
-
   function approved(record){
-    if(!record||!record.id) return false;
-    if(record.published!==true) return false;
-    if(BLOCKED_VISIBILITY.has(String(record.visibility||"").toLowerCase())) return false;
-    if(record.release_status && String(record.release_status).toLowerCase()!=="released") return false;
+    if(!record||!record.id)return false;
+    const published=record.published===true||String(record.status||"").toLowerCase()==="published";
+    if(!published||BLOCKED_VISIBILITY.has(String(record.visibility||"").toLowerCase()))return false;
+    if(record.release_status&&String(record.release_status).toLowerCase()!=="released")return false;
+    if(record.public_disclosure===false)return false;
     return true;
   }
-
-  function explicitSections(record){
-    const values=record&&record.public_sections;
-    return Array.isArray(values)?values.filter(id=>PUBLIC_SECTIONS.has(id)):[];
+  function sectionAudit(record){
+    const errors=[],values=record&&record.public_sections;
+    if(values===undefined||values===null)return errors;
+    if(!Array.isArray(values)){errors.push({record:record.id||null,error:"public_sections must be an array"});return errors;}
+    values.forEach(section=>{if(!PUBLIC_SECTIONS.has(section))errors.push({record:record.id||null,section,error:"unknown public section"});});
+    return errors;
   }
-
+  function explicitSections(record){const values=record&&record.public_sections;return Array.isArray(values)?values.filter(id=>PUBLIC_SECTIONS.has(id)):[];}
   function inferSections(record){
-    if(!approved(record)) return [];
-    const contract=window.ESCIE_PUBLIC_SECTIONS;
-    const manifest=window.ESCIE_RECORD_REGISTRY&&typeof window.ESCIE_RECORD_REGISTRY.manifestFor==="function"
-      ? window.ESCIE_RECORD_REGISTRY.manifestFor(record.id):null;
-    const sections=manifest&&manifest.sections?manifest.sections:{};
-    const result=[];
-    Object.keys(sections).forEach(id=>{ if(sections[id]&&PUBLIC_SECTIONS.has(id)) result.push(id); });
+    if(!approved(record))return [];
+    const registry=window.ESCIE_RECORD_REGISTRY;
+    const manifest=registry&&typeof registry.manifestFor==="function"?registry.manifestFor(record.id):null;
+    const sections=manifest&&manifest.sections?manifest.sections:{},result=[];
+    Object.keys(sections).forEach(id=>{if(sections[id]&&PUBLIC_SECTIONS.has(id))result.push(id);});
     return result;
   }
-
-  function sectionsFor(record){
-    const explicit=explicitSections(record);
-    return explicit.length?explicit:inferSections(record);
-  }
-
-  function canEnter(record,section){
-    return PUBLIC_SECTIONS.has(section)&&approved(record)&&sectionsFor(record).includes(section);
-  }
-
+  function sectionsFor(record){const explicit=explicitSections(record);return explicit.length?explicit:inferSections(record);}
+  function canEnter(record,section){return PUBLIC_SECTIONS.has(section)&&approved(record)&&sectionAudit(record).length===0&&sectionsFor(record).includes(section);}
   function publicRecords(section){
     const registry=window.ESCIE_RECORD_REGISTRY;
-    if(!registry||typeof registry.allPublicRecords!=="function") return [];
+    if(!registry||typeof registry.allPublicRecords!=="function")return [];
     return registry.allPublicRecords().filter(record=>canEnter(record,section));
   }
-
   function audit(records){
-    const list=Array.isArray(records)?records:[];
     const errors=[];
-    list.forEach(record=>{
-      if(!approved(record)) return;
-      explicitSections(record).forEach(section=>{
-        if(!PUBLIC_SECTIONS.has(section)) errors.push({record:record.id,section,error:"unknown public section"});
-      });
-      if(record.release_status && String(record.release_status).toLowerCase()==="locked"){
-        errors.push({record:record.id,error:"locked record cannot enter public surface"});
-      }
+    (Array.isArray(records)?records:[]).forEach(record=>{
+      sectionAudit(record).forEach(error=>errors.push(error));
+      if(record&&record.release_status&&String(record.release_status).toLowerCase()==="locked")errors.push({record:record.id,error:"locked record cannot enter public surface"});
     });
     return {ok:errors.length===0,errors};
   }
-
-  window.ESCIE_PUBLIC_PUBLISHING={
-    version:"1.0.0",
-    sections:Array.from(PUBLIC_SECTIONS),
-    approved,
-    sectionsFor,
-    canEnter,
-    publicRecords,
-    audit
-  };
+  window.ESCIE_PUBLIC_PUBLISHING={version:"1.1.0",sections:Array.from(PUBLIC_SECTIONS),approved,sectionAudit,sectionsFor,canEnter,publicRecords,audit};
 })();
