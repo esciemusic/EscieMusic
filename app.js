@@ -658,12 +658,12 @@
     const nowRecord=getGlobal("ESCIE_SITE",{});
     container.innerHTML='<div class="world-index">'+motifMarkup("world")+
       '<p class="eyebrow">MONTRÉAL / THE WORLD</p>'+
-      '<div class="world-now-strip"><span>NOW</span><strong>'+escapeHTML(nowRecord.location||"MONTRÉAL, QUÉBEC")+'</strong><em>THE WORLD STARTS HERE.</em></div>'+
+      '<div class="world-now-strip"><strong>'+escapeHTML(nowRecord.location||"MONTRÉAL, QUÉBEC")+'</strong><em>THE WORLD STARTS HERE.</em></div>'+
       '<div class="world-place-list">'+locations.map((place,index)=>
         '<article class="world-place world-place-current" role="button" tabindex="0" aria-label="Open '+escapeHTML(recordTitle(place))+'" data-record-id="'+escapeHTML(recordId(place))+'">'+
           '<span class="world-place-index">'+String(index+1).padStart(2,"0")+'</span>'+
           '<div class="world-place-copy"><h3>'+escapeHTML(recordTitle(place))+'</h3><p>'+escapeHTML(place.description||"THE CITY ANCHOR.")+'</p></div>'+
-          '<span class="world-place-state">CURRENT</span>'+
+          ''+
         '</article>').join("")+'</div>'+
       '<div class="world-record-pulse"><span class="eyebrow">THE CITY RECORD</span>'+
         '<div class="world-record-stats">'+
