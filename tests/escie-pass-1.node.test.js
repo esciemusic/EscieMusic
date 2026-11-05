@@ -14,6 +14,7 @@ test("ESCIE identity remains the artist endpoint",()=>{
   assert.match(app,/function renderAbout\(\)/);
   assert.match(app,/ESCIE THE ARTIST\. THE ART SPEAKS FOR ITSELF\./);
   assert.match(about,/role:\["the Father","the Man","the Monster"\]/);
+  assert.match(about,/description:"ESCIE THE ARTIST\. THE ART SPEAKS FOR ITSELF\."/);
   assert.match(about,/ESCIE THE ARTIST\. THE ART SPEAKS FOR ITSELF\./);
 });
 
