@@ -1592,7 +1592,7 @@ html[data-theme="light"] .site-footer{
    instrument: electric-blue when idle, off-white when active.
    ========================================================= */
 .entry-section #entry-container .entry-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;width:min(100%,1200px);margin:0 auto;text-align:center}
-.entry-section #entry-container h1{margin:0;font-size:clamp(108px,22vw,320px);font-weight:700;letter-spacing:.055em;line-height:.78;text-align:center;color:var(--escie-white);text-shadow:0 0 42px rgba(47,128,255,.07)}
+.entry-section #entry-container h1{margin:0;font-family:'Flesh Wound',Georgia,'Times New Roman',serif;font-size:clamp(112px,22vw,320px);font-weight:400;letter-spacing:.025em;line-height:.72;text-align:center;color:var(--escie-white);text-shadow:0 0 42px rgba(47,128,255,.07);font-variant-ligatures:none}
 .entry-section #entry-tagline{position:relative;margin:clamp(28px,4vw,42px) auto 0;max-width:none;color:var(--escie-white);font-size:clamp(10px,1.35vw,14px);letter-spacing:.28em;line-height:1.5;text-align:center;animation:escie-tagline-distort 8s steps(1,end) infinite}
 @keyframes escie-tagline-distort{0%,91%,100%{transform:none;filter:none;letter-spacing:.28em}92%{transform:translateX(-1px) skewX(-1.2deg);filter:blur(.12px);letter-spacing:.30em}93%{transform:translateX(2px) skewX(.9deg);filter:none;letter-spacing:.265em}94%{transform:none;filter:none;letter-spacing:.28em}}
 @media(max-width:700px){.entry-section #entry-container h1{font-size:clamp(82px,24vw,180px);letter-spacing:.045em}.entry-section #entry-tagline{font-size:9px;letter-spacing:.22em}}
