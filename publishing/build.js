@@ -5,7 +5,8 @@ function isPublicRecord(record={}){
   if(gate&&typeof gate.approved==="function")return gate.approved(record);
   const registry=typeof window!=="undefined"?window.ESCIE_RECORD_REGISTRY:null;
   if(registry&&typeof registry.releaseVisible==="function"){if(!registry.releaseVisible(record))return false;}
-  else if(record.release_status&&record.release_status!=="released")return false;
+  else if(record.release_state!==undefined&&record.release_state!==null&&String(record.release_state).toUpperCase()!=="RELEASED")return false;
+  else if(record.release_status&&String(record.release_status).toLowerCase()!=="released")return false;
   else if(record.type==="project"&&record.release_mode==="progressive")return false;
   if(!(record.published===true||record.status==="published"))return false;
   if(["private","withheld","limited"].includes(String(record.visibility||"").toLowerCase()))return false;
