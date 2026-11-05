@@ -11,7 +11,9 @@ const css=fs.readFileSync(path.join(root,"style.css"),"utf8");
 test("Glass Eye has a primary YouTube window between the eye interface and memory",()=>{
   assert.match(app,/ESCIE_GLASS_EYE_VIDEO/);
   assert.match(app,/data-glass-video-window/);
-  assert.match(app,/title="Glass Eye primary YouTube window"/);\n  assert.match(app,/glassEyeYouTubeURL/);\n  assert.match(app,/youtube-nocookie\\.com\/embed/);
+  assert.match(app,/title="Glass Eye primary YouTube window"/);
+assert.match(app,/glassEyeYouTubeURL/);
+assert.match(app,/youtube-nocookie\\.com\/embed/);
   assert.ok(app.indexOf("videoMarkup+") < app.indexOf('class="glass-eye-actions"'),"primary video must precede sensory controls");
   assert.ok(app.indexOf('class="glass-eye-actions"') < app.indexOf("glass-memory-inline"),"sensory controls must precede viewer memory");
 });
