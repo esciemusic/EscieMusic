@@ -1256,11 +1256,14 @@ function renderClothing(){
 
   function sectionLabel(section) {
     return ({
+      now:"NOW",
       art:"ART",
+      world:"THE WORLD",
       web:"THE WEB",
       archives:"THE ARCHIVES",
       investigation:"THE CASE FILES",
-      glassEye:"GLASS EYE"
+      "glass-eye":"GLASS EYE",
+      escie:"ESCIE"
     })[section] || String(section || "").toUpperCase();
   }
 
