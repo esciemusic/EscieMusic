@@ -6,12 +6,12 @@ const ESCIE_SITE={name:"ESCIE",location:"Montréal, Québec, Canada",publicYear:
   if(typeof document==="undefined") return;
 
   const labels={
+    now:"NOW",
     art:"ART",
     world:"THE WORLD",
     web:"THE WEB",
     archives:"THE ARCHIVES",
     investigation:"THE CASE FILES",
-    merch:"THE WORLD YOU CAN WEAR",
     "glass-eye":"GLASS EYE",
     escie:"ESCIE"
   };
@@ -21,15 +21,11 @@ const ESCIE_SITE={name:"ESCIE",location:"Montréal, Québec, Canada",publicYear:
     web:"⌕",
     archives:"▣",
     investigation:"?",
-    merch:"◇",
     "glass-eye":"◎",
     escie:"◇"
   };
 
   function polish(){
-    const now=document.getElementById("now");
-    if(now) now.hidden=true;
-
     Object.keys(labels).forEach(id=>{
       const section=document.getElementById(id);
       if(!section) return;
