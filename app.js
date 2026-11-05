@@ -1060,7 +1060,15 @@ function renderClothing(){
       fr:{side:"C'EST VOTRE CÔTÉ DE L'ÉCRAN.",core:"VOIR · ENTENDRE · SUIVRE · MANQUER · REVENIR",body:"Ce que vous remarquez, entendez et suivez appartient à votre parcours ici.",see:"VOIR CE QUE J'AI VU",follow:"SUIVRE MON FIL",return:"RETOURNER AU MONDE",info:"ⓘ INFO",clear:"EFFACER MA MÉMOIRE",local:"MÉMOIRE LOCALE / NON CANONIQUE",memory:"VOTRE MÉMOIRE",private:"LOCALE · PRIVÉE · NON CANONIQUE",last:"DERNIER SIGNAL",recent:"PARCOURS RÉCENT",footer:["VOTRE PARCOURS","VOTRE MÉMOIRE","AUCUN CANON","AUCUN HISTORIQUE CENTRAL"],infoMsg:"Le Glass Eye est l'œil du public : un endroit pour regarder à travers l'écran, suivre ce qui vous accroche et repartir avec votre propre parcours."},
       es:{side:"ESTE ES TU LADO DE LA PANTALLA.",core:"VER · OÍR · SEGUIR · PERDER · VOLVER",body:"Lo que notas, escuchas y sigues pertenece a tu recorrido aquí.",see:"VER LO QUE VI",follow:"SEGUIR MI HILO",return:"VOLVER AL MUNDO",info:"ⓘ INFO",clear:"BORRAR MI MEMORIA",local:"MEMORIA LOCAL / NO CANÓNICA",memory:"TU MEMORIA",private:"LOCAL · PRIVADA · NO CANÓNICA",last:"ÚLTIMA SEÑAL",recent:"RECORRIDO RECIENTE",footer:["TU RECORRIDO","TU MEMORIA","SIN CANON","SIN HISTORIAL CENTRAL"],infoMsg:"Glass Eye es el ojo del público: un lugar para mirar a través de la pantalla, seguir lo que te llama y salir con tu propio recorrido."}
     }[language]||null;
-    const t=copy||({}); 
+    const t=copy||({});
+    const videoConfig=getGlobal("ESCIE_GLASS_EYE_VIDEO",{});
+    const videoURL=safeExternalURL(videoConfig&&videoConfig.url);
+    const videoMarkup=videoURL
+      ? '<div class="glass-video-window" data-glass-video-window>'+
+          '<div class="glass-video-label"><span>GLASS EYE / PRIMARY WINDOW</span><span>YOUTUBE</span></div>'+
+          '<div class="glass-video-frame"><iframe src="'+esc(videoURL)+'" title="Glass Eye primary YouTube window" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>'+
+        '</div>'
+      : '<div class="glass-video-window glass-video-window-empty" data-glass-video-window aria-label="Glass Eye primary video window"><div class="glass-video-label"><span>GLASS EYE / PRIMARY WINDOW</span><span>YOUTUBE</span></div><div class="glass-video-placeholder"><span>PUBLIC VIDEO WINDOW</span><strong>AWAITING APPROVED VIDEO</strong></div></div>';
     container.innerHTML=
       '<div class="glass-frame glass-eye-interface">'+
         '<div class="glass-readout"><span>THE GLASS EYE</span><span>VIEWER LAYER / LOCAL MEMORY</span></div>'+
@@ -1080,6 +1088,7 @@ function renderClothing(){
           '</div>'+
           '<p class="glass-eye-response" aria-live="polite">'+esc(t.local)+'</p>'+
         '</div>'+
+        videoMarkup+
         '<div class="glass-memory-inline">'+
           '<div><span>'+esc(t.memory)+'</span><strong>'+esc(t.private)+'</strong></div>'+
           '<div class="glass-path-line"><span>'+esc(t.last)+'</span><em>'+esc(lastSignal||"NONE RECORDED")+'</em></div>'+
