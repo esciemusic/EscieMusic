@@ -1616,3 +1616,42 @@ html[data-theme="light"] .index-navigation{background:rgba(7,10,14,.78);border-c
 html[data-theme="light"] .index-navigation .nav-link{color:#4da3ff}
 html[data-theme="light"] .index-navigation .nav-link.is-current{color:#f0ede4}
 html[data-theme="light"] .index-navigation .nav-link.is-current .node-link-symbol{color:#f0ede4}
+
+
+/* =========================================================
+   ARCHIVES / PASS 3
+   Preservation should feel tactile, quiet, and continuous.
+   ========================================================= */
+
+.archive-index{position:relative;isolation:isolate}
+.archive-index::before{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:-1;
+  background:linear-gradient(90deg,transparent,rgba(47,128,255,.035),transparent),
+    repeating-linear-gradient(0deg,transparent 0 7px,rgba(216,212,202,.018) 8px);
+  opacity:.7;
+}
+.archive-record{position:relative;background:transparent;transform:translateZ(0)}
+.archive-record::after{
+  content:"";position:absolute;left:46px;right:0;bottom:-1px;height:1px;
+  background:linear-gradient(90deg,var(--line),transparent 78%);opacity:.55;pointer-events:none;
+}
+.archive-record:hover{background:linear-gradient(90deg,rgba(111,63,175,.035),transparent 72%)}
+.archive-record:focus-visible{
+  outline:1px solid var(--escie-blue-bright);outline-offset:-1px;background:rgba(47,128,255,.035)
+}
+.archive-record-index{position:relative}
+.archive-record-index::before{
+  content:"";display:block;width:4px;height:4px;margin:0 0 7px 1px;
+  border:1px solid var(--escie-purple);opacity:.7
+}
+.archive-index-note{max-width:320px}
+html[data-theme="light"] .archive-index::before{
+  background:linear-gradient(90deg,transparent,rgba(36,111,224,.025),transparent)
+}
+html[data-theme="light"] .archive-record:hover{background:linear-gradient(90deg,rgba(99,54,162,.045),transparent 72%)}
+html[data-theme="light"] .archive-record:focus-visible{background:rgba(36,111,224,.055)}
+@media(max-width:700px){
+  .archive-record::after{left:34px}
+  .archive-index-note{max-width:none}
+}
+@media(prefers-reduced-motion:reduce){.archive-record{transition:none}}
