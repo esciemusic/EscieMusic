@@ -103,3 +103,10 @@ This is the standing audit contract for every subsequent public-site optimizatio
 - Both public stylesheets retain visible keyboard focus treatment.
 - Reduced-motion handling remains present in interaction paths already audited.
 - Regression coverage now protects these accessibility/preference contracts.
+
+
+### Pass 1 — routing/URL safety checkpoint
+- External URL handling remains protocol allowlisted and fail-closed.
+- No popup-based external navigation was found in the public runtime.
+- Canonical hash routing, hashchange handling, top return, and skip-to-content paths remain intact.
+- Regression coverage now protects URL and route safety.
