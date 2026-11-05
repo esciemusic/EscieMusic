@@ -292,3 +292,15 @@ test("A-Z Pass 1 nested dropdown panel ids do not depend on Math.random",()=>{
   assert.match(index,/var panelId=\(item\.id\|\|"nested-item"\)\+"-panel"/);
 });
 
+
+
+test("A-Z Pass 1 canonical visual selectors remain across public styles",()=>{
+  const style=read("style.css");
+  const aesthetic=read("aesthetic.css");
+  for(const css of [style,aesthetic]){
+    assert.doesNotMatch(css,/\\.section-visual-work(?:\\b|[-:])/);
+    assert.doesNotMatch(css,/\\.section-visual-archive::before/);
+  }
+  assert.match(style,/\\.section-visual-art::before/);
+  assert.match(style,/\\.section-visual-archives::before/);
+});
