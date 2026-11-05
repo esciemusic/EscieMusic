@@ -116,3 +116,10 @@ test("A-Z Pass 1 record section labels use canonical public routes",()=>{
   assert.match(app,/"glass-eye":"GLASS EYE"/);
   assert.doesNotMatch(app,/glassEye:"GLASS EYE"/);
 });
+
+
+test("A-Z Pass 1 nested dropdown panel ids do not depend on Math.random",()=>{
+  const index=read("index.html");
+  assert.doesNotMatch(index,/nested-\+Math\.random/);
+  assert.match(index,/var panelId=\(item\.id\|\|"nested-item"\)\+"-panel"/);
+});
