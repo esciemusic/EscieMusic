@@ -146,3 +146,9 @@ This is the standing audit contract for every subsequent public-site optimizatio
 - Active `style.css` legacy ART/Archives visual selectors were corrected to canonical `section-visual-art` and `section-visual-archives` selectors.
 - A remaining duplicate legacy selector pattern was identified in `aesthetic.css`; it is presentation-only but remains a cleanup target before the Pass 1 final green checkpoint.
 - No new public content or release material was introduced.
+
+
+### Pass 1 — visual selector cleanup completed
+- Remaining legacy ART/Archives visual selectors were removed from the secondary aesthetic stylesheet.
+- Canonical ART and THE ARCHIVES visual selectors are now enforced across both public stylesheets.
+- Regression coverage locks the canonical selector requirement.
