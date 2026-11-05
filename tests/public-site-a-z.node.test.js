@@ -222,11 +222,12 @@ test("A-Z Pass 1 preserves keyboard and preference accessibility contracts",()=>
   assert.match(aesthetic,/:focus-visible/);
 });
 
-test("A-Z Pass 1 does not contain an active November 22 countdown",()=>{
+test("A-Z Pass 1 keeps the deferred November 22 countdown inactive",()=>{
   const app=read("app.js");
   const index=read("index.html");
-  assert.doesNotMatch(app,/2026-11-22|COUNTDOWN|countdown/);
-  assert.doesNotMatch(index,/2026-11-22|COUNTDOWN|countdown/);
+  assert.doesNotMatch(app,/2026-11-22|November 22|Nov 22/);
+  assert.ok(index.includes('data-escie-countdown hidden'));
+  assert.ok(index.includes('NEXT TRANSMISSION'));
 });
 
 test("A-Z Pass 1 time state is lightweight and does not create a recurring timer",()=>{
