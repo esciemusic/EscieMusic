@@ -89,3 +89,10 @@ This is the standing audit contract for every subsequent public-site optimizatio
 - Runtime initialization remains idempotent; mobile menu and record-inspector setup each have one initialization call.
 - Merch filter controls carry a per-control binding guard to prevent duplicate listeners across renders.
 - Saved language preference and keyboard-close behavior remain covered by regression contracts.
+
+
+### Pass 1 — time/performance checkpoint
+- No active November 22 countdown or countdown runtime was found; the previously deferred countdown remains inactive.
+- Time-state behavior is lightweight and derives the current day/dusk/night state without a recurring interval.
+- Public runtime contains no recurring `setInterval` timer; the Web search debounce remains the only short-lived input timer.
+- This preserves the decision to defer countdown implementation rather than accidentally activating obsolete release timing.
