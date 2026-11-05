@@ -207,3 +207,9 @@ This is the standing audit contract for every subsequent public-site optimizatio
 - No recurring interval is used for the time state.
 - No November 22 countdown/date dependency remains in the public runtime.
 - Regression coverage locks the lightweight, date-independent contract; a future countdown can only be introduced deliberately at the appropriate release phase.
+
+
+### Z — zero-regression checkpoint / failure caught
+- The deployment audit caught a real regression in the newly added symbol interaction contract: its regular-expression assertion was syntactically invalid, causing the public A–Z audit test suite to fail before any tests could run.
+- The runtime symbol interaction itself was not the failing component; the test contract was malformed.
+- The assertion was corrected and committed. New CI/deployment runs are queued against the corrected commit; Z remains **not yet green** until those runs complete successfully.
