@@ -1586,6 +1586,58 @@ html[data-theme="light"] .site-footer{
 }
 
 
+
+/* =========================================================
+   ESCIE TYPOGRAPHIC SYSTEM
+   Titles: Angel Wish
+   Supporting interface/subtext: Chopin Script
+   Font files are intentionally local so licensing is explicit.
+   ========================================================= */
+@font-face{
+  font-family:"Angel Wish";
+  src:url("./assets/fonts/angel-wish.ttf") format("truetype");
+  font-style:normal;
+  font-weight:400;
+  font-display:swap
+}
+@font-face{
+  font-family:"Chopin Script";
+  src:url("./assets/fonts/chopin-script.otf") format("opentype");
+  font-style:normal;
+  font-weight:400;
+  font-display:swap
+}
+:root{
+  --escie-title-font:"Angel Wish",Georgia,"Times New Roman",serif;
+  --escie-script-font:"Chopin Script","Segoe Script","Brush Script MT",cursive
+}
+.entry-section #entry-container h1,
+.site-section h2,
+.site-section h3,
+.section-drop-trigger .section-drop-title,
+.index-navigation .nav-link{
+  font-family:var(--escie-title-font)
+}
+.entry-section #entry-tagline,
+.entry-section #entry-location,
+.site-section .section-lede,
+.site-section .art-threshold,
+.site-section .hero-location,
+.site-section .hero-state,
+.site-section .record-filters,
+.site-section .section-drop-description,
+.site-section .section-drop-content,
+.site-section .content-container,
+.site-footer,
+.glass-eye-interface,
+.record-card,
+.world-card,
+.archive-record,
+.investigation-case,
+.nested-drop-panel{
+  font-family:var(--escie-script-font)
+}
+
 /* =========================================================
    ENTRY / INDEX — FINAL SIGNAL HIERARCHY
    ESCIE is the visual anchor. The Index is a translucent
