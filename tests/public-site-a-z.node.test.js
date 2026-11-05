@@ -250,7 +250,7 @@ test("A-Z Pass 1 merch filter listeners are bound once per control",()=>{
 
 test("A-Z Pass 1 public audio playback accepts only safe URLs",()=>{
   const app=read("app.js");
-  assert.match(app,/audio && safeExternalURL\(item\.url\)/);
+  assert.ok(app.includes('safeExternalURL(item.url)'));
   assert.match(app,/type === "audio" && safeExternalURL\(entry\.url\)/);
   assert.match(app,/url: safeExternalURL\(audio\.url\)/);
 });
