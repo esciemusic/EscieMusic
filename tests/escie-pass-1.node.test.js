@@ -8,10 +8,13 @@ const read=p=>fs.readFileSync(path.join(root,p),"utf8");
 test("ESCIE identity remains the artist endpoint",()=>{
   const index=read("index.html");
   const app=read("app.js");
+  const about=read("data/about.js");
   assert.match(index,/id="escie" class="site-section escie-section"/);
   assert.match(index,/ESCIE IS THE ARTIST\. THE WORK SPEAKS FROM HERE\./);
   assert.match(app,/function renderAbout\(\)/);
   assert.match(app,/ESCIE IS THE ARTIST\. THE WORK SPEAKS FROM HERE\./);
+  assert.match(about,/role:\["the Father","the Man","the Monster"\]/);
+  assert.match(about,/ESCIE — the Father \/ the Man \/ the Monster\./);
 });
 
 test("ESCIE identity does not expose unreleased BAM material",()=>{
