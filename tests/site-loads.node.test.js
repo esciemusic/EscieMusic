@@ -58,6 +58,10 @@ assert(fs.readFileSync("app.js","utf8").includes("glass-approved-media"),"approv
 assert(fs.readFileSync("data/glass-eye-participation.js","utf8").includes("ONLY PHOTO, VIDEO OR AUDIO FILES ARE ACCEPTED"),"Glass Eye media input must enforce supported media types");
 assert(fs.readFileSync("app.js","utf8").includes("data-web-record-type"),"THE WEB record-type filter must be wired");
 assert(fs.readFileSync("app.js","utf8").includes("safeExternalURL"),"external storefront URLs must be protocol-validated");
+assert(fs.readFileSync("app.js","utf8").includes('archive_state || record.archive?.state'),"THE ARCHIVES must recognize archived universal records");
+assert(fs.readFileSync("app.js","utf8").includes("PRESERVED TRACE /"),"THE ARCHIVES must expose a preserved-trace hierarchy");
+assert(fs.readFileSync("style.css","utf8").includes(".archive-record-index"),"THE ARCHIVES must retain its indexed archival list styling");
+assert(fs.readFileSync("language.js","utf8").includes("OPEN THE RECORD TO FOLLOW ITS TRACE."),"THE ARCHIVES interface copy must be translatable");
 
 console.log("ESCIE site script-load contracts OK");
 
