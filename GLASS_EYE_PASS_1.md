@@ -42,6 +42,14 @@ That memory is:
 
 Clearing it must not affect canonical ESCIE records.
 
+## Primary visual window
+
+The Glass Eye primary visual window is a YouTube embed placed after the audience-eye interface and before viewer controls/memory.
+
+The public configuration is intentionally empty until an artist-approved YouTube video is selected. No invented or placeholder video URL is treated as public media.
+
+When a URL is approved, the window renders responsively inside the Glass Eye and remains presentation-only; it does not create Central history or canon.
+
 ## Interaction model
 
 SEE WHAT I SAW:
