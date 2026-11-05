@@ -43,7 +43,7 @@
   }
   async function load(){
     const rows=await get("/records?select=*&visibility=eq.PUBLIC&publication_state=eq.PUBLISHED&release_state=eq.RELEASED&order=updated_at.desc");
-    const relationships=await get("/record_relationships?select=*&order=created_at.desc");
+    const relationships=await get("/record_relationships?select=id,from,to,type,visibility,public_disclosure,release_state&visibility=eq.PUBLIC&public_disclosure=eq.true&release_state=eq.RELEASED&order=created_at.desc");
     root.ESCIE_LIVE_RECORDS=(Array.isArray(rows)?rows:[]).map(normalize).filter(x=>x.id);
     root.ESCIE_LIVE_RELATIONSHIPS=Array.isArray(relationships)?relationships:[];
     return {records:root.ESCIE_LIVE_RECORDS,relationships:root.ESCIE_LIVE_RELATIONSHIPS};
