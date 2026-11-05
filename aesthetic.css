@@ -1274,7 +1274,7 @@ html[data-theme="light"] p, html[data-theme="light"] button, html[data-theme="li
 html[data-theme="light"] .signal-status { color:var(--escie-purple); }
 html[data-theme="light"] .signal-light { background:var(--escie-purple); box-shadow:0 0 9px rgba(91,46,152,.28); }
 html[data-theme="light"] .signal-scan { background:var(--escie-blue); box-shadow:0 0 18px rgba(23,104,216,.22); }
-html[data-theme="light"] .section-visual, html[data-theme="light"] .section-visual-world, html[data-theme="light"] .section-visual-work,
+html[data-theme="light"] .section-visual, html[data-theme="light"] .section-visual-world, html[data-theme="light"] .section-visual-art,
 html[data-theme="light"] .section-visual-web, html[data-theme="light"] .section-visual-archive, html[data-theme="light"] .section-visual-investigation,
 html[data-theme="light"] .section-visual-glass, html[data-theme="light"] .section-visual-escie {
   color:var(--escie-purple); border-color:var(--escie-blue-line);
@@ -1557,7 +1557,7 @@ html[data-theme="light"] .signal-scan{
 }
 html[data-theme="light"] .section-visual,
 html[data-theme="light"] .section-visual-world,
-html[data-theme="light"] .section-visual-work,
+html[data-theme="light"] .section-visual-art,
 html[data-theme="light"] .section-visual-web,
 html[data-theme="light"] .section-visual-archive,
 html[data-theme="light"] .section-visual-investigation,
