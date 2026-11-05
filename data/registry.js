@@ -365,5 +365,15 @@ function allPublicRecords(){
     });
     return {ok:missing.length===0,missing};
   }
-  function publicSectionContract(){\n    const contract=window.ESCIE_PUBLIC_SECTIONS;\n    return contract&&typeof contract.list==="function"?contract.list():[];\n  }\n\n  function sectionDefinition(id){\n    const contract=window.ESCIE_PUBLIC_SECTIONS;\n    return contract&&typeof contract.get==="function"?contract.get(id):null;\n  }\n\n  window.ESCIE_RECORD_REGISTRY={version:"1.19.0",build,records:()=>build().records,publicNodes,nodeFor,nodesForRecord,allPublicRecords,publicRecord,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,releaseAudit,manifestFor,filter,contextFor,publicRelationships,relationshipTypes,relationshipCategories,relationshipsFor,relationshipCounts,releaseVisible,publicSectionContract,sectionDefinition};
+  function publicSectionContract(){
+    const contract=window.ESCIE_PUBLIC_SECTIONS;
+    return contract&&typeof contract.list==="function"?contract.list():[];
+  }
+
+  function sectionDefinition(id){
+    const contract=window.ESCIE_PUBLIC_SECTIONS;
+    return contract&&typeof contract.get==="function"?contract.get(id):null;
+  }
+
+  window.ESCIE_RECORD_REGISTRY={version:"1.19.0",build,records:()=>build().records,publicNodes,nodeFor,nodesForRecord,allPublicRecords,publicRecord,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,releaseAudit,manifestFor,filter,contextFor,publicRelationships,relationshipTypes,relationshipCategories,relationshipsFor,relationshipCounts,releaseVisible,publicSectionContract,sectionDefinition};
 })();
