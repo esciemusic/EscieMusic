@@ -10,7 +10,8 @@
     if(!record||!record.id)return false;
     const published=record.published===true||String(record.status||"").toLowerCase()==="published";
     if(!published||BLOCKED_VISIBILITY.has(String(record.visibility||"").toLowerCase()))return false;
-    if(record.release_state!==undefined&&record.release_state!==null&&String(record.release_state).toUpperCase()!=="RELEASED")return false;\n    if(record.release_status!==undefined&&record.release_status!==null&&String(record.release_status).toLowerCase()!=="released")return false;
+    if(record.release_state!==undefined&&record.release_state!==null&&String(record.release_state).toUpperCase()!=="RELEASED")return false;
+    if(record.release_status!==undefined&&record.release_status!==null&&String(record.release_status).toLowerCase()!=="released")return false;
     if(record.public_disclosure===false)return false;
     return true;
   }
