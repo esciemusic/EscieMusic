@@ -1098,15 +1098,15 @@ function renderClothing(){
           '<strong>'+esc(t.side)+'</strong>'+
           '<span class="glass-core-line">'+esc(t.core)+'</span>'+
           '<p>'+esc(t.body)+'</p>'+
-          '<div class="glass-eye-actions" role="group" aria-label="Glass Eye actions">'+
-            '<button type="button" data-glass-eye-action="observe">'+esc(t.see)+'</button>'+
-            '<button type="button" data-glass-eye-action="follow">'+esc(t.follow)+'</button>'+
-            '<button type="button" data-glass-eye-action="return">'+esc(t.return)+'</button>'+
-            '<button type="button" data-glass-eye-action="info">'+esc(t.info)+'</button>'+
-          '</div>'+
-          '<p class="glass-eye-response" aria-live="polite">'+esc(t.local)+'</p>'+
         '</div>'+
         videoMarkup+
+        '<div class="glass-eye-actions" role="group" aria-label="Glass Eye actions">'+
+          '<button type="button" data-glass-eye-action="observe" aria-pressed="false">'+esc(t.see)+'</button>'+
+          '<button type="button" data-glass-eye-action="follow" aria-pressed="false">'+esc(t.follow)+'</button>'+
+          '<button type="button" data-glass-eye-action="return" aria-pressed="false">'+esc(t.return)+'</button>'+
+          '<button type="button" data-glass-eye-action="info" aria-pressed="false">'+esc(t.info)+'</button>'+
+        '</div>'+
+        '<p class="glass-eye-response" aria-live="polite">'+esc(t.local)+'</p>'+
         '<div class="glass-memory-inline">'+
           '<div><span>'+esc(t.memory)+'</span><strong>'+esc(t.private)+'</strong></div>'+
           '<div class="glass-path-line"><span>'+esc(t.last)+'</span><em>'+esc(lastSignal||"NONE RECORDED")+'</em></div>'+
@@ -1186,6 +1186,10 @@ function renderClothing(){
     container.querySelectorAll("[data-glass-eye-action]").forEach(button=>button.addEventListener("click",()=>{
       const action=button.getAttribute("data-glass-eye-action");
       if(action==="clear-memory"){if(memory&&typeof memory.clear==="function")memory.clear();renderGlassEye();return;}
+      container.querySelectorAll("[data-glass-eye-action]").forEach(item=>{
+        if(item.getAttribute("data-glass-eye-action")!=="clear-memory")item.setAttribute("aria-pressed","false");
+      });
+      button.setAttribute("aria-pressed","true");
       const messages={observe:t.local,follow:t.local,return:t.return,info:t.infoMsg};
       if(response)response.textContent=messages[action]||t.local;
       if(action!=="info"&&memory&&typeof memory.record==="function")memory.record({type:"GLASS_EYE_"+String(action||"").toUpperCase(),target_id:"glass-eye",timestamp:new Date().toISOString()});
