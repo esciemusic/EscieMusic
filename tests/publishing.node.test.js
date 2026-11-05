@@ -86,3 +86,16 @@ assert(
   !validate.validatePublicRecord(publicationCases[3]).valid,
   "Records denying public disclosure must fail public validation."
 );
+
+
+const invalidSection=validate.validatePublicRecord({id:"invalid-section",type:"art",published:true,visibility:"public",public_sections:["art","not-a-public-section"]});
+assert(!invalidSection.valid,"Unknown public section must fail validation.");
+assert(invalidSection.errors.some(error=>/Unknown public section/.test(error)),"Unknown public section error was not reported.");
+
+const disclosureDenied=validate.validatePublicRecord({id:"disclosure-denied",type:"art",published:true,visibility:"public",public_disclosure:false});
+assert(!disclosureDenied.valid,"Explicitly denied public disclosure must fail validation.");
+
+const locked=validate.validatePublicRecord({id:"locked-record",type:"art",published:true,visibility:"public",release_status:"locked"});
+assert(!locked.valid,"Locked records must fail the public release gate.");
+
+console.log("ESCIE public publication safety extensions OK");
