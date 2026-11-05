@@ -367,3 +367,18 @@ test("A-Z Pass 1 time state remains lightweight and date-independent",()=>{
   assert.doesNotMatch(app,/2026-11-22|November 22|Nov 22/);
   assert.doesNotMatch(app,/countdown/i);
 });
+
+
+test("A-Z Pass 2 entry keeps the live signal state above ESCIE",()=>{
+  const index=read("index.html");
+  const app=read("app.js");
+  const aesthetic=read("aesthetic.css");
+  assert.match(index,/id="entry-state" class="entry-state"/);
+  assert.ok(index.indexOf('id="entry-state"') < index.indexOf("<h1>ESCIE</h1>"));
+  assert.ok(app.includes('const entryState = byId("entry-state");'));
+  assert.ok(app.includes("SIGNAL // DAWN"));
+  assert.ok(app.includes("SIGNAL // DAY"));
+  assert.ok(app.includes("SIGNAL // DUSK"));
+  assert.ok(app.includes("SIGNAL // NIGHT"));
+  assert.ok(aesthetic.includes(".entry-state{"));
+});
