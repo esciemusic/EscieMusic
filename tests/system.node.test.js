@@ -755,7 +755,8 @@ assert(!merchApp.includes("function bindMerchFilters(){}"),"public merch filter 
 
 /* LAUNCH BUTTON COVERAGE CONTRACTS */
 const publicIndexRuntime = fs.readFileSync("index.html","utf8");
-assert((publicIndexRuntime.match(/<button\b/gi)||[]).length === 1, "public index should keep only the primary hardcoded menu button; generated controls are runtime-owned");
+const hardcodedLaunchButtons=(publicIndexRuntime.match(/<button\\b[^>]*>/gi)||[]).filter(tag=>!/[ ]class="[^"]*preference-button[^"]*"/.test(tag));
+assert(hardcodedLaunchButtons.length === 1, "public index should keep only the primary hardcoded menu button; preference controls are exempt and generated controls are runtime-owned");
 assert(publicIndexRuntime.includes('id="mobile-menu-button"'), "public index menu control must exist");
 assert(publicIndexRuntime.includes('id="merch-filters"'), "public merch filter host must exist");
 assert(appRuntime.includes('function bindMerchFilters'), "public merch filters must be generated from clothing data");
