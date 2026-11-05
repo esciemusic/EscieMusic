@@ -18,6 +18,8 @@
       status:String(row.status||"active").toLowerCase(),
       visibility:String(row.visibility||"PUBLIC").toLowerCase(),
       published:String(row.publication_state||"")=="PUBLISHED",
+      publication_state:String(row.publication_state||"").toUpperCase(),
+      release_state:String(row.release_state||"").toUpperCase(),
       release_status:"released",
       certainty:row.certainty||"UNKNOWN",
       tags:Array.isArray(row.tags)?row.tags:[],
