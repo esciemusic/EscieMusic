@@ -213,3 +213,10 @@ This is the standing audit contract for every subsequent public-site optimizatio
 - The deployment audit caught a real regression in the newly added symbol interaction contract: its regular-expression assertion was syntactically invalid, causing the public A–Z audit test suite to fail before any tests could run.
 - The runtime symbol interaction itself was not the failing component; the test contract was malformed.
 - The assertion was corrected and committed. New CI/deployment runs are queued against the corrected commit; Z remains **not yet green** until those runs complete successfully.
+
+
+## Pass 2 — entry experience checkpoint — 2026-11-05
+- The entry now presents the live signal state immediately above ESCIE, preserving the sparse hierarchy while making the current environmental state visible.
+- The state derives from the existing dawn/day/dusk/night time-state calculation; no recurring timer or obsolete November 22 countdown was introduced.
+- The signal-state treatment uses the established purple identity language and remains responsive on small screens.
+- A regression contract protects placement, state labels and styling so Pass 2 presentation work cannot silently remove the live state.
