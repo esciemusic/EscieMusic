@@ -41,7 +41,7 @@
   const malformed=[{id:"bad",section:"now",mode:"x",intensity:.5,status:"active",asset:{type:"image"}}];
   assert(audit(malformed).invalidAssets.includes("bad"),"visual audit must identify malformed assets");
   const normalized=normalize(items);
-  assert(normalized.length===7,"all seven public sections should have a visual");
+  assert(normalized.length===8,"all eight public sections should have a visual");
   assert(new Set(normalized.map(v=>v.id)).size===normalized.length,"visual IDs must be unique");
   normalized.forEach(v=>{
    assert(v.section&&v.mode,"visual requires section and mode");
