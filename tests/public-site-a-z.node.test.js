@@ -125,6 +125,26 @@ test("A-Z Pass 1 restores saved language preference on boot",()=>{
   assert.match(index,/document\.documentElement\.lang=initialLanguage/);
 });
 
+test("A-Z Pass 1 keeps unreleased public registries sealed",()=>{
+  const projects=read("data/projects.js");
+  const music=read("data/music.js");
+  const investigation=read("data/investigation.js");
+  const archive=read("data/archive.js");
+  assert.match(projects,/ESCIE_PROJECTS=\[\]/);
+  assert.match(music,/ESCIE_MUSIC=\[\]/);
+  assert.match(investigation,/ESCIE_INVESTIGATION\s*=\s*\[\]/);
+  assert.match(archive,/ESCIE_ARCHIVE\s*=\s*\[\]/);
+  assert.doesNotMatch(projects,/BAM|Dallas\s*[’']63/i);
+  assert.doesNotMatch(music,/BAM|Dallas\s*[’']63/i);
+});
+
+test("A-Z Pass 1 keeps the canonical eight-section shell",()=>{
+  const index=read("index.html");
+  for(const id of ["now","art","world","web","archives","investigation","glass-eye","escie"]){
+    assert.match(index,new RegExp('<section id="'+id+'"'));
+  }
+});
+
 test("A-Z Pass 1 keeps external media URL handling fail-closed",()=>{
   const app=read("app.js");
   assert.match(app,/function safeExternalURL\(value\)/);
