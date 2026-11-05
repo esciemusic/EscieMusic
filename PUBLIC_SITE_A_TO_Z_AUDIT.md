@@ -171,3 +171,9 @@ This is the standing audit contract for every subsequent public-site optimizatio
 - Glass Eye pseudo-element and active-state selectors were still using the legacy `section-visual-glass` class.
 - They are now aligned with the canonical `section-visual-glass-eye` class used by the public section architecture.
 - Regression coverage remains locked against legacy Glass Eye selector usage.
+
+
+### Pass 1 — symbols interaction checkpoint
+- Public section motifs render as real buttons with symbol IDs rather than decorative-only elements.
+- The delegated public interaction layer resolves those IDs through the symbol inspector, preserving the agreed interactive symbol system across dynamically rendered sections.
+- Regression coverage now locks the button/handler contract.
