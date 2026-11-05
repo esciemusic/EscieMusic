@@ -71,6 +71,17 @@ let ESCIE_I18N_OBSERVER = null;\nlet ESCIE_I18N_APPLYING = false;\n\nfunction ap
 
 
 
+function observeEscieInterfaceTranslations() {
+  if (typeof MutationObserver === "undefined" || !document.body || ESCIE_I18N_OBSERVER) return;
+  ESCIE_I18N_OBSERVER = new MutationObserver(function() {
+    if (ESCIE_I18N_APPLYING) return;
+    const language = (window.ESCIE_STATE && window.ESCIE_STATE.language) || "en";
+    ESCIE_I18N_APPLYING = true;
+    try { applyEscieInterfaceTranslations(language); } finally { ESCIE_I18N_APPLYING = false; }
+  });
+  ESCIE_I18N_OBSERVER.observe(document.body, {childList:true,subtree:true});
+}
+
 const ESCIE_INTERFACE_EXTRA = Object.freeze({
   en: {
     "OPEN INDEX":"OPEN INDEX","CLOSE INDEX":"CLOSE INDEX","RETURN TO TOP":"RETURN TO TOP",
@@ -588,17 +599,20 @@ const ESCIE_LANGUAGE_ENGINE = {
     const events = window.ESCIE_EVENTS;
     if (events && typeof events.emit === "function") events.emit("language:changed", { language: normalized });
     if (typeof applyEscieInterfaceTranslations === "function") {
-      applyEscieInterfaceTranslations(normalized);
+      ESCIE_I18N_APPLYING = true;
+      try { applyEscieInterfaceTranslations(normalized); } finally { ESCIE_I18N_APPLYING = false; }
+      observeEscieInterfaceTranslations();
       Promise.resolve().then(() => applyEscieInterfaceTranslations(normalized));
     }
     return normalized;
   },
 
   mode(name) {
-
-    return ESCIE_LANGUAGE_MODES[name]
-      || ESCIE_LANGUAGE_MODES.unknown;
-
+    const mode = ESCIE_LANGUAGE_MODES[name] || ESCIE_LANGUAGE_MODES.unknown;
+    const language = (window.ESCIE_STATE && window.ESCIE_STATE.language) || "en";
+    return Object.assign({}, mode, {
+      description: this.translate(mode.description, language)
+    });
   },
 
 
