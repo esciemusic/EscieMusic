@@ -85,4 +85,4 @@ A submission is never canon merely because it was sent.
 - No game or shop dependency is required.
 - The section remains usable when no approved contribution/media exists.
 
-Pass 2 will optimize sensory media, navigation, visual states and interaction depth.
+Pass 2 will optimize sensory media, navigation, visual states and interaction depth.\n\n## Pass 2 readiness\n\nThe primary video window now accepts only a valid YouTube video URL, converts it to a privacy-enhanced embed, fails closed for non-YouTube hosts/invalid IDs, and remains empty until approved public media is supplied.
