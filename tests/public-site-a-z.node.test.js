@@ -125,6 +125,15 @@ test("A-Z Pass 1 restores saved language preference on boot",()=>{
   assert.match(index,/document\.documentElement\.lang=initialLanguage/);
 });
 
+test("A-Z Pass 1 preserves record inspector focus return and visible close focus",()=>{
+  const app=read("app.js");
+  const style=read("style.css");
+  assert.match(app,/inspectorLastFocus/);
+  assert.match(app,/function closeRecordInspector\(\)/);
+  assert.match(app,/closeRecordInspector\(\);/);
+  assert.match(style,/\.record-inspector-close:focus-visible/);
+});
+
 test("A-Z Pass 1 preserves keyboard closing for section and nested interfaces",()=>{
   const index=read("index.html");
   assert.match(index,/event\.key!=="Escape"/);
