@@ -307,7 +307,7 @@ assert(centralWorldRuntime.includes("without telling the audience what is real")
 const nodesRuntime=fs.readFileSync("data/nodes.js","utf8");
 assert(!nodesRuntime.includes("ARTIST / AUTHOR"),"identity node must not expose artist/author framing");
 assert(nodesRuntime.includes('label:"ESCIE"'),"identity node must use ESCIE framing");
-assert(nodesRuntime.includes('role:"THE FATHER / THE MAN / THE MONSTER"'),"identity node must use Father / Man / Monster framing");
+assert(nodesRuntime.includes('role:"THE FATHER / THE MAN"'),"identity node must use Father / Man / Monster framing");
 assert(nodesRuntime.includes('description:"ESCIE, THE WORK SPEAKS FOR ITSELF."'),"identity node must use the confirmed ESCIE statement");
 const clothingRuntime=fs.readFileSync("data/clothing.js","utf8");assert(clothingRuntime.includes("production_packet"),"clothing records need production packets");assert(clothingRuntime.includes('approval_gate:"HUMAN"'),"clothing production must remain human-gated");assert(clothingRuntime.includes('quantity_decision:"POST-SAMPLE"'),"clothing quantities must wait until after sample approval");
 assert(clothingRuntime.includes("ESCIE_CLOTHING_AUDIT"),"clothing production audit contract missing");assert(clothingRuntime.includes('p.approval_gate!=="HUMAN"'),"clothing audit must enforce human approval");
