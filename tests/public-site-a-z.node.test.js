@@ -125,6 +125,31 @@ test("A-Z Pass 1 restores saved language preference on boot",()=>{
   assert.match(index,/document\.documentElement\.lang=initialLanguage/);
 });
 
+test("A-Z Pass 1 preserves the approved public experience surfaces",()=>{
+  const app=read("app.js");
+  const nav=read("navigation.js");
+  assert.match(nav,/id:"now"/);
+  assert.match(nav,/id:"art"/);
+  assert.match(nav,/id:"world"/);
+  assert.match(nav,/id:"web"/);
+  assert.match(nav,/id:"archives"/);
+  assert.match(nav,/id:"investigation"/);
+  assert.match(nav,/id:"glass-eye"/);
+  assert.match(nav,/id:"escie"/);
+  assert.match(app,/function renderGlassEye\(\)/);
+  assert.match(app,/function renderWorld\(\)/);
+  assert.match(app,/function renderArchive\(\)/);
+  assert.match(app,/function renderInvestigation\(\)/);
+  assert.match(app,/glassEyeYouTubeURL/);
+});
+
+test("A-Z Pass 1 keeps game exploration out of the public doorway",()=>{
+  const index=read("index.html");
+  const app=read("app.js");
+  assert.doesNotMatch(index,/Enter the World|game-shop|game shop/i);
+  assert.doesNotMatch(app,/GAME_SHOP|game-shop/i);
+});
+
 test("A-Z Pass 1 preserves record inspector focus return and visible close focus",()=>{
   const app=read("app.js");
   const style=read("style.css");
