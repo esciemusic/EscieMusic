@@ -52,3 +52,16 @@ THE FATHER · THE MAN · THE MONSTER
 No reality-classification filter. No automatic public publication. No unreleased BAM/Dallas material. No private Central workspace on the public site. No forced ARG/puzzle framing. No manufactured relationships. No game dependency while the game remains intentionally hidden.
 
 This is the standing audit contract for every subsequent public-site optimization pass.
+
+
+## Pass 1 functional audit — checkpoint
+
+- Public shell contains exactly the eight canonical sections: NOW, ART, THE WORLD, THE WEB, THE ARCHIVES, THE CASE FILES, GLASS EYE, ESCIE.
+- Navigation registry follows the same order.
+- Visual registry follows the same section IDs.
+- NOW now has its canonical ◉ dropdown symbol.
+- Legacy visual section IDs are blocked by regression contracts.
+- Closed-section accordion behavior remains the structural rule; expansion creates the space.
+- Public release registries remain empty until approved release.
+- Glass Eye remains the audience-eye surface with the approved-video gate.
+- Game remains outside the public navigation while intentionally hidden.
