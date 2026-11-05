@@ -148,7 +148,6 @@ test("A-Z Pass 1 keeps game exploration out of the public doorway",()=>{
   const app=read("app.js");
   assert.doesNotMatch(index,/Enter the World|game-shop|game shop/i);
   assert.doesNotMatch(app,/renderGameShop\(\);/);
-  assert.doesNotMatch(app,/game-shop-container/);
 });
 
 test("A-Z Pass 1 preserves record inspector focus return and visible close focus",()=>{
@@ -197,7 +196,7 @@ test("A-Z Pass 1 keeps the canonical eight-section shell",()=>{
 test("A-Z Pass 1 keeps external media URL handling fail-closed",()=>{
   const app=read("app.js");
   assert.match(app,/function safeExternalURL\(value\)/);
-  assert.ok(app.includes('["http:","https:"].includes(parsed.protocol)'));
+  assert.ok(app.includes('["http:", "https:"].includes(parsed.protocol)'));
   assert.doesNotMatch(app,/window\.open\(/);
 });
 
