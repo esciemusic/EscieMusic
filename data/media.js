@@ -42,7 +42,7 @@
         license:""
       },
       placement:{
-        publicSections:["WORK","THE WORLD","ARCHIVE","INVESTIGATION"],
+        publicSections:["ART","THE WORLD","THE ARCHIVES","THE CASE FILES"],
         worldDistricts:["LITTLE_ITALY"],
         worldBuildings:[],
         visualRoles:["environment","reference","archive"],
