@@ -16,6 +16,12 @@
       });
       assert(engine.translate("NO TRANSMISSION LOADED","fr")==="AUCUNE TRANSMISSION CHARGÉE","French runtime translation must resolve");
       assert(engine.translate("NO TRANSMISSION LOADED","es")==="NO HAY TRANSMISIÓN CARGADA","Spanish runtime translation must resolve");
+      assert(engine.translate("SIGNAL QUIET","fr")==="SIGNAL SILENCIEUX","French signal status must resolve");
+      assert(engine.translate("SIGNAL QUIET","es")==="SEÑAL EN SILENCIO","Spanish signal status must resolve");
+      assert(engine.translate("The signal is quiet. The record remains.","fr")==="Le signal est silencieux. Le registre demeure.","French signal message must resolve");
+      assert(engine.translate("The signal is quiet. The record remains.","es")==="La señal está en silencio. El registro permanece.","Spanish signal message must resolve");
+      assert(engine.translate("NIGHTLIGHT","fr")==="NIGHTLIGHT","canonical symbol names must remain unchanged");
+      assert(engine.translate("NIGHTLIGHT","es")==="NIGHTLIGHT","canonical symbol names must remain unchanged");
       const mode=engine.mode("documentary");
       assert(mode&&typeof mode.description==="string","mode description must remain available");
     }
