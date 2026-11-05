@@ -10,9 +10,9 @@ test("ESCIE identity remains the artist endpoint",()=>{
   const app=read("app.js");
   const about=read("data/about.js");
   assert.match(index,/id="escie" class="site-section escie-section"/);
-  assert.match(index,/ESCIE IS THE ARTIST\. THE WORK SPEAKS FROM HERE\./);
+  assert.match(index,/ESCIE THE ARTIST\. THE ART SPEAKS FOR ITSELF\./);
   assert.match(app,/function renderAbout\(\)/);
-  assert.match(app,/ESCIE IS THE ARTIST\. THE WORK SPEAKS FROM HERE\./);
+  assert.match(app,/ESCIE THE ARTIST\. THE ART SPEAKS FOR ITSELF\./);
   assert.match(about,/role:\["the Father","the Man","the Monster"\]/);
   assert.match(about,/ESCIE — the Father \/ the Man \/ the Monster\./);
 });
