@@ -310,3 +310,12 @@ test("A-Z Pass 1 clothing disclosure fails closed for hidden or locked garments"
   const app=read("app.js");
   assert.match(app,/getGlobal\("ESCIE_CLOTHING",\[\]\)\)\.filter\(item=>item&&item\.public_visibility!==\"hidden\"&&item\.release_status!==\"locked\"\)/);
 });
+
+
+test("A-Z Pass 1 visual selectors use canonical section IDs",()=>{
+  const css=read("style.css");
+  assert.doesNotMatch(css,/section-visual-(work|archive)(?!s)/);
+  assert.doesNotMatch(css,/section-visual-glass(?!-eye)/);
+  assert.match(css,/section-visual-archives/);
+  assert.match(css,/section-visual-glass-eye/);
+});
