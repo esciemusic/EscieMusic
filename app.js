@@ -777,7 +777,14 @@ function renderClothing(){
     const container=byId("merch-container");
     if(!container)return;
     const config=getGlobal("ESCIE_MERCH",{});
-    const clothing=normalizeCollection(getGlobal("ESCIE_CLOTHING",[])).filter(item=>item&&item.type==="CLOTHING");
+    const merchLocked=String(config.public_visibility||"").toLowerCase()==="hidden"||String(config.release_status||"").toLowerCase()!=="released";
+    if(merchLocked){
+      container.innerHTML="";
+      container.hidden=true;
+      return;
+    }
+    container.hidden=false;
+    const clothing=normalizeCollection(getGlobal("ESCIE_CLOTHING",[])).filter(item=>item&&item.type==="CLOTHING"&&String(item.public_visibility||"").toLowerCase()!=="hidden"&&String(item.release_status||"released").toLowerCase()==="released");
     const filterState=String(container.dataset.filter||"ALL").toUpperCase();
     const visible=clothing.filter(item=>filterState==="ALL"||String(item.category||"CORE").toUpperCase()===filterState);
     const storeUrl=safeExternalURL(config.storefront_url);
