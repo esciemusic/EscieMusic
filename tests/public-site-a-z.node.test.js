@@ -147,7 +147,8 @@ test("A-Z Pass 1 keeps game exploration out of the public doorway",()=>{
   const index=read("index.html");
   const app=read("app.js");
   assert.doesNotMatch(index,/Enter the World|game-shop|game shop/i);
-  assert.doesNotMatch(app,/renderGameShop\(\);/);\n  assert.doesNotMatch(app,/game-shop-container/);
+  assert.doesNotMatch(app,/renderGameShop\(\);/);
+  assert.doesNotMatch(app,/game-shop-container/);
 });
 
 test("A-Z Pass 1 preserves record inspector focus return and visible close focus",()=>{
