@@ -85,4 +85,17 @@ A submission is never canon merely because it was sent.
 - No game or shop dependency is required.
 - The section remains usable when no approved contribution/media exists.
 
-Pass 2 will optimize sensory media, navigation, visual states and interaction depth.\n\n## Pass 2 readiness\n\nThe primary video window now accepts only a valid YouTube video URL, converts it to a privacy-enhanced embed, fails closed for non-YouTube hosts/invalid IDs, and remains empty until approved public media is supplied.
+Pass 2 hardening now covers sensory media order, responsive presentation, keyboard/touch interaction, active-control feedback, and the viewer-memory boundary.\n\n## Pass 2 readiness\n\nThe primary video window now accepts only a valid YouTube video URL, converts it to a privacy-enhanced embed, fails closed for non-YouTube hosts/invalid IDs, and remains empty until approved public media is supplied.
+
+
+## Pass 2 optimization checkpoint
+
+The public Glass Eye order is now explicit:
+
+**AUDIENCE EYE → APPROVED YOUTUBE WINDOW → SENSORY CONTROLS → LOCAL MEMORY → PARTICIPATION**
+
+The YouTube window remains empty until an artist-approved public URL exists.
+
+Controls provide visible focus/active feedback and use touch-safe targets. Action state is UI state only; it does not become canon.
+
+Pass 3 remains for final regression/a11y integration and deployment verification.
