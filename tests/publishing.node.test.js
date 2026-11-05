@@ -99,3 +99,11 @@ const locked=validate.validatePublicRecord({id:"locked-record",type:"art",publis
 assert(!locked.valid,"Locked records must fail the public release gate.");
 
 console.log("ESCIE public publication safety extensions OK");
+const releaseStateCases=[
+  {id:"central-private",type:"art",published:true,visibility:"public",release_state:"PRIVATE"},
+  {id:"central-approved",type:"art",published:true,visibility:"public",release_state:"APPROVED"},
+  {id:"central-locked",type:"art",published:true,visibility:"public",release_state:"LOCKED"},
+  {id:"central-released",type:"art",published:true,visibility:"public",release_state:"RELEASED"}
+];
+assert(build.buildPublicRecords(releaseStateCases).length===1,"Public build must expose only Central RELEASED records when release_state is present.");
+assert(build.buildPublicRecords(releaseStateCases)[0].id==="central-released","Only the Central RELEASED record may cross the public build gate.");
