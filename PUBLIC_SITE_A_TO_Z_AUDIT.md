@@ -117,3 +117,11 @@ This is the standing audit contract for every subsequent public-site optimizatio
 - No BAM or Dallas ’63 material is present in the public project/music registries.
 - The canonical public shell remains the eight approved sections: NOW, ART, THE WORLD, THE WEB, THE ARCHIVES, THE CASE FILES, GLASS EYE, ESCIE.
 - This checkpoint protects the public/private disclosure boundary while preserving the existing section architecture.
+
+
+### Pass 1 — keyboard/lifecycle checkpoint
+- Main section accordion closes with Escape when a section is open.
+- Nested expandable interfaces are observed for dynamically rendered content.
+- Nested controls expose a refresh hook without requiring a second global initializer.
+- Runtime initialization is guarded against duplicate setup, and merch filter controls are individually binding-guarded.
+- Regression coverage now locks these lifecycle/accessibility protections.
