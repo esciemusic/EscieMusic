@@ -125,6 +125,19 @@ test("A-Z Pass 1 restores saved language preference on boot",()=>{
   assert.match(index,/document\.documentElement\.lang=initialLanguage/);
 });
 
+test("A-Z Pass 1 preserves keyboard and preference accessibility contracts",()=>{
+  const index=read("index.html");
+  const style=read("style.css");
+  const aesthetic=read("aesthetic.css");
+  assert.match(index,/class="skip-link"/);
+  assert.match(index,/id="theme-toggle"[^>]*aria-label=/);
+  assert.match(index,/data-language="en"/);
+  assert.match(index,/data-language="fr"/);
+  assert.match(index,/data-language="es"/);
+  assert.match(style,/:focus-visible/);
+  assert.match(aesthetic,/:focus-visible/);
+});
+
 test("A-Z Pass 1 does not contain an active November 22 countdown",()=>{
   const app=read("app.js");
   const index=read("index.html");
