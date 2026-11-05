@@ -786,17 +786,20 @@ main > .site-section:not(#entry) .section-drop-trigger[data-section="escie"]::be
    WORLD / WEB / GLASS EYE PARTICIPATION
    ========================================================= */
 .world-now-strip{
-  display:grid;
-  grid-template-columns:auto minmax(0,1fr) auto;
-  gap:14px;
+  display:flex;
   align-items:baseline;
-  padding:14px 0;
+  justify-content:space-between;
+  gap:18px;
+  padding:12px 0 14px;
   border-top:1px solid rgba(216,212,202,.12);
   border-bottom:1px solid rgba(216,212,202,.12);
 }
-.world-now-strip span{font:700 9px/1 var(--escie-font-mono);letter-spacing:.16em;color:var(--escie-aesthetic-purple)}
 .world-now-strip strong{font:500 clamp(18px,4vw,28px)/1 var(--escie-font-display);letter-spacing:.08em}
-.world-now-strip em{font:400 9px/1.4 var(--escie-font-mono);letter-spacing:.08em;opacity:.55;font-style:normal}
+.world-now-strip em{font:400 9px/1.4 var(--escie-font-mono);letter-spacing:.08em;opacity:.55;font-style:normal;text-align:right}
+@media(max-width:520px){
+  .world-now-strip{display:grid;grid-template-columns:1fr;gap:7px}
+  .world-now-strip em{text-align:left}
+}
 .world-progression-note{margin:18px 0 0;max-width:68ch;font:400 10px/1.7 var(--escie-font-mono);letter-spacing:.06em;opacity:.62}
 .web-record-search{margin-top:16px;padding-top:16px;border-top:1px solid rgba(216,212,202,.1)}
 .web-record-search>label{display:block;font:700 9px/1.3 var(--escie-font-mono);letter-spacing:.13em}
