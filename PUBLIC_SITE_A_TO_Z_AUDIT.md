@@ -152,3 +152,10 @@ This is the standing audit contract for every subsequent public-site optimizatio
 - Remaining legacy ART/Archives visual selectors were removed from the secondary aesthetic stylesheet.
 - Canonical ART and THE ARCHIVES visual selectors are now enforced across both public stylesheets.
 - Regression coverage locks the canonical selector requirement.
+
+
+### Pass 1 — clothing disclosure checkpoint
+- The public clothing renderer previously loaded the full clothing registry without honoring each item's hidden/locked publication state.
+- It now fails closed for garments marked `public_visibility: hidden` or `release_status: locked`.
+- This preserves the public clothing/world-wear concept while preventing unreleased garment specifications from crossing the public boundary.
+- Regression coverage locks the disclosure gate.
