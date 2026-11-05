@@ -9,7 +9,7 @@ ESCIE is the artist and the public endpoint for identity, philosophy, and select
 ## Pass 1 direction
 
 - Keep the section sparse.
-- Keep **ESCIE IS THE ARTIST. THE WORK SPEAKS FROM HERE.** as the primary public statement.
+- Keep **ESCIE THE ARTIST. THE ART SPEAKS FOR ITSELF.** as the primary public statement.
 - Present the artist identity without turning the section into a biography.
 - Preserve the principle that the art does not create the universe; the universe creates the art.
 - Keep Montréal present as context, without unnecessary status/year metadata.
@@ -23,7 +23,7 @@ ESCIE is the artist and the public endpoint for identity, philosophy, and select
 
 **ESCIE**
 
-ESCIE IS THE ARTIST. THE WORK SPEAKS FROM HERE.
+ESCIE THE ARTIST. THE ART SPEAKS FOR ITSELF.
 
 The art does not create the universe. The universe creates the art.
 
@@ -39,7 +39,7 @@ Public ESCIE identity is a finished presentation layer. Central may hold richer 
 
 Pass 2 keeps the section sparse while making the artist's central identity explicit.
 
-- **ESCIE IS THE ARTIST. THE WORK SPEAKS FROM HERE.** remains the primary statement.
+- **ESCIE THE ARTIST. THE ART SPEAKS FOR ITSELF.** remains the primary statement.
 - The identity facets are explicitly **THE FATHER · THE MAN · THE MONSTER**.
 - The three facets support the artist identity; they do not replace ESCIE or turn the section into a biography.
 - Identity facets render from canonical ESCIE_ABOUT.role data.
