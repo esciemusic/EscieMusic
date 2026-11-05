@@ -1496,11 +1496,13 @@ function renderClothing(){
       if (sectionTrigger) {
         const section = sectionTrigger.getAttribute("data-section-target");
         const target = ({
-          work:"art",
+          art:"art",
+          world:"world",
           web:"web",
-          archive:"archives",
+          archives:"archives",
           investigation:"investigation",
-          glassEye:"glass-eye"
+          "glass-eye":"glass-eye",
+          escie:"escie"
         })[section];
         if (target) {
           modal.hidden = true;
