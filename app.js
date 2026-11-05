@@ -914,27 +914,57 @@ function renderClothing(){
   function renderInvestigation() {
     const container = byId("investigation-container");
     if (!container) return;
-    const investigations=getAllPublicRecords().filter(record=>{
-      const manifest=recordManifest(record);
-      return manifest ? manifest.sections.investigation : record.type==="investigation";
-    });
-    const visible=investigations.filter(isPublic);
-    if (!visible.length) {
-      container.innerHTML='<div class="investigation-status">'+motifMarkup("investigation")+
-        '<p class="eyebrow">THE CASE FILES / OPEN</p>'+
-        '<h3>QUESTIONS BEFORE ANSWERS.</h3>'+
-        '<p>This is the place for questions that matter. A case can gather evidence, contradictions, sources, context and unresolved material without forcing a conclusion.</p>'+
-        '<div class="case-file-tools">'+
-          '<div><span class="eyebrow">FOLLOW</span><strong>QUESTIONS</strong><p>What does the record still not explain?</p></div>'+
-          '<div><span class="eyebrow">CHECK</span><strong>EVIDENCE</strong><p>What can be documented, sourced or reviewed?</p></div>'+
-          '<div><span class="eyebrow">LEAVE</span><strong>UNRESOLVED</strong><p>What remains open without being turned into fact?</p></div>'+
-        '</div>'+
-        '<button type="button" class="case-participate-link" data-web-participate>BRING A FINDING THROUGH GLASS EYE</button>'+
+
+    const investigations = getAllPublicRecords().filter(record => {
+      const manifest = recordManifest(record);
+      return manifest ? !!(manifest.sections && manifest.sections.investigation) : String(record.type || "").toLowerCase() === "investigation";
+    }).filter(isPublic);
+
+    if (!investigations.length) {
+      container.innerHTML = '<div class="investigation-status">' +
+        motifMarkup("investigation") +
+        '<p class="eyebrow">THE CASE FILES / OPEN</p>' +
+        '<h3>QUESTIONS BEFORE ANSWERS.</h3>' +
+        '<p>This is the place for questions that matter. A case can gather evidence, contradictions, sources, context and unresolved material without forcing a conclusion.</p>' +
+        '<div class="case-file-tools">' +
+          '<div><span class="eyebrow">FOLLOW</span><strong>QUESTIONS</strong><p>What does the record still not explain?</p></div>' +
+          '<div><span class="eyebrow">CHECK</span><strong>EVIDENCE</strong><p>What can be documented, sourced or reviewed?</p></div>' +
+          '<div><span class="eyebrow">LEAVE</span><strong>UNRESOLVED</strong><p>What remains open without being turned into fact?</p></div>' +
+        '</div>' +
+        '<button type="button" class="case-participate-link" data-web-participate>BRING A FINDING THROUGH GLASS EYE</button>' +
       '</div>';
       return;
     }
-    container.innerHTML='<div class="investigation-status"><p class="eyebrow">'+visible.length+' OPEN CASE FILE'+(visible.length===1?'':'S')+'</p><p>Questions are separated from evidence. A case can remain unresolved without the interface inventing an answer.</p></div>'+
-      '<div class="case-file-list">'+visible.map(item=>'<article class="investigation-case" data-record-id="'+escapeHTML(recordId(item))+'"'+narrationAttributes(item)+'><p class="eyebrow">'+escapeHTML(item.status||"OPEN")+'</p><h3>'+escapeHTML(recordTitle(item))+'</h3>'+(item.description?'<p>'+escapeHTML(item.description)+'</p>':'')+'</article>').join("")+'</div>';
+
+    const ordered = investigations.slice().sort((a,b) => {
+      const aTime = Date.parse(a.updated_at || a.created_at || a.date || "") || 0;
+      const bTime = Date.parse(b.updated_at || b.created_at || b.date || "") || 0;
+      if (aTime !== bTime) return bTime - aTime;
+      return recordTitle(a).localeCompare(recordTitle(b));
+    });
+
+    const countLabel = ordered.length === 1 ? "OPEN CASE FILE" : "OPEN CASE FILES";
+    container.innerHTML =
+      '<div class="investigation-index">' +
+        motifMarkup("investigation") +
+        '<div class="investigation-index-head"><p class="eyebrow">' + String(ordered.length) + ' ' + countLabel + '</p><span class="investigation-index-note">QUESTIONS STAY OPEN UNTIL THE RECORD CAN SUPPORT AN ANSWER.</span></div>' +
+        '<div class="case-file-list">' +
+          ordered.map((item,index) => {
+            const evidence = Array.isArray(item.evidence) ? item.evidence.length : (Array.isArray(item.sources) ? item.sources.length : 0);
+            const contradictions = Array.isArray(item.contradictions) ? item.contradictions.length : 0;
+            const status = String(item.status || "OPEN").toUpperCase();
+            const meta = [status, evidence ? evidence + " EVIDENCE" : "", contradictions ? contradictions + " CONTRADICTIONS" : ""].filter(Boolean).join(" · ");
+            return '<article class="investigation-case" role="button" tabindex="0" aria-label="Open ' + escapeHTML(recordTitle(item)) + '" data-record-id="' + escapeHTML(recordId(item)) + '"' + narrationAttributes(item) + '>' +
+              '<div class="investigation-case-index" aria-hidden="true">' + String(index + 1).padStart(2,"0") + '</div>' +
+              '<div class="investigation-case-body">' +
+                '<p class="eyebrow">' + escapeHTML(meta) + '</p>' +
+                '<h3>' + escapeHTML(recordTitle(item)) + '</h3>' +
+                (item.description ? '<p>' + escapeHTML(item.description) + '</p>' : '') +
+              '</div>' +
+            '</article>';
+          }).join("") +
+        '</div>' +
+      '</div>';
   }
 
   function socialIconMarkup(platform) {
