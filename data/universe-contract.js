@@ -28,7 +28,7 @@
       centralHumanApproval:true,
       canonicalGameWriteFromPlayer:false
     }),
-    publicSections:Object.freeze(["NOW","ART","THE WORLD","THE WEB","THE ARCHIVES","THE CASE FILES","HEART ON MY SLEEVE","GLASS EYE","ESCIE"]),
+    publicSections:Object.freeze(["NOW","ART","THE WORLD","THE WEB","THE ARCHIVES","THE CASE FILES","GLASS EYE","ESCIE"]),
     worldClasses:Object.freeze(["DRIFTER","RUNNER","INVESTIGATOR","SURVIVOR"]),
     worldNodes:Object.freeze(["ART","THE PEOPLE","PLACES","MOMENTS","FRAGMENTS","PROOF","BODIES","PATH","THE WEB","THE ARCHIVES"]),
     requiredGameSystems:Object.freeze(["simulation","npc-life","npc","law","investigation","rpg","vehicles","interiors","dialogue","3d"]),
@@ -38,7 +38,7 @@
       if(this.boundaries.gameplay2D!==false||this.boundaries.pauseMap2DOnly!==true)errors.push("game 3D/2D boundary invalid");
       if(this.boundaries.publicIsCanonicalDoorway!==true||this.boundaries.gameIsExtension!==true)errors.push("public/game ownership boundary invalid");
       if(this.boundaries.centralHumanApproval!==true)errors.push("central approval guard missing");
-      const expectedSections=["NOW","ART","THE WORLD","THE WEB","THE ARCHIVES","THE CASE FILES","HEART ON MY SLEEVE","GLASS EYE","ESCIE"];
+      const expectedSections=["NOW","ART","THE WORLD","THE WEB","THE ARCHIVES","THE CASE FILES","GLASS EYE","ESCIE"];
       if(JSON.stringify(this.publicSections)!==JSON.stringify(expectedSections))errors.push("public section contract is out of sync");
       return {ok:errors.length===0,errors,version:this.version};
     },
