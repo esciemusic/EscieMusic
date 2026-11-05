@@ -545,7 +545,19 @@
     const loc=Array.from(new Set(work.flatMap(r=>Array.isArray(r.locations)?r.locations:[]))).sort();
     const sym=Array.from(new Set(work.flatMap(r=>Array.isArray(r.symbols)?r.symbols:[]))).sort();
     const projects=Array.from(new Set(work.flatMap(r=>{const p=r&&r.project; if(p)return [p]; return r&&r.type==="project"&&r.id?[r.id]:[];}))).sort();
-    container.innerHTML=`<div class="record-filters-heading"><span>DISCOVER BY METADATA</span><button type="button" class="record-filter-clear">CLEAR</button></div><div class="record-filter-grid"><label>TYPE<select data-work-filter="type">${options(vals("type"),f.type,"ALL TYPES")}</select></label><label>STATUS<select data-work-filter="status">${options(vals("status"),f.status,"ALL STATUS")}</select></label><label>PROJECT<select data-work-filter="project">${options(projects,f.project,"ALL PROJECTS")}</select></label>${loc.length?`<label>LOCATION<select data-work-filter="location">${options(loc,f.location,"ALL LOCATIONS")}</select></label>`:""}${sym.length?`<label>MOTIF<select data-work-filter="symbol">${options(sym,f.symbol,"ALL MOTIFS")}</select></label>`:""}</div><p class="record-filter-count">${filtered.length} OF ${work.length} PUBLIC WORK RECORD${work.length===1?"":"S"}</p>`;
+    const filterField=(label,key,values,allLabel)=>values.length>1?`<label>${label}<select data-work-filter="${key}">${options(values,f[key],allLabel)}</select></label>`:"";
+    const filterMarkup=[
+      filterField("TYPE","type",vals("type"),"ALL TYPES"),
+      filterField("STATUS","status",vals("status"),"ALL STATUS"),
+      filterField("PROJECT","project",projects,"ALL PROJECTS"),
+      filterField("LOCATION","location",loc,"ALL LOCATIONS"),
+      filterField("MOTIF","symbol",sym,"ALL MOTIFS")
+    ].filter(Boolean).join("");
+    if(!filterMarkup){
+      container.innerHTML="";
+      return;
+    }
+    container.innerHTML=`<div class="record-filters-heading"><span>DISCOVER BY METADATA</span><button type="button" class="record-filter-clear">CLEAR</button></div><div class="record-filter-grid">${filterMarkup}</div><p class="record-filter-count">${filtered.length} OF ${work.length} PUBLIC WORK RECORD${work.length===1?"":"S"}</p>`;
   }
 
 
