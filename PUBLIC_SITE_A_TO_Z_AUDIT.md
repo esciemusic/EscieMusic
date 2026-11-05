@@ -183,3 +183,9 @@ This is the standing audit contract for every subsequent public-site optimizatio
 - Theme boot state remains EN/FR/ES-independent and restores the saved light/dark preference before the public experience initializes.
 - Light-mode styling had retained two legacy section visual selectors for Archives and Glass Eye; those selectors were aligned to the canonical eight-section IDs.
 - Regression coverage now locks the canonical light-theme visual selectors.
+
+
+### Pass 1 — URL safety checkpoint
+- Public external checkout links now pass through the same fail-closed HTTP/HTTPS URL sanitizer used by the public media/external-link layer.
+- Invalid or unsupported checkout targets render no checkout link instead of emitting an unsafe destination.
+- Regression coverage locks this contract.
