@@ -304,3 +304,9 @@ test("A-Z Pass 1 canonical visual selectors remain across public styles",()=>{
   assert.match(style,/\\.section-visual-art::before/);
   assert.match(style,/\\.section-visual-archives::before/);
 });
+
+
+test("A-Z Pass 1 clothing disclosure fails closed for hidden or locked garments",()=>{
+  const app=read("app.js");
+  assert.match(app,/getGlobal\("ESCIE_CLOTHING",\[\]\)\)\.filter\(item=>item&&item\.public_visibility!==\"hidden\"&&item\.release_status!==\"locked\"\)/);
+});
