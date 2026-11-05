@@ -801,6 +801,13 @@ main > .site-section:not(#entry) .section-drop-trigger[data-section="escie"]::be
   .world-now-strip em{text-align:left}
 }
 .world-progression-note{margin:18px 0 0;max-width:68ch;font:400 10px/1.7 var(--escie-font-mono);letter-spacing:.06em;opacity:.62}
+.web-record-search{margin-top:12px;padding-top:12px}
+.web-record-tools{margin-top:10px}
+.web-record-results{grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:6px;margin-top:8px}
+.web-record-result{padding:9px}
+.web-connection{padding:14px 0;border-top:1px solid rgba(216,212,202,.1)}
+.web-connection:first-child{border-top:0}
+@media(max-width:520px){.web-record-results{grid-template-columns:1fr}.web-record-result{padding:10px}.web-connection{padding:12px 0}}
 .web-record-search{margin-top:16px;padding-top:16px;border-top:1px solid rgba(216,212,202,.1)}
 .web-record-search>label{display:block;font:700 9px/1.3 var(--escie-font-mono);letter-spacing:.13em}
 .web-record-search input{display:block;width:100%;margin-top:8px;padding:11px 12px;background:rgba(0,0,0,.2);border:1px solid rgba(216,212,202,.14);color:inherit;font:inherit}
