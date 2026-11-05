@@ -40,6 +40,24 @@
     }
   }
 
+  function glassEyeYouTubeURL(value) {
+    const raw = String(value == null ? "" : value).trim();
+    if (!raw) return "";
+    try {
+      const parsed = new URL(raw, window.location.href);
+      const host = parsed.hostname.toLowerCase().replace(/^www\\./, "");
+      let id = "";
+      if (host === "youtu.be") id = parsed.pathname.replace(/^\\//, "").split("/")[0];
+      else if (host === "youtube.com" || host === "youtube-nocookie.com") {
+        if (parsed.pathname === "/watch") id = parsed.searchParams.get("v") || "";
+        else if (parsed.pathname.startsWith("/embed/")) id = parsed.pathname.split("/")[2] || "";
+        else if (parsed.pathname.startsWith("/shorts/")) id = parsed.pathname.split("/")[2] || "";
+      }
+      if (!/^[A-Za-z0-9_-]{11}$/.test(id)) return "";
+      return "https://www.youtube-nocookie.com/embed/" + id + "?rel=0&modestbranding=1";
+    } catch (error) { return ""; }
+  }
+
   function getGlobal(name, fallback) {
     return window[name] !== undefined ? window[name] : fallback;
   }
@@ -1062,7 +1080,7 @@ function renderClothing(){
     }[language]||null;
     const t=copy||({});
     const videoConfig=getGlobal("ESCIE_GLASS_EYE_VIDEO",{});
-    const videoURL=safeExternalURL(videoConfig&&videoConfig.url);
+    const videoURL=glassEyeYouTubeURL(videoConfig&&videoConfig.url);
     const videoMarkup=videoURL
       ? '<div class="glass-video-window" data-glass-video-window>'+
           '<div class="glass-video-label"><span>GLASS EYE / PRIMARY WINDOW</span><span>YOUTUBE</span></div>'+
