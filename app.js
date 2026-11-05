@@ -1027,22 +1027,28 @@ function renderClothing(){
         '</div>'+
         '<div class="glass-footer">'+t.footer.map(esc).map(item=>'<span>'+item+'</span>').join("")+'</div>'+
       '</div>';
+    const participationCopy={
+      en:{open:"PARTICIPATION / THE RECORD IS OPEN",title:"LEAVE SOMETHING BEHIND.",intro:"Post a comment, fan theory, finding, mention or media. Submissions are reviewed before anything enters the public record.",notice:"YOU NOTICE",send:"YOU SEND",review:"WE REVIEW",observe:"OBSERVE",contribute:"CONTRIBUTE",record:"RECORD",noticeText:"Something catches your eye, ear or memory.",sendText:"Leave a theory, finding, mention, comment or media.",reviewText:"Approved material can enter the public record and create new connections.",submission:"SUBMISSION TYPE",name:"NAME / ALIAS",location:"LOCATION / CONTEXT",contribution:"YOUR CONTRIBUTION",upload:"UPLOAD PHOTO / VIDEO / AUDIO",placeholderName:"ANONYMOUS",placeholderOptional:"OPTIONAL",placeholderBody:"What did you see, hear, find or think?",submit:"SUBMIT TO THE GLASS EYE",approved:"APPROVED PUBLIC CONTRIBUTIONS",loading:"LOADING…",received:"RECEIVED. HELD FOR REVIEW — NOT CANON.",failed:"SUBMISSION FAILED.",none:"NO APPROVED CONTRIBUTIONS YET.",openMedia:"OPEN APPROVED MEDIA ↗"},
+      fr:{open:"PARTICIPATION / LE REGISTRE EST OUVERT",title:"LAISSEZ QUELQUE CHOSE DERRIÈRE.",intro:"Publiez un commentaire, une théorie, une découverte, une mention ou un média. Les envois sont révisés avant toute entrée dans le registre public.",notice:"VOUS REMARQUEZ",send:"VOUS ENVOYEZ",review:"NOUS RÉVISONS",observe:"OBSERVER",contribute:"CONTRIBUER",record:"INSCRIRE",noticeText:"Quelque chose attire votre œil, votre oreille ou votre mémoire.",sendText:"Laissez une théorie, une découverte, une mention, un commentaire ou un média.",reviewText:"Le contenu approuvé peut entrer dans le registre public et créer de nouvelles connexions.",submission:"TYPE D’ENVOI",name:"NOM / ALIAS",location:"LIEU / CONTEXTE",contribution:"VOTRE CONTRIBUTION",upload:"TÉLÉVERSER PHOTO / VIDÉO / AUDIO",placeholderName:"ANONYME",placeholderOptional:"OPTIONNEL",placeholderBody:"Qu’avez-vous vu, entendu, trouvé ou pensé ?",submit:"ENVOYER AU GLASS EYE",approved:"CONTRIBUTIONS PUBLIQUES APPROUVÉES",loading:"CHARGEMENT…",received:"REÇU. EN ATTENTE DE RÉVISION — NON CANONIQUE.",failed:"ÉCHEC DE L’ENVOI.",none:"AUCUNE CONTRIBUTION APPROUVÉE POUR L’INSTANT.",openMedia:"OUVRIR LE MÉDIA APPROUVÉ ↗"},
+      es:{open:"PARTICIPACIÓN / EL REGISTRO ESTÁ ABIERTO",title:"DEJA ALGO ATRÁS.",intro:"Publica un comentario, teoría, hallazgo, mención o contenido multimedia. Todo envío se revisa antes de entrar al registro público.",notice:"TÚ NOTAS",send:"TÚ ENVÍAS",review:"NOSOTROS REVISAMOS",observe:"OBSERVAR",contribute:"CONTRIBUIR",record:"REGISTRAR",noticeText:"Algo llama tu atención, oído o memoria.",sendText:"Deja una teoría, hallazgo, mención, comentario o contenido multimedia.",reviewText:"El material aprobado puede entrar al registro público y crear nuevas conexiones.",submission:"TIPO DE ENVÍO",name:"NOMBRE / ALIAS",location:"LUGAR / CONTEXTO",contribution:"TU CONTRIBUCIÓN",upload:"SUBIR FOTO / VIDEO / AUDIO",placeholderName:"ANÓNIMO",placeholderOptional:"OPCIONAL",placeholderBody:"¿Qué viste, escuchaste, encontraste o pensaste?",submit:"ENVIAR AL GLASS EYE",approved:"CONTRIBUCIONES PÚBLICAS APROBADAS",loading:"CARGANDO…",received:"RECIBIDO. EN REVISIÓN — NO ES CANON.",failed:"ENVÍO FALLIDO.",none:"AÚN NO HAY CONTRIBUCIONES APROBADAS.",openMedia:"ABRIR MEDIO APROBADO ↗"}
+    }[language]||null;
+    const p=participationCopy||{};
     container.insertAdjacentHTML("beforeend",
       '<section class="glass-participation" aria-labelledby="glass-participation-title">'+
-        '<div class="glass-participation-head"><p class="eyebrow">PARTICIPATION / THE RECORD IS OPEN</p><h3 id="glass-participation-title">LEAVE SOMETHING BEHIND.</h3><p>Post a comment, fan theory, finding, mention or media. Submissions are reviewed before anything enters the public record.</p></div><div class="glass-participation-path"><div><span class="eyebrow">01 / YOU NOTICE</span><strong>OBSERVE</strong><p>Something catches your eye, ear or memory.</p></div><div><span class="eyebrow">02 / YOU SEND</span><strong>CONTRIBUTE</strong><p>Leave a theory, finding, mention, comment or media.</p></div><div><span class="eyebrow">03 / WE REVIEW</span><strong>RECORD</strong><p>Approved material can enter the public record and create new connections.</p></div></div>'+
+        '<div class="glass-participation-head"><p class="eyebrow">'+esc(p.open)+'</p><h3 id="glass-participation-title">'+esc(p.title)+'</h3><p>'+esc(p.intro)+'</p></div><div class="glass-participation-path"><div><span class="eyebrow">01 / '+esc(p.notice)+'</span><strong>'+esc(p.observe)+'</strong><p>'+esc(p.noticeText)+'</p></div><div><span class="eyebrow">02 / '+esc(p.send)+'</span><strong>'+esc(p.contribute)+'</strong><p>'+esc(p.sendText)+'</p></div><div><span class="eyebrow">03 / '+esc(p.review)+'</span><strong>'+esc(p.record)+'</strong><p>'+esc(p.reviewText)+'</p></div></div>'+
         '<form class="glass-participation-form" data-glass-participation-form>'+
-          '<div class="glass-participation-types" role="group" aria-label="Submission type">'+
+          '<div class="glass-participation-types" role="group" aria-label="'+esc(p.submission)+'">'+
             ["COMMENT","THEORY","FINDING","MENTION"].map((kind,i)=>'<button type="button" class="'+(i===0?"is-active":"")+'" data-glass-kind="'+kind+'">'+kind+'</button>').join("")+
           '</div>'+
           '<input type="hidden" name="kind" value="COMMENT">'+
-          '<label>NAME / ALIAS<input name="displayName" maxlength="80" placeholder="ANONYMOUS"></label>'+
-          '<label>LOCATION / CONTEXT<input name="location" maxlength="160" placeholder="OPTIONAL"></label>'+
-          '<label>YOUR CONTRIBUTION<textarea name="body" maxlength="5000" rows="5" placeholder="What did you see, hear, find or think?"></textarea></label>'+
-          '<label>UPLOAD PHOTO / VIDEO / AUDIO<input name="file" type="file" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,audio/mpeg,audio/wav,audio/ogg"></label>'+
-          '<button type="submit" class="glass-submit">SUBMIT TO THE GLASS EYE</button>'+
+          '<label>'+esc(p.name)+'<input name="displayName" maxlength="80" placeholder="'+esc(p.placeholderName)+'"></label>'+
+          '<label>'+esc(p.location)+'<input name="location" maxlength="160" placeholder="'+esc(p.placeholderOptional)+'"></label>'+
+          '<label>'+esc(p.contribution)+'<textarea name="body" maxlength="5000" rows="5" placeholder="'+esc(p.placeholderBody)+'"></textarea></label>'+
+          '<label>'+esc(p.upload)+'<input name="file" type="file" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,audio/mpeg,audio/wav,audio/ogg"></label>'+
+          '<button type="submit" class="glass-submit">'+esc(p.submit)+'</button>'+
           '<p class="glass-participation-status" data-glass-participation-status aria-live="polite"></p>'+
         '</form>'+
-        '<div class="glass-approved" data-glass-approved><p class="eyebrow">APPROVED PUBLIC CONTRIBUTIONS</p><div data-glass-approved-list><span class="inspector-note">LOADING…</span></div></div>'+
+        '<div class="glass-approved" data-glass-approved><p class="eyebrow">'+esc(p.approved)+'</p><div data-glass-approved-list><span class="inspector-note">'+esc(p.loading)+'</span></div></div>'+
       '</section>');
     const participation=window.ESCIE_GLASS_EYE_PARTICIPATION;
     const form=container.querySelector("[data-glass-participation-form]");
@@ -1061,9 +1067,9 @@ function renderClothing(){
         form.reset();
         form.querySelector('[name="kind"]').value="COMMENT";
         container.querySelectorAll("[data-glass-kind]").forEach((b,i)=>b.classList.toggle("is-active",i===0));
-        if(status)status.textContent="RECEIVED. HELD FOR REVIEW — NOT CANON.";
+        if(status)status.textContent=p.received;
         loadApproved();
-      }catch(error){if(status)status.textContent=error&&error.message?error.message:"SUBMISSION FAILED.";}
+      }catch(error){if(status)status.textContent=error&&error.message?error.message:p.failed;}
     });
     async function loadApproved(){
       if(!participation||typeof participation.approved!=="function")return;
@@ -1078,9 +1084,9 @@ function renderClothing(){
         if(safeMedia&&/\.(png|jpe?g|gif|webp|avif)(?:$|\?)/i.test(path))mediaMarkup='<img class="glass-approved-media" src="'+safeMedia+'" alt="Approved Glass Eye contribution" loading="lazy" decoding="async">';
         else if(safeMedia&&/\.(mp4|webm|mov|m4v)(?:$|\?)/i.test(path))mediaMarkup='<video class="glass-approved-media" controls preload="metadata" src="'+safeMedia+'"></video>';
         else if(safeMedia&&/\.(mp3|wav|m4a|ogg|aac)(?:$|\?)/i.test(path))mediaMarkup='<audio class="glass-approved-media" controls preload="metadata" src="'+safeMedia+'"></audio>';
-        else if(safeMedia)mediaMarkup='<a class="glass-approved-media-link" href="'+safeMedia+'" target="_blank" rel="noopener noreferrer">OPEN APPROVED MEDIA ↗</a>';
-        return '<article class="glass-approved-item"><div><strong>'+esc(row.display_name||"ANONYMOUS")+'</strong><span>'+esc(row.kind||"COMMENT")+(row.location_label?" / "+esc(row.location_label):"")+'</span></div>'+(row.body?'<p>'+esc(row.body)+'</p>':"")+mediaMarkup+'</article>';
-      }).join(""):'<span class="inspector-note">NO APPROVED CONTRIBUTIONS YET.</span>';
+        else if(safeMedia)mediaMarkup='<a class="glass-approved-media-link" href="'+safeMedia+'" target="_blank" rel="noopener noreferrer">'+esc(p.openMedia)+'</a>';
+        return '<article class="glass-approved-item"><div><strong>'+esc(row.display_name||p.placeholderName)+'</strong><span>'+esc(row.kind||"COMMENT")+(row.location_label?" / "+esc(row.location_label):"")+'</span></div>'+(row.body?'<p>'+esc(row.body)+'</p>':"")+mediaMarkup+'</article>';
+      }).join("") :'<span class="inspector-note">'+esc(p.none)+'</span>';
     }
     loadApproved();
     container.querySelectorAll("[data-glass-language]").forEach(button=>button.addEventListener("click",()=>{
