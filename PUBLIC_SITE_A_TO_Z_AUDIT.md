@@ -96,3 +96,10 @@ This is the standing audit contract for every subsequent public-site optimizatio
 - Time-state behavior is lightweight and derives the current day/dusk/night state without a recurring interval.
 - Public runtime contains no recurring `setInterval` timer; the Web search debounce remains the only short-lived input timer.
 - This preserves the decision to defer countdown implementation rather than accidentally activating obsolete release timing.
+
+
+### Pass 1 — accessibility/preferences checkpoint
+- Header retains the skip-to-content path, EN/FR/ES language controls, and theme control with explicit ARIA labeling.
+- Both public stylesheets retain visible keyboard focus treatment.
+- Reduced-motion handling remains present in interaction paths already audited.
+- Regression coverage now protects these accessibility/preference contracts.
