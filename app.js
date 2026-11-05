@@ -779,7 +779,7 @@
 function renderClothing(){
     const container=byId("clothing-container");
     if(!container)return;
-    const clothing=normalizeCollection(getGlobal("ESCIE_CLOTHING",[]));
+    const clothing=normalizeCollection(getGlobal("ESCIE_CLOTHING",[])).filter(item=>item&&item.public_visibility!=="hidden"&&item.release_status!=="locked");
     if(!clothing.length){
       container.innerHTML='<div class="archive-status"><p class="eyebrow">WARDROBE STATE</p><h3>THE CLOTHING LAYER IS READY.</h3><p>The first wardrobe will appear here as garments are approved for public release.</p></div>';
       return;
