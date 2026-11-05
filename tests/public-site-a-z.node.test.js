@@ -107,3 +107,12 @@ test("A-Z Pass 1 blocks legacy section target aliases",()=>{
   assert.match(app,/"glass-eye":"glass-eye"/);
   assert.match(app,/archives:"archives"/);
 });
+
+
+test("A-Z Pass 1 record section labels use canonical public routes",()=>{
+  const app=read("app.js");
+  assert.match(app,/now:"NOW"/);
+  assert.match(app,/world:"THE WORLD"/);
+  assert.match(app,/"glass-eye":"GLASS EYE"/);
+  assert.doesNotMatch(app,/glassEye:"GLASS EYE"/);
+});
