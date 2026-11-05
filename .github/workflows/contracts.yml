@@ -37,6 +37,7 @@ jobs:
           - release-injector.node.test.js
           - release-runtime.node.test.js
           - site-loads.node.test.js
+          - public-site-a-z.node.test.js
           - system.node.test.js
           - world-engine.node.test.js
     runs-on: ubuntu-latest
