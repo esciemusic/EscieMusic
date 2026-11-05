@@ -657,8 +657,8 @@
     ["person","place","moment","fragment","proof","investigation"].forEach(type=>counts[type]=records.filter(r=>String(r.type||"").toLowerCase()===type).length);
     const nowRecord=getGlobal("ESCIE_SITE",{});
     container.innerHTML='<div class="world-index">'+motifMarkup("world")+
-      '<p class="eyebrow">CURRENT WORLD / MONTRÉAL</p>'+
-      '<div class="world-now-strip"><span>NOW</span><strong>'+escapeHTML(nowRecord.location||"MONTRÉAL, QUÉBEC")+'</strong><em>THE WORLD STARTS HERE. IT EXPANDS ONLY AS THE RECORD DOES.</em></div>'+
+      '<p class="eyebrow">MONTRÉAL / THE WORLD</p>'+
+      '<div class="world-now-strip"><span>NOW</span><strong>'+escapeHTML(nowRecord.location||"MONTRÉAL, QUÉBEC")+'</strong><em>THE WORLD STARTS HERE.</em></div>'+
       '<div class="world-place-list">'+locations.map((place,index)=>
         '<article class="world-place world-place-current" role="button" tabindex="0" aria-label="Open '+escapeHTML(recordTitle(place))+'" data-record-id="'+escapeHTML(recordId(place))+'">'+
           '<span class="world-place-index">'+String(index+1).padStart(2,"0")+'</span>'+
@@ -670,7 +670,6 @@
           '<span><strong>'+counts.person+'</strong> PEOPLE</span><span><strong>'+counts.moment+'</strong> MOMENTS</span><span><strong>'+counts.fragment+'</strong> FRAGMENTS</span><span><strong>'+counts.proof+'</strong> PROOF</span>'+
         '</div>'+
       '</div>'+
-      '<p class="world-progression-note">FINDINGS, FAN SOURCES, PHOTOS, MENTIONS, PEOPLE, MOMENTS AND NEW LOCATIONS ENTER THE WORLD WHEN THEY ARE ESTABLISHED, REVIEWED OR RELEASED.</p>'+
       '</div>';
   }
 
