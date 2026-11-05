@@ -200,7 +200,7 @@
       sections.forEach(function(section,index){
         if(section.dataset.accordionReady==="1")return;
         var heading=section.querySelector("h2"),inner=section.querySelector(".section-inner")||section,button=document.createElement("button");
-        var symbols={art:"✳",world:"◌",web:"⌕",archives:"▣",investigation:"?",merch:"♥","glass-eye":"◎",escie:"◇"};
+        var symbols={now:"◉",art:"✳",world:"◌",web:"⌕",archives:"▣",investigation:"?",merch:"♥","glass-eye":"◎",escie:"◇"};
         var symbol=symbols[section.id]||"·";
         button.type="button";button.className="section-drop-trigger";button.setAttribute("aria-controls",section.id+"-panel");button.setAttribute("aria-expanded","false");button.setAttribute("aria-label","Open "+heading.textContent.trim());
         button.dataset.section=section.id;button.innerHTML='<span class="section-drop-index">'+String(index+1).padStart(2,"0")+'</span><span class="section-drop-title"></span><span class="section-drop-symbol" aria-hidden="true">'+symbol+'</span><span class="section-drop-state" aria-hidden="true">+</span>';
