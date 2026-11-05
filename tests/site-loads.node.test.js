@@ -62,6 +62,10 @@ assert(fs.readFileSync("app.js","utf8").includes('archive_state || record.archiv
 assert(fs.readFileSync("app.js","utf8").includes("PRESERVED TRACE /"),"THE ARCHIVES must expose a preserved-trace hierarchy");
 assert(fs.readFileSync("style.css","utf8").includes(".archive-record-index"),"THE ARCHIVES must retain its indexed archival list styling");
 assert(fs.readFileSync("language.js","utf8").includes("OPEN THE RECORD TO FOLLOW ITS TRACE."),"THE ARCHIVES interface copy must be translatable");
+assert(fs.readFileSync("app.js","utf8").includes("QUESTIONS STAY OPEN UNTIL THE RECORD CAN SUPPORT AN ANSWER."),"THE CASE FILES must preserve its evidence-first hierarchy");
+assert(fs.readFileSync("app.js","utf8").includes("Array.isArray(item.evidence)"),"THE CASE FILES must surface authored evidence metadata when present");
+assert(fs.readFileSync("style.css","utf8").includes(".investigation-case:focus-visible"),"THE CASE FILES records must expose a visible keyboard focus state");
+
 assert(fs.readFileSync("aesthetic.css","utf8").includes(".archive-record:focus-visible"),"THE ARCHIVES records must expose a visible keyboard focus state");
 assert(fs.readFileSync("aesthetic.css","utf8").includes('html[data-theme="light"] .archive-record:hover'),"THE ARCHIVES must retain a light-mode visual treatment");
 assert(fs.readFileSync("aesthetic.css","utf8").includes(".archive-record-index::before"),"THE ARCHIVES must retain its archival index marker");
