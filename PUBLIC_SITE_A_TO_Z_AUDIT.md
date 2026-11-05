@@ -140,3 +140,9 @@ This is the standing audit contract for every subsequent public-site optimizatio
 - Glass Eye retains its approved YouTube parsing/fail-closed path and audience-memory model.
 - Game exploration remains defined in the world model but is not exposed through the current public doorway; the previously agreed game deferral remains protected.
 - No game shop or game-specific public release surface was introduced.
+
+
+### Pass 1 — visual selector checkpoint
+- Active `style.css` legacy ART/Archives visual selectors were corrected to canonical `section-visual-art` and `section-visual-archives` selectors.
+- A remaining duplicate legacy selector pattern was identified in `aesthetic.css`; it is presentation-only but remains a cleanup target before the Pass 1 final green checkpoint.
+- No new public content or release material was introduced.
