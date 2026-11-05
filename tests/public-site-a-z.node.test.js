@@ -118,6 +118,13 @@ test("A-Z Pass 1 record section labels use canonical public routes",()=>{
 });
 
 
+test("A-Z Pass 1 public accordion closes on Escape",()=>{
+  const index=read("index.html");
+  assert.match(index,/document\.addEventListener\("keydown",function\(event\)/);
+  assert.match(index,/if\(event\.key!=="Escape"\)return/);
+  assert.match(index,/openSection\.querySelector\("\.section-drop-trigger"\)/);
+});
+
 test("A-Z Pass 1 nested dropdown panel ids do not depend on Math.random",()=>{
   const index=read("index.html");
   assert.doesNotMatch(index,/nested-\+Math\.random/);
