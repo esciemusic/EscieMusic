@@ -1045,10 +1045,15 @@ function renderClothing(){
         '</div>'
       : '';
 
+    const identity = Array.isArray(about.role) && about.role.length
+      ? about.role.join(" · ").toUpperCase()
+      : "THE FATHER · THE MAN · THE MONSTER";
+
     container.innerHTML =
       '<p class="about-lead">' + escapeHTML(
         about.description || "ESCIE IS THE ARTIST. THE WORK SPEAKS FROM HERE."
       ) + "</p>" +
+      '<p class="about-identity" aria-label="ESCIE identity facets">' + escapeHTML(identity) + "</p>" +
       '<div class="about-principles">' +
         '<p><span>PRINCIPLE</span>' + escapeHTML(
           about.principle || site.philosophy || "The art does not create the universe. The universe creates the art."
