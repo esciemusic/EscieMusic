@@ -132,3 +132,11 @@ This is the standing audit contract for every subsequent public-site optimizatio
 - Escape and explicit close paths share the same close routine.
 - Inspector close control has an explicit visible keyboard focus treatment.
 - Regression coverage protects focus restoration and close visibility.
+
+
+### Pass 1 — approved experience/boundary checkpoint
+- Canonical public navigation remains the eight approved sections.
+- WORLD, ARCHIVES, CASE FILES, and GLASS EYE runtime surfaces remain present.
+- Glass Eye retains its approved YouTube parsing/fail-closed path and audience-memory model.
+- Game exploration remains defined in the world model but is not exposed through the current public doorway; the previously agreed game deferral remains protected.
+- No game shop or game-specific public release surface was introduced.
