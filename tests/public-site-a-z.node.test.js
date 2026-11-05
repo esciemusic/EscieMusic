@@ -358,3 +358,12 @@ test("A-Z Pass 1 canonical Glass Eye visual markup",()=>{
   assert.match(html,/section-visual-glass-eye\\" data-visual-section=\\"glass-eye\\"/);
   assert.doesNotMatch(html,/section-visual-glass\\" data-visual-section=\\"glass-eye\\"/);
 });
+
+
+test("A-Z Pass 1 time state remains lightweight and date-independent",()=>{
+  const app=read("app.js");
+  assert.match(app,/function updateTimeState\\(\\)/);
+  assert.doesNotMatch(app,/setInterval\\(/);
+  assert.doesNotMatch(app,/2026-11-22|November 22|Nov 22/);
+  assert.doesNotMatch(app,/countdown/i);
+});
