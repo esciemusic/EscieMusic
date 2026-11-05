@@ -11,14 +11,14 @@ const css=fs.readFileSync(path.join(root,"style.css"),"utf8");
 test("Glass Eye has a primary YouTube window between the eye interface and memory",()=>{
   assert.match(app,/ESCIE_GLASS_EYE_VIDEO/);
   assert.match(app,/data-glass-video-window/);
-  assert.match(app,/title="Glass Eye primary YouTube window"/);
+  assert.match(app,/title="Glass Eye primary YouTube window"/);\n  assert.match(app,/glassEyeYouTubeURL/);\n  assert.match(app,/youtube-nocookie\\.com\/embed/);
   assert.ok(app.indexOf("videoMarkup+") < app.indexOf("glass-memory-inline"),"primary video must precede viewer memory");
 });
 
 test("Glass Eye video configuration is public and approval-gated",()=>{
   assert.match(config,/provider:"youtube"/);
   assert.match(config,/url:""/);
-  assert.match(config,/artist-approved YouTube video|approved YouTube video|artist-approved/i);
+  assert.match(config,/artist-approved YouTube video|artist-approved public video URL|artist-approved/i);
 });
 
 test("Glass Eye video presentation is responsive",()=>{
