@@ -1201,7 +1201,7 @@ function renderClothing(){
     const base = registry && typeof registry.records === "function"
       ? normalizeCollection(registry.records())
       : [
-          { id: "escie", type: "identity", title: "ESCIE", description: "ESCIE IS THE ARTIST. THE WORK SPEAKS FROM HERE.", status: "active", published: true, visibility: "public" },
+          { id: "escie", type: "identity", title: "ESCIE", description: "ESCIE THE ARTIST. THE ART SPEAKS FOR ITSELF.", status: "active", published: true, visibility: "public" },
           ...normalizeCollection(getMusic()),
           ...normalizeCollection(getProjects()),
           ...normalizeCollection(getArchive()),
@@ -1627,7 +1627,7 @@ function renderClothing(){
     const records = (registry && typeof registry.records === "function"
       ? registry.records()
       : [
-          { id: "escie", type: "identity", title: "ESCIE", description: "ESCIE IS THE ARTIST. THE WORK SPEAKS FROM HERE.", status: "active", published: true, visibility: "public" },
+          { id: "escie", type: "identity", title: "ESCIE", description: "ESCIE THE ARTIST. THE ART SPEAKS FOR ITSELF.", status: "active", published: true, visibility: "public" },
           ...normalizeCollection(getMusic()),
           ...normalizeCollection(getProjects()),
           ...normalizeCollection(getArchive()),
