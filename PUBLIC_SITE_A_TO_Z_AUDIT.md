@@ -110,3 +110,10 @@ This is the standing audit contract for every subsequent public-site optimizatio
 - No popup-based external navigation was found in the public runtime.
 - Canonical hash routing, hashchange handling, top return, and skip-to-content paths remain intact.
 - Regression coverage now protects URL and route safety.
+
+
+### Pass 1 — release/disclosure/shell checkpoint
+- Public project, music, investigation, and archive registries remain sealed/empty until approved transmission.
+- No BAM or Dallas ’63 material is present in the public project/music registries.
+- The canonical public shell remains the eight approved sections: NOW, ART, THE WORLD, THE WEB, THE ARCHIVES, THE CASE FILES, GLASS EYE, ESCIE.
+- This checkpoint protects the public/private disclosure boundary while preserving the existing section architecture.
