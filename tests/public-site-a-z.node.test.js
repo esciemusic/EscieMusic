@@ -125,6 +125,22 @@ test("A-Z Pass 1 restores saved language preference on boot",()=>{
   assert.match(index,/document\.documentElement\.lang=initialLanguage/);
 });
 
+test("A-Z Pass 1 keeps external media URL handling fail-closed",()=>{
+  const app=read("app.js");
+  assert.match(app,/function safeExternalURL\(value\)/);
+  assert.match(app,/\["http:","https:"\]\.includes\(parsed\.protocol\)/);
+  assert.doesNotMatch(app,/window\.open\(/);
+});
+
+test("A-Z Pass 1 keeps canonical hash routing and top return behavior",()=>{
+  const app=read("app.js");
+  const index=read("index.html");
+  assert.match(app,/hashchange/);
+  assert.match(app,/window\.location\.hash/);
+  assert.match(index,/href="#top"/);
+  assert.match(index,/href="#main-content"/);
+});
+
 test("A-Z Pass 1 preserves keyboard and preference accessibility contracts",()=>{
   const index=read("index.html");
   const style=read("style.css");
