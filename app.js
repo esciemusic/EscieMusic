@@ -1377,9 +1377,23 @@ function renderClothing(){
     if (close) close.focus();
   }
 
+  let inspectorLastFocus = null;
+
+  function closeRecordInspector() {
+    const modal = byId("record-inspector");
+    if (!modal) return;
+    modal.hidden = true;
+    document.body.classList.remove("inspector-open");
+    if (inspectorLastFocus && typeof inspectorLastFocus.focus === "function") {
+      inspectorLastFocus.focus();
+    }
+    inspectorLastFocus = null;
+  }
+
   function showSymbolInspector(symbolId) {
     const modal = byId("record-inspector");
     if (!modal) return;
+    inspectorLastFocus = document.activeElement;
     const symbol = getSymbols().find(item => item && item.id === symbolId);
     if (!symbol) return;
     const body = modal.querySelector(".record-inspector-body");
@@ -1480,8 +1494,7 @@ function renderClothing(){
 
       const close = event.target.closest("[data-inspector-close]");
       if (close) {
-        modal.hidden = true;
-        document.body.classList.remove("inspector-open");
+        closeRecordInspector();
         return;
       }
 
@@ -1570,8 +1583,7 @@ function renderClothing(){
     document.addEventListener("keydown", event => {
       if (event.key === "Escape" && !modal.hidden) {
         event.preventDefault();
-        modal.hidden = true;
-        document.body.classList.remove("inspector-open");
+        closeRecordInspector();
         return;
       }
 
