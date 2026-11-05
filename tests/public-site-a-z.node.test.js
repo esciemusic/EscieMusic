@@ -118,6 +118,13 @@ test("A-Z Pass 1 record section labels use canonical public routes",()=>{
 });
 
 
+test("A-Z Pass 1 restores saved language preference on boot",()=>{
+  const index=read("index.html");
+  assert.match(index,/localStorage\.getItem\("escie-language"\)/);
+  assert.match(index,/var initialLanguage=\(savedLanguage\|\|state\.language\|\|navigator\.language\|\|"en"\)/);
+  assert.match(index,/document\.documentElement\.lang=initialLanguage/);
+});
+
 test("A-Z Pass 1 public accordion closes on Escape",()=>{
   const index=read("index.html");
   assert.match(index,/document\.addEventListener\("keydown",function\(event\)/);
