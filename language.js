@@ -38,7 +38,10 @@ const ESCIE_ORTHOGRAPHY = {
 };
 
 
-let ESCIE_I18N_OBSERVER = null;\nlet ESCIE_I18N_APPLYING = false;\n\nfunction applyEscieInterfaceTranslations(language = "en") {
+let ESCIE_I18N_OBSERVER = null;
+let ESCIE_I18N_APPLYING = false;
+
+function applyEscieInterfaceTranslations(language = "en") {
   const normalized = ["en","fr","es"].includes(String(language).toLowerCase()) ? String(language).toLowerCase() : "en";
   const table = Object.assign({}, ESCIE_INTERFACE_TRANSLATIONS.en, ESCIE_INTERFACE_EXTRA.en, ESCIE_INTERFACE_RUNTIME.en, ESCIE_INTERFACE_TRANSLATIONS[normalized] || {}, ESCIE_INTERFACE_EXTRA[normalized] || {}, ESCIE_INTERFACE_RUNTIME[normalized] || {});
   const ignored = new Set(["SCRIPT","STYLE","NOSCRIPT","TEXTAREA","INPUT","SELECT","OPTION"]);
