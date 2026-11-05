@@ -405,3 +405,19 @@ test("A-Z Pass 2 accordion navigation stays compact and mutually exclusive",()=>
   assert.ok(css.includes(".section-collapsed{min-height:0 !important;}"));
   assert.ok(css.includes(".section-collapsed .section-drop-panel{display:none !important;}"));
 });
+
+
+test("A-Z Pass 2 Glass Eye primary window contract stays approved and responsive",()=>{
+  const app=read("app.js");
+  const css=read("aesthetic.css");
+  assert.ok(app.includes('glass-video-window'));
+  assert.ok(app.includes('glassEyeYouTubeURL(videoConfig&&videoConfig.url)'));
+  assert.ok(app.includes('https://www.youtube-nocookie.com/embed/'));
+  assert.ok(app.includes('LOCAL · PRIVATE · NON-CANONICAL'));
+  assert.ok(app.includes('data-glass-eye-action="observe"'));
+  assert.ok(app.includes('data-glass-eye-action="follow"'));
+  assert.ok(app.includes('data-glass-eye-action="return"'));
+  assert.ok(css.includes(".glass-video-window{"));
+  assert.ok(css.includes("aspect-ratio:16/9"));
+  assert.ok(css.includes(".glass-video-frame iframe{"));
+});
