@@ -392,3 +392,16 @@ test("A-Z Pass 2 open-section visuals use restrained motion with reduced-motion 
   assert.ok(css.includes("prefers-reduced-motion:reduce"));
   assert.ok(css.includes("section-open .section-visual::after{animation:escieSignalScan"));
 });
+
+
+test("A-Z Pass 2 accordion navigation stays compact and mutually exclusive",()=>{
+  const index=read("index.html");
+  const css=read("aesthetic.css");
+  assert.ok(index.includes('className="section-drop-trigger"'));
+  assert.ok(index.includes('className="section-drop-panel"'));
+  assert.ok(index.includes('other.classList.toggle("section-open",active)'));
+  assert.ok(index.includes('other.classList.toggle("section-collapsed",!active)'));
+  assert.ok(index.includes('p.hidden=!active'));
+  assert.ok(css.includes(".section-collapsed{min-height:0 !important;}"));
+  assert.ok(css.includes(".section-collapsed .section-drop-panel{display:none !important;}"));
+});
