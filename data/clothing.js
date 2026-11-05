@@ -14,6 +14,8 @@
       category:"CORE",
       garment:"Heavyweight oversized T-shirt",
       status:"DESIGN_READY",
+      release_status:"locked",
+      public_visibility:"hidden",
       production_stage:"SAMPLE",
       color:"WASHED BLACK",
       fabric:"100% cotton",
