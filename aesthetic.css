@@ -1655,3 +1655,11 @@ html[data-theme="light"] .archive-record:focus-visible{background:rgba(36,111,22
   .archive-index-note{max-width:none}
 }
 @media(prefers-reduced-motion:reduce){.archive-record{transition:none}}
+
+
+/* =========================================================
+   ACCORDION HARDENING — CLOSED SECTIONS MUST HAVE NO DEAD SPACE
+   ========================================================= */
+main > .site-section:not(#entry).section-collapsed{min-height:0 !important;}
+main > .site-section:not(#entry).section-collapsed .section-drop-panel{display:none !important;}
+main > .site-section:not(#entry).section-open{min-height:0 !important;}
