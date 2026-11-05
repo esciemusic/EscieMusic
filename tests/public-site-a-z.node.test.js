@@ -83,20 +83,20 @@ test("A-Z Pass 1 rejects remaining legacy shell visual class",()=>{
 
 test("A-Z Pass 1 keeps runtime motif and section labels on canonical IDs",()=>{
   const app=read("app.js");
-  assert.doesNotMatch(app,/motifMarkup\\("work"\\)/);
-  assert.doesNotMatch(app,/motifMarkup\\("the-web"\\)/);
-  assert.doesNotMatch(app,/motifMarkup\\("archive"\\)/);
-  assert.match(app,/motifMarkup\\("art"\\)/);
-  assert.match(app,/motifMarkup\\("web"\\)/);
-  assert.match(app,/motifMarkup\\("archives"\\)/);
+  assert.doesNotMatch(app,'motifMarkup("work")');
+  assert.doesNotMatch(app,'motifMarkup("the-web")');
+  assert.doesNotMatch(app,'motifMarkup("archive")');
+  assert.ok(app.includes('motifMarkup("art")'));
+  assert.ok(app.includes('motifMarkup("web")'));
+  assert.ok(app.includes('motifMarkup("archives")'));
   assert.match(app,/art:"ART"/);
   assert.match(app,/archives:"THE ARCHIVES"/);
 });
 
 test("A-Z Pass 1 accordion labels are section-local",()=>{
   const index=read("index.html");
-  assert.match(index,/var otherHeading=other\\.querySelector\\("h2"\\)/);
-  assert.match(index,/b\\.setAttribute\\("aria-label",\\(active\\?"Close ":"Open " \\)\\+otherTitle\\)/);
+  assert.ok(index.includes('var otherHeading=other.querySelector("h2")'));
+  assert.ok(index.includes('b.setAttribute("aria-label",(active?"Close ":"Open ")+otherTitle)'));
 });
 
 
@@ -301,8 +301,8 @@ test("A-Z Pass 1 canonical visual selectors remain across public styles",()=>{
     assert.doesNotMatch(css,/\\.section-visual-work(?:\\b|[-:])/);
     assert.doesNotMatch(css,/\\.section-visual-archive::before/);
   }
-  assert.match(style,/\\.section-visual-art::before/);
-  assert.match(style,/\\.section-visual-archives::before/);
+  assert.ok(style.includes(".section-visual-art::before"));
+  assert.ok(style.includes(".section-visual-archives::before"));
 });
 
 
@@ -333,37 +333,37 @@ test("A-Z Pass 1 theme selectors use canonical section visual IDs",()=>{
   const css=read("aesthetic.css");
   assert.doesNotMatch(css,/\\.section-visual-archive(?!s)/);
   assert.doesNotMatch(css,/\\.section-visual-glass(?!-eye)/);
-  assert.match(css,/html\\[data-theme=\\"light\\"\\]/);
-  assert.match(css,/html\\[data-theme=\\"light\\"\\] \\.section-visual-archives/);
-  assert.match(css,/html\\[data-theme=\\"light\\"\\] \\.section-visual-glass-eye/);
+  assert.ok(css.includes('html[data-theme="light"]'));
+  assert.ok(css.includes('html[data-theme="light"] .section-visual-archives'));
+  assert.ok(css.includes('html[data-theme="light"] .section-visual-glass-eye'));
 });
 
 
 test("A-Z Pass 1 external checkout URLs fail closed",()=>{
   const app=read("app.js");
   assert.match(app,/const purchaseURL=safeExternalURL\\(item\.external_purchase_url\\)/);
-  assert.match(app,/type===\\"REAL_MONEY\\"&&purchaseURL/);
+  assert.ok(app.includes('type==="REAL_MONEY"&&purchaseURL'));
 });
 
 
 test("A-Z Pass 1 canonical Archives visual markup",()=>{
   const html=read("index.html");
-  assert.match(html,/section-visual-archives\\" data-visual-section=\\"archives\\"/);
-  assert.doesNotMatch(html,/section-visual-archive\\" data-visual-section=\\"archives\\"/);
+  assert.ok(html.includes('section-visual-archives" data-visual-section="archives"'));
+  assert.doesNotMatch(html,/section-visual-archive" data-visual-section="archives"/);
 });
 
 
 test("A-Z Pass 1 canonical Glass Eye visual markup",()=>{
   const html=read("index.html");
-  assert.match(html,/section-visual-glass-eye\\" data-visual-section=\\"glass-eye\\"/);
-  assert.doesNotMatch(html,/section-visual-glass\\" data-visual-section=\\"glass-eye\\"/);
+  assert.ok(html.includes('section-visual-glass-eye" data-visual-section="glass-eye"'));
+  assert.doesNotMatch(html,/section-visual-glass" data-visual-section="glass-eye"/);
 });
 
 
 test("A-Z Pass 1 time state remains lightweight and date-independent",()=>{
   const app=read("app.js");
-  assert.match(app,/function updateTimeState\\(\\)/);
-  assert.doesNotMatch(app,/setInterval\\(/);
+  assert.ok(app.includes("function updateTimeState()"));
+  assert.doesNotMatch(app,/setInterval\(/);
   assert.doesNotMatch(app,/2026-11-22|November 22|Nov 22/);
   assert.doesNotMatch(app,/countdown/i);
 });
