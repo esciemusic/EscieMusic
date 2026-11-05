@@ -65,3 +65,11 @@ This is the standing audit contract for every subsequent public-site optimizatio
 - Public release registries remain empty until approved release.
 - Glass Eye remains the audience-eye surface with the approved-video gate.
 - Game remains outside the public navigation while intentionally hidden.
+
+
+### Pass 1 — second functional checkpoint
+- Accordion initializer is singular; no duplicate initializer was found in the public shell.
+- Mobile index trigger is singular in the shell.
+- Legacy visual section IDs are absent.
+- ART visual class is now canonical (section-visual-art) rather than the legacy section-visual-work.
+- Release registries remain sealed and Glass Eye remains approval-gated.
