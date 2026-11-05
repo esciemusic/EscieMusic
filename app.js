@@ -508,14 +508,12 @@
 
     container.innerHTML =
       '<div class="now-state">' + motifMarkup("now") + '' +
-        '<p class="eyebrow">CURRENT STATE</p>' +
         '<h3>' + escapeHTML(transmissionLabel) + "</h3>" +
         '<p>' + escapeHTML(transmissionText) + "</p>" +
         (publicMusic ? '<button class="record-action record-card" type="button" data-record-id="' + escapeHTML(recordId(publicMusic)) + '">OPEN TRANSMISSION</button>' : '') +
         '<div class="now-meta">' +
           '<span>' + escapeHTML(location) + "</span>" +
           '<span>' + escapeHTML(String(site.publicYear || new Date().getFullYear())) + "</span>" +
-          '<span>' + escapeHTML(status) + "</span>" +
         "</div>" +
       "</div>";
   }
