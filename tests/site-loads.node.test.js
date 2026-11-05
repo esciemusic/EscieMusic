@@ -60,3 +60,5 @@ assert(fs.readFileSync("app.js","utf8").includes("data-web-record-type"),"THE WE
 assert(fs.readFileSync("app.js","utf8").includes("safeExternalURL"),"external storefront URLs must be protocol-validated");
 
 console.log("ESCIE site script-load contracts OK");
+
+assert(!html.includes('<a href="#world">ENTER THE WORLD</a>'),"public entry must not expose the deferred game CTA");
