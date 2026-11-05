@@ -194,3 +194,9 @@ This is the standing audit contract for every subsequent public-site optimizatio
 ### Pass 1 — visual markup checkpoint
 - Found one remaining Archives markup class using the retired singular visual selector while the registry and active styles use canonical archives naming.
 - Aligned the live section markup to section-visual-archives and added regression coverage.
+
+
+### Pass 1 — W/X visual-world boundary checkpoint
+- THE WORLD retains its canonical world visual and dedicated renderer/clothing layer.
+- During cross-section inspection, the live Glass Eye markup was still using a retired `section-visual-glass` class despite the canonical `glass-eye` registry/style identity.
+- The markup is now aligned to `section-visual-glass-eye` with regression coverage, preventing another presentation-layer naming split.
