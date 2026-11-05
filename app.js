@@ -688,6 +688,11 @@
           '<span><strong>'+counts.person+'</strong> PEOPLE</span><span><strong>'+counts.moment+'</strong> MOMENTS</span><span><strong>'+counts.fragment+'</strong> FRAGMENTS</span><span><strong>'+counts.proof+'</strong> PROOF</span>'+
         '</div>'+
       '</div>'+
+      '<div class="world-wear-layer">'+
+        '<div class="world-wear-head"><p class="eyebrow">THE WORLD YOU CAN WEAR</p><span>PHYSICAL LAYER</span></div>'+
+        '<div id="merch-filters" class="merch-controls" aria-label="Clothing filters"></div>'+
+        '<div id="merch-container" class="merch-container" hidden></div>'+
+      '</div>'+
       '</div>';
   }
 
