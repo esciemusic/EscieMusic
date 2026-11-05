@@ -79,3 +79,13 @@ This is the standing audit contract for every subsequent public-site optimizatio
 - Legacy `glassEye` section naming is rejected in runtime record links.
 - NOW, THE WORLD and ESCIE are represented in record section-label routing.
 - Public/Central separation remains explicit; Central work does not become public canon automatically.
+
+
+### Pass 1 — interaction/media/lifecycle checkpoint
+- Record inspector section routing uses only canonical public section targets; legacy aliases are rejected.
+- Web relationship filters use one consolidated change lifecycle for web-filter and record-type controls.
+- Public audio playback validates URLs before queueing or loading media.
+- Glass Eye YouTube remains privacy-enhanced and fails closed to the approved-video placeholder when no valid approved URL exists.
+- Runtime initialization remains idempotent; mobile menu and record-inspector setup each have one initialization call.
+- Merch filter controls carry a per-control binding guard to prevent duplicate listeners across renders.
+- Saved language preference and keyboard-close behavior remain covered by regression contracts.
