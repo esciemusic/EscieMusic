@@ -189,3 +189,8 @@ This is the standing audit contract for every subsequent public-site optimizatio
 - Public external checkout links now pass through the same fail-closed HTTP/HTTPS URL sanitizer used by the public media/external-link layer.
 - Invalid or unsupported checkout targets render no checkout link instead of emitting an unsafe destination.
 - Regression coverage locks this contract.
+
+
+### Pass 1 — visual markup checkpoint
+- Found one remaining Archives markup class using the retired singular visual selector while the registry and active styles use canonical archives naming.
+- Aligned the live section markup to section-visual-archives and added regression coverage.
