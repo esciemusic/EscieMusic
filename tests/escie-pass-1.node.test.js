@@ -24,3 +24,19 @@ test("ESCIE identity does not expose unreleased BAM material",()=>{
   assert.doesNotMatch(index,/BAM|Dallas['’]?\s*['’]?63/i);
   assert.doesNotMatch(about,/BAM|Dallas['’]?\s*['’]?63/i);
 });
+
+
+test("ESCIE Pass 3 preserves the final public boundary",()=>{
+  const index=read("index.html");
+  const app=read("app.js");
+  const about=read("data/about.js");
+  const css=read("style.css");
+  assert.match(index,/ESCIE THE ARTIST\. THE ART SPEAKS FOR ITSELF\./);
+  assert.match(app,/ESCIE THE ARTIST\. THE ART SPEAKS FOR ITSELF\./);
+  assert.match(about,/role:\["the Father","the Man","the Monster"\]/);
+  assert.match(css,/\.escie-section \.about-lead/);
+  assert.match(css,/@media\(max-width:640px\)/);
+  assert.doesNotMatch(index,/BAM|Dallas['’]?\\s*['’]?63/i);
+  assert.doesNotMatch(about,/BAM|Dallas['’]?\\s*['’]?63/i);
+  assert.doesNotMatch(index,/REAL|MEMORY|DRAMATIZED|FICTIONALIZED|MYTH/i);
+});
