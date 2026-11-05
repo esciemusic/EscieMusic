@@ -98,3 +98,12 @@ test("A-Z Pass 1 accordion labels are section-local",()=>{
   assert.match(index,/var otherHeading=other\\.querySelector\\("h2"\\)/);
   assert.match(index,/b\\.setAttribute\\("aria-label",\\(active\\?"Close ":"Open " \\)\\+otherTitle\\)/);
 });
+
+
+test("A-Z Pass 1 blocks legacy section target aliases",()=>{
+  const app=read("app.js");
+  assert.doesNotMatch(app,/work:"art"/);
+  assert.doesNotMatch(app,/archive:"archives"/);
+  assert.match(app,/"glass-eye":"glass-eye"/);
+  assert.match(app,/archives:"archives"/);
+});
