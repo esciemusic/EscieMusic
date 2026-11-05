@@ -1773,16 +1773,28 @@ body.inspector-open{overflow:hidden}
 
 .entry-inner{position:relative}
 
-.now-section{min-height:62vh}
-.now-state{position:relative;position:relative;overflow:hidden}
+.now-section{min-height:0}
+.now-state{
+  position:relative;
+  overflow:hidden;
+  max-width:900px;
+  margin:0 auto;
+  padding:24px 0 18px;
+  border-top:1px solid var(--line);
+}
 .now-state::after{
   content:"";
   position:absolute;
   left:0;right:0;top:0;
   height:1px;
-  background:rgba(255,255,255,.32);
+  background:rgba(255,255,255,.26);
   transform:translateX(-100%);
-  animation:signal-sweep 6s linear infinite;
+  animation:signal-sweep 8s linear infinite;
+}
+.now-state h3{max-width:820px}
+.now-state > p:not(.eyebrow){max-width:620px}
+@media(max-width:700px){
+  .now-state{padding:18px 0 14px}
 }
 @keyframes signal-sweep{to{transform:translateX(100%)}}
 
