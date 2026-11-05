@@ -344,3 +344,10 @@ test("A-Z Pass 1 external checkout URLs fail closed",()=>{
   assert.match(app,/const purchaseURL=safeExternalURL\\(item\.external_purchase_url\\)/);
   assert.match(app,/type===\\"REAL_MONEY\\"&&purchaseURL/);
 });
+
+
+test("A-Z Pass 1 canonical Archives visual markup",()=>{
+  const html=read("index.html");
+  assert.match(html,/section-visual-archives\\" data-visual-section=\\"archives\\"/);
+  assert.doesNotMatch(html,/section-visual-archive\\" data-visual-section=\\"archives\\"/);
+});
