@@ -184,8 +184,12 @@
           if(events&&typeof events.emit==="function")events.emit("language:changed",{language:language});
         });
       });
-      var initialLanguage=(state.language||navigator.language||"en").toLowerCase().slice(0,2);
+      var savedLanguage="";
+      try{savedLanguage=localStorage.getItem("escie-language")||"";}catch(error){}
+      var initialLanguage=(savedLanguage||state.language||navigator.language||"en").toLowerCase().slice(0,2);
       if(["en","fr","es"].indexOf(initialLanguage)<0)initialLanguage="en";
+      state.language=initialLanguage;
+      document.documentElement.lang=initialLanguage;
       languageButtons.forEach(function(item){
         var active=item.getAttribute("data-language")===initialLanguage;
         item.classList.toggle("is-active",active);
