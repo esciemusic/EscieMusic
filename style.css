@@ -3485,3 +3485,72 @@ html[data-theme="light"] .investigation-case:focus-visible{
 /* ESCIE identity facets — Pass 2 */
 .about-identity{margin:.45rem 0 1rem;font-size:.72rem;letter-spacing:.18em;line-height:1.5;text-transform:uppercase;opacity:.82;}
 @media (max-width:640px){.about-identity{font-size:.64rem;letter-spacing:.12em;}}
+
+
+/* =========================================================
+   ESCIE — PASS 2 IDENTITY PRESENTATION
+   ========================================================= */
+.escie-section .section-inner{
+  width:min(100%,var(--max-width));
+}
+.escie-section .section-visual{
+  margin-bottom:24px;
+}
+.escie-section h2{
+  margin-bottom:22px;
+}
+.escie-section .about-content{
+  max-width:860px;
+}
+.escie-section .about-lead{
+  max-width:760px;
+  color:var(--white);
+  font-size:clamp(26px,4.5vw,56px);
+  line-height:1.08;
+  letter-spacing:.025em;
+  text-transform:uppercase;
+}
+.escie-section .about-identity{
+  margin:18px 0 0;
+  color:var(--escie-purple);
+  font-size:clamp(10px,1.2vw,13px);
+  font-weight:600;
+  letter-spacing:.22em;
+  line-height:1.5;
+}
+.escie-section .about-principles{
+  margin-top:34px;
+  max-width:760px;
+}
+.escie-section .about-principles p{
+  grid-template-columns:100px minmax(0,1fr);
+  gap:22px;
+  color:var(--muted);
+  font-size:12px;
+}
+.escie-section .about-social{
+  margin-top:28px;
+}
+@media(max-width:640px){
+  .escie-section .section-visual{margin-bottom:20px}
+  .escie-section h2{margin-bottom:18px}
+  .escie-section .about-lead{
+    font-size:clamp(25px,8vw,42px);
+    line-height:1.08;
+  }
+  .escie-section .about-identity{
+    margin-top:15px;
+    letter-spacing:.14em;
+  }
+  .escie-section .about-principles{
+    margin-top:28px;
+  }
+  .escie-section .about-principles p{
+    display:block;
+    font-size:12px;
+  }
+  .escie-section .about-principles span{
+    display:block;
+    margin-bottom:8px;
+  }
+}
