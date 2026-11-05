@@ -125,6 +125,20 @@ test("A-Z Pass 1 restores saved language preference on boot",()=>{
   assert.match(index,/document\.documentElement\.lang=initialLanguage/);
 });
 
+test("A-Z Pass 1 public audio playback accepts only safe URLs",()=>{
+  const app=read("app.js");
+  assert.match(app,/audio && safeExternalURL\(item\.url\)/);
+  assert.match(app,/type === "audio" && safeExternalURL\(entry\.url\)/);
+  assert.match(app,/url: safeExternalURL\(audio\.url\)/);
+});
+
+test("A-Z Pass 1 Glass Eye YouTube fails closed and uses privacy embed",()=>{
+  const app=read("app.js");
+  assert.match(app,/youtube-nocookie\.com\/embed/);
+  assert.match(app,/AWAITING APPROVED VIDEO/);
+  assert.match(app,/allowfullscreen/);
+});
+
 test("A-Z Pass 1 web filters use one consolidated change lifecycle",()=>{
   const app=read("app.js");
   const block=app.slice(app.indexOf("function setupRecordInspector"),app.indexOf("function setupRecordInspector")+5000);
