@@ -73,3 +73,9 @@ This is the standing audit contract for every subsequent public-site optimizatio
 - Legacy visual section IDs are absent.
 - ART visual class is now canonical (section-visual-art) rather than the legacy section-visual-work.
 - Release registries remain sealed and Glass Eye remains approval-gated.
+
+### Pass 1 — synchronized checkpoint
+- Record-to-section labels now use the canonical eight public routes.
+- Legacy `glassEye` section naming is rejected in runtime record links.
+- NOW, THE WORLD and ESCIE are represented in record section-label routing.
+- Public/Central separation remains explicit; Central work does not become public canon automatically.
