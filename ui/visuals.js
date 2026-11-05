@@ -113,7 +113,7 @@
  }
 
  function syncWorkAlbumVisuals(){
-  const work=document.querySelector('.section-visual[data-visual-section="work"]');
+  const work=document.querySelector('.section-visual[data-visual-section="art"]');
   if(!work)return;
   if(WORK_ALBUM_OBSERVER){WORK_ALBUM_OBSERVER.disconnect();WORK_ALBUM_OBSERVER=null;}
 
@@ -123,7 +123,7 @@
     const raw=card.getAttribute("data-project-visuals")||"[]";
     const items=JSON.parse(raw);
     return Array.isArray(items)?items.map(item=>{
-     if(typeof item==="string")return {url:item,section:"work"};
+     if(typeof item==="string")return {url:item,section:"art"};
      if(!item||typeof item!=="object")return null;
      const url=safeAlbumURL(item.url||item.src||item.href);
      return url?{url,section:String(item.section||"work"),alt:String(item.alt||"").trim()}:null;
@@ -166,7 +166,7 @@
   const sections=Array.from(document.querySelectorAll(".section-visual[data-visual-section]"));
   const bySection=new Map();
   allVisuals.forEach(item=>{
-   const key=item.section==="the-web"?"web":item.section;
+   const key=item.section==="the-web"?"web":(item.section==="archive"?"archives":(item.section==="work"?"art":item.section));
    if(!bySection.has(key))bySection.set(key,[]);
    bySection.get(key).push(item);
   });
