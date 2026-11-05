@@ -201,6 +201,9 @@ function allPublicRecords(){
 
   function releaseVisible(record){
     if(!record) return false;
+    if(record.release_state!==undefined&&record.release_state!==null){
+      return String(record.release_state).toUpperCase()==="RELEASED";
+    }
     if(record.release_status) return record.release_status==="released";
     if(record.type==="project"&&record.release_mode==="progressive"){
       return currentMusic().some(track=>track&&track.project===record.id&&track.release_status==="released");
