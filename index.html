@@ -267,7 +267,7 @@
           trigger.type="button";
           trigger.className="nested-drop-trigger";
           trigger.setAttribute("aria-expanded","false");
-          trigger.setAttribute("aria-controls",(item.id||("nested-"+Math.random().toString(36).slice(2)))+"-panel");
+          var panelId=(item.id||"nested-item")+"-panel";if(document.getElementById(panelId)){var suffix=1;while(document.getElementById(panelId+"-"+suffix))suffix++;panelId=panelId+"-"+suffix;}trigger.setAttribute("aria-controls",panelId);
           trigger.innerHTML='<span class="nested-drop-index" aria-hidden="true">▸</span><span class="nested-drop-title"></span><span class="nested-drop-meta"></span><span class="nested-drop-state" aria-hidden="true">+</span>';
           trigger.querySelector(".nested-drop-title").textContent=title;
           trigger.querySelector(".nested-drop-meta").textContent=(eyebrow?eyebrow.textContent.trim():"")+(status?" · "+status.textContent.trim():"");
