@@ -337,3 +337,10 @@ test("A-Z Pass 1 theme selectors use canonical section visual IDs",()=>{
   assert.match(css,/html\\[data-theme=\\"light\\"\\] \\.section-visual-archives/);
   assert.match(css,/html\\[data-theme=\\"light\\"\\] \\.section-visual-glass-eye/);
 });
+
+
+test("A-Z Pass 1 external checkout URLs fail closed",()=>{
+  const app=read("app.js");
+  assert.match(app,/const purchaseURL=safeExternalURL\\(item\.external_purchase_url\\)/);
+  assert.match(app,/type===\\"REAL_MONEY\\"&&purchaseURL/);
+});
