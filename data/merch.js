@@ -13,6 +13,8 @@
     shop_concept:"THE WORLD YOU CAN OWN",
     universe_links:["THE WORLD","THE ARCHIVES","GLASS EYE","ART"],
     presentation:"Physical objects carry traces of the universe into ordinary life; the site remains the doorway, not the checkout.",
+    public_visibility:"hidden",
+    release_status:"locked",
     art_license:"ESCIE-owned original artwork; master files remain outside checkout metadata.",
     drops:[
       {id:"drop-001",title:"DROP 001 — THE FIRST WARDROBE",status:"READY_FOR_ART_PRODUCTION",category:"CORE",
