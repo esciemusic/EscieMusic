@@ -42,3 +42,30 @@ test("public shell keeps the sealed release boundary",()=>{
   assert.match(music,/ESCIE_MUSIC=\[\]/);
   assert.doesNotMatch(index,/REAL[ /]+MEMORY[ /]+MYTH/i);
 });
+
+
+test("A-Z Pass 1 locks the live shell to the eight-section model",()=>{
+  const index=read("index.html");
+  const visuals=read("data/visuals.js");
+  const navigation=read("navigation.js");
+  assert.match(index,/id="now"[^>]*class="site-section now-section"/);
+  assert.match(index,/id="art"[^>]*class="site-section art-section"/);
+  assert.match(index,/id="world"[^>]*class="site-section world-section"/);
+  assert.match(index,/id="web"[^>]*class="site-section web-section"/);
+  assert.match(index,/id="archives"[^>]*class="site-section archives-section"/);
+  assert.match(index,/id="investigation"[^>]*class="site-section investigation-section"/);
+  assert.match(index,/id="glass-eye"[^>]*class="site-section glass-eye-section"/);
+  assert.match(index,/id="escie"[^>]*class="site-section escie-section"/);
+  assert.match(index,/var symbols=\{now:"◉"/);
+  assert.doesNotMatch(index,/data-visual-section="work"/);
+  assert.doesNotMatch(index,/data-visual-section="the-web"/);
+  assert.doesNotMatch(index,/data-visual-section="archive"/);
+  assert.match(visuals,/section:"art"/);
+  assert.match(visuals,/section:"web"/);
+  assert.match(visuals,/section:"archives"/);
+  assert.doesNotMatch(visuals,/section:"work"/);
+  assert.doesNotMatch(visuals,/section:"the-web"/);
+  assert.doesNotMatch(visuals,/section:"archive"/);
+  assert.match(navigation,/id:"now".*order:1/);
+  assert.match(navigation,/id:"escie".*order:8/);
+});
