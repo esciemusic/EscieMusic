@@ -596,7 +596,7 @@
       const parent = context.parents[0];
       const parentRecord = parent ? getAllRecords().find(item => recordId(item) === parent.record) : null;
       const media = Array.isArray(track.media) ? track.media : [];
-      const audio = media.find(item => String(item && (item.type || item.kind) || "").toLowerCase() === "audio" && item.url);
+      const audio = media.find(item => String(item && (item.type || item.kind) || "").toLowerCase() === "audio" && safeExternalURL(item.url));
       const stage = String(track.release_status || track.status || "TRANSMISSION").toUpperCase();
       const projectLabel = parentRecord ? recordTitle(parentRecord) : (track.project || "ESCIE");
       const number = track.number ? String(track.number).padStart(3, "0") : "—";
@@ -1546,7 +1546,7 @@ function renderClothing(){
                 return itemAudio ? {
                   id: recordId(item),
                   title: recordTitle(item),
-                  url: itemAudio.url,
+                  url: safeExternalURL(itemAudio.url),
                   sourceId: recordId(item)
                 } : null;
               })
@@ -1556,7 +1556,7 @@ function renderClothing(){
           player.load({
             id: recordId(record),
             title: recordTitle(record),
-            url: audio.url,
+            url: safeExternalURL(audio.url),
             sourceId: recordId(record)
           });
           player.play();
