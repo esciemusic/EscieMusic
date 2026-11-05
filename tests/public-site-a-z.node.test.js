@@ -382,3 +382,13 @@ test("A-Z Pass 2 entry keeps the live signal state above ESCIE",()=>{
   assert.ok(app.includes("SIGNAL // NIGHT"));
   assert.ok(aesthetic.includes(".entry-state{"));
 });
+
+
+test("A-Z Pass 2 open-section visuals use restrained motion with reduced-motion fallback",()=>{
+  const css=read("aesthetic.css");
+  assert.ok(css.includes("@keyframes escieSignalDrift"));
+  assert.ok(css.includes("@keyframes escieSignalScan"));
+  assert.ok(css.includes("section-open .section-visual{animation:escieSignalDrift"));
+  assert.ok(css.includes("prefers-reduced-motion:reduce"));
+  assert.ok(css.includes("section-open .section-visual::after{animation:escieSignalScan"));
+});
