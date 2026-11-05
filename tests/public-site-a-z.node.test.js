@@ -125,6 +125,19 @@ test("A-Z Pass 1 restores saved language preference on boot",()=>{
   assert.match(index,/document\.documentElement\.lang=initialLanguage/);
 });
 
+test("A-Z Pass 1 does not contain an active November 22 countdown",()=>{
+  const app=read("app.js");
+  const index=read("index.html");
+  assert.doesNotMatch(app,/2026-11-22|COUNTDOWN|countdown/);
+  assert.doesNotMatch(index,/2026-11-22|COUNTDOWN|countdown/);
+});
+
+test("A-Z Pass 1 time state is lightweight and does not create a recurring timer",()=>{
+  const app=read("app.js");
+  assert.match(app,/function updateTimeState\(\)/);
+  assert.doesNotMatch(app,/setInterval\(/);
+});
+
 test("A-Z Pass 1 runtime initialization is idempotent",()=>{
   const app=read("app.js");
   assert.match(app,/if \(ESCIE_RUNTIME\.initialized\) return ESCIE_RUNTIME;/);
