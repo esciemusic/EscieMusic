@@ -47,7 +47,7 @@
       const parsed = new URL(raw, window.location.href);
       const host = parsed.hostname.toLowerCase().replace(/^www\\./, "");
       let id = "";
-      if (host === "youtu.be") id = parsed.pathname.replace(/^\\//, "").split("/")[0];
+      if (host === "youtu.be") id = parsed.pathname.replace(/^\//, "").split("/")[0];
       else if (host === "youtube.com" || host === "youtube-nocookie.com") {
         if (parsed.pathname === "/watch") id = parsed.searchParams.get("v") || "";
         else if (parsed.pathname.startsWith("/embed/")) id = parsed.pathname.split("/")[2] || "";
