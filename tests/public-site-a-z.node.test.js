@@ -125,6 +125,20 @@ test("A-Z Pass 1 restores saved language preference on boot",()=>{
   assert.match(index,/document\.documentElement\.lang=initialLanguage/);
 });
 
+test("A-Z Pass 1 preserves keyboard closing for section and nested interfaces",()=>{
+  const index=read("index.html");
+  assert.match(index,/event\.key!=="Escape"/);
+  assert.match(index,/var openSection=sections\.find/);
+  assert.match(index,/new MutationObserver/);
+  assert.match(index,/window\.ESCIE_NESTED_DROPDOWNS/);
+});
+
+test("A-Z Pass 1 keeps runtime initialization guarded against duplicate lifecycle setup",()=>{
+  const app=read("app.js");
+  assert.match(app,/if \(ESCIE_RUNTIME\.initialized\) return ESCIE_RUNTIME/);
+  assert.match(app,/if\(button\.dataset\.bound==="1"\)return/);
+});
+
 test("A-Z Pass 1 keeps unreleased public registries sealed",()=>{
   const projects=read("data/projects.js");
   const music=read("data/music.js");
