@@ -159,3 +159,9 @@ This is the standing audit contract for every subsequent public-site optimizatio
 - It now fails closed for garments marked `public_visibility: hidden` or `release_status: locked`.
 - This preserves the public clothing/world-wear concept while preventing unreleased garment specifications from crossing the public boundary.
 - Regression coverage locks the disclosure gate.
+
+
+### Pass 1 — canonical visual selector completion
+- A remaining active-stylesheet selector for THE ARCHIVES used the legacy singular `section-visual-archive` class and was corrected to `section-visual-archives`.
+- A remaining Glass Eye presentation selector used `section-visual-glass` and was corrected to the canonical `section-visual-glass-eye` class.
+- Regression coverage now rejects these legacy selector forms.
