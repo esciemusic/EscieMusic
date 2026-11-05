@@ -128,8 +128,8 @@ test("A-Z Pass 1 restores saved language preference on boot",()=>{
 test("A-Z Pass 1 web filters use one consolidated change lifecycle",()=>{
   const app=read("app.js");
   const block=app.slice(app.indexOf("function setupRecordInspector"),app.indexOf("function setupRecordInspector")+5000);
-  assert.strictEqual((block.match(/document\\.addEventListener\\("change"/g)||[]).length,2);
-  assert.match(block,/\\[data-web-filter\\],\\[data-web-record-type\\]/);
+  assert.strictEqual((block.match(/document\.addEventListener\("change"/g)||[]).length,2);
+  assert.match(block,/\[data-web-filter\],\[data-web-record-type\]/);
 });
 
 test("A-Z Pass 1 record inspector uses canonical section targets",()=>{
