@@ -126,6 +126,7 @@ const ESCIE_INTERFACE_EXTRA = Object.freeze({
 
 const ESCIE_INTERFACE_RUNTIME = Object.freeze({
   en: {
+    "CURRENT TRANSMISSION /":"CURRENT TRANSMISSION /","ACTIVE SIGNAL":"ACTIVE SIGNAL","SIGNAL QUIET":"SIGNAL QUIET","The signal is quiet. The record remains.":"The signal is quiet. The record remains.","NIGHTLIGHT":"NIGHTLIGHT",
     "ESCIE — return to top":"ESCIE — return to top","English":"English","Français":"Français","Español":"Español",
     "Filter work":"Filter work","OPEN RECORD":"OPEN RECORD","CLOSE RECORD":"CLOSE RECORD",
     "PREV":"PREV","NEXT":"NEXT","PLAY":"PLAY","PAUSE":"PAUSE","WAIT":"WAIT","TRANSMISSION PLAYER":"TRANSMISSION PLAYER",
@@ -163,6 +164,7 @@ const ESCIE_INTERFACE_RUNTIME = Object.freeze({
     "PARTIAL TRANSMISSION.":"PARTIAL TRANSMISSION.","SIGNAL LOST.":"SIGNAL LOST."
   },
   fr: {
+    "CURRENT TRANSMISSION /":"TRANSMISSION ACTUELLE /","ACTIVE SIGNAL":"SIGNAL ACTIF","SIGNAL QUIET":"SIGNAL SILENCIEUX","The signal is quiet. The record remains.":"Le signal est silencieux. Le registre demeure.","NIGHTLIGHT":"NIGHTLIGHT",
     "ESCIE — return to top":"ESCIE — retourner en haut","English":"Anglais","Français":"Français","Español":"Espagnol",
     "Filter work":"Filtrer les œuvres","OPEN RECORD":"OUVRIR LE REGISTRE","CLOSE RECORD":"FERMER LE REGISTRE",
     "PREV":"PRÉC.","NEXT":"SUIV.","PLAY":"LECTURE","PAUSE":"PAUSE","WAIT":"ATTENDRE","TRANSMISSION PLAYER":"LECTEUR DE TRANSMISSION",
@@ -197,6 +199,7 @@ const ESCIE_INTERFACE_RUNTIME = Object.freeze({
     "TRANSMISSION INTERRUPTED.":"TRANSMISSION INTERROMPUE.","SIGNAL DETECTED.":"SIGNAL DÉTECTÉ.","PARTIAL TRANSMISSION.":"TRANSMISSION PARTIELLE.","SIGNAL LOST.":"SIGNAL PERDU."
   },
   es: {
+    "CURRENT TRANSMISSION /":"TRANSMISIÓN ACTUAL /","ACTIVE SIGNAL":"SEÑAL ACTIVA","SIGNAL QUIET":"SEÑAL EN SILENCIO","The signal is quiet. The record remains.":"La señal está en silencio. El registro permanece.","NIGHTLIGHT":"NIGHTLIGHT",
     "ESCIE — return to top":"ESCIE — volver arriba","English":"Inglés","Français":"Francés","Español":"Español",
     "Filter work":"Filtrar obra","OPEN RECORD":"ABRIR REGISTRO","CLOSE RECORD":"CERRAR REGISTRO",
     "PREV":"ANT.","NEXT":"SIG.","PLAY":"REPRODUCIR","PAUSE":"PAUSA","WAIT":"ESPERAR","TRANSMISSION PLAYER":"REPRODUCTOR DE TRANSMISIÓN",
