@@ -79,3 +79,22 @@ test("A-Z Pass 1 rejects remaining legacy shell visual class",()=>{
   assert.doesNotMatch(index,/data-visual-section="archive"/);
   assert.doesNotMatch(index,/data-visual-section="the-web"/);
 });
+
+
+test("A-Z Pass 1 keeps runtime motif and section labels on canonical IDs",()=>{
+  const app=read("app.js");
+  assert.doesNotMatch(app,/motifMarkup\\("work"\\)/);
+  assert.doesNotMatch(app,/motifMarkup\\("the-web"\\)/);
+  assert.doesNotMatch(app,/motifMarkup\\("archive"\\)/);
+  assert.match(app,/motifMarkup\\("art"\\)/);
+  assert.match(app,/motifMarkup\\("web"\\)/);
+  assert.match(app,/motifMarkup\\("archives"\\)/);
+  assert.match(app,/art:"ART"/);
+  assert.match(app,/archives:"THE ARCHIVES"/);
+});
+
+test("A-Z Pass 1 accordion labels are section-local",()=>{
+  const index=read("index.html");
+  assert.match(index,/var otherHeading=other\\.querySelector\\("h2"\\)/);
+  assert.match(index,/b\\.setAttribute\\("aria-label",\\(active\\?"Close ":"Open " \\)\\+otherTitle\\)/);
+});
