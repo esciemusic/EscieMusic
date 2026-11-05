@@ -3406,3 +3406,62 @@ main > section:not(#entry).section-open{
 .section-visual-now{background:linear-gradient(180deg,#11171b,#030405)!important}.section-visual-work{background:linear-gradient(135deg,#151515,#070707 58%,#111c18)!important}.section-visual-web{background:linear-gradient(135deg,#0c1013,#050607)!important}.section-visual-archive{background:linear-gradient(180deg,#141312,#050505)!important}.section-visual-investigation{background:linear-gradient(135deg,#11161a,#070708)!important}.section-visual-glass{background:linear-gradient(180deg,#101417,#030405)!important}.section-visual-escie{background:linear-gradient(180deg,#0b0b0c,#020202)!important}
 .glass-eye-interface{background:linear-gradient(180deg,rgba(13,17,18,.98),rgba(3,4,5,.98));border:1px solid rgba(216,212,202,.13)}.glass-memory-inline{display:grid;gap:12px;margin:22px auto 0;padding:15px;border:1px solid rgba(216,212,202,.09);background:rgba(0,0,0,.22)}.glass-memory-inline>div:first-child{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.glass-memory-inline span,.glass-memory-inline strong{font:700 9px/1.4 monospace;letter-spacing:.14em}.glass-memory-inline strong{color:var(--faint);font-weight:500}.glass-memory-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.glass-memory-stats span{display:flex;justify-content:space-between;gap:8px;padding:9px;border:1px solid rgba(216,212,202,.07);color:var(--faint)}.glass-memory-stats b{color:var(--white)}.glass-path-line{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.glass-path-line em{color:var(--muted);font:500 9px/1.4 monospace}.glass-memory-clear-inline{justify-self:start;border:1px solid rgba(216,212,202,.12);background:transparent;color:var(--faint);padding:8px 10px;font:700 9px/1 monospace;letter-spacing:.12em;cursor:pointer}
 @media(max-width:700px){.glass-memory-stats{grid-template-columns:1fr 1fr}main>.site-section:not(#entry).section-collapsed{height:auto!important;min-height:0!important;padding:2px 0!important}main>.site-section:not(#entry).section-open{height:auto!important;min-height:0!important;padding:2px 0 26px!important}main>.site-section:not(#entry) .section-drop-trigger{min-height:46px}.section-visual{margin-bottom:0}}
+
+
+/* =========================================================
+   CASE FILES / PASS 1
+   Investigation reads as an open record, not a dashboard.
+   ========================================================= */
+
+.investigation-index{max-width:980px}
+.investigation-index-head{
+  display:flex;align-items:baseline;justify-content:space-between;gap:18px;
+  padding:0 0 16px;border-bottom:1px solid var(--line)
+}
+.investigation-index-head .eyebrow{margin:0}
+.investigation-index-note{
+  max-width:420px;color:var(--faint);font-size:8px;letter-spacing:.13em;
+  line-height:1.5;text-align:right;text-transform:uppercase
+}
+.case-file-list{border-top:0}
+.investigation-case{
+  display:grid;grid-template-columns:46px minmax(0,1fr);gap:20px;align-items:start;
+  max-width:none;padding:24px 0;border-top:0;border-bottom:1px solid var(--line);
+  transition:background 180ms ease,padding 180ms ease
+}
+.investigation-case:hover{
+  background:linear-gradient(90deg,rgba(111,63,175,.035),transparent 72%)
+}
+.investigation-case:focus-visible{
+  outline:1px solid var(--escie-blue-bright);outline-offset:-1px;
+  background:rgba(47,128,255,.035)
+}
+.investigation-case-index{
+  color:var(--faint);font:400 9px/1.4 var(--escie-font-mono);letter-spacing:.12em;padding-top:4px
+}
+.investigation-case-index::before{
+  content:"";display:block;width:4px;height:4px;margin:0 0 7px 1px;
+  border:1px solid var(--escie-purple);opacity:.7
+}
+.investigation-case-body{min-width:0}
+.investigation-case-body h3{
+  margin:5px 0 0;font-size:clamp(21px,3.6vw,36px);font-weight:400;
+  letter-spacing:.035em;line-height:1.08
+}
+.investigation-case-body>p:not(.eyebrow){
+  max-width:700px;margin:10px 0 0;color:var(--muted);font-size:12px;line-height:1.8
+}
+html[data-theme="light"] .investigation-case:hover{
+  background:linear-gradient(90deg,rgba(99,54,162,.045),transparent 72%)
+}
+html[data-theme="light"] .investigation-case:focus-visible{
+  background:rgba(36,111,224,.055)
+}
+@media(max-width:700px){
+  .investigation-index-head{display:grid;gap:8px}
+  .investigation-index-note{text-align:left;max-width:none}
+  .investigation-case{grid-template-columns:34px minmax(0,1fr);gap:12px;padding:19px 0}
+}
+@media(prefers-reduced-motion:reduce){
+  .investigation-case{transition:none}
+}
