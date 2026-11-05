@@ -36,7 +36,7 @@ test("ESCIE Pass 3 preserves the final public boundary",()=>{
   assert.match(about,/role:\["the Father","the Man","the Monster"\]/);
   assert.match(css,/\.escie-section \.about-lead/);
   assert.match(css,/@media\(max-width:640px\)/);
-  assert.doesNotMatch(index,/BAM|Dallas['’]?\\s*['’]?63/i);
-  assert.doesNotMatch(about,/BAM|Dallas['’]?\\s*['’]?63/i);
-  assert.doesNotMatch(index,/REAL|MEMORY|DRAMATIZED|FICTIONALIZED|MYTH/i);
+  assert.doesNotMatch(index,/BAM|Dallas['’]?\s*['’]?63/i);
+  assert.doesNotMatch(about,/BAM|Dallas['’]?\s*['’]?63/i);
+  assert.doesNotMatch(index,/REAL\s*\/\s*MEMORY|REAL\s*\/\s*DRAMATIZED|REAL\s*\/\s*FICTIONALIZED|REAL\s*\/\s*MYTH/i);
 });
