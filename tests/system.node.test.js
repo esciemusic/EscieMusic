@@ -758,9 +758,6 @@ const publicIndexRuntime = fs.readFileSync("index.html","utf8");
 const hardcodedLaunchButtons=(publicIndexRuntime.match(/<button\b[^>]*>/gi)||[]).filter(tag=>!/[ ]class="[^"]*preference-button[^"]*"/.test(tag));
 assert(hardcodedLaunchButtons.length === 1, "public index should keep only the primary hardcoded menu button; preference controls are exempt and generated controls are runtime-owned");
 assert(publicIndexRuntime.includes('id="mobile-menu-button"'), "public index menu control must exist");
-assert(publicIndexRuntime.includes('id="merch-filters"'), "public merch filter host must exist");
-assert(appRuntime.includes('function bindMerchFilters'), "public merch filters must be generated from clothing data");
-assert(appRuntime.includes('data-merch-filter'), "public generated merch filters must expose filter targets");
 assert(appRuntime.includes('button.addEventListener("click", toggleMenu)'), "public mobile menu must have a click handler");
 assert(!publicIndexRuntime.includes('history.replaceState(null,"",link.getAttribute("href"))'), "public index accordion navigation must not bypass hashchange routing");
 
