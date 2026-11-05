@@ -14,31 +14,31 @@
   function run() {
     if (!N) return { skipped: true, reason: "ESCIE_NAVIGATION unavailable" };
 
-    const required = ["NOW", "WORK", "THE WEB", "ARCHIVE", "THE CASE FILES", "GLASS EYE", "ESCIE"];
+    const required = ["NOW", "ART", "THE WORLD", "THE WEB", "THE ARCHIVES", "THE CASE FILES", "GLASS EYE", "ESCIE"];
     required.forEach(function (label) {
       assert(N.some(item => item.label === label), "missing navigation item: " + label);
     });
 
-    assert(N.filter(item => item.primary === true).length === 7, "public primary navigation should contain seven nodes");
+    assert(N.filter(item => item.primary === true).length === 8, "public primary navigation should contain seven nodes");
 
     const sectionOrder = Array.from(document.querySelectorAll("main > section")).map(function (section) {
       return section.id;
     });
-    const expectedSectionOrder = ["entry", "now", "art", "world", "web", "archives", "investigation", "merch", "glass-eye", "escie"];
+    const expectedSectionOrder = ["entry", "now", "art", "world", "web", "archives", "investigation", "glass-eye", "escie"];
     assert(JSON.stringify(sectionOrder) === JSON.stringify(expectedSectionOrder), "public section order must match the universe contract");
     assert(new Set(N.map(item => item.id)).size === N.length, "navigation IDs should be unique");
     assert(new Set(N.map(item => item.target)).size === N.length, "navigation targets should be unique");
     assert(N.some(item => item.id === "now" && item.target === "#now"), "NOW route should target #now");
-    assert(N.some(item => item.id === "art" && item.target === "#art"), "WORK route should target #art");
+    assert(N.some(item => item.id === "art" && item.target === "#art"), "ART route should target #art");
     assert(N.some(item => item.id === "web" && item.target === "#web"), "THE WEB route should target #web");
-    assert(N.some(item => item.id === "archives" && item.target === "#archives"), "ARCHIVE route should target #archives");
+    assert(N.some(item => item.id === "archives" && item.target === "#archives"), "ARCHIVES route should target #archives");
     assert(N.some(item => item.id === "investigation" && item.target === "#investigation"), "INVESTIGATION route should target #investigation");
     assert(N.some(item => item.id === "glass-eye" && item.target === "#glass-eye"), "GLASS EYE route should target #glass-eye");
     assert(N.some(item => item.id === "escie" && item.target === "#escie"), "ESCIE route should target #escie");
 
     const router = typeof window !== "undefined" ? window.ESCIE_UI_ROUTER : null;
     if (router && typeof router.resolve === "function") {
-      assert(router.resolve("#art") === "art", "hash route should resolve to WORK");
+      assert(router.resolve("#art") === "art", "hash route should resolve to ART");
       assert(router.resolve("work") === "art", "legacy WORK alias should resolve to art");
       assert(router.resolve("#archives") === "archives", "hash route should resolve to ARCHIVE");
       assert(router.resolve("archive") === "archives", "legacy ARCHIVE alias should resolve to archives");
