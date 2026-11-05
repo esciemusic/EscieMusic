@@ -1426,18 +1426,11 @@ function renderClothing(){
     });
 
     document.addEventListener("change", event => {
-      const control=event.target.closest("[data-web-filter]");
+      const control=event.target.closest("[data-web-filter],[data-web-record-type]");
       if(!control)return;
       ESCIE_RUNTIME.webFilters=ESCIE_RUNTIME.webFilters||{};
-      ESCIE_RUNTIME.webFilters[control.getAttribute("data-web-filter")]=control.value||"";
-      renderWeb();
-    });
-
-    document.addEventListener("change", event => {
-      const typeControl=event.target.closest("[data-web-record-type]");
-      if(!typeControl)return;
-      ESCIE_RUNTIME.webFilters=ESCIE_RUNTIME.webFilters||{};
-      ESCIE_RUNTIME.webFilters.recordType=typeControl.value||"";
+      const key=control.getAttribute("data-web-filter")||"recordType";
+      ESCIE_RUNTIME.webFilters[key]=control.value||"";
       renderWeb();
     });
 
@@ -1474,7 +1467,7 @@ function renderClothing(){
       const webClear=event.target.closest("[data-web-filter-clear]");
       if(webClear){ ESCIE_RUNTIME.webFilters={}; renderWeb(); return; }
 
-      const webControl=event.target.closest("[data-web-filter]");
+      const webControl=event.target.closest("[data-web-filter],[data-web-record-type]");
       if(webControl)return;
 
       const clearFilters=event.target.closest(".record-filter-clear");
