@@ -1051,16 +1051,10 @@ function renderClothing(){
       ) + "</p>" +
       '<div class="about-principles">' +
         '<p><span>PRINCIPLE</span>' + escapeHTML(
-          about.principle || site.philosophy || "The music does not create the universe. The universe creates the music."
-        ) + "</p>" +
-        '<p><span>IDENTITY</span>' + escapeHTML(
-          Array.isArray(about.role) ? about.role.join(" / ") : (about.role || "artist / writer / central consciousness")
+          about.principle || site.philosophy || "The art does not create the universe. The universe creates the art."
         ) + "</p>" +
       '</div>' +
-      socialMarkup +
-      '<p class="about-location">' + escapeHTML(site.location || "Montréal, Canada") +
-      " / " + escapeHTML(String(site.publicYear || new Date().getFullYear())) +
-      " / " + escapeHTML(site.status || "development") + "</p>";
+      socialMarkup;
   }
 
   function renderGlassEye() {
