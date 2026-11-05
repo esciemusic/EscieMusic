@@ -705,7 +705,6 @@
     container.innerHTML=
       '<div class="web-intro">'+motifMarkup("the-web")+
       '<p class="eyebrow">THE WEB / CONNECTION LEDGER</p>'+
-      '<p>THE WEB is where established relationships become visible. Search the public record, inspect records, filter the network, and follow only connections that actually exist.</p>'+
       '<div class="record-filters web-filters"><div class="record-filters-heading"><span>EXPLORE THE NETWORK</span><button type="button" class="record-filter-clear" data-web-filter-clear>CLEAR</button></div>'+
       '<div class="record-filter-grid"><label>RECORD<select data-web-filter="record"><option value="">ALL CONNECTED RECORDS</option>'+nodeOptions+'</select></label>'+
       '<label>TYPE<select data-web-filter="type"><option value="">ALL CONNECTION TYPES</option>'+typeOptions+'</select></label>'+
