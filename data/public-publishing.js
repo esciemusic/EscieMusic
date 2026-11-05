@@ -10,7 +10,7 @@
     if(!record||!record.id)return false;
     const published=record.published===true||String(record.status||"").toLowerCase()==="published";
     if(!published||BLOCKED_VISIBILITY.has(String(record.visibility||"").toLowerCase()))return false;
-    if(record.release_status&&String(record.release_status).toLowerCase()!=="released")return false;
+    if(record.release_state!==undefined&&record.release_state!==null&&String(record.release_state).toUpperCase()!=="RELEASED")return false;\n    if(record.release_status!==undefined&&record.release_status!==null&&String(record.release_status).toLowerCase()!=="released")return false;
     if(record.public_disclosure===false)return false;
     return true;
   }
@@ -41,9 +41,9 @@
     const errors=[];
     (Array.isArray(records)?records:[]).forEach(record=>{
       sectionAudit(record).forEach(error=>errors.push(error));
-      if(record&&record.release_status&&String(record.release_status).toLowerCase()==="locked")errors.push({record:record.id,error:"locked record cannot enter public surface"});
+      if(record&&((record.release_state!==undefined&&String(record.release_state).toUpperCase()==="LOCKED")||(record.release_status!==undefined&&String(record.release_status).toLowerCase()==="locked")))errors.push({record:record.id,error:"locked record cannot enter public surface"});
     });
     return {ok:errors.length===0,errors};
   }
-  window.ESCIE_PUBLIC_PUBLISHING={version:"1.1.0",sections:Array.from(PUBLIC_SECTIONS),approved,sectionAudit,sectionsFor,canEnter,publicRecords,audit};
+  window.ESCIE_PUBLIC_PUBLISHING={version:"1.2.0",sections:Array.from(PUBLIC_SECTIONS),approved,sectionAudit,sectionsFor,canEnter,publicRecords,audit};
 })();
