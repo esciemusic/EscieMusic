@@ -327,3 +327,13 @@ test("A-Z Pass 1 symbols remain actionable controls",()=>{
   assert.match(app,/closest\\(\\"\\[data-symbol-id\\]\\"\\)/);
   assert.match(app,/showSymbolInspector\\(symbolTrigger\.getAttribute\\(\\"data-symbol-id\\"\\)\\)/);
 });
+
+
+test("A-Z Pass 1 theme selectors use canonical section visual IDs",()=>{
+  const css=read("aesthetic.css");
+  assert.doesNotMatch(css,/\\.section-visual-archive(?!s)/);
+  assert.doesNotMatch(css,/\\.section-visual-glass(?!-eye)/);
+  assert.match(css,/html\\[data-theme=\\"light\\"\\]/);
+  assert.match(css,/html\\[data-theme=\\"light\\"\\] \\.section-visual-archives/);
+  assert.match(css,/html\\[data-theme=\\"light\\"\\] \\.section-visual-glass-eye/);
+});
