@@ -1224,3 +1224,21 @@ html[data-theme="light"] .site-footer{
 @media(prefers-reduced-motion:reduce){
   .preference-button{transition:none}
 }
+
+
+/* =========================================================
+   ESCIE FINAL OPTIMIZATION LAYER
+   Compact index. Stronger hierarchy. Quiet open rooms.
+   ========================================================= */
+:root{--escie-panel-max:1040px}
+.site-header{padding-left:clamp(16px,3vw,30px);padding-right:clamp(16px,3vw,30px)}
+main > .site-section:not(#entry) .section-drop-trigger{min-height:50px;border-color:rgba(216,212,202,.075);background:rgba(6,7,8,.34)}
+main > .site-section:not(#entry) .section-drop-trigger:hover,main > .site-section:not(#entry) .section-drop-trigger:focus-visible{transform:none}
+main > .site-section:not(#entry).section-open .section-drop-trigger{min-height:52px}
+main > .site-section:not(#entry) .section-drop-state{position:relative;display:grid;place-items:center;width:24px;height:24px;border:1px solid rgba(155,89,255,.35);color:var(--escie-aesthetic-purple);font:700 12px/1 var(--escie-font-mono)}
+main > .site-section:not(#entry).section-open .section-drop-state::after{content:"CLOSE";position:absolute;right:40px;font:700 7px/1 var(--escie-font-mono);letter-spacing:.14em;opacity:.42}
+main > .site-section:not(#entry) .section-drop-content{width:min(100%,var(--escie-panel-max));margin:0 auto}
+#now .now-state{max-width:var(--escie-panel-max);margin:0 auto}
+#merch[hidden]{display:none!important}
+@media(max-width:700px){main > .site-section:not(#entry) .section-drop-trigger{min-height:46px;padding:9px 11px}main > .site-section:not(#entry).section-open .section-drop-trigger{min-height:48px}main > .site-section:not(#entry).section-open .section-drop-state::after{display:none}main > .site-section:not(#entry) .section-drop-content{width:100%}}
+@media(prefers-reduced-motion:reduce){main > .site-section:not(#entry) .section-drop-state::after{transition:none}}
