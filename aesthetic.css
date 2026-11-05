@@ -1584,3 +1584,24 @@ html[data-theme="light"] .site-footer{
   background:rgba(160,164,164,.46);
   border-color:rgba(24,25,27,.16);
 }
+
+
+/* =========================================================
+   ENTRY / INDEX — FINAL SIGNAL HIERARCHY
+   ESCIE is the visual anchor. The Index is a translucent
+   instrument: electric-blue when idle, off-white when active.
+   ========================================================= */
+.entry-section #entry-container .entry-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;width:min(100%,1200px);margin:0 auto;text-align:center}
+.entry-section #entry-container h1{margin:0;font-size:clamp(108px,22vw,320px);font-weight:700;letter-spacing:.055em;line-height:.78;text-align:center;color:var(--escie-white);text-shadow:0 0 42px rgba(47,128,255,.07)}
+.entry-section #entry-tagline{position:relative;margin:clamp(28px,4vw,42px) auto 0;max-width:none;color:var(--escie-white);font-size:clamp(10px,1.35vw,14px);letter-spacing:.28em;line-height:1.5;text-align:center;animation:escie-tagline-distort 8s steps(1,end) infinite}
+@keyframes escie-tagline-distort{0%,91%,100%{transform:none;filter:none;letter-spacing:.28em}92%{transform:translateX(-1px) skewX(-1.2deg);filter:blur(.12px);letter-spacing:.30em}93%{transform:translateX(2px) skewX(.9deg);filter:none;letter-spacing:.265em}94%{transform:none;filter:none;letter-spacing:.28em}}
+@media(max-width:700px){.entry-section #entry-container h1{font-size:clamp(82px,24vw,180px);letter-spacing:.045em}.entry-section #entry-tagline{font-size:9px;letter-spacing:.22em}}
+.index-navigation{background:rgba(5,7,9,.78);border-color:rgba(47,128,255,.34);backdrop-filter:blur(18px) saturate(.9);-webkit-backdrop-filter:blur(18px) saturate(.9)}
+.index-navigation .nav-link{color:var(--escie-blue-bright)}
+.index-navigation .nav-link.is-current{color:var(--escie-white);opacity:1;text-shadow:0 0 14px rgba(47,128,255,.14)}
+.index-navigation .nav-link.is-current .node-link-symbol{color:var(--escie-white)}
+html[data-theme="light"] .entry-section #entry-container h1,html[data-theme="light"] .entry-section #entry-tagline{color:#246fe0;text-shadow:0 0 24px rgba(36,111,224,.10)}
+html[data-theme="light"] .index-navigation{background:rgba(7,10,14,.78);border-color:rgba(36,111,224,.42);box-shadow:0 18px 60px rgba(24,25,27,.24),inset 0 1px 0 rgba(255,255,255,.05)}
+html[data-theme="light"] .index-navigation .nav-link{color:#4da3ff}
+html[data-theme="light"] .index-navigation .nav-link.is-current{color:#f0ede4}
+html[data-theme="light"] .index-navigation .nav-link.is-current .node-link-symbol{color:#f0ede4}
