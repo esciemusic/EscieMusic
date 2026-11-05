@@ -591,7 +591,7 @@
       return;
     }
 
-    container.innerHTML = motifMarkup("work") + visible.map(track => {
+    container.innerHTML = motifMarkup("art") + visible.map(track => {
       const context = recordContext(track);
       const parent = context.parents[0];
       const parentRecord = parent ? getAllRecords().find(item => recordId(item) === parent.record) : null;
@@ -723,7 +723,7 @@
     const resultMarkup=hasSearch?(recordResults||'<span class="inspector-note">NO MATCHES.</span>'):"";
     const count=registry&&typeof registry.relationshipCounts==="function"?registry.relationshipCounts(state):{relationships:relationships.length,nodes:new Set(relationships.flatMap(r=>[r.from,r.to])).size};
     container.innerHTML=
-      '<div class="web-intro">'+motifMarkup("the-web")+
+      '<div class="web-intro">'+motifMarkup("web")+
       '<p class="eyebrow">THE WEB / CONNECTION LEDGER</p>'+
       '<div class="record-filters web-filters"><div class="record-filters-heading"><span>EXPLORE THE NETWORK</span><button type="button" class="record-filter-clear" data-web-filter-clear>CLEAR</button></div>'+
       '<div class="record-filter-grid"><label>RECORD<select data-web-filter="record"><option value="">ALL CONNECTED RECORDS</option>'+nodeOptions+'</select></label>'+
@@ -907,7 +907,7 @@ function renderClothing(){
 
     container.innerHTML =
       '<div class="archive-index">' +
-        motifMarkup("archive") +
+        motifMarkup("archives") +
         '<div class="archive-index-head"><p class="eyebrow">PRESERVED TRACE / ' + escapeHTML(String(ordered.length)) + ' RECORD' + (ordered.length === 1 ? '' : 'S') + '</p><span class="archive-index-note">OPEN THE RECORD TO FOLLOW ITS TRACE.</span></div>' +
         '<div class="archive-list">' +
           ordered.map((record,index) => {
@@ -1256,9 +1256,9 @@ function renderClothing(){
 
   function sectionLabel(section) {
     return ({
-      work:"WORK",
+      art:"ART",
       web:"THE WEB",
-      archive:"ARCHIVE",
+      archives:"THE ARCHIVES",
       investigation:"THE CASE FILES",
       glassEye:"GLASS EYE"
     })[section] || String(section || "").toUpperCase();
