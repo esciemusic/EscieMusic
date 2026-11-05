@@ -2501,7 +2501,7 @@ body.inspector-open{overflow:hidden}
 .section-visual-web::before{background-position:left 34%;animation:escie-atlas-drift 24s var(--slow) infinite alternate,escie-visual-network 24s ease-in-out infinite alternate}
 .section-visual-archives::before{background-position:right 34%;animation:escie-atlas-drift 21s var(--slow) infinite alternate,escie-visual-archive 21s ease-in-out infinite alternate}
 .section-visual-investigation::before{background-position:left 68%;animation:escie-atlas-drift 17s var(--slow) infinite alternate,escie-visual-investigation 17s ease-in-out infinite alternate}
-.section-visual-glass::before{background-position:right 68%;animation:escie-atlas-drift 20s var(--slow) infinite alternate,escie-visual-glass 20s ease-in-out infinite alternate}
+.section-visual-glass-eye::before{background-position:right 68%;animation:escie-atlas-drift 20s var(--slow) infinite alternate,escie-visual-glass 20s ease-in-out infinite alternate}
 .section-visual-escie::before{background-size:100% auto;background-position:center bottom;animation:escie-atlas-drift 26s var(--slow) infinite alternate,escie-visual-presence 26s ease-in-out infinite alternate}
 .section-visual.visual-visible::before{opacity:calc(.20 + (var(--visual-intensity,.7) * .13))}
 .section-visual:hover::before{opacity:calc(.24 + (var(--visual-intensity,.7) * .14));filter:grayscale(.18) contrast(.88) saturate(.82)}
@@ -2512,7 +2512,7 @@ body.inspector-open{overflow:hidden}
 .section-visual-web.visual-active::before{animation-name:escie-atlas-drift,escie-visual-network,escie-atlas-flicker;animation-duration:13s,24s,7s;animation-timing-function:var(--slow),ease-in-out,steps(1,end);animation-iteration-count:infinite,infinite,infinite;animation-direction:alternate,alternate,normal}
 .section-visual-archives.visual-active::before{animation-name:escie-atlas-drift,escie-visual-archive,escie-atlas-flicker;animation-duration:13s,21s,7s;animation-timing-function:var(--slow),ease-in-out,steps(1,end);animation-iteration-count:infinite,infinite,infinite;animation-direction:alternate,alternate,normal}
 .section-visual-investigation.visual-active::before{animation-name:escie-atlas-drift,escie-visual-investigation,escie-atlas-flicker;animation-duration:13s,17s,7s;animation-timing-function:var(--slow),ease-in-out,steps(1,end);animation-iteration-count:infinite,infinite,infinite;animation-direction:alternate,alternate,normal}
-.section-visual-glass.visual-active::before{animation-name:escie-atlas-drift,escie-visual-glass,escie-atlas-flicker;animation-duration:13s,20s,7s;animation-timing-function:var(--slow),ease-in-out,steps(1,end);animation-iteration-count:infinite,infinite,infinite;animation-direction:alternate,alternate,normal}
+.section-visual-glass-eye.visual-active::before{animation-name:escie-atlas-drift,escie-visual-glass,escie-atlas-flicker;animation-duration:13s,20s,7s;animation-timing-function:var(--slow),ease-in-out,steps(1,end);animation-iteration-count:infinite,infinite,infinite;animation-direction:alternate,alternate,normal}
 .section-visual-escie.visual-active::before{animation-name:escie-atlas-drift,escie-visual-presence,escie-atlas-flicker;animation-duration:13s,26s,7s;animation-timing-function:var(--slow),ease-in-out,steps(1,end);animation-iteration-count:infinite,infinite,infinite;animation-direction:alternate,alternate,normal}
 
 .section-visual-media{
