@@ -351,3 +351,10 @@ test("A-Z Pass 1 canonical Archives visual markup",()=>{
   assert.match(html,/section-visual-archives\\" data-visual-section=\\"archives\\"/);
   assert.doesNotMatch(html,/section-visual-archive\\" data-visual-section=\\"archives\\"/);
 });
+
+
+test("A-Z Pass 1 canonical Glass Eye visual markup",()=>{
+  const html=read("index.html");
+  assert.match(html,/section-visual-glass-eye\\" data-visual-section=\\"glass-eye\\"/);
+  assert.doesNotMatch(html,/section-visual-glass\\" data-visual-section=\\"glass-eye\\"/);
+});
