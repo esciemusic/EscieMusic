@@ -1502,20 +1502,6 @@ function renderClothing(){
   }
 
   function renderEntry() {
-    const stateLabel = byId("entry-state");
-    if (stateLabel) {
-      const route = syncRouteState();
-      const nodes = getInformationNodes();
-      const node = nodes.find(item => {
-        const target = String(item && item.target || "").replace(/^#/, "");
-        return target === route;
-      });
-      stateLabel.textContent = node && node.role
-        ? String(node.role)
-        : (route === "entry" ? "CURRENT SIGNAL" : String(route || "CURRENT SIGNAL").replace(/-/g, " ").toUpperCase());
-      stateLabel.dataset.route = route;
-    }
-
     const year = byId("entry-year");
     if (year) {
       year.textContent = getSiteValue("publicYear", new Date().getFullYear());
@@ -1541,25 +1527,6 @@ function renderClothing(){
         "The music does not create the universe. The universe creates the music."
       );
     }
-  }
-
-  function updateEntryState(route) {
-    const stateLabel = byId("entry-state");
-    if (!stateLabel) return;
-
-    const normalizedRoute = String(route || "entry").replace(/^#/, "");
-    const nodes = getInformationNodes();
-    const node = nodes.find(item => {
-      const target = String(item && item.target || "").replace(/^#/, "");
-      return target === normalizedRoute;
-    });
-
-    stateLabel.textContent = node && node.role
-      ? String(node.role)
-      : (normalizedRoute === "entry"
-        ? "CURRENT SIGNAL"
-        : normalizedRoute.replace(/-/g, " ").toUpperCase());
-    stateLabel.dataset.route = normalizedRoute;
   }
 
   function buildSearchIndex() {
@@ -2003,13 +1970,18 @@ function renderClothing(){
     logo.dataset.topReturnReady = "1";
     logo.addEventListener("click", function(event) {
       event.preventDefault();
-      if (window.location.hash) history.replaceState(null, "", "#top");
+      try {
+        history.replaceState(null, "", window.location.pathname + window.location.search);
+      } catch (error) {
+        window.location.hash = "";
+      }
+      const state = getRuntimeState();
+      if (state) state.route = "entry";
       window.scrollTo({ top: 0, behavior: reduceMotion() ? "auto" : "smooth" });
       document.body.dataset.route = "entry";
       document.documentElement.dataset.route = "entry";
-      const stateLabel = byId("entry-state");
-      if (stateLabel) stateLabel.dataset.route = "entry";
-      if (typeof renderEntry === "function") renderEntry();
+      render();
+      refreshNavigationState();
     });
   }
 
