@@ -69,3 +69,13 @@ test("A-Z Pass 1 locks the live shell to the eight-section model",()=>{
   assert.match(navigation,/id:"now".*order:1/);
   assert.match(navigation,/id:"escie".*order:8/);
 });
+
+
+test("A-Z Pass 1 rejects remaining legacy shell visual class",()=>{
+  const index=read("index.html");
+  assert.match(index,/data-visual-section="art"/);
+  assert.doesNotMatch(index,/section-visual-work/);
+  assert.doesNotMatch(index,/data-visual-section="work"/);
+  assert.doesNotMatch(index,/data-visual-section="archive"/);
+  assert.doesNotMatch(index,/data-visual-section="the-web"/);
+});
