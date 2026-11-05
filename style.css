@@ -3356,11 +3356,20 @@ main > section:not(#entry).section-open{
 @media(max-width:650px){.world-filters{grid-template-columns:1fr}.world-graph-note{display:block}.world-graph-note strong{display:block;margin-top:6px}}
 
 /* Glass Eye — audience interface */
-.glass-eye-interface{min-height:24rem;display:flex;flex-direction:column;justify-content:space-between;}
-.glass-eye-actions{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin:1.5rem 0 .75rem;}
-.glass-eye-actions button{font:inherit;letter-spacing:.12em;background:transparent;border:1px solid currentColor;padding:.65rem .9rem;cursor:pointer;}
-.glass-eye-actions button:hover,.glass-eye-actions button:focus-visible{transform:translateY(-1px);}
-.glass-eye-response{min-height:1.4em;opacity:.72;}
+.glass-eye-interface{min-height:24rem;display:flex;flex-direction:column;justify-content:flex-start;gap:0;}
+.glass-eye-interface .glass-center{position:relative;left:auto;top:auto;transform:none;width:min(620px,92%);margin:0 auto;padding:5.5rem 0 2rem;text-align:center;}
+.glass-eye-interface .glass-center p{max-width:520px;}
+.glass-eye-actions{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin:1rem auto .35rem;width:min(760px,92%);}
+.glass-eye-actions button{font:inherit;letter-spacing:.12em;background:transparent;border:1px solid currentColor;padding:.65rem .9rem;cursor:pointer;touch-action:manipulation;transition:background .18s ease,border-color .18s ease,color .18s ease,transform .18s ease;}
+.glass-eye-actions button:hover,.glass-eye-actions button:focus-visible,.glass-eye-actions button[aria-pressed="true"]{transform:translateY(-1px);border-color:var(--escie-blue-bright);color:var(--escie-paper);background:rgba(47,128,255,.08);}
+.glass-eye-response{min-height:1.4em;width:min(760px,92%);margin:.35rem auto 0;text-align:center;color:var(--muted);opacity:.9;}
+.glass-language button{min-width:32px;min-height:30px;padding:0 .45rem;border:1px solid transparent;background:transparent;color:var(--faint);cursor:pointer;touch-action:manipulation;}
+.glass-language button:hover,.glass-language button:focus-visible,.glass-language button.is-active{border-color:rgba(47,128,255,.55);color:var(--white);}
+@media(max-width:700px){
+  .glass-eye-interface .glass-center{width:88%;padding:4.8rem 0 1.5rem;}
+  .glass-eye-actions{width:88%;gap:7px;}
+  .glass-eye-actions button{flex:1 1 calc(50% - 7px);min-height:42px;}
+}
 
 
 /* COUNTDOWN — dormant until 2026-10-31, then becomes part of the signal chamber */
