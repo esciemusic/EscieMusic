@@ -1898,6 +1898,12 @@ function renderClothing(){
     else if (hour >= 18 && hour < 21) state = "dusk";
 
     document.body.dataset.time = state;
+
+    const entryState = byId("entry-state");
+    if (entryState) {
+      const labels = { dawn: "SIGNAL // DAWN", day: "SIGNAL // DAY", dusk: "SIGNAL // DUSK", night: "SIGNAL // NIGHT" };
+      entryState.textContent = labels[state] || "SIGNAL // NIGHT";
+    }
   }
 
   function setupMobileMenu() {
