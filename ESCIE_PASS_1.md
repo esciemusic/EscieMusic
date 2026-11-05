@@ -35,6 +35,13 @@ The section ends there.
 
 Public ESCIE identity is a finished presentation layer. Central may hold richer private biography, research, relationships, drafts, and operational metadata. None of that crosses into the public page automatically.
 
-## Pass 2 readiness
+## Pass 2 — identity hardening
 
-Pass 2 should harden the identity presentation, multilingual behavior, responsive spacing, and interaction/a11y without adding unnecessary content.
+Pass 2 keeps the section sparse while making the artist's central identity explicit.
+
+- **ESCIE IS THE ARTIST. THE WORK SPEAKS FROM HERE.** remains the primary statement.
+- The identity facets are explicitly **THE FATHER · THE MAN · THE MONSTER**.
+- The three facets support the artist identity; they do not replace ESCIE or turn the section into a biography.
+- Identity facets render from canonical ESCIE_ABOUT.role data.
+- The presentation remains responsive and compact.
+- No reality classification, unreleased BAM/Dallas material, or private Central metadata is added.
