@@ -200,3 +200,10 @@ This is the standing audit contract for every subsequent public-site optimizatio
 - THE WORLD retains its canonical world visual and dedicated renderer/clothing layer.
 - During cross-section inspection, the live Glass Eye markup was still using a retired `section-visual-glass` class despite the canonical `glass-eye` registry/style identity.
 - The markup is now aligned to `section-visual-glass-eye` with regression coverage, preventing another presentation-layer naming split.
+
+
+### Pass 1 — Y time/state checkpoint
+- Public runtime time state remains limited to dawn/day/dusk/night presentation state.
+- No recurring interval is used for the time state.
+- No November 22 countdown/date dependency remains in the public runtime.
+- Regression coverage locks the lightweight, date-independent contract; a future countdown can only be introduced deliberately at the appropriate release phase.
