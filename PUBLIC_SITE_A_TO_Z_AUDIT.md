@@ -177,3 +177,9 @@ This is the standing audit contract for every subsequent public-site optimizatio
 - Public section motifs render as real buttons with symbol IDs rather than decorative-only elements.
 - The delegated public interaction layer resolves those IDs through the symbol inspector, preserving the agreed interactive symbol system across dynamically rendered sections.
 - Regression coverage now locks the button/handler contract.
+
+
+### Pass 1 — theme checkpoint
+- Theme boot state remains EN/FR/ES-independent and restores the saved light/dark preference before the public experience initializes.
+- Light-mode styling had retained two legacy section visual selectors for Archives and Glass Eye; those selectors were aligned to the canonical eight-section IDs.
+- Regression coverage now locks the canonical light-theme visual selectors.
