@@ -1275,8 +1275,8 @@ html[data-theme="light"] .signal-status { color:var(--escie-purple); }
 html[data-theme="light"] .signal-light { background:var(--escie-purple); box-shadow:0 0 9px rgba(91,46,152,.28); }
 html[data-theme="light"] .signal-scan { background:var(--escie-blue); box-shadow:0 0 18px rgba(23,104,216,.22); }
 html[data-theme="light"] .section-visual, html[data-theme="light"] .section-visual-world, html[data-theme="light"] .section-visual-art,
-html[data-theme="light"] .section-visual-web, html[data-theme="light"] .section-visual-archive, html[data-theme="light"] .section-visual-investigation,
-html[data-theme="light"] .section-visual-glass, html[data-theme="light"] .section-visual-escie {
+html[data-theme="light"] .section-visual-web, html[data-theme="light"] .section-visual-archives, html[data-theme="light"] .section-visual-investigation,
+html[data-theme="light"] .section-visual-glass-eye, html[data-theme="light"] .section-visual-escie {
   color:var(--escie-purple); border-color:var(--escie-blue-line);
   background:linear-gradient(135deg,rgba(194,187,176,.92),rgba(226,220,210,.88) 52%,rgba(170,162,152,.82));
 }
@@ -1559,9 +1559,9 @@ html[data-theme="light"] .section-visual,
 html[data-theme="light"] .section-visual-world,
 html[data-theme="light"] .section-visual-art,
 html[data-theme="light"] .section-visual-web,
-html[data-theme="light"] .section-visual-archive,
+html[data-theme="light"] .section-visual-archives,
 html[data-theme="light"] .section-visual-investigation,
-html[data-theme="light"] .section-visual-glass,
+html[data-theme="light"] .section-visual-glass-eye,
 html[data-theme="light"] .section-visual-escie{
   color:#6336a2;
   border-color:rgba(36,111,224,.30);
