@@ -28,6 +28,9 @@
     const project={id:"__test-project__",type:"project",title:"TEST PROJECT",status:"active",published:true,visibility:"public",release_mode:"progressive"};
     const track={id:"__test-track__",type:"music",project:project.id,number:"001",title:"TEST TRANSMISSION",role:"THE TEST",status:"active",published:true,visibility:"public",release_status:"released"};
     const locked={id:"__locked-release-fixture__",type:"music",project:project.id,number:"999",title:"LOCKED FIXTURE",role:"LOCKED",status:"development",published:true,visibility:"public",release_status:"locked"};
+    const centralPrivate={id:"__central-private__",type:"music",status:"active",published:true,visibility:"public",release_state:"PRIVATE"};
+    const centralApproved={id:"__central-approved__",type:"music",status:"active",published:true,visibility:"public",release_state:"APPROVED"};
+    const centralReleased={id:"__central-released__",type:"music",status:"active",published:true,visibility:"public",release_state:"RELEASED"};
     const relationship={id:"__test-contains__",from:project.id,type:"contains",to:track.id,status:"active",confidence:"verified",canonical_status:"canonical",visibility:"public",public_disclosure:true};
 
     runtime.projects=[project];
@@ -72,6 +75,9 @@
       assert(registry.releaseVisible(project)===true,"progressive project must unlock when a released track exists");
       assert(registry.releaseVisible(track)===true,"released track must be visible");
       assert(registry.releaseVisible(locked)===false,"locked release must remain hidden");
+      assert(registry.releaseVisible(centralPrivate)===false,"Central PRIVATE record must remain hidden");
+      assert(registry.releaseVisible(centralApproved)===false,"Central APPROVED record must remain hidden");
+      assert(registry.releaseVisible(centralReleased)===true,"Central RELEASED record must be visible");
       assert(registry.publicRecord(track.id).id===track.id,"publicRecord must return released records");
       assert(registry.publicRecord(locked.id)===null,"publicRecord must fail closed for locked records");
 
