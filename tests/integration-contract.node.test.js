@@ -6,9 +6,9 @@ test("public/Central integration boundary remains explicit",()=>{
   const contract=fs.readFileSync("INTEGRATION_CONTRACT.md","utf8");
   assert.match(contract,/CENTRAL → PUBLIC/);
   assert.match(contract,/approved, release-eligible, public-safe outputs/);
-  assert.match(contract,/No automatic ingestion/);
+  assert.match(contract,/no automatic ingestion/);
   assert.match(contract,/BRAIN → CANON/);
-  assert.match(contract,/External Platform → CANON|EXTERNAL PLATFORM → CANON/);
+  assert.match(contract,/EXTERNAL PLATFORM → CANON/);
   assert.match(contract,/Unreleased BAM\/Dallas '63/);
   assert.match(contract,/game remains a separate full-screen experience/);
 });
