@@ -125,6 +125,16 @@ test("A-Z Pass 1 restores saved language preference on boot",()=>{
   assert.match(index,/document\.documentElement\.lang=initialLanguage/);
 });
 
+test("A-Z Pass 1 record inspector uses canonical section targets",()=>{
+  const app=read("app.js");
+  assert.match(app,/art:"art"/);
+  assert.match(app,/archives:"archives"/);
+  assert.match(app,/"glass-eye":"glass-eye"/);
+  assert.doesNotMatch(app,/work:"art/);
+  assert.doesNotMatch(app,/archive:"archives/);
+  assert.doesNotMatch(app,/glassEye:"glass-eye/);
+});
+
 test("A-Z Pass 1 public accordion closes on Escape",()=>{
   const index=read("index.html");
   assert.match(index,/document\.addEventListener\("keydown",function\(event\)/);
