@@ -1,4 +1,4 @@
-const { chromium } = require("playwright");
+import { chromium } from "playwright";
 
 const baseURL = process.env.LIVE_URL;
 if (!baseURL) throw new Error("LIVE_URL is required");
