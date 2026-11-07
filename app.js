@@ -1518,7 +1518,7 @@ function renderClothing(){
           modal.hidden = true;
           document.body.classList.remove("inspector-open");
           const element = byId(target);
-          window.location.hash = target;
+          try{history.pushState(null, "", "#"+target);window.dispatchEvent(new Event("hashchange"));}catch(error){window.location.hash = target;}
         }
         return;
       }
