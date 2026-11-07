@@ -315,7 +315,8 @@ assert(clothingRuntime.includes("ESCIE_CLOTHING_AUDIT"),"clothing production aud
 const appRuntime=fs.readFileSync("app.js","utf8");
 assert(!appRuntime.includes("The central consciousness / interface."),"app fallback identity must not use central-consciousness wording");
 assert(appRuntime.includes('function reduceMotion()'),"app runtime needs reduced-motion detection");
-assert(appRuntime.includes('behavior:reduceMotion()?"auto":"smooth"'),"app section navigation must respect reduced motion");
+assert(!appRuntime.includes("scrollIntoView"),"public section navigation must not scroll between sections");
+assert(appRuntime.includes('history.pushState(null, "", "#"+target)'),"public inspector section navigation must update the route without scrolling");
 assert(appRuntime.includes('reduceMotion() || !("IntersectionObserver" in window)'),"app visual observer must respect reduced motion");
 
 assert(appRuntime.includes('if (!reduceMotion()) {'),"app route transitions must be skipped when reduced motion is requested");
@@ -759,7 +760,7 @@ const hardcodedLaunchButtons=(publicIndexRuntime.match(/<button\b[^>]*>/gi)||[])
 assert(hardcodedLaunchButtons.length === 1, "public index should keep only the primary hardcoded menu button; preference controls are exempt and generated controls are runtime-owned");
 assert(publicIndexRuntime.includes('id="mobile-menu-button"'), "public index menu control must exist");
 assert(appRuntime.includes('button.addEventListener("click", toggleMenu)'), "public mobile menu must have a click handler");
-assert(!publicIndexRuntime.includes('history.replaceState(null,"",link.getAttribute("href"))'), "public index accordion navigation must not bypass hashchange routing");
+assert(publicIndexRuntime.includes('history.pushState(null,"",link.getAttribute("href"))'), "public index accordion navigation must preserve the route without browser fragment scrolling");
 
 assert(publicIndexRuntime.includes('var router=window.ESCIE_UI_ROUTER;'), "accordion deep-link API must consult the shared router");
 
