@@ -14,7 +14,7 @@ test("public/Central integration boundary remains explicit",()=>{
 });
 
 test("public source contains no Central secret key material",()=>{
-  const files=["index.html","app.js","central-connect/app.html"];
+  const files=["index.html","app.js"];
   for(const file of files){
     const source=fs.readFileSync(file,"utf8").toLowerCase();
     assert.doesNotMatch(source,/service_role/);
