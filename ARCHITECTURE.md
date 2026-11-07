@@ -18,7 +18,7 @@ ESCIE is file-based. Content, world definitions, records, configuration, and sys
 6. World interface — world/index.html, world/world.css, world/game-shell.css. The pause/map is the only 2D system interface.
 7. Persistence — the world save/state layer. Saved player state is runtime state, not canonical editorial content.
 8. External/reference data — documented source references remain identifiable in data/config files.
-9. Central operations — `central-connect/` is an operational control surface. Backend/session data there is workspace state, not a second public/game canon. The Brain may observe, correlate and propose; explicit human approval remains required for important canonical changes.
+9. Central operations — EscieCentral is a separate private application and repository. The public site does not ship Central UI, session logic, or private operational state.
 
 ## Public-world presentation rule
 
