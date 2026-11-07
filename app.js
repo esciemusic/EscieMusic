@@ -1198,7 +1198,6 @@ function renderClothing(){
       if(action==="return"){
         const world=byId("world"),trigger=world&&world.querySelector(".section-drop-trigger");
         if(trigger&&!world.classList.contains("section-open"))trigger.click();
-        if(world)world.scrollIntoView({behavior:reduceMotion()?"auto":"smooth",block:"start"});
       }
     }));
   }
@@ -1481,7 +1480,6 @@ function renderClothing(){
       if(webParticipate){
         const glass=byId("glass-eye"),button=glass&&glass.querySelector(".section-drop-trigger");
         if(button&&!glass.classList.contains("section-open"))button.click();
-        if(glass)glass.scrollIntoView({behavior:reduceMotion()?"auto":"smooth",block:"start"});
         return;
       }
       const webClear=event.target.closest("[data-web-filter-clear]");
@@ -1520,7 +1518,6 @@ function renderClothing(){
           modal.hidden = true;
           document.body.classList.remove("inspector-open");
           const element = byId(target);
-          if (element) element.scrollIntoView({behavior:reduceMotion()?"auto":"smooth",block:"start"});
           window.location.hash = target;
         }
         return;
