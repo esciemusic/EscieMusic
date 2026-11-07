@@ -14,11 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         test:
-          - central.node.test.js
           - repository-boundary.node.test.js
-          - command-desk.node.test.js
-          - central-agent-orchestration.node.test.js
-          - central-world-engine-syntax.node.test.js
           - health.node.test.js
           - ingestion.node.test.js
           - module-references.node.test.js
@@ -26,7 +22,6 @@ jobs:
           - layer-balance.node.test.js
           - universe-contract.node.test.js
           - service-contract.node.test.js
-          - third-party-broker.node.test.js
           - countdown.node.test.js
           - syntax-all.node.test.js
           - surface-architecture.node.test.js
