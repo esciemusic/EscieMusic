@@ -209,6 +209,16 @@ test("A-Z Pass 1 keeps canonical hash routing and top return behavior",()=>{
   assert.match(index,/href="#main-content"/);
 });
 
+test("A-Z Pass 1 canonical navigation does not force section-to-section scrolling",()=>{
+  const index=read("index.html");
+  const app=read("app.js");
+  assert.match(index,/scrollRestoration="manual"/);
+  assert.doesNotMatch(index,/scrollIntoView/);
+  assert.doesNotMatch(app,/scrollIntoView/);
+  assert.doesNotMatch(index,/window\.location\.hash=link\.getAttribute\("href"\)/);
+  assert.match(index,/history\.pushState\(null,"",link\.getAttribute\("href"\)\)/);
+});
+
 test("A-Z Pass 1 preserves keyboard and preference accessibility contracts",()=>{
   const index=read("index.html");
   const style=read("style.css");
