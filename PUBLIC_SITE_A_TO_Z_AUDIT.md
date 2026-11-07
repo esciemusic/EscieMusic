@@ -227,3 +227,15 @@ This is the standing audit contract for every subsequent public-site optimizatio
 - Public source-secret regression contract added and passing.
 - Pages build and deployment completed successfully for the final Pass 3 commit.
 - No new public disclosure, identity, game, Glass Eye, THE WORLD or release-firewall regression was introduced.
+
+
+## Pass 3 — no-section-scroll hardening checkpoint — 2026-11-07
+- A full public navigation search found remaining section-to-section scroll paths after the initial accordion correction.
+- Removed the Glass Eye → WORLD scroll path, THE WEB → Glass Eye scroll path, and inspector → section scroll path from the runtime.
+- Removed the final fragment-navigation fallback that could invoke browser scrolling when changing public section routes.
+- Public section routing now updates history without forcing viewport movement; browser scroll restoration is set to manual for the public shell.
+- Added and synchronized regression coverage for the locked rule: CLOSED = ZERO VISUAL SPACE. OPEN = CONTENT ONLY. NO SECTION-TO-SECTION SCROLLING.
+- Repository search now returns no remaining scrollIntoView calls in the public site.
+- ESCIE Contracts run 2163, Deploy ESCIE to GitHub Pages run 2778, and Pages build/deployment run 2910 all passed for commit e868cb57.
+- Central was rechecked for the same class of section-scroll defect; no corresponding scrollIntoView, window.location.hash, or scroll-behavior source defect was found in the Central repository.
+- This checkpoint is GREEN for the no-section-scroll hardening scope.
