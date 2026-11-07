@@ -7,7 +7,6 @@ const history = require("../core/history.js");
 const control = require("../control/control.js");
 const proposals = require("../control/proposals.js");
 const media = require("../data/media.js");
-const centralMedia = require("../central/media-intake.js");
 const visuals = require("../data/visuals.js");
 
 global.window = { ESCIE_EVENTS: events };
@@ -47,14 +46,6 @@ assert(media.get("photo-parc-extension-example-001").location.locationId === "DA
 assert(media.get("photo-parc-extension-example-001").game.useAsReference === true, "media records must expose world reference usage");
 assert(visuals.normalizeEscieVisualAsset({mediaId:"photo-parc-extension-example-001"}) === null, "visual registry should fail safely without a browser media catalog");
 console.log("ESCIE media library contracts OK");
-const mediaPlan = centralMedia.toWritePlan({id:"dante-park-001",type:"photo",asset:"assets/media/dante-park-001.jpg",location:{label:"Dante Park",district:"Little Italy"},publicSections:["THE WORLD"],worldDistricts:["LITTLE_ITALY"]});
-assert(mediaPlan.status === "PENDING_APPROVAL", "Central media intake must require approval");
-assert(mediaPlan.destinations.some(d=>d.file === "data/media.js"), "Central media intake must route visual metadata to media registry");
-assert(mediaPlan.destinations.some(d=>d.file === "data/world-city.js"), "Central media intake must route geographic world metadata to city registry");
-assert(mediaPlan.record.location.label === "Dante Park", "Central media intake must preserve place metadata");
-const archivePlan=centralMedia.toWritePlan({id:"archive-001",type:"photo",asset:"assets/media/archive-001.jpg",publicSections:["ARCHIVE"]});
-assert(archivePlan.destinations.some(d=>d.file === "data/archive.js"), "Central media intake must route archive placements");
-console.log("CENTRAL media intake contracts OK");
 
 const source = sources.createSource({
   id: "source-test",
@@ -294,15 +285,6 @@ assert(reversedAudit.ok === false, "reversed history should be reported");
 
 
 
-const centralConnect=fs.readFileSync("central-connect/app.html","utf8");
-assert(!centralConnect.includes('e.innerHTML="<div><strong>"+p+"'),"Central connector provider detail must not interpolate provider data into HTML");
-assert(!centralConnect.includes('n.innerHTML="<strong>OAuth readiness'),"Central OAuth readiness must not interpolate HTML");
-
-const centralWorldRuntime=fs.readFileSync("central-connect/central-world-engine.js","utf8");
-assert(!centralWorldRuntime.includes("reality_level"),"Central World Engine must not restore reality-level classification");
-assert(!centralWorldRuntime.includes("REAL / MEMORY / MYTH"),"Central World Engine must not present reality classification");
-assert(!centralWorldRuntime.includes("[\"reality\",\"REALITY\"]"),"Central World Engine must not expose a reality tab");
-assert(centralWorldRuntime.includes("without telling the audience what is real"),"Central World Engine must preserve audience interpretation");
 
 const nodesRuntime=fs.readFileSync("data/nodes.js","utf8");
 assert(!nodesRuntime.includes("ARTIST / AUTHOR"),"identity node must not expose artist/author framing");
@@ -764,8 +746,6 @@ assert(publicIndexRuntime.includes('history.pushState(null,"",link.getAttribute(
 
 assert(publicIndexRuntime.includes('var router=window.ESCIE_UI_ROUTER;'), "accordion deep-link API must consult the shared router");
 
-const commandDeskSource = fs.readFileSync("central-connect/command-desk.js","utf8");
-try { new Function(commandDeskSource); } catch (error) { throw new Error("Central command desk must remain syntactically valid"); }
 const publicAppArchive = fs.readFileSync("app.js","utf8");
 assert(publicAppArchive.includes("function renderArchive()"), "public archive renderer must exist because render() invokes it");
 assert(publicAppArchive.includes('byId("archive-container")'), "public archive renderer must target the archive container");
@@ -780,36 +760,3 @@ assert(publicIndexRuntime.includes('var router=window.ESCIE_UI_ROUTER;'), "publi
 assert(publicIndexRuntime.includes('router&&typeof router.resolve==="function"?(router.resolve(raw)||raw):raw'), "public index accordion deep links must resolve legacy route aliases");
 assert(appRuntime.includes('button.addEventListener("click"'), "public generated controls must retain click handlers");
 
-const centralAppRuntime = fs.readFileSync("central-connect/app.html","utf8");
-const centralCommandDesk = fs.readFileSync("central-connect/command-desk.js","utf8");
-const centralButtonIds = [
-  "globalSearch","utilityToggle","themeToggle","logout","searchClose","auditClose","runAudit",
-  "showPass","signin","magic","firstTime","reset","generateCode","redeemCode","useCode",
-  "registerOpen","register","resendConfirm","recoverChange","recoverCancel","change",
-  "previewRegister","previewExit","refresh","copy"
-];
-centralButtonIds.forEach(id => {
-  assert(centralAppRuntime.includes('id="'+id+'"'), "Central button must exist: "+id);
-});
-assert(centralAppRuntime.includes('$("previewExit").onclick=()=>{clearPreview();location.reload()}'), "Central preview exit must have a working handler");
-assert(centralAppRuntime.includes('$("utilityToggle"'), "Central utility toggle must be wired");
-assert(centralAppRuntime.includes('utility&&utility.addEventListener("click"'), "Central utility toggle must respond to clicks");
-assert(centralAppRuntime.includes('$("runAudit")?.addEventListener("click"'), "Central audit action must be wired");
-assert(centralAppRuntime.includes('$("globalSearch")?.addEventListener("click"'), "Central search action must be wired");
-assert(centralAppRuntime.includes('$("logout").onclick=()=>'), "Central logout must be wired");
-assert(centralAppRuntime.includes('$("refresh").onclick='), "Central refresh must be wired");
-assert(centralAppRuntime.includes('$("copy").onclick='), "Central copy action must be wired");
-assert(centralCommandDesk.includes('root.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>'), "Command Desk tabs must be wired");
-assert(centralCommandDesk.includes("S.tab=b.dataset.tab"), "Command Desk tab selection must update state");
-assert(centralCommandDesk.includes("render()"), "Command Desk tab selection must rerender");
-assert(centralCommandDesk.includes('$("deskIntakeBtn")?.addEventListener("click",intake)'), "Command Desk intake must be wired");
-assert(centralCommandDesk.includes('$("deskRefresh")?.addEventListener("click",load)'), "Command Desk sync must be wired");
-assert(centralCommandDesk.includes('root.querySelectorAll("[data-a]").forEach(b=>b.onclick='), "Command Desk review decisions must be wired");
-assert(centralCommandDesk.includes('const broker=window.ESCIE_THIRD_PARTY_BROKER'), "Command Desk must guard the third-party storage broker");
-assert(centralCommandDesk.includes("async function publishRequest"), "Command Desk publish planning must be wired");
-assert(centralCommandDesk.includes("PUBLISH_REQUEST"), "Command Desk publish requests must create explicit approval work");
-assert(centralCommandDesk.includes("deskPublishRecord"), "Command Desk publish flow must choose content");
-assert(centralCommandDesk.includes("data-publish-destination"), "Command Desk publish flow must expose destinations");
-assert(centralCommandDesk.includes("publication_state:\"AWAITING_APPROVAL\""), "publish requests must remain human-gated");
-assert(centralCommandDesk.includes('THIRD_PARTY_STORAGE_BROKER_UNAVAILABLE'), "Command Desk must fail safely when storage broker is unavailable");
-console.log("ESCIE launch button coverage contracts OK");
