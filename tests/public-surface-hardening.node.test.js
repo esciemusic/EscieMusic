@@ -29,7 +29,7 @@ test("public/Central boundary remains explicit",()=>{
   const boundary=read("REPOSITORY_BOUNDARY.md");
   assert.match(boundary,/No cross-repository source imports/);
   assert.match(boundary,/Central operational state remains owned by EscieCentral\/Supabase/);
-  assert.doesNotMatch(indexFrom("index.html"),/EscieCentral|github\.com\/esciemusic\/EscieCentral/i);
+  assert.doesNotMatch(indexFrom("index.html"),/EscieCentral|github\.com\/esciemusic\/EscieCentral/i);assert.doesNotMatch(indexFrom("data\/file-manifest.js"),/central-connect\/|central\//i);
 });
 
 function indexFrom(p){return read(p);}
