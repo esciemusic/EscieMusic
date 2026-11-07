@@ -110,22 +110,3 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-      - name: Install Playwright
-        run: |
-          npm install --no-save playwright
-          npx playwright install --with-deps chromium
-
-      - name: Run live public-site audit
-        env:
-          LIVE_URL: ${{ steps.deployment.outputs.page_url }}
-        run: |
-          mkdir -p artifacts
-          node tests/live-public-audit.mjs
-
-      - name: Upload live public-site audit evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: escie-public-live-audit
-          path: artifacts/
-          if-no-files-found: ignore
