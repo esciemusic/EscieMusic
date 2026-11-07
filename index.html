@@ -200,6 +200,7 @@
     }
 
     initPreferences();
+    try{if("scrollRestoration" in history)history.scrollRestoration="manual";}catch(error){}
     function initSectionAccordion(){
       var sections=[].slice.call(document.querySelectorAll("main > section")).filter(function(section){return section.id!=="entry"&&section.querySelector("h2");});
       sections.forEach(function(section,index){
@@ -242,8 +243,8 @@
         if(button&&!target.classList.contains("section-open"))button.click();
       }};
       var nav=document.getElementById("main-navigation");
-      if(nav&&!nav.dataset.accordionLinksReady){nav.dataset.accordionLinksReady="1";nav.addEventListener("click",function(event){var link=event.target.closest("a[href^='#']");if(!link)return;var raw=link.getAttribute("href").slice(1),router=window.ESCIE_UI_ROUTER,resolved=router&&typeof router.resolve==="function"?(router.resolve(raw)||raw):raw,target=document.getElementById(resolved);if(!target)return;var b=target.querySelector(".section-drop-trigger");if(b&&!target.classList.contains("section-open")){event.preventDefault();b.click();window.location.hash=link.getAttribute("href");}});}
-      document.addEventListener("click",function(event){var link=event.target.closest("a[href^='#']");if(!link||nav&&nav.contains(link))return;var raw=link.getAttribute("href").slice(1),router=window.ESCIE_UI_ROUTER,resolved=router&&typeof router.resolve==="function"?(router.resolve(raw)||raw):raw,target=document.getElementById(resolved);if(!target)return;var b=target.querySelector(".section-drop-trigger");if(b&&!target.classList.contains("section-open")){event.preventDefault();b.click();window.location.hash=link.getAttribute("href");}});
+      if(nav&&!nav.dataset.accordionLinksReady){nav.dataset.accordionLinksReady="1";nav.addEventListener("click",function(event){var link=event.target.closest("a[href^='#']");if(!link)return;var raw=link.getAttribute("href").slice(1),router=window.ESCIE_UI_ROUTER,resolved=router&&typeof router.resolve==="function"?(router.resolve(raw)||raw):raw,target=document.getElementById(resolved);if(!target)return;var b=target.querySelector(".section-drop-trigger");if(b&&!target.classList.contains("section-open")){event.preventDefault();b.click();history.pushState(null,"",link.getAttribute("href"));window.dispatchEvent(new Event("hashchange"));}});}
+      document.addEventListener("click",function(event){var link=event.target.closest("a[href^='#']");if(!link||nav&&nav.contains(link))return;var raw=link.getAttribute("href").slice(1),router=window.ESCIE_UI_ROUTER,resolved=router&&typeof router.resolve==="function"?(router.resolve(raw)||raw):raw,target=document.getElementById(resolved);if(!target)return;var b=target.querySelector(".section-drop-trigger");if(b&&!target.classList.contains("section-open")){event.preventDefault();b.click();history.pushState(null,"",link.getAttribute("href"));window.dispatchEvent(new Event("hashchange"));}});
       document.addEventListener("keydown",function(event){
         if(event.key!=="Escape")return;
         var openSection=sections.find(function(section){return section.classList.contains("section-open");});
