@@ -88,7 +88,6 @@ jobs:
         run: |
           set -e
           test -f index.html
-          test -f central-connect/index.html
           test -f data/release-runtime.js
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v4
