@@ -1518,7 +1518,7 @@ function renderClothing(){
           modal.hidden = true;
           document.body.classList.remove("inspector-open");
           const element = byId(target);
-          try{history.pushState(null, "", "#"+target);window.dispatchEvent(new Event("hashchange"));}catch(error){window.location.hash = target;}
+          history.pushState(null, "", "#"+target);window.dispatchEvent(new Event("hashchange"));
         }
         return;
       }
@@ -2082,7 +2082,7 @@ function renderClothing(){
       try {
         history.replaceState(null, "", window.location.pathname + window.location.search);
       } catch (error) {
-        window.location.hash = "";
+        return;
       }
       const state = getRuntimeState();
       if (state) state.route = "entry";
