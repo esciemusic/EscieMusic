@@ -68,6 +68,8 @@ for (const forbidden of ["Dallas ’63","Dallas '63","Pumpy to the Chest","BACC 
   check(!bodyText.includes(forbidden), "unreleased BAM content exposed: " + forbidden);
 }
 check(!bodyText.includes("ESCIE_RELEASE_QUEUE_JSON"), "release secret name exposed");
+for (const forbidden of ["EscieCentral","central-api","SUPABASE_SERVICE_ROLE_KEY","SUPABASE_ACCESS_TOKEN"]) check(!bodyText.includes(forbidden), "private Central/internal material exposed: " + forbidden);
+check(await page.locator("#mobile-menu-button").isVisible(), "public doorway not visible on mobile");
 
 await page.screenshot({ path: "artifacts/public-mobile.png", fullPage: true });
 
