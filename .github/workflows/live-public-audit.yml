@@ -2,21 +2,22 @@ name: ESCIE Live Public Audit
 
 on:
   workflow_run:
-    workflows: ["pages build and deployment"]
+    workflows: ["Deploy ESCIE to GitHub Pages"]
     types: [completed]
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
   live-audit:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout deployed revision
         uses: actions/checkout@v6
         with:
-          ref: ${{ github.event.workflow_run.head_sha }}
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
 
       - name: Setup Node
         uses: actions/setup-node@v5
