@@ -10,6 +10,8 @@ The public ESCIE site and ESCIE Central are separate platforms but one ESCIE ent
 - The public site consumes only the public-safe projection.
 - Public participation is not automatically canonical.
 - Unreleased BAM, private case files, credentials and restricted material never enter the public projection.
+- The public site has no automatic ingestion into Central.
+- Public participation never becomes canonical without Central review and human approval.
 
 Release path:
 
