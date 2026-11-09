@@ -1742,3 +1742,101 @@ main > .site-section.section-open .section-visual::after{animation:escieSignalSc
 .world-wear-layer .merch-filter:hover,.world-wear-layer .merch-filter:focus-visible,.world-wear-layer .merch-filter.is-active{border-color:var(--escie-blue);color:var(--escie-blue-bright)}
 .world-wear-layer .merch-container[hidden]{display:none!important}
 @media(max-width:700px){.world-wear-head{align-items:flex-start;flex-direction:column;gap:5px}.world-wear-layer .merch-controls{width:100%;overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px}.world-wear-layer .merch-filter{flex:0 0 auto;min-height:40px}}
+
+
+/* =========================================================
+   GLASS EYE / PASS 2 — SCREEN PRESENCE
+   The audience is looking through a device, not at a horror card.
+   Movement stays restrained and documentary: scan, exposure, trace.
+   ========================================================= */
+.glass-eye-section.section-open .glass-eye-interface{
+  position:relative;
+  isolation:isolate;
+}
+.glass-eye-section.section-open .glass-eye-interface::before{
+  content:"";
+  position:absolute;
+  inset:-18px -12px;
+  z-index:-1;
+  pointer-events:none;
+  background:
+    linear-gradient(90deg,transparent 0%,rgba(47,128,255,.035) 48%,transparent 54%),
+    repeating-linear-gradient(0deg,transparent 0 8px,rgba(240,237,228,.018) 9px);
+  opacity:.72;
+  animation:glassEyeExposure 9s steps(1,end) infinite;
+}
+.glass-center{
+  border-color:rgba(47,128,255,.20);
+  background:
+    radial-gradient(circle at 50% 46%,rgba(47,128,255,.105),transparent 34%),
+    radial-gradient(circle at 72% 28%,rgba(155,89,255,.055),transparent 30%),
+    linear-gradient(180deg,rgba(15,17,20,.68),rgba(4,4,5,.95));
+}
+.glass-center::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(90deg,transparent 0 49.6%,rgba(47,128,255,.07) 50%,transparent 50.4%),
+    repeating-linear-gradient(0deg,transparent 0 5px,rgba(255,255,255,.022) 6px);
+  mix-blend-mode:screen;
+  opacity:.58;
+  animation:glassEyeScan 5.5s linear infinite;
+}
+.glass-dot{
+  animation:glassEyePulse 4.8s ease-in-out infinite;
+}
+.glass-eye-actions button{
+  transition:border-color var(--escie-motion-fast),background var(--escie-motion-fast),transform var(--escie-motion-fast),color var(--escie-motion-fast);
+}
+.glass-eye-actions button:hover,
+.glass-eye-actions button:focus-visible{
+  transform:translateY(-1px);
+  background:rgba(47,128,255,.055);
+}
+.glass-video-window{
+  position:relative;
+  border-color:rgba(47,128,255,.24);
+}
+.glass-video-window::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:2;
+  pointer-events:none;
+  border:1px solid rgba(240,237,228,.045);
+  background:linear-gradient(180deg,rgba(255,255,255,.025),transparent 18%,transparent 82%,rgba(47,128,255,.025));
+}
+.glass-video-frame::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent 0 6px,rgba(255,255,255,.018) 7px);
+  opacity:.55;
+}
+@keyframes glassEyeExposure{
+  0%,73%,100%{opacity:.52;transform:translateX(0)}
+  74%{opacity:.76;transform:translateX(1px)}
+  75%{opacity:.42;transform:translateX(-2px)}
+  76%{opacity:.58;transform:translateX(0)}
+}
+@keyframes glassEyeScan{
+  0%{background-position:0 0,0 0}
+  100%{background-position:0 0,0 14px}
+}
+@keyframes glassEyePulse{
+  0%,100%{box-shadow:0 0 45px rgba(47,128,255,.10),inset 0 0 28px rgba(155,89,255,.07)}
+  50%{box-shadow:0 0 58px rgba(47,128,255,.17),inset 0 0 34px rgba(155,89,255,.11)}
+}
+@media(max-width:700px){
+  .glass-eye-section.section-open .glass-eye-interface::before{inset:-10px -4px}
+  .glass-center::after{opacity:.42}
+}
+@media(prefers-reduced-motion:reduce){
+  .glass-eye-section.section-open .glass-eye-interface::before,
+  .glass-center::after,
+  .glass-dot{animation:none}
+  .glass-eye-actions button{transition:none}
+}
