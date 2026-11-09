@@ -14,3 +14,11 @@ The public ESCIE site and ESCIE Central are separate platforms but one ESCIE ent
 Release path:
 
 SOURCE → ENTITY → CANONICAL → SURFACE APPROVAL → PUBLIC PROJECTION → PUBLIC EXPERIENCE → AUDIT
+
+
+## LEGACY BOUNDARY CONTRACT
+CENTRAL → PUBLIC: approved, release-eligible, public-safe outputs.
+BRAIN → CANON: Central learning and canonicalization path.
+EXTERNAL PLATFORM → CANON: external inputs enter through controlled ingestion and review.
+Unreleased BAM/Dallas '63 remains private until its release gate is approved.
+The game remains a separate full-screen experience.
