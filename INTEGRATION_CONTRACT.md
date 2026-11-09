@@ -1,50 +1,16 @@
-# ESCIE CROSS-SYSTEM INTEGRATION CONTRACT
+# ESCIE Unified Platform Contract
 
-## Source of truth
+The public ESCIE site and ESCIE Central are separate platforms but one ESCIE entity.
 
-- ESCIE is the artist and human authority over canon.
-- EscieCentral is the private operational source for unreleased material and workflow.
-- The public ESCIE site is the public presentation layer.
-- External platforms are destinations.
+- Central is the private control plane.
+- The public site is the public experience plane.
+- The Knowledge Core is the shared canonical graph.
+- Stable ESCIE entity identity connects the two.
+- Central canonicalization and public release are separate human-approved gates.
+- The public site consumes only the public-safe projection.
+- Public participation is not automatically canonical.
+- Unreleased BAM, private case files, credentials and restricted material never enter the public projection.
 
-## Allowed direction
+Release path:
 
-CENTRAL → PUBLIC:
-only approved, release-eligible, public-safe outputs.
-
-PUBLIC → CENTRAL:
-no automatic ingestion of viewer state, public presentation state or unreviewed participation as canon.
-
-BRAIN → CANON:
-suggestion only until human approval.
-
-EXTERNAL PLATFORM → CANON:
-never authoritative.
-
-## Release sequence
-
-SOURCE → RECORD → REVIEW → APPROVE → RELEASE GATE → DERIVATIVE → DESTINATION → AUDIT
-
-Any failed gate stops the chain.
-
-## Protected content
-
-Unreleased BAM/Dallas '63 material, private Case Files, credentials, private media and unresolved Central material must remain outside the public repository.
-
-## Experience boundary
-
-Glass Eye is public audience participation/viewing. Its local memory is non-canonical.
-
-THE WORLD remains the Montréal-first public universe layer. Clothing remains a physical layer within THE WORLD.
-
-The game remains a separate full-screen experience and is not a dependency of the public site or Central.
-
-## Regression rule
-
-A change is not complete until:
-1. the changed layer passes its own tests;
-2. the integration boundary is rechecked;
-3. the opposite layer is confirmed unchanged where appropriate;
-4. release/disclosure checks pass.
-
-This contract is intentionally boring at the boundary so the creative layers can remain flexible.
+SOURCE → ENTITY → CANONICAL → SURFACE APPROVAL → PUBLIC PROJECTION → PUBLIC EXPERIENCE → AUDIT
