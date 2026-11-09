@@ -40,3 +40,16 @@ test("Glass Eye does not become an ARG or reality filter",()=>{
   assert.match(spec,/No forced puzzle\/investigation behavior is introduced/);
   assert.match(spec,/No game or shop dependency is required/);
 });
+
+test("Glass Eye Pass 3 keeps the public integration boundary explicit",()=>{
+  const participation=fs.readFileSync(path.join(root,"data","glass-eye-participation.js"),"utf8");
+  const bridge=fs.readFileSync(path.join(root,"data","unified-entities.js"),"utf8");
+  const contract=fs.readFileSync(path.join(root,"INTEGRATION_CONTRACT.md"),"utf8");
+  assert.doesNotMatch(participation,/service_role/i);
+  assert.doesNotMatch(bridge,/service_role/i);
+  assert.match(bridge,/functions\/v1\/escie-public/);
+  assert.match(contract,/CENTRAL → PUBLIC/);
+  assert.match(contract,/approved, release-eligible, public-safe outputs/);
+  assert.match(contract,/no automatic ingestion/);
+  assert.match(contract,/Unreleased BAM\/Dallas '63/);
+});
