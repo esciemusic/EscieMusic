@@ -1841,7 +1841,15 @@ function renderClothing(){
     return state.uiState;
   }
 
-  function updateEntryState(route) {\n    const node = byId("entry-state");\n    if (!node) return "";\n    const active = String(route || "entry").replace(/^#/, "") || "entry";\n    node.dataset.route = active;\n    return node.textContent || "";\n  }\n\n  function bindNavigationRuntime() {
+  function updateEntryState(route) {
+    const node = byId("entry-state");
+    if (!node) return "";
+    const active = String(route || "entry").replace(/^#/, "") || "entry";
+    node.dataset.route = active;
+    return node.textContent || "";
+  }
+
+  function bindNavigationRuntime() {
     const router = getRouter();
     if (!router) return;
 
