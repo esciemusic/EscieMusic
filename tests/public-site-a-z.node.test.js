@@ -453,8 +453,8 @@ test("A-Z Pass 3 public runtime boundaries remain schema-aligned and exception-s
   assert.ok(app.includes("function updateEntryState(route)"));
   assert.ok(live.includes("from:from_record_id")&&live.includes("to:to_record_id")&&live.includes("type:relationship_type"));
   assert.ok(live.includes("status=eq.RELEASED"));
-  assert.ok(live.includes("publicIds.has(String(x.from||")));
-  assert.ok(live.includes("publicIds.has(String(x.to||")));
+  assert.ok(live.includes('publicIds.has(String(x.from||')));
+  assert.ok(live.includes('publicIds.has(String(x.to||')));
   assert.ok(idle.includes("window.ESCIE_IDLE_SIGNAL={states:STATES.slice(),hasPublicTransmission}"));
   assert.doesNotMatch(live,/select=id,from,to,type,visibility,public_disclosure,release_state/);
   assert.doesNotMatch(idle,/^if\(typeof window!==\"undefined\"\) window\.ESCIE_IDLE_SIGNAL=\{states:STATES\.slice\(\),hasPublicTransmission\};/m);
