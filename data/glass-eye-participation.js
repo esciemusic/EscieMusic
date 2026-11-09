@@ -42,7 +42,7 @@
     }
     const response=await fetch(CONFIG.endpoint+"/rest/v1/glass_eye_submissions",{
       method:"POST",headers:{...headers(),Prefer:"return=minimal"},
-      body:JSON.stringify({kind,display_name:displayName,body:body||null,media_path:mediaPath,location_label:location,status:"PENDING_REVIEW",public_disclosure:false})
+      body:JSON.stringify({source:"GLASS_EYE",kind,display_name:displayName,body:body||null,media_path:mediaPath,location_label:location,status:"PENDING_REVIEW",public_disclosure:false})
     });
     if(!response.ok) throw new Error("THE SUBMISSION COULD NOT BE SAVED. TRY AGAIN.");
     return {ok:true};
