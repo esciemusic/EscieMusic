@@ -43,9 +43,11 @@
   }
   async function load(){
     const rows=await get("/records?select=*&visibility=eq.PUBLIC&publication_state=eq.PUBLISHED&release_state=eq.RELEASED&order=updated_at.desc");
-    const relationships=await get("/record_relationships?select=id,from,to,type,visibility,public_disclosure,release_state&visibility=eq.PUBLIC&public_disclosure=eq.true&release_state=eq.RELEASED&order=created_at.desc");
-    root.ESCIE_LIVE_RECORDS=(Array.isArray(rows)?rows:[]).map(normalize).filter(x=>x.id);
-    root.ESCIE_LIVE_RELATIONSHIPS=Array.isArray(relationships)?relationships:[];
+    const publicRecords=(Array.isArray(rows)?rows:[]).map(normalize).filter(x=>x.id);
+    const publicIds=new Set(publicRecords.map(x=>x.id));
+    const relationships=await get("/record_relationships?select=id,from:from_record_id,to:to_record_id,type:relationship_type,status&status=eq.RELEASED&order=created_at.desc");
+    root.ESCIE_LIVE_RECORDS=publicRecords;
+    root.ESCIE_LIVE_RELATIONSHIPS=(Array.isArray(relationships)?relationships:[]).filter(x=>publicIds.has(String(x.from||""))&&publicIds.has(String(x.to||"")));
     return {records:root.ESCIE_LIVE_RECORDS,relationships:root.ESCIE_LIVE_RELATIONSHIPS};
   }
   root.ESCIE_PUBLIC_LIVE={version:"1.1.0",status:"LOADING",ready:load().then(function(result){root.ESCIE_PUBLIC_LIVE.status="READY";return result;}).catch(function(error){root.ESCIE_PUBLIC_LIVE.status="OFFLINE";root.ESCIE_PUBLIC_LIVE.error=String(error&&error.message||error);return {records:[],relationships:[]};})};
