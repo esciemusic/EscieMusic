@@ -21,7 +21,7 @@ test("Glass Eye keeps viewer memory non-canonical",()=>{
   assert.match(spec,/not Central history/);
 });
 
-test("Glass Eye preserves multilingual and world-return behavior",()=>{
+test("Glass Eye participation is explicitly moderated before public disclosure",()=>{\n  const participation=fs.readFileSync(path.join(root,"data","glass-eye-participation.js"),"utf8");\n  assert.match(participation,/source:"GLASS_EYE"/);\n  assert.match(participation,/status:"PENDING_REVIEW"/);\n  assert.match(participation,/public_disclosure:false/);\n  assert.match(participation,/approvedEndpoint/);\n  assert.match(participation,/ONLY PHOTO, VIDEO OR AUDIO FILES ARE ACCEPTED/);\n});\n\ntest("Glass Eye preserves multilingual and world-return behavior",()=>{
   assert.match(spec,/EN \/ FR \/ ES/);
   assert.match(spec,/Return-to-world navigation remains direct/);
 });
