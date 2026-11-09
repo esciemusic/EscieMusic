@@ -31,3 +31,4 @@ test("Glass Eye does not become an ARG or reality filter",()=>{
   assert.match(spec,/No forced puzzle\/investigation behavior is introduced/);
   assert.match(spec,/No game or shop dependency is required/);
 });
+
