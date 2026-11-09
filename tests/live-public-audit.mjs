@@ -50,6 +50,8 @@ await page.waitForTimeout(100);
 const glassActions = page.locator("[data-glass-eye-action]");
 check(await glassActions.count() >= 4, "Glass Eye approved controls missing");
 for (const action of ["observe","follow","return","info"]) {
+  const glassSectionState=page.locator('section#glass-eye');
+  if(await glassSectionState.count() && !(await glassSectionState.evaluate(el=>el.classList.contains("section-open")).catch(()=>false))){const trigger=glassSectionState.locator(".section-drop-trigger");if(await trigger.count())await trigger.click();await page.waitForTimeout(100);}
   const b = page.locator('[data-glass-eye-action="' + action + '"]').first();
   check(await b.count() === 1, "Glass Eye action missing: " + action);
   if (await b.count()) {
