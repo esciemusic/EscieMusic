@@ -446,3 +446,15 @@ test("A-Z Pass 2 World includes the physical clothing layer without exposing loc
   assert.match(merch,/public_visibility:"hidden"/);
   assert.match(merch,/release_status:"locked"/);
 });
+
+
+test("A-Z Pass 3 public runtime boundaries remain schema-aligned and exception-safe",()=>{
+  const app=read("app.js"),live=read("data/public-live.js"),idle=read("ui/idle-signal.js");
+  assert.ok(app.includes("function updateEntryState(route)"));
+  assert.ok(live.includes("from:from_record_id")&&live.includes("to:to_record_id")&&live.includes("type:relationship_type"));
+  assert.ok(live.includes("status=eq.RELEASED"));
+  assert.ok(live.includes("publicIds.has(String(x.from||\"\\"))&&publicIds.has(String(x.to||\"\\"))"));
+  assert.ok(idle.includes("window.ESCIE_IDLE_SIGNAL={states:STATES.slice(),hasPublicTransmission}"));
+  assert.doesNotMatch(live,/select=id,from,to,type,visibility,public_disclosure,release_state/);
+  assert.doesNotMatch(idle,/^if\(typeof window!==\"undefined\"\) window\.ESCIE_IDLE_SIGNAL=\{states:STATES\.slice\(\),hasPublicTransmission\};/m);
+});
