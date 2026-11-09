@@ -44,6 +44,9 @@ for (let i = 0; i < count; i++) {
   }
 }
 
+const glassSection=page.locator('.section-drop-trigger[data-section="glass-eye"]');
+if(await glassSection.count()) await glassSection.first().click();
+await page.waitForTimeout(100);
 const glassActions = page.locator("[data-glass-eye-action]");
 check(await glassActions.count() >= 4, "Glass Eye approved controls missing");
 for (const action of ["observe","follow","return","info"]) {
