@@ -1,0 +1,2 @@
+/* ESCIE THE WEB DATA LAYER — foundation only. Empty collections are intentional. */
+(function(root){"use strict";const WEB_NODES=[],WEB_RELATIONSHIPS=[],WEB_EVIDENCE=[],WEB_PATHS=[];function publicNodes(){return WEB_NODES.filter(root.ESCIE_WEB&&root.ESCIE_WEB.isPublicReleased?root.ESCIE_WEB.isPublicReleased:()=>false);}root.ESCIE_WEB_DATA={nodes:WEB_NODES,relationships:WEB_RELATIONSHIPS,evidence:WEB_EVIDENCE,paths:WEB_PATHS,publicNodes};})(typeof window!=="undefined"?window:globalThis);
