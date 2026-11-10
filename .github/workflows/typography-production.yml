@@ -2,6 +2,12 @@ name: ESCIE Production Font Build
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - feature/escie-font-letterforms
+    paths:
+      - "fonts/**"
+      - ".github/workflows/typography-production.yml"
 
 jobs:
   build:
