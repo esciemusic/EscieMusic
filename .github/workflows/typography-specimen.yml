@@ -1,0 +1,31 @@
+name: ESCIE Typography Specimen
+
+on:
+  pull_request:
+  push:
+    branches:
+      - feature/escie-font-letterforms
+
+permissions:
+  contents: read
+
+jobs:
+  specimen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: python -m pip install fonttools pillow
+      - run: python fonts/prototype/specimen-pass3.py
+      - name: Upload desktop + phone specimens
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: escie-typography-specimens
+          path: |
+            fonts/prototype/specimen-desktop.png
+            fonts/prototype/specimen-phone.png
+            fonts/prototype/SPECIMEN-REPORT.md
+          if-no-files-found: warn
