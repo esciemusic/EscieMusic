@@ -107,6 +107,22 @@ async function auditAccordions(label) {
   }
 }
 
+async function auditSymbols(label) {
+  const symbols = page.locator(".section-motif-item");
+  let visibleCount = 0;
+  for (let i = 0; i < await symbols.count(); i++) {
+    const candidate = symbols.nth(i);
+    if (!(await candidate.isVisible().catch(() => false))) continue;
+    visibleCount++;
+    if (visibleCount > 3) break;
+    await candidate.click();
+    check(await page.locator("#record-inspector").isVisible().catch(() => false), label + " symbol did not open inspector");
+    const close = page.locator(".record-inspector-close").first();
+    if (await close.count()) await close.click();
+  }
+  check(visibleCount > 0, label + " interactive public symbols missing");
+}
+
 async function auditGlassEye(label) {
   const section = page.locator("section#glass-eye");
   if (!(await section.count())) {
@@ -165,30 +181,7 @@ const theme = page.locator("#theme-toggle");
 check(await theme.count() === 1, "theme control missing");
 if (await theme.count()) await theme.click();
 
-const openTrigger = page.locator(".section-drop-trigger").first();
-if (await openTrigger.count() && await openTrigger.isVisible().catch(() => false)) {
-  const openSection = openTrigger.locator("xpath=ancestor::section[1]");
-  if (!(await openSection.evaluate(el => el.classList.contains("section-open")).catch(() => false))) {
-    await openTrigger.click();
-    await page.waitForTimeout(80);
-  }
-}
-const symbols = page.locator(".section-motif-item");
-let symbol = null;
-for (let i = 0; i < await symbols.count(); i++) {
-  const candidate = symbols.nth(i);
-  if (await candidate.isVisible().catch(() => false)) {
-    symbol = candidate;
-    break;
-  }
-}
-check(Boolean(symbol), "interactive public symbol missing");
-if (symbol) {
-  await symbol.click();
-  check(await page.locator("#record-inspector").isVisible().catch(() => false), "symbol did not open inspector");
-  const close = page.locator(".record-inspector-close").first();
-  if (await close.count()) await close.click();
-}
+await auditSymbols("mobile");
 
 await scanRenderedBoundary("mobile");
 check(await menu.isVisible(), "public doorway not visible on mobile");
@@ -199,6 +192,7 @@ await page.reload({ waitUntil: "networkidle" });
 check(await page.locator("#main-content").isVisible(), "desktop main content not visible");
 await auditAccordions("desktop");
 await auditGlassEye("desktop");
+await auditSymbols("desktop");
 await scanRenderedBoundary("desktop");
 await page.screenshot({ path: "artifacts/public-desktop.png", fullPage: true });
 
