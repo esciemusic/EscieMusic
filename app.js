@@ -737,7 +737,7 @@
       '</article>';
     }).join("");
     container.innerHTML=
-      '<div class="web-experience web-identity-field" data-web-identity="montreal-signal">'+motifMarkup("web")+'<div class="web-signal-grid" aria-hidden="true"></div><div class="web-montreal-trace" aria-hidden="true">MONTRÉAL / SIGNAL FIELD / HERE</div>
+      '<div class="web-experience web-identity-field" data-web-identity="montreal-signal">'+motifMarkup("web")+'<div class="web-signal-grid" aria-hidden="true"></div><div class="web-montreal-trace" aria-hidden="true">MONTRÉAL / SIGNAL FIELD / HERE</div>'+
       '<div class="web-experience-head"><p class="eyebrow">THE WEB</p><h3>FIND WHAT IS CONNECTED.</h3><p>FOLLOW A PERSON, PLACE, MOMENT OR RECORD UNTIL SOMETHING ELSE PULLS INTO VIEW.</p></div>'+
       '<div class="web-discovery-tools">'+
         '<label>FIND A THREAD<input type="search" data-web-search value="'+escapeHTML(state.search||"")+'" placeholder="People, places, moments, fragments…"></label>'+
