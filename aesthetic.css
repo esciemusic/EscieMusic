@@ -1853,3 +1853,15 @@ main > .site-section.section-open .section-visual::after{animation:escieSignalSc
  .glass-eye-sequence span{padding:6px 7px}
  .glass-eye-body{font-size:13px}
 }
+
+/* Glass Eye Pass 3A — personal presence */
+.glass-eye-interface .glass-eye-response{min-height:1.4em;transition:opacity .24s ease,transform .24s ease}
+.glass-eye-interface .glass-eye-actions button[data-glass-eye-action="hear"]:not(:disabled):focus-visible{outline:2px solid currentColor;outline-offset:3px}
+.glass-eye-sequence[data-glass-stage="hear"] .is-active,
+.glass-eye-sequence[data-glass-stage="follow"] .is-active,
+.glass-eye-sequence[data-glass-stage="miss"] .is-active,
+.glass-eye-sequence[data-glass-stage="return"] .is-active{letter-spacing:.18em}
+.glass-eye-interface .glass-path-events span{display:inline-block;opacity:.78}
+@media (prefers-reduced-motion: reduce){
+  .glass-eye-interface .glass-eye-response{transition:none}
+}
