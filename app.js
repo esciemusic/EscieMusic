@@ -1079,7 +1079,7 @@ function renderClothing(){
     const followed=Array.isArray(state.connections)?state.connections.length>0:false;
     const missed=Array.isArray(state.missed)?state.missed.length>0:false;
     const returned=path.some(event=>event&&String(event.type||"").toUpperCase()==="RETURNED");
-    const stage=returned?"return":missed?"miss":followed?"follow":(heard||listened)?"hear":observed?"hear":"see";
+    const stage=returned?"return":missed?"miss":followed?"follow":(heard||listened)?"hear":"see";
     const stageIndex={see:0,hear:1,follow:2,miss:3,return:4}[stage];
     const esc=v=>escapeHTML(v==null?"":v);
     const t={
@@ -1127,12 +1127,12 @@ function renderClothing(){
           '<button type="button" data-glass-eye-action="return" aria-pressed="false">'+esc(t.return)+'</button>'+
           '<button type="button" class="glass-info-action" data-glass-eye-action="info" aria-pressed="false" aria-label="Glass Eye information">'+esc(t.info)+'</button>'+
         '</div>'+
-        '<p class="glass-eye-response" aria-live="polite">'+esc(path.length?"YOU ARE BACK. YOUR PATH IS STILL HERE.":"YOU ARE HERE. NOTHING HAS BEEN DECIDED FOR YOU.")+'</p>'+
+        '<p class="glass-eye-response" aria-live="polite">'+esc(returned?"YOU ARE BACK. YOUR PATH IS STILL HERE.":path.length?"YOUR PATH IS STILL HERE.":"YOU ARE HERE. NOTHING HAS BEEN DECIDED FOR YOU.")+'</p>'+
         '<div class="glass-memory-inline glass-memory-personal">'+
           '<div><span>'+esc(t.memory)+'</span><strong>'+esc(t.private)+'</strong></div>'+
           '<div class="glass-path-line"><span>'+esc(t.last)+'</span><em>'+esc(lastSignal||"NONE RECORDED")+'</em></div>'+
           '<div class="glass-path-line"><span>'+esc(t.recent)+'</span><em>'+esc(path.length?(path[path.length-1].type+" / "+(path[path.length-1].target_id||"—")):"NO PATH YET")+'</em></div>'+
-          (recent.length?'<div class="glass-path-events">'+recent.map(e=>'<span>'+esc(e.type)+" / "+esc(e.target_id||"—")+'</span>').join("")+'</div>':'')+
+          (recent.length?'<div class="glass-path-events" aria-label="Recent personal trace">'+recent.map(e=>{const type=String(e&&e.type||"").toUpperCase();const label={OBSERVED:"YOU LOOKED",LISTENED:"YOU LISTENED",HEARD:"YOU LISTENED",CONNECTED:"YOU FOLLOWED",RETURNED:"YOU RETURNED"}[type]||"YOU MOVED";return '<span>'+esc(label)+'</span>';}).join("")+'</div>':'')+
           '<button type="button" class="glass-memory-clear-inline" data-glass-eye-action="clear-memory">'+esc(t.clear)+'</button>'+
         '</div>'+
         '<div class="glass-footer">'+t.footer.map(esc).map(item=>'<span>'+item+'</span>').join("")+'</div>'+
