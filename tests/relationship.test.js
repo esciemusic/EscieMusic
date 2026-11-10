@@ -71,6 +71,25 @@
     });
     assert(invalidCanonicalVisibility.valid === false, "canonical relationships must be public");
 
+    const directional = R.create({
+      id: "directional-relationship",
+      type: "inspired_by",
+      from: "art-a",
+      to: "art-b"
+    });
+    assert(directional.valid === true, "known directional relationship should validate");
+    assert(R.invert(directional.relationship) === null, "unsupported inverse types must not be manufactured");
+
+    const supportedInverse = R.create({
+      id: "supported-inverse",
+      type: "created",
+      from: "person-a",
+      to: "art-a"
+    });
+    const inverse = R.invert(supportedInverse.relationship);
+    assert(inverse && inverse.type === "created_by", "registered inverse type should be traversable");
+    assert(inverse.from === "art-a" && inverse.to === "person-a", "inverse traversal must reverse endpoints");
+
     return { passed: true };
   }
 
