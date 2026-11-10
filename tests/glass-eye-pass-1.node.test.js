@@ -26,7 +26,9 @@ test("Glass Eye participation is explicitly moderated before public disclosure",
   assert.match(participation,/source:"GLASS_EYE"/);
   assert.match(participation,/status:"PENDING_REVIEW"/);
   assert.match(participation,/public_disclosure:false/);
-  assert.match(participation,/approvedEndpoint/);
+  assert.match(participation,/submissionEndpoint/);
+  assert.match(participation,/FormData/);
+  assert.match(participation,/apikey/);
   assert.match(participation,/ONLY PHOTO, VIDEO OR AUDIO FILES ARE ACCEPTED/);
 });
 
