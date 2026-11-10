@@ -1074,14 +1074,23 @@ function renderClothing(){
     const lastSignal=journeyState.last_signal||null;
     const recent=path.slice(-6).reverse();
     const esc=v=>escapeHTML(v==null?"":v);
-    const language=String(ESCIE_RUNTIME.glassLanguage||"en").toLowerCase();
-    const copy={
-      en:{side:"THIS IS YOUR SIDE OF THE SCREEN.",core:"SEE · HEAR · FOLLOW · MISS · RETURN",body:"What you notice, hear and follow belongs to your journey here.",see:"SEE WHAT I SAW",follow:"FOLLOW MY THREAD",return:"RETURN TO THE WORLD",info:"ⓘ INFO",clear:"CLEAR MY MEMORY",local:"LOCAL MEMORY / NON-CANONICAL",memory:"YOUR MEMORY",private:"LOCAL · PRIVATE · NON-CANONICAL",last:"LAST SIGNAL",recent:"RECENT PATH",footer:["YOUR PATH","YOUR MEMORY","NO CANON","NO CENTRAL HISTORY"],infoMsg:"The Glass Eye is the audience eye: a place to look through the screen, follow what catches you, and leave with your own path."},
-      fr:{side:"C'EST VOTRE CÔTÉ DE L'ÉCRAN.",core:"VOIR · ENTENDRE · SUIVRE · MANQUER · REVENIR",body:"Ce que vous remarquez, entendez et suivez appartient à votre parcours ici.",see:"VOIR CE QUE J'AI VU",follow:"SUIVRE MON FIL",return:"RETOURNER AU MONDE",info:"ⓘ INFO",clear:"EFFACER MA MÉMOIRE",local:"MÉMOIRE LOCALE / NON CANONIQUE",memory:"VOTRE MÉMOIRE",private:"LOCALE · PRIVÉE · NON CANONIQUE",last:"DERNIER SIGNAL",recent:"PARCOURS RÉCENT",footer:["VOTRE PARCOURS","VOTRE MÉMOIRE","AUCUN CANON","AUCUN HISTORIQUE CENTRAL"],infoMsg:"Le Glass Eye est l'œil du public : un endroit pour regarder à travers l'écran, suivre ce qui vous accroche et repartir avec votre propre parcours."},
-      es:{side:"ESTE ES TU LADO DE LA PANTALLA.",core:"VER · OÍR · SEGUIR · PERDER · VOLVER",body:"Lo que notas, escuchas y sigues pertenece a tu recorrido aquí.",see:"VER LO QUE VI",follow:"SEGUIR MI HILO",return:"VOLVER AL MUNDO",info:"ⓘ INFO",clear:"BORRAR MI MEMORIA",local:"MEMORIA LOCAL / NO CANÓNICA",memory:"TU MEMORIA",private:"LOCAL · PRIVADA · NO CANÓNICA",last:"ÚLTIMA SEÑAL",recent:"RECORRIDO RECIENTE",footer:["TU RECORRIDO","TU MEMORIA","SIN CANON","SIN HISTORIAL CENTRAL"],infoMsg:"Glass Eye es el ojo del público: un lugar para mirar a través de la pantalla, seguir lo que te llama y salir con tu propio recorrido."}
-    }[language]||null;
-    const t=copy||({});
-    const videoConfig=getGlobal("ESCIE_GLASS_EYE_VIDEO",{});
+    const t={
+      side:"THIS IS YOUR SIDE OF THE SCREEN.",
+      core:"SEE · HEAR · FOLLOW · MISS · RETURN",
+      body:"What you notice, hear and follow belongs to your journey here.",
+      see:"SEE WHAT I SAW",
+      follow:"FOLLOW MY THREAD",
+      return:"RETURN TO THE WORLD",
+      info:"ⓘ INFO",
+      clear:"CLEAR MY MEMORY",
+      local:"LOCAL MEMORY / NON-CANONICAL",
+      memory:"YOUR MEMORY",
+      private:"LOCAL · PRIVATE · NON-CANONICAL",
+      last:"LAST SIGNAL",
+      recent:"RECENT PATH",
+      footer:["YOUR PATH","YOUR MEMORY","NO CANON","NO CENTRAL HISTORY"],
+      infoMsg:"The Glass Eye is the audience eye: a place to look through the screen, follow what catches you, and leave with your own path."
+    };    const videoConfig=getGlobal("ESCIE_GLASS_EYE_VIDEO",{});
     const videoURL=glassEyeYouTubeURL(videoConfig&&videoConfig.url);
     const videoMarkup=videoURL
       ? '<div class="glass-video-window" data-glass-video-window>'+
@@ -1092,9 +1101,7 @@ function renderClothing(){
     container.innerHTML=
       '<div class="glass-frame glass-eye-interface">'+
         '<div class="glass-readout"><span>THE GLASS EYE</span><span>VIEWER LAYER / LOCAL MEMORY</span></div>'+
-        '<div class="glass-language" role="group" aria-label="Glass Eye language">'+
-          ["en","fr","es"].map(code=>'<button type="button" data-glass-language="'+code+'" class="'+(language===code?"is-active":"")+'">'+code.toUpperCase()+'</button>').join("")+
-        '</div>'+
+
         '<div class="glass-center glass-center-minimal">'+
           '<span class="glass-dot"></span>'+
           '<strong>'+esc(t.side)+'</strong>'+
@@ -1123,10 +1130,8 @@ function renderClothing(){
       '<p class="glass-boundary-note">VIEWER STATE IS LOCAL. PUBLIC RECORD IS APPROVED SEPARATELY.</p>'+
       '</div>';
     const participationCopy={
-      en:{open:"PARTICIPATION / THE RECORD IS OPEN",title:"LEAVE SOMETHING BEHIND.",intro:"Post a comment, fan theory, finding, mention or media. Submissions are reviewed before anything enters the public record.",notice:"YOU NOTICE",send:"YOU SEND",review:"WE REVIEW",observe:"OBSERVE",contribute:"CONTRIBUTE",record:"RECORD",noticeText:"Something catches your eye, ear or memory.",sendText:"Leave a theory, finding, mention, comment or media.",reviewText:"Approved material can enter the public record and create new connections.",submission:"SUBMISSION TYPE",name:"NAME / ALIAS",location:"LOCATION / CONTEXT",contribution:"YOUR CONTRIBUTION",upload:"UPLOAD PHOTO / VIDEO / AUDIO",placeholderName:"ANONYMOUS",placeholderOptional:"OPTIONAL",placeholderBody:"What did you see, hear, find or think?",submit:"SUBMIT TO THE GLASS EYE",approved:"APPROVED PUBLIC CONTRIBUTIONS",loading:"LOADING…",received:"RECEIVED. HELD FOR REVIEW — NOT CANON.",failed:"SUBMISSION FAILED.",none:"NO APPROVED CONTRIBUTIONS YET.",openMedia:"OPEN APPROVED MEDIA ↗"},
-      fr:{open:"PARTICIPATION / LE REGISTRE EST OUVERT",title:"LAISSEZ QUELQUE CHOSE DERRIÈRE.",intro:"Publiez un commentaire, une théorie, une découverte, une mention ou un média. Les envois sont révisés avant toute entrée dans le registre public.",notice:"VOUS REMARQUEZ",send:"VOUS ENVOYEZ",review:"NOUS RÉVISONS",observe:"OBSERVER",contribute:"CONTRIBUER",record:"INSCRIRE",noticeText:"Quelque chose attire votre œil, votre oreille ou votre mémoire.",sendText:"Laissez une théorie, une découverte, une mention, un commentaire ou un média.",reviewText:"Le contenu approuvé peut entrer dans le registre public et créer de nouvelles connexions.",submission:"TYPE D’ENVOI",name:"NOM / ALIAS",location:"LIEU / CONTEXTE",contribution:"VOTRE CONTRIBUTION",upload:"TÉLÉVERSER PHOTO / VIDÉO / AUDIO",placeholderName:"ANONYME",placeholderOptional:"OPTIONNEL",placeholderBody:"Qu’avez-vous vu, entendu, trouvé ou pensé ?",submit:"ENVOYER AU GLASS EYE",approved:"CONTRIBUTIONS PUBLIQUES APPROUVÉES",loading:"CHARGEMENT…",received:"REÇU. EN ATTENTE DE RÉVISION — NON CANONIQUE.",failed:"ÉCHEC DE L’ENVOI.",none:"AUCUNE CONTRIBUTION APPROUVÉE POUR L’INSTANT.",openMedia:"OUVRIR LE MÉDIA APPROUVÉ ↗"},
-      es:{open:"PARTICIPACIÓN / EL REGISTRO ESTÁ ABIERTO",title:"DEJA ALGO ATRÁS.",intro:"Publica un comentario, teoría, hallazgo, mención o contenido multimedia. Todo envío se revisa antes de entrar al registro público.",notice:"TÚ NOTAS",send:"TÚ ENVÍAS",review:"NOSOTROS REVISAMOS",observe:"OBSERVAR",contribute:"CONTRIBUIR",record:"REGISTRAR",noticeText:"Algo llama tu atención, oído o memoria.",sendText:"Deja una teoría, hallazgo, mención, comentario o contenido multimedia.",reviewText:"El material aprobado puede entrar al registro público y crear nuevas conexiones.",submission:"TIPO DE ENVÍO",name:"NOMBRE / ALIAS",location:"LUGAR / CONTEXTO",contribution:"TU CONTRIBUCIÓN",upload:"SUBIR FOTO / VIDEO / AUDIO",placeholderName:"ANÓNIMO",placeholderOptional:"OPCIONAL",placeholderBody:"¿Qué viste, escuchaste, encontraste o pensaste?",submit:"ENVIAR AL GLASS EYE",approved:"CONTRIBUCIONES PÚBLICAS APROBADAS",loading:"CARGANDO…",received:"RECIBIDO. EN REVISIÓN — NO ES CANON.",failed:"ENVÍO FALLIDO.",none:"AÚN NO HAY CONTRIBUCIONES APROBADAS.",openMedia:"ABRIR MEDIO APROBADO ↗"}
-    }[language]||null;
+      open:"PARTICIPATION / THE RECORD IS OPEN",title:"LEAVE SOMETHING BEHIND.",intro:"Post a comment, fan theory, finding, mention or media. Submissions are reviewed before anything enters the public record.",notice:"YOU NOTICE",send:"YOU SEND",review:"WE REVIEW",observe:"OBSERVE",contribute:"CONTRIBUTE",record:"RECORD",noticeText:"Something catches your eye, ear or memory.",sendText:"Leave a theory, finding, mention, comment or media.",reviewText:"Approved material can enter the public record and create new connections.",submission:"SUBMISSION TYPE",name:"NAME / ALIAS",location:"LOCATION / CONTEXT",contribution:"YOUR CONTRIBUTION",upload:"UPLOAD PHOTO / VIDEO / AUDIO",placeholderName:"ANONYMOUS",placeholderOptional:"OPTIONAL",placeholderBody:"What did you see, hear, find or think?",submit:"SUBMIT TO THE GLASS EYE",approved:"APPROVED PUBLIC CONTRIBUTIONS",loading:"LOADING…",received:"RECEIVED. HELD FOR REVIEW — NOT CANON.",failed:"SUBMISSION FAILED.",none:"NO APPROVED CONTRIBUTIONS YET.",openMedia:"OPEN APPROVED MEDIA ↗"
+    };
     const p=participationCopy||{};
     container.insertAdjacentHTML("beforeend",
       '<section class="glass-participation" aria-labelledby="glass-participation-title">'+
