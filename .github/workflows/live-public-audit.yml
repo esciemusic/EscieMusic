@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   live-audit:
+    timeout-minutes: 10
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
@@ -23,6 +24,9 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: 22
+
+      - name: Re-run release firewall on audited revision
+        run: node tests/release-firewall.node.test.js
 
       - name: Install Playwright
         run: |
@@ -42,4 +46,5 @@ jobs:
         with:
           name: escie-public-live-audit
           path: artifacts/
-          if-no-files-found: ignore
+          if-no-files-found: error
+          retention-days: 14
