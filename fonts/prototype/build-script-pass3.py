@@ -50,18 +50,29 @@ def stroke(p, pts, width=34):
 
 def smooth(points,steps=8):
     if len(points)<3:return points
+    q=[points[0]]+points+[points[-1]]
     out=[]
-    for a,b in zip(points,points[1:]):
-        for i in range(steps):
-            t=i/steps
-            u=1-t
-            out.append((u*a[0]+t*b[0],u*a[1]+t*b[1]))
+    for i in range(1,len(q)-2):
+        p0,p1,p2,p3=q[i-1:i+3]
+        for j in range(steps):
+            t=j/steps; t2=t*t; t3=t2*t
+            out.append((
+                .5*((2*p1[0])+(-p0[0]+p2[0])*t+(2*p0[0]-5*p1[0]+4*p2[0]-p3[0])*t2+(-p0[0]+3*p1[0]-3*p2[0]+p3[0])*t3),
+                .5*((2*p1[1])+(-p0[1]+p2[1])*t+(2*p0[1]-5*p1[1]+4*p2[1]-p3[1])*t2+(-p0[1]+3*p1[1]-3*p2[1]+p3[1])*t3)
+            ))
     out.append(points[-1])
     return out
-
 def script_glyph(ch):
     p=TTGlyphPen(None)
-    stroke(p,smooth(LOWER[ch]),36)
+    stroke(p,smooth(LOWER[ch]),42)
+    if ch=="i":
+        rect(p,188,430,34,34)
+    elif ch=="j":
+        rect(p,188,430,34,34)
+    elif ch=="t":
+        stroke(p,[(165,360),(350,360)],28)
+    elif ch=="f":
+        stroke(p,[(185,330),(330,330)],26)
     return p.glyph()
 
 def rect(p, x, y, w, h):
