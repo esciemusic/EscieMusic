@@ -96,7 +96,54 @@ def smooth(points,steps=12):
             ))
     out.append(points[-1])
     return out
+def ellipse(p,cx,cy,rx,ry,reverse=False,steps=28):
+    pts=[]
+    seq=range(steps-1,-1,-1) if reverse else range(steps)
+    for i in seq:
+        a=2*math.pi*i/steps
+        pts.append((cx+math.cos(a)*rx,cy+math.sin(a)*ry))
+    p.moveTo(pts[0])
+    for pt in pts[1:]:
+        p.lineTo(pt)
+    p.closePath()
+
+def loop_glyph(ch):
+    p=TTGlyphPen(None)
+    if ch=="o":
+        ellipse(p,235,290,112,105)
+        ellipse(p,235,290,48,42,reverse=True)
+    elif ch=="a":
+        ellipse(p,225,285,105,92)
+        ellipse(p,225,285,44,34,reverse=True)
+        stroke(p,[(315,330),(320,105)],58)
+    elif ch=="b":
+        stroke(p,[(155,80),(165,650)],58)
+        ellipse(p,245,285,105,100)
+        ellipse(p,245,285,43,40,reverse=True)
+    elif ch=="d":
+        stroke(p,[(320,80),(315,650)],58)
+        ellipse(p,220,285,105,100)
+        ellipse(p,220,285,43,40,reverse=True)
+    elif ch=="p":
+        stroke(p,[(150,-70),(155,350)],58)
+        ellipse(p,245,285,100,98)
+        ellipse(p,245,285,41,39,reverse=True)
+    elif ch=="q":
+        stroke(p,[(320,-60),(320,350)],58)
+        ellipse(p,225,285,100,98)
+        ellipse(p,225,285,41,39,reverse=True)
+    elif ch=="g":
+        ellipse(p,225,300,100,98)
+        ellipse(p,225,300,42,38,reverse=True)
+        stroke(p,[(305,300),(315,-45),(255,-85),(185,-70)],58)
+    else:
+        return None
+    return p.glyph()
+
 def script_glyph(ch):
+    loop=loop_glyph(ch)
+    if loop is not None:
+        return loop
     p=TTGlyphPen(None)
     weights={"a":62,"e":64,"g":68,"m":63,"n":64,"r":61,"s":67,"t":63,"u":64,"w":62,"y":66}
     offsets={"a":-6,"e":4,"g":-4,"m":3,"n":-2,"r":5,"s":-3,"t":2,"u":-4,"w":2,"y":-2}
