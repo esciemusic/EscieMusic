@@ -1073,6 +1073,13 @@ function renderClothing(){
     const journeyState=journey&&typeof journey.journey==="function"?journey.journey():{};
     const lastSignal=journeyState.last_signal||null;
     const recent=path.slice(-6).reverse();
+    const observed=Array.isArray(state.observed)?state.observed.length>0:false;
+    const heard=Array.isArray(state.heard)?state.heard.length>0:false;
+    const followed=Array.isArray(state.connections)?state.connections.length>0:false;
+    const missed=Array.isArray(state.missed)?state.missed.length>0:false;
+    const returned=path.some(event=>event&&String(event.type||"").toUpperCase()==="RETURNED");
+    const stage=returned?"return":missed?"miss":followed?"follow":heard?"hear":observed?"hear":"see";
+    const stageIndex={see:0,hear:1,follow:2,miss:3,return:4}[stage];
     const esc=v=>escapeHTML(v==null?"":v);
     const t={
       side:"THIS IS YOUR SIDE OF THE SCREEN.",
@@ -1108,8 +1115,8 @@ function renderClothing(){
           '<span class="glass-core-line">'+esc(t.core)+'</span>'+
         '</div>'+
         videoMarkup+
-        '<div class="glass-eye-sequence" aria-label="Glass Eye sequence">'+
-          '<span class="is-active">01 / SEE</span><span>02 / HEAR</span><span>03 / FOLLOW</span><span>04 / MISS</span><span>05 / RETURN</span>'+
+        '<div class="glass-eye-sequence" aria-label="Glass Eye sequence" data-glass-stage="'+esc(stage)+'">'+
+          ["SEE","HEAR","FOLLOW","MISS","RETURN"].map((label,index)=>'<span class="'+(index===stageIndex?"is-active":"")+'">'+String(index+1).padStart(2,"0")+' / '+label+'</span>').join("")+
         '</div>'+
         '<p class="glass-eye-body">'+esc(t.body)+'</p>'+
         '<div class="glass-eye-actions" role="group" aria-label="Glass Eye actions">'+
@@ -1206,7 +1213,8 @@ function renderClothing(){
         info:t.infoMsg
       };
       if(response)response.textContent=messages[action]||t.local;
-      if(action!=="info"&&memory&&typeof memory.record==="function")memory.record({type:"GLASS_EYE_"+String(action||"").toUpperCase(),target_id:"visitor-choice",timestamp:new Date().toISOString()});
+      const eventType={observe:"OBSERVED",follow:"CONNECTED",return:"RETURNED"}[action]||null;
+      if(eventType&&memory&&typeof memory.record==="function")memory.record({type:eventType,target_id:"glass-eye",timestamp:new Date().toISOString()});
       if(action==="return"){
         const world=byId("world"),trigger=world&&world.querySelector(".section-drop-trigger");
         if(trigger&&!world.classList.contains("section-open"))trigger.click();
