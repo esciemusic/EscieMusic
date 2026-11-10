@@ -333,7 +333,7 @@ assert(glassAppRuntime.includes("data-glass-eye-action"),"Glass Eye must expose 
 assert(glassAppRuntime.includes("YOUR SIDE OF THE SCREEN"),"Glass Eye must remain the audience side of the screen");
 assert(glassAppRuntime.includes('const stageIndex={see:0,hear:1,follow:2,miss:3,return:4}[stage]'),"Glass Eye sequence must derive its active stage from local visitor state");
 assert(glassAppRuntime.includes('const eventType={observe:"OBSERVED",follow:"CONNECTED",return:"RETURNED"}[action]||null'),"Glass Eye actions must use canonical player event types");
-assert(glassAppRuntime.includes('data-glass-stage="'+esc(stage)+'"'),"Glass Eye must expose its derived visitor stage to the interface");
+assert(glassAppRuntime.includes('data-glass-stage="'+stage+'"'),"Glass Eye must expose its derived visitor stage to the interface");
 assert(!glassAppRuntime.includes('data-glass-eye-action="language"'),"Glass Eye must not own a redundant language control");
 assert(glassAppRuntime.includes("VIEWER STATE IS LOCAL. PUBLIC RECORD IS APPROVED SEPARATELY."),"Glass Eye must preserve the viewer/canon boundary");
 
