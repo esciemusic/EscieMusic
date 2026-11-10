@@ -26,7 +26,7 @@
     const games=root.ESCIE_GAME_REGISTRY;
     const base=games&&typeof games.createPlayerState==="function"
       ? games.createPlayerState(safeRead()||{})
-      : {version:1,event_count:0,path:[],observed:[],interacted:[],heard:[],seen:[],collected:[],connections:[],discoveries:[],missed:[],visited_scenes:[],visited_locations:[],signals:[],unknown:[],unresolved:[],canonical_write:false};
+      : {version:1,event_count:0,path:[],observed:[],interacted:[],heard:[],listened:[],seen:[],collected:[],connections:[],discoveries:[],missed:[],visited_scenes:[],visited_locations:[],signals:[],unknown:[],unresolved:[],canonical_write:false};
     base.path=Array.isArray(base.path)?base.path.slice(-MAX_EVENTS):[];
     return base;
   }
