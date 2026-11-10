@@ -53,3 +53,19 @@ test("Glass Eye Pass 3 keeps the public integration boundary explicit",()=>{
   assert.match(contract,/no automatic ingestion/);
   assert.match(contract,/Unreleased BAM\/Dallas '63/);
 });
+
+
+test("Glass Eye HEAR advances only from an actual approved playback start, never from copy-only state",()=>{
+  const app=fs.readFileSync(path.join(root,"app.js"),"utf8");
+  const games=fs.readFileSync(path.join(root,"data","games.js"),"utf8");
+  const video=fs.readFileSync(path.join(root,"data","glass-eye-video.js"),"utf8");
+  assert.match(app,/data-glass-eye-action="hear"/);
+  assert.match(app,/PLAYBACK STARTED\\. LISTEN\\./);
+  assert.match(app,/playVideo/);
+  assert.match(app,/onStateChange/);
+  assert.match(app,/LISTENED/);
+  assert.match(games,/LISTENED/);
+  assert.match(games,/HEAR:"LISTENED"/);
+  assert.match(video,/url:""/);
+  assert.doesNotMatch(app,/memory\\.record\\(\\{type:"HEARD",target_id:"glass-eye"/);
+});
