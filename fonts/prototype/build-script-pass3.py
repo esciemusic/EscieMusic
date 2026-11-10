@@ -42,10 +42,10 @@ def stroke(p, pts, width=34):
     for a,b in zip(pts,pts[1:]):
         dx=b[0]-a[0]; dy=b[1]-a[1]; L=max(1,math.hypot(dx,dy))
         nx=-dy/L; ny=dx/L; w=width/2
-        p.moveTo(a[0]+nx*w,a[1]+ny*w)
-        p.lineTo(b[0]+nx*w,b[1]+ny*w)
-        p.lineTo(b[0]-nx*w,b[1]-ny*w)
-        p.lineTo(a[0]-nx*w,a[1]-ny*w)
+        p.moveTo((a[0]+nx*w,a[1]+ny*w))
+        p.lineTo((b[0]+nx*w,b[1]+ny*w))
+        p.lineTo((b[0]-nx*w,b[1]-ny*w))
+        p.lineTo((a[0]-nx*w,a[1]-ny*w))
         p.closePath()
 
 def smooth(points,steps=8):
@@ -65,7 +65,7 @@ def script_glyph(ch):
     return p.glyph()
 
 def rect(p, x, y, w, h):
-    p.moveTo(x,y); p.lineTo(x+w,y); p.lineTo(x+w,y+h); p.lineTo(x,y+h); p.closePath()
+    p.moveTo((x,y)); p.lineTo((x+w,y)); p.lineTo((x+w,y+h)); p.lineTo((x,y+h)); p.closePath()
 
 def simple_symbol(ch):
     p=TTGlyphPen(None)
@@ -97,7 +97,7 @@ def build(path):
     order=[".notdef","space"]+list(string.ascii_lowercase)+list(string.ascii_uppercase)+list(string.digits)+list(".,!?'-/:;()&")
     glyphs={}; metrics={}; cmap={}
     p=TTGlyphPen(None)
-    p.moveTo(70,0); p.lineTo(520,0); p.lineTo(520,760); p.lineTo(70,760); p.closePath()
+    p.moveTo((70,0)); p.lineTo((520,0)); p.lineTo((520,760)); p.lineTo((70,760)); p.closePath()
     glyphs[".notdef"]=p.glyph(); metrics[".notdef"]=(620,0)
     glyphs["space"]=Glyph(); metrics["space"]=(250,0); cmap[32]="space"
     for ch in string.ascii_lowercase:
