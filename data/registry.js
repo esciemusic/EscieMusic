@@ -392,5 +392,5 @@ function allPublicRecords(){
     return contract&&typeof contract.get==="function"?contract.get(id):null;
   }
 
-  window.ESCIE_RECORD_REGISTRY={version:"1.19.0",build,records:()=>build().records,publicNodes,nodeFor,nodesForRecord,allPublicRecords,publicRecord,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,releaseAudit,manifestFor,filter,contextFor,publicRelationships,relationshipTypes,relationshipCategories,relationshipsFor,relationshipCounts,releaseVisible,publicSectionContract,sectionDefinition};
+  window.ESCIE_RECORD_REGISTRY={version:"1.20.0",build,records:()=>build().records,publicNodes,nodeFor,nodesForRecord,allPublicRecords,publicRecord,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,releaseAudit,manifestFor,filter,contextFor,publicRelationships,relationshipTypes,relationshipCategories,relationshipsFor,relationshipCounts,releaseVisible,publicSectionContract,sectionDefinition};
 })();
