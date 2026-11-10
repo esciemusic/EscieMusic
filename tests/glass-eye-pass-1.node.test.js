@@ -71,3 +71,12 @@ test("Glass Eye HEAR advances only from an actual approved playback start, never
   assert.match(video,/url:""/);
   assert(!app.includes('memory.record({type:"HEARD",target_id:"glass-eye"'),"Glass Eye must not fabricate a HEARD record");
 });
+
+test("Glass Eye Pass 3A keeps sensory progression honest and personal",()=>{
+  const app=fs.readFileSync(path.join(root,"app.js"),"utf8");
+  assert.match(app,/const stage=returned\?"return":missed\?"miss":followed\?"follow":\(heard\|\|listened\)\?"hear":"see"/);
+  assert.match(app,/YOU ARE BACK\. YOUR PATH IS STILL HERE\./);
+  assert.match(app,/YOU LOOKED/);
+  assert.match(app,/YOU LISTENED/);
+  assert.doesNotMatch(app,/path\.length\?"YOU ARE BACK\. YOUR PATH IS STILL HERE\./);
+});
