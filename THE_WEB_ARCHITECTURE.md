@@ -1,7 +1,7 @@
 # ESCIE — THE WEB ARCHITECTURE & CONNECTION MODEL
 
 Status: Pass 3 — architecture hardening
-Version: 1.1.0
+Version: 1.2.0
 
 ## Purpose
 
@@ -120,6 +120,12 @@ THE WEB supports:
 Traversal never changes canonical data.
 
 Public traversal must resolve node visibility through the same public projection boundary used by the rest of the site.
+
+The public projection pipeline is fail-closed:
+
+REGISTRY → RELATIONSHIP CONTRACT → RELATIONSHIP DISCLOSURE → ENDPOINT PUBLIC RECORD → RELEASE FIREWALL → PUBLIC RELATIONSHIP VIEW → RENDERER
+
+A relationship is never sufficient by itself. Both endpoints must resolve to released, published, public records before the connection can become traversable. Private editorial fields such as evidence provenance, source references, history and internal metadata are stripped before public rendering.
 
 ## Discovery
 
