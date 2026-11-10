@@ -25,6 +25,18 @@ ESCIE is file-based. Content, world definitions, records, configuration, and sys
 The public World Engine is exploratory: search, type, connections, trails and Glass Eye context are allowed. It does not expose a reality-level filter. Ambiguity belongs in the records and their context, not in a player-facing sorting control.
 
 
+## THE WEB architecture
+
+THE WEB is the public relationship layer defined by `THE_WEB_ARCHITECTURE.md` and implemented by `relationship.js`.
+
+- Nodes resolve from the canonical record/registry layer.
+- Relationships are explicit FROM → TYPE → TO records.
+- Connection, confidence, canon and truth are separate concepts.
+- Reverse traversal is read-only and cannot manufacture unsupported relationship types.
+- Public rendering consumes the public-safe relationship projection.
+- Unresolved, unknown and contradictory states remain states; they are never silently resolved.
+- Central remains private and the release firewall remains authoritative.
+
 ## Communication contract
 
 Systems communicate through explicit APIs on window.ESCIE_* and named CustomEvents. A system should consume another system's public API instead of reaching into private variables.
