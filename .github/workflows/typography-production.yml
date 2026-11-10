@@ -23,8 +23,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install fontTools
-        run: python -m pip install fonttools
+      - name: Install fontTools and Pillow
+        run: python -m pip install fonttools pillow
       - name: Build release binaries
         run: python fonts/build-production-fonts.py
       - name: Validate release binaries
