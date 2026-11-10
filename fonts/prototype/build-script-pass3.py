@@ -97,7 +97,7 @@ def simple_symbol(ch):
     return p.glyph()
 
 def build(path):
-    order=[".notdef","space"]+list(string.ascii_lowercase)+list(string.ascii_uppercase)+list(string.digits)+list(".,!?'-/:;()&")+list("éèêëàâäîïôöùûüçÉÈÊËÀÂÄÎÏÔÖÙÛÜÇ")
+    order=[".notdef","space"]+list(string.ascii_lowercase)+list(string.ascii_uppercase)+list(string.digits)+list(".,!?'-/:;()&—–€“”’")+list("éèêëàâäîïôöùûüçÉÈÊËÀÂÄÎÏÔÖÙÛÜÇ")
     glyphs={}; metrics={}; cmap={}
     p=TTGlyphPen(None)
     p.moveTo((70,0)); p.lineTo((520,0)); p.lineTo((520,760)); p.lineTo((70,760)); p.closePath()
@@ -107,7 +107,7 @@ def build(path):
         glyphs[ch]=script_glyph(ch); metrics[ch]=(470,0); cmap[ord(ch)]=ch
     for ch in string.ascii_uppercase:
         glyphs[ch]=script_glyph(ch.lower()); metrics[ch]=(500,0); cmap[ord(ch)]=ch
-    for ch in string.digits + ".,!?'-/:;()&":
+    for ch in string.digits + ".,!?'-/:;()&—–€“”’":
         glyphs[ch]=simple_symbol(ch); metrics[ch]=(500,0); cmap[ord(ch)]=ch
     accents={"é":"e","è":"e","ê":"e","ë":"e","à":"a","â":"a","ä":"a","î":"i","ï":"i","ô":"o","ö":"o","ù":"u","û":"u","ü":"u","ç":"c",
              "É":"e","È":"e","Ê":"e","Ë":"e","À":"a","Â":"a","Ä":"a","Î":"i","Ï":"i","Ô":"o","Ö":"o","Ù":"u","Û":"u","Ü":"u","Ç":"c"}
