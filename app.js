@@ -1189,8 +1189,6 @@ function renderClothing(){
       }).join("") :'<span class="inspector-note">'+esc(p.none)+'</span>';
     }
     loadApproved();
-    container.querySelectorAll("[data-glass-language]").forEach(button=>button.addEventListener("click",()=>{
-      ESCIE_RUNTIME.glassLanguage=button.getAttribute("data-glass-language")||"en";
       renderGlassEye();
     }));
     const response=container.querySelector(".glass-eye-response");
