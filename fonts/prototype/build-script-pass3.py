@@ -84,11 +84,11 @@ def smooth(points,steps=8):
     return out
 def script_glyph(ch):
     p=TTGlyphPen(None)
-    weights={"a":48,"e":50,"g":54,"m":49,"n":50,"r":47,"s":53,"t":49,"u":50,"w":48,"y":52}
+    weights={"a":58,"e":60,"g":64,"m":59,"n":60,"r":57,"s":63,"t":59,"u":60,"w":58,"y":62}
     offsets={"a":-6,"e":4,"g":-4,"m":3,"n":-2,"r":5,"s":-3,"t":2,"u":-4,"w":2,"y":-2}
     pts=smooth(LOWER[ch])
     dx=offsets.get(ch,0)
-    pts=[(x+dx,y) for x,y in pts]
+    pts=[(x + dx + 0.10*(y-250), y) for x,y in pts]
 
     # Keep the skeleton clean. Human character comes from curve, pressure,
     # and slight letter-specific rhythm — not artificial spikes or tails.
