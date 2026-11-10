@@ -244,18 +244,32 @@ function allPublicRecords(){
     const current=build();
     const relationships=collection("ESCIE_RELATIONSHIPS");
     const f=filters||{};
+    const contract=typeof window!=="undefined"?window.ESCIE_RELATIONSHIP:null;
     return relationships.filter(rel=>{
       if(!rel||rel.public_disclosure!==true) return false;
-      if(rel.visibility&&["private","withheld"].includes(String(rel.visibility).toLowerCase())) return false;
       if(!rel.from||!rel.to||!current.byId[rel.from]||!current.byId[rel.to]) return false;
+
+      // THE WEB public projection is fail-closed at both boundaries:
+      // relationship safety AND endpoint safety must pass before rendering.
+      if(contract&&typeof contract.validate==="function"&&!contract.validate(rel).valid) return false;
+      if(contract&&typeof contract.canDisclose==="function"&&!contract.canDisclose(rel)) return false;
+      if(!publicRecord(rel.from)||!publicRecord(rel.to)) return false;
       if(!releaseVisible(current.byId[rel.from])||!releaseVisible(current.byId[rel.to])) return false;
+
       if(f.type&&String(rel.type||"").toLowerCase()!==String(f.type).toLowerCase()) return false;
-      if(f.category&&typeof window!=="undefined"&&window.ESCIE_RELATIONSHIP&&typeof window.ESCIE_RELATIONSHIP.getCategory==="function"){
-        if(window.ESCIE_RELATIONSHIP.getCategory(rel.type)!==f.category) return false;
+      if(f.category&&contract&&typeof contract.getCategory==="function"){
+        if(contract.getCategory(rel.type)!==f.category) return false;
       }
       if(f.record&&rel.from!==f.record&&rel.to!==f.record) return false;
       return true;
-    });
+    }).map(rel=>{
+      if(contract&&typeof contract.toPublicView==="function") return contract.toPublicView(rel);
+      return {
+        id:rel.id,from:rel.from,type:rel.type,to:rel.to,status:rel.status,
+        confidence:rel.confidence,canonical_status:rel.canonical_status,
+        date:rel.date,context:rel.context,note:rel.note,visibility:rel.visibility
+      };
+    }).filter(Boolean);
   }
   function relationshipTypes(filters){
     return Array.from(new Set(publicRelationships(filters).map(rel=>rel.type).filter(Boolean))).sort();
