@@ -698,56 +698,55 @@
 
   function renderWeb(){
     const container=byId("web-container"); if(!container)return;
-    const registry=getGlobal("ESCIE_RECORD_REGISTRY",null);
     const state=ESCIE_RUNTIME.webFilters||{};
     const all=getPublicRelationshipRecords();
-    const relationships=getPublicRelationshipRecords(state);
     const records=getAllPublicRecords();
     const byIdMap=new Map(records.filter(Boolean).map(record=>[recordId(record),record]));
-    const allNodes=new Set(); all.forEach(r=>{allNodes.add(r.from);allNodes.add(r.to);});
-    const nodeRecords=Array.from(allNodes).map(id=>byIdMap.get(id)).filter(Boolean);
-    const types=registry&&typeof registry.relationshipTypes==="function"?registry.relationshipTypes():Array.from(new Set(all.map(r=>r.type).filter(Boolean))).sort();
-    const categories=registry&&typeof registry.relationshipCategories==="function"?registry.relationshipCategories():[];
-    const recordTypes=Array.from(new Set(records.map(r=>String(r.type||"record")).filter(Boolean))).sort();
-    const nodeOptions=nodeRecords.sort((x,y)=>recordTitle(x).localeCompare(recordTitle(y))).map(r=>'<option value="'+escapeHTML(recordId(r))+'"'+(state.record===recordId(r)?" selected":"")+'>'+escapeHTML(recordTitle(r))+'</option>').join("");
-    const typeOptions=types.map(t=>'<option value="'+escapeHTML(t)+'"'+(state.type===t?" selected":"")+'> '+escapeHTML(t.replace(/_/g," "))+'</option>').join("");
-    const categoryOptions=categories.map(t=>'<option value="'+escapeHTML(t)+'"'+(state.category===t?" selected":"")+'> '+escapeHTML(t.replace(/_/g," "))+'</option>').join("");
-    const recordTypeOptions=recordTypes.map(t=>'<option value="'+escapeHTML(t)+'">'+escapeHTML(t.replace(/_/g," "))+'</option>').join("");
-    const recordSearch=String(state.search||"").trim().toLowerCase();
-    const recordTypeFilter=String(state.recordType||"").trim().toLowerCase();
-    const searchable=records.filter(r=>{
-      const matchesType=!recordTypeFilter||String(r.type||"record").toLowerCase()===recordTypeFilter;
-      const matchesSearch=!recordSearch||recordTitle(r).toLowerCase().includes(recordSearch)||(r.description||"").toLowerCase().includes(recordSearch);
-      return matchesType&&matchesSearch;
-    }).slice(0,16);
-    const recordResults=searchable.map(r=>{
-      const connected=all.some(link=>link.from===recordId(r)||link.to===recordId(r));
-      return '<button type="button" class="web-record-result" data-record-id="'+escapeHTML(recordId(r))+'"><strong>'+escapeHTML(recordTitle(r))+'</strong><span>'+escapeHTML(r.type||"record")+' · '+(connected?"CONNECTED":"UNCONNECTED")+'</span></button>';
+    const relationships=getPublicRelationshipRecords(state);
+    const nodeIds=new Set(); all.forEach(r=>{nodeIds.add(r.from);nodeIds.add(r.to);});
+    const connectedNodes=Array.from(nodeIds).map(id=>byIdMap.get(id)).filter(Boolean);
+    const search=String(state.search||"").trim().toLowerCase();
+    const matchesSearch=r=>!search||recordTitle(r).toLowerCase().includes(search)||(r.description||"").toLowerCase().includes(search);
+    const visibleRecords=records.filter(matchesSearch);
+    const nodeOptions=connectedNodes.sort((a,b)=>recordTitle(a).localeCompare(recordTitle(b))).map(r=>'<option value="'+escapeHTML(recordId(r))+'"'+(state.record===recordId(r)?" selected":"")+'>'+escapeHTML(recordTitle(r))+'</option>').join("");
+    const typeOptions=Array.from(new Set(all.map(r=>String(r.type||"CONNECTION")).filter(Boolean))).sort().map(t=>'<option value="'+escapeHTML(t)+'"'+(state.type===t?" selected":"")+'>'+escapeHTML(t.replace(/_/g," "))+'</option>').join("");
+    const recordResults=visibleRecords.filter(r=>!state.record||recordId(r)===state.record).slice(0,10).map(r=>{
+      const links=all.filter(link=>link.from===recordId(r)||link.to===recordId(r));
+      return '<button type="button" class="web-record-result" data-record-id="'+escapeHTML(recordId(r))+'"><strong>'+escapeHTML(recordTitle(r))+'</strong><span>'+escapeHTML(r.type||"record")+' · '+(links.length?links.length+" CONNECTION"+(links.length===1?"":"S"):"NO CONNECTIONS YET")+'</span></button>';
     }).join("");
-    const hasSearch=recordSearch.length>0||recordTypeFilter.length>0;
-    const resultMarkup=hasSearch?(recordResults||'<span class="inspector-note">NO MATCHES.</span>'):"";
-    const count=registry&&typeof registry.relationshipCounts==="function"?registry.relationshipCounts(state):{relationships:relationships.length,nodes:new Set(relationships.flatMap(r=>[r.from,r.to])).size};
+    const list=relationships.map((relationship,index)=>{
+      const from=byIdMap.get(relationship.from),to=byIdMap.get(relationship.to);
+      if(!from||!to)return "";
+      const status=String(relationship.status||"UNKNOWN").toUpperCase();
+      const confidence=String(relationship.confidence||"UNKNOWN").toUpperCase();
+      const reason=relationship.description||"THE RECORD CONNECTS THESE TWO POINTS. THE REASON REMAINS OPEN.";
+      const evidence=Array.isArray(relationship.evidence)?relationship.evidence:[];
+      return '<article class="web-connection" data-relationship-id="'+escapeHTML(relationship.id||("connection-"+index))+'">'+
+        '<button type="button" class="web-connection-main" data-web-connection-toggle aria-expanded="false">'+
+          '<span class="web-node"><strong>'+escapeHTML(recordTitle(from))+'</strong><em>'+escapeHTML(from.type||"record")+'</em></span>'+
+          '<span class="web-connection-line" aria-hidden="true"><i></i><b>'+escapeHTML((relationship.type||"CONNECTED_TO").replace(/_/g," "))+'</b><i></i></span>'+
+          '<span class="web-node"><strong>'+escapeHTML(recordTitle(to))+'</strong><em>'+escapeHTML(to.type||"record")+'</em></span>'+
+        '</button>'+
+        '<div class="web-connection-detail" hidden>'+
+          '<p class="eyebrow">WHY THIS CONNECTION EXISTS</p><p>'+escapeHTML(reason)+'</p>'+
+          '<div class="web-connection-meta"><span>'+escapeHTML(status)+'</span><span>'+escapeHTML(confidence)+'</span>'+ (evidence.length?'<span>'+evidence.length+' SOURCE'+(evidence.length===1?"":"S")+'</span>':"") +'</div>'+
+          '<div class="web-connection-actions"><button type="button" class="web-node-button" data-record-id="'+escapeHTML(recordId(from))+'">OPEN '+escapeHTML(recordTitle(from).toUpperCase())+'</button><button type="button" class="web-node-button" data-record-id="'+escapeHTML(recordId(to))+'">OPEN '+escapeHTML(recordTitle(to).toUpperCase())+'</button></div>'+
+        '</div>'+
+      '</article>';
+    }).join("");
     container.innerHTML=
-      '<div class="web-intro">'+motifMarkup("web")+
-      '<p class="eyebrow">THE WEB / CONNECTION LEDGER</p>'+
-      '<div class="record-filters web-filters"><div class="record-filters-heading"><span>EXPLORE THE NETWORK</span><button type="button" class="record-filter-clear" data-web-filter-clear>CLEAR</button></div>'+
-      '<div class="record-filter-grid"><label>RECORD<select data-web-filter="record"><option value="">ALL CONNECTED RECORDS</option>'+nodeOptions+'</select></label>'+
-      '<label>TYPE<select data-web-filter="type"><option value="">ALL CONNECTION TYPES</option>'+typeOptions+'</select></label>'+
-      '<label>CATEGORY<select data-web-filter="category"><option value="">ALL CATEGORIES</option>'+categoryOptions+'</select></label>'+
-      '</div><p class="record-filter-count">'+escapeHTML(String(relationships.length))+' OF '+escapeHTML(String(all.length))+' ESTABLISHED CONNECTION'+(all.length===1?"":"S")+' · '+escapeHTML(String(count.nodes||0))+' NODES</p></div>'+
-      '<div class="web-record-search"><label>SEARCH THE PUBLIC RECORD<input type="search" data-web-search value="'+escapeHTML(state.search||"")+'" placeholder="People, places, moments, fragments…"></label>'+
-      (recordTypes.length>1?'<div class="web-record-tools"><span class="eyebrow">BROWSE RECORD TYPE</span><select data-web-record-type><option value="">ALL PUBLIC RECORDS</option>'+recordTypes.map(t=>'<option value="'+escapeHTML(t)+'"'+(recordTypeFilter===String(t).toLowerCase()?" selected":"")+'>'+escapeHTML(t.replace(/_/g," "))+'</option>').join("")+'</select></div>':"")+
-      '<div class="web-record-results">'+resultMarkup+'</div></div></div>'+
-      (relationships.length?'<div class="web-list">'+relationships.map(relationship=>{
-        const from=byIdMap.get(relationship.from),to=byIdMap.get(relationship.to);
-        return '<article class="web-connection" data-relationship-id="'+escapeHTML(relationship.id||"")+'">'+
-          '<button class="web-node web-node-button" type="button" data-record-id="'+escapeHTML(relationship.from)+'"><strong>'+escapeHTML(recordTitle(from))+'</strong><span>'+escapeHTML(from.type||"record")+'</span></button>'+
-          '<span class="web-arrow" aria-hidden="true">→</span><span class="web-type">'+escapeHTML((relationship.type||"CONNECTION").replace(/_/g," "))+'</span><span class="web-arrow" aria-hidden="true">→</span>'+
-          '<button class="web-node web-node-button" type="button" data-record-id="'+escapeHTML(relationship.to)+'"><strong>'+escapeHTML(recordTitle(to))+'</strong><span>'+escapeHTML(to.type||"record")+'</span></button>'+
-        '</article>';}).join("")+'</div>':
-        '<div class="archive-status web-empty-state"><p class="eyebrow">NO PUBLIC CONNECTIONS YET</p><h3>THE WEB IS WAITING.</h3><p>There are no established links to draw yet. The record search above still lets you inspect what is public. Connections appear when ESCIE establishes them or approved audience material creates a reviewed relationship.</p><button type="button" class="web-participate-link" data-web-participate>ADD A FINDING THROUGH GLASS EYE</button></div>');
+      '<div class="web-experience">'+motifMarkup("web")+
+      '<div class="web-experience-head"><p class="eyebrow">THE WEB</p><h3>FIND WHAT IS CONNECTED.</h3><p>FOLLOW A PERSON, PLACE, MOMENT OR RECORD UNTIL SOMETHING ELSE PULLS INTO VIEW.</p></div>'+
+      '<div class="web-discovery-tools">'+
+        '<label>FIND A THREAD<input type="search" data-web-search value="'+escapeHTML(state.search||"")+'" placeholder="People, places, moments, fragments…"></label>'+
+        '<div class="web-discovery-selects"><label>START HERE<select data-web-filter="record"><option value="">ANY CONNECTED NODE</option>'+nodeOptions+'</select></label><label>CONNECTION<select data-web-filter="type"><option value="">ALL CONNECTIONS</option>'+typeOptions+'</select></label></div>'+
+        '<p class="web-discovery-count">'+escapeHTML(String(relationships.length))+' CONNECTION'+(relationships.length===1?"":"S")+' · '+escapeHTML(String(new Set(relationships.flatMap(r=>[r.from,r.to])).size))+' NODES</p>'+
+      '</div>'+
+      '<div class="web-record-results">'+recordResults+'</div>'+
+      (list?'<div class="web-connection-field">'+list+'</div>':'<div class="web-empty-state"><p class="eyebrow">NO PUBLIC CONNECTIONS YET</p><h3>THE WEB IS QUIET.</h3><p>Nothing public is connected here yet. That is not a missing page. It is an honest state.</p><button type="button" class="web-participate-link" data-web-participate>BRING A FINDING THROUGH GLASS EYE</button></div>')+
+      '<p class="web-governing-principle">EVERYTHING CAN CONNECT. NOTHING CONNECTS WITHOUT A REASON.</p>'+
+      '</div>';
   }
-
 
   function renderGameItemInspector(item){
     const api=window.ESCIE_GAME_REGISTRY;
@@ -1546,6 +1545,12 @@ function renderClothing(){
     });
 
     document.addEventListener("click", event => {
+      const webConnection=event.target.closest("[data-web-connection-toggle]");
+      if(webConnection){
+        const detail=webConnection.parentElement&&webConnection.parentElement.querySelector(".web-connection-detail");
+        if(detail){const open=detail.hidden===false;detail.hidden=open;webConnection.setAttribute("aria-expanded",open?"false":"true");}
+        return;
+      }
       const webParticipate=event.target.closest("[data-web-participate]");
       if(webParticipate){
         const glass=byId("glass-eye"),button=glass&&glass.querySelector(".section-drop-trigger");

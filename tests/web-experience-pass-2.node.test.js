@@ -1,0 +1,15 @@
+const assert=require("node:assert/strict");const fs=require("node:fs");
+const app=fs.readFileSync("app.js","utf8");
+const html=fs.readFileSync("index.html","utf8");
+const css=fs.readFileSync("style.css","utf8");
+assert.match(app,/function renderWeb\(\)/);
+assert.match(app,/FIND WHAT IS CONNECTED/);
+assert.match(app,/WHY THIS CONNECTION EXISTS/);
+assert.match(app,/data-web-connection-toggle/);
+assert.match(app,/EVERYTHING CAN CONNECT\. NOTHING CONNECTS WITHOUT A REASON/);
+assert.doesNotMatch(app,/EXPLORE THE NETWORK/);
+assert.match(html,/data\/web-contract\.js/);
+assert.match(html,/data\/web\.js/);
+assert.match(css,/\.web-experience/);
+assert.match(css,/\.web-connection-detail/);
+console.log("THE WEB experience pass 2: PASS");
