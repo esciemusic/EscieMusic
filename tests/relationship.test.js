@@ -24,7 +24,7 @@
     });
 
     assert(relationship.id === "test-relationship", "relationship id should be preserved");
-    assert(R.isType(relationship, "collaborated_with"), "relationship type should validate");
+    assert(R.isType("collaborated_with"), "relationship type should validate");
     assert(R.isCanonical(relationship) === false, "provisional relationship is not canonical");
     assert(R.isPublic(relationship) === true, "default public relationship should be public");
 
