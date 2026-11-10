@@ -7,6 +7,7 @@ function journey(){
  return {
   path:Array.isArray(s.path)?s.path.slice():[],
   connections:Array.isArray(s.connections)?s.connections.slice():[],
+  listened:Array.isArray(s.listened)?s.listened.slice():[],
   discoveries:Array.isArray(s.discoveries)?s.discoveries.slice():[],
   missed:Array.isArray(s.missed)?s.missed.slice():[],
   unknown:Array.isArray(s.unknown)?s.unknown.slice():[],

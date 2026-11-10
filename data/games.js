@@ -243,7 +243,7 @@
   }
 
   const PLAYER_EVENT_TYPES=[
-    "ENTERED","OBSERVED","INTERACTED","HEARD","SEEN","COLLECTED",
+    "ENTERED","OBSERVED","INTERACTED","HEARD","LISTENED","SEEN","COLLECTED",
     "CONNECTED","DISCONNECTED","MISSED","RETURNED","DISCOVERED","LEFT"
   ];
 
@@ -259,6 +259,7 @@
     observed:[],
     interacted:[],
     heard:[],
+    listened:[],
     seen:[],
     collected:[],
     connections:[],
@@ -291,6 +292,7 @@
     state.observed=cleanIds(input.observed);
     state.interacted=cleanIds(input.interacted);
     state.heard=cleanIds(input.heard);
+    state.listened=cleanIds(input.listened);
     state.seen=cleanIds(input.seen);
     state.collected=cleanIds(input.collected);
     state.connections=cleanIds(input.connections);
@@ -336,6 +338,7 @@
     if(type==="OBSERVED") addUnique(state.observed,id);
     if(type==="INTERACTED") addUnique(state.interacted,id);
     if(type==="HEARD") addUnique(state.heard,id);
+    if(type==="LISTENED") addUnique(state.listened,id);
     if(type==="SEEN") addUnique(state.seen,id);
     if(type==="COLLECTED") addUnique(state.collected,id);
     if(type==="CONNECTED") addUnique(state.connections,id);
@@ -363,6 +366,7 @@
       observed:source.observed.slice(),
       interacted:source.interacted.slice(),
       heard:source.heard.slice(),
+      listened:source.listened.slice(),
       seen:source.seen.slice(),
       collected:source.collected.slice(),
       connections:source.connections.slice(),
@@ -407,7 +411,7 @@
     const type=String(event.type||"").toUpperCase();
     if(!GAME_EVENT_TYPES.includes(type)) return state;
     const target=typeof event.target_id==="string"?event.target_id.trim():"";
-    const mapped={ENTER:"ENTERED",EXIT:"LEFT",OBSERVE:"OBSERVED",INTERACT:"INTERACTED",COLLECT:"COLLECTED",HEAR:"HEARD",SEE:"SEEN",DISCOVER:"DISCOVERED"};
+    const mapped={ENTER:"ENTERED",EXIT:"LEFT",OBSERVE:"OBSERVED",INTERACT:"INTERACTED",COLLECT:"COLLECTED",HEAR:"LISTENED",SEE:"SEEN",DISCOVER:"DISCOVERED"};
     if(mapped[type]) return applyPlayerEvent(state,Object.assign({},event,{type:mapped[type],target_id:target}));
     if(type==="UNLOCK"&&target){state.unlocked=cleanIds(state.unlocked);addUnique(state.unlocked,target);}
     if(type==="DIALOGUE"||type==="MISSION"||type==="WORLD_CHANGE"){const timestamp=event.timestamp||new Date().toISOString();state.path.push({type,target_id:target,timestamp,data:event.data||null});state.event_count+=1;state.last_seen_at=timestamp;}

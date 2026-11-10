@@ -1840,3 +1840,28 @@ main > .site-section.section-open .section-visual::after{animation:escieSignalSc
   .glass-dot{animation:none}
   .glass-eye-actions button{transition:none}
 }
+
+/* Glass Eye Pass 1 — sensory-first experience rail */
+.glass-center-minimal{margin-bottom:clamp(14px,2vw,24px)}
+.glass-eye-sequence{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:10px 0 18px;font:600 10px/1.2 system-ui,sans-serif;letter-spacing:.14em;opacity:.58}
+.glass-eye-sequence span{padding:7px 9px;border:1px solid currentColor;border-radius:999px}
+.glass-eye-sequence .is-active{opacity:1}
+.glass-eye-body{max-width:58ch;margin:0 auto 18px;text-align:center;opacity:.72}
+.glass-boundary-note{margin:16px auto 0;max-width:60ch;text-align:center;font-size:10px;letter-spacing:.12em;opacity:.5}
+@media (max-width:600px){
+ .glass-eye-sequence{gap:6px;font-size:9px}
+ .glass-eye-sequence span{padding:6px 7px}
+ .glass-eye-body{font-size:13px}
+}
+
+/* Glass Eye Pass 3A — personal presence */
+.glass-eye-interface .glass-eye-response{min-height:1.4em;transition:opacity .24s ease,transform .24s ease}
+.glass-eye-interface .glass-eye-actions button[data-glass-eye-action="hear"]:not(:disabled):focus-visible{outline:2px solid currentColor;outline-offset:3px}
+.glass-eye-sequence[data-glass-stage="hear"] .is-active,
+.glass-eye-sequence[data-glass-stage="follow"] .is-active,
+.glass-eye-sequence[data-glass-stage="miss"] .is-active,
+.glass-eye-sequence[data-glass-stage="return"] .is-active{letter-spacing:.18em}
+.glass-eye-interface .glass-path-events span{display:inline-block;opacity:.78}
+@media (prefers-reduced-motion: reduce){
+  .glass-eye-interface .glass-eye-response{transition:none}
+}

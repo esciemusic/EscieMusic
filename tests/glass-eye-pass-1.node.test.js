@@ -30,9 +30,11 @@ test("Glass Eye participation is explicitly moderated before public disclosure",
   assert.match(participation,/ONLY PHOTO, VIDEO OR AUDIO FILES ARE ACCEPTED/);
 });
 
-test("Glass Eye preserves multilingual and world-return behavior",()=>{
-  assert.match(spec,/EN \/ FR \/ ES/);
+test("Glass Eye leaves language control at the main site and keeps world-return behavior",()=>{
+  assert.match(spec,/main ESCIE site language control/);
+  assert.match(spec,/Glass Eye has no separate language toggle/);
   assert.match(spec,/Return-to-world navigation remains direct/);
+  assert.doesNotMatch(spec,/EN \/ FR \/ ES remain supported/);
 });
 
 test("Glass Eye does not become an ARG or reality filter",()=>{
@@ -52,4 +54,29 @@ test("Glass Eye Pass 3 keeps the public integration boundary explicit",()=>{
   assert.match(contract,/approved, release-eligible, public-safe outputs/);
   assert.match(contract,/no automatic ingestion/);
   assert.match(contract,/Unreleased BAM\/Dallas '63/);
+});
+
+
+test("Glass Eye HEAR advances only from an actual approved playback start, never from copy-only state",()=>{
+  const app=fs.readFileSync(path.join(root,"app.js"),"utf8");
+  const games=fs.readFileSync(path.join(root,"data","games.js"),"utf8");
+  const video=fs.readFileSync(path.join(root,"data","glass-eye-video.js"),"utf8");
+  assert.match(app,/data-glass-eye-action="hear"/);
+  assert.match(app,/PLAYBACK STARTED\. LISTEN\./);
+  assert.match(app,/playVideo/);
+  assert.match(app,/onStateChange/);
+  assert.match(app,/LISTENED/);
+  assert.match(games,/LISTENED/);
+  assert.match(games,/HEAR:"LISTENED"/);
+  assert.match(video,/url:""/);
+  assert(!app.includes('memory.record({type:"HEARD",target_id:"glass-eye"'),"Glass Eye must not fabricate a HEARD record");
+});
+
+test("Glass Eye Pass 3A keeps sensory progression honest and personal",()=>{
+  const app=fs.readFileSync(path.join(root,"app.js"),"utf8");
+  assert.match(app,/const stage=returned\?"return":missed\?"miss":followed\?"follow":\(heard\|\|listened\)\?"hear":"see"/);
+  assert.match(app,/YOU ARE BACK\. YOUR PATH IS STILL HERE\./);
+  assert.match(app,/YOU LOOKED/);
+  assert.match(app,/YOU LISTENED/);
+  assert.doesNotMatch(app,/path\.length\?"YOU ARE BACK\. YOUR PATH IS STILL HERE\./);
 });

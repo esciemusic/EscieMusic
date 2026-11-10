@@ -54,7 +54,7 @@
         else if (parsed.pathname.startsWith("/shorts/")) id = parsed.pathname.split("/")[2] || "";
       }
       if (!/^[A-Za-z0-9_-]{11}$/.test(id)) return "";
-      return "https://www.youtube-nocookie.com/embed/" + id + "?rel=0&modestbranding=1";
+      return "https://www.youtube-nocookie.com/embed/" + id + "?rel=0&modestbranding=1&enablejsapi=1&origin=" + encodeURIComponent(window.location.origin);
     } catch (error) { return ""; }
   }
 
@@ -1073,15 +1073,32 @@ function renderClothing(){
     const journeyState=journey&&typeof journey.journey==="function"?journey.journey():{};
     const lastSignal=journeyState.last_signal||null;
     const recent=path.slice(-6).reverse();
+    const observed=Array.isArray(state.observed)?state.observed.length>0:false;
+    const listened=Array.isArray(state.listened)?state.listened.length>0:false;
+    const heard=Array.isArray(state.heard)?state.heard.length>0:false;
+    const followed=Array.isArray(state.connections)?state.connections.length>0:false;
+    const missed=Array.isArray(state.missed)?state.missed.length>0:false;
+    const returned=path.some(event=>event&&String(event.type||"").toUpperCase()==="RETURNED");
+    const stage=returned?"return":missed?"miss":followed?"follow":(heard||listened)?"hear":"see";
+    const stageIndex={see:0,hear:1,follow:2,miss:3,return:4}[stage];
     const esc=v=>escapeHTML(v==null?"":v);
-    const language=String(ESCIE_RUNTIME.glassLanguage||"en").toLowerCase();
-    const copy={
-      en:{side:"THIS IS YOUR SIDE OF THE SCREEN.",core:"SEE · HEAR · FOLLOW · MISS · RETURN",body:"What you notice, hear and follow belongs to your journey here.",see:"SEE WHAT I SAW",follow:"FOLLOW MY THREAD",return:"RETURN TO THE WORLD",info:"ⓘ INFO",clear:"CLEAR MY MEMORY",local:"LOCAL MEMORY / NON-CANONICAL",memory:"YOUR MEMORY",private:"LOCAL · PRIVATE · NON-CANONICAL",last:"LAST SIGNAL",recent:"RECENT PATH",footer:["YOUR PATH","YOUR MEMORY","NO CANON","NO CENTRAL HISTORY"],infoMsg:"The Glass Eye is the audience eye: a place to look through the screen, follow what catches you, and leave with your own path."},
-      fr:{side:"C'EST VOTRE CÔTÉ DE L'ÉCRAN.",core:"VOIR · ENTENDRE · SUIVRE · MANQUER · REVENIR",body:"Ce que vous remarquez, entendez et suivez appartient à votre parcours ici.",see:"VOIR CE QUE J'AI VU",follow:"SUIVRE MON FIL",return:"RETOURNER AU MONDE",info:"ⓘ INFO",clear:"EFFACER MA MÉMOIRE",local:"MÉMOIRE LOCALE / NON CANONIQUE",memory:"VOTRE MÉMOIRE",private:"LOCALE · PRIVÉE · NON CANONIQUE",last:"DERNIER SIGNAL",recent:"PARCOURS RÉCENT",footer:["VOTRE PARCOURS","VOTRE MÉMOIRE","AUCUN CANON","AUCUN HISTORIQUE CENTRAL"],infoMsg:"Le Glass Eye est l'œil du public : un endroit pour regarder à travers l'écran, suivre ce qui vous accroche et repartir avec votre propre parcours."},
-      es:{side:"ESTE ES TU LADO DE LA PANTALLA.",core:"VER · OÍR · SEGUIR · PERDER · VOLVER",body:"Lo que notas, escuchas y sigues pertenece a tu recorrido aquí.",see:"VER LO QUE VI",follow:"SEGUIR MI HILO",return:"VOLVER AL MUNDO",info:"ⓘ INFO",clear:"BORRAR MI MEMORIA",local:"MEMORIA LOCAL / NO CANÓNICA",memory:"TU MEMORIA",private:"LOCAL · PRIVADA · NO CANÓNICA",last:"ÚLTIMA SEÑAL",recent:"RECORRIDO RECIENTE",footer:["TU RECORRIDO","TU MEMORIA","SIN CANON","SIN HISTORIAL CENTRAL"],infoMsg:"Glass Eye es el ojo del público: un lugar para mirar a través de la pantalla, seguir lo que te llama y salir con tu propio recorrido."}
-    }[language]||null;
-    const t=copy||({});
-    const videoConfig=getGlobal("ESCIE_GLASS_EYE_VIDEO",{});
+    const t={
+      side:"THIS IS YOUR SIDE OF THE SCREEN.",
+      core:"SEE · HEAR · FOLLOW · MISS · RETURN",
+      body:"What you notice, hear and follow belongs to your journey here.",
+      see:"SEE WHAT I SAW",
+      follow:"FOLLOW MY THREAD",
+      return:"RETURN TO THE WORLD",
+      info:"ⓘ INFO",
+      clear:"CLEAR MY MEMORY",
+      local:"LOCAL MEMORY / NON-CANONICAL",
+      memory:"YOUR MEMORY",
+      private:"LOCAL · PRIVATE · NON-CANONICAL",
+      last:"LAST SIGNAL",
+      recent:"RECENT PATH",
+      footer:["YOUR PATH","YOUR MEMORY","NO CANON","NO CENTRAL HISTORY"],
+      infoMsg:"The Glass Eye is the audience eye: a place to look through the screen, follow what catches you, and leave with your own path."
+    };    const videoConfig=getGlobal("ESCIE_GLASS_EYE_VIDEO",{});
     const videoURL=glassEyeYouTubeURL(videoConfig&&videoConfig.url);
     const videoMarkup=videoURL
       ? '<div class="glass-video-window" data-glass-video-window>'+
@@ -1092,37 +1109,38 @@ function renderClothing(){
     container.innerHTML=
       '<div class="glass-frame glass-eye-interface">'+
         '<div class="glass-readout"><span>THE GLASS EYE</span><span>VIEWER LAYER / LOCAL MEMORY</span></div>'+
-        '<div class="glass-language" role="group" aria-label="Glass Eye language">'+
-          ["en","fr","es"].map(code=>'<button type="button" data-glass-language="'+code+'" class="'+(language===code?"is-active":"")+'">'+code.toUpperCase()+'</button>').join("")+
-        '</div>'+
-        '<div class="glass-center">'+
+
+        '<div class="glass-center glass-center-minimal">'+
           '<span class="glass-dot"></span>'+
           '<strong>'+esc(t.side)+'</strong>'+
           '<span class="glass-core-line">'+esc(t.core)+'</span>'+
-          '<p>'+esc(t.body)+'</p>'+
         '</div>'+
         videoMarkup+
+        '<div class="glass-eye-sequence" aria-label="Glass Eye sequence" data-glass-stage="'+esc(stage)+'">'+
+          ["SEE","HEAR","FOLLOW","MISS","RETURN"].map((label,index)=>'<span class="'+(index===stageIndex?"is-active":"")+'">'+String(index+1).padStart(2,"0")+' / '+label+'</span>').join("")+
+        '</div>'+
+        '<p class="glass-eye-body">'+esc(t.body)+'</p>'+
         '<div class="glass-eye-actions" role="group" aria-label="Glass Eye actions">'+
           '<button type="button" data-glass-eye-action="observe" aria-pressed="false">'+esc(t.see)+'</button>'+
+          '<button type="button" data-glass-eye-action="hear" aria-pressed="false"'+(videoURL?'':' disabled')+'>'+esc(videoURL?"HEAR THE SIGNAL":"HEAR / AWAITING APPROVED MEDIA")+'</button>'+
           '<button type="button" data-glass-eye-action="follow" aria-pressed="false">'+esc(t.follow)+'</button>'+
           '<button type="button" data-glass-eye-action="return" aria-pressed="false">'+esc(t.return)+'</button>'+
-          '<button type="button" data-glass-eye-action="info" aria-pressed="false">'+esc(t.info)+'</button>'+
+          '<button type="button" class="glass-info-action" data-glass-eye-action="info" aria-pressed="false" aria-label="Glass Eye information">'+esc(t.info)+'</button>'+
         '</div>'+
-        '<p class="glass-eye-response" aria-live="polite">'+esc(t.local)+'</p>'+
-        '<div class="glass-memory-inline">'+
+        '<p class="glass-eye-response" aria-live="polite">'+esc(returned?"YOU ARE BACK. YOUR PATH IS STILL HERE.":path.length?"YOUR PATH IS STILL HERE.":"YOU ARE HERE. NOTHING HAS BEEN DECIDED FOR YOU.")+'</p>'+
+        '<div class="glass-memory-inline glass-memory-personal">'+
           '<div><span>'+esc(t.memory)+'</span><strong>'+esc(t.private)+'</strong></div>'+
           '<div class="glass-path-line"><span>'+esc(t.last)+'</span><em>'+esc(lastSignal||"NONE RECORDED")+'</em></div>'+
           '<div class="glass-path-line"><span>'+esc(t.recent)+'</span><em>'+esc(path.length?(path[path.length-1].type+" / "+(path[path.length-1].target_id||"—")):"NO PATH YET")+'</em></div>'+
-          (recent.length?'<div class="glass-path-events">'+recent.map(e=>'<span>'+esc(e.type)+" / "+esc(e.target_id||"—")+'</span>').join("")+'</div>':'')+
+          (recent.length?'<div class="glass-path-events" aria-label="Recent personal trace">'+recent.map(e=>{const type=String(e&&e.type||"").toUpperCase();const label={OBSERVED:"YOU LOOKED",LISTENED:"YOU LISTENED",HEARD:"YOU LISTENED",CONNECTED:"YOU FOLLOWED",RETURNED:"YOU RETURNED"}[type]||"YOU MOVED";return '<span>'+esc(label)+'</span>';}).join("")+'</div>':'')+
           '<button type="button" class="glass-memory-clear-inline" data-glass-eye-action="clear-memory">'+esc(t.clear)+'</button>'+
         '</div>'+
         '<div class="glass-footer">'+t.footer.map(esc).map(item=>'<span>'+item+'</span>').join("")+'</div>'+
+      '<p class="glass-boundary-note">VIEWER STATE IS LOCAL. PUBLIC RECORD IS APPROVED SEPARATELY.</p>'+
       '</div>';
     const participationCopy={
-      en:{open:"PARTICIPATION / THE RECORD IS OPEN",title:"LEAVE SOMETHING BEHIND.",intro:"Post a comment, fan theory, finding, mention or media. Submissions are reviewed before anything enters the public record.",notice:"YOU NOTICE",send:"YOU SEND",review:"WE REVIEW",observe:"OBSERVE",contribute:"CONTRIBUTE",record:"RECORD",noticeText:"Something catches your eye, ear or memory.",sendText:"Leave a theory, finding, mention, comment or media.",reviewText:"Approved material can enter the public record and create new connections.",submission:"SUBMISSION TYPE",name:"NAME / ALIAS",location:"LOCATION / CONTEXT",contribution:"YOUR CONTRIBUTION",upload:"UPLOAD PHOTO / VIDEO / AUDIO",placeholderName:"ANONYMOUS",placeholderOptional:"OPTIONAL",placeholderBody:"What did you see, hear, find or think?",submit:"SUBMIT TO THE GLASS EYE",approved:"APPROVED PUBLIC CONTRIBUTIONS",loading:"LOADING…",received:"RECEIVED. HELD FOR REVIEW — NOT CANON.",failed:"SUBMISSION FAILED.",none:"NO APPROVED CONTRIBUTIONS YET.",openMedia:"OPEN APPROVED MEDIA ↗"},
-      fr:{open:"PARTICIPATION / LE REGISTRE EST OUVERT",title:"LAISSEZ QUELQUE CHOSE DERRIÈRE.",intro:"Publiez un commentaire, une théorie, une découverte, une mention ou un média. Les envois sont révisés avant toute entrée dans le registre public.",notice:"VOUS REMARQUEZ",send:"VOUS ENVOYEZ",review:"NOUS RÉVISONS",observe:"OBSERVER",contribute:"CONTRIBUER",record:"INSCRIRE",noticeText:"Quelque chose attire votre œil, votre oreille ou votre mémoire.",sendText:"Laissez une théorie, une découverte, une mention, un commentaire ou un média.",reviewText:"Le contenu approuvé peut entrer dans le registre public et créer de nouvelles connexions.",submission:"TYPE D’ENVOI",name:"NOM / ALIAS",location:"LIEU / CONTEXTE",contribution:"VOTRE CONTRIBUTION",upload:"TÉLÉVERSER PHOTO / VIDÉO / AUDIO",placeholderName:"ANONYME",placeholderOptional:"OPTIONNEL",placeholderBody:"Qu’avez-vous vu, entendu, trouvé ou pensé ?",submit:"ENVOYER AU GLASS EYE",approved:"CONTRIBUTIONS PUBLIQUES APPROUVÉES",loading:"CHARGEMENT…",received:"REÇU. EN ATTENTE DE RÉVISION — NON CANONIQUE.",failed:"ÉCHEC DE L’ENVOI.",none:"AUCUNE CONTRIBUTION APPROUVÉE POUR L’INSTANT.",openMedia:"OUVRIR LE MÉDIA APPROUVÉ ↗"},
-      es:{open:"PARTICIPACIÓN / EL REGISTRO ESTÁ ABIERTO",title:"DEJA ALGO ATRÁS.",intro:"Publica un comentario, teoría, hallazgo, mención o contenido multimedia. Todo envío se revisa antes de entrar al registro público.",notice:"TÚ NOTAS",send:"TÚ ENVÍAS",review:"NOSOTROS REVISAMOS",observe:"OBSERVAR",contribute:"CONTRIBUIR",record:"REGISTRAR",noticeText:"Algo llama tu atención, oído o memoria.",sendText:"Deja una teoría, hallazgo, mención, comentario o contenido multimedia.",reviewText:"El material aprobado puede entrar al registro público y crear nuevas conexiones.",submission:"TIPO DE ENVÍO",name:"NOMBRE / ALIAS",location:"LUGAR / CONTEXTO",contribution:"TU CONTRIBUCIÓN",upload:"SUBIR FOTO / VIDEO / AUDIO",placeholderName:"ANÓNIMO",placeholderOptional:"OPCIONAL",placeholderBody:"¿Qué viste, escuchaste, encontraste o pensaste?",submit:"ENVIAR AL GLASS EYE",approved:"CONTRIBUCIONES PÚBLICAS APROBADAS",loading:"CARGANDO…",received:"RECIBIDO. EN REVISIÓN — NO ES CANON.",failed:"ENVÍO FALLIDO.",none:"AÚN NO HAY CONTRIBUCIONES APROBADAS.",openMedia:"ABRIR MEDIO APROBADO ↗"}
-    }[language]||null;
+      open:"PARTICIPATION / THE RECORD IS OPEN",title:"LEAVE SOMETHING BEHIND.",intro:"Post a comment, fan theory, finding, mention or media. Submissions are reviewed before anything enters the public record.",notice:"YOU NOTICE",send:"YOU SEND",review:"WE REVIEW",observe:"OBSERVE",contribute:"CONTRIBUTE",record:"RECORD",noticeText:"Something catches your eye, ear or memory.",sendText:"Leave a theory, finding, mention, comment or media.",reviewText:"Approved material can enter the public record and create new connections.",submission:"SUBMISSION TYPE",name:"NAME / ALIAS",location:"LOCATION / CONTEXT",contribution:"YOUR CONTRIBUTION",upload:"UPLOAD PHOTO / VIDEO / AUDIO",placeholderName:"ANONYMOUS",placeholderOptional:"OPTIONAL",placeholderBody:"What did you see, hear, find or think?",submit:"SUBMIT TO THE GLASS EYE",approved:"APPROVED PUBLIC CONTRIBUTIONS",loading:"LOADING…",received:"RECEIVED. HELD FOR REVIEW — NOT CANON.",failed:"SUBMISSION FAILED.",none:"NO APPROVED CONTRIBUTIONS YET.",openMedia:"OPEN APPROVED MEDIA ↗"
+    };
     const p=participationCopy||{};
     container.insertAdjacentHTML("beforeend",
       '<section class="glass-participation" aria-labelledby="glass-participation-title">'+
@@ -1180,11 +1198,40 @@ function renderClothing(){
       }).join("") :'<span class="inspector-note">'+esc(p.none)+'</span>';
     }
     loadApproved();
-    container.querySelectorAll("[data-glass-language]").forEach(button=>button.addEventListener("click",()=>{
-      ESCIE_RUNTIME.glassLanguage=button.getAttribute("data-glass-language")||"en";
-      renderGlassEye();
-    }));
+
     const response=container.querySelector(".glass-eye-response");
+    let hearRequested=false;
+    const previousBridge=ESCIE_RUNTIME.glassEyeAudioBridge;
+    if(previousBridge&&previousBridge.handler)window.removeEventListener("message",previousBridge.handler);
+    if(videoURL){
+      const iframe=container.querySelector(".glass-video-frame iframe");
+      const handler=function(event){
+        if(event.origin!=="https://www.youtube-nocookie.com"||!event.data||typeof event.data!=="string")return;
+        let payload=null;
+        try{payload=JSON.parse(event.data);}catch(error){return;}
+        if(!payload||payload.event!=="onStateChange")return;
+        if(Number(payload.info)===1&&hearRequested&&memory&&typeof memory.record==="function"){
+          hearRequested=false;
+          memory.record({type:"LISTENED",target_id:"glass-eye",timestamp:new Date().toISOString(),data:{source:"approved-youtube-playback-start"}});
+          if(response)response.textContent="PLAYBACK STARTED. LISTEN.";
+          renderGlassEye();
+        }
+      };
+      window.addEventListener("message",handler);
+      ESCIE_RUNTIME.glassEyeAudioBridge={handler};
+      const signalListening=function(){
+        try{
+          if(iframe&&iframe.contentWindow){
+            iframe.contentWindow.postMessage(JSON.stringify({event:"listening",id:"glass-eye"}),"https://www.youtube-nocookie.com");
+            iframe.contentWindow.postMessage(JSON.stringify({event:"command",func:"addEventListener",args:["onStateChange"]}),"https://www.youtube-nocookie.com");
+          }
+        }catch(error){}
+      };
+      if(iframe){
+        iframe.addEventListener("load",signalListening,{once:true});
+        window.setTimeout(signalListening,0);
+      }
+    }
     container.querySelectorAll("[data-glass-eye-action]").forEach(button=>button.addEventListener("click",()=>{
       const action=button.getAttribute("data-glass-eye-action");
       if(action==="clear-memory"){if(memory&&typeof memory.clear==="function")memory.clear();renderGlassEye();return;}
@@ -1192,9 +1239,32 @@ function renderClothing(){
         if(item.getAttribute("data-glass-eye-action")!=="clear-memory")item.setAttribute("aria-pressed","false");
       });
       button.setAttribute("aria-pressed","true");
-      const messages={observe:t.local,follow:t.local,return:t.return,info:t.infoMsg};
+      if(action==="hear"){
+        hearRequested=true;
+        const iframe=container.querySelector(".glass-video-frame iframe");
+        if(!iframe||!videoURL){
+          hearRequested=false;
+          if(response)response.textContent="NO APPROVED AUDIO IS AVAILABLE YET.";
+          return;
+        }
+        if(response)response.textContent="STARTING PLAYBACK. LISTEN.";
+        try{
+          iframe.contentWindow.postMessage(JSON.stringify({event:"command",func:"playVideo",args:[]}),"https://www.youtube-nocookie.com");
+        }catch(error){
+          hearRequested=false;
+          if(response)response.textContent="PLAYBACK COULD NOT START.";
+        }
+        return;
+      }
+      const messages={
+        observe:"YOU LOOKED. THAT IS NOW PART OF YOUR PATH.",
+        follow:"YOU CHOSE A THREAD. FOLLOW IT OR LEAVE IT.",
+        return:"YOU LEFT. THE EYE REMEMBERS YOUR SIDE OF THE SCREEN.",
+        info:t.infoMsg
+      };
       if(response)response.textContent=messages[action]||t.local;
-      if(action!=="info"&&memory&&typeof memory.record==="function")memory.record({type:"GLASS_EYE_"+String(action||"").toUpperCase(),target_id:"glass-eye",timestamp:new Date().toISOString()});
+      const eventType={observe:"OBSERVED",follow:"CONNECTED",return:"RETURNED"}[action]||null;
+      if(eventType&&memory&&typeof memory.record==="function")memory.record({type:eventType,target_id:"glass-eye",timestamp:new Date().toISOString()});
       if(action==="return"){
         const world=byId("world"),trigger=world&&world.querySelector(".section-drop-trigger");
         if(trigger&&!world.classList.contains("section-open"))trigger.click();
