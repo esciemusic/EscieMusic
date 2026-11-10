@@ -67,5 +67,5 @@ test("Glass Eye HEAR advances only from an actual approved playback start, never
   assert.match(games,/LISTENED/);
   assert.match(games,/HEAR:"LISTENED"/);
   assert.match(video,/url:""/);
-  assert.doesNotMatch(app,/memory\\.record\\(\\{type:"HEARD",target_id:"glass-eye"/);
+  assert.doesNotMatch(app, /memory\\.record\\(\\{type:"HEARD",target_id:"glass-eye"/);
 });
