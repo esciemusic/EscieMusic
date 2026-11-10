@@ -32,10 +32,11 @@
     const centralApproved={id:"__central-approved__",type:"music",status:"active",published:true,visibility:"public",release_state:"APPROVED"};
     const centralReleased={id:"__central-released__",type:"music",status:"active",published:true,visibility:"public",release_state:"RELEASED"};
     const relationship={id:"__test-contains__",from:project.id,type:"contains",to:track.id,status:"active",confidence:"verified",canonical_status:"canonical",visibility:"public",public_disclosure:true};
+    const lockedRelationship={id:"__test-private-endpoint__",from:project.id,type:"contains",to:locked.id,status:"active",confidence:"verified",canonical_status:"provisional",visibility:"public",public_disclosure:true};
 
     runtime.projects=[project];
     runtime.music=[track,locked];
-    runtime.relationships=[relationship];
+    runtime.relationships=[relationship,lockedRelationship];
     window.ESCIE_GAMES.push({
       id:"__test-game__",type:"game",title:"TEST GAME",status:"active",published:true,visibility:"public",release_status:"released"
     });
