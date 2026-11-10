@@ -8,6 +8,7 @@ const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
 const failures = [];
 const checks = [];
+const textResponses = new Map();
 const check = (ok, msg) => {
   checks.push({ ok: Boolean(ok), message: msg });
   if (!ok) failures.push(msg);
