@@ -64,11 +64,13 @@ def stroke(p, pts, width=34):
         p.lineTo((b[0]-nx*w,b[1]-ny*w))
         p.lineTo((a[0]-nx*w,a[1]-ny*w))
         p.closePath()
-    r=width*0.46
-    round_cap(p,*pts[0],r)
-    round_cap(p,*pts[-1],r)
+    # Round joins at every sampled point keep the continuous stroke closed
+    # at tight handwriting turns and prevent raster gaps that read as damage.
+    r=width*0.50
+    for pt in pts:
+        round_cap(p,*pt,r)
 
-def smooth(points,steps=8):
+def smooth(points,steps=12):
     if len(points)<3:return points
     q=[points[0]]+points+[points[-1]]
     out=[]
