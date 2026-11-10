@@ -64,7 +64,12 @@ def smooth(points,steps=8):
     return out
 def script_glyph(ch):
     p=TTGlyphPen(None)
-    stroke(p,smooth(LOWER[ch]),42)
+    weights={"a":38,"e":40,"g":44,"m":39,"n":40,"r":37,"s":43,"t":39,"u":40,"w":38,"y":42}
+    offsets={"a":-6,"e":4,"g":-4,"m":3,"n":-2,"r":5,"s":-3,"t":2,"u":-4,"w":2,"y":-2}
+    pts=smooth(LOWER[ch])
+    dx=offsets.get(ch,0)
+    pts=[(x+dx,y) for x,y in pts]
+    stroke(p,pts,weights.get(ch,42))
     if ch=="i":
         rect(p,188,430,34,34)
     elif ch=="j":
@@ -73,6 +78,10 @@ def script_glyph(ch):
         stroke(p,[(165,360),(350,360)],28)
     elif ch=="f":
         stroke(p,[(185,330),(330,330)],26)
+    elif ch=="e":
+        stroke(p,[(175,285),(330,285)],18)
+    elif ch=="t":
+        stroke(p,[(175,360),(350,360)],22)
     return p.glyph()
 
 def rect(p, x, y, w, h):
