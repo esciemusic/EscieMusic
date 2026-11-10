@@ -720,7 +720,9 @@
       const status=String(relationship.status||"UNKNOWN").toUpperCase();
       const confidence=String(relationship.confidence||"UNKNOWN").toUpperCase();
       const reason=relationship.description||"THE RECORD CONNECTS THESE TWO POINTS. THE REASON REMAINS OPEN.";
-      const evidence=Array.isArray(relationship.evidence)?relationship.evidence:[];
+      // Public THE WEB receives a sanitized relationship projection only.
+      // Do not reconstruct internal evidence/source/history in the renderer.
+      const evidence=[];
       const statusClass=status.toLowerCase().replace(/[^a-z0-9]+/g,"-");
       const hasEvidence=evidence.length>0;
       return '<article class="web-connection web-status-'+statusClass+(hasEvidence?" web-has-evidence":" web-no-evidence")+'" data-relationship-id="'+escapeHTML(relationship.id||("connection-"+index))+'">'+
