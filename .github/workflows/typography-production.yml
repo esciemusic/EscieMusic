@@ -1,0 +1,40 @@
+name: ESCIE Production Font Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/escie-font-letterforms
+    paths:
+      - "fonts/**"
+      - ".github/workflows/typography-production.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "fonts/**"
+      - ".github/workflows/typography-production.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install fontTools and Pillow
+        run: python -m pip install fonttools pillow
+      - name: Build release binaries
+        run: python fonts/build-production-fonts.py
+      - name: Validate release binaries
+        run: python fonts/validate-production-fonts.py
+      - name: Render release specimens
+        run: python fonts/production-specimen.py
+      - name: Upload release candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: escie-production-font-candidates
+          path: |
+            fonts/release-candidate/
+            fonts/release-candidate-specimens/
