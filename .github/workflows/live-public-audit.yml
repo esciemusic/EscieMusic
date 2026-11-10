@@ -48,3 +48,5 @@ jobs:
           path: artifacts/
           if-no-files-found: error
           retention-days: 14
+
+# Audit workflow dispatch alignment: preserve the deployed-revision live gate.
