@@ -36,6 +36,7 @@ jobs:
           - system.node.test.js
           - world-engine.node.test.js
           - integration-contract.node.test.js
+          - glass-eye-pass-1.node.test.js
           - unified-entity-contract.node.test.js
     runs-on: ubuntu-latest
     name: Contract · ${{ matrix.test }}
