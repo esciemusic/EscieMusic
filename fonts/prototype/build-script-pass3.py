@@ -38,15 +38,35 @@ LOWER = {
 "z":[(110,370),(350,370),(125,100),(365,100)]
 }
 
+def round_cap(p, x, y, r):
+    pts=[]
+    for i in range(12):
+        a=2*math.pi*i/12
+        pts.append((x+math.cos(a)*r,y+math.sin(a)*r))
+    p.moveTo(pts[0])
+    for pt in pts[1:]: p.lineTo(pt)
+    p.closePath()
+
 def stroke(p, pts, width=34):
-    for a,b in zip(pts,pts[1:]):
+    # Soft, slightly variable pressure keeps the hand human rather than
+    # making every segment look mechanically extruded.
+    if len(pts) < 2:
+        return
+    n=len(pts)
+    for i,(a,b) in enumerate(zip(pts,pts[1:])):
         dx=b[0]-a[0]; dy=b[1]-a[1]; L=max(1,math.hypot(dx,dy))
-        nx=-dy/L; ny=dx/L; w=width/2
+        nx=-dy/L; ny=dx/L
+        phase=i/max(1,n-2)
+        pressure=1.0 + 0.10*math.sin(phase*math.pi) - 0.035*math.cos(phase*2*math.pi)
+        w=(width*pressure)/2
         p.moveTo((a[0]+nx*w,a[1]+ny*w))
         p.lineTo((b[0]+nx*w,b[1]+ny*w))
         p.lineTo((b[0]-nx*w,b[1]-ny*w))
         p.lineTo((a[0]-nx*w,a[1]-ny*w))
         p.closePath()
+    r=width*0.46
+    round_cap(p,*pts[0],r)
+    round_cap(p,*pts[-1],r)
 
 def smooth(points,steps=8):
     if len(points)<3:return points
@@ -69,7 +89,15 @@ def script_glyph(ch):
     pts=smooth(LOWER[ch])
     dx=offsets.get(ch,0)
     pts=[(x+dx,y) for x,y in pts]
+
+    # A small entry/exit motion gives the lowercase alphabet a continuous
+    # handwriting gesture without turning it into a decorative script font.
+    entry=22 + (ord(ch) % 5)*4
+    exit_tail=26 + (ord(ch) % 4)*5
+    if ch not in {"i","j","l"}:
+        pts=[(80,245),(105,255)] + pts + [(pts[-1][0]+exit_tail,pts[-1][1]+8)]
     stroke(p,pts,weights.get(ch,42))
+
     if ch=="i":
         rect(p,188,430,34,34)
     elif ch=="j":
