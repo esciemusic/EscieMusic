@@ -64,8 +64,37 @@ def script_glyph(ch):
     stroke(p,smooth(LOWER[ch]),36)
     return p.glyph()
 
+def rect(p, x, y, w, h):
+    p.moveTo(x,y); p.lineTo(x+w,y); p.lineTo(x+w,y+h); p.lineTo(x,y+h); p.closePath()
+
+def simple_symbol(ch):
+    p=TTGlyphPen(None)
+    strokes={
+        "0":[(120,120),(120,620),(230,700),(350,620),(350,120),(230,50),(120,120)],
+        "1":[(235,90),(235,680),(145,560)],
+        "2":[(120,560),(180,680),(320,680),(380,560),(120,100),(390,100)],
+        "3":[(130,650),(340,650),(380,540),(260,390),(360,300),(340,120),(140,120)],
+        "4":[(330,90),(330,680),(120,300),(390,300)],
+        "5":[(370,670),(150,670),(130,390),(330,390),(380,270),(330,100),(140,100)],
+        "6":[(350,620),(260,690),(140,560),(130,220),(240,90),(350,180),(330,350),(150,350)],
+        "7":[(120,670),(390,670),(210,90)],
+        "8":[(220,390),(120,560),(180,680),(320,680),(380,560),(280,390),(380,250),(320,100),(180,100),(120,250),(220,390)],
+        "9":[(350,90),(370,520),(280,670),(150,620),(140,450),(260,350),(370,450)],
+        ".":[(220,70),(280,70)], ",":[(220,90),(280,90),(250,25)], "-":[(130,360),(370,360)],
+        "_":[(100,70),(400,70)], "/":[(140,80),(360,680)], ":":[(220,480),(280,480),(220,120),(280,120)],
+        ";":[(220,480),(280,480),(245,100),(280,70)], "!":[(250,170),(250,680),(250,70)],
+        "?":[(140,560),(200,670),(330,650),(380,540),(300,440),(250,350),(250,180),(250,70)],
+        "'":[(250,620),(250,700)], '"':[ (210,620),(210,700),(290,620),(290,700)],
+        "(":[(300,680),(210,580),(180,390),(210,200),(300,90)],
+        ")":[(200,680),(290,580),(320,390),(290,200),(200,90)],
+        "&":[(350,560),(280,680),(170,620),(150,500),(330,170),(280,80),(170,120),(140,260),(190,350),(360,90)]
+    }
+    pts=strokes.get(ch,[])
+    if pts: stroke(p,smooth(pts),30)
+    return p.glyph()
+
 def build(path):
-    order=[".notdef","space"]+list(string.ascii_lowercase)+list(string.ascii_uppercase)
+    order=[".notdef","space"]+list(string.ascii_lowercase)+list(string.ascii_uppercase)+list(string.digits)+list(".,!?'-/:;()&")
     glyphs={}; metrics={}; cmap={}
     p=TTGlyphPen(None)
     p.moveTo(70,0); p.lineTo(520,0); p.lineTo(520,760); p.lineTo(70,760); p.closePath()
@@ -75,6 +104,24 @@ def build(path):
         glyphs[ch]=script_glyph(ch); metrics[ch]=(470,0); cmap[ord(ch)]=ch
     for ch in string.ascii_uppercase:
         glyphs[ch]=script_glyph(ch.lower()); metrics[ch]=(500,0); cmap[ord(ch)]=ch
+    for ch in string.digits + ".,!?'-/:;()&":
+        glyphs[ch]=simple_symbol(ch); metrics[ch]=(500,0); cmap[ord(ch)]=ch
+    accents={"é":"e","è":"e","ê":"e","ë":"e","à":"a","â":"a","ä":"a","î":"i","ï":"i","ô":"o","ö":"o","ù":"u","û":"u","ü":"u","ç":"c",
+             "É":"e","È":"e","Ê":"e","Ë":"e","À":"a","Â":"a","Ä":"a","Î":"i","Ï":"i","Ô":"o","Ö":"o","Ù":"u","Û":"u","Ü":"u","Ç":"c"}
+    for ch,base in accents.items():
+        p=TTGlyphPen(None)
+        stroke(p,smooth(LOWER[base]),36)
+        if base != "c":
+            if ch.lower() in "éèàù":
+                rect(p,330,690,34,90)
+            elif ch.lower() in "êâîôû":
+                stroke(p,[(215,705),(250,755),(285,705)],22)
+            elif ch.lower() in "ëäïöü":
+                rect(p,205,720,28,28); rect(p,285,720,28,28)
+        else:
+            rect(p,285,-55,42,65)
+        glyphs[ch]=p.glyph(); metrics[ch]=(470 if ch.islower() else 500,0); cmap[ord(ch)]=ch
+
     fb=FontBuilder(1000,isTTF=True)
     fb.setupGlyphOrder(order); fb.setupGlyf(glyphs); fb.setupHorizontalMetrics(metrics)
     fb.setupHorizontalHeader(ascent=900,descent=-200); fb.setupCharacterMap(cmap)
