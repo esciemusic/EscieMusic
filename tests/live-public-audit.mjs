@@ -167,6 +167,14 @@ const theme = page.locator("#theme-toggle");
 check(await theme.count() === 1, "theme control missing");
 if (await theme.count()) await theme.click();
 
+const openTrigger = page.locator(".section-drop-trigger").first();
+if (await openTrigger.count() && await openTrigger.isVisible().catch(() => false)) {
+  const openSection = openTrigger.locator("xpath=ancestor::section[1]");
+  if (!(await openSection.evaluate(el => el.classList.contains("section-open")).catch(() => false))) {
+    await openTrigger.click();
+    await page.waitForTimeout(80);
+  }
+}
 const symbols = page.locator(".section-motif-item");
 let symbol = null;
 for (let i = 0; i < await symbols.count(); i++) {
