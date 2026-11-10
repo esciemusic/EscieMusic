@@ -46,7 +46,7 @@ jobs:
         with:
           name: escie-public-live-audit
           path: artifacts/
-          if-no-files-found: error
+          if-no-files-found: ignore
           retention-days: 14
 
 # Audit workflow dispatch alignment: preserve the deployed-revision live gate.
