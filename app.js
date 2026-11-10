@@ -1220,6 +1220,18 @@ function renderClothing(){
       };
       window.addEventListener("message",handler);
       ESCIE_RUNTIME.glassEyeAudioBridge={handler};
+      const signalListening=function(){
+        try{
+          if(iframe&&iframe.contentWindow){
+            iframe.contentWindow.postMessage(JSON.stringify({event:"listening",id:"glass-eye"}),"https://www.youtube-nocookie.com");
+            iframe.contentWindow.postMessage(JSON.stringify({event:"command",func:"addEventListener",args:["onStateChange"]}),"https://www.youtube-nocookie.com");
+          }
+        }catch(error){}
+      };
+      if(iframe){
+        iframe.addEventListener("load",signalListening,{once:true});
+        window.setTimeout(signalListening,0);
+      }
     }
     container.querySelectorAll("[data-glass-eye-action]").forEach(button=>button.addEventListener("click",()=>{
       const action=button.getAttribute("data-glass-eye-action");
