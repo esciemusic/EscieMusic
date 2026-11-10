@@ -8,7 +8,6 @@ const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
 const failures = [];
 const checks = [];
-const textResponses = new Map();
 const check = (ok, msg) => {
   checks.push({ ok: Boolean(ok), message: msg });
   if (!ok) failures.push(msg);
@@ -43,24 +42,23 @@ async function scanRenderedBoundary(label) {
   for (const secret of forbidden) {
     check(!html.toLowerCase().includes(secret.toLowerCase()), label + " exposes forbidden material: " + secret);
   }
-  const scripts = await page.locator("script[src]").evaluateAll(nodes =>
-    nodes.map(node => new URL(node.getAttribute("src"), location.href).href)
+  const assets = await page.locator("script[src],link[rel='stylesheet'][href]").evaluateAll(nodes =>
+    nodes.map(node => new URL(node.getAttribute("src") || node.getAttribute("href"), location.href).href)
   );
-  const assets = await page.evaluate(async urls => {
-    return Promise.all([...new Set(urls)].map(async url => {
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 3000);
-      try {
-        const response = await fetch(url, { cache: "no-store", signal: controller.signal });
-        return { url, status: response.status, text: response.ok ? await response.text() : "" };
-      } catch (error) {
-        return { url, status: 0, text: "", error: String(error) };
-      } finally {
-        clearTimeout(timer);
-      }
-    }));
-  }, scripts);
-  for (const asset of assets) {
+  const loadedAssets = await page.evaluate(async urls => Promise.all([...new Set(urls)].map(async url => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 3000);
+    try {
+      const response = await fetch(url, { cache: "no-store", signal: controller.signal });
+      return { url, status: response.status, text: response.ok ? await response.text() : "" };
+    } catch (error) {
+      return { url, status: 0, text: "", error: String(error) };
+    } finally {
+      clearTimeout(timer);
+    }
+  })), assets);
+
+  for (const asset of loadedAssets) {
     check(asset.status >= 200 && asset.status < 400, label + " loaded script failed: " + asset.status + " (" + asset.url + ")");
     for (const secret of forbidden) {
       check(!asset.text.toLowerCase().includes(secret.toLowerCase()), label + " loaded asset exposes forbidden material: " + secret + " (" + asset.url + ")");
