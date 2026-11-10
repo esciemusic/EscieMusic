@@ -9,6 +9,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: escie-live-public-audit
+  cancel-in-progress: false
+
 jobs:
   live-audit:
     timeout-minutes: 10
