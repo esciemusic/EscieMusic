@@ -13,7 +13,7 @@ Glass Eye is the audience eye of ESCIE: the visitor sees through the screen rath
 
 ## System boundaries
 ### Viewer state
-Local, private, non-canonical state. May contain language, theme, local path, viewed items, dismissed prompts and temporary participation draft.
+Local, private, non-canonical state. It may contain the visitor's local path, viewed items, dismissed prompts and temporary participation draft. Site-wide language selection belongs to the main ESCIE site, not Glass Eye.
 
 ### Canonical ESCIE content
 Artist-approved public material only. Never created automatically from viewer activity.
@@ -33,9 +33,10 @@ Glass Eye can return directly to THE WORLD and must not require the game, shop o
 - memory — local viewer memory boundary
 - participation — submissions and review states
 - connections — visitor-facing relationships between public material
-- i18n — EN / FR / ES
 - accessibility — keyboard, touch, reduced motion, focus and labels
 - visual — Glass Eye presentation only
+
+Glass Eye does not maintain a separate language system or language toggle. The main ESCIE site language control already governs the public experience.
 
 ## What Glass Eye is not
 - not a public evidence dashboard
