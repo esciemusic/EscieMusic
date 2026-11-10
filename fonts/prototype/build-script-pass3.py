@@ -94,7 +94,7 @@ def simple_symbol(ch):
     return p.glyph()
 
 def build(path):
-    order=[".notdef","space"]+list(string.ascii_lowercase)+list(string.ascii_uppercase)+list(string.digits)+list(".,!?'-/:;()&")
+    order=[".notdef","space"]+list(string.ascii_lowercase)+list(string.ascii_uppercase)+list(string.digits)+list(".,!?'-/:;()&")+list("éèêëàâäîïôöùûüçÉÈÊËÀÂÄÎÏÔÖÙÛÜÇ")
     glyphs={}; metrics={}; cmap={}
     p=TTGlyphPen(None)
     p.moveTo((70,0)); p.lineTo((520,0)); p.lineTo((520,760)); p.lineTo((70,760)); p.closePath()
