@@ -36,9 +36,6 @@ page.on("response", response => {
   if (!["document", "script", "stylesheet", "xhr", "fetch"].includes(type)) return;
   if (!response.url().startsWith(sameOrigin)) return;
   if (response.status() >= 400) failures.push("same-origin " + type + " request failed: " + response.status() + " " + response.url());
-  if (["document", "script", "xhr", "fetch"].includes(type)) {
-    textResponses.set(response.url(), response);
-  }
 });
 
 async function scanRenderedBoundary(label) {
