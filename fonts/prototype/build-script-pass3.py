@@ -57,7 +57,7 @@ def stroke(p, pts, width=34):
         dx=b[0]-a[0]; dy=b[1]-a[1]; L=max(1,math.hypot(dx,dy))
         nx=-dy/L; ny=dx/L
         phase=i/max(1,n-2)
-        pressure=1.0 + 0.10*math.sin(phase*math.pi) - 0.035*math.cos(phase*2*math.pi)
+        pressure=1.0 + 0.055*math.sin(phase*math.pi) - 0.015*math.cos(phase*2*math.pi)
         w=(width*pressure)/2
         p.moveTo((a[0]+nx*w,a[1]+ny*w))
         p.lineTo((b[0]+nx*w,b[1]+ny*w))
@@ -84,7 +84,7 @@ def smooth(points,steps=8):
     return out
 def script_glyph(ch):
     p=TTGlyphPen(None)
-    weights={"a":78,"e":80,"g":84,"m":79,"n":80,"r":77,"s":83,"t":79,"u":80,"w":78,"y":82}
+    weights={"a":62,"e":64,"g":68,"m":63,"n":64,"r":61,"s":67,"t":63,"u":64,"w":62,"y":66}
     offsets={"a":-6,"e":4,"g":-4,"m":3,"n":-2,"r":5,"s":-3,"t":2,"u":-4,"w":2,"y":-2}
     pts=smooth(LOWER[ch])
     dx=offsets.get(ch,0)
@@ -92,20 +92,20 @@ def script_glyph(ch):
 
     # Keep the skeleton clean. Human character comes from curve, pressure,
     # and slight letter-specific rhythm — not artificial spikes or tails.
-    stroke(p,pts,weights.get(ch,72))
+    stroke(p,pts,weights.get(ch,58))
 
     if ch=="i":
         rect(p,188,430,34,34)
     elif ch=="j":
         rect(p,188,430,34,34)
     elif ch=="t":
-        stroke(p,[(165,360),(350,360)],28)
+        stroke(p,[(165,360),(350,360)],20)
     elif ch=="f":
-        stroke(p,[(185,330),(330,330)],26)
+        stroke(p,[(185,330),(330,330)],19)
     elif ch=="e":
-        stroke(p,[(175,285),(330,285)],18)
+        stroke(p,[(175,285),(330,285)],15)
     elif ch=="t":
-        stroke(p,[(175,360),(350,360)],22)
+        stroke(p,[(175,360),(350,360)],18)
     return p.glyph()
 
 def rect(p, x, y, w, h):
@@ -157,7 +157,7 @@ def build(path):
              "É":"e","È":"e","Ê":"e","Ë":"e","À":"a","Â":"a","Ä":"a","Î":"i","Ï":"i","Ô":"o","Ö":"o","Ù":"u","Û":"u","Ü":"u","Ç":"c"}
     for ch,base in accents.items():
         p=TTGlyphPen(None)
-        stroke(p,smooth(LOWER[base]),36)
+        stroke(p,smooth(LOWER[base]),30)
         if base != "c":
             if ch.lower() in "éèàù":
                 rect(p,330,690,34,90)
