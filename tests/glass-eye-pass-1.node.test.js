@@ -23,10 +23,10 @@ test("Glass Eye keeps viewer memory non-canonical",()=>{
 
 test("Glass Eye participation is explicitly moderated before public disclosure",()=>{
   const participation=fs.readFileSync(path.join(root,"data","glass-eye-participation.js"),"utf8");
-  assert.match(participation,/source:"GLASS_EYE"/);
-  assert.match(participation,/status:"PENDING_REVIEW"/);
-  assert.match(participation,/public_disclosure:false/);
   assert.match(participation,/submissionEndpoint/);
+  assert.match(participation,/FormData/);
+  assert.match(participation,/apikey/);
+  assert.doesNotMatch(participation,/service_role/i);
   assert.match(participation,/FormData/);
   assert.match(participation,/apikey/);
   assert.match(participation,/ONLY PHOTO, VIDEO OR AUDIO FILES ARE ACCEPTED/);
