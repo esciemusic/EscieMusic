@@ -77,10 +77,6 @@ def stroke(p, pts, width=34):
         p.lineTo(pt)
     p.closePath()
 
-    # Soft endpoint caps only; joins remain part of the continuous outline.
-    r=width*0.50
-    round_cap(p,*pts[0],r)
-    round_cap(p,*pts[-1],r)
 
 def smooth(points,steps=12):
     if len(points)<3:return points
