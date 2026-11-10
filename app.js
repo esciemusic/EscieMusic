@@ -54,7 +54,7 @@
         else if (parsed.pathname.startsWith("/shorts/")) id = parsed.pathname.split("/")[2] || "";
       }
       if (!/^[A-Za-z0-9_-]{11}$/.test(id)) return "";
-      return "https://www.youtube-nocookie.com/embed/" + id + "?rel=0&modestbranding=1";
+      return "https://www.youtube-nocookie.com/embed/" + id + "?rel=0&modestbranding=1&enablejsapi=1&origin=" + encodeURIComponent(window.location.origin);
     } catch (error) { return ""; }
   }
 
@@ -1074,11 +1074,12 @@ function renderClothing(){
     const lastSignal=journeyState.last_signal||null;
     const recent=path.slice(-6).reverse();
     const observed=Array.isArray(state.observed)?state.observed.length>0:false;
+    const listened=Array.isArray(state.listened)?state.listened.length>0:false;
     const heard=Array.isArray(state.heard)?state.heard.length>0:false;
     const followed=Array.isArray(state.connections)?state.connections.length>0:false;
     const missed=Array.isArray(state.missed)?state.missed.length>0:false;
     const returned=path.some(event=>event&&String(event.type||"").toUpperCase()==="RETURNED");
-    const stage=returned?"return":missed?"miss":followed?"follow":heard?"hear":observed?"hear":"see";
+    const stage=returned?"return":missed?"miss":followed?"follow":(heard||listened)?"hear":observed?"hear":"see";
     const stageIndex={see:0,hear:1,follow:2,miss:3,return:4}[stage];
     const esc=v=>escapeHTML(v==null?"":v);
     const t={
@@ -1121,6 +1122,7 @@ function renderClothing(){
         '<p class="glass-eye-body">'+esc(t.body)+'</p>'+
         '<div class="glass-eye-actions" role="group" aria-label="Glass Eye actions">'+
           '<button type="button" data-glass-eye-action="observe" aria-pressed="false">'+esc(t.see)+'</button>'+
+          '<button type="button" data-glass-eye-action="hear" aria-pressed="false"'+(videoURL?'':' disabled')+'>'+esc(videoURL?"HEAR THE SIGNAL":"HEAR / AWAITING APPROVED MEDIA")+'</button>'+
           '<button type="button" data-glass-eye-action="follow" aria-pressed="false">'+esc(t.follow)+'</button>'+
           '<button type="button" data-glass-eye-action="return" aria-pressed="false">'+esc(t.return)+'</button>'+
           '<button type="button" class="glass-info-action" data-glass-eye-action="info" aria-pressed="false" aria-label="Glass Eye information">'+esc(t.info)+'</button>'+
@@ -1199,6 +1201,26 @@ function renderClothing(){
       renderGlassEye();
     }));
     const response=container.querySelector(".glass-eye-response");
+    let hearRequested=false;
+    const previousBridge=ESCIE_RUNTIME.glassEyeAudioBridge;
+    if(previousBridge&&previousBridge.handler)window.removeEventListener("message",previousBridge.handler);
+    if(videoURL){
+      const iframe=container.querySelector(".glass-video-frame iframe");
+      const handler=function(event){
+        if(event.origin!=="https://www.youtube-nocookie.com"||!event.data||typeof event.data!=="string")return;
+        let payload=null;
+        try{payload=JSON.parse(event.data);}catch(error){return;}
+        if(!payload||payload.event!=="onStateChange")return;
+        if(Number(payload.info)===1&&hearRequested&&memory&&typeof memory.record==="function"){
+          hearRequested=false;
+          memory.record({type:"LISTENED",target_id:"glass-eye",timestamp:new Date().toISOString(),data:{source:"approved-youtube-playback-start"}});
+          if(response)response.textContent="PLAYBACK STARTED. LISTEN.";
+          renderGlassEye();
+        }
+      };
+      window.addEventListener("message",handler);
+      ESCIE_RUNTIME.glassEyeAudioBridge={handler};
+    }
     container.querySelectorAll("[data-glass-eye-action]").forEach(button=>button.addEventListener("click",()=>{
       const action=button.getAttribute("data-glass-eye-action");
       if(action==="clear-memory"){if(memory&&typeof memory.clear==="function")memory.clear();renderGlassEye();return;}
@@ -1206,6 +1228,23 @@ function renderClothing(){
         if(item.getAttribute("data-glass-eye-action")!=="clear-memory")item.setAttribute("aria-pressed","false");
       });
       button.setAttribute("aria-pressed","true");
+      if(action==="hear"){
+        hearRequested=true;
+        const iframe=container.querySelector(".glass-video-frame iframe");
+        if(!iframe||!videoURL){
+          hearRequested=false;
+          if(response)response.textContent="NO APPROVED AUDIO IS AVAILABLE YET.";
+          return;
+        }
+        if(response)response.textContent="STARTING PLAYBACK. LISTEN.";
+        try{
+          iframe.contentWindow.postMessage(JSON.stringify({event:"command",func:"playVideo",args:[]}),"https://www.youtube-nocookie.com");
+        }catch(error){
+          hearRequested=false;
+          if(response)response.textContent="PLAYBACK COULD NOT START.";
+        }
+        return;
+      }
       const messages={
         observe:"YOU LOOKED. THAT IS NOW PART OF YOUR PATH.",
         follow:"YOU CHOSE A THREAD. FOLLOW IT OR LEAVE IT.",
