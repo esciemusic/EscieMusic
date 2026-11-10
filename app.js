@@ -1198,8 +1198,8 @@ function renderClothing(){
       }).join("") :'<span class="inspector-note">'+esc(p.none)+'</span>';
     }
     loadApproved();
-      renderGlassEye();
-    }));
+  }
+
     const response=container.querySelector(".glass-eye-response");
     let hearRequested=false;
     const previousBridge=ESCIE_RUNTIME.glassEyeAudioBridge;
