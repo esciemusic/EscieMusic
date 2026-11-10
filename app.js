@@ -1545,6 +1545,12 @@ function renderClothing(){
     });
 
     document.addEventListener("click", event => {
+      const webConnection=event.target.closest("[data-web-connection-toggle]");
+      if(webConnection){
+        const detail=webConnection.parentElement&&webConnection.parentElement.querySelector(".web-connection-detail");
+        if(detail){const open=detail.hidden===false;detail.hidden=open;webConnection.setAttribute("aria-expanded",open?"false":"true");}
+        return;
+      }
       const webParticipate=event.target.closest("[data-web-participate]");
       if(webParticipate){
         const glass=byId("glass-eye"),button=glass&&glass.querySelector(".section-drop-trigger");
