@@ -23,7 +23,7 @@
 
   const ESCIE_RELATIONSHIP = {
 
-    VERSION: "1.0.0",
+    VERSION: "1.1.0",
 
     /*
      * ---------------------------------------------------------
@@ -700,7 +700,9 @@
           relationship.type
         );
 
-      if (!inverseType) {
+      // An inverse is a view only. Never manufacture a relationship
+      // type that is outside the canonical vocabulary.
+      if (!inverseType || !this.isType(inverseType)) {
         return null;
       }
 
