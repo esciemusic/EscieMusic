@@ -720,9 +720,9 @@
       const status=String(relationship.status||"UNKNOWN").toUpperCase();
       const confidence=String(relationship.confidence||"UNKNOWN").toUpperCase();
       const reason=relationship.description||"THE RECORD CONNECTS THESE TWO POINTS. THE REASON REMAINS OPEN.";
+      const evidence=Array.isArray(relationship.evidence)?relationship.evidence:[];
       const statusClass=status.toLowerCase().replace(/[^a-z0-9]+/g,"-");
       const hasEvidence=evidence.length>0;
-      const evidence=Array.isArray(relationship.evidence)?relationship.evidence:[];
       return '<article class="web-connection web-status-'+statusClass+(hasEvidence?" web-has-evidence":" web-no-evidence")+'" data-relationship-id="'+escapeHTML(relationship.id||("connection-"+index))+'">'+
         '<button type="button" class="web-connection-main" data-web-connection-toggle aria-expanded="false">'+
           '<span class="web-node"><strong>'+escapeHTML(recordTitle(from))+'</strong><em>'+escapeHTML(from.type||"record")+'</em></span>'+
