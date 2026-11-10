@@ -60,7 +60,7 @@ test("Glass Eye HEAR advances only from an actual approved playback start, never
   const games=fs.readFileSync(path.join(root,"data","games.js"),"utf8");
   const video=fs.readFileSync(path.join(root,"data","glass-eye-video.js"),"utf8");
   assert.match(app,/data-glass-eye-action="hear"/);
-  assert.match(app,/PLAYBACK STARTED\\. LISTEN\\./);
+  assert.match(app,/PLAYBACK STARTED\. LISTEN\./);
   assert.match(app,/playVideo/);
   assert.match(app,/onStateChange/);
   assert.match(app,/LISTENED/);
