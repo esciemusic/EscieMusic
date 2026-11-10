@@ -1198,7 +1198,6 @@ function renderClothing(){
       }).join("") :'<span class="inspector-note">'+esc(p.none)+'</span>';
     }
     loadApproved();
-  }
 
     const response=container.querySelector(".glass-eye-response");
     let hearRequested=false;
