@@ -1116,10 +1116,10 @@ function renderClothing(){
           '<button type="button" data-glass-eye-action="observe" aria-pressed="false">'+esc(t.see)+'</button>'+
           '<button type="button" data-glass-eye-action="follow" aria-pressed="false">'+esc(t.follow)+'</button>'+
           '<button type="button" data-glass-eye-action="return" aria-pressed="false">'+esc(t.return)+'</button>'+
-          '<button type="button" data-glass-eye-action="info" aria-pressed="false">'+esc(t.info)+'</button>'+
+          '<button type="button" class="glass-info-action" data-glass-eye-action="info" aria-pressed="false" aria-label="Glass Eye information">'+esc(t.info)+'</button>'+
         '</div>'+
-        '<p class="glass-eye-response" aria-live="polite">'+esc(t.local)+'</p>'+
-        '<div class="glass-memory-inline">'+
+        '<p class="glass-eye-response" aria-live="polite">'+esc(path.length?"YOU ARE BACK. YOUR PATH IS STILL HERE.":"YOU ARE HERE. NOTHING HAS BEEN DECIDED FOR YOU.")+'</p>'+
+        '<div class="glass-memory-inline glass-memory-personal">'+
           '<div><span>'+esc(t.memory)+'</span><strong>'+esc(t.private)+'</strong></div>'+
           '<div class="glass-path-line"><span>'+esc(t.last)+'</span><em>'+esc(lastSignal||"NONE RECORDED")+'</em></div>'+
           '<div class="glass-path-line"><span>'+esc(t.recent)+'</span><em>'+esc(path.length?(path[path.length-1].type+" / "+(path[path.length-1].target_id||"—")):"NO PATH YET")+'</em></div>'+
@@ -1199,9 +1199,14 @@ function renderClothing(){
         if(item.getAttribute("data-glass-eye-action")!=="clear-memory")item.setAttribute("aria-pressed","false");
       });
       button.setAttribute("aria-pressed","true");
-      const messages={observe:t.local,follow:t.local,return:t.return,info:t.infoMsg};
+      const messages={
+        observe:"YOU LOOKED. THAT IS NOW PART OF YOUR PATH.",
+        follow:"YOU CHOSE A THREAD. FOLLOW IT OR LEAVE IT.",
+        return:"YOU LEFT. THE EYE REMEMBERS YOUR SIDE OF THE SCREEN.",
+        info:t.infoMsg
+      };
       if(response)response.textContent=messages[action]||t.local;
-      if(action!=="info"&&memory&&typeof memory.record==="function")memory.record({type:"GLASS_EYE_"+String(action||"").toUpperCase(),target_id:"glass-eye",timestamp:new Date().toISOString()});
+      if(action!=="info"&&memory&&typeof memory.record==="function")memory.record({type:"GLASS_EYE_"+String(action||"").toUpperCase(),target_id:"visitor-choice",timestamp:new Date().toISOString()});
       if(action==="return"){
         const world=byId("world"),trigger=world&&world.querySelector(".section-drop-trigger");
         if(trigger&&!world.classList.contains("section-open"))trigger.click();
