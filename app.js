@@ -662,9 +662,16 @@
       : normalizeCollection(getRelationships()).filter(relationship=>relationship&&relationship.public_disclosure===true&&relationship.visibility!=="private"&&relationship.visibility!=="withheld");
     const live=normalizeCollection(getGlobal("ESCIE_LIVE_RELATIONSHIPS",[])).map(r=>({
       id:r.id,from:r.from_record_id||r.from,to:r.to_record_id||r.to,type:r.type||"connection",category:r.category||null,
+      status:r.status||"active",confidence:r.confidence||"unknown",canonical_status:r.canonical_status||"unknown",
       public_disclosure:true,visibility:"public"
     }));
-    return base.concat(live).filter(r=>r&&byIdMap.has(r.from)&&byIdMap.has(r.to));
+    const relationshipContract=getGlobal("ESCIE_RELATIONSHIP",null);
+    return base.concat(live).filter(r=>{
+      if(!r||!byIdMap.has(r.from)||!byIdMap.has(r.to)) return false;
+      if(relationshipContract&&typeof relationshipContract.validate==="function"&&!relationshipContract.validate(r).valid) return false;
+      if(relationshipContract&&typeof relationshipContract.canDisclose==="function"&&!relationshipContract.canDisclose(r)) return false;
+      return true;
+    });
   }
 
   function renderWorld(){
