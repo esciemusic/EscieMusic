@@ -1095,13 +1095,16 @@ function renderClothing(){
         '<div class="glass-language" role="group" aria-label="Glass Eye language">'+
           ["en","fr","es"].map(code=>'<button type="button" data-glass-language="'+code+'" class="'+(language===code?"is-active":"")+'">'+code.toUpperCase()+'</button>').join("")+
         '</div>'+
-        '<div class="glass-center">'+
+        '<div class="glass-center glass-center-minimal">'+
           '<span class="glass-dot"></span>'+
           '<strong>'+esc(t.side)+'</strong>'+
           '<span class="glass-core-line">'+esc(t.core)+'</span>'+
-          '<p>'+esc(t.body)+'</p>'+
         '</div>'+
         videoMarkup+
+        '<div class="glass-eye-sequence" aria-label="Glass Eye sequence">'+
+          '<span class="is-active">01 / SEE</span><span>02 / HEAR</span><span>03 / FOLLOW</span><span>04 / MISS</span><span>05 / RETURN</span>'+
+        '</div>'+
+        '<p class="glass-eye-body">'+esc(t.body)+'</p>'+
         '<div class="glass-eye-actions" role="group" aria-label="Glass Eye actions">'+
           '<button type="button" data-glass-eye-action="observe" aria-pressed="false">'+esc(t.see)+'</button>'+
           '<button type="button" data-glass-eye-action="follow" aria-pressed="false">'+esc(t.follow)+'</button>'+
@@ -1117,6 +1120,7 @@ function renderClothing(){
           '<button type="button" class="glass-memory-clear-inline" data-glass-eye-action="clear-memory">'+esc(t.clear)+'</button>'+
         '</div>'+
         '<div class="glass-footer">'+t.footer.map(esc).map(item=>'<span>'+item+'</span>').join("")+'</div>'+
+      '<p class="glass-boundary-note">VIEWER STATE IS LOCAL. PUBLIC RECORD IS APPROVED SEPARATELY.</p>'+
       '</div>';
     const participationCopy={
       en:{open:"PARTICIPATION / THE RECORD IS OPEN",title:"LEAVE SOMETHING BEHIND.",intro:"Post a comment, fan theory, finding, mention or media. Submissions are reviewed before anything enters the public record.",notice:"YOU NOTICE",send:"YOU SEND",review:"WE REVIEW",observe:"OBSERVE",contribute:"CONTRIBUTE",record:"RECORD",noticeText:"Something catches your eye, ear or memory.",sendText:"Leave a theory, finding, mention, comment or media.",reviewText:"Approved material can enter the public record and create new connections.",submission:"SUBMISSION TYPE",name:"NAME / ALIAS",location:"LOCATION / CONTEXT",contribution:"YOUR CONTRIBUTION",upload:"UPLOAD PHOTO / VIDEO / AUDIO",placeholderName:"ANONYMOUS",placeholderOptional:"OPTIONAL",placeholderBody:"What did you see, hear, find or think?",submit:"SUBMIT TO THE GLASS EYE",approved:"APPROVED PUBLIC CONTRIBUTIONS",loading:"LOADING…",received:"RECEIVED. HELD FOR REVIEW — NOT CANON.",failed:"SUBMISSION FAILED.",none:"NO APPROVED CONTRIBUTIONS YET.",openMedia:"OPEN APPROVED MEDIA ↗"},
