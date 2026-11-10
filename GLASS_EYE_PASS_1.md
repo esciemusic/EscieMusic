@@ -21,7 +21,7 @@ The experience belongs to the visitor's journey.
 1. Preserve the audience-eye concept.
 2. Keep the interface sparse and sensory.
 3. Keep local viewer memory separate from ESCIE canon.
-4. Keep EN / FR / ES available.
+4. Let the main ESCIE site language control cover the public experience; do not duplicate it inside Glass Eye.
 5. Keep the return-to-world path immediate.
 6. Keep information optional rather than explanatory.
 7. Never expose Central history as viewer memory.
@@ -78,15 +78,18 @@ A submission is never canon merely because it was sent.
 - Sensory experience comes before explanation.
 - Local memory is explicitly non-canonical.
 - Viewer memory never becomes Central history automatically.
-- EN / FR / ES remain supported.
+- The main site's language control remains sufficient; Glass Eye has no separate language toggle.
 - Return-to-world navigation remains direct.
 - No reality-classification labels appear.
 - No forced puzzle/investigation behavior is introduced.
 - No game or shop dependency is required.
 - The section remains usable when no approved contribution/media exists.
 
-Pass 2 hardening now covers sensory media order, responsive presentation, keyboard/touch interaction, active-control feedback, and the viewer-memory boundary.\n\n## Pass 2 readiness\n\nThe primary video window now accepts only a valid YouTube video URL, converts it to a privacy-enhanced embed, fails closed for non-YouTube hosts/invalid IDs, and remains empty until approved public media is supplied.
+Pass 2 hardening now covers sensory media order, responsive presentation, keyboard/touch interaction, active-control feedback, and the viewer-memory boundary.
 
+## Pass 2 readiness
+
+The primary video window now accepts only a valid YouTube video URL, converts it to a privacy-enhanced embed, fails closed for non-YouTube hosts/invalid IDs, and remains empty until approved public media is supplied.
 
 ## Pass 2 optimization checkpoint
 
