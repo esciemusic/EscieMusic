@@ -657,9 +657,11 @@
   function getPublicRelationshipRecords(filters){
     const registry=getGlobal("ESCIE_RECORD_REGISTRY",null),records=getAllPublicRecords();
     const byIdMap=new Map(records.filter(Boolean).map(record=>[recordId(record),record]));
+    // Fail closed if the canonical registry projection is unavailable.
+    // The public renderer must never fall back to raw relationship data.
     const base=registry&&typeof registry.publicRelationships==="function"
       ? registry.publicRelationships(filters||{})
-      : normalizeCollection(getRelationships()).filter(relationship=>relationship&&relationship.public_disclosure===true&&relationship.visibility!=="private"&&relationship.visibility!=="withheld");
+      : [];
     const live=normalizeCollection(getGlobal("ESCIE_LIVE_RELATIONSHIPS",[])).map(r=>({
       id:r.id,from:r.from_record_id||r.from,to:r.to_record_id||r.to,type:r.type||"connection",category:r.category||null,
       status:r.status||"active",confidence:r.confidence||"unknown",canonical_status:r.canonical_status||"unknown",
