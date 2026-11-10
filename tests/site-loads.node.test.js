@@ -52,7 +52,8 @@ assert(fs.readFileSync("data/universe-contract.js","utf8").includes('version:"1.
 const universeContract=fs.readFileSync("data/universe-contract.js","utf8");
 assert(!universeContract.includes("realityFilter"),"legacy Reality Filter contract must be removed entirely");
 assert(!universeContract.includes("HEART ON MY SLEEVE"),"wardrobe identity must not occupy a primary public section");
-assert(fs.readFileSync("data/glass-eye-participation.js","utf8").includes("approvedEndpoint"),"Glass Eye must use the moderated approved-media endpoint");
+assert(fs.readFileSync("data/glass-eye-participation.js","utf8").includes("submissionEndpoint"),"Glass Eye must use the moderated submission endpoint");
+assert(fs.readFileSync("data/glass-eye-participation.js","utf8").includes("FormData"),"Glass Eye submissions must use the server-side submission bridge");
 assert(fs.readFileSync("data/glass-eye-participation.js","utf8").includes("glass-eye-public"),"Glass Eye approved media must use the public moderation endpoint");
 assert(fs.readFileSync("app.js","utf8").includes("glass-approved-media"),"approved Glass Eye media must render in the public record");
 assert(fs.readFileSync("data/glass-eye-participation.js","utf8").includes("ONLY PHOTO, VIDEO OR AUDIO FILES ARE ACCEPTED"),"Glass Eye media input must enforce supported media types");
