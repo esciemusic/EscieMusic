@@ -48,27 +48,39 @@ def round_cap(p, x, y, r):
     p.closePath()
 
 def stroke(p, pts, width=34):
-    # Soft, slightly variable pressure keeps the hand human rather than
-    # making every segment look mechanically extruded.
+    # Build one continuous closed outline from the smoothed centerline.
+    # A single outline avoids raster seams between segment rectangles while
+    # keeping the handwriting soft, readable, and self-authored.
     if len(pts) < 2:
         return
     n=len(pts)
-    for i,(a,b) in enumerate(zip(pts,pts[1:])):
-        dx=b[0]-a[0]; dy=b[1]-a[1]; L=max(1,math.hypot(dx,dy))
+    left=[]; right=[]
+    for i,(x,y) in enumerate(pts):
+        if i==0:
+            dx=pts[1][0]-x; dy=pts[1][1]-y
+        elif i==n-1:
+            dx=x-pts[i-1][0]; dy=y-pts[i-1][1]
+        else:
+            dx=pts[i+1][0]-pts[i-1][0]; dy=pts[i+1][1]-pts[i-1][1]
+        L=max(1,math.hypot(dx,dy))
         nx=-dy/L; ny=dx/L
-        phase=i/max(1,n-2)
+        phase=i/max(1,n-1)
         pressure=1.0 + 0.055*math.sin(phase*math.pi) - 0.015*math.cos(phase*2*math.pi)
         w=(width*pressure)/2
-        p.moveTo((a[0]+nx*w,a[1]+ny*w))
-        p.lineTo((b[0]+nx*w,b[1]+ny*w))
-        p.lineTo((b[0]-nx*w,b[1]-ny*w))
-        p.lineTo((a[0]-nx*w,a[1]-ny*w))
-        p.closePath()
-    # Round joins at every sampled point keep the continuous stroke closed
-    # at tight handwriting turns and prevent raster gaps that read as damage.
+        left.append((x+nx*w,y+ny*w))
+        right.append((x-nx*w,y-ny*w))
+
+    p.moveTo(left[0])
+    for pt in left[1:]:
+        p.lineTo(pt)
+    for pt in reversed(right):
+        p.lineTo(pt)
+    p.closePath()
+
+    # Soft endpoint caps only; joins remain part of the continuous outline.
     r=width*0.50
-    for pt in pts:
-        round_cap(p,*pt,r)
+    round_cap(p,*pts[0],r)
+    round_cap(p,*pts[-1],r)
 
 def smooth(points,steps=12):
     if len(points)<3:return points
