@@ -170,10 +170,19 @@ if (await theme.count()) await theme.click();
 const symbol = page.locator(".section-motif-item").first();
 check(await symbol.count() > 0, "interactive public symbol missing");
 if (await symbol.count()) {
-  await symbol.click();
-  check(await page.locator("#record-inspector").isVisible().catch(() => false), "symbol did not open inspector");
-  const close = page.locator(".record-inspector-close").first();
-  if (await close.count()) await close.click();
+  const symbolSection = symbol.locator("xpath=ancestor::section[1]");
+  const symbolTrigger = symbolSection.locator(".section-drop-trigger").first();
+  if (await symbolTrigger.count() && !(await symbol.isVisible().catch(() => false))) {
+    await symbolTrigger.click();
+    await page.waitForTimeout(80);
+  }
+  check(await symbol.isVisible().catch(() => false), "interactive public symbol is not visible in its section");
+  if (await symbol.isVisible().catch(() => false)) {
+    await symbol.click();
+    check(await page.locator("#record-inspector").isVisible().catch(() => false), "symbol did not open inspector");
+    const close = page.locator(".record-inspector-close").first();
+    if (await close.count()) await close.click();
+  }
 }
 
 await scanRenderedBoundary("mobile");
