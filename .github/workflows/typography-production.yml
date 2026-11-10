@@ -35,4 +35,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: escie-production-font-candidates
-          path: fonts/release-candidate/
+          path: |
+            fonts/release-candidate/
+            fonts/release-candidate-specimens/
