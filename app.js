@@ -721,7 +721,9 @@
       const confidence=String(relationship.confidence||"UNKNOWN").toUpperCase();
       const reason=relationship.description||"THE RECORD CONNECTS THESE TWO POINTS. THE REASON REMAINS OPEN.";
       const evidence=Array.isArray(relationship.evidence)?relationship.evidence:[];
-      return '<article class="web-connection" data-relationship-id="'+escapeHTML(relationship.id||("connection-"+index))+'">'+
+      const statusClass=status.toLowerCase().replace(/[^a-z0-9]+/g,"-");
+      const hasEvidence=evidence.length>0;
+      return '<article class="web-connection web-status-'+statusClass+(hasEvidence?" web-has-evidence":" web-no-evidence")+'" data-relationship-id="'+escapeHTML(relationship.id||("connection-"+index))+'">'+
         '<button type="button" class="web-connection-main" data-web-connection-toggle aria-expanded="false">'+
           '<span class="web-node"><strong>'+escapeHTML(recordTitle(from))+'</strong><em>'+escapeHTML(from.type||"record")+'</em></span>'+
           '<span class="web-connection-line" aria-hidden="true"><i></i><b>'+escapeHTML((relationship.type||"CONNECTED_TO").replace(/_/g," "))+'</b><i></i></span>'+
@@ -735,7 +737,7 @@
       '</article>';
     }).join("");
     container.innerHTML=
-      '<div class="web-experience">'+motifMarkup("web")+
+      '<div class="web-experience web-identity-field" data-web-identity="montreal-signal">'+motifMarkup("web")+'<div class="web-signal-grid" aria-hidden="true"></div><div class="web-montreal-trace" aria-hidden="true">MONTRÉAL / SIGNAL FIELD / HERE</div>'+
       '<div class="web-experience-head"><p class="eyebrow">THE WEB</p><h3>FIND WHAT IS CONNECTED.</h3><p>FOLLOW A PERSON, PLACE, MOMENT OR RECORD UNTIL SOMETHING ELSE PULLS INTO VIEW.</p></div>'+
       '<div class="web-discovery-tools">'+
         '<label>FIND A THREAD<input type="search" data-web-search value="'+escapeHTML(state.search||"")+'" placeholder="People, places, moments, fragments…"></label>'+

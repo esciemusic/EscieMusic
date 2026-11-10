@@ -3590,3 +3590,26 @@ html[data-theme="light"] .investigation-case:focus-visible{
  .web-connection-line i:first-child{display:none}
  .web-record-result{display:grid}
 }
+
+
+/* THE WEB / identity pass 3 */
+.web-identity-field{position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(90deg,transparent 0 12%,rgba(92,122,255,.035) 12.2% 12.5%,transparent 12.7% 100%),linear-gradient(0deg,transparent 0 68%,rgba(155,84,255,.035) 68.2% 68.5%,transparent 68.7% 100%)}
+.web-identity-field::before,.web-identity-field::after{content:"";position:absolute;pointer-events:none;z-index:-1}
+.web-identity-field::before{inset:0;opacity:.35;background:repeating-linear-gradient(0deg,transparent 0 5px,rgba(255,255,255,.025) 6px,transparent 7px),linear-gradient(105deg,transparent 0 47%,rgba(72,109,255,.08) 48%,transparent 50%);mix-blend-mode:screen}
+.web-identity-field::after{width:46vw;height:46vw;right:-24vw;top:8%;border:1px solid rgba(114,86,255,.16);border-radius:50%}
+.web-signal-grid{position:absolute;inset:0;pointer-events:none;z-index:-1;opacity:.16;background:linear-gradient(90deg,transparent 0 24%,rgba(255,255,255,.08) 24.1%,transparent 24.2%),linear-gradient(0deg,transparent 0 42%,rgba(255,255,255,.06) 42.1%,transparent 42.2%)}
+.web-montreal-trace{font-family:var(--escie-font-signal);position:absolute;top:0;right:0;font-size:.55rem;letter-spacing:.18em;opacity:.32;transform:rotate(90deg) translateX(100%);transform-origin:top right;white-space:nowrap}
+.web-experience-head{position:relative;padding-right:2.5rem}
+.web-experience-head::after{content:"";position:absolute;right:0;top:.2rem;width:1.4rem;height:3.8rem;border-left:1px solid rgba(118,93,255,.55);border-top:1px solid rgba(118,93,255,.25);opacity:.7}
+.web-connection{position:relative;overflow:hidden;transition:border-color .25s ease,background .25s ease,transform .25s ease}
+.web-connection::before{content:"";position:absolute;inset:0 auto 0 0;width:2px;background:rgba(91,116,255,.55);opacity:.45}
+.web-connection:hover,.web-connection:focus-within{border-color:rgba(126,103,255,.34);background:rgba(45,38,66,.22);transform:translateX(2px)}
+.web-connection.web-status-unknown::before,.web-connection.web-status-contradicted::before{background:rgba(164,145,255,.65)}
+.web-connection.web-status-confirmed::before,.web-connection.web-status-documented::before{background:rgba(84,132,255,.7)}
+.web-connection-detail{border-top:1px solid rgba(255,255,255,.07)}
+.web-connection-meta span{padding:.2rem .35rem;border:1px solid rgba(255,255,255,.08)}
+.web-governing-principle{border-top:1px solid rgba(116,93,255,.18);letter-spacing:.12em}
+@media (prefers-reduced-motion:no-preference){.web-identity-field::before{animation:webSignalDrift 14s linear infinite}.web-connection-line i{animation:webSignalPulse 3.8s ease-in-out infinite}}
+@keyframes webSignalDrift{0%,100%{transform:translateX(0)}50%{transform:translateX(8px)}}
+@keyframes webSignalPulse{0%,100%{opacity:.22}50%{opacity:.7}}
+@media(max-width:640px){.web-montreal-trace{font-size:.48rem}.web-experience-head{padding-right:1.8rem}}
