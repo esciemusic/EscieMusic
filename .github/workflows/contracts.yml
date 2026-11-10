@@ -38,6 +38,7 @@ jobs:
           - integration-contract.node.test.js
           - glass-eye-pass-1.node.test.js
           - unified-entity-contract.node.test.js
+          - web-foundation.node.test.js
     runs-on: ubuntu-latest
     name: Contract · ${{ matrix.test }}
     steps:
