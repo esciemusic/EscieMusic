@@ -26,8 +26,6 @@ const forbidden = [
 ];
 
 const sameOrigin = new URL(baseURL).origin;
-const textResponses = new Map();
-
 page.on("console", m => {
   if (m.type() === "error") failures.push("console error: " + m.text());
 });
@@ -47,13 +45,30 @@ async function scanRenderedBoundary(label) {
   for (const secret of forbidden) {
     check(!html.toLowerCase().includes(secret.toLowerCase()), label + " exposes forbidden material: " + secret);
   }
-  for (const [url, response] of textResponses) {
-    try {
-      const text = await response.text();
-      for (const secret of forbidden) {
-        check(!text.toLowerCase().includes(secret.toLowerCase()), label + " loaded asset exposes forbidden material: " + secret + " (" + url + ")");
+  const scripts = await page.locator("script[src]").evaluateAll(nodes =>
+    nodes.map(node => new URL(node.getAttribute("src"), location.href).href)
+  );
+  const assets = await page.evaluate(async urls => {
+    const results = [];
+    for (const url of urls) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 5000);
+      try {
+        const response = await fetch(url, { cache: "no-store", signal: controller.signal });
+        results.push({ url, status: response.status, text: response.ok ? await response.text() : "" });
+      } catch (error) {
+        results.push({ url, status: 0, text: "", error: String(error) });
+      } finally {
+        clearTimeout(timer);
       }
-    } catch {}
+    }
+    return results;
+  }, scripts);
+  for (const asset of assets) {
+    check(asset.status >= 200 && asset.status < 400, label + " loaded script failed: " + asset.status + " (" + asset.url + ")");
+    for (const secret of forbidden) {
+      check(!asset.text.toLowerCase().includes(secret.toLowerCase()), label + " loaded asset exposes forbidden material: " + secret + " (" + asset.url + ")");
+    }
   }
 }
 
