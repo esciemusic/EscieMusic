@@ -47,20 +47,18 @@ async function scanRenderedBoundary(label) {
     nodes.map(node => new URL(node.getAttribute("src"), location.href).href)
   );
   const assets = await page.evaluate(async urls => {
-    const results = [];
-    for (const url of urls) {
+    return Promise.all([...new Set(urls)].map(async url => {
       const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 5000);
+      const timer = setTimeout(() => controller.abort(), 3000);
       try {
         const response = await fetch(url, { cache: "no-store", signal: controller.signal });
-        results.push({ url, status: response.status, text: response.ok ? await response.text() : "" });
+        return { url, status: response.status, text: response.ok ? await response.text() : "" };
       } catch (error) {
-        results.push({ url, status: 0, text: "", error: String(error) });
+        return { url, status: 0, text: "", error: String(error) };
       } finally {
         clearTimeout(timer);
       }
-    }
-    return results;
+    }));
   }, scripts);
   for (const asset of assets) {
     check(asset.status >= 200 && asset.status < 400, label + " loaded script failed: " + asset.status + " (" + asset.url + ")");
