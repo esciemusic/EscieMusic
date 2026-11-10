@@ -33,10 +33,11 @@
     const centralReleased={id:"__central-released__",type:"music",status:"active",published:true,visibility:"public",release_state:"RELEASED"};
     const relationship={id:"__test-contains__",from:project.id,type:"contains",to:track.id,status:"active",confidence:"verified",canonical_status:"canonical",visibility:"public",public_disclosure:true};
     const lockedRelationship={id:"__test-private-endpoint__",from:project.id,type:"contains",to:locked.id,status:"active",confidence:"verified",canonical_status:"provisional",visibility:"public",public_disclosure:true};
+    const invalidPublicRelationship={id:"__test-invalid-public__",from:project.id,type:"not_a_registered_connection",to:track.id,status:"active",confidence:"verified",canonical_status:"provisional",visibility:"public",public_disclosure:true};
 
     runtime.projects=[project];
     runtime.music=[track,locked];
-    runtime.relationships=[relationship,lockedRelationship];
+    runtime.relationships=[relationship,lockedRelationship,invalidPublicRelationship];
     window.ESCIE_GAMES.push({
       id:"__test-game__",type:"game",title:"TEST GAME",status:"active",published:true,visibility:"public",release_status:"released"
     });
@@ -73,6 +74,7 @@
       assert(trackManifest.sections.web===true,"connected test track must appear in web");
       assert(trackManifest.search===true,"public released records should be searchable");
 
+      assert(registry.publicRelationships().every(rel=>rel.id!=="__test-invalid-public__"),"invalid public relationship must fail closed at the relationship contract");
       assert(registry.releaseVisible(project)===true,"progressive project must unlock when a released track exists");
       assert(registry.releaseVisible(track)===true,"released track must be visible");
       assert(registry.releaseVisible(locked)===false,"locked release must remain hidden");
@@ -95,6 +97,8 @@
       const counts=registry.relationshipCounts();
       assert(counts.byType.contains===1,"relationship counts must aggregate released containment");
 
+      const projectContext=registry.contextFor(project.id);
+      assert(projectContext.connections.length===1&&projectContext.connections[0].record===track.id,"context traversal must consume only the validated public relationship projection");
       assert(registry.contextFor(locked.id).record===null,"locked context must fail closed");
       assert(registry.releaseVisible(Object.assign({},locked,{release_status:"unknown"}))===false,"invalid release states must fail closed");
 
