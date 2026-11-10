@@ -84,19 +84,15 @@ def smooth(points,steps=8):
     return out
 def script_glyph(ch):
     p=TTGlyphPen(None)
-    weights={"a":38,"e":40,"g":44,"m":39,"n":40,"r":37,"s":43,"t":39,"u":40,"w":38,"y":42}
+    weights={"a":48,"e":50,"g":54,"m":49,"n":50,"r":47,"s":53,"t":49,"u":50,"w":48,"y":52}
     offsets={"a":-6,"e":4,"g":-4,"m":3,"n":-2,"r":5,"s":-3,"t":2,"u":-4,"w":2,"y":-2}
     pts=smooth(LOWER[ch])
     dx=offsets.get(ch,0)
     pts=[(x+dx,y) for x,y in pts]
 
-    # A small entry/exit motion gives the lowercase alphabet a continuous
-    # handwriting gesture without turning it into a decorative script font.
-    entry=22 + (ord(ch) % 5)*4
-    exit_tail=26 + (ord(ch) % 4)*5
-    if ch not in {"i","j","l"}:
-        pts=[(80,245),(105,255)] + pts + [(pts[-1][0]+exit_tail,pts[-1][1]+8)]
-    stroke(p,pts,weights.get(ch,42))
+    # Keep the skeleton clean. Human character comes from curve, pressure,
+    # and slight letter-specific rhythm — not artificial spikes or tails.
+    stroke(p,pts,weights.get(ch,50))
 
     if ch=="i":
         rect(p,188,430,34,34)
