@@ -30,9 +30,11 @@ test("Glass Eye participation is explicitly moderated before public disclosure",
   assert.match(participation,/ONLY PHOTO, VIDEO OR AUDIO FILES ARE ACCEPTED/);
 });
 
-test("Glass Eye preserves multilingual and world-return behavior",()=>{
-  assert.match(spec,/EN \/ FR \/ ES/);
+test("Glass Eye leaves language control at the main site and keeps world-return behavior",()=>{
+  assert.match(spec,/main ESCIE site language control/);
+  assert.match(spec,/Glass Eye has no separate language toggle/);
   assert.match(spec,/Return-to-world navigation remains direct/);
+  assert.doesNotMatch(spec,/EN \/ FR \/ ES remain supported/);
 });
 
 test("Glass Eye does not become an ARG or reality filter",()=>{
