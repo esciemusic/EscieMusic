@@ -16,7 +16,13 @@ def load(path, name):
 def build_from(module_path, builder, filename):
     mod = load(module_path, filename.replace(".ttf", ""))
     target = OUT / filename
-    getattr(mod, builder)(str(target))
+    if module_path.name == "build-fonts-pass2.py":
+        if filename == "ESCIE.ttf":
+            mod.build(str(target), "ESCIE", 800, "escie")
+        else:
+            mod.build(str(target), "ESCIE SIGNAL", 600, "signal")
+    else:
+        mod.build(str(target))
     return target
 
 def set_release_metadata(path, family, subfamily, ps_name):
