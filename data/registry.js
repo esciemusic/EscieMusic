@@ -112,18 +112,19 @@
     const current=build();
     const record=current.byId[id]||null;
     if(!record||!releaseVisible(record)) return {record:null,connections:[],parents:[],children:[]};
-    const relationships=collection("ESCIE_RELATIONSHIPS");
-    const connected=relationships
-      .filter(r=>r&&r.public_disclosure===true&&(r.from===id||r.to===id))
+    // Context must consume the same fail-closed THE WEB projection as the renderer.
+    // Never traverse raw relationships here: contract validation, disclosure,
+    // public-record checks, and endpoint release checks belong to publicRelationships().
+    const connected=publicRelationships({record:id})
       .map(r=>({
         id:r.id||null,
         type:r.type||"connection",
         direction:r.from===id?"out":"in",
         record:r.from===id?r.to:r.from
       }))
-      .filter(item=>current.byId[item.record] && releaseVisible(current.byId[item.record]));
+      .filter(item=>current.byId[item.record] && publicRecord(item.record));
     return {
-      record:current.byId[id]||null,
+      record:publicRecord(id),
       connections:connected,
       parents:connected.filter(item=>item.direction==="in"&&["contains","parent","part-of","includes"].includes(item.type)),
       children:connected.filter(item=>item.direction==="out"&&["contains","includes","has-part"].includes(item.type))
@@ -300,14 +301,9 @@ function allPublicRecords(){
     if(!record) return null;
     const media=Array.isArray(record.media)?record.media:[];
     const evidence=Array.isArray(record.evidence)?record.evidence:[];
-    const relationships=collection("ESCIE_RELATIONSHIPS");
-    const hasPublicConnection=relationships.some(rel =>
-      rel && rel.public_disclosure===true &&
-      (rel.from===id || rel.to===id) &&
-      current.byId[rel.from] && current.byId[rel.to] &&
-      releaseVisible(current.byId[rel.from]) &&
-      releaseVisible(current.byId[rel.to])
-    );
+    // Section exposure must use the exact public relationship projection.
+    // A raw relationship must never make THE WEB section appear public.
+    const hasPublicConnection=publicRelationships({record:id}).length>0;
     const work=record.type==="project"||record.type==="music"||record.type==="body"||!!record.project;
     const archive=record.type==="archive"||media.length>0||evidence.length>0||record.archive_state==="active";
     const investigation=record.type==="investigation"||hasPublicConnection||record.type==="moment"||record.type==="fragment"||evidence.length>0;
@@ -392,5 +388,5 @@ function allPublicRecords(){
     return contract&&typeof contract.get==="function"?contract.get(id):null;
   }
 
-  window.ESCIE_RECORD_REGISTRY={version:"1.20.0",build,records:()=>build().records,publicNodes,nodeFor,nodesForRecord,allPublicRecords,publicRecord,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,releaseAudit,manifestFor,filter,contextFor,publicRelationships,relationshipTypes,relationshipCategories,relationshipsFor,relationshipCounts,releaseVisible,publicSectionContract,sectionDefinition};
+  window.ESCIE_RECORD_REGISTRY={version:"1.21.0",build,records:()=>build().records,publicNodes,nodeFor,nodesForRecord,allPublicRecords,publicRecord,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,releaseAudit,manifestFor,filter,contextFor,publicRelationships,relationshipTypes,relationshipCategories,relationshipsFor,relationshipCounts,releaseVisible,publicSectionContract,sectionDefinition};
 })();
