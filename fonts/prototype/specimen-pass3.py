@@ -72,19 +72,38 @@ def render(width, height, filename, scale):
     ]
     draw.text((margin, margin), "ESCIE / LETTERFORM SPECIMEN", font=title, fill=(238,238,238))
     y = margin + int(54 * scale)
+    max_width = width - (margin * 2)
+    def draw_wrapped(text, font, x, y, line_gap):
+        words = text.split(" ")
+        lines = []
+        line = ""
+        for word in words:
+            candidate = word if not line else line + " " + word
+            if draw.textbbox((0,0), candidate, font=font)[2] <= max_width:
+                line = candidate
+            else:
+                if line: lines.append(line)
+                line = word
+        if line: lines.append(line)
+        for item in lines:
+            draw.text((x, y), item, font=font, fill=(238,238,238))
+            y += line_gap
+        return y
+
     for name, size, text in faces:
         role = "IDENTITY" if name == "ESCIE" else "OPERATION" if name == "SIGNAL" else "INTIMACY"
         draw.text((margin, y), name + " / " + role, font=meta, fill=(150,150,160))
         y += int(28 * scale)
         font = ImageFont.truetype(str(fonts[name]), size)
-        draw.text((margin, y), text, font=font, fill=(238,238,238))
-        y += int(size * 1.55)
-    draw.text((margin, y), "French coverage / Montréal, Québec — ÉCOUTE / DÉTAIL / FRAGMENTS",
-              font=meta, fill=(150,150,160))
+        y = draw_wrapped(text, font, margin, y, int(size * 1.35))
+        y += int(size * 0.65)
+    french = ImageFont.truetype(str(fonts["SIGNAL"]), max(10, int(13 * scale)))
+    y = draw_wrapped("French coverage / Montréal, Québec — ÉCOUTE / DÉTAIL / FRAGMENTS",
+                      french, margin, y, int(20 * scale))
     image.save(ROOT / filename)
 
 render(1440, 900, "specimen-desktop.png", 1.0)
-render(390, 844, "specimen-phone.png", 0.58)
+render(390, 844, "specimen-phone.png", 0.46)
 
 report = ROOT / "SPECIMEN-REPORT.md"
 lines = [
