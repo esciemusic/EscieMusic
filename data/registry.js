@@ -43,6 +43,12 @@
     ["identity",()=>{const about=window.ESCIE_ABOUT; return about?[about]:[];}],
     ["project",()=>collection("ESCIE_PROJECTS")],
     ["music",()=>collection("ESCIE_MUSIC")],
+    ["poetry",()=>collection("ESCIE_POETRY")],
+    ["drawing",()=>collection("ESCIE_DRAWINGS")],
+    ["painting",()=>collection("ESCIE_PAINTINGS")],
+    ["writing",()=>collection("ESCIE_WRITING")],
+    ["visual",()=>collection("ESCIE_VISUAL_ART")],
+    ["other_art",()=>collection("ESCIE_OTHER_ART")],
     ["person",()=>collection("ESCIE_PEOPLE")],
     ["location",()=>collection("ESCIE_LOCATIONS")],
     ["moment",()=>collection("ESCIE_MOMENTS")],
@@ -304,7 +310,7 @@ function allPublicRecords(){
     // Section exposure must use the exact public relationship projection.
     // A raw relationship must never make THE WEB section appear public.
     const hasPublicConnection=publicRelationships({record:id}).length>0;
-    const work=record.type==="project"||record.type==="music"||record.type==="body"||!!record.project;
+    const work=["project","music","body","poetry","drawing","drawings","painting","writing","visual","film","photography","other_art"].includes(record.type)||!!record.project;
     const archive=record.type==="archive"||media.length>0||evidence.length>0||record.archive_state==="active";
     const investigation=record.type==="investigation"||hasPublicConnection||record.type==="moment"||record.type==="fragment"||evidence.length>0;
     const glassEye=media.some(item=>{
@@ -388,5 +394,5 @@ function allPublicRecords(){
     return contract&&typeof contract.get==="function"?contract.get(id):null;
   }
 
-  window.ESCIE_RECORD_REGISTRY={version:"1.21.0",build,records:()=>build().records,publicNodes,nodeFor,nodesForRecord,allPublicRecords,publicRecord,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,releaseAudit,manifestFor,filter,contextFor,publicRelationships,relationshipTypes,relationshipCategories,relationshipsFor,relationshipCounts,releaseVisible,publicSectionContract,sectionDefinition};
+  window.ESCIE_RECORD_REGISTRY={version:"1.22.0",build,records:()=>build().records,publicNodes,nodeFor,nodesForRecord,allPublicRecords,publicRecord,get:(id)=>build().byId[id]||null,duplicates:()=>build().duplicates,relationshipAudit,symbolAudit,sectionAudit,contractAudit,referenceAudit,releaseAudit,manifestFor,filter,contextFor,publicRelationships,relationshipTypes,relationshipCategories,relationshipsFor,relationshipCounts,releaseVisible,publicSectionContract,sectionDefinition};
 })();
