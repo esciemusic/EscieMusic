@@ -247,6 +247,8 @@ main > .site-section:not(#entry) .section-drop-panel .content-container{
 .world-city-district{display:grid;grid-template-columns:28px minmax(0,1fr) 24px;gap:10px;align-items:center;min-height:42px;padding:8px 10px;background:var(--background)}
 .world-city-district span,.world-city-district em{color:var(--faint);font:400 8px/1 var(--escie-font-mono);letter-spacing:.1em}
 .world-city-district strong{font:400 11px/1.2 var(--escie-font-display);letter-spacing:.06em}
+.world-city-district{position:relative;overflow:hidden}
+.world-city-district:after{content:"";position:absolute;left:0;bottom:0;width:38%;height:1px;background:var(--escie-blue-bright);opacity:.42}
 .world-city-district em{text-align:right;font-style:normal;color:var(--escie-blue-bright)}
 @media(max-width:700px){
   .world-city-field{padding:10px;margin-bottom:18px}
