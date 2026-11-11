@@ -457,7 +457,6 @@
     );
 
     const location = site.location || "Montréal, Canada";
-    const status = site.status || "development";
     const publicMusic = getAllPublicRecords()
       .filter(record => record && record.type === "music" && isPublic(record))
       .sort((a, b) => String(a.number || "").localeCompare(String(b.number || ""), undefined, { numeric: true }))
@@ -474,7 +473,7 @@
       : (active && active.description ? active.description : "The signal is quiet. The record remains.");
 
     container.innerHTML =
-      '<div class="now-state">' + motifMarkup("now") + '' +
+      '<div class="now-state" data-transmission-state="' + (publicTransmission ? "released" : (active ? "active" : "quiet")) + '">' + motifMarkup("now") + '' +
         '<h3>' + escapeHTML(transmissionLabel) + "</h3>" +
         '<p>' + escapeHTML(transmissionText) + "</p>" +
         (publicTransmission ? '<button class="record-action record-card" type="button" data-record-id="' + escapeHTML(recordId(publicTransmission)) + '">OPEN TRANSMISSION</button>' : '') +
