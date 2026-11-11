@@ -232,6 +232,13 @@ test("A-Z Pass 1 preserves keyboard and preference accessibility contracts",()=>
   assert.match(aesthetic,/:focus-visible/);
 });
 
+test("A-Z Pass 3 signal chamber remains visual-only without runtime status state",()=>{
+  const style=read("style.css");
+  assert.match(style,/\.signal-chamber \{[\s\S]*opacity: \.72;/);
+  assert.doesNotMatch(style,/\.idle-universe \.signal-chamber/);
+  assert.doesNotMatch(style,/transition: opacity 900ms/);
+});
+
 test("A-Z Pass 3 keeps the public signal chamber visual-only",()=>{
   const index=read("index.html");
   const style=read("style.css");
