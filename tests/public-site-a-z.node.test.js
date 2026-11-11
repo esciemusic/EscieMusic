@@ -905,3 +905,52 @@ test("A-Z Pass 3 THE ARCHIVES empty state stays quiet and does not invent public
   assert.match(projection,/PUBLIC TRACES WILL APPEAR WHEN THEY ENTER THE ARCHIVE\./);
   assert.doesNotMatch(projection,/sample|mock|demo|placeholder/i);
 });
+
+
+test("A-Z Pass 3 THE CASE FILES public field is covered by an interaction and evidence contract",()=>{
+  const app=read("app.js");
+  const style=read("style.css");
+  assert.match(app,/function renderInvestigation\(\)/);
+  assert.match(app,/class="investigation-index"/);
+  assert.match(app,/class="investigation-index-head"/);
+  assert.match(app,/class="case-file-list"/);
+  assert.match(app,/class="investigation-case"/);
+  assert.match(app,/role="button"/);
+  assert.match(app,/tabindex="0"/);
+  assert.match(app,/data-record-id=/);
+  assert.match(app,/narrationAttributes\(item\)/);
+  assert.match(app,/QUESTIONS STAY OPEN UNTIL THE RECORD CAN SUPPORT AN ANSWER\./);
+  assert.match(app,/EVIDENCE/);
+  assert.match(app,/CONTRADICTIONS/);
+  assert.match(style,/\.investigation-index\{|\.investigation-case\{/);
+  assert.match(style,/\.case-file-list\{/);
+  assert.match(style,/@media\(max-width:700px\)/);
+});
+
+test("A-Z Pass 3 THE CASE FILES remains public-only and does not expose private provenance",()=>{
+  const app=read("app.js");
+  const start=app.indexOf("function renderInvestigation");
+  const end=app.indexOf("function socialIconMarkup",start);
+  const projection=app.slice(start,end);
+  assert.ok(start>=0&&end>start,"case-file renderer boundary must remain discoverable");
+  assert.match(projection,/getAllPublicRecords\(\)/);
+  assert.match(projection,/\.filter\(isPublic\)/);
+  assert.match(projection,/recordManifest\(record\)/);
+  assert.doesNotMatch(projection,/ESCIE_SOURCE|ESCIE_PROVENANCE|ESCIE_HISTORY|pendingControl/);
+  assert.doesNotMatch(projection,/provenance:/);
+  assert.doesNotMatch(projection,/source:/);
+});
+
+test("A-Z Pass 3 THE CASE FILES empty state preserves the Glass Eye finding doorway",()=>{
+  const app=read("app.js");
+  const start=app.indexOf("function renderInvestigation");
+  const end=app.indexOf("function socialIconMarkup",start);
+  const projection=app.slice(start,end);
+  assert.match(projection,/if \(!investigations\.length\)/);
+  assert.match(projection,/QUESTIONS BEFORE ANSWERS\./);
+  assert.match(projection,/What does the record still not explain\?/);
+  assert.match(projection,/What can be documented, sourced or reviewed\?/);
+  assert.match(projection,/What remains open without being turned into fact\?/);
+  assert.match(projection,/data-web-participate/);
+  assert.match(projection,/BRING A FINDING THROUGH GLASS EYE/);
+});
