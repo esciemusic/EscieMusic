@@ -24,7 +24,7 @@
         <button type="button" class="preference-button language-option" data-language="fr" aria-label="Français">FR</button>
         <button type="button" class="preference-button language-option" data-language="es" aria-label="Español">ES</button>
       </div>
-      <button type="button" id="theme-toggle" class="preference-button theme-toggle" aria-label="Light mode" aria-pressed="false">
+      <button type="button" id="theme-toggle" class="preference-button theme-toggle" aria-label="Switch to light mode">
         <span class="theme-toggle-icon" aria-hidden="true">◐</span>
         <span class="theme-toggle-label">LIGHT</span>
       </button>
@@ -173,17 +173,19 @@
       languageButtons.forEach(function(button){
         button.addEventListener("click",function(){
           var language=button.getAttribute("data-language")||"en";
-          if(window.ESCIE_LANGUAGE_ENGINE&&typeof window.ESCIE_LANGUAGE_ENGINE.setLanguage==="function"){
-            window.ESCIE_LANGUAGE_ENGINE.setLanguage(language);
-          }else if(window.ESCIE_STATE){window.ESCIE_STATE.language=language;document.documentElement.lang=language;}
+          var engine=window.ESCIE_LANGUAGE_ENGINE;
+          if(engine&&typeof engine.setLanguage==="function"){
+            engine.setLanguage(language);
+            return;
+          }
+          if(window.ESCIE_STATE)window.ESCIE_STATE.language=language;
+          document.documentElement.lang=language;
           try{localStorage.setItem("escie-language",language);}catch(error){}
           languageButtons.forEach(function(item){
             var active=item.getAttribute("data-language")===language;
             item.classList.toggle("is-active",active);
             item.setAttribute("aria-pressed",active?"true":"false");
           });
-          var events=window.ESCIE_EVENTS;
-          if(events&&typeof events.emit==="function")events.emit("language:changed",{language:language});
         });
       });
       var savedLanguage="";
