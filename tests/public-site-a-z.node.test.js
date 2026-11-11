@@ -1050,3 +1050,31 @@ test("A-Z Pass 3 ESCIE section remains a collapsible public doorway",()=>{
   assert.match(index,/section-open/);
   assert.match(index,/panel\.hidden=!active/);
 });
+
+
+test("A-Z Pass 3 public footer stays minimal, navigationally safe, and consistent with ESCIE",()=>{
+  const app=read("app.js");
+  const index=read("index.html");
+  const style=read("style.css");
+  assert.match(index,/class="site-footer"/);
+  assert.match(index,/<p>ESCIE<\/p>/);
+  assert.match(index,/THE SIGNAL REMAINS DISTORTED\./);
+  assert.match(index,/id="footer-social"/);
+  assert.match(app,/function renderFooterSocial\(\)/);
+  assert.match(app,/renderSocialLinks\("footer-social","footer-social-link",true\)/);
+  assert.match(app,/target="_blank" rel="noopener noreferrer"/);
+  assert.match(app,/normalizeEscieSocial/);
+  assert.match(style,/\.site-footer/);
+  assert.match(style,/@media \(max-width: 700px\)/);
+  assert.match(style,/\.footer-social/);
+  assert.doesNotMatch(index,/TRANSMISSION COUNTDOWN|SIGNAL STATUS|COUNTDOWN/);
+});
+
+test("A-Z Pass 3 footer social links remain public external links only",()=>{
+  const app=read("app.js");
+  const social=read("data/social.js");
+  assert.match(app,/renderSocialLinks/);
+  assert.match(app,/^.*https?:\/\//m);
+  assert.match(social,/ESCIE_SOCIAL/);
+  assert.doesNotMatch(app,/ESCIE_SOURCE|ESCIE_PROVENANCE|ESCIE_HISTORY|pendingControl/);
+});
