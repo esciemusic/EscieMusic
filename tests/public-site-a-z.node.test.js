@@ -338,8 +338,8 @@ test("A-Z Pass 3 NOW hands off to ART as a creative threshold, not a portfolio C
   const nowIndex=html.indexOf('<section id="now"');
   const artIndex=html.indexOf('<section id="art"');
   assert.ok(nowIndex>=0 && artIndex>nowIndex,"ART must follow NOW in the public sequence");
-  assert.match(html,/id="art"[^>]*>[\\s\\S]*class="art-threshold">WHERE LIFE BECOMES THE MEDIUM\.<\\/p>/);
-  assert.match(html,/class="art-threshold">WHERE LIFE BECOMES THE MEDIUM\.<\\/p>[\\s\\S]*class="section-lede">BROAD STROKES AND FINE LINES/);
+  assert.match(html,/id="art"[^>]*>[\s\S]*class="art-threshold">WHERE LIFE BECOMES THE MEDIUM\.<\/p>/);
+  assert.match(html,/class="art-threshold">WHERE LIFE BECOMES THE MEDIUM\.<\/p>[\s\S]*class="section-lede">BROAD STROKES AND FINE LINES/);
   assert.match(style,/\.art-threshold \{[\\s\\S]*max-width: 680px;[\\s\\S]*font-size: 10px;[\\s\\S]*letter-spacing: 0\.24em/);
   assert.doesNotMatch(html,/ENTER THE WORLD[^<]*<[^>]*art|VIEW ART|OPEN ART/i);
 });
