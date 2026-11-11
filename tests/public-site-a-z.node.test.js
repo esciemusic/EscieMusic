@@ -232,6 +232,15 @@ test("A-Z Pass 1 preserves keyboard and preference accessibility contracts",()=>
   assert.match(aesthetic,/:focus-visible/);
 });
 
+test("A-Z Pass 3 hero identity stays dominant over signal chamber",()=>{
+  const style=read("style.css");
+  assert.match(style,/\.entry-inner \{[\s\S]*isolation: isolate/);
+  assert.match(style,/\.entry-section #entry-container h1,[\s\S]*z-index: 3/);
+  assert.match(style,/\.signal-window \{\s*opacity: \.82;\s*\}/);
+  assert.match(style,/\.signal-city \{\s*opacity: \.56;\s*\}/);
+  assert.match(style,/@media\(max-width:700px\) \{\s*\.signal-window \{ opacity: \.74; \}\s*\.signal-city \{ opacity: \.50; \}\s*\}/);
+});
+
 test("A-Z Pass 3 signal atmosphere stays restrained",()=>{
   const style=read("style.css");
   assert.match(style,/animation: signalPulse 5\.6s ease-in-out infinite/);
