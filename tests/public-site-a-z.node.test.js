@@ -232,6 +232,13 @@ test("A-Z Pass 1 preserves keyboard and preference accessibility contracts",()=>
   assert.match(aesthetic,/:focus-visible/);
 });
 
+test("A-Z Pass 3 NOW transmission revalidates through the public registry",()=>{
+  const app=read("app.js");
+  assert.match(app,/const publicTransmission = publicMusic && getGlobal\("ESCIE_RECORD_REGISTRY",null\)\?\.publicRecord/);
+  assert.match(app,/const transmission = publicTransmission \|\| active/);
+  assert.match(app,/publicTransmission \? '<button class="record-action record-card"/);
+});
+
 test("A-Z Pass 3 keeps NOW subordinate to the entry identity",()=>{
   const style=read("style.css");
   assert.match(style,/\.now-state h3\{max-width:820px;font-size:clamp\(24px,4\.8vw,58px\);line-height:1\.02\}/);
