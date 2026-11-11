@@ -232,6 +232,13 @@ test("A-Z Pass 1 preserves keyboard and preference accessibility contracts",()=>
   assert.match(aesthetic,/:focus-visible/);
 });
 
+test("A-Z Pass 3 mobile hero respects viewport and safe-area composition",()=>{
+  const style=read("style.css");
+  assert.match(style,/@media\(max-width:700px\)\{[\s\S]*\.entry-section\{[\s\S]*min-height:100svh;[\s\S]*padding:78px 14px calc\(72px \+ env\(safe-area-inset-bottom\)\)/);
+  assert.match(style,/\.entry-section \.section-label\{[\s\S]*top:74px;[\s\S]*left:14px/);
+  assert.match(style,/\.entry-inner\{[\s\S]*width:min\(100%,100%\)/);
+});
+
 test("A-Z Pass 3 hero identity stays dominant over signal chamber",()=>{
   const style=read("style.css");
   assert.match(style,/\.entry-inner \{[\s\S]*isolation: isolate/);
