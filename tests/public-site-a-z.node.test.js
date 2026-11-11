@@ -310,7 +310,8 @@ test("A-Z Pass 3 ART metadata filters are rendered, public-scoped, and usable",(
   assert.match(app,/ALL MOTIFS/);
   assert.match(app,/record-filter-clear/);
   assert.match(app,/ESCIE_RUNTIME\.workFilters/);
-  assert.match(app,/renderMusic\(\)/);\n  assert.match(app,/renderProjects\(\)/);
+  assert.match(app,/renderMusic\\(\\)/);
+  assert.match(app,/renderProjects\\(\\)/);
   assert.match(css,/\.art-section #work-filters \.record-filter-grid\{/);
   assert.match(css,/\.art-section #work-filters \.record-filter-grid select\{/);
   assert.match(css,/\.art-section #work-filters \.record-filter-clear\{/);
