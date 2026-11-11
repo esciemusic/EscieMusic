@@ -232,6 +232,14 @@ test("A-Z Pass 1 preserves keyboard and preference accessibility contracts",()=>
   assert.match(aesthetic,/:focus-visible/);
 });
 
+test("A-Z Pass 3 NOW quiet state is intentional and visually restrained",()=>{
+  const app=read("app.js");
+  const style=read("style.css");
+  assert.match(app,/data-transmission-state.*publicTransmission.*released.*active.*quiet/);
+  assert.match(style,/\.now-state\[data-transmission-state="quiet"\] h3\{[\s\S]*color:var\(--faint\)/);
+  assert.match(style,/\.now-state\[data-transmission-state="quiet"\] > p:not\(\.eyebrow\)/);
+});
+
 test("A-Z Pass 3 NOW transmission revalidates through the public registry",()=>{
   const app=read("app.js");
   assert.match(app,/const publicTransmission = publicMusic && getGlobal\("ESCIE_RECORD_REGISTRY",null\)\?\.publicRecord/);
