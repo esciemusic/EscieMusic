@@ -1,6 +1,7 @@
 /* ESCIE WORLD CITY DATA — canonical street graph and authored NPC population */
 (function(){
 "use strict";
+window.ESCIE_WORLD_CITY=window.ESCIE_WORLD_CITY||{};
 const streetNodes={
   "PARC-EXTENSION":[
     {id:"HOME",label:"HOME",x:2,y:7,type:"STREET"},
