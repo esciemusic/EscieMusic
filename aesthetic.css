@@ -374,6 +374,14 @@ main > .site-section:not(#entry).section-open .section-visual{
   background:var(--escie-aesthetic-purple);
   opacity:.72;
 }
+.art-section .empty-state[data-empty-state="filter-quiet"]{
+  color:var(--muted);
+  border-bottom-color:rgba(155,89,255,.16);
+}
+.art-section .empty-state[data-empty-state="filter-quiet"]::before{
+  width:52px;
+  opacity:.5;
+}
 .art-section .empty-state[data-empty-state="music-quiet"]{
   color:var(--muted);
 }
