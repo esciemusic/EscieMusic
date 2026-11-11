@@ -1678,7 +1678,7 @@ main > .site-section:not(#entry).section-open{min-height:0 !important;}
 @keyframes escieSignalScan{0%{background-position:0 0,0 0,0 0}100%{background-position:18px 0,0 8px,-24px 0}}
 main > .site-section.section-open .section-visual{animation:escieSignalDrift 8s ease-in-out infinite}
 main > .site-section.section-open .section-visual::after{animation:escieSignalScan 6s linear infinite}
-@media(prefers-reduced-motion:reduce){main > .site-section.section-open .section-visual,main > .site-section.section-open .section-visual::after{animation:none}}
+@media(prefers-reduced-motion:reduce){main > .site-section.section-open .section-visual,main > .site-section.section-open .section-visual::after{animation:none}.entry-section #entry-tagline{animation:none!important}}
 
 
 /* GLASS EYE — primary window / viewer layer */
