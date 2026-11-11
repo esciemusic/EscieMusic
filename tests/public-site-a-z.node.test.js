@@ -253,6 +253,26 @@ test("A-Z Pass 3 keeps NOW subordinate to the entry identity",()=>{
   assert.match(style,/\.now-section\{min-height:0\}/);
 });
 
+test("A-Z Pass 3 ART metadata filters are rendered, public-scoped, and usable",()=>{
+  const app=read("app.js");
+  const css=read("style.css");
+  assert.match(app,/getWorkRecords\(\)/);
+  assert.match(app,/data-work-filter/);
+  assert.match(app,/ALL TYPES/);
+  assert.match(app,/ALL STATUS/);
+  assert.match(app,/ALL PROJECTS/);
+  assert.match(app,/ALL LOCATIONS/);
+  assert.match(app,/ALL MOTIFS/);
+  assert.match(app,/record-filter-clear/);
+  assert.match(app,/ESCIE_RUNTIME\.workFilters/);
+  assert.match(app,/renderMusic\(\); renderProjects\(\)/);
+  assert.match(css,/\.art-section #work-filters \.record-filter-grid\{/);
+  assert.match(css,/\.art-section #work-filters \.record-filter-grid select\{/);
+  assert.match(css,/\.art-section #work-filters \.record-filter-clear\{/);
+  assert.match(css,/\.art-section #work-filters \.record-filter-count\{/);
+  assert.match(css,/outline:1px solid rgba\(155,89,255/);
+});
+
 test("A-Z Pass 3 ART empty states read as intentional quiet transmission states",()=>{
   const app=read("app.js");
   const aesthetic=read("aesthetic.css");
