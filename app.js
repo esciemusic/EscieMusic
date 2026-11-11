@@ -252,75 +252,20 @@
     return getGlobal("ESCIE_SIGNAL_ENGINE", null);
   }
 
-  function getBrain() {
-    return getGlobal("ESCIE_BRAIN", null);
-  }
-
-  function getEvidenceAPI() {
-    return getGlobal("ESCIE_EVIDENCE", null);
-  }
-
-  function getCorrelationAPI() {
-    return getGlobal("ESCIE_CORRELATION_API", null);
-  }
-
-  function getAuditAPI() {
-    return getGlobal("ESCIE_AUDIT_API", null);
-  }
-
-  function getControl() {
-    return getGlobal("ESCIE_CONTROL", null);
-  }
-
-  function getProposalAPI() {
-    return getGlobal("ESCIE_PROPOSAL_API", null);
-  }
-
-  function getDecisionAPI() {
-    return getGlobal("ESCIE_DECISION_API", null);
-  }
-
+  // Private cognition/control systems are intentionally absent from the public runtime.
+  // Central owns observation, evidence, proposals, decisions, audit history, and ingestion.
   function initializeCognitionBridge() {
-    const brain = getBrain();
-    const control = getControl();
-    const events = getEvents();
-
-    ESCIE_RUNTIME.brain = brain || null;
-    ESCIE_RUNTIME.control = control || null;
-    ESCIE_RUNTIME.evidence = getEvidenceAPI();
-    ESCIE_RUNTIME.correlation = getCorrelationAPI();
-    ESCIE_RUNTIME.audit = getAuditAPI();
-    ESCIE_RUNTIME.proposals = getProposalAPI();
-    ESCIE_RUNTIME.decisions = getDecisionAPI();
-
-    ESCIE_RUNTIME.observe = function (input = {}) {
-      return brain && typeof brain.observe === "function"
-        ? brain.observe(input)
-        : null;
-    };
-
-    ESCIE_RUNTIME.propose = function (input = {}) {
-      if (!brain || typeof brain.propose !== "function") return null;
-      return brain.propose(input);
-    };
-
-    ESCIE_RUNTIME.pendingControl = function () {
-      return control && typeof control.pending === "function"
-        ? control.pending()
-        : [];
-    };
-
-    if (events && typeof events.on === "function") {
-      events.on("control:item-added", () => {
-        ESCIE_RUNTIME.controlItems = ESCIE_RUNTIME.pendingControl();
-      });
-
-      events.on("control:item-resolved", () => {
-        ESCIE_RUNTIME.controlItems = ESCIE_RUNTIME.pendingControl();
-      });
-    }
-
-    ESCIE_RUNTIME.controlItems = ESCIE_RUNTIME.pendingControl();
+    ESCIE_RUNTIME.brain = null;
+    ESCIE_RUNTIME.control = null;
+    ESCIE_RUNTIME.evidence = null;
+    ESCIE_RUNTIME.correlation = null;
+    ESCIE_RUNTIME.audit = null;
+    ESCIE_RUNTIME.proposals = null;
+    ESCIE_RUNTIME.decisions = null;
+    ESCIE_RUNTIME.observe = function () { return null; };
+    ESCIE_RUNTIME.propose = function () { return null; };
+    ESCIE_RUNTIME.pendingControl = function () { return []; };
+    ESCIE_RUNTIME.controlItems = [];
   }
 
   function normalizeCollection(value) {
@@ -2259,11 +2204,7 @@ function renderClothing(){
     const report = health.check([
       "ESCIE_RECORD",
       "ESCIE_RELATIONSHIP",
-      "ESCIE_SOURCE",
-      "ESCIE_PROVENANCE",
-      "ESCIE_HISTORY",
-      "ESCIE_HISTORY_API",
-      "ESCIE_STATE",
+            "ESCIE_STATE",
       "ESCIE_EVENTS",
       "ESCIE_PUBLISH_BUILD",
       "ESCIE_PUBLISH_VALIDATE",
