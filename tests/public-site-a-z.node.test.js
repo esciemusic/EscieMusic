@@ -762,3 +762,19 @@ test("A-Z Pass 3 Montréal skyline uses recognizable landmark silhouettes",()=>{
   assert.ok(css.includes(".signal-city::before"));
   assert.ok(css.includes(".signal-city::after"));
 });
+
+
+test("ART is a complete creative-form doorway, not a music-only portfolio",()=>{
+  const index=read("index.html"),app=read("app.js"),registry=read("data/registry.js"),art=read("data/art.js");
+  for(const label of ["MUSIC","POETRY","DRAWINGS","PAINTING","WRITING","FILM / VISUAL","OTHER"]) assert.ok(index.includes("<h3>"+label+"</h3>"),"ART must expose "+label);
+  assert.ok(index.includes('id="art-forms"'));
+  assert.ok(app.includes("function renderArtForm"));
+  assert.ok(app.includes('renderArtForm("poetry-container"'));
+  assert.ok(app.includes('renderArtForm("drawings-container"'));
+  assert.ok(app.includes('renderArtForm("painting-container"'));
+  assert.ok(app.includes('renderArtForm("writing-container"'));
+  assert.ok(app.includes('renderArtForm("visual-art-container"'));
+  assert.ok(registry.includes('["poetry",()=>collection("ESCIE_POETRY")]'));
+  assert.ok(registry.includes('["drawing",()=>collection("ESCIE_DRAWINGS")]'));
+  assert.ok(art.includes('id:"drawings",label:"DRAWINGS"'));
+});
