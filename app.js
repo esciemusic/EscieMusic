@@ -1370,7 +1370,7 @@ function renderClothing(){
       ? registry.nodesForRecord(recordId(record))
       : [];
 
-    const relationships = normalizeCollection(getRelationships());
+    const relationships = getPublicRelationshipRecords();
     const relatedIds = relationships
       .filter(r => r && (r.from === recordId(record) || r.to === recordId(record)))
       .map(r => r.from === recordId(record) ? r.to : r.from)
@@ -1412,14 +1412,14 @@ function renderClothing(){
         '</div>' : '') +
       (derivedContext.parents.length ? '<div class="record-context"><p class="eyebrow">CONTAINED BY</p>' +
         derivedContext.parents.map(item => '<button class="record-related-link" type="button" data-record-id="' + escapeHTML(item.record) + '">' +
-          escapeHTML(recordTitle(getAllRecords().find(r => recordId(r) === item.record) || {title:item.record})) + '</button>').join("") + '</div>' : '') +
+          escapeHTML(recordTitle(getAllPublicRecords().find(r => recordId(r) === item.record && isPublic(r)) || {title:item.record})) + '</button>').join("") + '</div>' : '') +
       (derivedContext.children.length ? '<div class="record-context"><p class="eyebrow">CONTAINS</p>' +
         derivedContext.children.map(item => '<button class="record-related-link" type="button" data-record-id="' + escapeHTML(item.record) + '">' +
-          escapeHTML(recordTitle(getAllRecords().find(r => recordId(r) === item.record) || {title:item.record})) + '</button>').join("") + '</div>' : '') +
+          escapeHTML(recordTitle(getAllPublicRecords().find(r => recordId(r) === item.record && isPublic(r)) || {title:item.record})) + '</button>').join("") + '</div>' : '') +
       (derivedContext.connections.length ? '<div class="record-context"><p class="eyebrow">RELATIONSHIPS</p>' +
         derivedContext.connections.map(item => '<p><strong>' + escapeHTML(item.direction === "out" ? "TO" : "FROM") + '</strong> ' +
           '<button class="record-related-link" type="button" data-record-id="' + escapeHTML(item.record) + '">' +
-          escapeHTML(recordTitle(getAllRecords().find(r => recordId(r) === item.record) || {title:item.record})) + '</button>' +
+          escapeHTML(recordTitle(getAllPublicRecords().find(r => recordId(r) === item.record && isPublic(r)) || {title:item.record})) + '</button>' +
           ' <span class="inspector-note">[' + escapeHTML(item.type) + ']</span></p>').join("") + '</div>' : '') +
       (related.length ? '<div class="record-related"><p class="eyebrow">CONNECTED RECORDS</p>' +
         related.map(item => '<button class="record-related-link" type="button" data-record-id="' + escapeHTML(recordId(item)) + '">' +
