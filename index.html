@@ -77,8 +77,16 @@
         <p class="section-lede">BROAD STROKES AND FINE LINES — THE THINGS ESCIE MAKES FROM LIFE.</p>
         <div id="art-container" class="content-container">
           <div id="work-filters" class="record-filters" aria-label="Filter work"></div>
-          <div id="music-container" class="content-container"></div>
-          <div id="projects-container" class="content-container"></div>
+          <div id="art-forms" class="art-forms" aria-label="Creative forms">
+            <article class="art-category" data-art-category="music"><h3>MUSIC</h3><div id="music-container" class="content-container"></div></article>
+            <article class="art-category" data-art-category="poetry"><h3>POETRY</h3><div id="poetry-container" class="content-container"></div></article>
+            <article class="art-category" data-art-category="drawings"><h3>DRAWINGS</h3><div id="drawings-container" class="content-container"></div></article>
+            <article class="art-category" data-art-category="painting"><h3>PAINTING</h3><div id="painting-container" class="content-container"></div></article>
+            <article class="art-category" data-art-category="writing"><h3>WRITING</h3><div id="writing-container" class="content-container"></div></article>
+            <article class="art-category" data-art-category="film-visual"><h3>FILM / VISUAL</h3><div id="visual-art-container" class="content-container"></div></article>
+            <article class="art-category" data-art-category="other"><h3>OTHER</h3><div id="other-art-container" class="content-container"></div></article>
+            <article class="art-category" data-art-category="projects"><h3>PROJECTS</h3><div id="projects-container" class="content-container"></div></article>
+          </div>
         </div>
       </div>
     </section>
@@ -259,7 +267,7 @@
       openFromHash(false);
     }
     function initNestedDropdowns(){
-      var selector=".world-place,.archive-record,.investigation-case,.merch-card,.clothing-card";
+      var selector=".world-place,.archive-record,.investigation-case,.merch-card,.clothing-card,.art-category";
       function enhance(root){
         if(!root)return;
         var items=[];
@@ -383,6 +391,7 @@
   <script src="data/about.js" defer></script>
   <script src="data/projects.js" defer></script>
   <script src="data/music.js" defer></script>
+  <script src="data/art.js" defer></script>
   <script src="data/people.js" defer></script>
   <script src="data/locations.js" defer></script>
   <script src="data/moments.js" defer></script>
