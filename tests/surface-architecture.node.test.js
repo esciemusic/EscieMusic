@@ -5,7 +5,7 @@ function read(p){return fs.readFileSync(path.join(ROOT,p),"utf8");}
 function assert(v,m){if(!v)throw new Error(m);}
 const index=read("index.html");
 const world=read("world/index.html");
-assert(index.includes('signal/countdown-ui.js'),"public site must load countdown UI");
+assert(!index.includes('signal/countdown-ui.js'),"public site must keep deferred countdown UI out of the public doorway");
 assert(/<script\s+src="data\/universe-contract\.js"[^>]*><\/script>/.test(index),"public site must load universe contract");
 assert(/<script\s+src="data\/layer-balance\.js"[^>]*><\/script>/.test(index),"public site must load layer balance");
 assert(/<script\s+src="\.\.\/core\/performance\.js"[^>]*><\/script>/.test(world),"world must load performance runtime");
