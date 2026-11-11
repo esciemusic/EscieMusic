@@ -855,3 +855,53 @@ test("A-Z Pass 3 THE WEB empty state preserves the Glass Eye participation doorw
   assert.match(app,/data-web-participate/);
   assert.match(app,/const glass=byId\("glass-eye"\)/);
 });
+
+
+test("A-Z Pass 3 THE ARCHIVES preserved-trace field is covered by a public interaction contract",()=>{
+  const app=read("app.js");
+  const style=read("style.css");
+  assert.match(app,/function renderArchive()/);
+  assert.match(app,/manifest\.sections\.archive === true/);
+  assert.match(app,/archiveType/);
+  assert.match(app,/archivedState/);
+  assert.match(app,/\.filter\(isPublic\)/);
+  assert.match(app,/class="archive-index"/);
+  assert.match(app,/class="archive-index-head"/);
+  assert.match(app,/class="archive-list"/);
+  assert.match(app,/class="archive-record"/);
+  assert.match(app,/role="button"/);
+  assert.match(app,/tabindex="0"/);
+  assert.match(app,/data-record-id=/);
+  assert.match(app,/OPEN THE RECORD TO FOLLOW ITS TRACE\./);
+  assert.match(style,/\.archive-index\{/);
+  assert.match(style,/\.archive-list\{/);
+  assert.match(style,/\.archive-record\{/);
+  assert.match(style,/\.archive-record-body\{/);
+  assert.match(style,/@media\(max-width:700px\)/);
+});
+
+test("A-Z Pass 3 THE ARCHIVES remains public-only and fail-closed at the record boundary",()=>{
+  const app=read("app.js");
+  const start=app.indexOf("function renderArchive");
+  const end=app.indexOf("function renderInvestigation",start);
+  const projection=app.slice(start,end);
+  assert.ok(start>=0&&end>start,"archive renderer boundary must remain discoverable");
+  assert.match(projection,/getAllPublicRecords\(\)/);
+  assert.match(projection,/\.filter\(isPublic\)/);
+  assert.match(projection,/recordManifest\(record\)/);
+  assert.doesNotMatch(projection,/ESCIE_SOURCE|ESCIE_PROVENANCE|ESCIE_HISTORY|pendingControl/);
+  assert.doesNotMatch(projection,/source:|provenance:|evidence:/);
+  assert.match(projection,/recordId\(record\)/);
+  assert.match(projection,/recordTitle\(record\)/);
+});
+
+test("A-Z Pass 3 THE ARCHIVES empty state stays quiet and does not invent public records",()=>{
+  const app=read("app.js");
+  const start=app.indexOf("function renderArchive");
+  const end=app.indexOf("function renderInvestigation",start);
+  const projection=app.slice(start,end);
+  assert.match(projection,/if \(!records\.length\)/);
+  assert.match(projection,/THE ARCHIVE IS BEING PRESERVED\./);
+  assert.match(projection,/PUBLIC TRACES WILL APPEAR WHEN THEY ENTER THE ARCHIVE\./);
+  assert.doesNotMatch(projection,/sample|mock|demo|placeholder/i);
+});
