@@ -108,3 +108,18 @@ test("THE WEB inversion is a view and does not mutate the source", () => {
   assert.notEqual(inverse.id, source.relationship.id);
   assert.deepEqual(inverse.history, source.relationship.history);
 });
+
+test("THE WEB disclosure is explicit opt-in", () => {
+  const relationship = R.create({
+    id: "disclosure-opt-in",
+    type: "collaborated_with",
+    from: "person-a",
+    to: "person-b",
+    visibility: "public"
+  });
+
+  assert.equal(relationship.valid, true);
+  assert.equal(relationship.relationship.public_disclosure, null);
+  assert.equal(R.canDisclose(relationship.relationship), false);
+  assert.equal(R.toPublicView(relationship.relationship), null);
+});
