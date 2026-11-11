@@ -531,11 +531,12 @@
     const container = byId("music-container");
     if (!container) return;
 
-    const music = getFilteredWorkRecords().filter(record => record.type === "music");
+    const filteredWork = getFilteredWorkRecords();
+    const music = filteredWork.filter(record => record.type === "music");
     const visible = music.filter(isPublic);
 
     if (!visible.length) {
-      renderEmpty(container, "THE MUSIC EXISTS. IT HAS NOT BEEN TRANSMITTED HERE YET.", "music-quiet");
+      renderEmpty(container, filteredWork.length ? "THE MUSIC EXISTS. IT HAS NOT BEEN TRANSMITTED HERE YET." : "NO PUBLIC WORK MATCHES THIS TRACE.", filteredWork.length ? "music-quiet" : "filter-quiet");
       return;
     }
 
@@ -564,11 +565,12 @@
     const container = byId("projects-container");
     if (!container) return;
 
-    const projects = getFilteredWorkRecords().filter(record => record.type === "project");
+    const filteredWork = getFilteredWorkRecords();
+    const projects = filteredWork.filter(record => record.type === "project");
     const visible = projects.filter(isPublic);
 
     if (!visible.length) {
-      renderEmpty(container, "THE WORK IS BEING PREPARED.", "work-quiet");
+      renderEmpty(container, filteredWork.length ? "THE WORK IS BEING PREPARED." : "NO PUBLIC WORK MATCHES THIS TRACE.", filteredWork.length ? "work-quiet" : "filter-quiet");
       return;
     }
 
