@@ -240,6 +240,15 @@ main > .site-section:not(#entry) .section-drop-panel .content-container{
 .world-place-copy h3{margin:0;font:400 clamp(15px,2vw,21px)/1.2 var(--escie-font-display);letter-spacing:.08em}
 .world-place-copy p{margin:7px 0 0;color:var(--faint);font-size:10px;line-height:1.7}
 .world-place-state{font:700 8px/1 var(--escie-font-mono);letter-spacing:.18em;color:var(--faint)}
+.world-now-strip{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:end;gap:18px;margin:18px 0 20px;padding:14px 0;border-top:1px solid rgba(216,212,202,.1);border-bottom:1px solid rgba(216,212,202,.1)}
+.world-now-strip strong{font:400 clamp(18px,3vw,30px)/1.05 var(--escie-font-display);letter-spacing:.05em}
+.world-now-strip em{color:var(--escie-blue-bright);font:400 8px/1 var(--escie-font-mono);font-style:normal;letter-spacing:.16em;text-transform:uppercase}
+.world-city-scale{color:var(--faint);font:400 8px/1 var(--escie-font-mono);letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
+@media(max-width:700px){
+  .world-now-strip{grid-template-columns:1fr auto;gap:9px;padding:12px 0}
+  .world-now-strip em{grid-column:1}
+  .world-city-scale{grid-column:2;grid-row:1;align-self:start}
+}
 .world-place:hover{background:linear-gradient(90deg,rgba(155,89,255,.035),transparent 70%)}
 @media(max-width:700px){
   .world-place{grid-template-columns:32px minmax(0,1fr);gap:12px;padding:15px 0}
