@@ -232,6 +232,12 @@ test("A-Z Pass 1 preserves keyboard and preference accessibility contracts",()=>
   assert.match(aesthetic,/:focus-visible/);
 });
 
+test("A-Z Pass 3 keeps the hero-to-NOW transition as a quiet threshold",()=>{
+  const style=read("style.css");
+  assert.match(style,/\.entry-section \+ \.now-section\{[\s\S]*padding-top:clamp\(68px,9vw,108px\)/);
+  assert.match(style,/@media\(max-width:700px\)\{[\s\S]*\.entry-section \+ \.now-section\{[\s\S]*padding-top:64px/);
+});
+
 test("A-Z Pass 3 hero vertical hierarchy keeps state above identity",()=>{
   const style=read("style.css");
   assert.match(style,/\.entry-section #entry-container #entry-state\{[\s\S]*margin-bottom:clamp\(14px,2\.2vw,22px\)/);
