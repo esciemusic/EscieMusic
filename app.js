@@ -527,6 +527,27 @@
   }
 
 
+  function renderArtForm(containerId, types, emptyMessage, state){
+    const container=byId(containerId); if(!container)return;
+    const filtered=getFilteredWorkRecords();
+    const records=filtered.filter(record=>types.includes(String(record.type||"").toLowerCase())).filter(isPublic);
+    if(!records.length){
+      renderEmpty(container, filtered.length ? emptyMessage : "NO PUBLIC WORK MATCHES THIS TRACE.", filtered.length ? state : "filter-quiet");
+      return;
+    }
+    container.innerHTML=records.map(record=>{
+      const media=Array.isArray(record.media)?record.media:[];
+      const mediaMarkup=window.ESCIE_MEDIA&&typeof window.ESCIE_MEDIA.renderAll==="function"&&media.length ? window.ESCIE_MEDIA.renderAll(media) : "";
+      const date=record.date||record.date_start||"DATE WITHHELD";
+      return '<article class="art-record-card" data-record-id="'+escapeHTML(recordId(record))+'">'+
+        '<div class="art-record-copy"><p class="eyebrow">'+escapeHTML(String(record.type||"ART").replace(/_/g," / "))+'</p>'+
+        '<h4>'+escapeHTML(recordTitle(record))+'</h4>'+
+        '<p>'+escapeHTML(record.description||record.summary||"The work exists. The record remains.")+'</p>'+
+        '<div class="art-record-meta"><span>'+escapeHTML(date)+'</span></div>'+
+        '<button class="record-action record-card" type="button" data-record-id="'+escapeHTML(recordId(record))+'">OPEN RECORD</button></div>'+mediaMarkup+'</article>';
+    }).join("");
+  }
+
   function renderMusic() {
     const container = byId("music-container");
     if (!container) return;
@@ -559,6 +580,15 @@
         '<div class="music-card-meta"><span>' + escapeHTML(track.release_date || "DATE WITHHELD") + '</span><span>' + escapeHTML((track.tags || []).slice(0, 3).join(" · ") || "SIGNAL") + '</span></div>' +
         listen + '</div></article>';
     }).join("");
+  }
+
+  function renderArtForms(){
+    renderArtForm("poetry-container",["poetry"],"THE POETRY EXISTS. IT HAS NOT BEEN TRANSMITTED HERE YET.","poetry-quiet");
+    renderArtForm("drawings-container",["drawing","drawings"],"THE DRAWINGS EXIST. THEY HAVE NOT BEEN TRANSMITTED HERE YET.","drawings-quiet");
+    renderArtForm("painting-container",["painting"],"THE PAINTING EXISTS. IT HAS NOT BEEN TRANSMITTED HERE YET.","painting-quiet");
+    renderArtForm("writing-container",["writing"],"THE WRITING EXISTS. IT HAS NOT BEEN TRANSMITTED HERE YET.","writing-quiet");
+    renderArtForm("visual-art-container",["visual","film","photography"],"THE VISUAL WORK EXISTS. IT HAS NOT BEEN TRANSMITTED HERE YET.","visual-quiet");
+    renderArtForm("other-art-container",["other_art"],"THE WORK EXISTS. IT HAS NOT BEEN TRANSMITTED HERE YET.","other-quiet");
   }
 
   function renderProjects() {
@@ -1489,7 +1519,7 @@ function renderClothing(){
       if(!control)return;
       ESCIE_RUNTIME.workFilters=ESCIE_RUNTIME.workFilters||{};
       ESCIE_RUNTIME.workFilters[control.getAttribute("data-work-filter")]=control.value||"";
-      renderWorkFilters(); renderMusic(); renderProjects();
+      renderWorkFilters(); renderMusic(); renderArtForms(); renderProjects();
     });
 
     document.addEventListener("change", event => {
@@ -1545,7 +1575,7 @@ function renderClothing(){
       const clearFilters=event.target.closest(".record-filter-clear");
       if(clearFilters){
         ESCIE_RUNTIME.workFilters={};
-        renderWorkFilters(); renderMusic(); renderProjects();
+        renderWorkFilters(); renderMusic(); renderArtForms(); renderProjects();
         return;
       }
 
@@ -1821,6 +1851,7 @@ function renderClothing(){
         renderNavigation();
         renderNow();
         renderMusic();
+        renderArtForms();
         renderProjects();
         renderClothing();
         renderMerch();
@@ -2143,6 +2174,7 @@ function renderClothing(){
     renderWorkFilters();
     renderNow();
     renderMusic();
+    renderArtForms();
     renderProjects();
     renderClothing();
     renderMerch();
