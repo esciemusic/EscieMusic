@@ -8,6 +8,27 @@
   const API="https://ljdkjzvnwnaluevtzker.supabase.co/rest/v1";
   const KEY="sb_publishable_ICPqqxh3c32b7eb5PYqUaA_Cem3vvB9";
   function headers(){return {apikey:KEY,Accept:"application/json"};}
+  function safeURL(value){
+    const raw=String(value==null?"":value).trim();
+    if(!raw)return "";
+    try{
+      const parsed=new URL(raw,root.location&&root.location.href||undefined);
+      return ["http:","https:"].includes(parsed.protocol)?parsed.href:"";
+    }catch(error){return "";}
+  }
+  function publicMedia(items){
+    return (Array.isArray(items)?items:[]).map(item=>{
+      if(!item||typeof item!=="object")return null;
+      return {
+        id:item.id?String(item.id):null,
+        type:item.type?String(item.type).toLowerCase():null,
+        title:item.title?String(item.title):"",
+        label:item.label?String(item.label):"",
+        alt:item.alt?String(item.alt):"",
+        url:safeURL(item.url)
+      };
+    }).filter(item=>item&&item.url);
+  }
   function normalize(row){
     const source=row&&row.source&&typeof row.source==="object"?row.source:{};
     return {
@@ -27,13 +48,10 @@
       locations:Array.isArray(row.places)?row.places:[],
       moments:Array.isArray(row.moments)?row.moments:[],
       related_content:Array.isArray(row.related_records)?row.related_records:[],
-      evidence:Array.isArray(row.evidence)?row.evidence:[],
-      media:Array.isArray(row.media)?row.media:[],
-      symbols:Array.isArray(source.symbols)?source.symbols:(Array.isArray(row.symbols)?row.symbols:[]),
+      media:publicMedia(row.media),
+      symbols:Array.isArray(row.symbols)?row.symbols:[],
       project:row.project||null,
-      date:row.due_date||source.date||null,
-      source:source,
-      provenance:source.provenance||null
+      date:row.due_date||null
     };
   }
   async function get(path){
@@ -50,5 +68,5 @@
     root.ESCIE_LIVE_RELATIONSHIPS=(Array.isArray(relationships)?relationships:[]).filter(x=>publicIds.has(String(x.from||""))&&publicIds.has(String(x.to||"")));
     return {records:root.ESCIE_LIVE_RECORDS,relationships:root.ESCIE_LIVE_RELATIONSHIPS};
   }
-  root.ESCIE_PUBLIC_LIVE={version:"1.1.0",status:"LOADING",ready:load().then(function(result){root.ESCIE_PUBLIC_LIVE.status="READY";return result;}).catch(function(error){root.ESCIE_PUBLIC_LIVE.status="OFFLINE";root.ESCIE_PUBLIC_LIVE.error=String(error&&error.message||error);return {records:[],relationships:[]};})};
+  root.ESCIE_PUBLIC_LIVE={version:"1.2.0",status:"LOADING",ready:load().then(function(result){root.ESCIE_PUBLIC_LIVE.status="READY";return result;}).catch(function(error){root.ESCIE_PUBLIC_LIVE.status="OFFLINE";root.ESCIE_PUBLIC_LIVE.error=String(error&&error.message||error);return {records:[],relationships:[]};})};
 })();
