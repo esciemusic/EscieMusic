@@ -550,3 +550,15 @@ test("A-Z Pass 3 hero signal respects reduced-motion preferences",()=>{
   assert.ok(aesthetic.includes(".entry-section #entry-tagline{animation:none!important}"));
   assert.ok(style.includes("env(safe-area-inset-bottom)"));
 });
+
+
+test("A-Z Pass 3 hero supporting copy preserves signal hierarchy",()=>{
+  const aesthetic=read("aesthetic.css");
+  const index=read("index.html");
+  assert.match(index,/id="entry-tagline" class="hero-tagline"/);
+  assert.match(index,/id="entry-location" class="hero-location"/);
+  assert.ok(aesthetic.includes("#entry-container #entry-tagline{margin-top:clamp(22px,3.2vw,34px)"));
+  assert.ok(aesthetic.includes("color:var(--escie-blue-bright)"));
+  assert.ok(aesthetic.includes("#entry-container #entry-location{margin-top:clamp(12px,1.8vw,18px)"));
+  assert.ok(aesthetic.includes("font-family:var(--escie-font-signal)"));
+});
