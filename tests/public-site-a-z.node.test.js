@@ -253,6 +253,18 @@ test("A-Z Pass 3 keeps NOW subordinate to the entry identity",()=>{
   assert.match(style,/\.now-section\{min-height:0\}/);
 });
 
+test("A-Z Pass 3 ART record opening stays public-scoped",()=>{
+  const app=read("app.js");
+  const start=app.indexOf("function showRecordInspector(record)");
+  const end=app.indexOf("let inspectorLastFocus",start);
+  const inspector=app.slice(start,end);
+  assert.match(inspector,/registry\.publicRecord\(recordId\(record\)\)/);
+  assert.match(inspector,/const relationships = getPublicRelationshipRecords\(\);/);
+  assert.match(inspector,/getAllPublicRecords\(\)\.find\(r => recordId\(r\) === item\.record && isPublic\(r\)/);
+  assert.doesNotMatch(inspector,/normalizeCollection\(getRelationships\(\)\)/);
+  assert.doesNotMatch(inspector,/getAllRecords\(\)\.find\(r => recordId\(r\) === item\.record\)/);
+});
+
 test("A-Z Pass 3 ART record cards remain public-projection scoped",()=>{
   const app=read("app.js");
   const musicStart=app.indexOf("function renderMusic()");
