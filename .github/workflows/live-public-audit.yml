@@ -44,6 +44,7 @@ jobs:
       - name: Run live public-site audit
         env:
           LIVE_URL: https://esciemusic.github.io/EscieMusic/
+          EXPECTED_SHA: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
         run: |
           mkdir -p artifacts
           node tests/live-public-audit.mjs
