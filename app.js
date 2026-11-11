@@ -582,13 +582,44 @@
     }).join("");
   }
 
+  function renderArtGroup(containerId, groups, emptyMessage){
+    const container=byId(containerId); if(!container)return;
+    container.innerHTML=groups.map(group=>{
+      const holder=document.createElement("div");
+      holder.className="art-form-group";
+      holder.dataset.artFormGroup=group.key;
+      holder.innerHTML='<h4>'+escapeHTML(group.label)+'</h4><div class="art-form-records"></div>';
+      const records=getFilteredWorkRecords().filter(record=>group.types.includes(String(record.type||"").toLowerCase())).filter(isPublic);
+      const recordsContainer=holder.querySelector(".art-form-records");
+      if(records.length){
+        recordsContainer.innerHTML=records.map(record=>{
+          const media=Array.isArray(record.media)?record.media:[];
+          const mediaMarkup=window.ESCIE_MEDIA&&typeof window.ESCIE_MEDIA.renderAll==="function"&&media.length ? window.ESCIE_MEDIA.renderAll(media) : "";
+          const date=record.date||record.date_start||"DATE WITHHELD";
+          return '<article class="art-record-card" data-record-id="'+escapeHTML(recordId(record))+'">'+
+            '<div class="art-record-copy"><p class="eyebrow">'+escapeHTML(String(record.type||group.label||"ART").replace(/_/g," / "))+'</p>'+
+            '<h5>'+escapeHTML(recordTitle(record))+'</h5>'+
+            '<p>'+escapeHTML(record.description||record.summary||"The work exists. The record remains.")+'</p>'+
+            '<div class="art-record-meta"><span>'+escapeHTML(date)+'</span></div>'+
+            '<button class="record-action record-card" type="button" data-record-id="'+escapeHTML(recordId(record))+'">OPEN RECORD</button></div>'+mediaMarkup+'</article>';
+        }).join("");
+      }else{
+        recordsContainer.innerHTML='<p class="art-form-empty">'+escapeHTML(emptyMessage||"THE WORK EXISTS. IT HAS NOT BEEN TRANSMITTED HERE YET.")+'</p>';
+      }
+      return holder.outerHTML;
+    }).join("");
+  }
+
   function renderArtForms(){
-    renderArtForm("poetry-container",["poetry"],"THE POETRY EXISTS. IT HAS NOT BEEN TRANSMITTED HERE YET.","poetry-quiet");
-    renderArtForm("drawings-container",["drawing","drawings"],"THE DRAWINGS EXIST. THEY HAVE NOT BEEN TRANSMITTED HERE YET.","drawings-quiet");
-    renderArtForm("painting-container",["painting"],"THE PAINTING EXISTS. IT HAS NOT BEEN TRANSMITTED HERE YET.","painting-quiet");
-    renderArtForm("writing-container",["writing"],"THE WRITING EXISTS. IT HAS NOT BEEN TRANSMITTED HERE YET.","writing-quiet");
-    renderArtForm("visual-art-container",["visual","film","photography"],"THE VISUAL WORK EXISTS. IT HAS NOT BEEN TRANSMITTED HERE YET.","visual-quiet");
-    renderArtForm("other-art-container",["other_art"],"THE WORK EXISTS. IT HAS NOT BEEN TRANSMITTED HERE YET.","other-quiet");
+    renderArtGroup("words-container",[
+      {key:"poetry",label:"POETRY",types:["poetry"]},
+      {key:"writing",label:"WRITING",types:["writing"]}
+    ],"THE WORDS EXIST. THEY HAVE NOT BEEN TRANSMITTED HERE YET.");
+    renderArtGroup("visual-container",[
+      {key:"drawings",label:"DRAWINGS",types:["drawing","drawings"]},
+      {key:"painting",label:"PAINTING",types:["painting"]},
+      {key:"film-visual",label:"FILM / VISUAL",types:["visual","film","photography"]}
+    ],"THE VISUAL WORK EXISTS. IT HAS NOT BEEN TRANSMITTED HERE YET.");
   }
 
   function renderProjects() {
