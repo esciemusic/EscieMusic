@@ -253,6 +253,22 @@ test("A-Z Pass 3 keeps NOW subordinate to the entry identity",()=>{
   assert.match(style,/\.now-section\{min-height:0\}/);
 });
 
+test("A-Z Pass 3 ART record cards remain public-projection scoped",()=>{
+  const app=read("app.js");
+  const musicStart=app.indexOf("function renderMusic()");
+  const projectsStart=app.indexOf("function renderProjects()",musicStart);
+  const music=app.slice(musicStart,projectsStart);
+  const projectEnd=app.indexOf("function getPublicRelationshipRecords()",projectsStart);
+  const projects=app.slice(projectsStart,projectEnd);
+  assert.match(music,/getAllPublicRecords\(\)\.find\(item => recordId\(item\) === parent\.record && isPublic\(item\)/);
+  assert.match(music,/const stage = "TRANSMISSION"/);
+  assert.match(projects,/new Map\(getAllPublicRecords\(\)\.filter\(item => item && isPublic\(item\)/);
+  assert.match(projects,/isReleaseVisible\(track\)/);
+  assert.match(projects,/data-record-id/);
+  assert.doesNotMatch(music,/getAllRecords\(\)\.find\(item => recordId\(item\) === parent\.record/);
+  assert.doesNotMatch(projects,/new Map\(getAllRecords\(\)/);
+});
+
 test("A-Z Pass 3 ART filters produce a distinct zero-match state without crossing release boundaries",()=>{
   const app=read("app.js");
   const aesthetic=read("aesthetic.css");
