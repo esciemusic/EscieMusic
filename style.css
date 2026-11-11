@@ -580,7 +580,7 @@ body.menu-open .index-navigation.is-open {
   align-items: center;
   justify-content: center;
   padding-top: 110px;
-  padding-bottom: 90px;
+  padding-bottom: calc(90px + env(safe-area-inset-bottom));
   border-top: 0;
 }
 
