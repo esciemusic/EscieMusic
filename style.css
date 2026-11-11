@@ -1970,6 +1970,70 @@ body.inspector-open{overflow:hidden}
   margin-top:10px;
 }
 
+.art-section #work-filters .record-filters-heading{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:14px;
+  color:var(--faint);
+  font-size:8px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+}
+.art-section #work-filters .record-filter-clear{
+  border:1px solid var(--line);
+  background:transparent;
+  color:var(--muted);
+  padding:7px 9px;
+  font:inherit;
+  letter-spacing:inherit;
+  cursor:pointer;
+  transition:color var(--escie-motion-fast),border-color var(--escie-motion-fast),background var(--escie-motion-fast);
+}
+.art-section #work-filters .record-filter-clear:hover,
+.art-section #work-filters .record-filter-clear:focus-visible{
+  color:var(--white);
+  border-color:rgba(155,89,255,.45);
+  background:rgba(155,89,255,.04);
+}
+.art-section #work-filters .record-filter-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(145px,1fr));
+  gap:10px;
+}
+.art-section #work-filters .record-filter-grid label{
+  display:grid;
+  gap:6px;
+  color:var(--faint);
+  font-size:8px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+.art-section #work-filters .record-filter-grid select{
+  width:100%;
+  min-height:34px;
+  border:1px solid var(--line);
+  border-radius:0;
+  background:rgba(255,255,255,.015);
+  color:var(--muted);
+  padding:8px 26px 8px 9px;
+  font:inherit;
+  letter-spacing:.08em;
+  cursor:pointer;
+}
+.art-section #work-filters .record-filter-grid select:focus-visible{
+  outline:1px solid rgba(155,89,255,.58);
+  outline-offset:2px;
+  color:var(--white);
+}
+.art-section #work-filters .record-filter-count{
+  margin:12px 0 0;
+  color:var(--faint);
+  font-size:8px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
 .art-section .music-card{
   display:block;
   padding:26px 0 28px;
