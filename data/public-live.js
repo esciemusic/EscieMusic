@@ -63,9 +63,22 @@
     const rows=await get("/records?select=*&visibility=eq.PUBLIC&publication_state=eq.PUBLISHED&release_state=eq.RELEASED&order=updated_at.desc");
     const publicRecords=(Array.isArray(rows)?rows:[]).map(normalize).filter(x=>x.id);
     const publicIds=new Set(publicRecords.map(x=>x.id));
-    const relationships=await get("/record_relationships?select=id,from:from_record_id,to:to_record_id,type:relationship_type,status&status=eq.RELEASED&order=created_at.desc");
+    const relationships=await get("/record_relationships?select=id,from:from_record_id,to:to_record_id,type:relationship_type,status,confidence,canonical_status,visibility,public_disclosure,date,context,note&status=eq.RELEASED&order=created_at.desc");
     root.ESCIE_LIVE_RECORDS=publicRecords;
-    root.ESCIE_LIVE_RELATIONSHIPS=(Array.isArray(relationships)?relationships:[]).filter(x=>publicIds.has(String(x.from||""))&&publicIds.has(String(x.to||"")));
+    const contract=root.ESCIE_RELATIONSHIP;
+    if(!contract||typeof contract.validate!=="function"||typeof contract.canDisclose!=="function"){
+      root.ESCIE_LIVE_RELATIONSHIPS=[];
+    }else{
+      root.ESCIE_LIVE_RELATIONSHIPS=(Array.isArray(relationships)?relationships:[])
+        .map(function(x){return Object.assign({},x,{from:x&&x.from?String(x.from):null,to:x&&x.to?String(x.to):null,type:x&&x.type?String(x.type):null});})
+        .filter(function(x){
+          if(!publicIds.has(String(x.from||""))||!publicIds.has(String(x.to||"")))return false;
+          const validation=contract.validate(x);
+          return validation&&validation.valid===true&&contract.canDisclose(x)===true;
+        })
+        .map(function(x){return contract.toPublicView?contract.toPublicView(x):x;})
+        .filter(Boolean);
+    }
     return {records:root.ESCIE_LIVE_RECORDS,relationships:root.ESCIE_LIVE_RELATIONSHIPS};
   }
   root.ESCIE_PUBLIC_LIVE={version:"1.2.0",status:"LOADING",ready:load().then(function(result){root.ESCIE_PUBLIC_LIVE.status="READY";return result;}).catch(function(error){root.ESCIE_PUBLIC_LIVE.status="OFFLINE";root.ESCIE_PUBLIC_LIVE.error=String(error&&error.message||error);return {records:[],relationships:[]};})};
