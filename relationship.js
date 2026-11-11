@@ -483,6 +483,15 @@
         );
       }
 
+      if (
+        relationship.canonical_status === this.CANONICAL_STATUS.CANONICAL &&
+        relationship.public_disclosure !== true
+      ) {
+        errors.push(
+          "Canonical relationships must explicitly allow public disclosure."
+        );
+      }
+
       return {
         valid: errors.length === 0,
         errors: errors
