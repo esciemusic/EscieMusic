@@ -240,6 +240,15 @@ test("A-Z Pass 1 keeps the deferred November 22 countdown inactive",()=>{
   assert.ok(index.includes('NEXT TRANSMISSION'));
 });
 
+test("A-Z Pass 3 entry signal state stays synchronized to local time boundaries",()=>{
+  const app=read("app.js");
+  assert.match(app,/let entryTimeStateTimer = null/);
+  assert.match(app,/function scheduleTimeStateRefresh\(\)/);
+  assert.match(app,/window\.setTimeout\(\(\) => \{/);
+  assert.match(app,/entryState\.dataset\.signalState = state/);
+  assert.doesNotMatch(app,/setInterval\(/);
+});
+
 test("A-Z Pass 1 time state is lightweight and does not create a recurring timer",()=>{
   const app=read("app.js");
   assert.match(app,/function updateTimeState\(\)/);
