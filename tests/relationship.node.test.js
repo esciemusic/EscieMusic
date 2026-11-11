@@ -66,3 +66,45 @@ test("THE WEB inverse vocabulary is internally closed", () => {
     assert.equal(R.isType(inverse), true, `inverse target must be registered: ${inverse}`);
   }
 });
+
+test("THE WEB public view strips private editorial metadata", () => {
+  const source = R.create({
+    id: "public-safe-view",
+    type: "collaborated_with",
+    from: "person-a",
+    to: "person-b",
+    visibility: "public",
+    public_disclosure: true,
+    basis: "internal research",
+    source_reference: "private-source",
+    evidence: [{ id: "private-evidence" }],
+    history: [{ action: "private-history" }],
+    created_by: "private-user",
+    modified_by: "private-user"
+  });
+
+  assert.equal(source.valid, true);
+  const view = R.toPublicView(source.relationship);
+  assert.ok(view);
+  for (const field of ["basis","source","evidence","history","created_by","modified_by"]) {
+    assert.equal(Object.prototype.hasOwnProperty.call(view, field), false, `public view must exclude ${field}`);
+  }
+});
+
+test("THE WEB inversion is a view and does not mutate the source", () => {
+  const source = R.create({
+    id: "non-mutating-inverse",
+    type: "created",
+    from: "person-a",
+    to: "art-a",
+    history: [{ action: "created" }]
+  });
+
+  const before = JSON.stringify(source.relationship);
+  const inverse = R.invert(source.relationship);
+
+  assert.ok(inverse);
+  assert.equal(JSON.stringify(source.relationship), before);
+  assert.notEqual(inverse.id, source.relationship.id);
+  assert.deepEqual(inverse.history, source.relationship.history);
+});
