@@ -764,16 +764,21 @@ test("A-Z Pass 3 Montréal skyline uses recognizable landmark silhouettes",()=>{
 });
 
 
-test("ART is a complete creative-form doorway, not a music-only portfolio",()=>{
+test("ART is a complete creative body with a compact public taxonomy",()=>{
   const index=read("index.html"),app=read("app.js"),registry=read("data/registry.js"),art=read("data/art.js");
-  for(const label of ["MUSIC","POETRY","DRAWINGS","PAINTING","WRITING","FILM / VISUAL","OTHER"]) assert.ok(index.includes("<h3>"+label+"</h3>"),"ART must expose "+label);
+  for(const label of ["MUSIC","WORDS","VISUAL","PROJECTS"]) assert.ok(index.includes("<h3>"+label+"</h3>"),"ART must expose "+label);
+  for(const label of ["POETRY","WRITING","DRAWINGS","PAINTING","FILM / VISUAL"]) assert.ok(app.includes('label:"'+label+'"'),"ART must retain "+label+" internally");
   assert.ok(index.includes('id="art-forms"'));
   assert.ok(app.includes("function renderArtForm"));
-  assert.ok(app.includes('renderArtForm("poetry-container"'));
-  assert.ok(app.includes('renderArtForm("drawings-container"'));
-  assert.ok(app.includes('renderArtForm("painting-container"'));
-  assert.ok(app.includes('renderArtForm("writing-container"'));
-  assert.ok(app.includes('renderArtForm("visual-art-container"'));
+  assert.ok(app.includes("function renderArtGroup"));
+  assert.ok(app.includes('renderArtGroup("words-container"'));
+  assert.ok(app.includes('renderArtGroup("visual-container"'));
+  assert.doesNotMatch(index,/<h3>OTHER<\/h3>/);
+  assert.doesNotMatch(index,/<h3>POETRY<\/h3>/);
+  assert.doesNotMatch(index,/<h3>DRAWINGS<\/h3>/);
+  assert.doesNotMatch(index,/<h3>PAINTING<\/h3>/);
+  assert.doesNotMatch(index,/<h3>WRITING<\/h3>/);
+  assert.doesNotMatch(index,/<h3>FILM \/ VISUAL<\/h3>/);
   assert.ok(registry.includes('["poetry",()=>collection("ESCIE_POETRY")]'));
   assert.ok(registry.includes('["drawing",()=>collection("ESCIE_DRAWINGS")]'));
   assert.ok(art.includes('id:"drawings",label:"DRAWINGS"'));
