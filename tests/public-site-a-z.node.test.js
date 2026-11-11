@@ -599,7 +599,8 @@ test("A-Z Pass 3 hero supporting copy preserves signal hierarchy",()=>{
 
 test("A-Z Pass 3 signal chamber respects reduced-motion preferences",()=>{
   const css=read("style.css");
-  assert.match(css,/\\.signal-chamber,\\s*\\.signal-scan,\\s*\\.signal-light,\\s*\\.signal-window::before/);\n  assert.ok(css.includes("transition: none;"));
+  assert.match(css,/\\.signal-chamber,\\s*\\.signal-scan,\\s*\\.signal-light,\\s*\\.signal-window::before/);
+  assert.ok(css.includes("transition: none;"));
 });
 
 
