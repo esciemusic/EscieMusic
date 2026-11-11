@@ -2097,20 +2097,47 @@ body.inspector-open{overflow:hidden}
   position: absolute;
   left: 8%;
   right: 8%;
-  bottom: 19%;
-  height: 22%;
+  bottom: 17%;
+  height: 27%;
+  opacity: .62;
   background:
+    /* Montréal street-level skyline */
     linear-gradient(90deg,
-      transparent 0 4%, rgba(242,242,237,.10) 4% 7%, transparent 7% 11%,
-      rgba(242,242,237,.07) 11% 16%, transparent 16% 21%,
-      rgba(242,242,237,.11) 21% 28%, transparent 28% 31%,
-      rgba(242,242,237,.06) 31% 40%, transparent 40% 44%,
-      rgba(242,242,237,.12) 44% 51%, transparent 51% 56%,
-      rgba(242,242,237,.07) 56% 63%, transparent 63% 67%,
-      rgba(242,242,237,.10) 67% 75%, transparent 75% 81%,
-      rgba(242,242,237,.06) 81% 91%, transparent 91%);
-  clip-path: polygon(0 100%,0 55%,5% 55%,5% 35%,10% 35%,10% 62%,16% 62%,16% 25%,21% 25%,21% 48%,27% 48%,27% 14%,32% 14%,32% 50%,38% 50%,38% 30%,44% 30%,44% 4%,48% 4%,48% 44%,54% 44%,54% 20%,60% 20%,60% 52%,67% 52%,67% 31%,73% 31%,73% 58%,80% 58%,80% 23%,86% 23%,86% 49%,93% 49%,93% 36%,100% 36%,100% 100%);
-  opacity: .55;
+      transparent 0 3%, rgba(242,242,237,.07) 3% 8%, transparent 8% 11%,
+      rgba(242,242,237,.10) 11% 18%, transparent 18% 22%,
+      rgba(242,242,237,.07) 22% 28%, transparent 28% 31%,
+      rgba(242,242,237,.11) 31% 38%, transparent 38% 42%,
+      rgba(242,242,237,.08) 42% 49%, transparent 49% 53%,
+      rgba(242,242,237,.10) 53% 61%, transparent 61% 66%,
+      rgba(242,242,237,.07) 66% 74%, transparent 74% 79%,
+      rgba(242,242,237,.10) 79% 88%, transparent 88%);
+  clip-path: polygon(0 100%,0 63%,6% 63%,6% 44%,12% 44%,12% 57%,18% 57%,18% 34%,24% 34%,24% 53%,30% 53%,30% 27%,36% 27%,36% 48%,42% 48%,42% 38%,48% 38%,48% 56%,54% 56%,54% 31%,60% 31%,60% 50%,66% 50%,66% 40%,72% 40%,72% 58%,78% 58%,78% 29%,84% 29%,84% 47%,90% 47%,90% 36%,96% 36%,96% 60%,100% 60%,100% 100%);
+}
+.signal-city::before {
+  content: "";
+  position: absolute;
+  left: 38%;
+  bottom: 43%;
+  width: 12%;
+  height: 42%;
+  background:
+    linear-gradient(90deg, transparent 0 42%, rgba(242,242,237,.16) 42% 58%, transparent 58%),
+    linear-gradient(18deg, transparent 0 43%, rgba(242,242,237,.12) 43% 52%, transparent 52%);
+  clip-path: polygon(0 100%,34% 38%,43% 0,57% 0,66% 38%,100% 100%);
+  opacity: .72;
+}
+.signal-city::after {
+  content: "";
+  position: absolute;
+  left: 70%;
+  bottom: 40%;
+  width: 10%;
+  height: 62%;
+  background:
+    linear-gradient(90deg, transparent 0 44%, rgba(242,242,237,.16) 44% 56%, transparent 56%),
+    linear-gradient(145deg, transparent 0 44%, rgba(242,242,237,.16) 44% 54%, transparent 54%);
+  clip-path: polygon(0 100%,34% 0,54% 0,100% 100%,66% 100%,46% 31%,28% 100%);
+  opacity: .72;
 }
 
 .signal-light {
