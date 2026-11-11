@@ -16,9 +16,13 @@ concurrency:
 jobs:
   live-audit:
     timeout-minutes: 15
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
+      - name: Verify deployment completed successfully
+        if: ${{ github.event_name == 'workflow_run' }}
+        run: |
+          test "${{ github.event.workflow_run.conclusion }}" = "success"
+
       - name: Checkout deployed revision
         uses: actions/checkout@v6
         with:
