@@ -1824,7 +1824,7 @@ body.inspector-open{overflow:hidden}
   transform:translateX(-100%);
   animation:signal-sweep 8s linear infinite;
 }
-.now-state h3{max-width:820px}
+.now-state h3{max-width:820px;font-size:clamp(24px,4.8vw,58px);line-height:1.02}
 .now-state > p:not(.eyebrow){max-width:620px}
 @media(max-width:700px){
   .now-state{padding:18px 0 14px}
