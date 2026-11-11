@@ -769,6 +769,12 @@ test("ART is a complete creative body with a compact public taxonomy",()=>{
   for(const label of ["MUSIC","WORDS","VISUAL","PROJECTS"]) assert.ok(index.includes("<h3>"+label+"</h3>"),"ART must expose "+label);
   for(const label of ["POETRY","WRITING","DRAWINGS","PAINTING","FILM / VISUAL"]) assert.ok(app.includes('label:"'+label+'"'),"ART must retain "+label+" internally");
   assert.ok(index.includes('id="art-forms"'));
+  assert.ok(index.includes('trigger.setAttribute("aria-expanded","false")'));
+  assert.ok(index.includes('trigger.setAttribute("aria-controls",panelId)'));
+  assert.ok(index.includes('panel.setAttribute("role","region")'));
+  assert.ok(index.includes('panel.setAttribute("aria-label",title)'));
+  assert.ok(index.includes('panel.hidden=true'));
+  assert.ok(index.includes('trigger.setAttribute("aria-expanded",String(open))'));
   assert.ok(app.includes("function renderArtForm"));
   assert.ok(app.includes("function renderArtGroup"));
   assert.ok(app.includes('const populated=groups.map(group=>({'));
