@@ -93,6 +93,9 @@
 
       const contained=registry.relationshipsFor(project.id,{type:"contains"});
       assert(contained.length===1&&contained[0].to===track.id,"relationship query must expose only released containment");
+      assert(registry.publicRelationships({type:"contains"}).length===1,"public relationship type filter must be exact");
+      assert(registry.publicRelationships({record:track.id}).length===1,"public relationship record filter must constrain both endpoints");
+      assert(registry.publicRelationships({category:"STRUCTURAL"}).length===1,"public relationship category filter must use the canonical relationship contract");
 
       const counts=registry.relationshipCounts();
       assert(counts.byType.contains===1,"relationship counts must aggregate released containment");
