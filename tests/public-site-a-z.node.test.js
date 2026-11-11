@@ -452,7 +452,7 @@ test("A-Z Pass 3 public runtime boundaries remain schema-aligned and exception-s
   const app=read("app.js"),live=read("data/public-live.js"),idle=read("ui/idle-signal.js");
   assert.ok(app.includes("function updateEntryState(route)"));
   assert.ok(live.includes("from:from_record_id")&&live.includes("to:to_record_id")&&live.includes("type:relationship_type"));
-  assert.ok(live.includes("status=eq.RELEASED"));
+  assert.ok(live.includes("status=eq.APPROVED"));
   assert.ok(live.includes("public_disclosure")&&live.includes("contract.validate")&&live.includes("contract.canDisclose"),"live relationships must fail closed through the relationship contract");
   assert.ok(live.includes("root.ESCIE_LIVE_RELATIONSHIPS=[]"),"live relationship projection must fail closed when the contract is unavailable");
   assert.ok(live.includes('publicIds.has(String(x.from||'));
@@ -462,6 +462,7 @@ test("A-Z Pass 3 public runtime boundaries remain schema-aligned and exception-s
   assert.ok(live.includes('symbols:Array.isArray(row.symbols)?row.symbols:[]'));
   assert.doesNotMatch(live,/source:source|provenance:source\.provenance|evidence:Array\.isArray\(row\.evidence\)/);
   assert.ok(app.includes('const relationshipContract=getGlobal("ESCIE_RELATIONSHIP",null);'));
+  assert.ok(app.includes("filters&&filters.type")&&app.includes("filters&&filters.record"),"live relationships must honor THE WEB filters");
   assert.ok(app.includes('? normalizeCollection(getGlobal("ESCIE_LIVE_RELATIONSHIPS",[]))'));
   assert.ok(app.includes(': [];'));
   assert.ok(idle.includes("window.ESCIE_IDLE_SIGNAL={states:STATES.slice(),hasPublicTransmission}"));
