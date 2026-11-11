@@ -1038,7 +1038,8 @@ test("A-Z Pass 3 ESCIE field preserves the external signal without exposing priv
   assert.match(app,/about-social/);
   assert.match(app,/EXTERNAL SIGNAL/);
   assert.match(about,/tagline:"ARS LONGA, VITA BREVIS\."/);
-  assert.match(app,/ESCIE_RUNTIME\.brain\s*=\s*null/);\n  assert.doesNotMatch(app,/window\.ESCIE_(SOURCE|PROVENANCE|HISTORY)\s*=/);
+  assert.match(app,/ESCIE_RUNTIME\.brain\s*=\s*null/);
+  assert.doesNotMatch(app,/window\.ESCIE_(SOURCE|PROVENANCE|HISTORY)\s*=/);
 });
 
 test("A-Z Pass 3 ESCIE section remains a collapsible public doorway",()=>{
