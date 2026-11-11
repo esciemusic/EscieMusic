@@ -2189,6 +2189,15 @@ body.inspector-open{overflow:hidden}
   96% { opacity: .82; }
 }
 
+@media(max-width:700px){
+  .signal-window{width:94vw;height:min(58vw,360px)}
+  .signal-city{left:4%;right:4%;bottom:13%;height:36%;opacity:.72}
+  .signal-city::before{left:41%;bottom:54%;width:13%;height:46%}
+  .signal-city::after{left:71%;bottom:39%;width:16%;height:68%}
+  .signal-light{bottom:20%}
+  .signal-scan{left:7%;right:7%}
+}
+
 @media (prefers-reduced-motion: reduce) {
   .signal-chamber,
   .signal-scan,
