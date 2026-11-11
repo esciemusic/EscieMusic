@@ -2166,7 +2166,30 @@ body.inspector-open{overflow:hidden}
 .entry-inner {
   position: relative;
   z-index: 2;
+  isolation: isolate;
   text-shadow: 0 2px 18px rgba(0,0,0,.85);
+}
+
+.entry-section #entry-container h1,
+.entry-section #entry-container #entry-state,
+.entry-section #entry-container #entry-social,
+.entry-section #entry-container #entry-tagline,
+.entry-section #entry-container #entry-location {
+  position: relative;
+  z-index: 3;
+}
+
+.signal-window {
+  opacity: .82;
+}
+
+.signal-city {
+  opacity: .56;
+}
+
+@media(max-width:700px) {
+  .signal-window { opacity: .74; }
+  .signal-city { opacity: .50; }
 }
 
 @keyframes signalScan {
