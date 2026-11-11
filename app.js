@@ -109,10 +109,6 @@
     return getGlobal("ESCIE_LOCATIONS", []);
   }
 
-  function getRelationships() {
-    return getGlobal("ESCIE_RELATIONSHIPS", []);
-  }
-
   function getSymbols() {
     return normalizeCollection(getGlobal("ESCIE_SYMBOLS", []));
   }
