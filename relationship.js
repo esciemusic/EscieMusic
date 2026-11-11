@@ -200,74 +200,26 @@
 
       created: "created_by",
       created_by: "created",
+
+      // Only registered relationship types may be produced by inversion.
+      // Unsupported semantic counterparts stay unresolved rather than
+      // manufacturing vocabulary that THE WEB does not recognize.
+
       contributed_to: "contributed_to",
-
-      inspired_by: "inspires",
-
-      responds_to: "responded_to",
-
-      recontextualizes: "recontextualized_by",
 
       contrasts_with: "contrasts_with",
 
-      echoes: "echoed_by",
-
       family_of: "family_of",
       friend_of: "friend_of",
-
       collaborated_with: "collaborated_with",
 
-      influenced_by: "influences",
-      influences: "influenced_by",
-
-      featured_in: "features",
-      features: "featured_in",
-
-      subject_of: "has_subject",
-
-      located_at: "location_of",
-
-      created_at: "creation_location_of",
-
-      recorded_at: "recording_location_of",
-
-      performed_at: "performance_location_of",
-
-      occurred_at: "occurrence_location_of",
-
-      depicts: "depicted_by",
-
-      references: "referenced_by",
-      anchored_in: "anchor_for",
-      anchor_for: "anchored_in",
-
-      occurred_during: "contains_event",
-
-      created_during: "contains_creation",
+      occurred_during: "occurred_during",
+      created_during: "created_during",
 
       preceded_by: "followed_by",
       followed_by: "preceded_by",
 
       coincides_with: "coincides_with",
-
-      resulted_in: "resulted_from",
-
-      resulted_from: "resulted_in",
-
-      supports: "supported_by",
-      contradicts: "contradicted_by",
-
-      corroborates: "corroborated_by",
-
-      contextualizes: "contextualized_by",
-
-      challenges: "challenged_by",
-
-      investigates: "investigated_by",
-
-      examines: "examined_by",
-
-      includes: "included_in",
 
       possibly_related: "possibly_related",
       resembles: "resembles",
