@@ -455,6 +455,13 @@ test("A-Z Pass 3 public runtime boundaries remain schema-aligned and exception-s
   assert.ok(live.includes("status=eq.RELEASED"));
   assert.ok(live.includes('publicIds.has(String(x.from||'));
   assert.ok(live.includes('publicIds.has(String(x.to||'));
+  assert.ok(live.includes('function safeURL(value)'));
+  assert.ok(live.includes('function publicMedia(items)'));
+  assert.ok(live.includes('symbols:Array.isArray(row.symbols)?row.symbols:[]'));
+  assert.doesNotMatch(live,/source:source|provenance:source\.provenance|evidence:Array\.isArray\(row\.evidence\)/);
+  assert.ok(app.includes('const relationshipContract=getGlobal("ESCIE_RELATIONSHIP",null);'));
+  assert.ok(app.includes('? normalizeCollection(getGlobal("ESCIE_LIVE_RELATIONSHIPS",[]))'));
+  assert.ok(app.includes(': [];'));
   assert.ok(idle.includes("window.ESCIE_IDLE_SIGNAL={states:STATES.slice(),hasPublicTransmission}"));
   assert.doesNotMatch(live,/select=id,from,to,type,visibility,public_disclosure,release_state/);
   assert.doesNotMatch(idle,/^if\(typeof window!==\"undefined\"\) window\.ESCIE_IDLE_SIGNAL=\{states:STATES\.slice\(\),hasPublicTransmission\};/m);
