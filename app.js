@@ -348,10 +348,10 @@
       '" data-certainty="' + escapeHTML(presentation.certainty || "unknown") + '"';
   }
 
-  function renderEmpty(container, message) {
+  function renderEmpty(container, message, state = "quiet") {
     if (!container) return;
     container.innerHTML =
-      '<div class="empty-state"><span>' +
+      '<div class="empty-state" data-empty-state="' + escapeHTML(state) + '"><span>' +
       escapeHTML(message) +
       "</span></div>";
   }
@@ -535,7 +535,7 @@
     const visible = music.filter(isPublic);
 
     if (!visible.length) {
-      renderEmpty(container, "THE MUSIC EXISTS. IT HAS NOT BEEN TRANSMITTED HERE YET.");
+      renderEmpty(container, "THE MUSIC EXISTS. IT HAS NOT BEEN TRANSMITTED HERE YET.", "music-quiet");
       return;
     }
 
@@ -568,7 +568,7 @@
     const visible = projects.filter(isPublic);
 
     if (!visible.length) {
-      renderEmpty(container, "THE WORK IS BEING PREPARED.");
+      renderEmpty(container, "THE WORK IS BEING PREPARED.", "work-quiet");
       return;
     }
 
