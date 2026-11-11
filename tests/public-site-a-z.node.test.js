@@ -1011,3 +1011,42 @@ test("A-Z Pass 3 GLASS EYE preserves touch, keyboard, reduced-motion, and respon
   assert.match(style,/@media\(max-width:700px\)/);
   assert.match(aesthetic,/prefers-reduced-motion:reduce/);
 });
+
+
+test("A-Z Pass 3 ESCIE identity field is canonical, restrained, and complete",()=>{
+  const app=read("app.js");
+  const about=read("data/about.js");
+  const index=read("index.html");
+  assert.match(app,/function renderAbout\(\)/);
+  assert.match(app,/THE FATHER · THE MAN · THE MONSTER/);
+  assert.match(app,/ESCIE THE ARTIST\. THE ART SPEAKS FOR ITSELF\./);
+  assert.match(app,/The art does not create the universe\. The universe creates the art\./);
+  assert.match(about,/role:\["the Father","the Man","the Monster"\]/);
+  assert.match(about,/description:"ESCIE THE ARTIST\. THE ART SPEAKS FOR ITSELF\."/);
+  assert.match(about,/principle:"The art does not create the universe\. The universe creates the art\."/);
+  assert.match(index,/id="escie"/);
+  assert.match(index,/ESCIE THE ARTIST\. THE ART SPEAKS FOR ITSELF\./);
+  assert.doesNotMatch(index,/S\.C\./);
+  assert.doesNotMatch(index,/REAL\s*\/|MEMORY\s*\/|DRAMATIZED|FICTIONALIZED|MYTH/);
+});
+
+test("A-Z Pass 3 ESCIE field preserves the external signal without exposing private system layers",()=>{
+  const app=read("app.js");
+  const about=read("data/about.js");
+  assert.match(app,/normalizeEscieSocial/);
+  assert.match(app,/about-social/);
+  assert.match(app,/EXTERNAL SIGNAL/);
+  assert.match(about,/tagline:"ARS LONGA, VITA BREVIS\."/);
+  assert.doesNotMatch(app,/ESCIE_SOURCE|ESCIE_PROVENANCE|ESCIE_HISTORY|pendingControl/);
+});
+
+test("A-Z Pass 3 ESCIE section remains a collapsible public doorway",()=>{
+  const index=read("index.html");
+  assert.match(index,/id="escie" class="site-section escie-section"/);
+  assert.match(index,/symbols=.*escie:"◇"/);
+  assert.match(index,/section-drop-trigger/);
+  assert.match(index,/section-drop-panel/);
+  assert.match(index,/aria-expanded="false"/);
+  assert.match(index,/section-open/);
+  assert.match(index,/panel\.hidden=!active/);
+});
