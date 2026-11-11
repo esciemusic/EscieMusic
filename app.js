@@ -708,9 +708,16 @@
     const city=getGlobal("ESCIE_WORLD_CITY",{});
     const districtCount=city&&city.districts&&typeof city.districts==="object" ? Object.keys(city.districts).length : 0;
     const districtLabel=districtCount===1?"DISTRICT":"DISTRICTS";
+    const districts=districtCount ? Object.keys(city.districts).sort((x,y)=>x.localeCompare(y)) : [];
+    const cityConnections=Array.isArray(city.cityConnections) ? city.cityConnections : [];
+    const districtLinks=districts.map(district=>cityConnections.filter(connection=>Array.isArray(connection)&&connection.slice(0,2).includes(district)).length);
     container.innerHTML='<div class="world-index">'+motifMarkup("world")+
       '<p class="eyebrow">MONTRÉAL / HERE</p>'+
       '<div class="world-now-strip"><strong>'+escapeHTML(nowRecord.location||"MONTRÉAL, QUÉBEC")+'</strong><em>THE WORLD IS HERE.</em><span class="world-city-scale">'+escapeHTML(String(districtCount))+" "+districtLabel+'</span></div>'+
+      '<div class="world-city-field" aria-label="Authored Montréal district index">'+
+        '<div class="world-city-field-head"><span>DISTRICT INDEX</span><span>CONNECTIONS</span></div>'+
+        '<div class="world-city-field-grid">'+districts.map((district,index)=>'<div class="world-city-district"><span>'+String(index+1).padStart(2,"0")+'</span><strong>'+escapeHTML(district)+'</strong><em>'+String(districtLinks[index]).padStart(2,"0")+'</em></div>').join("")+'</div>'+
+      '</div>'+
       '<div class="world-place-list">'+locations.map((place,index)=>
         '<article class="world-place world-place-current" role="button" tabindex="0" aria-label="Open '+escapeHTML(recordTitle(place))+'" data-record-id="'+escapeHTML(recordId(place))+'">'+
           '<span class="world-place-index">'+String(index+1).padStart(2,"0")+'</span>'+
