@@ -542,3 +542,11 @@ test("A-Z Pass 3 header preferences use one language authority and accessible th
   assert.match(app,/engine\.setLanguage\(detected\)/);
   assert.match(language,/applyEscieInterfaceTranslations\(normalized\)/);
 });
+
+
+test("A-Z Pass 3 hero signal respects reduced-motion preferences",()=>{
+  const aesthetic=read("aesthetic.css");
+  const style=read("style.css");
+  assert.ok(aesthetic.includes(".entry-section #entry-tagline{animation:none!important}"));
+  assert.ok(style.includes("env(safe-area-inset-bottom)"));
+});
