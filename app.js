@@ -658,16 +658,16 @@
     const base=registry&&typeof registry.publicRelationships==="function"
       ? registry.publicRelationships(filters||{})
       : [];
-    const live=normalizeCollection(getGlobal("ESCIE_LIVE_RELATIONSHIPS",[])).map(r=>({
-      id:r.id,from:r.from_record_id||r.from,to:r.to_record_id||r.to,type:r.type||"connection",category:r.category||null,
-      status:r.status||"active",confidence:r.confidence||"unknown",canonical_status:r.canonical_status||"unknown",
-      public_disclosure:true,visibility:"public"
-    }));
     const relationshipContract=getGlobal("ESCIE_RELATIONSHIP",null);
+    const live=relationshipContract&&typeof relationshipContract.validate==="function"&&typeof relationshipContract.canDisclose==="function"
+      ? normalizeCollection(getGlobal("ESCIE_LIVE_RELATIONSHIPS",[])).map(r=>({
+          id:r.id,from:r.from_record_id||r.from,to:r.to_record_id||r.to,type:r.type||"connection",
+          category:r.category||null,status:r.status||"active",confidence:r.confidence||"unknown",
+          canonical_status:r.canonical_status||"unknown",public_disclosure:true,visibility:"public"
+        })).filter(r=>relationshipContract.validate(r).valid&&relationshipContract.canDisclose(r))
+      : [];
     return base.concat(live).filter(r=>{
       if(!r||!byIdMap.has(r.from)||!byIdMap.has(r.to)) return false;
-      if(relationshipContract&&typeof relationshipContract.validate==="function"&&!relationshipContract.validate(r).valid) return false;
-      if(relationshipContract&&typeof relationshipContract.canDisclose==="function"&&!relationshipContract.canDisclose(r)) return false;
       return true;
     });
   }
