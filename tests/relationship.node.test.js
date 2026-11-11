@@ -123,3 +123,18 @@ test("THE WEB disclosure is explicit opt-in", () => {
   assert.equal(R.canDisclose(relationship.relationship), false);
   assert.equal(R.toPublicView(relationship.relationship), null);
 });
+
+test("THE WEB canonical relationships require explicit disclosure", () => {
+  const canonical = R.create({
+    id: "canonical-disclosure-required",
+    type: "collaborated_with",
+    from: "person-a",
+    to: "person-b",
+    canonical_status: "canonical",
+    status: "active",
+    visibility: "public"
+  });
+
+  assert.equal(canonical.valid, false);
+  assert.match(canonical.errors.join(" "), /explicitly allow public disclosure/);
+});
