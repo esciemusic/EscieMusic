@@ -253,6 +253,23 @@ test("A-Z Pass 3 keeps NOW subordinate to the entry identity",()=>{
   assert.match(style,/\.now-section\{min-height:0\}/);
 });
 
+test("A-Z Pass 3 ART filters produce a distinct zero-match state without crossing release boundaries",()=>{
+  const app=read("app.js");
+  const aesthetic=read("aesthetic.css");
+  const language=read("language.js");
+  assert.match(app,/NO PUBLIC WORK MATCHES THIS TRACE/);
+  assert.match(app,/data-empty-state/);
+  assert.match(app,/filter-quiet/);
+  assert.match(app,/filteredWork\.length/);
+  assert.match(aesthetic,/data-empty-state="filter-quiet"/);
+  assert.match(aesthetic,/border-bottom-color:rgba\(155,89,255/);
+  assert.match(language,/NO PUBLIC WORK MATCHES THIS TRACE/);
+  assert.match(language,/AUCUNE ŒUVRE PUBLIQUE NE CORRESPOND À CETTE TRACE/);
+  assert.match(language,/NINGUNA OBRA PÚBLICA COINCIDE CON ESTA HUELLA/);
+  assert.match(app,/getFilteredWorkRecords\(\)/);
+  assert.doesNotMatch(app,/getAllRecords\(\)\.filter\([^\n]*workFilters/);
+});
+
 test("A-Z Pass 3 ART metadata filters are rendered, public-scoped, and usable",()=>{
   const app=read("app.js");
   const css=read("style.css");
