@@ -569,3 +569,12 @@ test("A-Z Pass 3 signal chamber respects reduced-motion preferences",()=>{
   assert.match(css,/\.signal-chamber,\s*\.signal-scan,\s*\.signal-light,\s*\.signal-window::before,\s*\.signal-status-shift/);
   assert.ok(css.includes(".signal-status-shift")&&css.includes("transition: none;"));
 });
+
+
+test("A-Z Pass 3 Montréal skyline uses recognizable landmark silhouettes",()=>{
+  const css=read("style.css");
+  assert.ok(css.includes("/* Montréal street-level skyline */"));
+  assert.ok(css.includes(".signal-city::before"));
+  assert.ok(css.includes(".signal-city::after"));
+  assert.ok(css.includes("clip-path: polygon(0 100%,34% 38%,43% 0,57% 0,66% 38%,100% 100%)"));
+});
