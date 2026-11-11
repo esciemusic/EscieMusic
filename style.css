@@ -2145,7 +2145,7 @@ body.inspector-open{overflow:hidden}
   border-radius: 50%;
   background: rgba(242,242,237,.75);
   box-shadow: 0 0 9px rgba(180,205,230,.55);
-  animation: signalPulse 3.8s ease-in-out infinite;
+  animation: signalPulse 5.6s ease-in-out infinite;
 }
 
 .signal-light-a { left: 24%; animation-delay: -.7s; }
@@ -2158,9 +2158,9 @@ body.inspector-open{overflow:hidden}
   right: 12%;
   top: 18%;
   height: 1px;
-  background: rgba(242,242,237,.16);
-  box-shadow: 0 0 18px rgba(150,180,210,.16);
-  animation: signalScan 8s linear infinite;
+  background: rgba(242,242,237,.09);
+  box-shadow: 0 0 12px rgba(150,180,210,.10);
+  animation: signalScan 12s linear infinite;
 }
 
 .entry-inner {
@@ -2171,9 +2171,9 @@ body.inspector-open{overflow:hidden}
 
 @keyframes signalScan {
   0% { top: 16%; opacity: 0; }
-  10% { opacity: .8; }
-  50% { opacity: .18; }
-  90% { opacity: .8; }
+  10% { opacity: .45; }
+  50% { opacity: .10; }
+  90% { opacity: .45; }
   100% { top: 82%; opacity: 0; }
 }
 
@@ -2183,10 +2183,10 @@ body.inspector-open{overflow:hidden}
 }
 
 @keyframes signalFlicker {
-  0%,92%,100% { opacity: 1; }
-  93% { opacity: .72; }
-  94% { opacity: .98; }
-  96% { opacity: .82; }
+  0%,94%,100% { opacity: 1; }
+  95% { opacity: .84; }
+  96% { opacity: .98; }
+  98% { opacity: .9; }
 }
 
 @media(max-width:700px){
