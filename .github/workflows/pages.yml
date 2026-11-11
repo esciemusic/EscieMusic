@@ -33,6 +33,21 @@ jobs:
           ESCIE_RELEASE_QUEUE_JSON: ${{ secrets.ESCIE_RELEASE_QUEUE_JSON }}
         run: node publishing/inject-release.js
 
+      - name: Stamp deployed revision into public artifact
+        env:
+          ESCIE_DEPLOYMENT_SHA: ${{ github.sha }}
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const path = 'index.html';
+          const sha = process.env.ESCIE_DEPLOYMENT_SHA;
+          if (!/^[0-9a-f]{40}$/i.test(sha)) throw new Error('Invalid deployment SHA');
+          const html = fs.readFileSync(path, 'utf8');
+          if (!/<head[^>]*>/i.test(html)) throw new Error('Public entry point has no <head>');
+          if (/name=["']escie-deployment-sha["']/i.test(html)) throw new Error('Deployment SHA marker already exists');
+          fs.writeFileSync(path, html.replace(/<head([^>]*)>/i, '<head$1>\n<meta name="escie-deployment-sha" content="' + sha + '">'));
+          NODE
+
       - name: Validate JavaScript contracts
         run: |
           set -e
