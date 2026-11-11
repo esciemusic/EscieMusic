@@ -253,6 +253,20 @@ test("A-Z Pass 3 keeps NOW subordinate to the entry identity",()=>{
   assert.match(style,/\.now-section\{min-height:0\}/);
 });
 
+test("A-Z Pass 3 ART empty states read as intentional quiet transmission states",()=>{
+  const app=read("app.js");
+  const aesthetic=read("aesthetic.css");
+  assert.match(app,/function renderEmpty\(container, message, state = "quiet"\)/);
+  assert.match(app,/data-empty-state/);
+  assert.match(app,/music-quiet/);
+  assert.match(app,/work-quiet/);
+  assert.match(aesthetic,/\.art-section \.empty-state\{/);
+  assert.match(aesthetic,/\.art-section \.empty-state::before\{/);
+  assert.match(aesthetic,/data-empty-state="music-quiet"/);
+  assert.match(aesthetic,/data-empty-state="work-quiet"/);
+  assert.doesNotMatch(aesthetic,/\.art-section \.empty-state[^{]*\{[\s\S]*background:\s*[^;]+;/);
+});
+
 test("A-Z Pass 3 NOW hands off to ART as a creative threshold, not a portfolio CTA",()=>{ 
   const html=read("index.html");
   const style=read("style.css");
