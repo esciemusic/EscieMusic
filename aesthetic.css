@@ -1865,3 +1865,10 @@ main > .site-section.section-open .section-visual::after{animation:escieSignalSc
 @media (prefers-reduced-motion: reduce){
   .glass-eye-interface .glass-eye-response{transition:none}
 }
+
+
+/* Pass 3 — hero supporting-copy hierarchy: identity first, signal second, place last. */
+.entry-section #entry-container #entry-tagline{margin-top:clamp(22px,3.2vw,34px);max-width:32rem;color:var(--escie-blue-bright);font-family:var(--escie-font-signal);font-size:clamp(9px,1.2vw,12px);font-weight:400;letter-spacing:.24em;line-height:1.55;text-shadow:0 0 18px rgba(47,128,255,.10)}
+.entry-section #entry-container #entry-location{margin-top:clamp(12px,1.8vw,18px);color:var(--muted);font-family:var(--escie-font-signal);font-size:8px;letter-spacing:.24em;line-height:1.6;text-transform:uppercase;opacity:.72}
+@media(max-width:700px){.entry-section #entry-container #entry-tagline{font-size:8px;letter-spacing:.18em;line-height:1.6}.entry-section #entry-container #entry-location{font-size:7px;letter-spacing:.16em}}
+@media(prefers-reduced-motion:reduce){.entry-section #entry-container #entry-tagline{animation:none!important}}
