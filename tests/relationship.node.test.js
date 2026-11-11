@@ -58,3 +58,11 @@ test("THE WEB blocks canonical relationships from non-public lifecycle states", 
 
   assert.equal(invalid.valid, false);
 });
+
+test("THE WEB inverse vocabulary is internally closed", () => {
+  for (const type of Object.keys(R.INVERSE_TYPES)) {
+    const inverse = R.INVERSE_TYPES[type];
+    assert.equal(R.isType(type), true, `inverse source must be registered: ${type}`);
+    assert.equal(R.isType(inverse), true, `inverse target must be registered: ${inverse}`);
+  }
+});
