@@ -1949,8 +1949,11 @@ function renderClothing(){
     navigate();
   }
 
+  let entryTimeStateTimer = null;
+
   function updateTimeState() {
-    const hour = new Date().getHours();
+    const now = new Date();
+    const hour = now.getHours();
     let state = "night";
 
     if (hour >= 5 && hour < 8) state = "dawn";
@@ -1963,7 +1966,33 @@ function renderClothing(){
     if (entryState) {
       const labels = { dawn: "SIGNAL // DAWN", day: "SIGNAL // DAY", dusk: "SIGNAL // DUSK", night: "SIGNAL // NIGHT" };
       entryState.textContent = labels[state] || "SIGNAL // NIGHT";
+      entryState.dataset.signalState = state;
     }
+
+    return state;
+  }
+
+  function scheduleTimeStateRefresh() {
+    if (entryTimeStateTimer !== null) {
+      window.clearTimeout(entryTimeStateTimer);
+      entryTimeStateTimer = null;
+    }
+
+    const now = new Date();
+    const nextBoundaryHours = [5, 8, 18, 21]
+      .map(hour => {
+        const next = new Date(now);
+        next.setHours(hour, 0, 0, 0);
+        if (next <= now) next.setDate(next.getDate() + 1);
+        return next;
+      })
+      .sort((a, b) => a - b)[0];
+
+    const delay = Math.max(1000, nextBoundaryHours.getTime() - now.getTime() + 50);
+    entryTimeStateTimer = window.setTimeout(() => {
+      updateTimeState();
+      scheduleTimeStateRefresh();
+    }, delay);
   }
 
   function setupMobileMenu() {
