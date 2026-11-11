@@ -588,7 +588,11 @@ assert(aestheticRuntime.includes("padding:28px 0 8px"),"expanded sections must c
 assert(aestheticRuntime.includes(".section-open .section-drop-trigger"),"expanded sections must receive a distinct visual state");
 assert(fs.readFileSync("app.js","utf8").includes("function renderWorld()"),"public runtime must render the geographic world record");
 assert(fs.readFileSync("app.js","utf8").includes("THE CITY RECORD"),"THE WORLD must expose the public city record");
+assert(fs.readFileSync("app.js","utf8").includes("MONTRÉAL / HERE"),"THE WORLD must anchor the public world explicitly in Montréal");
+assert(fs.readFileSync("app.js","utf8").includes("ESCIE_WORLD_CITY"),"THE WORLD must consume the canonical city registry for geographic scale");
+assert(fs.readFileSync("app.js","utf8").includes("districtCount"),"THE WORLD must expose authored district scale without inventing geography");
 assert(aestheticRuntime.includes(".world-place-list"),"THE WORLD geographic record must have a restrained list presentation");
+assert(aestheticRuntime.includes(".world-now-strip"),"THE WORLD city anchor must have a dedicated scale strip");
 assert(fs.readFileSync("app.js","utf8").includes("renderMerch();\n    bindMerchFilters();\n    renderWorld();\n    renderWeb();"),"public render lifecycle must render THE WORLD before THE WEB");
 assert(!fs.readFileSync("app.js","utf8").includes("ESCIE_RUNTIME.webFilters[control.getAttribute(\"data-web-filter\")]=control.value||\"\";\n      renderWorld();"),"THE WEB filter changes must not rebuild THE WORLD unnecessarily");
 const publicAppRuntime=fs.readFileSync("app.js","utf8");
