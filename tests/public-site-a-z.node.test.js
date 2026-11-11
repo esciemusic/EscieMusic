@@ -771,6 +771,10 @@ test("ART is a complete creative body with a compact public taxonomy",()=>{
   assert.ok(index.includes('id="art-forms"'));
   assert.ok(app.includes("function renderArtForm"));
   assert.ok(app.includes("function renderArtGroup"));
+  assert.ok(app.includes('const populated=groups.map(group=>({'));
+  assert.ok(app.includes('renderEmpty(container,emptyMessage||"THE WORK EXISTS. IT HAS NOT BEEN TRANSMITTED HERE YET.","art-group-quiet")'));
+  assert.ok(app.includes('className="art-form-group"'));
+  assert.ok(app.includes('className="art-form-label"'));
   assert.ok(app.includes('renderArtGroup("words-container"'));
   assert.ok(app.includes('renderArtGroup("visual-container"'));
   assert.doesNotMatch(index,/<h3>OTHER<\/h3>/);
