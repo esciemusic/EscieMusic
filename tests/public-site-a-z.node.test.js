@@ -265,6 +265,19 @@ test("A-Z Pass 3 NOW hands off to ART as a creative threshold, not a portfolio C
   assert.doesNotMatch(html,/ENTER THE WORLD[^<]*<[^>]*art|VIEW ART|OPEN ART/i);
 });
 
+test("A-Z Pass 3 ART composition treats public work as creative records, not generic portfolio cards",()=>{
+  const style=read("style.css");
+  const app=read("app.js");
+  assert.match(style,/\.art-section #art-container\{[\s\S]*width:min\(100%,900px\)/);
+  assert.match(style,/\.art-section \.music-card\{[\s\S]*display:block/);
+  assert.match(style,/\.art-section \.music-card-body h3\{[\s\S]*font-size:clamp\(22px,4vw,42px\)/);
+  assert.match(style,/\.art-section \.music-card:hover,[\s\S]*background:linear-gradient\(90deg,rgba\(155,89,255,\.035\)/);
+  assert.match(style,/@media\(max-width:700px\)[\s\S]*\.art-section \.music-card-body h3/);
+  assert.match(app,/class="music-card-body"/);
+  assert.match(app,/class="music-card-meta"/);
+  assert.match(app,/class="project-card"/);
+});
+
 test("A-Z Pass 3 keeps the hero-to-NOW transition as a quiet threshold",()=>{
   const style=read("style.css");
   assert.match(style,/\.entry-section \+ \.now-section\{[\s\S]*padding-top:clamp\(68px,9vw,108px\)/);
