@@ -380,6 +380,18 @@ test("A-Z Pass 1 time state remains lightweight and date-independent",()=>{
 });
 
 
+test("A-Z Pass 3 public header identity and index stay compact",()=>{
+  const index=read("index.html");
+  const style=read("style.css");
+  assert.match(index,/class="site-logo" aria-label="ESCIE — return to top"/);
+  assert.match(index,/class="index-trigger"/);
+  assert.match(index,/class="index-trigger-glyph"/);
+  assert.doesNotMatch(index,/class="index-trigger-label"/);
+  assert.match(style,/\.site-logo\{[\s\S]*font-family: var\(--escie-font-escie\)/);
+  assert.match(style,/\.index-trigger\{[\s\S]*min-width:40px/);
+  assert.match(style,/\.index-trigger-glyph\{[\s\S]*width:22px[\s\S]*height:22px/);
+});
+
 test("A-Z Pass 3 public hero uses the authored ESCIE family fallback contract",()=>{
   const typography=read("typography.css");
   const aesthetic=read("aesthetic.css");
