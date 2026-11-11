@@ -543,10 +543,10 @@
     container.innerHTML = motifMarkup("art") + visible.map(track => {
       const context = recordContext(track);
       const parent = context.parents[0];
-      const parentRecord = parent ? getAllRecords().find(item => recordId(item) === parent.record) : null;
+      const parentRecord = parent ? getAllPublicRecords().find(item => recordId(item) === parent.record && isPublic(item)) : null;
       const media = Array.isArray(track.media) ? track.media : [];
       const audio = media.find(item => String(item && (item.type || item.kind) || "").toLowerCase() === "audio" && safeExternalURL(item.url));
-      const stage = String(track.release_status || track.status || "TRANSMISSION").toUpperCase();
+      const stage = "TRANSMISSION";
       const projectLabel = parentRecord ? recordTitle(parentRecord) : (track.project || "ESCIE");
       const number = track.number ? String(track.number).padStart(3, "0") : "—";
       const listen = audio
@@ -579,7 +579,7 @@
       const artwork = project.artwork || project.cover_art || project.cover || project.visual || null;
       const artworkURL = typeof artwork === "string" ? artwork : (artwork && (artwork.url || artwork.src || artwork.href));
       const projectVisuals = Array.isArray(project.visuals) ? project.visuals : (artworkURL ? [artworkURL] : []);
-      const recordsById = new Map(getAllRecords().map(item => [recordId(item), item]));
+      const recordsById = new Map(getAllPublicRecords().filter(item => item && isPublic(item)).map(item => [recordId(item), item]));
       const releasedStructure = structure.filter(part => {
         const track = recordsById.get(part.trackId);
         return track && isReleaseVisible(track);
