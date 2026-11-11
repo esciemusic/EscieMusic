@@ -126,8 +126,6 @@ const ESCIE_INTERFACE_EXTRA = Object.freeze({
   }
 });
 
-  }
-});
 
 const ESCIE_INTERFACE_RUNTIME = Object.freeze({
   en: {
