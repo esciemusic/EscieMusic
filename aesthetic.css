@@ -353,6 +353,39 @@ main > .site-section:not(#entry).section-open .section-visual{
   opacity:.78;
   overflow:hidden;
 }
+/* ART empty states are quiet transmission states, never error states. */
+.art-section .empty-state{
+  max-width:680px;
+  margin:10px 0 0;
+  padding:24px 0 26px;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid rgba(216,212,202,.08);
+  color:var(--faint);
+  font:700 9px/1.7 var(--escie-font-mono);
+  letter-spacing:.18em;
+  text-transform:uppercase;
+}
+.art-section .empty-state::before{
+  content:"";
+  display:block;
+  width:34px;
+  height:1px;
+  margin-bottom:16px;
+  background:var(--escie-aesthetic-purple);
+  opacity:.72;
+}
+.art-section .empty-state[data-empty-state="music-quiet"]{
+  color:var(--muted);
+}
+.art-section .empty-state[data-empty-state="work-quiet"]{
+  color:var(--faint);
+}
+@media(max-width:700px){
+  .art-section .empty-state{
+    padding:20px 0 22px;
+    font-size:8px;
+  }
+}
 .record-filters-empty{
   display:grid;
   gap:8px;
