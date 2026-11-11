@@ -466,3 +466,24 @@ test("A-Z Pass 3 public runtime boundaries remain schema-aligned and exception-s
   assert.doesNotMatch(live,/select=id,from,to,type,visibility,public_disclosure,release_state/);
   assert.doesNotMatch(idle,/^if\(typeof window!==\"undefined\"\) window\.ESCIE_IDLE_SIGNAL=\{states:STATES\.slice\(\),hasPublicTransmission\};/m);
 });
+
+
+test("A-Z Pass 3 seals Central cognition, provenance, history, and ingestion from the public shell",()=>{
+  const index=read("index.html");
+  const app=read("app.js");
+  for(const privateScript of [
+    "brain/brain.js","brain/evidence.js","brain/correlation.js","brain/audit.js",
+    "brain/reference-audit.js","control/control.js","control/proposals.js",
+    "control/decisions.js","ingestion/ingestion.js","ingestion/normalize.js",
+    "ingestion/match.js","ingestion/deduplicate.js","core/sources.js",
+    "core/provenance.js","core/history.js","core/permissions.js"
+  ]) assert.equal(index.includes(privateScript),false,"public shell must not load "+privateScript);
+  assert.match(app,/Private cognition\/control systems are intentionally absent from the public runtime/);
+  assert.match(app,/ESCIE_RUNTIME\.brain = null/);
+  assert.match(app,/ESCIE_RUNTIME\.control = null/);
+  assert.match(app,/ESCIE_RUNTIME\.pendingControl = function \(\) \{ return \[\]; \}/);
+  assert.doesNotMatch(app,/"ESCIE_SOURCE",/);
+  assert.doesNotMatch(app,/"ESCIE_PROVENANCE",/);
+  assert.doesNotMatch(app,/"ESCIE_HISTORY",/);
+  assert.doesNotMatch(app,/"ESCIE_HISTORY_API",/);
+});
