@@ -2178,10 +2178,13 @@ body.inspector-open{overflow:hidden}
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .signal-chamber,
   .signal-scan,
   .signal-light,
-  .signal-window::before {
+  .signal-window::before,
+  .signal-status-shift {
     animation: none;
+    transition: none;
   }
 }
 
