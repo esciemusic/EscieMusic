@@ -1012,7 +1012,7 @@
       }
 
       if (
-        relationship.public_disclosure === false
+        relationship.public_disclosure !== true
       ) {
         return false;
       }
