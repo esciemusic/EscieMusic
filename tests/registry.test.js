@@ -32,7 +32,7 @@
     const centralApproved={id:"__central-approved__",type:"music",status:"active",published:true,visibility:"public",release_state:"APPROVED"};
     const centralReleased={id:"__central-released__",type:"music",status:"active",published:true,visibility:"public",release_state:"RELEASED"};
     const relationship={id:"__test-contains__",from:project.id,type:"contains",to:track.id,status:"active",confidence:"verified",canonical_status:"canonical",visibility:"public",public_disclosure:true};
-    const lockedRelationship={id:"__test-private-endpoint__",from:project.id,type:"contains",to:locked.id,status:"active",confidence:"verified",canonical_status:"provisional",visibility:"public",public_disclosure:true};
+    const lockedRelationship={id:"__test-private-endpoint__",from:project.id,type:"contains",to:locked.id,status:"active",confidence:"verified",canonical_status:"provisional",visibility:"public",public_disclosure:true,basis:"PRIVATE BASIS",source:"PRIVATE SOURCE",evidence:[{id:"PRIVATE EVIDENCE"}],history:[{action:"PRIVATE HISTORY"}]};
     const invalidPublicRelationship={id:"__test-invalid-public__",from:project.id,type:"not_a_registered_connection",to:track.id,status:"active",confidence:"verified",canonical_status:"provisional",visibility:"public",public_disclosure:true};
 
     runtime.projects=[project];
@@ -75,6 +75,10 @@
       assert(trackManifest.search===true,"public released records should be searchable");
 
       assert(registry.publicRelationships().every(rel=>rel.id!=="__test-invalid-public__"),"invalid public relationship must fail closed at the relationship contract");
+      assert(registry.publicRelationships().every(rel=>rel.id!=="__test-private-endpoint__"),"public relationship projection must exclude relationships whose endpoints are not public");
+      assert(registry.relationshipsFor(locked.id).length===0,"relationship lookup must not traverse a locked endpoint");
+      const publicConnection=registry.relationshipsFor(track.id)[0];
+      assert(publicConnection&&!Object.prototype.hasOwnProperty.call(publicConnection,"basis")&&!Object.prototype.hasOwnProperty.call(publicConnection,"source")&&!Object.prototype.hasOwnProperty.call(publicConnection,"evidence")&&!Object.prototype.hasOwnProperty.call(publicConnection,"history"),"relationship helpers must expose only the public-safe projection");
       assert(registry.releaseVisible(project)===true,"progressive project must unlock when a released track exists");
       assert(registry.releaseVisible(track)===true,"released track must be visible");
       assert(registry.releaseVisible(locked)===false,"locked release must remain hidden");
