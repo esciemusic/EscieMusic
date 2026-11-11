@@ -27,14 +27,19 @@ const forbidden = [
 
 const sameOrigin = new URL(baseURL).origin;
 page.on("console", m => {
-  if (m.type() === "error") failures.push("console error: " + m.text());
+  if (m.type() === "error") {
+    const location = m.location();
+    failures.push("console error: " + m.text() + (location?.url ? " [" + location.url + "]" : ""));
+  }
 });
 page.on("pageerror", e => failures.push("page error: " + e.message));
 page.on("response", response => {
+  const status = response.status();
   const type = response.request().resourceType();
   if (!["document", "script", "stylesheet", "xhr", "fetch"].includes(type)) return;
-  if (!response.url().startsWith(sameOrigin)) return;
-  if (response.status() >= 400) failures.push("same-origin " + type + " request failed: " + response.status() + " " + response.url());
+  if (status >= 400) {
+    failures.push((response.url().startsWith(sameOrigin) ? "same-origin " : "external ") + type + " request failed: " + status + " " + response.url());
+  }
 });
 
 async function scanRenderedBoundary(label) {
@@ -59,7 +64,7 @@ async function scanRenderedBoundary(label) {
   })), assets);
 
   for (const asset of loadedAssets) {
-    check(asset.status >= 200 && asset.status < 400, label + " loaded script failed: " + asset.status + " (" + asset.url + ")");
+    check(asset.status >= 200 && asset.status < 400, label + " loaded asset failed: " + asset.status + " (" + asset.url + ")");
     for (const secret of forbidden) {
       check(!asset.text.toLowerCase().includes(secret.toLowerCase()), label + " loaded asset exposes forbidden material: " + secret + " (" + asset.url + ")");
     }
