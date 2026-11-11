@@ -388,7 +388,7 @@ test("A-Z Pass 3 public header identity and index stay compact",()=>{
   assert.match(index,/class="index-trigger-glyph"/);
   assert.doesNotMatch(index,/class="index-trigger-label"/);
   assert.match(style,/\.site-logo\{[\s\S]*font-family: var\(--escie-font-escie\)/);
-  assert.match(style,/\.index-trigger\{[\s\S]*min-width:40px/);
+  assert.match(style,/\.index-trigger\s*\{[\s\S]*min-width:\s*40px/);
   assert.match(style,/\.index-trigger-glyph\{[\s\S]*width:22px[\s\S]*height:22px/);
 });
 
