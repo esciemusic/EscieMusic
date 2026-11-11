@@ -584,28 +584,33 @@
 
   function renderArtGroup(containerId, groups, emptyMessage){
     const container=byId(containerId); if(!container)return;
-    container.innerHTML=groups.map(group=>{
+    const filtered=getFilteredWorkRecords();
+    const populated=groups.map(group=>({
+      group,
+      records:filtered.filter(record=>group.types.includes(String(record.type||"").toLowerCase())).filter(isPublic)
+    })).filter(entry=>entry.records.length);
+    if(!populated.length){
+      renderEmpty(container,emptyMessage||"THE WORK EXISTS. IT HAS NOT BEEN TRANSMITTED HERE YET.","art-group-quiet");
+      return;
+    }
+    container.innerHTML=populated.map(entry=>{
+      const group=entry.group, records=entry.records;
       const holder=document.createElement("div");
       holder.className="art-form-group";
       holder.dataset.artFormGroup=group.key;
-      holder.innerHTML='<h4>'+escapeHTML(group.label)+'</h4><div class="art-form-records"></div>';
-      const records=getFilteredWorkRecords().filter(record=>group.types.includes(String(record.type||"").toLowerCase())).filter(isPublic);
+      holder.innerHTML='<div class="art-form-label">'+escapeHTML(group.label)+'</div><div class="art-form-records"></div>';
       const recordsContainer=holder.querySelector(".art-form-records");
-      if(records.length){
-        recordsContainer.innerHTML=records.map(record=>{
-          const media=Array.isArray(record.media)?record.media:[];
-          const mediaMarkup=window.ESCIE_MEDIA&&typeof window.ESCIE_MEDIA.renderAll==="function"&&media.length ? window.ESCIE_MEDIA.renderAll(media) : "";
-          const date=record.date||record.date_start||"DATE WITHHELD";
-          return '<article class="art-record-card" data-record-id="'+escapeHTML(recordId(record))+'">'+
-            '<div class="art-record-copy"><p class="eyebrow">'+escapeHTML(String(record.type||group.label||"ART").replace(/_/g," / "))+'</p>'+
-            '<h5>'+escapeHTML(recordTitle(record))+'</h5>'+
-            '<p>'+escapeHTML(record.description||record.summary||"The work exists. The record remains.")+'</p>'+
-            '<div class="art-record-meta"><span>'+escapeHTML(date)+'</span></div>'+
-            '<button class="record-action record-card" type="button" data-record-id="'+escapeHTML(recordId(record))+'">OPEN RECORD</button></div>'+mediaMarkup+'</article>';
-        }).join("");
-      }else{
-        recordsContainer.innerHTML='<p class="art-form-empty">'+escapeHTML(emptyMessage||"THE WORK EXISTS. IT HAS NOT BEEN TRANSMITTED HERE YET.")+'</p>';
-      }
+      recordsContainer.innerHTML=records.map(record=>{
+        const media=Array.isArray(record.media)?record.media:[];
+        const mediaMarkup=window.ESCIE_MEDIA&&typeof window.ESCIE_MEDIA.renderAll==="function"&&media.length ? window.ESCIE_MEDIA.renderAll(media) : "";
+        const date=record.date||record.date_start||"DATE WITHHELD";
+        return '<article class="art-record-card" data-record-id="'+escapeHTML(recordId(record))+'">'+
+          '<div class="art-record-copy"><p class="eyebrow">'+escapeHTML(String(record.type||group.label||"ART").replace(/_/g," / "))+'</p>'+
+          '<h4>'+escapeHTML(recordTitle(record))+'</h4>'+
+          '<p>'+escapeHTML(record.description||record.summary||"The work exists. The record remains.")+'</p>'+
+          '<div class="art-record-meta"><span>'+escapeHTML(date)+'</span></div>'+
+          '<button class="record-action record-card" type="button" data-record-id="'+escapeHTML(recordId(record))+'">OPEN RECORD</button></div>'+mediaMarkup+'</article>';
+      }).join("");
       return holder.outerHTML;
     }).join("");
   }
