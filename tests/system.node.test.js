@@ -593,6 +593,10 @@ assert(fs.readFileSync("app.js","utf8").includes("ESCIE_WORLD_CITY"),"THE WORLD 
 assert(fs.readFileSync("app.js","utf8").includes("districtCount"),"THE WORLD must expose authored district scale without inventing geography");
 assert(aestheticRuntime.includes(".world-place-list"),"THE WORLD geographic record must have a restrained list presentation");
 assert(aestheticRuntime.includes(".world-now-strip"),"THE WORLD city anchor must have a dedicated scale strip");
+assert(aestheticRuntime.includes(".world-city-field"),"THE WORLD must expose a dedicated Montréal district field");
+assert(fs.readFileSync("app.js","utf8").includes("Object.keys(city.districts).sort"),"THE WORLD district presentation must derive from the canonical city registry");
+assert(fs.readFileSync("app.js","utf8").includes("city.cityConnections"),"THE WORLD district presentation must use authored city connections");
+
 assert(fs.readFileSync("app.js","utf8").includes("renderMerch();\n    bindMerchFilters();\n    renderWorld();\n    renderWeb();"),"public render lifecycle must render THE WORLD before THE WEB");
 assert(!fs.readFileSync("app.js","utf8").includes("ESCIE_RUNTIME.webFilters[control.getAttribute(\"data-web-filter\")]=control.value||\"\";\n      renderWorld();"),"THE WEB filter changes must not rebuild THE WORLD unnecessarily");
 const publicAppRuntime=fs.readFileSync("app.js","utf8");
