@@ -2287,3 +2287,30 @@ body.inspector-open{overflow:hidden}
 @media (prefers-reduced-motion: reduce){
   .web-experience::before{animation:none}
 }
+
+
+/* =========================================================
+   PUBLIC SECTION VISUALS / CANONICAL SELECTORS
+   ========================================================= */
+.section-visual{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+  opacity:.9;
+}
+.section-visual::before{
+  content:"";
+  position:absolute;
+  inset:10% 8%;
+  border:1px solid rgba(255,255,255,.05);
+  background:radial-gradient(circle at 50% 40%,rgba(47,128,255,.05),transparent 58%);
+}
+.section-visual-art::before{box-shadow:inset 0 0 90px rgba(111,63,175,.08)}
+.section-visual-world::before{background:linear-gradient(180deg,rgba(47,128,255,.04),transparent 55%)}
+.section-visual-web::before{background:repeating-linear-gradient(90deg,transparent 0 44px,rgba(47,128,255,.025) 45px)}
+.section-visual-archives::before{box-shadow:inset 0 0 80px rgba(255,255,255,.045)}
+.section-visual-investigation::before{border-color:rgba(111,63,175,.10)}
+.section-visual-glass-eye::before{background:radial-gradient(circle,rgba(79,163,255,.06),transparent 48%)}
+.section-visual-escie::before{background:radial-gradient(circle,rgba(111,63,175,.08),transparent 55%)}
+.section-visual-now::before{background:linear-gradient(90deg,transparent,rgba(47,128,255,.05),transparent)}
