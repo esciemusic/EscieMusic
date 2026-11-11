@@ -453,6 +453,8 @@ test("A-Z Pass 3 public runtime boundaries remain schema-aligned and exception-s
   assert.ok(app.includes("function updateEntryState(route)"));
   assert.ok(live.includes("from:from_record_id")&&live.includes("to:to_record_id")&&live.includes("type:relationship_type"));
   assert.ok(live.includes("status=eq.RELEASED"));
+  assert.ok(live.includes("public_disclosure")&&live.includes("contract.validate")&&live.includes("contract.canDisclose"),"live relationships must fail closed through the relationship contract");
+  assert.ok(live.includes("root.ESCIE_LIVE_RELATIONSHIPS=[]"),"live relationship projection must fail closed when the contract is unavailable");
   assert.ok(live.includes('publicIds.has(String(x.from||'));
   assert.ok(live.includes('publicIds.has(String(x.to||'));
   assert.ok(live.includes('function safeURL(value)'));
