@@ -715,7 +715,7 @@
       '<p class="eyebrow">MONTRÉAL / HERE</p>'+
       '<div class="world-now-strip"><strong>'+escapeHTML(nowRecord.location||"MONTRÉAL, QUÉBEC")+'</strong><em>THE WORLD IS HERE.</em><span class="world-city-scale">'+escapeHTML(String(districtCount))+" "+districtLabel+'</span></div>'+
       '<div class="world-city-field" aria-label="Authored Montréal district index">'+
-        '<div class="world-city-field-head"><span>DISTRICT INDEX</span><span>CONNECTIONS</span></div>'+
+        '<div class="world-city-field-head"><span>MONTRÉAL / DISTRICTS</span><span>LINKS</span></div>'+
         '<div class="world-city-field-grid">'+districts.map((district,index)=>'<div class="world-city-district"><span>'+String(index+1).padStart(2,"0")+'</span><strong>'+escapeHTML(district)+'</strong><em>'+String(districtLinks[index]).padStart(2,"0")+'</em></div>').join("")+'</div>'+
       '</div>'+
       '<div class="world-place-list">'+locations.map((place,index)=>
