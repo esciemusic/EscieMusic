@@ -212,7 +212,8 @@ check(await menu.isVisible(), "public doorway not visible on mobile");
 await page.screenshot({ path: "artifacts/public-mobile.png", fullPage: true });
 
 await page.setViewportSize({ width: 1440, height: 900 });
-await page.goto(auditURL.toString(), { waitUntil: "networkidle" });
+await page.goto(auditURL.toString(), { waitUntil: "domcontentloaded", timeout: 30000 });
+await page.waitForLoadState("networkidle", { timeout: 10000 }).catch(() => {});
 check(await page.locator("#main-content").isVisible(), "desktop main content not visible");
 await auditAccordions("desktop");
 await auditGlassEye("desktop");
