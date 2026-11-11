@@ -261,7 +261,7 @@ test("A-Z Pass 3 keeps the public signal chamber visual-only",()=>{
   assert.ok(index.includes('class="signal-chamber"'));
   assert.ok(index.includes('class="signal-city"'));
   assert.doesNotMatch(index,/signal-status|data-escie-countdown|NEXT TRANSMISSION/);
-  assert.doesNotMatch(index,/signal\\/countdown/);
+  assert.doesNotMatch(index,/signal\/countdown/);
   assert.doesNotMatch(style,/\\.signal-status|\\.escie-countdown|\\.countdown-status|\\.countdown-value/);
 });
 
