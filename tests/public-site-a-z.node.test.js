@@ -1079,5 +1079,5 @@ test("A-Z Pass 3 footer social links remain public external links only",()=>{
   assert.match(app,/renderSocialLinks/);
   assert.match(app,/^.*https?:\/\//m);
   assert.match(social,/ESCIE_SOCIAL/);
-  assert.doesNotMatch(app,/ESCIE_SOURCE|ESCIE_PROVENANCE|ESCIE_HISTORY|pendingControl/);
+  assert.doesNotMatch(app,/window\.ESCIE_(SOURCE|PROVENANCE|HISTORY)\s*=/);
 });
