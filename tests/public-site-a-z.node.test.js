@@ -232,6 +232,14 @@ test("A-Z Pass 1 preserves keyboard and preference accessibility contracts",()=>
   assert.match(aesthetic,/:focus-visible/);
 });
 
+test("A-Z Pass 3 Montréal skyline scales for mobile",()=>{
+  const style=read("style.css");
+  assert.match(style,/@media\(max-width:700px\)\{[\s\S]*\.signal-window\{width:94vw;height:min\(58vw,360px\)\}/);
+  assert.match(style,/\.signal-city\{left:4%;right:4%;bottom:13%;height:36%;opacity:\.72\}/);
+  assert.match(style,/\.signal-city::before\{left:41%;bottom:54%;width:13%;height:46%\}/);
+  assert.match(style,/\.signal-city::after\{left:71%;bottom:39%;width:16%;height:68%\}/);
+});
+
 test("A-Z Pass 3 signal chamber remains visual-only without runtime status state",()=>{
   const style=read("style.css");
   assert.match(style,/\.signal-chamber \{[\s\S]*opacity: \.72;/);
