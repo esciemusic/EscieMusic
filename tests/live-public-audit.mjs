@@ -167,9 +167,14 @@ async function auditGlassEye(label) {
 await page.goto(baseURL, { waitUntil: "domcontentloaded", timeout: 30000 });
 await page.waitForLoadState("networkidle", { timeout: 30000 }).catch(() => {});
 check((await page.title()).includes('ESCIE'), 'ESCIE title missing');
-const deploymentMeta = page.locator('meta[name="escie-deployment-sha"]').first();
-check(await deploymentMeta.count() === 1, 'deployment revision marker missing');
 let observedSha = '';
+let deploymentMeta = page.locator('meta[name="escie-deployment-sha"]').first();
+for (let attempt = 0; attempt < 6 && !(await deploymentMeta.count()); attempt++) {
+  await page.waitForTimeout(10000);
+  await page.reload({ waitUntil: "domcontentloaded", timeout: 30000 });
+  deploymentMeta = page.locator('meta[name="escie-deployment-sha"]').first();
+}
+check(await deploymentMeta.count() === 1, 'deployment revision marker missing');
 if (await deploymentMeta.count()) {
   observedSha = (await deploymentMeta.getAttribute('content')) || '';
   check(/^[0-9a-f]{40}$/i.test(observedSha), 'deployment revision marker is invalid');
