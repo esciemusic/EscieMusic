@@ -833,7 +833,8 @@ test("A-Z Pass 3 THE WEB public relationship projection stays sanitized and fail
   assert.match(projection,/relationshipContract\.canDisclose\(r\)/);
   assert.match(projection,/public_disclosure:true/);
   assert.match(projection,/visibility:"public"/);
-  assert.match(projection,/byIdMap\.has\(r\.from\)/);\n  assert.match(projection,/byIdMap\.has\(r\.to\)/);
+  assert.match(projection,/byIdMap\.has\(r\.from\)/); 
+  assert.match(projection,/byIdMap\.has\(r\.to\)/);
   assert.doesNotMatch(projection,/source:|provenance:|evidence:/);
   assert.doesNotMatch(live,/select=\*/);
   assert.doesNotMatch(live,/source:source|provenance:source\.provenance|evidence:Array\.isArray\(row\.evidence\)/);
