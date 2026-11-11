@@ -241,6 +241,18 @@ main > .site-section:not(#entry) .section-drop-panel .content-container{
 .world-place-copy p{margin:7px 0 0;color:var(--faint);font-size:10px;line-height:1.7}
 .world-place-state{font:700 8px/1 var(--escie-font-mono);letter-spacing:.18em;color:var(--faint)}
 .world-now-strip{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:end;gap:18px;margin:18px 0 20px;padding:14px 0;border-top:1px solid rgba(216,212,202,.1);border-bottom:1px solid rgba(216,212,202,.1)}
+.world-city-field{margin:0 0 24px;border:1px solid rgba(216,212,202,.1);background:linear-gradient(135deg,rgba(155,89,255,.035),transparent 58%);padding:14px}
+.world-city-field-head{display:grid;grid-template-columns:1fr auto;gap:12px;padding:0 2px 10px;color:var(--faint);font:400 8px/1 var(--escie-font-mono);letter-spacing:.16em;text-transform:uppercase}
+.world-city-field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:rgba(216,212,202,.08)}
+.world-city-district{display:grid;grid-template-columns:28px minmax(0,1fr) 24px;gap:10px;align-items:center;min-height:42px;padding:8px 10px;background:var(--background)}
+.world-city-district span,.world-city-district em{color:var(--faint);font:400 8px/1 var(--escie-font-mono);letter-spacing:.1em}
+.world-city-district strong{font:400 11px/1.2 var(--escie-font-display);letter-spacing:.06em}
+.world-city-district em{text-align:right;font-style:normal;color:var(--escie-blue-bright)}
+@media(max-width:700px){
+  .world-city-field{padding:10px;margin-bottom:18px}
+  .world-city-field-grid{grid-template-columns:1fr}
+  .world-city-district{min-height:40px}
+}
 .world-now-strip strong{font:400 clamp(18px,3vw,30px)/1.05 var(--escie-font-display);letter-spacing:.05em}
 .world-now-strip em{color:var(--escie-blue-bright);font:400 8px/1 var(--escie-font-mono);font-style:normal;letter-spacing:.16em;text-transform:uppercase}
 .world-city-scale{color:var(--faint);font:400 8px/1 var(--escie-font-mono);letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
