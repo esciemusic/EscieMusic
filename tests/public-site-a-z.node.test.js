@@ -466,6 +466,10 @@ test("A-Z Pass 3 public runtime boundaries remain schema-aligned and exception-s
   assert.ok(app.includes(': [];'));
   assert.ok(idle.includes("window.ESCIE_IDLE_SIGNAL={states:STATES.slice(),hasPublicTransmission}"));
   assert.doesNotMatch(live,/select=id,from,to,type,visibility,public_disclosure,release_state/);
+  assert.ok(live.includes("from:from_record_id")&&live.includes("to:to_record_id")&&live.includes("type:relationship_type"),"live relationships must use the durable record_relationships column names");
+  assert.ok(live.includes("status=eq.APPROVED"),"live relationships must project approved relationships only");
+  assert.doesNotMatch(live,/select=\*/,"public records must not fetch the full Central record payload");
+  assert.ok(live.includes('version:"1.3.0"'),"public live projection version must advance with the schema hardening");
   assert.doesNotMatch(idle,/^if\(typeof window!==\"undefined\"\) window\.ESCIE_IDLE_SIGNAL=\{states:STATES\.slice\(\),hasPublicTransmission\};/m);
 });
 
