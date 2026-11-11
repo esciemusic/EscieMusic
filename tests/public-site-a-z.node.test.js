@@ -232,12 +232,14 @@ test("A-Z Pass 1 preserves keyboard and preference accessibility contracts",()=>
   assert.match(aesthetic,/:focus-visible/);
 });
 
-test("A-Z Pass 1 keeps the deferred November 22 countdown inactive",()=>{
-  const app=read("app.js");
+test("A-Z Pass 3 keeps the public signal chamber visual-only",()=>{
   const index=read("index.html");
-  assert.doesNotMatch(app,/2026-11-22|November 22|Nov 22/);
-  assert.ok(index.includes('data-escie-countdown hidden'));
-  assert.ok(index.includes('NEXT TRANSMISSION'));
+  const style=read("style.css");
+  assert.ok(index.includes('class="signal-chamber"'));
+  assert.ok(index.includes('class="signal-city"'));
+  assert.doesNotMatch(index,/signal-status|data-escie-countdown|NEXT TRANSMISSION/);
+  assert.doesNotMatch(index,/signal\\/countdown/);
+  assert.doesNotMatch(style,/\\.signal-status|\\.escie-countdown|\\.countdown-status|\\.countdown-value/);
 });
 
 test("A-Z Pass 3 entry signal state stays synchronized to local time boundaries",()=>{
@@ -479,7 +481,7 @@ test("A-Z Pass 2 World includes the physical clothing layer without exposing loc
 
 
 test("A-Z Pass 3 public runtime boundaries remain schema-aligned and exception-safe",()=>{
-  const app=read("app.js"),live=read("data/public-live.js"),idle=read("ui/idle-signal.js");
+  const app=read("app.js"),live=read("data/public-live.js");
   assert.ok(app.includes("function updateEntryState(route)"));
   assert.ok(live.includes("from:from_record_id")&&live.includes("to:to_record_id")&&live.includes("type:relationship_type"));
   assert.ok(live.includes("status=eq.APPROVED"));
@@ -495,7 +497,6 @@ test("A-Z Pass 3 public runtime boundaries remain schema-aligned and exception-s
   assert.ok(app.includes("filters&&filters.type")&&app.includes("filters&&filters.record"),"live relationships must honor THE WEB filters");
   assert.ok(app.includes('? normalizeCollection(getGlobal("ESCIE_LIVE_RELATIONSHIPS",[]))'));
   assert.ok(app.includes(': [];'));
-  assert.ok(idle.includes("window.ESCIE_IDLE_SIGNAL={states:STATES.slice(),hasPublicTransmission}"));
   assert.doesNotMatch(live,/select=id,from,to,type,visibility,public_disclosure,release_state/);
   assert.ok(live.includes("from:from_record_id")&&live.includes("to:to_record_id")&&live.includes("type:relationship_type"),"live relationships must use the durable record_relationships column names");
   assert.ok(live.includes("status=eq.APPROVED"),"live relationships must project approved relationships only");
@@ -573,8 +574,9 @@ test("A-Z Pass 3 signal chamber respects reduced-motion preferences",()=>{
 
 test("A-Z Pass 3 Montréal skyline uses recognizable landmark silhouettes",()=>{
   const css=read("style.css");
-  assert.ok(css.includes("/* Montréal street-level skyline */"));
+  assert.ok(css.includes("Montréal skyline"));
+  assert.ok(css.includes("Mount Royal cross"));
+  assert.ok(css.includes("Olympic Stadium tower"));
   assert.ok(css.includes(".signal-city::before"));
   assert.ok(css.includes(".signal-city::after"));
-  assert.ok(css.includes("clip-path: polygon(0 100%,34% 38%,43% 0,57% 0,66% 38%,100% 100%)"));
 });
