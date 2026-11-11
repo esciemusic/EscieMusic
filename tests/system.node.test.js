@@ -596,6 +596,8 @@ assert(aestheticRuntime.includes(".world-now-strip"),"THE WORLD city anchor must
 assert(aestheticRuntime.includes(".world-city-field"),"THE WORLD must expose a dedicated Montréal district field");
 assert(fs.readFileSync("app.js","utf8").includes("Object.keys(city.districts).sort"),"THE WORLD district presentation must derive from the canonical city registry");
 assert(fs.readFileSync("app.js","utf8").includes("city.cityConnections"),"THE WORLD district presentation must use authored city connections");
+assert(fs.readFileSync("app.js","utf8").includes("MONTRÉAL / DISTRICTS"),"THE WORLD district field must remain explicitly Montréal-scoped");
+assert(aestheticRuntime.includes(".world-city-district:after"),"THE WORLD district links must have a restrained visual relationship cue");
 
 assert(fs.readFileSync("app.js","utf8").includes("renderMerch();\n    bindMerchFilters();\n    renderWorld();\n    renderWeb();"),"public render lifecycle must render THE WORLD before THE WEB");
 assert(!fs.readFileSync("app.js","utf8").includes("ESCIE_RUNTIME.webFilters[control.getAttribute(\"data-web-filter\")]=control.value||\"\";\n      renderWorld();"),"THE WEB filter changes must not rebuild THE WORLD unnecessarily");
