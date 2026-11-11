@@ -380,6 +380,15 @@ test("A-Z Pass 1 time state remains lightweight and date-independent",()=>{
 });
 
 
+test("A-Z Pass 3 public hero uses the authored ESCIE family fallback contract",()=>{
+  const typography=read("typography.css");
+  const aesthetic=read("aesthetic.css");
+  assert.match(typography,/--escie-font-escie/);
+  assert.match(aesthetic,/entry-section #entry-container h1\{[^}]*font-family:var\(--escie-font-escie\)/);
+  assert.doesNotMatch(aesthetic,/Flesh Wound/);
+  assert.doesNotMatch(aesthetic,/fonts\.googleapis\.com|fonts\.gstatic\.com/);
+});
+
 test("A-Z Pass 2 entry keeps the live signal state above ESCIE",()=>{
   const index=read("index.html");
   const app=read("app.js");
