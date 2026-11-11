@@ -1825,6 +1825,15 @@ body.inspector-open{overflow:hidden}
   animation:signal-sweep 8s linear infinite;
 }
 .now-state h3{max-width:820px;font-size:clamp(24px,4.8vw,58px);line-height:1.02}
+.now-state[data-transmission-state="quiet"] h3{
+  color:var(--faint);
+  font-size:clamp(18px,3vw,34px);
+  letter-spacing:.14em;
+}
+.now-state[data-transmission-state="quiet"] > p:not(.eyebrow){
+  max-width:520px;
+}
+
 .now-state > p:not(.eyebrow){max-width:620px}
 @media(max-width:700px){
   .now-state{padding:18px 0 14px}
