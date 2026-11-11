@@ -793,3 +793,65 @@ test("ART is a complete creative body with a compact public taxonomy",()=>{
   assert.ok(registry.includes('["drawing",()=>collection("ESCIE_DRAWINGS")]'));
   assert.ok(art.includes('id:"drawings",label:"DRAWINGS"'));
 });
+
+
+test("A-Z Pass 3 THE WEB connection field is covered by a public interaction contract",()=>{
+  const app=read("app.js");
+  const style=read("style.css");
+  assert.match(app,/function renderWeb\(\)/);
+  assert.match(app,/class="web-experience web-identity-field"/);
+  assert.match(app,/class="web-connection-field"/);
+  assert.match(app,/class="web-connection-main"/);
+  assert.match(app,/class="web-node"/);
+  assert.match(app,/class="web-connection-line"/);
+  assert.match(app,/data-web-connection-toggle/);
+  assert.match(app,/data-web-search/);
+  assert.match(app,/data-web-filter="record"/);
+  assert.match(app,/data-web-filter="type"/);
+  assert.match(app,/data-web-participate/);
+  assert.match(app,/aria-expanded="false"/);
+  assert.match(app,/detail\.hidden===false/);
+  assert.match(app,/setAttribute\("aria-expanded",open\?"false":"true"\)/);
+  assert.match(style,/\.web-experience\{/);
+  assert.match(style,/\.web-connection-main\{/);
+  assert.match(style,/\.web-node /);
+  assert.match(style,/\.web-connection-line/);
+  assert.match(style,/\.web-discovery-tools/);
+  assert.match(style,/\.web-record-results/);
+  assert.match(style,/@media\(max-width:700px\)/);
+});
+
+test("A-Z Pass 3 THE WEB public relationship projection stays sanitized and fail-closed",()=>{
+  const app=read("app.js");
+  const live=read("data/public-live.js");
+  const start=app.indexOf("function getPublicRelationshipRecords");
+  const end=app.indexOf("function renderWorld",start);
+  const projection=app.slice(start,end);
+  assert.match(projection,/publicRelationships\(filters\|\|\{\}\)/);
+  assert.match(projection,/relationshipContract\.validate\(r\)\.valid/);
+  assert.match(projection,/relationshipContract\.canDisclose\(r\)/);
+  assert.match(projection,/public_disclosure:true/);
+  assert.match(projection,/visibility:"public"/);
+  assert.match(projection,/byIdMap\.has\(r\.from\)&&byIdMap\.has\(r\.to\)/);
+  assert.doesNotMatch(projection,/source:|provenance:|evidence:/);
+  assert.doesNotMatch(live,/select=\*/);
+  assert.doesNotMatch(live,/source:source|provenance:source\.provenance|evidence:Array\.isArray\(row\.evidence\)/);
+});
+
+test("A-Z Pass 3 THE WEB connection expansion stays local and links back into public records",()=>{
+  const app=read("app.js");
+  assert.match(app,/const webConnection=event\.target\.closest\("\[data-web-connection-toggle\]"\)/);
+  assert.match(app,/const detail=webConnection\.parentElement&&webConnection\.parentElement\.querySelector\("\.web-connection-detail"\)/);
+  assert.match(app,/webConnection\.setAttribute\("aria-expanded"/);
+  assert.match(app,/data-record-id=/);
+  assert.match(app,/OPEN \'+escapeHTML\(recordTitle\(from\)\.toUpperCase\(\)\)/);
+  assert.match(app,/OPEN \'+escapeHTML\(recordTitle\(to\)\.toUpperCase\(\)\)/);
+});
+
+test("A-Z Pass 3 THE WEB empty state preserves the Glass Eye participation doorway",()=>{
+  const app=read("app.js");
+  assert.match(app,/NO PUBLIC CONNECTIONS YET/);
+  assert.match(app,/THE WEB IS QUIET\./);
+  assert.match(app,/data-web-participate/);
+  assert.match(app,/const glass=byId\("glass-eye"\)/);
+});
