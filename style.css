@@ -2556,3 +2556,71 @@ body.inspector-open{overflow:hidden}
 }
 .index-trigger-glyph::before{width:1px;height:14px;transform:translate(-50%,-50%)}
 .index-trigger-glyph::after{width:14px;height:1px;transform:translate(-50%,-50%)}
+
+/* =========================================================
+   ART / CREATIVE FORMS
+   ART is the complete body of ESCIE's work.
+   ========================================================= */
+.art-forms{
+  display:grid;
+  gap:12px;
+  margin-top:clamp(28px,5vw,56px);
+}
+.art-category{
+  margin:0;
+  border-top:1px solid rgba(154,120,255,.18);
+}
+.art-category > .nested-drop-trigger{
+  min-height:58px;
+  padding:14px 4px;
+}
+.art-category .nested-drop-title{
+  font-family:var(--escie-font-signal);
+  letter-spacing:.12em;
+}
+.art-category .nested-drop-meta{
+  color:var(--faint);
+}
+.art-category .nested-drop-panel{
+  padding:0 0 18px;
+}
+.art-category .content-container{
+  width:100%;
+}
+.art-record-card{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(180px,.55fr);
+  gap:clamp(18px,4vw,42px);
+  padding:22px 0;
+  border-top:1px solid rgba(154,120,255,.12);
+}
+.art-record-card:first-child{border-top:0;}
+.art-record-copy h4{
+  margin:6px 0 10px;
+  font-size:clamp(24px,4vw,48px);
+  line-height:1.02;
+}
+.art-record-copy > p:not(.eyebrow){
+  max-width:680px;
+  color:var(--muted);
+}
+.art-record-meta{
+  margin:16px 0;
+  color:var(--faint);
+  font-size:.72rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+.art-record-card .record-action{
+  margin-top:4px;
+}
+@media(max-width:700px){
+  .art-forms{gap:8px;margin-top:28px;}
+  .art-category > .nested-drop-trigger{min-height:52px;}
+  .art-record-card{grid-template-columns:1fr;gap:16px;padding:18px 0;}
+  .art-record-copy h4{font-size:clamp(22px,8vw,34px);}
+}
+@media(prefers-reduced-motion:reduce){
+  .art-category .nested-drop-trigger,
+  .art-record-card{transition:none!important;}
+}
