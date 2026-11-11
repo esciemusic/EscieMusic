@@ -2197,10 +2197,8 @@ body.inspector-open{overflow:hidden}
   .signal-chamber,
   .signal-scan,
   .signal-light,
-  .signal-window::before,
+  .signal-window::before {
     animation: none;
     transition: none;
   }
-}
-
 }
