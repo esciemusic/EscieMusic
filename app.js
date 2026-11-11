@@ -609,7 +609,13 @@
           id:r.id,from:r.from_record_id||r.from,to:r.to_record_id||r.to,type:r.type||"connection",
           category:r.category||null,status:r.status||"active",confidence:r.confidence||"unknown",
           canonical_status:r.canonical_status||"unknown",public_disclosure:true,visibility:"public"
-        })).filter(r=>relationshipContract.validate(r).valid&&relationshipContract.canDisclose(r))
+        })).filter(r=>{
+          if(!relationshipContract.validate(r).valid||!relationshipContract.canDisclose(r)) return false;
+          if(filters&&filters.type&&String(r.type||"").toLowerCase()!==String(filters.type).toLowerCase()) return false;
+          if(filters&&filters.record&&r.from!==filters.record&&r.to!==filters.record) return false;
+          if(filters&&filters.category&&typeof relationshipContract.getCategory==="function"&&relationshipContract.getCategory(r.type)!==filters.category) return false;
+          return true;
+        })
       : [];
     return base.concat(live).filter(r=>{
       if(!r||!byIdMap.has(r.from)||!byIdMap.has(r.to)) return false;
