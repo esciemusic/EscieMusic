@@ -515,3 +515,21 @@ test("A-Z Pass 3 seals Central cognition, provenance, history, and ingestion fro
   assert.doesNotMatch(app,/"ESCIE_HISTORY",/);
   assert.doesNotMatch(app,/"ESCIE_HISTORY_API",/);
 });
+
+
+test("A-Z Pass 3 header preferences use one language authority and accessible theme action labels",()=>{
+  const index=read("index.html");
+  const app=read("app.js");
+  const language=read("language.js");
+  assert.match(index,/data-language="en"/);
+  assert.match(index,/data-language="fr"/);
+  assert.match(index,/data-language="es"/);
+  assert.match(index,/id="theme-toggle"[^>]*aria-label="Switch to light mode"/);
+  assert.doesNotMatch(index,/id="theme-toggle"[^>]*aria-pressed/);
+  assert.match(index,/engine\.setLanguage\(language\);\s*return;/);
+  assert.doesNotMatch(index,/var events=window\.ESCIE_EVENTS/);
+  assert.match(app,/const engine = getLanguageEngine\(\);/);
+  assert.match(app,/engine && typeof engine\.setLanguage === "function"/);
+  assert.match(app,/engine\.setLanguage\(detected\)/);
+  assert.match(language,/applyEscieInterfaceTranslations\(normalized\)/);
+});
