@@ -214,13 +214,18 @@
 
   function initializeLanguage() {
     const detected = detectLanguage();
-    setLanguage(detected);
-
     const engine = getLanguageEngine();
-    if (engine && typeof engine.mode === "function") {
-      ESCIE_RUNTIME.languageEngine = engine;
+
+    if (engine && typeof engine.setLanguage === "function") {
+      const normalized = engine.setLanguage(detected);
+      ESCIE_RUNTIME.language = normalized;
+      if (typeof engine.mode === "function") {
+        ESCIE_RUNTIME.languageEngine = engine;
+      }
+      return normalized;
     }
 
+    setLanguage(detected);
     return detected;
   }
 
