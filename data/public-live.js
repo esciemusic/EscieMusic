@@ -60,19 +60,39 @@
     return response.json();
   }
   async function load(){
-    const rows=await get("/records?select=*&visibility=eq.PUBLIC&publication_state=eq.PUBLISHED&release_state=eq.RELEASED&order=updated_at.desc");
+    const rows=await get("/records?select=id,type,title,description,status,visibility,publication_state,release_state,certainty,tags,people,places,moments,related_records,media,project,phase,due_date&visibility=eq.PUBLIC&publication_state=eq.PUBLISHED&release_state=eq.RELEASED&order=updated_at.desc");
     const publicRecords=(Array.isArray(rows)?rows:[]).map(normalize).filter(x=>x.id);
     const publicIds=new Set(publicRecords.map(x=>x.id));
-    const relationships=await get("/record_relationships?select=id,from:from_record_id,to:to_record_id,type:relationship_type,status,confidence,canonical_status,visibility,public_disclosure,date,context,note&status=eq.RELEASED&order=created_at.desc");
+    const relationships=await get("/record_relationships?select=id,from:from_record_id,to:to_record_id,type:relationship_type,status,confidence,reason,created_at,updated_at,approved_by&status=eq.APPROVED&order=created_at.desc");
     root.ESCIE_LIVE_RECORDS=publicRecords;
     const contract=root.ESCIE_RELATIONSHIP;
+    function publicRelationship(row){
+      const numeric=Number(row&&row.confidence);
+      const confidence=Number.isFinite(numeric)
+        ? (numeric>=0.9?"verified":numeric>=0.75?"strongly_supported":numeric>=0.5?"credible":numeric>0?"plausible":"unknown")
+        : "unknown";
+      return {
+        id:row&&row.id?String(row.id):"",
+        from:row&&row.from?String(row.from):null,
+        type:row&&row.type?String(row.type):null,
+        to:row&&row.to?String(row.to):null,
+        status:"active",
+        confidence:confidence,
+        canonical_status:"canonical",
+        date:row&&row.created_at?row.created_at:null,
+        context:row&&row.reason?String(row.reason):null,
+        note:null,
+        visibility:"public",
+        public_disclosure:true
+      };
+    }
     if(!contract||typeof contract.validate!=="function"||typeof contract.canDisclose!=="function"){
       root.ESCIE_LIVE_RELATIONSHIPS=[];
     }else{
       root.ESCIE_LIVE_RELATIONSHIPS=(Array.isArray(relationships)?relationships:[])
-        .map(function(x){return Object.assign({},x,{from:x&&x.from?String(x.from):null,to:x&&x.to?String(x.to):null,type:x&&x.type?String(x.type):null});})
+        .map(publicRelationship)
         .filter(function(x){
-          if(!publicIds.has(String(x.from||""))||!publicIds.has(String(x.to||"")))return false;
+          if(!x.id||!publicIds.has(String(x.from||""))||!publicIds.has(String(x.to||"")))return false;
           const validation=contract.validate(x);
           return validation&&validation.valid===true&&contract.canDisclose(x)===true;
         })
@@ -81,5 +101,5 @@
     }
     return {records:root.ESCIE_LIVE_RECORDS,relationships:root.ESCIE_LIVE_RELATIONSHIPS};
   }
-  root.ESCIE_PUBLIC_LIVE={version:"1.2.0",status:"LOADING",ready:load().then(function(result){root.ESCIE_PUBLIC_LIVE.status="READY";return result;}).catch(function(error){root.ESCIE_PUBLIC_LIVE.status="OFFLINE";root.ESCIE_PUBLIC_LIVE.error=String(error&&error.message||error);return {records:[],relationships:[]};})};
+  root.ESCIE_PUBLIC_LIVE={version:"1.3.0",status:"LOADING",ready:load().then(function(result){root.ESCIE_PUBLIC_LIVE.status="READY";return result;}).catch(function(error){root.ESCIE_PUBLIC_LIVE.status="OFFLINE";root.ESCIE_PUBLIC_LIVE.error=String(error&&error.message||error);return {records:[],relationships:[]};})};
 })();
