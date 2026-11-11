@@ -1952,6 +1952,102 @@ body.inspector-open{overflow:hidden}
 
 
 /* METADATA DISCOVERY */
+/* =========================================================
+   ART / PUBLIC WORK COMPOSITION
+   Creative records read as work, not storefront cards.
+   ========================================================= */
+
+.art-section .section-inner{
+  position:relative;
+}
+
+.art-section #art-container{
+  width:min(100%,900px);
+  margin:0 auto;
+}
+
+.art-section #work-filters{
+  margin-top:10px;
+}
+
+.art-section .music-card{
+  display:block;
+  padding:26px 0 28px;
+  border-top:1px solid var(--line);
+  transition:padding var(--escie-motion-standard),border-color var(--escie-motion-fast),background var(--escie-motion-standard);
+}
+
+.art-section .music-card:hover,
+.art-section .music-card:focus-within{
+  padding-left:12px;
+  border-color:rgba(155,89,255,.28);
+  background:linear-gradient(90deg,rgba(155,89,255,.035),transparent 72%);
+}
+
+.art-section .music-card-top{
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  align-items:baseline;
+  color:var(--faint);
+  font-size:8px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+}
+
+.art-section .music-card-body h3{
+  max-width:760px;
+  margin:14px 0 0;
+  font-size:clamp(22px,4vw,42px);
+  line-height:1.05;
+  font-weight:400;
+  letter-spacing:.025em;
+}
+
+.art-section .music-card-body p{
+  max-width:650px;
+  margin:12px 0 0;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.75;
+}
+
+.art-section .music-card-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 22px;
+  margin-top:18px;
+  color:var(--faint);
+  font-size:8px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+
+.art-section .record-action{
+  margin-top:18px;
+}
+
+.art-section .project-card{
+  max-width:900px;
+  margin-top:34px;
+  padding:26px 0 30px;
+  border-top:1px solid var(--line);
+}
+
+@media(max-width:700px){
+  .art-section #art-container{width:100%}
+  .art-section .music-card{padding:22px 0 24px}
+  .art-section .music-card:hover,
+  .art-section .music-card:focus-within{padding-left:7px}
+  .art-section .music-card-top{gap:10px}
+  .art-section .music-card-body h3{font-size:clamp(20px,7vw,32px)}
+  .art-section .music-card-body p{font-size:11px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .art-section .music-card{transition:none}
+}
+
 .record-filters{margin:0 0 34px;padding:18px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .record-filters-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px;color:var(--faint);font-size:8px;letter-spacing:.2em;text-transform:uppercase}
 .record-filter-clear{border:1px solid var(--line);background:transparent;color:var(--muted);padding:7px 9px;font:inherit;letter-spacing:inherit;cursor:pointer}
