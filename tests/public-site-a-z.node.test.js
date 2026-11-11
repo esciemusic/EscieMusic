@@ -562,3 +562,10 @@ test("A-Z Pass 3 hero supporting copy preserves signal hierarchy",()=>{
   assert.ok(aesthetic.includes("#entry-container #entry-location{margin-top:clamp(12px,1.8vw,18px)"));
   assert.ok(aesthetic.includes("font-family:var(--escie-font-signal)"));
 });
+
+
+test("A-Z Pass 3 signal chamber respects reduced-motion preferences",()=>{
+  const css=read("style.css");
+  assert.match(css,/\.signal-chamber,\s*\.signal-scan,\s*\.signal-light,\s*\.signal-window::before,\s*\.signal-status-shift/);
+  assert.ok(css.includes(".signal-status-shift")&&css.includes("transition: none;"));
+});
