@@ -2,7 +2,9 @@ import { chromium } from "playwright";
 import fs from "node:fs";
 
 const baseURL = process.env.LIVE_URL;
-if (!baseURL) throw new Error("LIVE_URL is required");
+const expectedSha = process.env.EXPECTED_SHA || '';
+if (!baseURL) throw new Error('LIVE_URL is required');
+if (expectedSha && !/^[0-9a-f]{40}$/i.test(expectedSha)) throw new Error('EXPECTED_SHA must be a 40-character commit SHA');
 
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
@@ -164,8 +166,16 @@ async function auditGlassEye(label) {
 
 await page.goto(baseURL, { waitUntil: "domcontentloaded", timeout: 30000 });
 await page.waitForLoadState("networkidle", { timeout: 30000 }).catch(() => {});
-check((await page.title()).includes("ESCIE"), "ESCIE title missing");
-check(await page.locator("#main-content").count() === 1, "main content missing");
+check((await page.title()).includes('ESCIE'), 'ESCIE title missing');
+const deploymentMeta = page.locator('meta[name="escie-deployment-sha"]').first();
+check(await deploymentMeta.count() === 1, 'deployment revision marker missing');
+let observedSha = '';
+if (await deploymentMeta.count()) {
+  observedSha = (await deploymentMeta.getAttribute('content')) || '';
+  check(/^[0-9a-f]{40}$/i.test(observedSha), 'deployment revision marker is invalid');
+  if (expectedSha) check(observedSha.toLowerCase() === expectedSha.toLowerCase(), 'live deployment revision mismatch: expected ' + expectedSha + ' but observed ' + observedSha);
+}
+check(await page.locator('#main-content').count() === 1, 'main content missing');
 check(await page.locator("#mobile-menu-button").count() === 1, "public doorway/menu missing");
 
 const menu = page.locator("#mobile-menu-button");
@@ -205,6 +215,9 @@ fs.writeFileSync("artifacts/audit-manifest.json", JSON.stringify({
   status: failures.length ? "FAIL" : "PASS",
   baseURL,
   checkedAt: new Date().toISOString(),
+  expectedSha: expectedSha || null,
+  observedSha: observedSha || null,
+  deploymentIdentity: expectedSha ? observedSha.toLowerCase() === expectedSha.toLowerCase() : 'not-required',
   viewports: [{ width: 390, height: 844 }, { width: 1440, height: 900 }],
   checks: checks.filter(c => c.ok).map(c => c.message),
   failures
