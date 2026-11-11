@@ -954,3 +954,60 @@ test("A-Z Pass 3 THE CASE FILES empty state preserves the Glass Eye finding door
   assert.match(projection,/data-web-participate/);
   assert.match(projection,/BRING A FINDING THROUGH GLASS EYE/);
 });
+
+
+test("A-Z Pass 3 GLASS EYE stays personal, local-first, and does not add a second language system",()=>{
+  const app=read("app.js");
+  const index=read("index.html");
+  assert.match(app,/function renderGlassEye\(\)/);
+  assert.match(app,/THIS IS YOUR SIDE OF THE SCREEN\./);
+  assert.match(app,/YOUR MEMORY/);
+  assert.match(app,/LOCAL · PRIVATE · NON-CANONICAL/);
+  assert.match(app,/NO CENTRAL HISTORY/);
+  assert.match(app,/SEE · HEAR · FOLLOW · MISS · RETURN/);
+  assert.doesNotMatch(app,/glass-language/);
+  assert.doesNotMatch(index,/glass-language/);
+});
+
+test("A-Z Pass 3 GLASS EYE participation remains reviewed before public record entry",()=>{
+  const app=read("app.js");
+  assert.match(app,/data-glass-participation-form/);
+  assert.match(app,/COMMENT/);
+  assert.match(app,/THEORY/);
+  assert.match(app,/FINDING/);
+  assert.match(app,/MENTION/);
+  assert.match(app,/UPLOAD PHOTO \/ VIDEO \/ AUDIO/);
+  assert.match(app,/Submissions are reviewed before anything enters the public record/);
+  assert.match(app,/RECEIVED\. HELD FOR REVIEW — NOT CANON\./);
+  assert.match(app,/ESCIE_GLASS_EYE_PARTICIPATION/);
+  assert.match(app,/participation\.submit/);
+  assert.match(app,/participation\.approved/);
+});
+
+test("A-Z Pass 3 GLASS EYE media stays approval-gated and safely embedded",()=>{
+  const app=read("app.js");
+  const config=read("data/glass-eye-video.js");
+  assert.match(app,/glassEyeYouTubeURL\(videoConfig&&videoConfig\.url\)/);
+  assert.match(app,/youtube-nocookie\.com\/embed/);
+  assert.match(app,/AWAITING APPROVED VIDEO/);
+  assert.match(app,/NO APPROVED AUDIO IS AVAILABLE YET\./);
+  assert.match(config,/url:""/);
+  assert.match(config,/artist-approved/i);
+});
+
+test("A-Z Pass 3 GLASS EYE preserves touch, keyboard, reduced-motion, and responsive behavior",()=>{
+  const app=read("app.js");
+  const style=read("style.css");
+  const aesthetic=read("aesthetic.css");
+  assert.match(app,/data-glass-eye-action="observe"/);
+  assert.match(app,/data-glass-eye-action="hear"/);
+  assert.match(app,/data-glass-eye-action="follow"/);
+  assert.match(app,/data-glass-eye-action="return"/);
+  assert.match(app,/data-glass-eye-action="info"/);
+  assert.match(app,/aria-pressed="false"/);
+  assert.match(app,/setAttribute\("aria-pressed","true"\)/);
+  assert.match(style,/\.glass-eye-actions button:focus-visible/);
+  assert.match(style,/touch-action:manipulation/);
+  assert.match(style,/@media\(max-width:700px\)/);
+  assert.match(aesthetic,/prefers-reduced-motion:reduce/);
+});
