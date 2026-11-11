@@ -2573,10 +2573,16 @@ body.inspector-open{overflow:hidden}
 .art-category > .nested-drop-trigger{
   min-height:58px;
   padding:14px 4px;
+  border-left:1px solid transparent;
+}
+.art-category > .nested-drop-trigger:hover,
+.art-category > .nested-drop-trigger:focus-visible{
+  border-left-color:rgba(155,89,255,.55);
 }
 .art-category .nested-drop-title{
   font-family:var(--escie-font-signal);
-  letter-spacing:.12em;
+  font-size:.82rem;
+  letter-spacing:.16em;
 }
 .art-category .nested-drop-meta{
   color:var(--faint);
@@ -2595,19 +2601,19 @@ body.inspector-open{overflow:hidden}
   margin:0 0 8px;
   color:var(--faint);
   font-family:var(--escie-font-signal);
-  font-size:.68rem;
-  letter-spacing:.16em;
+  font-size:.62rem;
+  letter-spacing:.18em;
   text-transform:uppercase;
 }
 .art-form-records{
   width:100%;
 }
-.art-form-empty{
+.art-group-quiet{
   margin:0;
-  padding:18px 0 4px;
+  padding:18px 0 6px;
   color:var(--faint);
   font-family:var(--escie-font-signal);
-  font-size:.72rem;
+  font-size:.68rem;
   letter-spacing:.1em;
   text-transform:uppercase;
 }
@@ -2643,7 +2649,12 @@ body.inspector-open{overflow:hidden}
 }
 @media(max-width:700px){
   .art-forms{gap:8px;margin-top:28px;}
-  .art-category > .nested-drop-trigger{min-height:52px;}
+  .art-category > .nested-drop-trigger{
+    min-height:52px;
+    padding:11px 3px;
+  }
+  .art-category .nested-drop-title{font-size:.76rem;letter-spacing:.14em;}
+  .art-form-group{padding:15px 0 4px;}
   .art-record-card{grid-template-columns:1fr;gap:16px;padding:18px 0;}
   .art-record-copy h4{font-size:clamp(22px,8vw,34px);}
 }
