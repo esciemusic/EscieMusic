@@ -662,7 +662,7 @@ test("A-Z Pass 2 World includes the physical clothing layer without exposing loc
 
 test("A-Z Pass 3 public runtime boundaries remain schema-aligned and exception-safe",()=>{
   const app=read("app.js"),live=read("data/public-live.js");
-  assert.ok(app.includes("function updateEntryState(route)"));
+  assert.doesNotMatch(app,/function updateEntryState\(route\)/);
   assert.ok(live.includes("from:from_record_id")&&live.includes("to:to_record_id")&&live.includes("type:relationship_type"));
   assert.ok(live.includes("status=eq.APPROVED"));
   assert.ok(live.includes("public_disclosure")&&live.includes("contract.validate")&&live.includes("contract.canDisclose"),"live relationships must fail closed through the relationship contract");
