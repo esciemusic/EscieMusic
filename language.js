@@ -43,7 +43,7 @@ let ESCIE_I18N_APPLYING = false;
 
 function applyEscieInterfaceTranslations(language = "en") {
   const normalized = ["en","fr","es"].includes(String(language).toLowerCase()) ? String(language).toLowerCase() : "en";
-  const table = Object.assign({}, ESCIE_INTERFACE_TRANSLATIONS.en, ESCIE_INTERFACE_EXTRA.en, ESCIE_INTERFACE_RUNTIME.en, ESCIE_INTERFACE_TRANSLATIONS[normalized] || {}, ESCIE_INTERFACE_EXTRA[normalized] || {}, ESCIE_INTERFACE_RUNTIME[normalized] || {});
+  const table = Object.assign({}, ESCIE_INTERFACE_TRANSLATIONS.en, ESCIE_INTERFACE_EXTRA.en, ESCIE_INTERFACE_RUNTIME.en, ESCIE_INTERFACE_TRANSLATIONS[normalized] || {}, ESCIE_INTERFACE_EXTRA[normalized] || {}, ESCIE_INTERFACE_RUNTIME[normalized] || {}, ESCIE_WORLD_TRANSLATIONS[normalized] || {});
   const ignored = new Set(["SCRIPT","STYLE","NOSCRIPT","TEXTAREA","INPUT","SELECT","OPTION"]);
   if (!document.body) return;
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
@@ -514,6 +514,36 @@ const ESCIE_LANGUAGE = {
 };
 
 
+const ESCIE_WORLD_TRANSLATIONS = Object.freeze({
+  en: {
+    "ONE WORLD · MANY WAYS IN":"ONE WORLD · MANY WAYS IN","START WITH WHAT PULLS YOU.":"START WITH WHAT PULLS YOU.",
+    "There is no correct entrance. Begin with a person, a place, a moment, a piece of art or a trace. The next thing appears through its relationship to what you found.":"There is no correct entrance. Begin with a person, a place, a moment, a piece of art or a trace. The next thing appears through its relationship to what you found.",
+    "PLACE":"PLACE","PEOPLE":"PEOPLE","MOMENT":"MOMENT","ART":"ART","WHERE SOMETHING HAPPENED.":"WHERE SOMETHING HAPPENED.","WHO LEFT A TRACE.":"WHO LEFT A TRACE.","WHAT REMAINED.":"WHAT REMAINED.","WHAT ESCIE MADE FROM IT.":"WHAT ESCIE MADE FROM IT.",
+    "ATLAS":"ATLAS","PLACES":"PLACES","MOMENTS":"MOMENTS","FRAGMENTS":"FRAGMENTS","BODIES":"BODIES","PROOF":"PROOF","PATH":"PATH","TIMELINE":"TIMELINE","SYMBOLS":"SYMBOLS","TRAILS":"TRAILS",
+    "ESCIE WORLD ENGINE":"ESCIE WORLD ENGINE","THE WORLD BEHIND THE WORK.":"THE WORLD BEHIND THE WORK.","Explore the universe. Follow the signal. Decide what you believe.":"Explore the universe. Follow the signal. Decide what you believe.",
+    "SEARCH THE WORLD…":"SEARCH THE WORLD…","ALL TYPES":"ALL TYPES","A MAP WITHOUT BORDERS":"A MAP WITHOUT BORDERS","ENTER ANYWHERE.":"ENTER ANYWHERE.",
+    "ONE WORLD. MANY WAYS IN.":"ONE WORLD. MANY WAYS IN."
+  },
+  fr: {
+    "ONE WORLD · MANY WAYS IN":"UN MONDE · PLUSIEURS ENTRÉES","START WITH WHAT PULLS YOU.":"COMMENCEZ PAR CE QUI VOUS ATTIRE.",
+    "There is no correct entrance. Begin with a person, a place, a moment, a piece of art or a trace. The next thing appears through its relationship to what you found.":"Il n’y a pas de bonne entrée. Commencez par une personne, un lieu, un moment, une œuvre ou une trace. La suite apparaît par son lien avec ce que vous avez trouvé.",
+    "PLACE":"LIEU","PEOPLE":"PERSONNES","MOMENT":"MOMENT","ART":"ART","WHERE SOMETHING HAPPENED.":"LÀ OÙ QUELQUE CHOSE S’EST PASSÉ.","WHO LEFT A TRACE.":"QUI A LAISSÉ UNE TRACE.","WHAT REMAINED.":"CE QUI EST RESTÉ.","WHAT ESCIE MADE FROM IT.":"CE QU’ESCIE EN A FAIT.",
+    "ATLAS":"ATLAS","PLACES":"LIEUX","MOMENTS":"MOMENTS","FRAGMENTS":"FRAGMENTS","BODIES":"ENSEMBLES","PROOF":"PREUVES","PATH":"PARCOURS","TIMELINE":"CHRONOLOGIE","SYMBOLS":"SYMBOLES","TRAILS":"TRACES",
+    "ESCIE WORLD ENGINE":"MOTEUR DU MONDE ESCIE","THE WORLD BEHIND THE WORK.":"LE MONDE DERRIÈRE L’ŒUVRE.","Explore the universe. Follow the signal. Decide what you believe.":"Explorez l’univers. Suivez le signal. Décidez de ce que vous croyez.",
+    "SEARCH THE WORLD…":"CHERCHER DANS LE MONDE…","ALL TYPES":"TOUS LES TYPES","A MAP WITHOUT BORDERS":"UNE CARTE SANS FRONTIÈRES","ENTER ANYWHERE.":"ENTREZ N’IMPORTE OÙ.",
+    "ONE WORLD. MANY WAYS IN.":"UN MONDE. PLUSIEURS ENTRÉES."
+  },
+  es: {
+    "ONE WORLD · MANY WAYS IN":"UN MUNDO · MUCHAS ENTRADAS","START WITH WHAT PULLS YOU.":"EMPIEZA POR LO QUE TE ATRAE.",
+    "There is no correct entrance. Begin with a person, a place, a moment, a piece of art or a trace. The next thing appears through its relationship to what you found.":"No hay una entrada correcta. Empieza por una persona, un lugar, un momento, una obra o una huella. Lo siguiente aparece a través de su relación con lo que encontraste.",
+    "PLACE":"LUGAR","PEOPLE":"PERSONAS","MOMENT":"MOMENTO","ART":"ARTE","WHERE SOMETHING HAPPENED.":"DONDE ALGO SUCEDIÓ.","WHO LEFT A TRACE.":"QUIÉN DEJÓ UNA HUELLA.","WHAT REMAINED.":"LO QUE QUEDÓ.","WHAT ESCIE MADE FROM IT.":"LO QUE ESCIE HIZO CON ELLO.",
+    "ATLAS":"ATLAS","PLACES":"LUGARES","MOMENTS":"MOMENTOS","FRAGMENTS":"FRAGMENTOS","BODIES":"CUERPOS","PROOF":"PRUEBAS","PATH":"RUTA","TIMELINE":"LÍNEA DE TIEMPO","SYMBOLS":"SÍMBOLOS","TRAILS":"TRAZAS",
+    "ESCIE WORLD ENGINE":"MOTOR DEL MUNDO ESCIE","THE WORLD BEHIND THE WORK.":"EL MUNDO DETRÁS DE LA OBRA.","Explore the universe. Follow the signal. Decide what you believe.":"Explora el universo. Sigue la señal. Decide qué crees.",
+    "SEARCH THE WORLD…":"BUSCAR EN EL MUNDO…","ALL TYPES":"TODOS LOS TIPOS","A MAP WITHOUT BORDERS":"UN MAPA SIN FRONTERAS","ENTER ANYWHERE.":"ENTRA POR CUALQUIER LUGAR.",
+    "ONE WORLD. MANY WAYS IN.":"UN MUNDO. MUCHAS ENTRADAS."
+  }
+});
+
 const ESCIE_LANGUAGE_ENGINE = {
 
   /*
@@ -526,7 +556,7 @@ const ESCIE_LANGUAGE_ENGINE = {
 
   translate(text, language = "en") {
     const key = String(text == null ? "" : text);
-    const table = Object.assign({}, ESCIE_INTERFACE_TRANSLATIONS.en, ESCIE_INTERFACE_EXTRA.en, ESCIE_INTERFACE_RUNTIME.en, ESCIE_INTERFACE_TRANSLATIONS[language] || {}, ESCIE_INTERFACE_EXTRA[language] || {}, ESCIE_INTERFACE_RUNTIME[language] || {});
+    const table = Object.assign({}, ESCIE_INTERFACE_TRANSLATIONS.en, ESCIE_INTERFACE_EXTRA.en, ESCIE_INTERFACE_RUNTIME.en, ESCIE_WORLD_TRANSLATIONS.en, ESCIE_INTERFACE_TRANSLATIONS[language] || {}, ESCIE_INTERFACE_EXTRA[language] || {}, ESCIE_INTERFACE_RUNTIME[language] || {});
     return this.speak(table[key] || key);
   },
 
