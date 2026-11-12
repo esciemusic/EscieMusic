@@ -2078,3 +2078,32 @@ html[data-theme="light"] .escie-player-node .escie-player-label{color:#245fbe}
   .escie-player-node .escie-player-main{grid-template-columns:32px 52px minmax(0,1fr) 38px 24px;padding:9px 8px 9px 14px}
 }
 @media(prefers-reduced-motion:reduce){.world-card{transition:none}}
+
+
+/* World entry flow: invitation first, machinery second. */
+.world-atlas-intro{padding-bottom:8px}
+.world-entry-nodes{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:22px 0 26px;
+}
+.world-entry-node{
+  min-height:112px;padding:14px;text-align:left;border:1px solid rgba(77,163,255,.18);
+  border-radius:0;background:linear-gradient(145deg,rgba(47,128,255,.045),rgba(5,6,9,.18));
+  color:inherit;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;
+  transition:transform 180ms ease,border-color 180ms ease,background 180ms ease;
+}
+.world-entry-node span{font-size:20px;color:var(--escie-blue-bright)}
+.world-entry-node strong{font:700 10px/1.1 var(--escie-font-mono);letter-spacing:.16em}
+.world-entry-node small{font:400 8px/1.45 var(--escie-font-mono);letter-spacing:.08em;color:var(--muted)}
+.world-entry-node:hover,.world-entry-node:focus-visible{
+  transform:translateY(-2px);border-color:rgba(155,89,255,.46);
+  background:linear-gradient(145deg,rgba(155,89,255,.10),rgba(47,128,255,.035));
+  outline:none;
+}
+@media(max-width:700px){.world-entry-nodes{grid-template-columns:repeat(2,minmax(0,1fr))}.world-entry-node{min-height:96px}}
+html[data-theme="light"] .world-entry-node{
+  background:linear-gradient(145deg,rgba(36,95,190,.07),rgba(112,65,159,.035));
+  border-color:rgba(36,95,190,.20);color:#17171a;
+}
+html[data-theme="light"] .world-entry-node:hover,html[data-theme="light"] .world-entry-node:focus-visible{
+  background:linear-gradient(145deg,rgba(112,65,159,.10),rgba(36,95,190,.07));
+}
