@@ -51,17 +51,16 @@ function applyEscieInterfaceTranslations(language = "en") {
   let node;
   while ((node = walker.nextNode())) nodes.push(node);
   nodes.forEach((textNode) => {
-    if (!textNode.parentElement || ignored.has(textNode.parentElement.tagName)) return;
+    if (!textNode.parentElement || ignored.has(textNode.parentElement.tagName)) return; if (textNode.parentElement.closest("[data-no-translate],.escie-proper,.personal-info,.personal-data,.record-identity,.world-place-copy h3,.world-card h3,.world-detail h3,.music-card-body h3,.art-record-copy h4,.archive-record h3,.investigation-case h3")) return;
     const source = textNode.__escieI18nSource ?? textNode.nodeValue;
     if (!source || !source.trim()) return;
     textNode.__escieI18nSource = source;
     const key = source.trim();
     const lookup = table[key] || table[key.toUpperCase()];
-    if (!lookup) return;
-    const startIndex = source.indexOf(key);
-    textNode.nodeValue = source.slice(0,startIndex) + lookup + source.slice(startIndex + key.length);
+    if (lookup) { const startIndex = source.indexOf(key); textNode.nodeValue = source.slice(0,startIndex) + lookup + source.slice(startIndex + key.length); return; }
+    let translated = source; Object.keys(table).sort((a,b)=>b.length-a.length).forEach((phrase)=>{ if(!phrase || phrase.length<3) return; const replacement=table[phrase]; if(!replacement || replacement===phrase) return; translated=translated.split(phrase).join(replacement); }); if (translated !== source) textNode.nodeValue = translated;
   });
-  document.querySelectorAll("[aria-label],[title],[placeholder]").forEach((element) => {
+  document.querySelectorAll("[aria-label],[title],[placeholder]").forEach((element) => { if (element.matches("[data-no-translate],.escie-proper,.personal-info,.personal-data,.record-identity")) return;
     ["aria-label","title","placeholder"].forEach((attribute) => {
       if (!element.hasAttribute(attribute)) return;
       const source = element.dataset.escieI18nSource ?? element.getAttribute(attribute) ?? "";
