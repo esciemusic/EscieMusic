@@ -11,9 +11,9 @@
   --escie-font-script:"ESCIE SCRIPT","Brush Script MT","Segoe Script",cursive;
 }
 .site-logo,.entry-inner h1,main > .site-section:not(#entry) h2,.escie-display,.font-escie{font-family:var(--escie-font-escie)}
-.index-navigation,.index-trigger,.site-preferences,.entry-state,.hero-location,.section-drop-trigger,.font-signal{font-family:var(--escie-font-signal)}
+.index-navigation,.index-trigger,.site-preferences,.hero-location,.section-drop-trigger,.font-signal{font-family:var(--escie-font-signal)}
 .font-script,.glass-eye-personal,.visitor-trace,.personal-note{font-family:var(--escie-font-script)}
 body,.section-lede,.content-container,.font-body{font-family:var(--escie-font-body)}
 .entry-inner h1,main > .site-section:not(#entry) h2{letter-spacing:.06em;font-weight:700}
-.entry-state,.hero-location,.section-drop-trigger{letter-spacing:.14em;text-transform:uppercase}
+.hero-location,.section-drop-trigger{letter-spacing:.14em;text-transform:uppercase}
 .font-script{letter-spacing:.015em;font-weight:400}
