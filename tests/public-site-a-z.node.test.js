@@ -364,9 +364,11 @@ test("A-Z Pass 3 keeps the hero-to-NOW transition as a quiet threshold",()=>{
   assert.match(style,/@media\s*\(max-width:\s*700px\)\s*\{[\s\S]*?\.entry-section\s*\+\s*\.now-section\s*\{[\s\S]*?padding-top:\s*64px/);
 });
 
-test("A-Z Pass 3 hero vertical hierarchy keeps state above identity",()=>{
+test("A-Z Pass 3 hero vertical hierarchy keeps identity primary",()=>{
   const style=read("style.css");
-  assert.match(style,/\.entry-section #entry-container #entry-state\s*,\s*\.entry-section #entry-container #entry-social/);
+  const index=read("index.html");
+  assert.doesNotMatch(index,/id="entry-state"/);
+  assert.doesNotMatch(style,/\.entry-section #entry-container #entry-state/);
   assert.match(style,/\.entry-section #entry-container #entry-social/);
 });
 
@@ -425,13 +427,12 @@ test("A-Z Pass 3 keeps the public signal chamber visual-only",()=>{
   assert.doesNotMatch(style,/\\.signal-status|\\.escie-countdown|\\.countdown-status|\\.countdown-value/);
 });
 
-test("A-Z Pass 3 entry signal state stays synchronized to local time boundaries",()=>{
+test("A-Z Pass 3 entry contains no runtime signal status state",()=>{
   const app=read("app.js");
-  assert.match(app,/let entryTimeStateTimer = null/);
-  assert.match(app,/function scheduleTimeStateRefresh\(\)/);
-  assert.match(app,/window\.setTimeout\(\(\) => \{/);
-  assert.match(app,/entryState\.dataset\.signalState = state/);
-  assert.doesNotMatch(app,/setInterval\(/);
+  const index=read("index.html");
+  assert.doesNotMatch(index,/id="entry-state"/);
+  assert.doesNotMatch(app,/entry-state/);
+  assert.doesNotMatch(app,/SIGNAL STATUS|TRANSMISSION COUNTDOWN/);
 });
 
 test("A-Z Pass 1 time state is lightweight and does not create a recurring timer",()=>{
