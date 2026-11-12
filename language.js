@@ -556,7 +556,7 @@ const ESCIE_LANGUAGE_ENGINE = {
 
   translate(text, language = "en") {
     const key = String(text == null ? "" : text);
-    const table = Object.assign({}, ESCIE_INTERFACE_TRANSLATIONS.en, ESCIE_INTERFACE_EXTRA.en, ESCIE_INTERFACE_RUNTIME.en, ESCIE_WORLD_TRANSLATIONS.en, ESCIE_INTERFACE_TRANSLATIONS[language] || {}, ESCIE_INTERFACE_EXTRA[language] || {}, ESCIE_INTERFACE_RUNTIME[language] || {});
+    const table = Object.assign({}, ESCIE_INTERFACE_TRANSLATIONS.en, ESCIE_INTERFACE_EXTRA.en, ESCIE_INTERFACE_RUNTIME.en, ESCIE_WORLD_TRANSLATIONS.en, ESCIE_INTERFACE_TRANSLATIONS[language] || {}, ESCIE_INTERFACE_EXTRA[language] || {}, ESCIE_INTERFACE_RUNTIME[language] || {}, ESCIE_WORLD_TRANSLATIONS[language] || {});
     return this.speak(table[key] || key);
   },
 
