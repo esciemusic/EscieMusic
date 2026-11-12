@@ -36,6 +36,7 @@ page.on("console", m => {
 });
 page.on("pageerror", e => failures.push("page error: " + e.message));
 page.on("response", response => {
+  if (/central-api|supabase\.co\/functions\/v1\/central|esciecentral/i.test(response.url())) failures.push("public runtime contacted Central/private API: " + response.url());
   const status = response.status();
   const type = response.request().resourceType();
   if (!["document", "script", "stylesheet", "xhr", "fetch"].includes(type)) return;
@@ -114,6 +115,21 @@ async function auditAccordions(label) {
   }
 }
 
+async function auditWorldLenses(label){
+  const world=page.locator("#world");
+  check(await world.count()===1, label+" THE WORLD section missing");
+  const trigger=world.locator(".section-drop-trigger");
+  if(await trigger.count() && !(await world.evaluate(el=>el.classList.contains("section-open")).catch(()=>false))) await trigger.click();
+  for(const tab of ["atlas","people","places","moments","fragments","bodies","proof","path","timeline","symbols","trails"]){
+    const button=page.locator('[data-world-tab="'+tab+'"]').first();
+    check(await button.count()===1, label+" THE WORLD lens missing: "+tab);
+    if(await button.count()){
+      await button.click();
+      check((await button.getAttribute("aria-selected"))==="true", label+" THE WORLD lens did not activate: "+tab);
+      check((await page.locator("#world-container").innerText()).trim().length>0, label+" THE WORLD lens rendered empty shell: "+tab);
+    }
+  }
+}
 async function auditSymbols(label) {
   const symbols = page.locator(".section-motif-item");
   let visibleCount = 0;
@@ -195,6 +211,8 @@ check((await menu.getAttribute("aria-expanded")) === "false", "mobile index did 
 
 await auditAccordions("mobile");
 await auditGlassEye("mobile");
+await auditWorldLenses("mobile");
+check(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 2), "mobile public layout has horizontal overflow");
 
 for (const lang of ["en", "fr", "es"]) {
   const button = page.locator('[data-language="' + lang + '"]');
@@ -217,6 +235,8 @@ await page.waitForLoadState("networkidle", { timeout: 10000 }).catch(() => {});
 check(await page.locator("#main-content").isVisible(), "desktop main content not visible");
 await auditAccordions("desktop");
 await auditGlassEye("desktop");
+await auditWorldLenses("desktop");
+check(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 2), "desktop public layout has horizontal overflow");
 await auditSymbols("desktop");
 await scanRenderedBoundary("desktop");
 await page.screenshot({ path: "artifacts/public-desktop.png", fullPage: true });
