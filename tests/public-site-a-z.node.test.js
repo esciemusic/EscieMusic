@@ -595,18 +595,14 @@ test("A-Z Pass 3 public hero uses the authored ESCIE family fallback contract",(
   assert.doesNotMatch(aesthetic,/fonts\.googleapis\.com|fonts\.gstatic\.com/);
 });
 
-test("A-Z Pass 2 entry keeps the live signal state above ESCIE",()=>{
+test("A-Z Pass 2 entry keeps the doorway free of signal status text",()=>{
   const index=read("index.html");
   const app=read("app.js");
   const aesthetic=read("aesthetic.css");
-  assert.match(index,/id="entry-state" class="entry-state"/);
-  assert.ok(index.indexOf('id="entry-state"') < index.indexOf("<h1>ESCIE</h1>"));
-  assert.ok(app.includes('const entryState = byId("entry-state");'));
-  assert.ok(app.includes("SIGNAL // DAWN"));
-  assert.ok(app.includes("SIGNAL // DAY"));
-  assert.ok(app.includes("SIGNAL // DUSK"));
-  assert.ok(app.includes("SIGNAL // NIGHT"));
-  assert.ok(aesthetic.includes(".entry-state{"));
+  assert.doesNotMatch(index,/id="entry-state"|SIGNAL \/\//);
+  assert.doesNotMatch(app,/entryState|SIGNAL \/\//);
+  assert.doesNotMatch(aesthetic,/\.entry-state\{/);
+  assert.doesNotMatch(index,/TRANSMISSION COUNTDOWN|SIGNAL STATUS|COUNTDOWN/);
 });
 
 
