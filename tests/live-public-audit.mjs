@@ -24,7 +24,10 @@ const forbidden = [
   "EscieCentral",
   "central-api",
   "SUPABASE_SERVICE_ROLE_KEY",
-  "SUPABASE_ACCESS_TOKEN"
+  "SUPABASE_ACCESS_TOKEN",
+  "SIGNAL //",
+  "TRANSMISSION COUNTDOWN",
+  "SIGNAL STATUS"
 ];
 
 const sameOrigin = new URL(baseURL).origin;
