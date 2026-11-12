@@ -121,6 +121,9 @@ jobs:
     needs: build
 
     steps:
+      - name: Checkout deployment commit for live audit
+        uses: actions/checkout@v6
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
@@ -128,12 +131,6 @@ jobs:
         run: |
           npm install --no-save playwright
           npx playwright install chromium
-
-      - name: Restore live audit from deployment commit
-        run: |
-          set -e
-          test -f tests/live-public-audit.mjs || git show "${GITHUB_SHA}:tests/live-public-audit.mjs" > tests/live-public-audit.mjs
-          test -s tests/live-public-audit.mjs
 
       - name: Run deployed ESCIE public live audit
         env:
