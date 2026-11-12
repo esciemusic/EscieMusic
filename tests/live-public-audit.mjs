@@ -134,7 +134,7 @@ async function auditWorldLenses(label){
   }
 }
 async function auditCurrentExperience(label){
-  const entryNodes = page.locator('#world [data-world-entry]');
+  const entryNodes = page.locator("#world .world-entry-node");
   if (await entryNodes.count()) {
     for (let i=0;i<Math.min(4,await entryNodes.count());i++) {
       const node=entryNodes.nth(i);
@@ -149,7 +149,7 @@ async function auditCurrentExperience(label){
   }
   const whiteBlocks=await page.locator('.section-inner,.content-container,.section-drop-panel').evaluateAll(nodes=>nodes.filter(el=>{
     const bg=getComputedStyle(el).backgroundColor;
-    return /^rgb\\(255, 255, 255\\)$/.test(bg);
+    return /^rgb\(255, 255, 255\)$/.test(bg);
   }).length);
   check(whiteBlocks===0, label+' generic white section blocks detected: '+whiteBlocks);
 }
