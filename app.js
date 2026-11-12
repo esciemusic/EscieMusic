@@ -1972,14 +1972,6 @@ function renderClothing(){
     return state.uiState;
   }
 
-  function updateEntryState(route) {
-    const node = byId("entry-state");
-    if (!node) return "";
-    const active = String(route || "entry").replace(/^#/, "") || "entry";
-    node.dataset.route = active;
-    return node.textContent || "";
-  }
-
   function bindNavigationRuntime() {
     const router = getRouter();
     if (!router) return;
@@ -2008,7 +2000,6 @@ function renderClothing(){
       const activeRoute = resolved || route || "entry";
       document.body.dataset.route = activeRoute;
       document.documentElement.dataset.route = activeRoute;
-      updateEntryState(activeRoute);
       renderEntry();
       document.documentElement.classList.remove("route-shift");
       if (!reduceMotion()) {
