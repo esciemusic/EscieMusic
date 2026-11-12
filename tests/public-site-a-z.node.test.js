@@ -1081,3 +1081,24 @@ test("A-Z Pass 3 footer social links remain public external links only",()=>{
   assert.match(social,/ESCIE_SOCIAL/);
   assert.doesNotMatch(app,/window\.ESCIE_(SOURCE|PROVENANCE|HISTORY)\s*=/);
 });
+
+
+test("THE WORLD exposes the complete public lens architecture without creating duplicate top-level worlds",()=>{
+  const engine=read("world-engine.js");
+  const index=read("index.html");
+  for(const id of ["atlas","people","places","moments","fragments","bodies","proof","path","timeline","symbols","trails"]) {
+    assert.match(engine,new RegExp('\\["'+id+'","'));
+  }
+  for(const registry of ["ESCIE_PEOPLE","ESCIE_LOCATIONS","ESCIE_MOMENTS","ESCIE_FRAGMENTS","ESCIE_BODIES","ESCIE_PROOF","ESCIE_PATHS"]) {
+    assert.match(engine,new RegExp(registry));
+  }
+  assert.match(index,/data\/proof\.js/);
+  assert.match(engine,/THE PEOPLE/);
+  assert.match(engine,/PLACES/);
+  assert.match(engine,/MOMENTS/);
+  assert.match(engine,/FRAGMENTS/);
+  assert.match(engine,/BODIES/);
+  assert.match(engine,/PROOF/);
+  assert.match(engine,/PATH/);
+  assert.match(engine,/THIS LAYER IS QUIET/);
+});
