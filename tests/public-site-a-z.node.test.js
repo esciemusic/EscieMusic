@@ -56,7 +56,7 @@ test("A-Z Pass 1 locks the live shell to the eight-section model",()=>{
   assert.match(index,/id="investigation"[^>]*class="site-section investigation-section"/);
   assert.match(index,/id="glass-eye"[^>]*class="site-section glass-eye-section"/);
   assert.match(index,/id="escie"[^>]*class="site-section escie-section"/);
-  assert.match(index,/var symbols=\{now:"◉"/);
+  assert.match(index,/var symbols=\{now:"◒"/);
   assert.doesNotMatch(index,/data-visual-section="work"/);
   assert.doesNotMatch(index,/data-visual-section="the-web"/);
   assert.doesNotMatch(index,/data-visual-section="archive"/);
