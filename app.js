@@ -2043,13 +2043,6 @@ function renderClothing(){
 
     document.body.dataset.time = state;
 
-    const entryState = byId("entry-state");
-    if (entryState) {
-      const labels = { dawn: "SIGNAL // DAWN", day: "SIGNAL // DAY", dusk: "SIGNAL // DUSK", night: "SIGNAL // NIGHT" };
-      entryState.textContent = labels[state] || "SIGNAL // NIGHT";
-      entryState.dataset.signalState = state;
-    }
-
     return state;
   }
 
