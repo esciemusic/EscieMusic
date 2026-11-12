@@ -133,6 +133,27 @@ async function auditWorldLenses(label){
     }
   }
 }
+async function auditCurrentExperience(label){
+  const entryNodes = page.locator('#world [data-world-entry]');
+  if (await entryNodes.count()) {
+    for (let i=0;i<Math.min(4,await entryNodes.count());i++) {
+      const node=entryNodes.nth(i);
+      check(await node.isVisible().catch(()=>false), label+' World entry node is not visible: '+i);
+    }
+  }
+  const player=page.locator('#escie-player-node, .escie-player-node').first();
+  check(await player.count()===1, label+' floating audio player node missing');
+  if(await player.count()){
+    const position=await player.evaluate(el=>getComputedStyle(el).position);
+    check(position==='fixed' || position==='sticky', label+' audio player is not a floating node');
+  }
+  const whiteBlocks=await page.locator('.section-inner,.content-container,.section-drop-panel').evaluateAll(nodes=>nodes.filter(el=>{
+    const bg=getComputedStyle(el).backgroundColor;
+    return /^rgb\\(255, 255, 255\\)$/.test(bg);
+  }).length);
+  check(whiteBlocks===0, label+' generic white section blocks detected: '+whiteBlocks);
+}
+
 async function auditSymbols(label) {
   const symbols = page.locator(".section-motif-item");
   let visibleCount = 0;
@@ -214,6 +235,7 @@ check((await menu.getAttribute("aria-expanded")) === "false", "mobile index did 
 
 await auditAccordions("mobile");
 await auditGlassEye("mobile");
+await auditCurrentExperience("mobile");
 await auditWorldLenses("mobile");
 check(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 2), "mobile public layout has horizontal overflow");
 
@@ -238,6 +260,7 @@ await page.waitForLoadState("networkidle", { timeout: 10000 }).catch(() => {});
 check(await page.locator("#main-content").isVisible(), "desktop main content not visible");
 await auditAccordions("desktop");
 await auditGlassEye("desktop");
+await auditCurrentExperience("desktop");
 await auditWorldLenses("desktop");
 check(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 2), "desktop public layout has horizontal overflow");
 await auditSymbols("desktop");
