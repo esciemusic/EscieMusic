@@ -4,7 +4,7 @@ const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
 const coll=(name,fallback=[])=>{const v=window[name];return Array.isArray(v)?v:(v&&Array.isArray(v.records)?v.records:fallback)};
 const state={tab:"atlas",q:"",type:"ALL",selected:null,trail:[],visited:[],eyeOpen:false};
-const tabs=[["atlas","ATLAS"],["timeline","TIMELINE"],["symbols","SYMBOLS"],["trails","TRAILS"]];
+const tabs=[["atlas","ATLAS"],["people","THE PEOPLE"],["places","PLACES"],["moments","MOMENTS"],["fragments","FRAGMENTS"],["bodies","BODIES"],["proof","PROOF"],["path","PATH"],["timeline","TIMELINE"],["symbols","SYMBOLS"],["trails","TRAILS"]];
 const raf=typeof requestAnimationFrame==="function"?requestAnimationFrame:fn=>setTimeout(fn,0);
 const caf=typeof cancelAnimationFrame==="function"?cancelAnimationFrame:clearTimeout;
 const reduceMotion=()=>typeof window.matchMedia==="function"&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -101,6 +101,27 @@ function eyePanel(){
  const rows=filtered(),last=state.trail.length?records().find(r=>String(r.id)===String(state.trail[state.trail.length-1])):null,next=discovery(rows);
  return "<div class=\"glass-eye-panel\"><div><span class=\"world-kicker\">GLASS EYE</span><h3>SEE · HEAR · FOLLOW · MISS · RETURN</h3><p>The audience eye. This is your side of the screen. Your path is remembered on this device, but it never becomes canon.</p></div>"+(last?"<div class=\"glass-eye-last\"><span class=\"world-kicker\">LAST SIGNAL</span><button type=\"button\" data-node=\""+esc(last.id)+"\">"+esc(title(last))+"</button></div>":"")+"<div class=\"world-kicker\">NEXT SIGNALS</div><div class=\"glass-eye-discovery\">"+next.map(x=>"<button type=\"button\" data-node=\""+esc(x.node.id)+"\"><strong>"+esc(title(x.node))+"</strong><small>"+esc(x.reason)+" · "+esc(type(x.node))+"</small></button>").join("")+"</div><div class=\"glass-eye-actions\"><button type=\"button\" data-eye-clear>CLEAR MY PATH</button><button type=\"button\" data-eye-close>CLOSE EYE</button></div></div>";
 }
+function lensRecords(kind){
+ const map={
+  people:["ESCIE_PEOPLE","THE PEOPLE","People remain people. Their presence is a trace, not a biography."],
+  places:["ESCIE_LOCATIONS","PLACES","Place is where something happened, was felt, made, remembered or left behind."],
+  moments:["ESCIE_MOMENTS","MOMENTS","A moment is anything that left a trace. Time may be exact, approximate or unknown."],
+  fragments:["ESCIE_FRAGMENTS","FRAGMENTS","A fragment is a piece that survives without owing the visitor a complete explanation."],
+  bodies:["ESCIE_BODIES","BODIES","Bodies are relationships between works and records that belong together."],
+  proof:["ESCIE_PROOF","PROOF","Proof is material that makes a thing harder to dismiss. It does not manufacture certainty."],
+  path:["ESCIE_PATHS","PATH","Path is how things lead to other things. The visitor chooses the movement."]
+ };
+ const cfg=map[kind];if(!cfg)return null;
+ const rows=coll(cfg[0],[]).filter(r=>r&&typeof r==="object"&&r.visibility!=="withheld"&&r.public_disclosure!==false);
+ return {rows,title:cfg[1],intro:cfg[2]};
+}
+function lensView(kind){
+ const cfg=lensRecords(kind);if(!cfg)return "";
+ const rows=cfg.rows;
+ const header='<div class="world-intro"><span class="world-kicker">'+esc(cfg.title)+'</span><h3>'+esc(cfg.title)+" IS A LAYER.</h3><p>"+esc(cfg.intro)+"</p></div>";
+ if(!rows.length)return header+'<div class="world-intro"><p>THIS LAYER IS QUIET. PUBLIC RECORDS WILL APPEAR WHEN THEY EARN THEIR PLACE HERE.</p></div>';
+ return header+'<div class="world-list">'+rows.map(card).join("")+'</div>';
+}
 function render(){
  const root=$("world-container");if(!root)return;
  const all=records(),rows=filtered(),types=[...new Set(all.map(type))].sort();
@@ -108,6 +129,8 @@ function render(){
  if(state.tab==="atlas")body='<div class="world-intro"><span class="world-kicker">A MAP WITHOUT BORDERS</span><h3>ENTER ANYWHERE.</h3><p>Montréal, memory, music, people, places, fragments and proof are connected here. Choose a node. Follow the connection. Keep your own route.</p></div>'+graphView(rows)+'<div class="world-list">'+rows.map(card).join("")+'</div>';
  if(state.tab==="timeline"){const sorted=rows.slice().sort((a,b)=>String(a.date||a.release_date||a.moment_date||a.created_at||"9999").localeCompare(String(b.date||b.release_date||b.moment_date||b.created_at||"9999")));body='<div class="world-intro"><span class="world-kicker">THE CHRONOLOGICAL SPINE</span><h3>TIME IS A LAYER.</h3><p>Known dates, release dates and moments can coexist with unknown time. Absence stays visible.</p></div><div class="world-list">'+sorted.map(r=>'<button type="button" class="world-card" data-node="'+esc(r.id)+'"><div class="world-card-main"><span class="world-kicker">'+esc(r.date||r.release_date||r.moment_date||"DATE UNKNOWN")+'</span><h3>'+esc(title(r))+'</h3><p>'+esc(type(r))+'</p></div></button>').join("")+'</div>';
  }
+ if(["people","places","moments","fragments","bodies","proof","path"].includes(state.tab))body=lensView(state.tab);
+
  if(state.tab==="symbols"){const syms=coll("ESCIE_SYMBOLS",[..."CAMERA|DAISY|CHILD'S SHOE|NIGHTLIGHT|KEY|EMPTY CHAIR|VHS".split("|")].map((name,i)=>({id:"symbol-"+i,name})));body='<div class="world-intro"><span class="world-kicker">RECURRING VISUAL LANGUAGE</span><h3>NOT DECORATION.</h3><p>Symbols become doors when they recur. Their meaning can evolve, contradict itself or remain unknown.</p></div><div class="world-symbols">'+syms.map(s=>'<button type="button" class="world-symbol" data-node="'+esc(s.id)+'"><span class="symbol-glyph">·</span><strong>'+esc(s.name||s.title)+'</strong><small>'+esc(s.motif||"Appearances and connections will accumulate here.")+'</small></button>').join("")+'</div>';
  }
  if(state.tab==="trails")body='<div class="world-intro"><span class="world-kicker">EXPLORATION TRAILS</span><h3>NO WRONG DOOR.</h3><p>Every entry point can lead somewhere else. The audience builds its own route through the public graph.</p></div>'+trails(rows);
