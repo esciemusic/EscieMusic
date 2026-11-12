@@ -599,10 +599,10 @@ test("A-Z Pass 3 public hero uses the authored ESCIE family fallback contract",(
 test("A-Z Pass 2 entry keeps the doorway free of signal status text",()=>{
   const index=read("index.html");
   const app=read("app.js");
-  const aesthetic=read("aesthetic.css");
   assert.doesNotMatch(index,/id="entry-state"|SIGNAL \/\//);
   assert.doesNotMatch(app,/entryState|SIGNAL \/\//);
-  assert.doesNotMatch(aesthetic,/\.entry-state\{/);
+  assert.doesNotMatch(read("style.css"),/\.entry-state\{/);
+  assert.doesNotMatch(read("typography.css"),/\.entry-state\{/);
   assert.doesNotMatch(index,/TRANSMISSION COUNTDOWN|SIGNAL STATUS|COUNTDOWN/);
 });
 
