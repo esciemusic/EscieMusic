@@ -195,7 +195,7 @@
   let timer=null;
   let stopped=false;
   const schedule=()=>{
-   if(stopped||document.hidden||reducedMotion())return;
+   if(stopped||document.hidden||reducedMotion()||timer)return;
    timer=window.setTimeout(()=>{
     timer=null;
     if(stopped||document.hidden||reducedMotion())return;
