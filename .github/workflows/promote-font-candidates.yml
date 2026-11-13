@@ -87,3 +87,5 @@ jobs:
           fi
           git commit -m "Public: promote validated ESCIE production fonts"
           git push
+
+# Promotion is intentionally path-scoped to prevent release loops.
