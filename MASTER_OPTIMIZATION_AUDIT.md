@@ -293,3 +293,27 @@ GREEN. The public doorway, release firewall, integration boundary and deployment
 GREEN. Both platforms are deployed from passing checkpoints and their live audits pass. The public/Central boundary remains enforced through the unified entity model, public-safe projection and human-approved release path.
 
 The remaining items documented as future production capabilities (for example durable multi-artist administration, production connector authorization, and auth hardening advisories) are intentionally not represented as completed features.
+
+
+## Optimization pass — 2026-11-13
+
+### Cross-system findings
+- Public HEAD advanced through the typography/font-promotion work; the latest public commit restored font promotion to a manual-only gate.
+- Central HEAD added the typography regression contract and continues to enforce Builder/approval/release boundaries.
+- Supabase project is ACTIVE_HEALTHY on Postgres 17.11.0.003.
+- Supabase health advisors are currently clear.
+- Security advisors report two items: `glass_eye_submissions` has RLS enabled with zero policies (therefore direct table access remains denied; this is a fail-closed state but should be made explicit in the database contract), and leaked-password protection is disabled.
+- Performance advisors report many unused indexes. Because the system is still low-volume/new and these indexes support known future workflows, they are not removed blindly; index cleanup remains telemetry-driven.
+
+### Public optimization completed
+- Visual album rotation no longer uses a perpetual `setInterval`.
+- Rotation now pauses while the document is hidden or reduced-motion is active and uses a cancellable timeout.
+- A public A–Z regression contract now locks this behavior.
+
+### Central optimization completed
+- CI no longer resolves the Supabase CLI through the moving `latest` tag.
+- Central deployment now stays on the maintained v2 stable line, reducing unexpected major-version drift while Supabase CLI v3 has breaking CI/hosted-command changes.
+
+### Release state
+- These changes are committed but their new push-triggered CI/deployment runs are not yet verified from this audit checkpoint.
+- Therefore the optimization scope is **implemented / verification pending**, not falsely declared green.
