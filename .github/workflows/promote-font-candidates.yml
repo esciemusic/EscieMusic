@@ -89,3 +89,4 @@ jobs:
           git push
 
 # Promotion is intentionally path-scoped to prevent release loops.
+# Production validator now targets fonts/release.
