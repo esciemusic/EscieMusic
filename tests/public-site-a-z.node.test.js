@@ -997,7 +997,7 @@ test("A-Z Pass 3 GLASS EYE media stays approval-gated and safely embedded",()=>{
 test("A-Z Pass 3 visual album rotation is visibility-aware and timer-safe",()=>{
   const visuals=read("ui/visuals.js");
   assert.doesNotMatch(visuals,/setInterval\(/);
-  assert.match(visuals,/setTimeout\(\(\)=>/);
+  assert.match(visuals,/setTimeout\(\(\)=>/);\n  assert.match(visuals,/reducedMotion\(\)\|\|timer/);
   assert.match(visuals,/document\.addEventListener\("visibilitychange",onVisibility\)/);
   assert.match(visuals,/if\(stopped\|\|document\.hidden\|\|reducedMotion\(\)\)return/);
   assert.match(visuals,/window\.clearTimeout\(timer\)/);
