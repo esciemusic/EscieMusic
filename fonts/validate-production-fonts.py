@@ -1,7 +1,9 @@
 from pathlib import Path
 from fontTools.ttLib import TTFont
 
-ROOT = Path(__file__).resolve().parent / "release-candidate"
+ROOT = Path(__file__).resolve().parent / "release"
+if not ROOT.exists():
+    ROOT = Path(__file__).resolve().parent / "release-candidate"
 required = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,!?'-/:;()&—–€“”’éèêëàâäîïôöùûüçÉÈÊËÀÂÄÎÏÔÖÙÛÜÇ")
 
 for path in sorted(ROOT.glob("*.ttf")):
