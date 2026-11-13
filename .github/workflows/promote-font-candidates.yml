@@ -2,6 +2,11 @@ name: Promote ESCIE production font candidates
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/promote-font-candidates.yml"
 
 permissions:
   contents: write
