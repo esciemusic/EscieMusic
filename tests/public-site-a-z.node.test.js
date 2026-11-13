@@ -994,6 +994,15 @@ test("A-Z Pass 3 GLASS EYE media stays approval-gated and safely embedded",()=>{
   assert.match(config,/artist-approved/i);
 });
 
+test("A-Z Pass 3 visual album rotation is visibility-aware and timer-safe",()=>{
+  const visuals=read("ui/visuals.js");
+  assert.doesNotMatch(visuals,/setInterval\(/);
+  assert.match(visuals,/setTimeout\(\(\)=>/);
+  assert.match(visuals,/document\.addEventListener\("visibilitychange",onVisibility\)/);
+  assert.match(visuals,/if\(stopped\|\|document\.hidden\|\|reducedMotion\(\)\)return/);
+  assert.match(visuals,/window\.clearTimeout\(timer\)/);
+});
+
 test("A-Z Pass 3 GLASS EYE preserves touch, keyboard, reduced-motion, and responsive behavior",()=>{
   const app=read("app.js");
   const style=read("style.css");
