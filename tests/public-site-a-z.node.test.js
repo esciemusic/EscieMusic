@@ -1364,3 +1364,14 @@ test("A-Z Pass 5 makes The Web a thread discovery layer",()=>{
   assert.match(style,/\.web-thread-node/);
   assert.match(style,/\.web-discovery-actions/);
 });
+
+test("A-Z Pass 6 exposes legitimate next steps from Web connections",()=>{
+  const app=read("app.js");
+  const style=read("style.css");
+  assert.match(app,/WHERE THIS THREAD CAN GO/);
+  assert.match(app,/nextIds=new Set/);
+  assert.match(app,/data-record-id/);
+  assert.match(app,/NO NEXT PUBLIC CONNECTION IS ESTABLISHED YET/);
+  assert.match(style,/\.web-next-step/);
+  assert.match(style,/\.web-next-node/);
+});
