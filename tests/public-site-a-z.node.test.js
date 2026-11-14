@@ -334,7 +334,7 @@ test("A-Z Pass 3 ART filters produce a distinct zero-match state without crossin
   assert.match(language,/AUCUNE ŒUVRE PUBLIQUE NE CORRESPOND À CETTE TRACE/);
   assert.match(language,/NINGUNA OBRA PÚBLICA COINCIDE CON ESTA HUELLA/);
   assert.match(app,/getFilteredWorkRecords\(\)/);
-  assert.doesNotMatch(app,/getAllRecords\\(\\)\\.filter\\([\\s\\S]*?workFilters/);
+  assert.doesNotMatch(app,/getAllRecords\(\)\.filter\([\s\S]*?workFilters/);
 });
 
 test("A-Z Pass 3 ART metadata filters are rendered, public-scoped, and usable",()=>{
