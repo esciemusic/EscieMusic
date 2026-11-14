@@ -1141,3 +1141,21 @@ test("THE WORLD exposes the complete public lens architecture without creating d
   assert.match(engine,/PATH/);
   assert.match(engine,/THIS LAYER IS QUIET/);
 });
+
+
+test("A-Z Pass 3 custom ESCIE glyph system is canonical and replaces Unicode navigation symbols",()=>{
+  const nodes=read("data/nodes.js");
+  const navigation=read("navigation.js");
+  const symbols=read("data/symbols.js");
+  const app=read("app.js");
+  const index=read("index.html");
+  const svg=read("assets/escie-symbols.svg");
+  for(const glyph of ["now","art","world","glass-eye","web","archives","case-files","escie"]) assert.match(nodes,new RegExp('symbol:"'+glyph+'"'));
+  for(const glyph of ["now","art","world","glass-eye","web","archives","case-files","escie"]) assert.match(navigation,new RegExp('symbol:"'+glyph+'"'));
+  for(const glyph of ["camera","daisy","child-shoe","nightlight","key","empty-chair","vhs"]) assert.match(symbols,new RegExp('glyph:"'+glyph+'"'));
+  for(const glyph of ["now","art","world","glass-eye","web","archives","case-files","escie","camera","daisy","child-shoe","nightlight","key","empty-chair","vhs"]) assert.match(svg,new RegExp('id="'+glyph+'"'));
+  assert.match(app,/function customSymbolMarkup\(glyph, label\)/);
+  assert.match(app,/assets\/escie-symbols\.svg#/);
+  assert.match(index,/assets\/escie-symbols\.svg#/);
+  assert.doesNotMatch(navigation,/symbol:"[◉✳◌◎⌕▣◇?]"/);
+});
