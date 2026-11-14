@@ -2038,9 +2038,6 @@ function renderClothing(){
     else if (hour >= 18 && hour < 21) state = "dusk";
 
     document.body.dataset.time = state;
-    const entryState = byId("entry-state");
-    if (entryState) entryState.textContent = state.toUpperCase();
-
     return state;
   }
 
