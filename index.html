@@ -110,7 +110,6 @@
               <span class="art-carousel-position" aria-hidden="true">01 / 04</span>
               <button type="button" class="art-carousel-arrow" data-art-next aria-label="Next art category">›</button>
             </div>
-            <p class="art-carousel-hint">SWIPE · TAP · MOVE</p>
           </div>
         </div>
       </div>
@@ -294,7 +293,7 @@
       openFromHash(false);
     }
     function initNestedDropdowns(){
-      var selector=".world-place,.archive-record,.investigation-case,.merch-card,.clothing-card,.art-category";
+      var selector=".world-place,.archive-record,.investigation-case,.merch-card,.clothing-card";
       function enhance(root){
         if(!root)return;
         var items=[];
@@ -381,15 +380,31 @@
       var next=carousel.querySelector("[data-art-next]");
       var viewport=carousel.querySelector(".art-carousel-viewport");
       if(slides.length<2)return;
-      var index=0,startX=0,startY=0,tracking=false;
 
-      function show(nextIndex,focusTab){
+      var index=0,startX=0,startY=0,tracking=false;
+      var categories=slides.map(function(slide){return slide.dataset.artCategory;});
+
+      function readCategory(){
+        var match=(window.location.hash||"").match(/^#art\/(music|words|visual|projects)$/i);
+        return match?match[1].toLowerCase():null;
+      }
+      function writeCategory(category){
+        var target="#art/"+category;
+        if(window.location.hash!==target){
+          try{history.replaceState(null,"",target);}catch(error){}
+        }
+      }
+      function show(nextIndex,focusTab,writeURL,direction){
+        var previous=index;
         index=(nextIndex+slides.length)%slides.length;
+        var move=direction||(index>previous?"next":index<previous?"previous":"none");
         slides.forEach(function(slide,i){
           var active=i===index;
           slide.hidden=!active;
           slide.classList.toggle("is-active",active);
+          slide.classList.remove("is-entering-next","is-entering-previous");
           slide.setAttribute("aria-hidden",active?"false":"true");
+          if(active&&move!=="none"){void slide.offsetWidth;slide.classList.add(move==="next"?"is-entering-next":"is-entering-previous");}
         });
         tabs.forEach(function(tab,i){
           var active=i===index;
@@ -400,18 +415,19 @@
         if(position)position.textContent=String(index+1).padStart(2,"0")+" / "+String(slides.length).padStart(2,"0");
         if(focusTab&&tabs[index])tabs[index].focus();
         carousel.dataset.active=slides[index].dataset.artCategory;
+        if(writeURL)writeCategory(categories[index]);
       }
       tabs.forEach(function(tab,i){
-        tab.addEventListener("click",function(){show(i,false);});
+        tab.addEventListener("click",function(){show(i,false,true);});
         tab.addEventListener("keydown",function(event){
-          if(event.key==="ArrowRight"){event.preventDefault();show(i+1,true);}
-          if(event.key==="ArrowLeft"){event.preventDefault();show(i-1,true);}
-          if(event.key==="Home"){event.preventDefault();show(0,true);}
-          if(event.key==="End"){event.preventDefault();show(slides.length-1,true);}
+          if(event.key==="ArrowRight"){event.preventDefault();show(i+1,true,true,"next");}
+          if(event.key==="ArrowLeft"){event.preventDefault();show(i-1,true,true,"previous");}
+          if(event.key==="Home"){event.preventDefault();show(0,true,true,"previous");}
+          if(event.key==="End"){event.preventDefault();show(slides.length-1,true,true,"next");}
         });
       });
-      prev&&prev.addEventListener("click",function(){show(index-1,false);});
-      next&&next.addEventListener("click",function(){show(index+1,false);});
+      prev&&prev.addEventListener("click",function(){show(index-1,false,true,"previous");});
+      next&&next.addEventListener("click",function(){show(index+1,false,true,"next");});
       viewport&&viewport.addEventListener("touchstart",function(event){
         if(!event.touches||!event.touches[0])return;
         startX=event.touches[0].clientX;startY=event.touches[0].clientY;tracking=true;
@@ -421,13 +437,17 @@
         var dx=event.changedTouches[0].clientX-startX,dy=event.changedTouches[0].clientY-startY;
         tracking=false;
         if(Math.abs(dx)<45||Math.abs(dx)<Math.abs(dy))return;
-        show(index+(dx<0?1:-1),false);
+        show(index+(dx<0?1:-1),false,true,dx<0?"next":"previous");
       },{passive:true});
       viewport&&viewport.addEventListener("keydown",function(event){
-        if(event.key==="ArrowRight"){event.preventDefault();show(index+1,false);}
-        if(event.key==="ArrowLeft"){event.preventDefault();show(index-1,false);}
+        if(event.key==="ArrowRight"){event.preventDefault();show(index+1,false,true,"next");}
+        if(event.key==="ArrowLeft"){event.preventDefault();show(index-1,false,true,"previous");}
+        if(event.key==="Home"){event.preventDefault();show(0,false,true,"previous");}
+        if(event.key==="End"){event.preventDefault();show(slides.length-1,false,true,"next");}
       });
-      show(0,false);
+      var initial=readCategory();
+      var initialIndex=initial?categories.indexOf(initial):-1;
+      show(initialIndex>=0?initialIndex:0,false,false);
       carousel.dataset.ready="1";
     }
     if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initArtCarousel,{once:true});else initArtCarousel();
