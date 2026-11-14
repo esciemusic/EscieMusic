@@ -1751,15 +1751,18 @@ function renderClothing(){
     if (tagline) {
       tagline.textContent = getSiteValue(
         "tagline",
-        "THE SIGNAL REMAINS DISTORTED."
+        "REALITY WITH THE SIGNAL DISTORTED."
       );
     }
+
+    const state = byId("entry-state");
+    if (state) state.textContent = updateTimeState().toUpperCase();
 
     const philosophy = byId("entry-philosophy");
     if (philosophy) {
       philosophy.textContent = getSiteValue(
         "philosophy",
-        "The music does not create the universe. The universe creates the music."
+        "The art does not create the universe. The universe creates the art."
       );
     }
   }
@@ -2035,6 +2038,8 @@ function renderClothing(){
     else if (hour >= 18 && hour < 21) state = "dusk";
 
     document.body.dataset.time = state;
+    const entryState = byId("entry-state");
+    if (entryState) entryState.textContent = state.toUpperCase();
 
     return state;
   }
