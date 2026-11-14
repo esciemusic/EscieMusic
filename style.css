@@ -2330,16 +2330,19 @@ body.inspector-open{overflow:hidden}
 .entry-section{isolation:isolate;overflow:hidden;}
 .entry-inner{position:relative;z-index:2;isolation:isolate;text-shadow:0 2px 18px rgba(0,0,0,.85);}
 .entry-section #entry-container h1,.entry-section #entry-container #entry-social,.entry-section #entry-container #entry-tagline,.entry-section #entry-container #entry-location{position:relative;z-index:3;}
-.hero-skyline{position:relative;z-index:1;width:min(900px,94vw);height:clamp(86px,15vw,150px);margin:clamp(18px,3vw,30px) auto 0;overflow:hidden;opacity:.72;pointer-events:none;mask-image:linear-gradient(90deg,transparent,black 10%,black 90%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,black 10%,black 90%,transparent);}
-.hero-skyline-city{position:absolute;left:4%;right:4%;bottom:10%;height:76%;opacity:.64;background:linear-gradient(90deg,transparent 0 4%,rgba(242,242,237,.10) 4% 9%,transparent 9% 11%,rgba(242,242,237,.12) 11% 17%,transparent 17% 19%,rgba(242,242,237,.08) 19% 25%,transparent 25% 27%,rgba(242,242,237,.13) 27% 34%,transparent 34% 36%,rgba(242,242,237,.10) 36% 42%,transparent 42% 44%,rgba(242,242,237,.15) 44% 50%,transparent 50% 52%,rgba(242,242,237,.11) 52% 59%,transparent 59% 61%,rgba(242,242,237,.09) 61% 68%,transparent 68% 71%,rgba(242,242,237,.13) 71% 78%,transparent 78% 81%,rgba(242,242,237,.09) 81% 89%);clip-path:polygon(0 100%,0 64%,6% 64%,6% 48%,12% 48%,12% 57%,18% 57%,18% 37%,24% 37%,24% 52%,30% 52%,30% 29%,36% 29%,36% 47%,42% 47%,42% 20%,48% 20%,48% 47%,54% 47%,54% 33%,60% 33%,60% 52%,66% 52%,66% 40%,72% 40%,72% 55%,78% 55%,78% 31%,84% 31%,84% 48%,90% 48%,90% 38%,96% 38%,96% 61%,100% 61%,100% 100%);}
-.hero-skyline-city::before{content:"";position:absolute;left:43%;bottom:57%;width:10%;height:43%;background:linear-gradient(90deg,transparent 0 43%,rgba(242,242,237,.25) 43% 57%,transparent 57%),linear-gradient(0deg,transparent 0 43%,rgba(242,242,237,.25) 43% 57%,transparent 57%);}
-.hero-skyline-city::after{content:"";position:absolute;left:72%;bottom:43%;width:12%;height:67%;background:linear-gradient(90deg,transparent 0 38%,rgba(242,242,237,.19) 38% 62%,transparent 62%);clip-path:polygon(0 100%,36% 0,57% 0,100% 100%,69% 100%,47% 18%,28% 100%);}
-.hero-skyline-distortion{position:absolute;inset:12% 2% 8%;background:repeating-linear-gradient(0deg,transparent 0 5px,rgba(242,242,237,.045) 6px 7px,transparent 8px 13px),linear-gradient(90deg,transparent 0 12%,rgba(47,128,255,.08) 12.4% 17%,transparent 17.5% 43%,rgba(111,63,175,.10) 43.5% 48%,transparent 48.5% 74%,rgba(47,128,255,.07) 74.5% 80%,transparent 80.5%);mix-blend-mode:screen;opacity:.75;transform:skewX(-4deg);animation:heroDistort 7s steps(2,end) infinite;}
+.hero-skyline{position:relative;z-index:1;width:min(960px,96vw);height:clamp(96px,18vw,170px);margin:clamp(18px,3vw,30px) auto 0;overflow:hidden;opacity:.76;pointer-events:none;mask-image:linear-gradient(90deg,transparent,black 7%,black 93%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,black 7%,black 93%,transparent);}
+.hero-skyline-art{position:absolute;inset:0;width:100%;height:100%;overflow:visible;}
+.skyline-mountain{fill:rgba(20,24,27,.82);}
+.skyline-buildings{fill:rgba(242,242,237,.15);}
+.skyline-olympic{fill:rgba(242,242,237,.22);}
+.skyline-cross{fill:rgba(242,242,237,.20);}
+.skyline-habitat{fill:rgba(242,242,237,.14);}
+.hero-skyline-distortion{position:absolute;inset:8% 0 4%;background:repeating-linear-gradient(0deg,transparent 0 5px,rgba(242,242,237,.045) 6px 7px,transparent 8px 13px),linear-gradient(90deg,transparent 0 12%,rgba(47,128,255,.08) 12.4% 17%,transparent 17.5% 43%,rgba(111,63,175,.10) 43.5% 48%,transparent 48.5% 74%,rgba(47,128,255,.07) 74.5% 80%,transparent 80.5%);mix-blend-mode:screen;opacity:.75;transform:skewX(-4deg);animation:heroDistort 7s steps(2,end) infinite;}
 @keyframes heroDistort{0%,88%,100%{transform:translateX(0) skewX(-4deg);opacity:.55}90%{transform:translateX(-8px) skewX(-5deg);opacity:.85}92%{transform:translateX(6px) skewX(-3deg);opacity:.62}95%{transform:translateX(-3px) skewX(-4deg);opacity:.78}}
-.site-header{background:linear-gradient(180deg,rgba(5,5,5,.72),rgba(5,5,5,0));-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);}
-.site-logo{padding:8px 10px;margin-left:-10px;border:1px solid rgba(255,255,255,.10);background:rgba(5,5,5,.30);box-shadow:0 4px 18px rgba(0,0,0,.18);}
-.site-logo:hover{background:rgba(5,5,5,.46)}
-@media(max-width:700px){.hero-skyline{height:86px;margin-top:18px}.hero-skyline-city{left:2%;right:2%;opacity:.56}.hero-skyline-distortion{inset:10% 0 6%;opacity:.68}.site-logo{padding:7px 8px;margin-left:-8px}}
+.site-header{background:linear-gradient(180deg,rgba(5,5,5,.78),rgba(5,5,5,.06));-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);}
+.site-logo{padding:8px 10px;margin-left:-10px;border:1px solid rgba(255,255,255,.12);background:rgba(5,5,5,.38);box-shadow:0 4px 18px rgba(0,0,0,.22);}
+.site-logo:hover{background:rgba(5,5,5,.52)}
+@media(max-width:700px){.hero-skyline{height:92px;margin-top:16px}.skyline-buildings{fill:rgba(242,242,237,.13)}.skyline-olympic{fill:rgba(242,242,237,.18)}.hero-skyline-distortion{inset:8% 0 4%;opacity:.68}.site-logo{padding:7px 8px;margin-left:-8px}}
 @media(prefers-reduced-motion:reduce){.hero-skyline-distortion{animation:none}}
 /* =========================================================
    THE WEB / identity pass 3
@@ -2449,25 +2452,8 @@ body.inspector-open{overflow:hidden}
 .section-visual-now::before{background:linear-gradient(90deg,transparent,rgba(47,128,255,.05),transparent)}
 
 
-.index-trigger-glyph{
-  display:block;
-  width:22px;
-  height:22px;
-  border:1px solid currentColor;
-  border-radius:50%;
-  position:relative;
-}
-.index-trigger-glyph::before,
-.index-trigger-glyph::after{
-  content:"";
-  position:absolute;
-  left:50%;
-  top:50%;
-  background:currentColor;
-  opacity:.7;
-}
-.index-trigger-glyph::before{width:1px;height:14px;transform:translate(-50%,-50%)}
-.index-trigger-glyph::after{width:14px;height:1px;transform:translate(-50%,-50%)}
+.index-trigger-glyph{display:inline-flex;width:22px;height:22px;align-items:center;justify-content:center;color:currentColor;opacity:.82;}
+.index-trigger-glyph .escie-symbol-glyph{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;}
 
 /* =========================================================
    ART / CREATIVE FORMS
