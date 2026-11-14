@@ -1242,3 +1242,26 @@ test("A-Z Pass 4 world node links preserve the active layer",()=>{
   assert.match(engine,/world-tab=.*state\.tab/);
   assert.match(engine,/world-node=.*encodeURIComponent/);
 });
+
+
+test("A-Z Pass 4 hero creative doorways map to canonical destinations",()=>{
+  const index=read("index.html");
+  const svg=read("assets/escie-symbols.svg");
+  const aesthetic=read("aesthetic.css");
+  assert.match(index,/id="entry-location" class="hero-location hero-location-link" href="#world-node=montreal"/);
+  assert.match(index,/class="hero-art-doors"/);
+  assert.match(index,/href="#art\/music"[^>]*aria-label="Open Music"/);
+  assert.match(index,/href="#art\/words"[^>]*aria-label="Open Words"/);
+  assert.match(index,/href="#art\/visual"[^>]*aria-label="Open Visual"/);
+  assert.match(index,/href="#glass-eye"[^>]*aria-label="Open Glass Eye"/);
+  assert.match(index,/escie-symbols\.svg#music-note/);
+  assert.match(index,/escie-symbols\.svg#feather/);
+  assert.match(index,/escie-symbols\.svg#photo-negative/);
+  assert.match(index,/escie-symbols\.svg#film-reel/);
+  assert.match(svg,/<symbol id="music-note"/);
+  assert.match(svg,/<symbol id="feather"/);
+  assert.match(svg,/<symbol id="photo-negative"/);
+  assert.match(svg,/<symbol id="film-reel"/);
+  assert.match(aesthetic,/\.hero-art-doors\{/);
+  assert.match(aesthetic,/\.hero-art-door\{/);
+});
