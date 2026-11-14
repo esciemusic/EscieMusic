@@ -1234,3 +1234,11 @@ test("A-Z Pass 4 skyline backdoors preserve obvious city entry and deeper destin
   assert.match(aesthetic,/\.skyline-door-moments/);
   assert.match(aesthetic,/\.skyline-door-art/);
 });
+
+
+test("A-Z Pass 4 world node links preserve the active layer",()=>{
+  const engine=read("world-engine.js");
+  assert.match(engine,/function syncNodeHash\(id\)/);
+  assert.match(engine,/world-tab=.*state\.tab/);
+  assert.match(engine,/world-node=.*encodeURIComponent/);
+});
