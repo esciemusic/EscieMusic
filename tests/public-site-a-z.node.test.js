@@ -1393,3 +1393,13 @@ test("A-Z Pass 8 protects Web hub context",()=>{
   assert.match(app,/CONNECTED BY/);
   assert.match(style,/\.web-hub-summary/);
 });
+
+test("A-Z Pass 9 protects Web thread path navigation",()=>{
+  const app=read("app.js");
+  const style=read("style.css");
+  assert.match(app,/webTrail/);
+  assert.match(app,/THREAD PATH/);
+  assert.match(app,/renderWeb\(\);/);
+  assert.match(style,/\.web-thread-trail/);
+  assert.match(style,/\.web-trail-node/);
+});
