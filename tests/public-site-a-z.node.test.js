@@ -1350,3 +1350,17 @@ test("A-Z Pass 4 hero door destinations preserve destination state",()=>{
   assert.match(router,/^art\\\/(music\|words\|visual\|projects)/m);
 });
 
+
+test("A-Z Pass 5 makes The Web a thread discovery layer",()=>{
+  const app=read("app.js");
+  const style=read("style.css");
+  assert.match(app,/FOLLOW THE THREAD/);
+  assert.match(app,/THREAD MAP/);
+  assert.match(app,/STARTING NODE/);
+  assert.match(app,/FOLLOW THREAD/);
+  assert.match(app,/CLEAR THREAD/);
+  assert.match(app,/data-web-participate/);
+  assert.match(style,/\.web-thread-map/);
+  assert.match(style,/\.web-thread-node/);
+  assert.match(style,/\.web-discovery-actions/);
+});
