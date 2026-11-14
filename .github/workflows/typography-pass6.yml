@@ -1,0 +1,29 @@
+name: ESCIE Typography Pass 6 Specimen
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  specimen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: python -m pip install fonttools pillow
+      - run: python fonts/prototype/build-fonts-pass6-solid.py
+      - run: python fonts/prototype/render-pass6-specimen.py
+      - name: Upload Pass 6 specimens
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: escie-pass6-specimens
+          path: fonts/prototype/dist/pass6-specimen/*
+          if-no-files-found: error
