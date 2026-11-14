@@ -409,7 +409,7 @@ test("A-Z Pass 3 hero vertical hierarchy keeps identity primary without runtime 
   assert.doesNotMatch(index,/id="entry-state"/);
   assert.doesNotMatch(aesthetic,/\.entry-state\{/);
    assert.match(index,/<h1><a class="hero-identity-link" href="#escie" aria-label="Go to ESCIE bio"[^>]*>ESCIE<\/a><\/h1>\s*<p id="entry-tagline"/);
-  assert.match(index,/class="hero-skyline-link" href="#world-tab=places&world-node=parc-extension" aria-label="Enter Parc-Extension"/);
+  assert.match(index,/class="hero-skyline-link" href="#world-node=parc-extension" aria-label="Enter Parc-Extension"/);
   assert.match(index,/hero-identity-link[^>]*data-depth-door="surface"/);
   assert.match(index,/hero-skyline-link[^>]*data-depth-door="deep"/);
   assert.match(read("world-engine.js"),/data-depth/);
@@ -432,7 +432,7 @@ test("A-Z Pass 3 mobile hero respects viewport and safe-area composition",()=>{
 test("A-Z Pass 3 hero identity stays dominant over the Montreal distortion and links to the ESCIE bio",()=>{
   const index=read("index.html");
    const style=read("style.css");
-   assert.ok(index.includes("THE FATHER / THE MAN / THE MONSTER."));
+   assert.ok(index.includes("A GOOD PERSON. I\'M JUST NOT NICE."));
   assert.ok(index.includes('<h1><a class="hero-identity-link" href="#escie" aria-label="Go to ESCIE bio" data-depth-door="surface">ESCIE</a></h1>'));
   assert.match(index,/MONTRÉAL, QUÉBEC, CANADA/);
   assert.match(index,/hero-skyline-art/);
@@ -1218,7 +1218,7 @@ test("A-Z Pass 4 skyline doorway preserves the city entry without duplicate hero
   const app=read("app.js");
   const aesthetic=read("aesthetic.css");
   assert.match(index,/hero-skyline-map/);
-  assert.match(index,/href="#world-tab=places&world-node=parc-extension"/);
+  assert.match(index,/href="#world-node=parc-extension"/);
   assert.match(index,/aria-label="Enter Parc-Extension"/);
     assert.doesNotMatch(index,/data-skyline-door=/);
     assert.match(engine,/function applyWorldRoute()/);
@@ -1246,8 +1246,8 @@ test("A-Z Pass 4 hero identity and place doors use canonical World/ESCIE routes"
   const app=read("app.js");
   const world=read("world-engine.js");
   assert.match(index,/class="hero-identity-link" href="#escie"/);
-  assert.match(index,/class="hero-skyline-link" href="#world-tab=places&world-node=parc-extension"/);
-  assert.match(index,/href="#world-tab=places&world-node=montreal"/);
+  assert.match(index,/class="hero-skyline-link" href="#world-node=parc-extension"/);
+  assert.match(index,/href="#world-node=montreal"/);
   assert.match(app,/const route = \/\^\(world-node=\|world-tab=\)\/\.test\(hashRoute\) \? "world" : hashRoute;/);
   assert.match(world,/function applyWorldRoute\(\)/);
 });
@@ -1256,7 +1256,7 @@ test("A-Z Pass 4 hero creative doorways map to canonical destinations",()=>{
   const index=read("index.html");
   const svg=read("assets/escie-symbols.svg");
   const aesthetic=read("aesthetic.css");
-  assert.match(index,/id="entry-location" class="hero-location hero-location-link" href="#world-tab=places&world-node=montreal"/);
+  assert.match(index,/id="entry-location" class="hero-location hero-location-link" href="#world-node=montreal"/);
   assert.match(index,/class="hero-art-doors"/);
   assert.match(index,/href="#art\/music"[^>]*aria-label="Open Music"/);
   assert.match(index,/href="#art\/words"[^>]*aria-label="Open Words"/);
@@ -1294,7 +1294,7 @@ test("A-Z Pass 3 World legacy node links infer the correct public layer",()=>{
   assert.match(world,/nodeType==="place"\?"places"/);
   assert.match(world,/nodeType==="person"\?"people"/);
   assert.match(world,/syncNodeHash\(id\)/);
-  assert.match(index,/href="#world-tab=places&world-node=montreal"/);
+  assert.match(index,/href="#world-node=montreal"/);
 });
 
 test("A-Z Pass 3 world deep links preserve tab integrity and full node context",()=>{
@@ -1310,7 +1310,7 @@ test("A-Z Pass 3 public hero doors resolve to intentional destinations",()=>{
   const router=read("ui/router.js");
   const navigation=read("navigation.js");
   assert.match(index,/href="#escie"/);
-  assert.match(index,/href="#world-tab=places&world-node=montreal"/);
+  assert.match(index,/href="#world-node=montreal"/);
   assert.match(index,/href="#art\/music"/);
   assert.match(index,/href="#art\/words"/);
   assert.match(index,/href="#art\/visual"/);
@@ -1325,8 +1325,8 @@ test("A-Z Pass 4 hero door destinations preserve destination state",()=>{
   const index=read("index.html");
   const world=read("world-engine.js");
   const router=read("ui/router.js");
-  assert.match(index,/href="#world-tab=places&world-node=parc-extension"/);
-  assert.match(index,/href="#world-tab=places&world-node=montreal"/);
+  assert.match(index,/href="#world-node=parc-extension"/);
+  assert.match(index,/href="#world-node=montreal"/);
   assert.match(index,/href="#art\/music"/);
   assert.match(index,/href="#art\/words"/);
   assert.match(index,/href="#art\/visual"/);
