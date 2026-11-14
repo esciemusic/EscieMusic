@@ -443,7 +443,7 @@ test("A-Z Pass 3 hero distortion stays restrained",()=>{
   const style=read("style.css");
    assert.match(style,/animation:heroDistort 7s steps\(2,end\) infinite/);
    assert.match(style,/mix-blend-mode:screen/);
-   assert.match(style,/opacity:\.75/);
+   assert.match(style,/opacity:\.82/);
    assert.match(style,/@keyframes heroDistort/);
    assert.doesNotMatch(style,/signalPulse|signalScan/);
 });
@@ -797,8 +797,8 @@ test("A-Z Pass 3 hero supporting copy preserves signal hierarchy",()=>{
   const index=read("index.html");
   assert.match(index,/id="entry-tagline" class="hero-tagline"/);
   assert.match(index,/id="entry-location" class="hero-location"/);
-  assert.ok(aesthetic.includes("#entry-container #entry-tagline{margin-top:clamp(22px,3.2vw,34px)"));
-  assert.ok(aesthetic.includes("color:var(--escie-blue-bright)"));
+  assert.ok(aesthetic.includes("#entry-container #entry-tagline{margin:clamp(20px,3vw,34px)"));
+  assert.ok(aesthetic.includes("color:var(--escie-white)"));
   assert.ok(aesthetic.includes("#entry-container #entry-location{margin-top:clamp(12px,1.8vw,18px)"));
   assert.ok(aesthetic.includes("font-family:var(--escie-font-signal)"));
 });
