@@ -2416,6 +2416,19 @@ body.inspector-open{overflow:hidden}
 .web-status-conflicting-records .web-connection-line{color:var(--escie-purple)}
 .web-status-thread-unresolved .web-connection-line{color:var(--escie-purple)}
 .web-empty-state{margin-top:18px;padding:26px 0;border-top:1px solid var(--line)}
+.web-discovery-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px}
+.web-filter-clear{padding:8px 10px;border:1px solid rgba(77,163,255,.32);background:transparent;color:var(--escie-blue-bright);font:700 8px/1 var(--escie-font-mono);letter-spacing:.12em;cursor:pointer}
+.web-thread-map{margin-top:24px;padding:18px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.web-thread-map-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px}
+.web-thread-map-head h4{margin:5px 0 0;font:500 clamp(16px,3vw,24px)/1.1 var(--escie-font-display);letter-spacing:.05em}
+.web-thread-map-head>span{color:var(--faint);font:700 8px/1 var(--escie-font-mono);letter-spacing:.12em;text-align:right}
+.web-thread-map p{max-width:60ch;margin:14px 0 0;color:var(--muted);line-height:1.65}
+.web-thread-map-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:14px}
+.web-thread-node{min-height:72px;padding:12px;text-align:left;border:1px solid var(--line);background:rgba(255,255,255,.018);color:inherit;cursor:pointer}
+.web-thread-node strong{display:block;font:600 11px/1.2 var(--escie-font-display);letter-spacing:.06em}
+.web-thread-node small{display:block;margin-top:7px;color:var(--faint);font:700 7px/1.2 var(--escie-font-mono);letter-spacing:.12em;text-transform:uppercase}
+.web-thread-node-current{border-color:rgba(77,163,255,.48);box-shadow:inset 2px 0 0 var(--escie-blue-bright)}
+.web-field-label{display:flex;justify-content:space-between;padding:12px 0;color:var(--faint);font:700 8px/1 var(--escie-font-mono);letter-spacing:.16em}
 .web-governing-principle{margin:26px 0 0;color:var(--faint);font-size:8px;letter-spacing:.22em;text-transform:uppercase}
 .investigation-case:focus-visible{outline:1px solid var(--white);outline-offset:8px}
 @keyframes webSignalDrift{to{transform:translateX(100%)}}
