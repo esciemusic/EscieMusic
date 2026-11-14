@@ -1,63 +1,58 @@
-/* ESCIE FONT FAMILY
-   Production web faces generated from the authored ESCIE letterform pipeline.
-   Local repository assets only — no external web-font service.
-*/
+/* TEMPORARY TYPOGRAPHY FALLBACK
+   Native system fonts are intentionally used while the authored ESCIE font
+   loading/rendering issue is isolated. Keep the authored font assets intact. */
 :root{
-  --escie-font-escie:"ESCIE","Arial Black",Arial,Helvetica,sans-serif;
-  --escie-font-signal:"ESCIE SIGNAL","Courier New",Courier,monospace;
-  --escie-font-script:"ESCIE SCRIPT","Brush Script MT","Segoe Script",cursive;
-  --escie-font-body:"ESCIE TEXT",Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --escie-font-escie:Arial,Helvetica,sans-serif;
+  --escie-font-signal:"Courier New",Courier,monospace;
+  --escie-font-script:"Segoe Script","Brush Script MT",cursive;
+  --escie-font-body:Arial,Helvetica,sans-serif;
 }
-@font-face{
-  font-family:"ESCIE";
-  src:url("./fonts/release/ESCIE.woff2") format("woff2"),url("./fonts/release/ESCIE.ttf") format("truetype");
-  font-weight:400;
-  font-style:normal;
-  font-display:swap;
-}
-@font-face{
-  font-family:"ESCIE SIGNAL";
-  src:url("./fonts/release/ESCIE-SIGNAL.woff2") format("woff2"),url("./fonts/release/ESCIE-SIGNAL.ttf") format("truetype");
-  font-weight:400;
-  font-style:normal;
-  font-display:swap;
-}
-@font-face{
-  font-family:"ESCIE SCRIPT";
-  src:url("./fonts/release/ESCIE-SCRIPT.woff2") format("woff2"),url("./fonts/release/ESCIE-SCRIPT.ttf") format("truetype");
-  font-weight:400;
-  font-style:normal;
-  font-display:swap;
-}
-.site-logo,.entry-inner h1,main > .site-section:not(#entry) h2,.escie-display,.font-escie{font-family:var(--escie-font-escie)}
-.index-navigation,.index-trigger,.site-preferences,.hero-location,.section-drop-trigger,.font-signal{font-family:var(--escie-font-signal)}
-.font-script,.glass-eye-personal,.visitor-trace,.personal-note{font-family:var(--escie-font-script)}
-body,.section-lede,.content-container,.font-body{font-family:var(--escie-font-body);font-synthesis:none}
-.entry-inner h1,main > .site-section:not(#entry) h2{letter-spacing:.035em;font-weight:400;font-synthesis:none;text-rendering:geometricPrecision;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-.hero-location,.section-drop-trigger{letter-spacing:.14em;text-transform:uppercase}
-.font-script{letter-spacing:.015em;font-weight:400;font-synthesis:none}
-
-
-/* Production faces are local repository assets. Keep display roles explicit so
-   the authored faces cannot be silently replaced by the generic page stack. */
-.hero h1,
-.entry-inner h1,
 .site-logo,
+.entry-inner h1,
 main > .site-section:not(#entry) h2,
 .escie-display,
-.font-escie{font-family:"ESCIE",var(--escie-font-escie)}
+.font-escie,
+.hero h1{
+  font-family:var(--escie-font-escie);
+  font-weight:400;
+  font-synthesis:none;
+}
 .index-navigation,
 .index-trigger,
 .site-preferences,
 .hero-location,
 .section-drop-trigger,
-.font-signal{font-family:"ESCIE SIGNAL",var(--escie-font-signal)}
+.font-signal{
+  font-family:var(--escie-font-signal);
+  font-weight:400;
+  font-synthesis:none;
+}
 .font-script,
 .glass-eye-personal,
 .visitor-trace,
-.personal-note{font-family:"ESCIE SCRIPT",var(--escie-font-script)}
-
-/* Typography contract: never synthesize weights/styles for the authored ESCIE faces. */
+.personal-note{
+  font-family:var(--escie-font-script);
+  font-weight:400;
+  font-synthesis:none;
+}
+body,
+.section-lede,
+.content-container,
+.font-body{
+  font-family:var(--escie-font-body);
+  font-synthesis:none;
+}
+.entry-inner h1,
+main > .site-section:not(#entry) h2{
+  letter-spacing:.035em;
+  text-rendering:geometricPrecision;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+.hero-location,
+.section-drop-trigger{
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+.font-script{letter-spacing:.015em;}
 html,body{font-synthesis:none;}
-.hero-identity-link,.site-logo,main > .site-section:not(#entry) h2,.font-escie{font-weight:400;font-synthesis:none;}
-.index-navigation,.index-trigger,.site-preferences,.hero-location,.section-drop-trigger,.font-signal{font-weight:400;font-synthesis:none;}
