@@ -2429,6 +2429,8 @@ body.inspector-open{overflow:hidden}
 .web-thread-node small{display:block;margin-top:7px;color:var(--faint);font:700 7px/1.2 var(--escie-font-mono);letter-spacing:.12em;text-transform:uppercase}
 .web-thread-node-current{border-color:rgba(77,163,255,.48);box-shadow:inset 2px 0 0 var(--escie-blue-bright)}
 .web-field-label{display:flex;justify-content:space-between;padding:12px 0;color:var(--faint);font:700 8px/1 var(--escie-font-mono);letter-spacing:.16em}
+.web-trail-step{display:inline-flex;align-items:center;gap:7px;flex:0 0 auto}
+.web-trail-step>i{color:var(--escie-blue-bright);font:700 7px/1 var(--escie-font-mono);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
 .web-thread-trail{margin:18px 0 0;padding:12px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .web-thread-trail-head{display:flex;justify-content:space-between;gap:12px;margin-bottom:9px;color:var(--faint);font:700 7px/1 var(--escie-font-mono);letter-spacing:.13em}
 .web-thread-trail-list{display:flex;align-items:center;gap:7px;overflow-x:auto;padding-bottom:2px}
