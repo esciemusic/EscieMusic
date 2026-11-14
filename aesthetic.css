@@ -2254,3 +2254,7 @@ html[data-theme="light"] .montreal-world-card{
   border-color:rgba(36,95,190,.22);
 }
 html[data-theme="light"] .montreal-neighbourhood{background:rgba(232,225,212,.28);border-color:rgba(36,95,190,.16)}
+
+.world-node-card[data-depth="deep"] .world-kicker{color:var(--escie-blue-bright);}
+.world-node-card[data-depth="deep"] .world-arrow{color:var(--escie-blue-bright);}
+.montreal-world-card[data-depth="deep"]{box-shadow:inset 0 0 0 1px rgba(47,128,255,.08);}
