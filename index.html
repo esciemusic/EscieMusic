@@ -9,15 +9,12 @@
   <link rel="stylesheet" href="aesthetic.css">
   <link rel="stylesheet" href="typography.css">
 </head>
-
 <body id="top">
   <a class="skip-link" href="#main-content">SKIP TO CONTENT</a>
   <div class="sky" aria-hidden="true"></div>
   <div class="grain" aria-hidden="true"></div>
-
   <header class="site-header">
     <a href="#top" class="site-logo" aria-label="ESCIE — return to top">ESCIE</a>
-
     <div class="site-preferences" role="group" aria-label="Site preferences">
       <div class="language-toggle" role="group" aria-label="Language">
         <button type="button" class="preference-button language-option" data-language="en" aria-label="English">EN</button>
@@ -25,340 +22,43 @@
         <button type="button" class="preference-button language-option" data-language="es" aria-label="Español">ES</button>
       </div>
       <button type="button" id="theme-toggle" class="preference-button theme-toggle" aria-label="Switch to light mode">
-        <span class="theme-toggle-icon" aria-hidden="true">◐</span>
+        <span class="theme-toggle-icon" aria-hidden="true"><svg class="escie-symbol-glyph" viewBox="0 0 32 32" focusable="false"><use href="./assets/escie-symbols.svg#theme"></use></svg></span>
         <span class="theme-toggle-label">LIGHT</span>
       </button>
     </div>
-
-    <button
-      id="mobile-menu-button"
-      class="index-trigger"
-      type="button"
-      aria-label="Open index"
-      aria-controls="main-navigation"
-      aria-expanded="false"
-    >
+    <button id="mobile-menu-button" class="index-trigger" type="button" aria-label="Open index" aria-controls="main-navigation" aria-expanded="false">
       <span class="index-trigger-glyph" aria-hidden="true"><svg class="escie-symbol-glyph" viewBox="0 0 32 32" focusable="false"><use href="./assets/escie-symbols.svg#index"></use></svg></span>
     </button>
-
     <nav id="main-navigation" class="index-navigation" aria-label="Index"></nav>
   </header>
-
   <main id="main-content" tabindex="-1">
     <section id="entry" class="site-section entry-section">
       <div class="section-inner">
         <div class="signal-chamber" aria-hidden="true"><div class="signal-window"><span class="signal-city"></span><span class="signal-light signal-light-a"></span><span class="signal-light signal-light-b"></span><span class="signal-light signal-light-c"></span></div><span class="signal-scan"></span></div>
-        <div id="entry-container" class="content-container">
-          <div class="entry-inner">
-            <div id="entry-social" class="entry-social" aria-label="External signal"></div>
-            <h1>ESCIE</h1>
-            <p id="entry-tagline" class="hero-tagline">REALITY WITH THE SIGNAL DISTORTED.</p>
-            <p id="entry-location" class="hero-location">MONTRÉAL, QUÉBEC, CANADA</p>
-          </div>
-        </div>
+        <div id="entry-container" class="content-container"><div class="entry-inner"><div id="entry-social" class="entry-social" aria-label="External signal"></div><h1>ESCIE</h1><p id="entry-tagline" class="hero-tagline">REALITY WITH THE SIGNAL DISTORTED.</p><p id="entry-location" class="hero-location">MONTRÉAL, QUÉBEC, CANADA</p></div></div>
       </div>
     </section>
-
-    <section id="now" class="site-section now-section">
-      <div class="section-inner">
-        <div class="section-visual section-visual-now" data-visual-section="now" aria-hidden="true"><span class="visual-nightlight"></span><span class="visual-horizon"></span><span class="visual-flicker"></span></div>
-        <h2>NOW</h2>
-        <p class="section-lede">WHAT IS HAPPENING NOW. THE CURRENT SIGNAL, THE CURRENT WORK, THE CURRENT TRACE.</p>
-        <div id="now-container" class="content-container"></div>
-      </div>
-    </section>
-
-    <section id="art" class="site-section art-section">
-      <div class="section-inner">
-        <div class="section-visual section-visual-art" data-visual-section="art" aria-hidden="true"><span class="visual-vhs"></span><span class="visual-daisy"><svg class="escie-symbol-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#daisy"></use></svg></span><span class="visual-scanline"></span></div>
-        <h2>ART</h2>
-        <p class="art-threshold">WHERE LIFE BECOMES THE MEDIUM.</p>
-        <p class="section-lede">BROAD STROKES AND FINE LINES — THE THINGS ESCIE MAKES FROM LIFE.</p>
-        <div id="art-container" class="content-container">
-          <div id="work-filters" class="record-filters" aria-label="Filter work"></div>
-          <div id="art-forms" class="art-forms" aria-label="Creative forms">
-            <article class="art-category" data-art-category="music"><h3>MUSIC</h3><div id="music-container" class="content-container"></div></article>
-            <article class="art-category" data-art-category="words"><h3>WORDS</h3><div id="words-container" class="content-container"></div></article>
-            <article class="art-category" data-art-category="visual"><h3>VISUAL</h3><div id="visual-container" class="content-container"></div></article>
-            <article class="art-category" data-art-category="projects"><h3>PROJECTS</h3><div id="projects-container" class="content-container"></div></article>
-          </div>
-        </div>
-      </div>
-    </section>
-
+    <section id="now" class="site-section now-section"><div class="section-inner"><div class="section-visual section-visual-now" data-visual-section="now" aria-hidden="true"><span class="visual-nightlight"></span><span class="visual-horizon"></span><span class="visual-flicker"></span></div><h2>NOW</h2><p class="section-lede">WHAT IS HAPPENING NOW. THE CURRENT SIGNAL, THE CURRENT WORK, THE CURRENT TRACE.</p><div id="now-container" class="content-container"></div></div></section>
+    <section id="art" class="site-section art-section"><div class="section-inner"><div class="section-visual section-visual-art" data-visual-section="art" aria-hidden="true"><span class="visual-vhs"></span><span class="visual-daisy"><svg class="escie-symbol-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#daisy"></use></svg></span><span class="visual-scanline"></span></div><h2>ART</h2><p class="art-threshold">WHERE LIFE BECOMES THE MEDIUM.</p><p class="section-lede">BROAD STROKES AND FINE LINES — THE THINGS ESCIE MAKES FROM LIFE.</p><div id="art-container" class="content-container"><div id="work-filters" class="record-filters" aria-label="Filter work"></div><div id="art-forms" class="art-forms" aria-label="Creative forms"><article class="art-category" data-art-category="music"><h3>MUSIC</h3><div id="music-container" class="content-container"></div></article><article class="art-category" data-art-category="words"><h3>WORDS</h3><div id="words-container" class="content-container"></div></article><article class="art-category" data-art-category="visual"><h3>VISUAL</h3><div id="visual-container" class="content-container"></div></article><article class="art-category" data-art-category="projects"><h3>PROJECTS</h3><div id="projects-container" class="content-container"></div></article></div></div></div></section>
     <section id="world" class="site-section world-section"><div class="section-inner"><div class="section-visual section-visual-world" data-visual-section="world" aria-hidden="true"><span class="visual-map-grid"></span><span class="visual-montreal-mark">M</span><span class="visual-route-line"></span><span class="visual-location-dot"></span></div><h2>THE WORLD</h2><div id="world-container" class="content-container"></div></div></section>
-
-    <section id="web" class="site-section web-section">
-      <div class="section-inner">
-        <div class="section-visual section-visual-web" data-visual-section="web" aria-hidden="true"><span class="visual-key"><svg class="escie-symbol-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#key"></use></svg></span><span class="visual-node n1"></span><span class="visual-node n2"></span><span class="visual-node n3"></span><span class="visual-wire w1"></span><span class="visual-wire w2"></span><span class="visual-wire w3"></span></div>
-        <h2>THE WEB</h2>
-        <p class="section-lede">THE CONNECTIONS BETWEEN PEOPLE, PLACES, MOMENTS, RECORDS AND SIGNALS.</p>
-        <div id="web-container" class="content-container"></div>
-      </div>
-    </section>
-
-    <section id="archives" class="site-section archives-section">
-      <div class="section-inner">
-        <div class="section-visual section-visual-archives" data-visual-section="archives" aria-hidden="true"><span class="visual-tape"></span><span class="visual-shoe"><svg class="escie-symbol-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#child-shoe"></use></svg></span><span class="visual-chair"><svg class="escie-symbol-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#empty-chair"></use></svg></span><span class="visual-date"></span></div>
-        <h2>THE ARCHIVES</h2>
-        <p class="section-lede">WHAT WAS LEFT BEHIND. RECORDS, FRAGMENTS, SOURCES, IMAGES AND TRACES.</p>
-        <div id="archive-container" class="content-container"></div>
-      </div>
-    </section>
-
-    <section id="investigation" class="site-section investigation-section">
-      <div class="section-inner">
-        <div class="section-visual section-visual-investigation" data-visual-section="investigation" aria-hidden="true"><span class="visual-lens"></span><span class="visual-cross"></span><span class="visual-evidence e1"></span><span class="visual-evidence e2"></span></div>
-        <h2>THE CASE FILES</h2>
-        <p class="section-lede">QUESTIONS, EVIDENCE, CONTRADICTIONS AND UNRESOLVED THREADS — FOLLOW WHAT THE RECORD CAN SUPPORT.</p>
-        <div id="investigation-container" class="content-container"></div>
-      </div>
-    </section>
-
-    <section id="glass-eye" class="site-section glass-eye-section">
-      <div class="section-inner">
-        <div class="section-visual section-visual-glass-eye" data-visual-section="glass-eye" aria-hidden="true"><span class="visual-eye-ring"></span><span class="visual-eye-dot"></span><span class="visual-glass-scan"></span></div>
-        <h2>GLASS EYE</h2>
-        <p class="section-lede">SEE · HEAR · FOLLOW · MISS · RETURN</p>
-        <div id="glass-eye-container" class="content-container"></div>
-      </div>
-    </section>
-
-    <section id="escie" class="site-section escie-section">
-      <div class="section-inner">
-        <div class="section-visual section-visual-escie" data-visual-section="escie" aria-hidden="true"><span class="visual-presence"></span><span class="visual-pulse"></span></div>
-        <div class="escie-emblem" aria-hidden="true"><svg class="escie-emblem-glyph" viewBox="0 0 64 64" focusable="false"><use href="./assets/escie-symbols.svg#escie-emblem"></use></svg></div>
-        <h2>ESCIE</h2>
-        <p class="section-lede">ESCIE THE ARTIST. THE ART SPEAKS FOR ITSELF.</p>
-        <p class="section-lede">ARS LONGA, VITA BREVIS.</p>
-        <div id="escie-container" class="content-container">
-          <div id="about-container" class="about-content"></div>
-        </div>
-      </div>
-    </section>
+    <section id="web" class="site-section web-section"><div class="section-inner"><div class="section-visual section-visual-web" data-visual-section="web" aria-hidden="true"><span class="visual-key"><svg class="escie-symbol-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#key"></use></svg></span><span class="visual-node n1"></span><span class="visual-node n2"></span><span class="visual-node n3"></span><span class="visual-wire w1"></span><span class="visual-wire w2"></span><span class="visual-wire w3"></span></div><h2>THE WEB</h2><p class="section-lede">THE CONNECTIONS BETWEEN PEOPLE, PLACES, MOMENTS, RECORDS AND SIGNALS.</p><div id="web-container" class="content-container"></div></div></section>
+    <section id="archives" class="site-section archives-section"><div class="section-inner"><div class="section-visual section-visual-archives" data-visual-section="archives" aria-hidden="true"><span class="visual-tape"></span><span class="visual-shoe"><svg class="escie-symbol-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#child-shoe"></use></svg></span><span class="visual-chair"><svg class="escie-symbol-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#empty-chair"></use></svg></span><span class="visual-date"></span></div><h2>THE ARCHIVES</h2><p class="section-lede">WHAT WAS LEFT BEHIND. RECORDS, FRAGMENTS, SOURCES, IMAGES AND TRACES.</p><div id="archive-container" class="content-container"></div></div></section>
+    <section id="investigation" class="site-section investigation-section"><div class="section-inner"><div class="section-visual section-visual-investigation" data-visual-section="investigation" aria-hidden="true"><span class="visual-lens"></span><span class="visual-cross"></span><span class="visual-evidence e1"></span><span class="visual-evidence e2"></span></div><h2>THE CASE FILES</h2><p class="section-lede">QUESTIONS, EVIDENCE, CONTRADICTIONS AND UNRESOLVED THREADS — FOLLOW WHAT THE RECORD CAN SUPPORT.</p><div id="investigation-container" class="content-container"></div></div></section>
+    <section id="glass-eye" class="site-section glass-eye-section"><div class="section-inner"><div class="section-visual section-visual-glass-eye" data-visual-section="glass-eye" aria-hidden="true"><span class="visual-eye-ring"></span><span class="visual-eye-dot"></span><span class="visual-glass-scan"></span></div><h2>GLASS EYE</h2><p class="section-lede">SEE · HEAR · FOLLOW · MISS · RETURN</p><div id="glass-eye-container" class="content-container"></div></div></section>
+    <section id="escie" class="site-section escie-section"><div class="section-inner"><div class="section-visual section-visual-escie" data-visual-section="escie" aria-hidden="true"><span class="visual-presence"></span><span class="visual-pulse"></span></div><div class="escie-emblem" aria-hidden="true"><svg class="escie-emblem-glyph" viewBox="0 0 64 64" focusable="false"><use href="./assets/escie-symbols.svg#escie-emblem"></use></svg></div><h2>ESCIE</h2><p class="section-lede">ESCIE THE ARTIST. THE ART SPEAKS FOR ITSELF.</p><p class="section-lede">ARS LONGA, VITA BREVIS.</p><div id="escie-container" class="content-container"><div id="about-container" class="about-content"></div></div></div></section>
   </main>
-
-  <footer class="site-footer">
-    <p>ESCIE</p>
-    <p>THE SIGNAL REMAINS DISTORTED.</p>
-    <div id="footer-social" class="footer-social" aria-label="External signal"></div>
-  </footer>
-
-  <script>
-  (function(){
-    "use strict";
-
-    function initPreferences(){
-      var root=document.documentElement;
-      var state=window.ESCIE_STATE||{};
-      var savedTheme="";
-      try{savedTheme=localStorage.getItem("escie-theme")||"";}catch(error){}
-      var theme=(savedTheme==="light"||savedTheme==="dark")?savedTheme:(state.theme||"dark");
-      root.dataset.theme=theme;
-      state.theme=theme;
-
-      var themeButton=document.getElementById("theme-toggle");
-      var languageButtons=[].slice.call(document.querySelectorAll("[data-language]"));
-
-      function applyTheme(next){
-        theme=next==="light"?"light":"dark";
-        root.dataset.theme=theme;
-        state.theme=theme;
-        try{localStorage.setItem("escie-theme",theme);}catch(error){}
-        if(themeButton){
-          themeButton.setAttribute("aria-pressed",theme==="light"?"true":"false");
-          themeButton.setAttribute("aria-label",theme==="light"?"Dark mode":"Light mode");
-          var label=themeButton.querySelector(".theme-toggle-label");
-          if(label)label.textContent=theme==="light"?"DARK":"LIGHT";
-        }
-      }
-
-      themeButton&&themeButton.addEventListener("click",function(){applyTheme(theme==="dark"?"light":"dark");});
-      languageButtons.forEach(function(button){
-        button.addEventListener("click",function(){
-          var language=button.getAttribute("data-language")||"en";
-          var engine=window.ESCIE_LANGUAGE_ENGINE;
-          if(engine&&typeof engine.setLanguage==="function"){
-            engine.setLanguage(language);
-            return;
-          }
-          if(window.ESCIE_STATE)window.ESCIE_STATE.language=language;
-          document.documentElement.lang=language;
-          try{localStorage.setItem("escie-language",language);}catch(error){}
-          languageButtons.forEach(function(item){
-            var active=item.getAttribute("data-language")===language;
-            item.classList.toggle("is-active",active);
-            item.setAttribute("aria-pressed",active?"true":"false");
-          });
-        });
-      });
-      var savedLanguage="";
-      try{savedLanguage=localStorage.getItem("escie-language")||"";}catch(error){}
-      var initialLanguage=(savedLanguage||state.language||navigator.language||"en").toLowerCase().slice(0,2);
-      if(["en","fr","es"].indexOf(initialLanguage)<0)initialLanguage="en";
-      state.language=initialLanguage;
-      document.documentElement.lang=initialLanguage;
-      languageButtons.forEach(function(item){
-        var active=item.getAttribute("data-language")===initialLanguage;
-        item.classList.toggle("is-active",active);
-        item.setAttribute("aria-pressed",active?"true":"false");
-      });
-      applyTheme(theme);
-    }
-
-    initPreferences();
-    try{if("scrollRestoration" in history)history.scrollRestoration="manual";}catch(error){}
-    function initSectionAccordion(){
-      var sections=[].slice.call(document.querySelectorAll("main > section")).filter(function(section){return section.id!=="entry"&&section.querySelector("h2");});
-      sections.forEach(function(section,index){
-        if(section.dataset.accordionReady==="1")return;
-        var heading=section.querySelector("h2"),inner=section.querySelector(".section-inner")||section,button=document.createElement("button");
-        var symbols={now:"now",art:"art",world:"world",web:"web",archives:"archives",investigation:"case-files","glass-eye":"glass-eye",escie:"escie"};
-        var symbol=symbols[section.id]||"·";
-        button.type="button";button.className="section-drop-trigger";button.setAttribute("aria-controls",section.id+"-panel");button.setAttribute("aria-expanded","false");button.setAttribute("aria-label","Open "+heading.textContent.trim());
-        button.dataset.section=section.id;button.innerHTML='<span class="section-drop-index">'+String(index+1).padStart(2,"0")+'</span><span class="section-drop-title"></span><span class="section-drop-symbol"><svg class="escie-symbol-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#'+symbol+'"></use></svg></span><span class="section-drop-state" aria-hidden="true">+</span>';button.querySelector(".section-drop-title").textContent=heading.textContent.trim();heading.hidden=true;
-        var panel=document.createElement("div");panel.className="section-drop-panel";panel.id=section.id+"-panel";panel.setAttribute("role","region");panel.hidden=true;
-        var content=document.createElement("div");content.className="section-drop-content";
-        Array.from(inner.children).forEach(function(child){if(child!==heading)content.appendChild(child);});
-        panel.appendChild(content);
-        inner.appendChild(button);inner.appendChild(panel);section.dataset.accordionReady="1";section.classList.add("section-collapsed");
-        function setOpen(open){
-          sections.forEach(function(other){var p=other.querySelector(".section-drop-panel"),b=other.querySelector(".section-drop-trigger"),active=other===section&&open;other.classList.toggle("section-open",active);other.classList.toggle("section-collapsed",!active);if(p)p.hidden=!active;if(b){b.setAttribute("aria-expanded",String(active));var s=b.querySelector(".section-drop-state");if(s)s.textContent=active?"−":"+";var otherHeading=other.querySelector("h2");var otherTitle=otherHeading?otherHeading.textContent.trim():(b.querySelector(".section-drop-title")?.textContent.trim()||other.id);b.setAttribute("aria-label",(active?"Close ":"Open ")+otherTitle);}});
-        }
-        button.addEventListener("click",function(){setOpen(!section.classList.contains("section-open"));});
-      });
-      function openFromHash(shouldScroll){
-        var raw=(window.location.hash||"").replace(/^#/,"");
-        if(!raw||raw==="top"||raw==="entry")return;
-        var router=window.ESCIE_UI_ROUTER;
-        var resolved=router&&typeof router.resolve==="function"?(router.resolve(raw)||raw):raw;
-        var target=document.getElementById(resolved);
-        if(!target)return;
-        var button=target.querySelector(".section-drop-trigger");
-        if(button&&!target.classList.contains("section-open")){
-          button.click();
-        }else if(shouldScroll&&target.classList.contains("section-open")){
-        }
-      }
-      window.ESCIE_SECTION_ACCORDION={open:function(id){
-        var raw=String(id||"").replace(/^#/,"");
-        var router=window.ESCIE_UI_ROUTER;
-        var resolved=router&&typeof router.resolve==="function"?(router.resolve(raw)||raw):raw;
-        var target=document.getElementById(resolved);
-        var button=target&&target.querySelector(".section-drop-trigger");
-        if(button&&!target.classList.contains("section-open"))button.click();
-      }};
-      var nav=document.getElementById("main-navigation");
-      if(nav&&!nav.dataset.accordionLinksReady){nav.dataset.accordionLinksReady="1";nav.addEventListener("click",function(event){var link=event.target.closest("a[href^='#']");if(!link)return;var raw=link.getAttribute("href").slice(1),router=window.ESCIE_UI_ROUTER,resolved=router&&typeof router.resolve==="function"?(router.resolve(raw)||raw):raw,target=document.getElementById(resolved);if(!target)return;var b=target.querySelector(".section-drop-trigger");if(b){event.preventDefault();var wasOpen=target.classList.contains("section-open");if(!wasOpen)b.click();history.pushState(null,"",link.getAttribute("href"));window.dispatchEvent(new Event("hashchange"));window.requestAnimationFrame(function(){var header=document.querySelector(".site-header");var offset=(header?header.getBoundingClientRect().height:0)+12;var top=target.getBoundingClientRect().top+window.pageYOffset-offset;window.scrollTo({top:Math.max(0,top),behavior:"smooth"});});}});}
-      document.addEventListener("click",function(event){var link=event.target.closest("a[href^='#']");if(!link||nav&&nav.contains(link))return;var raw=link.getAttribute("href").slice(1),router=window.ESCIE_UI_ROUTER,resolved=router&&typeof router.resolve==="function"?(router.resolve(raw)||raw):raw,target=document.getElementById(resolved);if(!target)return;var b=target.querySelector(".section-drop-trigger");if(b){event.preventDefault();if(!target.classList.contains("section-open"))b.click();history.pushState(null,"",link.getAttribute("href"));window.dispatchEvent(new Event("hashchange"));window.requestAnimationFrame(function(){var header=document.querySelector(".site-header");var offset=(header?header.getBoundingClientRect().height:0)+12;var top=target.getBoundingClientRect().top+window.pageYOffset-offset;window.scrollTo({top:Math.max(0,top),behavior:"smooth"});});}});
-      document.addEventListener("keydown",function(event){
-        if(event.key!=="Escape")return;
-        var openSection=sections.find(function(section){return section.classList.contains("section-open");});
-        if(!openSection)return;
-        var trigger=openSection.querySelector(".section-drop-trigger");
-        if(trigger)trigger.click();
-      });
-      window.addEventListener("hashchange",function(){openFromHash(true);});
-      openFromHash(false);
-    }
-    function initNestedDropdowns(){
-      var selector=".world-place,.archive-record,.investigation-case,.merch-card,.clothing-card,.art-category";
-      function enhance(root){
-        if(!root)return;
-        var items=[];
-        if(root.nodeType===1 && root.matches && root.matches(selector))items.push(root);
-        if(root.querySelectorAll)root.querySelectorAll(selector).forEach(function(item){items.push(item);});
-        items.forEach(function(item){
-          if(item.dataset.nestedDropReady==="1")return;
-          var titleNode=item.querySelector(":scope > h3");
-          if(!titleNode)return;
-          var title=titleNode.textContent.trim()||"OPEN RECORD";
-          var eyebrow=item.querySelector(":scope > .eyebrow,.world-place-state");
-          item.removeAttribute("role");
-          item.removeAttribute("tabindex");
-          var status=item.querySelector(":scope > .world-place-state,:scope > .merch-card-top .merch-status,:scope > .clothing-card-head .pill");
-          var original=Array.from(item.children);
-          var trigger=document.createElement("button");
-          trigger.type="button";
-          trigger.className="nested-drop-trigger";
-          trigger.setAttribute("aria-expanded","false");
-          var panelId=(item.id||"nested-item")+"-panel";if(document.getElementById(panelId)){var suffix=1;while(document.getElementById(panelId+"-"+suffix))suffix++;panelId=panelId+"-"+suffix;}trigger.setAttribute("aria-controls",panelId);
-          trigger.innerHTML='<span class="nested-drop-index" aria-hidden="true">▸</span><span class="nested-drop-title"></span><span class="nested-drop-meta"></span><span class="nested-drop-state" aria-hidden="true">+</span>';
-          trigger.querySelector(".nested-drop-title").textContent=title;
-          trigger.querySelector(".nested-drop-meta").textContent=(eyebrow?eyebrow.textContent.trim():"")+(status?" · "+status.textContent.trim():"");
-          var panel=document.createElement("div");
-          panel.className="nested-drop-panel";
-          panel.id=trigger.getAttribute("aria-controls");
-          panel.hidden=true;
-          panel.setAttribute("role","region");
-          panel.setAttribute("aria-label",title);
-          var content=document.createElement("div");
-          content.className="nested-drop-content";
-          original.forEach(function(child){content.appendChild(child);});
-          panel.appendChild(content);
-          item.innerHTML="";
-          item.appendChild(trigger);
-          item.appendChild(panel);
-          item.dataset.nestedDropReady="1";
-          item.classList.add("nested-drop-collapsed");
-          trigger.addEventListener("click",function(event){
-            event.stopPropagation();
-            var open=!item.classList.contains("nested-drop-open");
-            var group=item.parentElement;
-            if(group){
-              Array.from(group.children).filter(function(other){return other!==item && other.matches && other.matches(selector+".nested-drop-open");}).forEach(function(other){
-                if(other===item)return;
-                other.classList.remove("nested-drop-open");
-                other.classList.add("nested-drop-collapsed");
-                var p=other.querySelector(":scope > .nested-drop-panel"),b=other.querySelector(":scope > .nested-drop-trigger");
-                if(p)p.hidden=true;
-                if(b){b.setAttribute("aria-expanded","false");var s=b.querySelector(".nested-drop-state");if(s)s.textContent="+";}
-              });
-            }
-            item.classList.toggle("nested-drop-open",open);
-            item.classList.toggle("nested-drop-collapsed",!open);
-            panel.hidden=!open;
-            trigger.setAttribute("aria-expanded",String(open));
-            trigger.querySelector(".nested-drop-state").textContent=open?"−":"+";
-          });
-        });
-      }
-      enhance(document);
-      var observer=new MutationObserver(function(mutations){
-        mutations.forEach(function(mutation){
-          mutation.addedNodes.forEach(function(node){
-            if(node.nodeType===1)enhance(node);
-          });
-        });
-      });
-      document.querySelectorAll(".content-container").forEach(function(container){
-        observer.observe(container,{childList:true,subtree:true});
-      });
-      window.ESCIE_NESTED_DROPDOWNS={refresh:function(){enhance(document);}};
-    }
-    if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initSectionAccordion,{once:true});else initSectionAccordion();
-    initNestedDropdowns();
-  })();
-  </script>
-
-  <!-- Foundational contracts -->
+  <footer class="site-footer"><p>ESCIE</p><p>THE SIGNAL REMAINS DISTORTED.</p><div id="footer-social" class="footer-social" aria-label="External signal"></div></footer>
   <script src="core/lyrics.js" defer></script>
   <script src="record.js" defer></script>
   <script src="relationship.js" defer></script>
-
-  <!-- Core -->
   <script src="core/performance.js" defer></script>
   <script src="core/state.js" defer></script>
   <script src="core/events.js" defer></script>
   <script src="core/health.js" defer></script>
-
-
   <script src="signal/signal.js" defer></script>
   <script src="signal/visual.js" defer></script>
   <script src="signal/audio.js" defer></script>
   <script src="signal/transmission.js" defer></script>
-
-  <!-- UI / search / publishing / security -->
   <script src="ui/shell.js" defer></script>
   <script src="ui/router.js" defer></script>
   <script src="ui/player.js" defer></script>
@@ -372,8 +72,6 @@
   <script src="publishing/validate.js" defer></script>
   <script src="security/sanitize.js" defer></script>
   <script src="security/disclosure.js" defer></script>
-
-  <!-- Data -->
   <script src="data/universe-contract.js" defer></script>
   <script src="data/layer-balance.js" defer></script>
   <script src="data/file-manifest.js" defer></script>
@@ -415,16 +113,11 @@
   <script src="data/web-contract.js" defer></script>
   <script src="data/web.js" defer></script>
   <script src="data/world-city.js" defer></script>
-
-  <!-- Public navigation / language / narration -->
   <script src="navigation.js" defer></script>
   <script src="world-engine.js" defer></script>
-  
   <script src="language.js" defer></script>
   <script src="narration.js" defer></script>
-
-
-  <!-- Application -->
   <script src="app.js" defer></script>
-<div id="escie-player-profile" class="escie-player-profile" hidden><span class="escie-player-label">THE WORLD PLAYER</span><strong data-player-name>PLAYER</strong></div></body>
+  <div id="escie-player-profile" class="escie-player-profile" hidden><span class="escie-player-label">THE WORLD PLAYER</span><strong data-player-name>PLAYER</strong></div>
+</body>
 </html>
