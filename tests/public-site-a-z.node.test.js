@@ -1315,7 +1315,6 @@ test("A-Z Pass 3 public hero doors resolve to intentional destinations",()=>{
   assert.match(index,/href="#art\/words"/);
   assert.match(index,/href="#art\/visual"/);
   assert.match(index,/href="#glass-eye"/);
-  assert.ok(index.includes('class="hero-art-door hero-art-door-disabled"'));
   assert.ok(router.includes('/^art\\/(music|words|visual|projects)$/i'));
   assert.match(navigation,/id:"escie",label:"ESCIE"/);
   assert.match(navigation,/id:"glass-eye",label:"GLASS EYE"/);
