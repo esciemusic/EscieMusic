@@ -2167,7 +2167,12 @@ body.inspector-open{overflow:hidden}
   padding-left:10px;
   background:transparent;
 }
+.node-link .escie-symbol-glyph{transition:filter 250ms ease,transform 350ms var(--ease)}
 .node-link:hover .node-link-symbol{color:var(--white);transform:translateX(-2px)}
+.node-link:hover .escie-symbol-glyph{transform:scale(1.06)}
+.node-link.is-current .escie-symbol-glyph{stroke-width:1.6;filter:drop-shadow(0 0 5px rgba(155,89,255,.18))}
+.section-motif-item .escie-symbol-glyph{transition:transform 250ms ease,filter 250ms ease}
+.section-motif-item:hover .escie-symbol-glyph,.section-motif-item:focus-visible .escie-symbol-glyph{transform:scale(1.08);filter:drop-shadow(0 0 5px rgba(77,163,255,.16))}
 .node-link.is-current{
   opacity:1;
   padding-left:10px;
