@@ -1956,14 +1956,14 @@ main > .site-section:not(#entry) .section-drop-state{position:relative;z-index:1
 main > .site-section:not(#entry) .section-drop-panel{border-top:0;padding:0 16px 24px}
 main > .site-section:not(#entry) .section-drop-content{padding:18px 0 8px}
 
-main > #now{--section-accent:#b8873a;--section-glow:rgba(184,135,58,.12)}
-main > #art{--section-accent:#9b59ff;--section-glow:rgba(155,89,255,.12)}
-main > #world{--section-accent:#4da3ff;--section-glow:rgba(77,163,255,.13)}
-main > #web{--section-accent:#63b9ff;--section-glow:rgba(99,185,255,.10)}
-main > #archives{--section-accent:#b7a98f;--section-glow:rgba(183,169,143,.10)}
-main > #investigation{--section-accent:#c05a6a;--section-glow:rgba(192,90,106,.11)}
-main > #glass-eye{--section-accent:#7b8cff;--section-glow:rgba(123,140,255,.12)}
-main > #escie{--section-accent:#9b59ff;--section-glow:rgba(155,89,255,.14)}
+main > #now{--section-accent:#4da3ff;--section-glow:rgba(77,163,255,.10)}
+main > #art{--section-accent:#9b59ff;--section-glow:rgba(155,89,255,.10)}
+main > #world{--section-accent:#4da3ff;--section-glow:rgba(77,163,255,.10)}
+main > #web{--section-accent:#4da3ff;--section-glow:rgba(77,163,255,.08)}
+main > #archives{--section-accent:#9a9da3;--section-glow:rgba(154,157,163,.07)}
+main > #investigation{--section-accent:#6f3faf;--section-glow:rgba(111,63,175,.08)}
+main > #glass-eye{--section-accent:#4da3ff;--section-glow:rgba(77,163,255,.08)}
+main > #escie{--section-accent:#9b59ff;--section-glow:rgba(155,89,255,.10)}
 
 main > .site-section.section-open .section-drop-trigger{
   border-color:color-mix(in srgb,var(--section-accent,#4da3ff) 45%,rgba(216,212,202,.12));
