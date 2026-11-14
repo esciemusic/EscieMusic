@@ -980,7 +980,7 @@ function renderClothing(){
       '<div class="archive-index">' +
         motifMarkup("archives") +
         '<div class="archive-index-head"><p class="eyebrow">PRESERVED TRACE / ' + escapeHTML(String(ordered.length)) + ' RECORD' + (ordered.length === 1 ? '' : 'S') + '</p><span class="archive-index-note">OPEN THE RECORD TO FOLLOW ITS TRACE.</span></div>' +
-        '<div class="archive-list">' +
+        '<div class="archive-record-carousel" data-record-carousel="archive"><div class="record-carousel-viewport" tabindex="0" aria-live="polite"><div class="record-carousel-track">' +
           ordered.map((record,index) => {
             const type = String(record.type || record.identity?.type || "record").toUpperCase();
             const dateSource = record.date || record.created_at || record.updated_at || "";
@@ -988,7 +988,7 @@ function renderClothing(){
             const year = record.year ? String(record.year) : (dateValue && !Number.isNaN(dateValue.getTime()) ? String(dateValue.getFullYear()) : "");
             const location = record.location ? String(record.location) : "";
             const meta = [type, year, location].filter(Boolean).join(" · ");
-            return '<article class="archive-record" role="button" tabindex="0" aria-label="Open ' + escapeHTML(recordTitle(record)) + '" data-record-id="' + escapeHTML(recordId(record)) + '">' +
+            return '<article class="archive-record record-carousel-slide" role="button" tabindex="0" aria-hidden="' + (index === 0 ? 'false' : 'true') + '" aria-label="Open ' + escapeHTML(recordTitle(record)) + '" data-record-id="' + escapeHTML(recordId(record)) + '">' +
               '<div class="archive-record-index" aria-hidden="true">' + String(index + 1).padStart(2,"0") + '</div>' +
               '<div class="archive-record-body"><p class="eyebrow">' + escapeHTML(meta || "RECORD") + '</p>' +
               '<h3>' + escapeHTML(recordTitle(record)) + '</h3>' +
@@ -996,7 +996,7 @@ function renderClothing(){
               '</div>' +
             '</article>';
           }).join("") +
-        '</div>' +
+        '</div></div><div class="record-carousel-controls"><span tabindex="0" role="button" class="record-carousel-arrow" data-record-prev aria-label="Previous archive record">‹</span><span class="record-carousel-position" aria-hidden="true">01 / ' + String(ordered.length).padStart(2,"0") + '</span><span tabindex="0" role="button" class="record-carousel-arrow" data-record-next aria-label="Next archive record">›</span></div></div>' +
       '</div>';
   }
 
@@ -1037,13 +1037,13 @@ function renderClothing(){
       '<div class="investigation-index">' +
         motifMarkup("investigation") +
         '<div class="investigation-index-head"><p class="eyebrow">' + String(ordered.length) + ' ' + countLabel + '</p><span class="investigation-index-note">QUESTIONS STAY OPEN UNTIL THE RECORD CAN SUPPORT AN ANSWER.</span></div>' +
-        '<div class="case-file-list">' +
+        '<div class="record-carousel case-file-carousel" data-record-carousel="case-files"><div class="record-carousel-viewport" tabindex="0" aria-live="polite"><div class="record-carousel-track">' +
           ordered.map((item,index) => {
             const evidence = Array.isArray(item.evidence) ? item.evidence.length : (Array.isArray(item.sources) ? item.sources.length : 0);
             const contradictions = Array.isArray(item.contradictions) ? item.contradictions.length : 0;
             const status = String(item.status || "OPEN").toUpperCase();
             const meta = [status, evidence ? evidence + " EVIDENCE" : "", contradictions ? contradictions + " CONTRADICTIONS" : ""].filter(Boolean).join(" · ");
-            return '<article class="investigation-case" role="button" tabindex="0" aria-label="Open ' + escapeHTML(recordTitle(item)) + '" data-record-id="' + escapeHTML(recordId(item)) + '"' + narrationAttributes(item) + '>' +
+            return '<article class="investigation-case record-carousel-slide" role="button" tabindex="0" aria-hidden="' + (index === 0 ? 'false' : 'true') + '" aria-label="Open ' + escapeHTML(recordTitle(item)) + '" data-record-id="' + escapeHTML(recordId(item)) + '"' + narrationAttributes(item) + '>' +
               '<div class="investigation-case-index" aria-hidden="true">' + String(index + 1).padStart(2,"0") + '</div>' +
               '<div class="investigation-case-body">' +
                 '<p class="eyebrow">' + escapeHTML(meta) + '</p>' +
@@ -1052,7 +1052,7 @@ function renderClothing(){
               '</div>' +
             '</article>';
           }).join("") +
-        '</div>' +
+        '</div></div><div class="record-carousel-controls"><span tabindex="0" role="button" class="record-carousel-arrow" data-record-prev aria-label="Previous case file">‹</span><span class="record-carousel-position" aria-hidden="true">01 / ' + String(ordered.length).padStart(2,"0") + '</span><span tabindex="0" role="button" class="record-carousel-arrow" data-record-next aria-label="Next case file">›</span></div></div>' +
       '</div>';
   }
 
