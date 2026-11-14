@@ -457,8 +457,8 @@ test("A-Z Pass 3 Montréal skyline scales for mobile",()=>{
 
 test("A-Z Pass 3 signal chamber remains visual-only without runtime status state",()=>{
   const style=read("style.css");
-  assert.match(style,/\.signal-chamber \{[\s\S]*opacity: \.72;/);
-  assert.doesNotMatch(style,/\.idle-universe \.signal-chamber/);
+  assert.match(style,/\.hero-skyline\{[\s\S]*opacity:\.76/);
+  assert.doesNotMatch(style,/\.signal-chamber\s*\{/);
   assert.doesNotMatch(style,/transition: opacity 900ms/);
 });
 
