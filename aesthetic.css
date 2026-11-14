@@ -1770,7 +1770,7 @@ main > .site-section.section-open .section-visual::after{animation:escieSignalSc
   letter-spacing:.16em;
 }
 .glass-video-placeholder strong{color:var(--escie-paper);font-size:10px}
-.glass-language button:focus-visible,.glass-eye-actions button:focus-visible,.glass-memory-clear-inline:focus-visible{outline:1px solid var(--escie-blue-bright);outline-offset:3px}
+.glass-eye-actions button:focus-visible,.glass-memory-clear-inline:focus-visible{outline:1px solid var(--escie-blue-bright);outline-offset:3px}
 @media(max-width:700px){
   .glass-video-label{font-size:7px;padding:8px 10px}
   .glass-video-window{margin-top:14px}
