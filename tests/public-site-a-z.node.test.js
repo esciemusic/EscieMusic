@@ -1299,6 +1299,16 @@ test("A-Z Pass 4 hero art deep links resolve to the ART section while preserving
   assert.match(index,/show\(targetIndex,false,false\)/);
 });
 
+test("A-Z Pass 3 World legacy node links infer the correct public layer",()=>{
+  const world=read("world-engine.js");
+  const index=read("index.html");
+  assert.match(world,/const nodeType=type\(node\)\.toLowerCase\(\)/);
+  assert.match(world,/nodeType==="place"\?"places"/);
+  assert.match(world,/nodeType==="person"\?"people"/);
+  assert.match(world,/syncNodeHash\(id\)/);
+  assert.match(index,/href="#world-tab=places&world-node=montreal"/);
+});
+
 test("A-Z Pass 3 world deep links preserve tab integrity and full node context",()=>{
   const world=read("world-engine.js");
   assert.match(world,/const expected=tab==="people"\?"person":tab==="places"\?"place"/);
