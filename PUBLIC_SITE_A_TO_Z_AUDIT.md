@@ -215,11 +215,11 @@ This is the standing audit contract for every subsequent public-site optimizatio
 - The assertion was corrected and committed. New CI/deployment runs are queued against the corrected commit; Z remains **not yet green** until those runs complete successfully.
 
 
-## Pass 2 — entry experience checkpoint — 2026-11-05
-- The entry now presents the live signal state immediately above ESCIE, preserving the sparse hierarchy while making the current environmental state visible.
-- The state derives from the existing dawn/day/dusk/night time-state calculation; no recurring timer or obsolete November 22 countdown was introduced.
-- The signal-state treatment uses the established purple identity language and remains responsive on small screens.
-- A regression contract protects placement, state labels and styling so Pass 2 presentation work cannot silently remove the live state.
+## Pass 2 — entry experience checkpoint — superseded
+- The earlier runtime entry-state experiment was removed because it added unnecessary interface language to the approved sparse hero.
+- The current entry hierarchy is intentionally limited to ESCIE, the approved tagline, Montréal location and the existing visual chamber.
+- No runtime entry-state element, signal-status label or November 22 countdown is part of the current public shell.
+- The current A–Z regression contract explicitly rejects the obsolete entry-state surface.
 
 
 ## Pass 3 final checkpoint — 2026-11-05
