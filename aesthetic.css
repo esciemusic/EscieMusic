@@ -1710,14 +1710,6 @@ main > .site-section:not(#entry).section-collapsed .section-drop-panel{display:n
 main > .site-section:not(#entry).section-open{min-height:0 !important;}
 
 
-/* =========================================================
-   ENTRY STATE / LIVE SIGNAL
-   ========================================================= */
-.entry-state{margin:0 0 12px;color:var(--escie-aesthetic-purple);font:700 8px/1 var(--escie-font-mono);letter-spacing:.24em;text-transform:uppercase;opacity:.82;text-shadow:0 0 16px var(--escie-aesthetic-purple-soft)}
-.entry-inner h1{margin-top:0}
-@media(max-width:700px){.entry-state{margin-bottom:10px;letter-spacing:.2em}}
-
-
 /* Pass 2 visual motion: documentary signal moves only while a section is open. */
 @keyframes escieSignalDrift{0%{transform:translate3d(-1%,0,0) scale(1)}50%{transform:translate3d(1%,1px,0) scale(1.012)}100%{transform:translate3d(-1%,0,0) scale(1)}}
 @keyframes escieSignalScan{0%{background-position:0 0,0 0,0 0}100%{background-position:18px 0,0 8px,-24px 0}}
