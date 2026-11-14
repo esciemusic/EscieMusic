@@ -56,7 +56,7 @@ test("A-Z Pass 1 locks the live shell to the eight-section model",()=>{
   assert.match(index,/id="investigation"[^>]*class="site-section investigation-section"/);
   assert.match(index,/id="glass-eye"[^>]*class="site-section glass-eye-section"/);
   assert.match(index,/id="escie"[^>]*class="site-section escie-section"/);
-  assert.match(index,/var symbols=\{now:"◒"/);
+  assert.match(index,/class="escie-symbol-glyph"[^>]*viewBox="0 0 32 32"[^>]*focusable="false"[^>]*aria-hidden="true"><use href="\.\/assets\/escie-symbols\.svg#/);
   assert.doesNotMatch(index,/data-visual-section="work"/);
   assert.doesNotMatch(index,/data-visual-section="the-web"/);
   assert.doesNotMatch(index,/data-visual-section="archive"/);
@@ -1258,5 +1258,5 @@ test("A-Z Pass 4 preference controls use the canonical theme glyph",()=>{
   assert.ok(svg.includes('<symbol id="theme" viewBox="0 0 32 32">'));
   assert.ok(svg.includes("</symbol>"));
   assert.match(index,/class="theme-toggle-icon"[^>]*aria-hidden="true">[\s\S]*escie-symbols\.svg#theme/);
-  assert.match(aesthetic,/\\.theme-toggle-icon\\{/);
+  assert.match(aesthetic,/\.theme-toggle-icon\{/);
 });
