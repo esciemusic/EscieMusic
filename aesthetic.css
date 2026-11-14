@@ -2224,3 +2224,141 @@ html[data-theme="light"] .montreal-neighbourhood{background:rgba(232,225,212,.28
   .hero-art-door span{opacity:0;transform:translateY(-2px);}
   .hero-skyline-map{margin-top:10px;}
 }
+
+/* =========================================================
+   HERO CANON — final cascade
+   One composition: identity → statement → Montréal → doors.
+   These rules intentionally resolve earlier pass overrides.
+   ========================================================= */
+.entry-section #entry-container .entry-inner{
+  width:min(100%,1200px);
+  padding-inline:clamp(10px,2vw,24px);
+}
+.entry-section #entry-container h1{
+  margin:0;
+  font-family:var(--escie-font-escie);
+  font-size:clamp(96px,18vw,250px);
+  font-weight:400;
+  letter-spacing:.02em;
+  line-height:.78;
+  text-align:center;
+  color:var(--escie-white);
+  text-shadow:0 0 34px rgba(47,128,255,.06);
+}
+.entry-section #entry-tagline{
+  margin:clamp(14px,2.2vw,22px) auto 0;
+  max-width:min(92vw,720px);
+  font-family:var(--escie-font-signal);
+  font-size:clamp(11px,1.5vw,16px);
+  font-weight:400;
+  letter-spacing:.12em;
+  line-height:1.35;
+  text-align:center;
+  text-wrap:balance;
+  animation:none;
+  text-shadow:0 0 18px rgba(47,128,255,.08);
+}
+.entry-section #entry-location{
+  margin-top:clamp(8px,1.4vw,14px);
+  font-family:var(--escie-font-signal);
+  font-size:8px;
+  letter-spacing:.22em;
+  line-height:1.5;
+  opacity:.78;
+}
+.hero-skyline-map{
+  width:min(1040px,98vw);
+  margin:clamp(12px,2vw,20px) auto 0;
+}
+.hero-skyline-link{
+  width:100%;
+  margin:0;
+  padding:0;
+}
+.hero-skyline-link .hero-skyline{
+  display:block;
+  width:100%;
+  opacity:.9;
+  transform:none;
+  filter:none;
+}
+.hero-art-doors{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(16px,3vw,28px);
+  margin:clamp(10px,1.8vw,16px) auto 0;
+}
+.hero-art-door{
+  min-width:42px;
+  gap:5px;
+  color:rgba(216,212,202,.44);
+}
+.hero-art-door .escie-symbol-glyph{
+  width:22px;
+  height:22px;
+}
+.hero-art-door span{
+  font-family:var(--escie-font-signal);
+  font-size:7px;
+  letter-spacing:.14em;
+  opacity:0;
+  transform:translateY(-2px);
+}
+.hero-art-door:hover span,
+.hero-art-door:focus-visible span{
+  opacity:.82;
+  transform:translateY(0);
+}
+.hero-location-link:hover,
+.hero-location-link:focus-visible{
+  color:var(--escie-blue-bright);
+}
+@media(max-width:700px){
+  .entry-section #entry-container .entry-inner{
+    width:100%;
+    padding-inline:8px;
+  }
+  .entry-section #entry-container h1{
+    font-size:clamp(76px,22vw,150px);
+    letter-spacing:.035em;
+    line-height:.8;
+  }
+  .entry-section #entry-tagline{
+    margin-top:12px;
+    font-size:clamp(10px,3.2vw,14px);
+    letter-spacing:.075em;
+  }
+  .entry-section #entry-location{
+    margin-top:8px;
+    font-size:7px;
+    letter-spacing:.15em;
+  }
+  .hero-skyline-map{
+    width:100vw;
+    margin-top:10px;
+  }
+  .hero-art-doors{
+    gap:16px;
+    margin-top:10px;
+  }
+  .hero-art-door{
+    min-width:34px;
+  }
+  .hero-art-door .escie-symbol-glyph{
+    width:20px;
+    height:20px;
+  }
+  .hero-art-door span{
+    opacity:.64;
+    transform:none;
+    font-size:6px;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-art-door,
+  .hero-art-door span,
+  .hero-location-link{
+    transition:none;
+  }
+}
