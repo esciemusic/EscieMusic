@@ -98,11 +98,11 @@ test("A-Z Pass 3 public index follows visitor priority and restrained palette",(
   assert.match(nodes,/id:"node-web"[^\n]*order:5/);
   assert.match(nodes,/id:"node-archives"[^\n]*order:6/);
   assert.match(nodes,/id:"node-investigation"[^\n]*order:7/);
-  assert.match(aesthetic,/main > #now\\{--section-accent:#4da3ff/);
-  assert.match(aesthetic,/main > #art\\{--section-accent:#9b59ff/);
-  assert.match(aesthetic,/main > #archives\\{--section-accent:#9a9da3/);
-  assert.doesNotMatch(aesthetic,/main > #now\\{--section-accent:#b8873a/);
-  assert.doesNotMatch(aesthetic,/main > #investigation\\{--section-accent:#c05a6a/);
+  assert.match(aesthetic,/main > #now\{--section-accent:#4da3ff/);
+  assert.match(aesthetic,/main > #art\{--section-accent:#9b59ff/);
+  assert.match(aesthetic,/main > #archives\{--section-accent:#9a9da3/);
+  assert.doesNotMatch(aesthetic,/main > #now\{--section-accent:#b8873a/);
+  assert.doesNotMatch(aesthetic,/main > #investigation\{--section-accent:#c05a6a/);
   assert.match(language,/"MONTRÉAL \/ THE WORLD":"MONTRÉAL \/ EL MUNDO"/);
   assert.match(language,/"THE CITY RECORD":"EL REGISTRO DE LA CIUDAD"/);
   assert.match(language,/"OPEN THE RECORD TO FOLLOW ITS TRACE.":"ABRE EL REGISTRO PARA SEGUIR SU HUELLA."/);
