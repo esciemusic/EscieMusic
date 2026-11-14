@@ -796,6 +796,10 @@
             ?"UNKNOWN CONNECTION"
             :rawStatus.toUpperCase();
       const reason=relationship.context||relationship.note||"THE RECORD CONNECTS THESE TWO POINTS. THE REASON REMAINS OPEN.";
+      const relationType=StringrelationType;
+      const nextIds=new Set(all.filter(link=>link.from===recordId(to)||link.to===recordId(to)).flatMap(link=>[link.from,link.to])).filter(id=>id!==recordId(from)&&id!==recordId(to));
+      const nextNodes=Array.from(nextIds).map(id=>byIdMap.get(id)).filter(Boolean).slice(0,4);
+      const nextStep=nextNodes.length ? '<div class="web-next-step"><p class="eyebrow">WHERE THIS THREAD CAN GO</p><div class="web-next-nodes">'+nextNodes.map(node=>'<button type="button" class="web-next-node" data-record-id="'+escapeHTML(recordId(node))+'"><strong>'+escapeHTML(recordTitle(node))+'</strong><span>FOLLOW '+escapeHTML(String(node.type||"RECORD").toUpperCase())+'</span></button>').join("")+'</div></div>' : '<p class="web-next-quiet">NO NEXT PUBLIC CONNECTION IS ESTABLISHED YET.</p>';
       const statusClass=displayState.toLowerCase().replace(/[^a-z0-9]+/g,"-");
       return '<article class="web-connection web-status-'+statusClass+'" data-relationship-id="'+escapeHTML(relationship.id||("connection-"+index))+'">'+
         '<button type="button" class="web-connection-main" data-web-connection-toggle aria-expanded="false">'+
@@ -807,6 +811,7 @@
           '<p class="eyebrow">WHY THIS CONNECTION EXISTS</p><p>'+escapeHTML(reason)+'</p>'+
           '<div class="web-connection-meta"><span>'+escapeHTML(displayState)+'</span><span>'+escapeHTML(confidenceValue.toUpperCase())+'</span></div>'+
           '<div class="web-connection-actions"><button type="button" class="web-node-button" data-record-id="'+escapeHTML(recordId(from))+'">OPEN '+escapeHTML(recordTitle(from).toUpperCase())+'</button><button type="button" class="web-node-button" data-record-id="'+escapeHTML(recordId(to))+'">OPEN '+escapeHTML(recordTitle(to).toUpperCase())+'</button></div>'+
+        nextStep+
         '</div>'+
       '</article>';
     }).join("");
