@@ -65,66 +65,67 @@ SKELETON={
 "Z":[(95,665),(505,665),(120,80),(505,80)]}
 
 def display(ch,p,clean=False):
-    # Pass 4 refinement: narrow architectural gothic construction.
-    # Curves are built as single bands to avoid segmented/stencil artifacts.
-    w = 64 if not clean else 56
+    # Pass 4 identity refinement: narrow gothic architecture with restrained pointed terminals.
+    w = 70 if not clean else 60
     if ch=="A":
-        stroke(p,[(118,42),(202,690),(318,690),(498,42)],w)
-        wedge(p,190,300,216,48,20)
+        stroke(p,[(124,42),(202,690),(318,690),(492,42)],w)
+        wedge(p,190,306,218,46,20)
+        wedge(p,112,42,42,30,16,False); wedge(p,462,42,42,30,16)
     elif ch=="E":
         rect(p,112,42,72,654,.018)
-        wedge(p,170,640,308,54,30)
-        wedge(p,170,346,220,46,24)
-        wedge(p,170,42,308,54,30,False)
+        wedge(p,168,642,318,54,32)
+        wedge(p,168,348,210,44,24)
+        wedge(p,168,42,318,54,32,False)
     elif ch=="G":
-        arc_band(p,308,382,202,320,math.radians(48),math.radians(318),w)
-        stroke(p,[(316,362),(500,362),(500,154)],w*.9)
+        arc_band(p,308,382,198,318,math.radians(52),math.radians(318),w)
+        stroke(p,[(316,360),(500,360),(500,154)],w*.9)
+        wedge(p,414,338,86,40,18)
+        wedge(p,116,650,44,34,18); wedge(p,472,54,44,34,18,False)
     elif ch=="R":
         rect(p,112,42,72,654,.018)
-        arc_band(p,184,522,218,164,-math.pi/2,math.pi/2,w)
-        stroke(p,[(198,348),(488,42)],w*.9)
+        arc_band(p,184,522,216,164,-math.pi/2,math.pi/2,w)
+        wedge(p,194,348,84,34,16)
+        stroke(p,[(198,348),(490,42)],w*.92)
     elif ch=="S":
-        arc_band(p,304,526,194,142,math.radians(206),math.radians(18),w)
-        arc_band(p,304,238,194,142,math.radians(18),math.radians(206),w)
+        arc_band(p,304,526,192,140,math.radians(208),math.radians(16),w)
+        arc_band(p,304,238,192,140,math.radians(16),math.radians(208),w)
+        wedge(p,132,620,70,36,18); wedge(p,406,74,70,36,18,False)
     elif ch=="M":
         stroke(p,[(96,42),(148,694),(304,402),(460,694),(512,42)],w)
+        wedge(p,90,42,44,34,18,False); wedge(p,474,42,44,34,18)
     elif ch=="T":
         wedge(p,86,640,438,54,30)
         rect(p,270,42,72,652,.012)
     elif ch=="C":
-        arc_band(p,316,382,204,320,math.radians(50),math.radians(310),w)
+        arc_band(p,316,382,200,318,math.radians(52),math.radians(308),w)
+        wedge(p,112,650,116,40,26); wedge(p,112,42,116,40,26,False)
     elif ch=="O":
-        ring(p,316,382,202,320,w)
+        ring(p,316,382,198,318,w)
+        wedge(p,116,650,52,34,20); wedge(p,464,52,52,34,20,False)
     elif ch in SKELETON:
         stroke(p,SKELETON[ch],w*.88)
     elif ch=="B":
         rect(p,112,42,72,654,.018)
-        arc_band(p,184,520,218,164,-math.pi/2,math.pi/2,w)
-        arc_band(p,184,242,218,164,-math.pi/2,math.pi/2,w)
+        arc_band(p,184,520,216,164,-math.pi/2,math.pi/2,w)
+        arc_band(p,184,242,216,164,-math.pi/2,math.pi/2,w)
     elif ch=="D":
-        rect(p,112,42,72,654,.018)
-        arc_band(p,184,370,242,320,-math.pi/2,math.pi/2,w)
+        rect(p,112,42,72,654,.018); arc_band(p,184,370,240,318,-math.pi/2,math.pi/2,w)
     elif ch=="F":
-        rect(p,112,42,72,654,.018)
-        wedge(p,170,640,308,54,30)
-        wedge(p,170,346,220,46,24)
+        rect(p,112,42,72,654,.018); wedge(p,168,642,318,54,32); wedge(p,168,348,210,44,24)
     elif ch=="H":
-        rect(p,112,42,72,654,.018); rect(p,430,42,72,654,.018)
-        wedge(p,184,350,246,50,20)
+        rect(p,112,42,72,654,.018); rect(p,430,42,72,654,.018); wedge(p,184,350,246,50,20)
     elif ch=="I":
         wedge(p,112,640,356,54,30); rect(p,252,42,72,652,.012); wedge(p,112,42,356,54,30,False)
     elif ch=="J":
-        wedge(p,170,640,300,54,30)
-        stroke(p,[(426,666),(426,156),(390,76),(276,42),(166,112)],w)
+        wedge(p,168,640,302,54,30); stroke(p,[(426,666),(426,156),(390,76),(276,42),(166,112)],w)
     elif ch=="L":
-        rect(p,112,42,72,654,.018); wedge(p,170,42,308,54,30,False)
+        rect(p,112,42,72,654,.018); wedge(p,168,42,318,54,30,False)
     elif ch=="P":
-        rect(p,112,42,72,654,.018); arc_band(p,184,522,218,164,-math.pi/2,math.pi/2,w)
+        rect(p,112,42,72,654,.018); arc_band(p,184,522,216,164,-math.pi/2,math.pi/2,w)
     elif ch=="Q":
-        ring(p,306,402,196,300,w); stroke(p,[(376,170),(510,42)],w*.72)
+        ring(p,306,402,194,298,w); stroke(p,[(376,170),(510,42)],w*.72)
     elif ch=="U":
-        rect(p,112,360,72,336,.018); rect(p,430,360,72,336,.018)
-        arc_band(p,306,365,218,300,math.pi,2*math.pi,w)
+        rect(p,112,360,72,336,.018); rect(p,430,360,72,336,.018); arc_band(p,306,365,218,300,math.pi,2*math.pi,w)
     else:
         wedge(p,112,42,396,654,30)
 
