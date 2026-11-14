@@ -370,6 +370,57 @@
     if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initSectionAccordion,{once:true});else initSectionAccordion();
     initNestedDropdowns();
 
+    function initRecordCarousels(){
+      document.querySelectorAll("[data-record-carousel]").forEach(function(carousel){
+        if(carousel.dataset.ready==="1")return;
+        var slides=[].slice.call(carousel.querySelectorAll(".record-carousel-slide"));
+        var viewport=carousel.querySelector(".record-carousel-viewport");
+        var prev=carousel.querySelector("[data-record-prev]");
+        var next=carousel.querySelector("[data-record-next]");
+        var position=carousel.querySelector(".record-carousel-position");
+        if(slides.length<2){carousel.dataset.ready="1";return;}
+        var index=0,startX=0,startY=0,tracking=false;
+        function show(nextIndex,direction){
+          index=(nextIndex+slides.length)%slides.length;
+          var move=direction||(nextIndex>=0?"next":"previous");
+          slides.forEach(function(slide,i){
+            var active=i===index;
+            slide.hidden=!active;
+            slide.setAttribute("aria-hidden",active?"false":"true");
+            slide.classList.remove("is-entering-next","is-entering-previous");
+            if(active){void slide.offsetWidth;slide.classList.add(move==="previous"?"is-entering-previous":"is-entering-next");}
+          });
+          if(position)position.textContent=String(index+1).padStart(2,"0")+" / "+String(slides.length).padStart(2,"0");
+        }
+        prev&&prev.addEventListener("click",function(){show(index-1,"previous");});
+        next&&next.addEventListener("click",function(){show(index+1,"next");});
+        [prev,next].forEach(function(control){
+          control&&control.addEventListener("keydown",function(event){
+            if(event.key==="Enter"||event.key===" "){event.preventDefault();show(index+(control===next?1:-1),control===next?"next":"previous");}
+          });
+        });
+        viewport&&viewport.addEventListener("touchstart",function(event){
+          if(!event.touches||!event.touches[0])return;
+          startX=event.touches[0].clientX;startY=event.touches[0].clientY;tracking=true;
+        },{passive:true});
+        viewport&&viewport.addEventListener("touchend",function(event){
+          if(!tracking||!event.changedTouches||!event.changedTouches[0])return;
+          var dx=event.changedTouches[0].clientX-startX,dy=event.changedTouches[0].clientY-startY;
+          tracking=false;
+          if(Math.abs(dx)<45||Math.abs(dx)<Math.abs(dy))return;
+          show(index+(dx<0?1:-1),dx<0?"next":"previous");
+        },{passive:true});
+        viewport&&viewport.addEventListener("keydown",function(event){
+          if(event.key==="ArrowRight"){event.preventDefault();show(index+1,"next");}
+          if(event.key==="ArrowLeft"){event.preventDefault();show(index-1,"previous");}
+          if(event.key==="Home"){event.preventDefault();show(0,"previous");}
+          if(event.key==="End"){event.preventDefault();show(slides.length-1,"next");}
+        });
+        show(0,"next");
+        carousel.dataset.ready="1";
+      });
+    }
+
     function initArtCarousel(){
       var carousel=document.getElementById("art-forms");
       if(!carousel||carousel.dataset.ready==="1")return;
@@ -452,7 +503,8 @@
       show(initialIndex>=0?initialIndex:0,false,false);
       carousel.dataset.ready="1";
     }
-    if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initArtCarousel,{once:true});else initArtCarousel();
+    function initESCIECarousels(){initArtCarousel();initRecordCarousels();}
+    if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initESCIECarousels,{once:true});else initESCIECarousels();
   })();
   </script>
 
