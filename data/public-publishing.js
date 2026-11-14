@@ -58,6 +58,8 @@
     });
     return {ok:errors.length===0,errors};
   }
-  window.ESCIE_PUBLIC_PUBLISHING={version:"1.4.0",sections:Array.from(PUBLIC_SECTIONS),approved,boundaryAudit,sectionAudit,sectionsFor,canEnter,publicRecords,audit};
-  if(typeof module!=="undefined"&&module.exports)module.exports=window.ESCIE_PUBLIC_PUBLISHING;
+  const target=typeof window!=="undefined"?window:globalThis;
+  const contract={version:"1.4.0",sections:Array.from(PUBLIC_SECTIONS),approved,boundaryAudit,sectionAudit,sectionsFor,canEnter,publicRecords,audit};
+  target.ESCIE_PUBLIC_PUBLISHING=contract;
+  if(typeof module!=="undefined"&&module.exports)module.exports=contract;
 })();
