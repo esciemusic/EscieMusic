@@ -591,6 +591,12 @@ test("A-Z Pass 3 public hero uses the authored ESCIE family fallback contract",(
   const typography=read("typography.css");
   const aesthetic=read("aesthetic.css");
   assert.match(typography,/--escie-font-escie/);
+  assert.match(typography,/url\("\.\/fonts\/release\/ESCIE\.woff2"\)/);
+  assert.match(typography,/url\("\.\/fonts\/release\/ESCIE-SIGNAL\.woff2"\)/);
+  assert.match(typography,/url\("\.\/fonts\/release\/ESCIE-SCRIPT\.woff2"\)/);
+  assert.match(typography,/\.hero h1,[\\s\\S]*?font-family:"ESCIE"/);
+  assert.match(typography,/\.index-navigation,[\\s\\S]*?font-family:"ESCIE SIGNAL"/);
+  assert.match(typography,/\.font-script,[\\s\\S]*?font-family:"ESCIE SCRIPT"/);
   assert.match(aesthetic,/entry-section #entry-container h1\{[^}]*font-family:var\(--escie-font-escie\)/);
   assert.doesNotMatch(aesthetic,/Flesh Wound/);
   assert.doesNotMatch(aesthetic,/fonts\.googleapis\.com|fonts\.gstatic\.com/);
