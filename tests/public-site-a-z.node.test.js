@@ -1211,3 +1211,13 @@ test("A-Z Pass 4 ESCIE emblem is a standalone identity mark and the Index uses t
   assert.match(aesthetic,/\.escie-emblem-glyph\{/);
   assert.match(aesthetic,/The emblem is identity, not decoration/);
 });
+
+
+test("A-Z Pass 4 preference controls use the canonical theme glyph",()=>{
+  const index=read("index.html");
+  const svg=read("assets/escie-symbols.svg");
+  const aesthetic=read("aesthetic.css");
+  assert.match(svg,/<symbol id="theme" viewBox="0 0 32 32">[\\s\\S]*<\\/symbol>/);
+  assert.match(index,/class="theme-toggle-icon"[^>]*aria-hidden="true">[\\s\\S]*escie-symbols\\.svg#theme/);
+  assert.match(aesthetic,/\\.theme-toggle-icon\\{/);
+});
