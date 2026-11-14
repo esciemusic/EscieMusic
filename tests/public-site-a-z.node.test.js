@@ -431,8 +431,8 @@ test("A-Z Pass 3 hero identity stays dominant over the Montreal distortion and l
   assert.ok(index.includes('<h1><a class="hero-identity-link" href="#escie" aria-label="Go to ESCIE bio">ESCIE</a></h1>'));
   assert.match(index,/MONTRÉAL, QUÉBEC, CANADA/);
   assert.match(index,/hero-skyline-art/);
-  assert.match(style,/\.entry-inner \{[\s\S]*isolation: isolate/);
-  assert.match(style,/\.entry-section #entry-container h1,[\\s\\S]*z-index:3/);
+   assert.match(style,/\.entry-inner\{[\s\S]*isolation:isolate/);
+   assert.match(style,/\.entry-section #entry-container h1,[\s\S]*z-index:3/);
   assert.ok(style.includes('.hero-identity-link{display:inline-block;color:inherit;text-decoration:none'));
   assert.match(style,/\.hero-skyline-art/);
   assert.match(style,/\.hero-skyline-distortion/);
