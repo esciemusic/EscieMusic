@@ -1255,7 +1255,8 @@ test("A-Z Pass 4 preference controls use the canonical theme glyph",()=>{
   const index=read("index.html");
   const svg=read("assets/escie-symbols.svg");
   const aesthetic=read("aesthetic.css");
-  assert.ok(svg.includes('<symbol id="theme" viewBox="0 0 32 32">'));\n  assert.ok(svg.includes("</symbol>"));
+  assert.ok(svg.includes('<symbol id="theme" viewBox="0 0 32 32">'));
+  assert.ok(svg.includes("</symbol>"));
   assert.match(index,/class="theme-toggle-icon"[^>]*aria-hidden="true">[\\s\\S]*escie-symbols\\.svg#theme/);
   assert.match(aesthetic,/\\.theme-toggle-icon\\{/);
 });
