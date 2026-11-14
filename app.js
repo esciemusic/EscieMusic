@@ -769,6 +769,8 @@
     const selectedNeighbourIds=new Set();
     selectedLinks.forEach(link=>selectedNeighbourIds.add(link.from===recordId(selected)?link.to:link.from));
     const selectedNeighbours=Array.from(selectedNeighbourIds).map(id=>byIdMap.get(id)).filter(Boolean);
+    const selectedConnectionTypes=Array.from(new Set(selectedLinks.map(link=>String(link.type||"CONNECTED_TO").replace(/_/g," "))));
+
     const recordResults=visibleRecords.filter(r=>!state.record||recordId(r)===state.record).slice(0,10).map(r=>{
       const links=all.filter(link=>link.from===recordId(r)||link.to===recordId(r));
       return '<button type="button" class="web-record-result" data-record-id="'+escapeHTML(recordId(r))+'"><strong>'+escapeHTML(recordTitle(r))+'</strong><span>'+escapeHTML(r.type||"record")+' · '+(links.length?links.length+" CONNECTION"+(links.length===1?"":"S"):"NO CONNECTIONS YET")+'</span></button>';
@@ -776,6 +778,7 @@
 
     const networkMap=selected
       ? '<div class="web-thread-map"><div class="web-thread-map-head"><div><span class="eyebrow">THREAD MAP</span><h4>'+escapeHTML(recordTitle(selected))+'</h4></div><span>'+selectedLinks.length+' DIRECT '+(selectedLinks.length===1?"CONNECTION":"CONNECTIONS")+'</span></div>'+
+        '<div class="web-hub-summary"><span>CONNECTED BY</span><strong>'+escapeHTML(selectedConnectionTypes.join(" · ")||"PUBLIC RELATIONSHIPS")+'</strong></div>'+
         '<div class="web-thread-map-grid">'+
         '<button type="button" class="web-thread-node web-thread-node-current" data-record-id="'+escapeHTML(recordId(selected))+'"><strong>'+escapeHTML(recordTitle(selected))+'</strong><small>STARTING NODE</small></button>'+
         selectedNeighbours.map(node=>'<button type="button" class="web-thread-node" data-record-id="'+escapeHTML(recordId(node))+'"><strong>'+escapeHTML(recordTitle(node))+'</strong><small>'+escapeHTML(node.type||"record")+' · FOLLOW THREAD</small></button>').join("")+
