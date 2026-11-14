@@ -1333,3 +1333,20 @@ test("A-Z Pass 3 public hero doors resolve to intentional destinations",()=>{
   assert.match(navigation,/id:"glass-eye",label:"GLASS EYE"/);
 });
 
+
+test("A-Z Pass 4 hero door destinations preserve destination state",()=>{
+  const index=read("index.html");
+  const world=read("world-engine.js");
+  const router=read("ui/router.js");
+  assert.match(index,/href="#world-tab=places&world-node=parc-extension"/);
+  assert.match(index,/href="#world-tab=places&world-node=montreal"/);
+  assert.match(index,/href="#art\/music"/);
+  assert.match(index,/href="#art\/words"/);
+  assert.match(index,/href="#art\/visual"/);
+  assert.match(index,/href="#glass-eye"/);
+  assert.match(world,/state\.tab=tab/);
+  assert.match(world,/state\.selected=id/);
+  assert.match(world,/expected=tab==="people"\?"person":tab==="places"\?"place"/);
+  assert.match(router,/^art\\\/(music\|words\|visual\|projects)/m);
+});
+
