@@ -192,31 +192,8 @@
     showVisual(section,items[state.index]);
    });
   };
-  let timer=null;
-  let stopped=false;
-  const schedule=()=>{
-   if(stopped||document.hidden||reducedMotion()||timer)return;
-   timer=window.setTimeout(()=>{
-    timer=null;
-    if(stopped||document.hidden||reducedMotion())return;
-    rotate();
-    schedule();
-   },9500);
-  };
-  const onVisibility=()=>{
-   if(document.hidden){
-    if(timer){window.clearTimeout(timer);timer=null;}
-    return;
-   }
-   schedule();
-  };
-  document.addEventListener("visibilitychange",onVisibility);
-  schedule();
-  WORK_ALBUM_OBSERVER={disconnect:()=>{
-   stopped=true;
-   if(timer){window.clearTimeout(timer);timer=null;}
-   document.removeEventListener("visibilitychange",onVisibility);
-  }};
+  const timer=window.setInterval(rotate,9500);
+  WORK_ALBUM_OBSERVER={disconnect:()=>window.clearInterval(timer)};
  }
 
 
