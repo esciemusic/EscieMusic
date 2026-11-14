@@ -162,7 +162,12 @@ function applyWorldRoute(){
    if(tabs.some(t=>t[0]===tab))state.tab=tab;
    if(match[2]){
      const id=decodeURIComponent(match[2]);
-     if(records().some(r=>String(r.id)===String(id))){state.selected=id;remember(id);}
+     const node=records().find(r=>String(r.id)===String(id));
+     if(node){
+       const expected=tab==="people"?"person":tab==="places"?"place":tab==="moments"?"moment":tab==="fragments"?"fragment":tab==="bodies"?"body":tab==="proof"?"proof":tab==="path"?"path":null;
+       if(expected===null || type(node)===String(expected).toUpperCase()){state.selected=id;remember(id);}
+       else state.selected=null;
+     }else state.selected=null;
    }else state.selected=null;
    return true;
  }catch(e){return false}
@@ -176,7 +181,7 @@ function bind(root){
  const select=$("world-public-type");if(select)select.onchange=e=>{state.type=e.target.value;render()};
  root.querySelectorAll("[data-node]").forEach(b=>b.onclick=e=>{e.preventDefault();remember(b.dataset.node);state.selected=b.dataset.node;syncNodeHash(state.selected);render();setTimeout(()=>{const close=document.querySelector(".world-close");if(close)close.focus()},0)});
  const path=$("world-path-items");if(path){const map=new Map(records().map(r=>[String(r.id),r]));path.innerHTML=state.trail.map(id=>map.get(String(id))).filter(Boolean).map(n=>"<button type=\"button\" data-node=\""+esc(n.id)+"\">"+esc(title(n))+"</button>").join(" → ")||"START HERE";path.querySelectorAll("[data-node]").forEach(b=>b.onclick=e=>{e.preventDefault();remember(b.dataset.node);state.selected=b.dataset.node;syncNodeHash(state.selected);render()})}
- root.querySelectorAll("[data-copy-node]").forEach(b=>b.onclick=async()=>{const u=location.href.split("#")[0]+"#world-node="+encodeURIComponent(state.selected||"");try{await navigator.clipboard.writeText(u);b.textContent="COPIED";setTimeout(()=>b.textContent="COPY NODE LINK",1200)}catch(e){}});
+ root.querySelectorAll("[data-copy-node]").forEach(b=>b.onclick=async()=>{const u=location.href.split("#")[0]+"#world-tab="+encodeURIComponent(state.tab)+"&world-node="+encodeURIComponent(state.selected||"");try{await navigator.clipboard.writeText(u);b.textContent="COPIED";setTimeout(()=>b.textContent="COPY NODE LINK",1200)}catch(e){}});
  root.querySelectorAll("[data-close-node]").forEach(b=>b.onclick=()=>{state.selected=null;syncNodeHash(null);render()});
  root.querySelectorAll("[data-focus-search]").forEach(b=>b.onclick=()=>{const s=$("world-public-search");if(s){s.value=title(records().find(r=>String(r.id)===String(state.selected))||{});s.dispatchEvent(new Event("input"));s.focus()}});
 }
