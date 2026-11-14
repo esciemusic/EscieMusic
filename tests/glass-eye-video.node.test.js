@@ -6,7 +6,7 @@ const path=require("node:path");
 const root=path.resolve(__dirname,"..");
 const app=fs.readFileSync(path.join(root,"app.js"),"utf8");
 const config=fs.readFileSync(path.join(root,"data","glass-eye-video.js"),"utf8");
-const css=fs.readFileSync(path.join(root,"style.css"),"utf8");
+const css=fs.readFileSync(path.join(root,"aesthetic.css"),"utf8");
 
 test("Glass Eye has a primary YouTube window between the eye interface and memory",()=>{
   assert.match(app,/ESCIE_GLASS_EYE_VIDEO/);
