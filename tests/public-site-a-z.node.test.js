@@ -430,7 +430,7 @@ test("A-Z Pass 3 hero identity stays dominant over the Montreal distortion",()=>
   assert.match(index,/A GOOD PERSON\. I['’]M JUST NOT NICE\./);
   assert.match(index,/MONTRÉAL, QUÉBEC, CANADA/);
   assert.match(index,/hero-skyline-art/);
-  assert.match(style,/\.hero-inner \{[\s\S]*isolation: isolate/);
+  assert.match(style,/\.entry-inner \{[\s\S]*isolation: isolate/);
   assert.match(style,/\.entry-section #entry-container h1,[\s\S]*z-index:3/);
   assert.match(style,/\.hero-skyline-art/);
   assert.match(style,/\.hero-skyline-distortion/);
