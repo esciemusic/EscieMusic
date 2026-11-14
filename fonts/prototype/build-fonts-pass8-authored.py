@@ -21,6 +21,7 @@ arc = ns["arc"]
 ring = ns["ring"]
 
 ANCHORS = {"A","C","E","G","I","M","O","R","S","T"}
+BASE_DISPLAY = ns["display"]
 
 def signature_pass8(ch, p, clean=False):
     weight = 80 if clean else 86
@@ -92,7 +93,7 @@ def display_pass8(ch,p,clean=False):
         if up in ANCHORS:
             signature_pass8(up,tp,clean=clean)
         else:
-            ns["display"](up,tp,clean=clean)
+            BASE_DISPLAY(up,tp,clean=clean)
         return
     if ch in ANCHORS:
         signature_pass8(ch,p,clean=clean)
