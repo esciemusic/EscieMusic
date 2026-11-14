@@ -1068,6 +1068,22 @@ function renderClothing(){
     return icons[String(platform || "").toLowerCase()] || '<span aria-hidden="true">↗</span>';
   }
 
+  function renderHeroIndexLinks() {
+    const container = byId("hero-index-links");
+    if (!container) return;
+    const nodes = normalizeCollection(getNavigation())
+      .filter(node => node && node.public !== false && node.target)
+      .sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999));
+    container.innerHTML = nodes.map(node => {
+      const target = String(node.target || "");
+      const route = target.replace(/^#/, "");
+      if (!route || !byId(route)) return "";
+      return '<a class="hero-index-link" href="' + escapeHTML(target) + '" aria-label="' + escapeHTML(node.label || route) + '" data-hero-index-target="' + escapeHTML(route) + '">' +
+        '<span class="hero-index-glyph" aria-hidden="true">' + customSymbolMarkup(node.symbol || "", node.label || route) + '</span>' +
+      '</a>';
+    }).join("");
+  }
+
   function renderSocialLinks(containerId, className, includeLabel) {
     const container = byId(containerId);
     if (!container) return;
@@ -1905,6 +1921,7 @@ function renderClothing(){
     if (events && typeof events.on === "function") {
       events.on("language:changed", () => {
         renderEntry();
+        renderHeroIndexLinks();
         renderNavigation();
         renderNow();
         renderMusic();
@@ -2210,6 +2227,7 @@ function renderClothing(){
 
   function render() {
     renderEntry();
+    renderHeroIndexLinks();
     renderNavigation();
     renderWorkFilters();
     renderNow();
