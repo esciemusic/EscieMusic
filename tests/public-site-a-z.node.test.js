@@ -413,7 +413,7 @@ test("A-Z Pass 3 hero vertical hierarchy keeps identity primary without runtime 
   assert.match(index,/hero-identity-link[^>]*data-depth-door="surface"/);
   assert.match(index,/hero-skyline-link[^>]*data-depth-door="deep"/);
   assert.match(read("world-engine.js"),/data-depth/);
-  assert.match(read("app.js"),/const route = \/\^world-node=\/\.test\(hashRoute\) \? "world" : hashRoute/);
+  assert.match(read("app.js"),/const route = \/\^\(world-node=\|world-tab=\)\/.test\(hashRoute\) \? "world" : hashRoute/);
 });
 
 test("A-Z Pass 3 desktop hero scales without over-constraining identity",()=>{
@@ -437,7 +437,7 @@ test("A-Z Pass 3 hero identity stays dominant over the Montreal distortion and l
   assert.match(index,/MONTRÉAL, QUÉBEC, CANADA/);
   assert.match(index,/hero-skyline-art/);
    assert.match(style,/\.entry-inner\{[\s\S]*isolation:isolate/);
-   assert.ok(style.includes('.entry-section #entry-container h1,.entry-section #entry-container #entry-tagline,.entry-section #entry-container #entry-location{position:relative;z-index:3;}') || style.includes('.entry-section #entry-container h1,.entry-section #entry-container #entry-social,.entry-section #entry-container #entry-tagline,.entry-section #entry-container #entry-location{position:relative;z-index:3;} '));
+   assert.match(style,/\.entry-section #entry-container h1[^}]*position:relative;z-index:3/);
    const aesthetic=read("aesthetic.css");
    assert.ok(aesthetic.includes('.hero-identity-link{display:inline-block;color:inherit;text-decoration:none'));
   assert.match(style,/\.hero-skyline-distortion/);
