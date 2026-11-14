@@ -755,17 +755,33 @@
     const records=getAllPublicRecords();
     const byIdMap=new Map(records.filter(Boolean).map(record=>[recordId(record),record]));
     const relationships=getPublicRelationshipRecords(state);
-    const nodeIds=new Set(); all.forEach(r=>{nodeIds.add(r.from);nodeIds.add(r.to);});
-    const connectedNodes=Array.from(nodeIds).map(id=>byIdMap.get(id)).filter(Boolean);
+    const connectedIds=new Set();
+    all.forEach(r=>{connectedIds.add(r.from);connectedIds.add(r.to);});
+    const connectedNodes=Array.from(connectedIds).map(id=>byIdMap.get(id)).filter(Boolean);
     const search=String(state.search||"").trim().toLowerCase();
     const matchesSearch=r=>!search||recordTitle(r).toLowerCase().includes(search)||(r.description||"").toLowerCase().includes(search);
     const visibleRecords=records.filter(matchesSearch);
     const nodeOptions=connectedNodes.sort((a,b)=>recordTitle(a).localeCompare(recordTitle(b))).map(r=>'<option value="'+escapeHTML(recordId(r))+'"'+(state.record===recordId(r)?" selected":"")+'>'+escapeHTML(recordTitle(r))+'</option>').join("");
     const typeOptions=Array.from(new Set(all.map(r=>String(r.type||"CONNECTION")).filter(Boolean))).sort().map(t=>'<option value="'+escapeHTML(t)+'"'+(state.type===t?" selected":"")+'>'+escapeHTML(t.replace(/_/g," "))+'</option>').join("");
+
+    const selected=state.record?byIdMap.get(String(state.record)):null;
+    const selectedLinks=selected?all.filter(link=>link.from===recordId(selected)||link.to===recordId(selected)):[];
+    const selectedNeighbourIds=new Set();
+    selectedLinks.forEach(link=>selectedNeighbourIds.add(link.from===recordId(selected)?link.to:link.from));
+    const selectedNeighbours=Array.from(selectedNeighbourIds).map(id=>byIdMap.get(id)).filter(Boolean);
     const recordResults=visibleRecords.filter(r=>!state.record||recordId(r)===state.record).slice(0,10).map(r=>{
       const links=all.filter(link=>link.from===recordId(r)||link.to===recordId(r));
       return '<button type="button" class="web-record-result" data-record-id="'+escapeHTML(recordId(r))+'"><strong>'+escapeHTML(recordTitle(r))+'</strong><span>'+escapeHTML(r.type||"record")+' · '+(links.length?links.length+" CONNECTION"+(links.length===1?"":"S"):"NO CONNECTIONS YET")+'</span></button>';
     }).join("");
+
+    const networkMap=selected
+      ? '<div class="web-thread-map"><div class="web-thread-map-head"><div><span class="eyebrow">THREAD MAP</span><h4>'+escapeHTML(recordTitle(selected))+'</h4></div><span>'+selectedLinks.length+' DIRECT '+(selectedLinks.length===1?"CONNECTION":"CONNECTIONS")+'</span></div>'+
+        '<div class="web-thread-map-grid">'+
+        '<button type="button" class="web-thread-node web-thread-node-current" data-record-id="'+escapeHTML(recordId(selected))+'"><strong>'+escapeHTML(recordTitle(selected))+'</strong><small>STARTING NODE</small></button>'+
+        selectedNeighbours.map(node=>'<button type="button" class="web-thread-node" data-record-id="'+escapeHTML(recordId(node))+'"><strong>'+escapeHTML(recordTitle(node))+'</strong><small>'+escapeHTML(node.type||"record")+' · FOLLOW THREAD</small></button>').join("")+
+        '</div></div>'
+      : '<div class="web-thread-map web-thread-map-idle"><div class="web-thread-map-head"><div><span class="eyebrow">THREAD MAP</span><h4>START ANYWHERE.</h4></div><span>PUBLIC GRAPH</span></div><p>Select a connected node to see its immediate neighbours. The map only draws relationships that the public record actually establishes.</p></div>';
+
     const list=relationships.map((relationship,index)=>{
       const from=byIdMap.get(relationship.from),to=byIdMap.get(relationship.to);
       if(!from||!to)return "";
@@ -779,15 +795,9 @@
           :canonicalStatus==="unknown"||confidenceValue==="unknown"||confidenceValue==="unverified"
             ?"UNKNOWN CONNECTION"
             :rawStatus.toUpperCase();
-      const status=displayState;
-      const confidence=confidenceValue.toUpperCase();
       const reason=relationship.context||relationship.note||"THE RECORD CONNECTS THESE TWO POINTS. THE REASON REMAINS OPEN.";
-      // Public THE WEB receives a sanitized relationship projection only.
-      // Do not reconstruct internal evidence/source/history in the renderer.
-      const evidence=[];
       const statusClass=displayState.toLowerCase().replace(/[^a-z0-9]+/g,"-");
-      const hasEvidence=evidence.length>0;
-      return '<article class="web-connection web-status-'+statusClass+(hasEvidence?" web-has-evidence":" web-no-evidence")+'" data-relationship-id="'+escapeHTML(relationship.id||("connection-"+index))+'">'+
+      return '<article class="web-connection web-status-'+statusClass+'" data-relationship-id="'+escapeHTML(relationship.id||("connection-"+index))+'">'+
         '<button type="button" class="web-connection-main" data-web-connection-toggle aria-expanded="false">'+
           '<span class="web-node"><strong>'+escapeHTML(recordTitle(from))+'</strong><em>'+escapeHTML(from.type||"record")+'</em></span>'+
           '<span class="web-connection-line" aria-hidden="true"><i></i><b>'+escapeHTML((relationship.type||"CONNECTED_TO").replace(/_/g," "))+'</b><i></i></span>'+
@@ -795,21 +805,27 @@
         '</button>'+
         '<div class="web-connection-detail" hidden>'+
           '<p class="eyebrow">WHY THIS CONNECTION EXISTS</p><p>'+escapeHTML(reason)+'</p>'+
-          '<div class="web-connection-meta"><span>'+escapeHTML(status)+'</span><span>'+escapeHTML(confidence)+'</span>'+ (evidence.length?'<span>'+evidence.length+' SOURCE'+(evidence.length===1?"":"S")+'</span>':"") +'</div>'+
+          '<div class="web-connection-meta"><span>'+escapeHTML(displayState)+'</span><span>'+escapeHTML(confidenceValue.toUpperCase())+'</span></div>'+
           '<div class="web-connection-actions"><button type="button" class="web-node-button" data-record-id="'+escapeHTML(recordId(from))+'">OPEN '+escapeHTML(recordTitle(from).toUpperCase())+'</button><button type="button" class="web-node-button" data-record-id="'+escapeHTML(recordId(to))+'">OPEN '+escapeHTML(recordTitle(to).toUpperCase())+'</button></div>'+
         '</div>'+
       '</article>';
     }).join("");
+
+    const clear=state.search||state.record||state.type
+      ? '<button type="button" class="web-filter-clear" data-web-filter-clear>CLEAR THREAD</button>' : "";
+
     container.innerHTML=
-      '<div class="web-experience web-identity-field" data-web-identity="montreal-signal">'+motifMarkup("web")+'<div class="web-signal-grid" aria-hidden="true"></div><div class="web-montreal-trace" aria-hidden="true">MONTRÉAL / SIGNAL FIELD / HERE</div>'+
-      '<div class="web-experience-head"><p class="eyebrow">THE WEB</p><h3>FIND WHAT IS CONNECTED.</h3><p>FOLLOW A PERSON, PLACE, MOMENT OR RECORD UNTIL SOMETHING ELSE PULLS INTO VIEW.</p></div>'+
+      '<div class="web-experience web-identity-field" data-web-identity="montreal-signal">'+motifMarkup("web")+
+      '<div class="web-signal-grid" aria-hidden="true"></div><div class="web-montreal-trace" aria-hidden="true">MONTRÉAL / SIGNAL FIELD / HERE</div>'+
+      '<div class="web-experience-head"><p class="eyebrow">THE WEB</p><h3>FOLLOW THE THREAD.</h3><p>THE WEB IS NOT ANOTHER ARCHIVE. IT IS THE SPACE BETWEEN THINGS. START WITH ONE RECORD, FOLLOW A CONNECTION, THEN SEE WHAT THAT CONNECTION OPENS.</p></div>'+
       '<div class="web-discovery-tools">'+
         '<label>FIND A THREAD<input type="search" data-web-search value="'+escapeHTML(state.search||"")+'" placeholder="People, places, moments, fragments…"></label>'+
         '<div class="web-discovery-selects"><label>START HERE<select data-web-filter="record"><option value="">ANY CONNECTED NODE</option>'+nodeOptions+'</select></label><label>CONNECTION<select data-web-filter="type"><option value="">ALL CONNECTIONS</option>'+typeOptions+'</select></label></div>'+
-        '<p class="web-discovery-count">'+escapeHTML(String(relationships.length))+' CONNECTION'+(relationships.length===1?"":"S")+' · '+escapeHTML(String(new Set(relationships.flatMap(r=>[r.from,r.to])).size))+' NODES</p>'+
+        '<div class="web-discovery-actions"><p class="web-discovery-count">'+escapeHTML(String(relationships.length))+' CONNECTION'+(relationships.length===1?"":"S")+' · '+escapeHTML(String(connectedIds.size))+' NODES</p>'+clear+'</div>'+
       '</div>'+
       '<div class="web-record-results">'+recordResults+'</div>'+
-      (list?'<div class="web-connection-field">'+list+'</div>':'<div class="web-empty-state"><p class="eyebrow">NO PUBLIC CONNECTIONS YET</p><h3>THE WEB IS QUIET.</h3><p>Nothing public is connected here yet. That is not a missing page. It is an honest state.</p><button type="button" class="web-participate-link" data-web-participate>BRING A FINDING THROUGH GLASS EYE</button></div>')+
+      networkMap+
+      (list?'<div class="web-connection-field"><div class="web-field-label"><span>PUBLIC CONNECTIONS</span><span>'+relationships.length+'</span></div>'+list+'</div>':'<div class="web-empty-state"><p class="eyebrow">THE PUBLIC GRAPH IS QUIET</p><h3>NO PUBLIC THREADS HAVE BEEN ESTABLISHED HERE YET.</h3><p>The system stays honest when a connection does not exist. Public findings can enter through Glass Eye and become a thread only after they earn a place in the record.</p><button type="button" class="web-participate-link" data-web-participate>BRING A FINDING THROUGH GLASS EYE</button></div>')+
       '<p class="web-governing-principle">EVERYTHING CAN CONNECT. NOTHING CONNECTS WITHOUT A REASON.</p>'+
       '</div>';
   }
