@@ -408,7 +408,7 @@ test("A-Z Pass 3 hero vertical hierarchy keeps identity primary without runtime 
   const index=read("index.html");
   assert.doesNotMatch(index,/id="entry-state"/);
   assert.doesNotMatch(aesthetic,/\.entry-state\{/);
-  assert.match(index,/<h1>ESCIE<\/h1>\s*<p id="entry-tagline"/);
+   assert.match(index,/<h1><a class="hero-identity-link" href="#escie" aria-label="Go to ESCIE bio">ESCIE<\/a><\/h1>\s*<p id="entry-tagline"/);
 });
 
 test("A-Z Pass 3 desktop hero scales without over-constraining identity",()=>{
@@ -427,7 +427,7 @@ test("A-Z Pass 3 mobile hero respects viewport and safe-area composition",()=>{
 test("A-Z Pass 3 hero identity stays dominant over the Montreal distortion and links to the ESCIE bio",()=>{
   const index=read("index.html");
   const style=read("style.css");
-  assert.match(index,/A GOOD PERSON\\. I['’]M JUST NOT NICE\\./);
+   assert.ok(index.includes("A GOOD PERSON. I'M JUST NOT NICE."));
   assert.ok(index.includes('<h1><a class="hero-identity-link" href="#escie" aria-label="Go to ESCIE bio">ESCIE</a></h1>'));
   assert.match(index,/MONTRÉAL, QUÉBEC, CANADA/);
   assert.match(index,/hero-skyline-art/);
@@ -439,26 +439,26 @@ test("A-Z Pass 3 hero identity stays dominant over the Montreal distortion and l
   assert.doesNotMatch(index,/signal-chamber|signal-window|signal-city/);
 });
 
-test("A-Z Pass 3 signal atmosphere stays restrained",()=>{
+test("A-Z Pass 3 hero distortion stays restrained",()=>{
   const style=read("style.css");
-  assert.match(style,/animation: signalPulse 5\.6s ease-in-out infinite/);
-  assert.match(style,/animation: signalScan 12s linear infinite/);
-  assert.match(style,/background: rgba\(242,242,237,\.09\)/);
-  assert.match(style,/0%,94%,100% \{ opacity: 1; \}/);
-});
+   assert.match(style,/animation:heroDistort 7s steps\(2,end\) infinite/);
+   assert.match(style,/mix-blend-mode:screen/);
+   assert.match(style,/opacity:\.75/);
+   assert.match(style,/@keyframes heroDistort/);
+   assert.doesNotMatch(style,/signalPulse|signalScan/);
 
 test("A-Z Pass 3 Montréal skyline scales for mobile",()=>{
   const style=read("style.css");
-  assert.match(style,/@media\(max-width:700px\)\{[\s\S]*\.signal-window\{width:94vw;height:min\(58vw,360px\)\}/);
-  assert.match(style,/\.signal-city\{left:4%;right:4%;bottom:13%;height:36%;opacity:\.72\}/);
-  assert.match(style,/\.signal-city::before\{left:41%;bottom:54%;width:13%;height:46%\}/);
-  assert.match(style,/\.signal-city::after\{left:71%;bottom:39%;width:16%;height:68%\}/);
-});
+   assert.match(style,/@media\(max-width:700px\)\{[\s\S]*\.hero-skyline\{height:92px;margin-top:16px\}/);
+   assert.match(style,/\.skyline-buildings\{fill:rgba\(242,242,237,\.13\)\}/);
+   assert.match(style,/\.skyline-olympic\{fill:rgba\(242,242,237,\.18\)\}/);
+   assert.match(style,/\.hero-skyline-distortion\{inset:8% 0 4%;opacity:\.68\}/);
+   assert.doesNotMatch(style,/signal-window|signal-city/);
 
-test("A-Z Pass 3 signal chamber remains visual-only without runtime status state",()=>{
+test("A-Z Pass 3 Montréal distortion remains visual-only without runtime status state",()=>{
   const style=read("style.css");
-  assert.match(style,/\.hero-skyline\{[\s\S]*opacity:\.76/);
-  assert.doesNotMatch(style,/\.signal-chamber\s*\{/);
+   assert.match(style,/\.hero-skyline-distortion/);
+   assert.doesNotMatch(style,/\.signal-chamber\s*\{|transition: opacity 900ms/);
   assert.doesNotMatch(style,/transition: opacity 900ms/);
 });
 
