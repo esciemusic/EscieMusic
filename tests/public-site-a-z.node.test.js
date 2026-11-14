@@ -1219,14 +1219,14 @@ test("A-Z Pass 4 skyline backdoors preserve obvious city entry and deeper destin
   const app=read("app.js");
   const aesthetic=read("aesthetic.css");
   assert.match(index,/hero-skyline-map/);
-  assert.match(index,/href="#world-node=montreal"/);
+  assert.match(index,/href="#world-tab=places&world-node=parc-extension"/);\n  assert.match(index,/aria-label="Enter Parc-Extension"/);
   assert.match(index,/data-skyline-door="places" data-skyline-node="parc-extension"/);
   assert.match(index,/data-skyline-door="people" data-skyline-node="a-good-person"/);
   assert.match(index,/data-skyline-door="moments"/);
   assert.match(index,/href="#art"/);
   assert.match(engine,/function applyWorldRoute()/);
   assert.match(engine,/^.*world-tab=\(\[\^&\]\+\).*$/m);
-  assert.match(engine,/state\.tab=tab/);
+  assert.match(engine,/state\.tab=tab/);\n  assert.match(engine,/function applyWorldRoute\(\)/);
   assert.match(app,/\/\^\(world-node=\|world-tab=\)\//);
   assert.match(aesthetic,/\.hero-skyline-backdoor/);
   assert.match(aesthetic,/\.skyline-door-place/);
