@@ -107,6 +107,7 @@ jobs:
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v4
         with:
+          name: escie-pages
           path: .
 
   deploy:
@@ -127,6 +128,8 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: escie-pages
       - name: Install Playwright
         run: |
           npm install --no-save playwright
