@@ -98,22 +98,14 @@ test("A-Z Pass 3 public index follows visitor priority and restrained palette",(
   const nodes=read("data/nodes.js");
   const aesthetic=read("aesthetic.css");
   const language=read("language.js");
-  assert.match(navigation,/id:"now"[^
-]*order:1/);
-  assert.match(navigation,/id:"art"[^
-]*order:2/);
-  assert.match(navigation,/id:"world"[^
-]*order:3/);
-  assert.match(navigation,/id:"glass-eye"[^
-]*order:4/);
-  assert.match(navigation,/id:"web"[^
-]*order:5/);
-  assert.match(navigation,/id:"archives"[^
-]*order:6/);
-  assert.match(navigation,/id:"investigation"[^
-]*order:7/);
-  assert.match(navigation,/id:"escie"[^
-]*order:8/);
+  assert.match(navigation,/id:"now".*order:1/);
+  assert.match(navigation,/id:"art".*order:2/);
+  assert.match(navigation,/id:"world".*order:3/);
+  assert.match(navigation,/id:"glass-eye".*order:4/);
+  assert.match(navigation,/id:"web".*order:5/);
+  assert.match(navigation,/id:"archives".*order:6/);
+  assert.match(navigation,/id:"investigation".*order:7/);
+  assert.match(navigation,/id:"escie".*order:8/);
   assert.match(nodes,/id:"node-glass-eye"[^
 ]*order:4/);
   assert.match(nodes,/id:"node-web"[^
