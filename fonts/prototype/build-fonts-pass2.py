@@ -137,7 +137,11 @@ def build(path,family,weight,kind):
         else: rect(p,295,-70,70,80)
         g[mark]=p.glyph(); m[mark]=(0,0)
     for ch,(base_ch,mark) in ACC.items():
-        p=TTGlyphPen(None); (script if kind=="script" else display)(base_ch,p,clean=(kind=="signal"))
+        p=TTGlyphPen(None)
+        if kind=="script":
+            script(base_ch,p)
+        else:
+            display(base_ch,p,clean=(kind=="signal"))
         if mark=="acute": rect(p,350,730,45,120,-.12)
         elif mark=="grave": rect(p,370,730,45,120,.12)
         elif mark=="circumflex": stroke(p,[(230,745),(300,805),(370,745)],34)
