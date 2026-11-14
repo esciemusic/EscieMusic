@@ -1072,7 +1072,7 @@ function renderClothing(){
     const container = byId("hero-index-links");
     if (!container) return;
     const nodes = normalizeCollection(getNavigation())
-      .filter(node => node && node.public !== false && node.target)
+      .filter(node => node && node.public !== false && node.target && String(node.target).toLowerCase() !== "#escie")
       .sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999));
     container.innerHTML = nodes.map(node => {
       const target = String(node.target || "");
