@@ -1265,3 +1265,4 @@ test("A-Z Pass 4 hero creative doorways map to canonical destinations",()=>{
   assert.match(aesthetic,/\.hero-art-doors\{/);
   assert.match(aesthetic,/\.hero-art-door\{/);
 });
+\n\ntest("A-Z Pass 4 hero art deep links resolve to the ART section while preserving category routes",()=>{\n  const router=read("ui/router.js");\n  const index=read("index.html");\n  assert.match(router,/^\\s*if \\/\\^art\\\\\\\\\\/(music\\|words\\|visual\\|projects)\\\\\\\\\\\\$/i.test\\(normalized\\)/m);\n  assert.match(router,/this\\.routes\\.has\\("art"\\)/);\n  assert.match(index,/href="#art\\/music"/);\n  assert.match(index,/href="#art\\/words"/);\n  assert.match(index,/href="#art\\/visual"/);\n  assert.match(index,/href="#glass-eye"/);\n});\n
