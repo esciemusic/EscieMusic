@@ -410,7 +410,7 @@ test("A-Z Pass 3 hero vertical hierarchy keeps identity primary without runtime 
   assert.doesNotMatch(aesthetic,/\.entry-state\{/);
    assert.match(index,/<h1><a class="hero-identity-link" href="#escie" aria-label="Go to ESCIE bio">ESCIE<\/a><\/h1>\s*<p id="entry-tagline"/);
   assert.match(index,/<a class="hero-skyline-link" href="#world-node=montreal" aria-label="Explore Montréal">[\s\S]*<\/a>\s*<nav id="hero-index-links"/);
-  assert.match(app,/const route = \^\/world-node=\/\.test\(hashRoute\) \? "world" : hashRoute/);
+  assert.match(app,/const route = \/\^world-node=\/\.test\(hashRoute\) \? "world" : hashRoute/);
 });
 
 test("A-Z Pass 3 desktop hero scales without over-constraining identity",()=>{
