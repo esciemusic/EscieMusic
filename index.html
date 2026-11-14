@@ -528,6 +528,12 @@
       var initial=readCategory();
       var initialIndex=initial?categories.indexOf(initial):-1;
       show(initialIndex>=0?initialIndex:0,false,false);
+      window.addEventListener("hashchange",function(){
+        var category=readCategory();
+        if(!category)return;
+        var targetIndex=categories.indexOf(category);
+        if(targetIndex>=0&&targetIndex!==index)show(targetIndex,false,false);
+      });
       carousel.dataset.ready="1";
     }
     function initESCIECarousels(){initArtCarousel();initRecordCarousels();}
