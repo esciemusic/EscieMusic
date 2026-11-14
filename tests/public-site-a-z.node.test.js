@@ -848,10 +848,8 @@ test("A-Z Pass 3 THE WEB connection expansion stays local and links back into pu
   assert.match(app,/const detail=webConnection\.parentElement&&webConnection\.parentElement\.querySelector\("\.web-connection-detail"\)/);
   assert.match(app,/webConnection\.setAttribute\("aria-expanded"/);
   assert.match(app,/data-record-id=/);
-  assert.match(app,/OPEN [^\
-]*escapeHTML\(recordTitle\(from\)\.toUpperCase\(\)/);
-  assert.match(app,/OPEN [^\
-]*escapeHTML\(recordTitle\(to\)\.toUpperCase\(\)/);
+  assert.match(app,/OPEN [^"]*escapeHTML\(recordTitle\(from\)\.toUpperCase\(\)/);
+  assert.match(app,/OPEN [^"]*escapeHTML\(recordTitle\(to\)\.toUpperCase\(\)/);
 });
 
 test("A-Z Pass 3 THE WEB empty state preserves the Glass Eye participation doorway",()=>{
