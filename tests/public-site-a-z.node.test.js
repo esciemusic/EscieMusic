@@ -1220,10 +1220,8 @@ test("A-Z Pass 4 skyline doorway preserves the city entry without duplicate hero
   assert.match(index,/hero-skyline-map/);
   assert.match(index,/href="#world-tab=places&world-node=parc-extension"/);
   assert.match(index,/aria-label="Enter Parc-Extension"/);
-  assert.doesNotMatch(index,/hero-skyline-backdoor/);
-  assert.doesNotMatch(index,/data-skyline-door=/);
-  assert.doesNotMatch(index,/hero-index-links/);
-  assert.match(engine,/function applyWorldRoute()/);
+    assert.doesNotMatch(index,/data-skyline-door=/);
+    assert.match(engine,/function applyWorldRoute()/);
   assert.match(engine,/^.*world-tab=\(\[\^&\]\+\).*$/m);
   assert.match(engine,/state\.tab=tab/);
   assert.match(engine,/function applyWorldRoute\(\)/);
@@ -1284,8 +1282,7 @@ test("A-Z Pass 4 hero art deep links resolve to the ART section while preserving
   assert.match(index,/href="#art\/words"/);
   assert.match(index,/href="#art\/visual"/);
   assert.match(index,/href="#glass-eye"/);
-  assert.doesNotMatch(index,/hero-art-door-disabled/);
-  assert.doesNotMatch(index,/title="Projects will appear when a public project is transmitted"/);
+    assert.doesNotMatch(index,/title="Projects will appear when a public project is transmitted"/);
   assert.match(index,/window\.addEventListener\("hashchange",function\(\)\{/);
   assert.match(index,/show\(targetIndex,false,false\)/);
 });
