@@ -1316,3 +1316,20 @@ test("A-Z Pass 3 world deep links preserve tab integrity and full node context",
   assert.match(world,/#world-tab=/);
   assert.match(world,/&world-node=/);
 });
+
+test("A-Z Pass 3 public hero doors resolve to intentional destinations",()=>{
+  const index=read("index.html");
+  const router=read("ui/router.js");
+  const navigation=read("navigation.js");
+  assert.match(index,/href="#escie"/);
+  assert.match(index,/href="#world-tab=places&world-node=montreal"/);
+  assert.match(index,/href="#art\/music"/);
+  assert.match(index,/href="#art\/words"/);
+  assert.match(index,/href="#art\/visual"/);
+  assert.match(index,/href="#glass-eye"/);
+  assert.match(index,/class="hero-art-door-disabled"/);
+  assert.match(router,/^art\\\/(music\|words\|visual\|projects)/m);
+  assert.match(navigation,/id:"escie",label:"ESCIE"/);
+  assert.match(navigation,/id:"glass-eye",label:"GLASS EYE"/);
+});
+
