@@ -1375,3 +1375,13 @@ test("A-Z Pass 6 exposes legitimate next steps from Web connections",()=>{
   assert.match(style,/\.web-next-step/);
   assert.match(style,/\.web-next-node/);
 });
+
+test("A-Z Pass 7 protects established Montréal neighbourhood relationships",()=>{
+  const rel=read("data/relationships.js");
+  assert.match(rel,/rel-mile-end-montreal/);
+  assert.match(rel,/rel-rosemont-montreal/);
+  assert.match(rel,/from:"mile-end",type:"part_of",to:"montreal"/);
+  assert.match(rel,/from:"rosemont",type:"part_of",to:"montreal"/);
+  assert.match(rel,/context:"Mile End is a Montréal neighbourhood/);
+  assert.match(rel,/context:"Rosemont is a Montréal neighbourhood/);
+});
