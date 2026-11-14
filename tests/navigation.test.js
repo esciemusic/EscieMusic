@@ -55,7 +55,17 @@
     assert(button.getAttribute("aria-label") === "Open index", "INDEX should advertise its closed state");
     assert(nav.getAttribute("aria-hidden") === "true", "INDEX navigation should initialize hidden to assistive technology");
     assert(!nav.classList.contains("is-open"), "INDEX navigation should initialize closed");
-    assert(nav.querySelectorAll("a").length === N.length, "rendered INDEX links should match navigation contract");
+    const renderedLinks = Array.from(nav.querySelectorAll("a"));
+    assert(renderedLinks.length === N.length, "rendered INDEX links should match navigation contract");
+    assert(
+      JSON.stringify(renderedLinks.map(link => link.getAttribute("href"))) ===
+      JSON.stringify(N.slice().sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999)).map(item => item.target)),
+      "rendered INDEX order and destinations must come from the navigation contract"
+    );
+    assert(
+      renderedLinks.every(link => link.querySelector(".node-link-label") && link.querySelector(".node-link-symbol")),
+      "rendered INDEX links must preserve the shared navigation presentation contract"
+    );
 
     const menu = typeof window !== "undefined" ? window.ESCIE_RUNTIME && window.ESCIE_RUNTIME.navigationMenu : null;
     if (menu && typeof menu.open === "function" && typeof menu.close === "function") {
