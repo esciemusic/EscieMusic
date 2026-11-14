@@ -20,7 +20,7 @@
     const errors=[],values=record&&record.public_sections;
     if(values===undefined||values===null)return errors;
     if(!Array.isArray(values)){errors.push({record:record.id||null,error:"public_sections must be an array"});return errors;}
-    values.forEach(section=>{if(!PUBLIC_SECTIONS.has(section))errors.push({record:record.id||null,section,error:"unknown public section"});});
+    values.forEach(section=>{if(!PUBLIC_SECTIONS.has(section))errors.push({record:record.id||null,section,error:"Unknown public section: "+section});});
     return errors;
   }
   function boundaryAudit(record){
