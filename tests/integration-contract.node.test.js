@@ -30,6 +30,16 @@ test("public source contains no Central secret key material",()=>{
   }
 });
 
+test("build and validation use the canonical public gate",()=>{
+  const build=fs.readFileSync("publishing/build.js","utf8");
+  const validate=fs.readFileSync("publishing/validate.js","utf8");
+  assert.match(build,/require\(["']\.\.\/data\/public-publishing\.js["']\)/);
+  assert.match(validate,/require\(["']\.\.\/data\/public-publishing\.js["']\)/);
+  assert.match(build,/PUBLIC_GATE\.approved/);
+  assert.match(validate,/PUBLIC_GATE\.approved/);
+  assert.match(validate,/PUBLIC_GATE\.boundaryAudit/);
+});
+
 test("public projection boundary rejects unsafe Central states",()=>{
   const gate=loadPublishing();
   const base={id:"x",status:"published",published:true,visibility:"public",release_status:"released",public_disclosure:true,approved:false};
