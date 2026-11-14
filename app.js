@@ -1037,7 +1037,7 @@ function renderClothing(){
       '<div class="investigation-index">' +
         motifMarkup("investigation") +
         '<div class="investigation-index-head"><p class="eyebrow">' + String(ordered.length) + ' ' + countLabel + '</p><span class="investigation-index-note">QUESTIONS STAY OPEN UNTIL THE RECORD CAN SUPPORT AN ANSWER.</span></div>' +
-        '<div class="case-file-list"><div class="record-carousel case-file-carousel" data-record-carousel="case-files"><div class="record-carousel-viewport" tabindex="0" aria-live="polite"><div class="record-carousel-track">' +
+        '<div class="investigation-case"><div class="case-file-list"><div class="record-carousel case-file-carousel" data-record-carousel="case-files"><div class="record-carousel-viewport" tabindex="0" aria-live="polite"><div class="record-carousel-track">' +
           ordered.map((item,index) => {
             const evidence = Array.isArray(item.evidence) ? item.evidence.length : (Array.isArray(item.sources) ? item.sources.length : 0);
             const contradictions = Array.isArray(item.contradictions) ? item.contradictions.length : 0;
