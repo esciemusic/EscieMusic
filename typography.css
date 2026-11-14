@@ -1,23 +1,35 @@
-/* TEMPORARY TYPOGRAPHY FALLBACK
-   The current release binaries are prototype geometry, not the approved
-   ESCIE display direction. Keep them out of production until the correct
-   original family is finished and visually approved.
-   System fonts are intentional during this isolation pass. */
+/* TEMPORARY TYPOGRAPHY CANDIDATE — Oswald + Space Grotesk
+   Purpose: give the public site a usable Ghetto Goth / architectural / urban
+   direction while the authored ESCIE family is still under development.
+   This is intentionally reversible. Do not delete the prototype font work.
+
+   Candidate roles:
+   - Oswald: identity, hero titles, section headings, strong labels.
+   - Space Grotesk: navigation, metadata, body, interface copy.
+   - Script remains a restrained system fallback until the authored SCRIPT face
+     is visually approved.
+
+   Source: Google Fonts. Next production-hardening step is to self-host the
+   selected font binaries and document the license/provenance in-repo.
+*/
+
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap");
 
 :root{
-  --escie-font-escie:Arial,Helvetica,sans-serif;
-  --escie-font-signal:"Courier New",Courier,monospace;
+  --escie-font-escie:"Oswald",Arial,Helvetica,sans-serif;
+  --escie-font-signal:"Space Grotesk",Arial,Helvetica,sans-serif;
   --escie-font-script:"Segoe Script","Brush Script MT",cursive;
-  --escie-font-body:Arial,Helvetica,sans-serif;
+  --escie-font-body:"Space Grotesk",Arial,Helvetica,sans-serif;
 }
 
 .site-logo,
 .entry-inner h1,
 main > .site-section:not(#entry) h2,
 .escie-display,
-.font-escie{
+.font-escie,
+.hero h1{
   font-family:var(--escie-font-escie);
-  font-weight:700;
+  font-weight:600;
   font-synthesis:none;
 }
 
@@ -28,7 +40,7 @@ main > .site-section:not(#entry) h2,
 .section-drop-trigger,
 .font-signal{
   font-family:var(--escie-font-signal);
-  font-weight:400;
+  font-weight:500;
   font-synthesis:none;
 }
 
@@ -46,13 +58,14 @@ body,
 .content-container,
 .font-body{
   font-family:var(--escie-font-body);
+  font-weight:400;
   font-synthesis:none;
 }
 
 .entry-inner h1,
 main > .site-section:not(#entry) h2,
 .hero h1{
-  letter-spacing:.035em;
+  letter-spacing:.025em;
   text-rendering:geometricPrecision;
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
@@ -60,7 +73,7 @@ main > .site-section:not(#entry) h2,
 
 .hero-location,
 .section-drop-trigger{
-  letter-spacing:.14em;
+  letter-spacing:.12em;
   text-transform:uppercase;
 }
 
