@@ -1,4 +1,6 @@
 /* ESCIE PUBLISHING — BUILD */
+(function(){
+"use strict";
 const PUBLIC_GATE=typeof module!=="undefined"&&module.exports?require("../data/public-publishing.js"):window.ESCIE_PUBLIC_PUBLISHING;
 function isPublicRecord(record={}){return !!record&&PUBLIC_GATE.boundaryAudit(record).ok&&PUBLIC_GATE.approved(record);}
 function buildPublicRecords(records=[]){
@@ -16,3 +18,4 @@ function createBuildPlan(input={}){
 const ESCIE_PUBLISH_BUILD={isPublicRecord,buildPublicRecords,createBuildPlan};
 if(typeof window!=="undefined")window.ESCIE_PUBLISH_BUILD=ESCIE_PUBLISH_BUILD;
 if(typeof module!=="undefined"&&module.exports)module.exports=ESCIE_PUBLISH_BUILD;
+})();
