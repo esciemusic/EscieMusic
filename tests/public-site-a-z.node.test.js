@@ -1166,8 +1166,7 @@ test("A-Z Pass 4 language runtime has parity across EN, FR and ES",()=>{
   const runtime=language.slice(language.indexOf("const ESCIE_INTERFACE_RUNTIME"),language.indexOf("const ESCIE_LANGUAGE_MODES"));
   const blockKeys=(name,next)=>{
     const start=runtime.indexOf("  "+name+": {");
-    const end=next?runtime.indexOf("  "+next+": {",start+1):runtime.lastIndexOf("
-  }");
+    const end=next?runtime.indexOf("  "+next+": {",start+1):runtime.lastIndexOf("\n  }");
     return [...runtime.slice(start,end).matchAll(/"([^"]+)"\s*:/g)].map(match=>match[1]);
   };
   const en=blockKeys("en","fr"), fr=blockKeys("fr","es"), es=blockKeys("es");
