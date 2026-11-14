@@ -8,9 +8,8 @@ import math
 import os
 import runpy
 from fontTools.pens.transformPen import TransformPen
-from fontTools.pens.transformPen import TransformPen
 
-BASE = os.path.join(os.path.dirname(__file__), "build-fonts-pass4-signature.py")
+BASE = os.path.join(os.path.dirname(__file__), "build-fonts-pass2.py")
 ns = runpy.run_path(BASE)
 
 poly = ns["poly"]
