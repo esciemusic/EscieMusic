@@ -1159,3 +1159,15 @@ test("A-Z Pass 3 custom ESCIE glyph system is canonical and replaces Unicode nav
   assert.match(index,/assets\/escie-symbols\.svg#/);
   assert.doesNotMatch(navigation,/symbol:"[◉✳◌◎⌕▣◇?]"/);
 });
+
+
+test("A-Z Pass 3 custom glyphs use restrained vector geometry and states",()=>{
+  const svg=read("assets/escie-symbols.svg");
+  const style=read("style.css");
+  assert.match(svg,/viewBox="0 0 32 32"/);
+  assert.doesNotMatch(svg,/<(image|text)\b/);
+  assert.match(style,/node-link\.is-current \.escie-symbol-glyph/);
+  assert.match(style,/section-motif-item:hover \.escie-symbol-glyph/);
+  assert.match(style,/drop-shadow\(0 0 5px rgba\(155,89,255,.18\)\)/);
+  assert.match(style,/drop-shadow\(0 0 5px rgba\(77,163,255,.16\)\)/);
+});
