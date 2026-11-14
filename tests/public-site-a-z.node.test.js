@@ -1171,3 +1171,18 @@ test("A-Z Pass 3 custom glyphs use restrained vector geometry and states",()=>{
   assert.match(style,/drop-shadow\(0 0 5px rgba\(155,89,255,.18\)\)/);
   assert.match(style,/drop-shadow\(0 0 5px rgba\(77,163,255,.16\)\)/);
 });
+
+
+test("A-Z Pass 3 recurring world symbols have controlled canonical placement",()=>{
+  const symbols=read("data/symbols.js");
+  const index=read("index.html");
+  assert.match(symbols,/name:"DAISY"[\s\S]*placements:\["art"\]/);
+  assert.doesNotMatch(symbols,/name:"DAISY"[\s\S]*placements:\[[^\]]*"entry"/);
+  assert.doesNotMatch(symbols,/name:"KEY"[\s\S]*placements:\[[^\]]*"entry"/);
+  assert.match(index,/assets\/escie-symbols\.svg#daisy/);
+  assert.match(index,/assets\/escie-symbols\.svg#key/);
+  assert.match(index,/assets\/escie-symbols\.svg#child-shoe/);
+  assert.match(index,/assets\/escie-symbols\.svg#empty-chair/);
+  assert.doesNotMatch(index,/visual-daisy[^<]*>✳/);
+  assert.doesNotMatch(index,/visual-key[^<]*>⌕/);
+});
