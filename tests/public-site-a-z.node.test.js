@@ -1097,7 +1097,7 @@ test("A-Z Pass 3 ESCIE field preserves the external signal without exposing priv
 test("A-Z Pass 3 ESCIE section remains a collapsible public doorway",()=>{
   const index=read("index.html");
   assert.match(index,/id="escie" class="site-section escie-section"/);
-  assert.match(index,/symbols=.*escie:"◇"/);
+  assert.match(index,/var symbols=\{[^\n]*escie:"escie"/);
   assert.match(index,/section-drop-trigger/);
   assert.match(index,/section-drop-panel/);
   assert.match(index,/aria-expanded="false"/);
