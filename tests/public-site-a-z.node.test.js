@@ -20,7 +20,7 @@ test("public registries and identity stay aligned",()=>{
   assert.match(nodes,/role:"THE FATHER \/ THE MAN \/ THE MONSTER"/);
   assert.match(nodes,/description:"ESCIE THE ARTIST\. THE ART SPEAKS FOR ITSELF\."/);
   assert.match(symbols,/placements:\["archives","investigation"\]/);
-  assert.match(symbols,/placements:\["web","entry"\]/);
+  assert.match(symbols,/name:"KEY"[\s\S]*placements:\["web"\]/);
   assert.doesNotMatch(language,/ESCIE IS THE ARTIST\. THE WORK SPEAKS FROM HERE\./);
 });
 
@@ -1257,6 +1257,6 @@ test("A-Z Pass 4 preference controls use the canonical theme glyph",()=>{
   const aesthetic=read("aesthetic.css");
   assert.ok(svg.includes('<symbol id="theme" viewBox="0 0 32 32">'));
   assert.ok(svg.includes("</symbol>"));
-  assert.match(index,/class="theme-toggle-icon"[^>]*aria-hidden="true">[\\s\\S]*escie-symbols\\.svg#theme/);
+  assert.match(index,/class="theme-toggle-icon"[^>]*aria-hidden="true">[\s\S]*escie-symbols\.svg#theme/);
   assert.match(aesthetic,/\\.theme-toggle-icon\\{/);
 });
