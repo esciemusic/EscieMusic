@@ -7,8 +7,9 @@ and fewer overlapping primitives. Production typography remains untouched.
 import math
 import os
 import runpy
+from fontTools.pens.transformPen import TransformPen
 
-BASE = os.path.join(os.path.dirname(__file__), "build-fonts-pass5-family.py")
+BASE = os.path.join(os.path.dirname(__file__), "build-fonts-pass4-signature.py")
 ns = runpy.run_path(BASE)
 
 poly = ns["poly"]
@@ -80,6 +81,14 @@ def signature_pass6(ch, p, clean=False):
     ns["display"](ch,p,clean=clean)
 
 def display_pass6(ch,p,clean=False):
+    if ch.islower() and ch.upper().isalpha():
+        tp=TransformPen(p,(0.82,0,0,0.68,0,5))
+        up=ch.upper()
+        if up in ANCHORS:
+            signature_pass6(up,tp,clean=clean)
+        else:
+            ns["display"](up,tp,clean=clean)
+        return
     if ch in ANCHORS:
         signature_pass6(ch,p,clean=clean)
     else:
