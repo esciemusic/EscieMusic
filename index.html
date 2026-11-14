@@ -92,10 +92,10 @@
           <div id="work-filters" class="record-filters" aria-label="Filter work"></div>
           <div id="art-forms" class="art-carousel" aria-label="Creative forms">
             <div class="art-carousel-nav" role="tablist" aria-label="Art categories">
-              <button type="button" class="art-carousel-tab is-active" role="tab" aria-selected="true" aria-controls="art-slide-music" id="art-tab-music" data-art-target="music">MUSIC</button>
-              <button type="button" class="art-carousel-tab" role="tab" aria-selected="false" aria-controls="art-slide-words" id="art-tab-words" data-art-target="words">WORDS</button>
-              <button type="button" class="art-carousel-tab" role="tab" aria-selected="false" aria-controls="art-slide-visual" id="art-tab-visual" data-art-target="visual">VISUAL</button>
-              <button type="button" class="art-carousel-tab" role="tab" aria-selected="false" aria-controls="art-slide-projects" id="art-tab-projects" data-art-target="projects">PROJECTS</button>
+              <div tabindex="0" class="art-carousel-tab is-active" role="tab" aria-selected="true" aria-controls="art-slide-music" id="art-tab-music" data-art-target="music">MUSIC</button>
+              <div tabindex="-1" class="art-carousel-tab" role="tab" aria-selected="false" aria-controls="art-slide-words" id="art-tab-words" data-art-target="words">WORDS</button>
+              <div tabindex="-1" class="art-carousel-tab" role="tab" aria-selected="false" aria-controls="art-slide-visual" id="art-tab-visual" data-art-target="visual">VISUAL</button>
+              <div tabindex="-1" class="art-carousel-tab" role="tab" aria-selected="false" aria-controls="art-slide-projects" id="art-tab-projects" data-art-target="projects">PROJECTS</div>
             </div>
             <div class="art-carousel-viewport" aria-live="polite" tabindex="0">
               <div class="art-carousel-track">
@@ -106,9 +106,9 @@
               </div>
             </div>
             <div class="art-carousel-controls">
-              <button type="button" class="art-carousel-arrow" data-art-prev aria-label="Previous art category">‹</button>
+              <span tabindex="0" role="button" class="art-carousel-arrow" data-art-prev aria-label="Previous art category">‹</span>
               <span class="art-carousel-position" aria-hidden="true">01 / 04</span>
-              <button type="button" class="art-carousel-arrow" data-art-next aria-label="Next art category">›</button>
+              <span tabindex="0" role="button" class="art-carousel-arrow" data-art-next aria-label="Next art category">›</span>
             </div>
           </div>
         </div>
