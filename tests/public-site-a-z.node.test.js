@@ -81,6 +81,33 @@ test("A-Z Pass 1 rejects remaining legacy shell visual class",()=>{
 });
 
 
+test("A-Z Pass 3 public index follows visitor priority and restrained palette",()=>{
+  const navigation=read("navigation.js");
+  const nodes=read("data/nodes.js");
+  const aesthetic=read("aesthetic.css");
+  const language=read("language.js");
+  assert.match(navigation,/id:"now"[^\n]*order:1/);
+  assert.match(navigation,/id:"art"[^\n]*order:2/);
+  assert.match(navigation,/id:"world"[^\n]*order:3/);
+  assert.match(navigation,/id:"glass-eye"[^\n]*order:4/);
+  assert.match(navigation,/id:"web"[^\n]*order:5/);
+  assert.match(navigation,/id:"archives"[^\n]*order:6/);
+  assert.match(navigation,/id:"investigation"[^\n]*order:7/);
+  assert.match(navigation,/id:"escie"[^\n]*order:8/);
+  assert.match(nodes,/id:"node-glass-eye"[^\n]*order:4/);
+  assert.match(nodes,/id:"node-web"[^\n]*order:5/);
+  assert.match(nodes,/id:"node-archives"[^\n]*order:6/);
+  assert.match(nodes,/id:"node-investigation"[^\n]*order:7/);
+  assert.match(aesthetic,/main > #now\\{--section-accent:#4da3ff/);
+  assert.match(aesthetic,/main > #art\\{--section-accent:#9b59ff/);
+  assert.match(aesthetic,/main > #archives\\{--section-accent:#9a9da3/);
+  assert.doesNotMatch(aesthetic,/main > #now\\{--section-accent:#b8873a/);
+  assert.doesNotMatch(aesthetic,/main > #investigation\\{--section-accent:#c05a6a/);
+  assert.match(language,/"MONTRÉAL \/ THE WORLD":"MONTRÉAL \/ EL MUNDO"/);
+  assert.match(language,/"THE CITY RECORD":"EL REGISTRO DE LA CIUDAD"/);
+  assert.match(language,/"OPEN THE RECORD TO FOLLOW ITS TRACE.":"ABRE EL REGISTRO PARA SEGUIR SU HUELLA."/);
+});
+
 test("A-Z Pass 1 keeps runtime motif and section labels on canonical IDs",()=>{
   const app=read("app.js");
   assert.doesNotMatch(app,/motifMarkup\("work"\)/);
