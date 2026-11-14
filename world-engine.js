@@ -152,7 +152,7 @@ function render(){
  if(state.eyeOpen)root.insertAdjacentHTML("beforeend",eyePanel().replace('class="glass-eye"','class="glass-eye" id="glass-eye-panel" role="region" aria-label="The Glass Eye"'));
  bind(root);
  }
-function syncNodeHash(id){try{if(id)history.replaceState(null,"","#world-node="+encodeURIComponent(String(id)));else history.replaceState(null,"",location.pathname+location.search)}catch(e){}}
+function syncNodeHash(id){try{if(id)history.replaceState(null,"","#world-tab="+encodeURIComponent(String(state.tab))+"&world-node="+encodeURIComponent(String(id)));else history.replaceState(null,"",location.pathname+location.search)}catch(e){}}
 function applyWorldRoute(){
  const raw=location.hash.replace(/^#/,"");
  const match=raw.match(/^world-tab=([^&]+)(?:&world-node=(.+))?$/);
