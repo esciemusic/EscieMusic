@@ -784,8 +784,11 @@
       const toId=recordId(node);
       return all.find(link=>(link.from===fromId&&link.to===toId)||(link.from===toId&&link.to===fromId))||null;
     });
+    const canStepBack=trailRecords.length>1;
     const trailMarkup=trailRecords.length
-      ? '<div class="web-thread-trail"><div class="web-thread-trail-head"><span class="eyebrow">THREAD PATH</span><span>'+trailRecords.length+' STEPS</span></div><div class="web-thread-trail-list">'+trailRecords.map((node,index)=>{
+      ? '<div class="web-thread-trail">'+
+        '<div class="web-thread-trail-head"><span class="eyebrow">THREAD PATH</span><span>'+trailRecords.length+' STEPS</span></div>'+
+        '<div class="web-thread-trail-controls">'+(canStepBack?'<button type="button" class="web-trail-back" data-web-trail-back>BACK ONE STEP</button>':"")+'<button type="button" class="web-trail-clear" data-web-trail-clear>CLEAR PATH</button></div><div class="web-thread-trail-head"><span class="eyebrow">THREAD PATH</span><span>'+trailRecords.length+' STEPS</span></div><div class="web-thread-trail-list">'+trailRecords.map((node,index)=>{
           const edge=index>0?trailEdges[index-1]:null;
           const relation=edge?String(edge.type||"CONNECTED_TO").replace(/_/g," "):"START";
           return '<span class="web-trail-step">'+(index>0?'<i aria-hidden="true">'+escapeHTML(relation)+'</i>':"")+'<button type="button" class="web-trail-node" data-record-id="'+escapeHTML(recordId(node))+'" aria-label="Return to '+escapeHTML(recordTitle(node))+'"><span>'+String(index+1).padStart(2,"0")+'</span><strong>'+escapeHTML(recordTitle(node))+'</strong></button></span>';
@@ -1740,7 +1743,9 @@ function renderClothing(){
         if (ESCIE_RUNTIME.webTrail[ESCIE_RUNTIME.webTrail.length - 1] !== id) {
           ESCIE_RUNTIME.webTrail.push(id);
         }
-        ESCIE_RUNTIME.webTrail = ESCIE_RUNTIME.webTrail.slice(-8);
+        const existingIndex=ESCIE_RUNTIME.webTrail.indexOf(id);
+        if(existingIndex>=0) ESCIE_RUNTIME.webTrail=ESCIE_RUNTIME.webTrail.slice(0,existingIndex+1);
+        else ESCIE_RUNTIME.webTrail=ESCIE_RUNTIME.webTrail.slice(-8);
         ESCIE_RUNTIME.webFilters = ESCIE_RUNTIME.webFilters || {};
         ESCIE_RUNTIME.webFilters.record = id;
         renderWeb();
