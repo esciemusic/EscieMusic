@@ -980,7 +980,7 @@ function renderClothing(){
       '<div class="archive-index">' +
         motifMarkup("archives") +
         '<div class="archive-index-head"><p class="eyebrow">PRESERVED TRACE / ' + escapeHTML(String(ordered.length)) + ' RECORD' + (ordered.length === 1 ? '' : 'S') + '</p><span class="archive-index-note">OPEN THE RECORD TO FOLLOW ITS TRACE.</span></div>' +
-        '<div class="archive-record-carousel" data-record-carousel="archive"><div class="record-carousel-viewport" tabindex="0" aria-live="polite"><div class="record-carousel-track">' +
+        '<div class="archive-record-carousel archive-list" data-record-carousel="archive"><div class="record-carousel-viewport" tabindex="0" aria-live="polite"><div class="record-carousel-track">' +
           ordered.map((record,index) => {
             const type = String(record.type || record.identity?.type || "record").toUpperCase();
             const dateSource = record.date || record.created_at || record.updated_at || "";
@@ -1037,7 +1037,7 @@ function renderClothing(){
       '<div class="investigation-index">' +
         motifMarkup("investigation") +
         '<div class="investigation-index-head"><p class="eyebrow">' + String(ordered.length) + ' ' + countLabel + '</p><span class="investigation-index-note">QUESTIONS STAY OPEN UNTIL THE RECORD CAN SUPPORT AN ANSWER.</span></div>' +
-        '<div class="record-carousel case-file-carousel" data-record-carousel="case-files"><div class="record-carousel-viewport" tabindex="0" aria-live="polite"><div class="record-carousel-track">' +
+        '<div class="record-carousel case-file-carousel case-file-list" data-record-carousel="case-files"><div class="record-carousel-viewport" tabindex="0" aria-live="polite"><div class="record-carousel-track">' +
           ordered.map((item,index) => {
             const evidence = Array.isArray(item.evidence) ? item.evidence.length : (Array.isArray(item.sources) ? item.sources.length : 0);
             const contradictions = Array.isArray(item.contradictions) ? item.contradictions.length : 0;
