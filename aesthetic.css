@@ -1686,6 +1686,22 @@ html[data-theme="light"] .site-footer{
 .entry-section #entry-container h1{margin:0;font-family:var(--escie-font-escie);font-size:clamp(112px,22vw,320px);font-weight:400;letter-spacing:.025em;line-height:.72;text-align:center;color:var(--escie-white);text-shadow:0 0 42px rgba(47,128,255,.07);font-variant-ligatures:none}
 .entry-section #entry-container h1 .hero-identity-link{display:inline-block;color:inherit;text-decoration:none;cursor:pointer;transition:color 180ms ease,filter 180ms ease,transform 180ms ease}\n.entry-section #entry-container h1 .hero-identity-link:hover{color:var(--escie-blue-bright);filter:drop-shadow(0 0 18px rgba(47,128,255,.16))}\n.entry-section #entry-container h1 .hero-identity-link:focus-visible{outline:2px solid var(--escie-blue-bright);outline-offset:8px}
 .hero-skyline-link{position:relative;z-index:1;display:block;width:min(1040px,98vw);margin:clamp(16px,2.8vw,28px) auto 0;color:inherit;text-decoration:none;cursor:pointer;border-radius:18px;outline:none;-webkit-tap-highlight-color:transparent;}
+.hero-skyline-map{position:relative;width:min(1040px,98vw);margin:clamp(16px,2.8vw,28px) auto 0;}
+.hero-skyline-map .hero-skyline-link{width:100%;margin:0;}
+.hero-skyline-backdoor{position:absolute;z-index:3;display:grid;place-items:center;min-width:48px;min-height:48px;padding:7px;border:1px solid rgba(47,128,255,.28);border-radius:999px;background:rgba(5,7,9,.34);color:var(--escie-blue-bright);font-size:8px;letter-spacing:.18em;text-decoration:none;opacity:.12;transform:translate(-50%,-50%);transition:opacity 180ms ease,background 180ms ease,border-color 180ms ease,transform 180ms ease,box-shadow 180ms ease;}
+.hero-skyline-backdoor span{pointer-events:none;}
+.hero-skyline-backdoor:hover,.hero-skyline-backdoor:focus-visible{opacity:1;background:rgba(5,7,9,.78);border-color:rgba(47,128,255,.72);transform:translate(-50%,-50%) scale(1.04);box-shadow:0 0 22px rgba(47,128,255,.12);}
+.hero-skyline-backdoor:focus-visible{outline:2px solid var(--escie-blue-bright);outline-offset:3px;}
+.skyline-door-place{left:28%;top:68%;}
+.skyline-door-people{left:48%;top:48%;}
+.skyline-door-moments{left:61%;top:72%;}
+.skyline-door-art{left:77%;top:63%;}
+@media(max-width:700px){
+  .hero-skyline-map{width:100%;margin-top:14px;}
+  .hero-skyline-backdoor{min-width:44px;min-height:44px;font-size:7px;opacity:.2;}
+  .skyline-door-place{left:27%;top:68%}.skyline-door-people{left:48%;top:47%}.skyline-door-moments{left:61%;top:71%}.skyline-door-art{left:77%;top:62%}
+}
+@media(prefers-reduced-motion:reduce){.hero-skyline-backdoor{transition:none;}}
 .hero-skyline-link .hero-skyline{width:100%;margin:0;pointer-events:none;transition:opacity 220ms ease,transform 220ms ease,filter 220ms ease;}
 .hero-skyline-link:hover .hero-skyline,.hero-skyline-link:focus-visible .hero-skyline{opacity:1;transform:translateY(-2px);filter:drop-shadow(0 0 18px rgba(47,128,255,.12));}
 .hero-skyline-link:focus-visible{box-shadow:0 0 0 2px var(--escie-blue-bright),0 0 0 7px rgba(47,128,255,.12);}
