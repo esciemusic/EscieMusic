@@ -2330,14 +2330,17 @@ body.inspector-open{overflow:hidden}
 .entry-section{isolation:isolate;overflow:hidden;}
 .entry-inner{position:relative;z-index:2;isolation:isolate;text-shadow:0 2px 18px rgba(0,0,0,.85);}
 .entry-section #entry-container h1,.entry-section #entry-container #entry-social,.entry-section #entry-container #entry-tagline,.entry-section #entry-container #entry-location{position:relative;z-index:3;}
-.hero-skyline{position:relative;z-index:1;width:min(960px,96vw);height:clamp(96px,18vw,170px);margin:clamp(18px,3vw,30px) auto 0;overflow:hidden;opacity:.76;pointer-events:none;mask-image:linear-gradient(90deg,transparent,black 7%,black 93%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,black 7%,black 93%,transparent);}
+.hero-skyline{position:relative;z-index:1;width:min(1040px,98vw);height:clamp(112px,22vw,205px);margin:clamp(16px,2.8vw,28px) auto 0;overflow:hidden;opacity:.82;pointer-events:none;mask-image:linear-gradient(90deg,transparent,black 5%,black 95%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,black 5%,black 95%,transparent);}
 .hero-skyline-art{position:absolute;inset:0;width:100%;height:100%;overflow:visible;}
-.skyline-mountain{fill:rgba(20,24,27,.82);}
-.skyline-buildings{fill:rgba(242,242,237,.15);}
-.skyline-olympic{fill:rgba(242,242,237,.22);}
-.skyline-cross{fill:rgba(242,242,237,.20);}
-.skyline-habitat{fill:rgba(242,242,237,.14);}
-.hero-skyline-distortion{position:absolute;inset:8% 0 4%;background:repeating-linear-gradient(0deg,transparent 0 5px,rgba(242,242,237,.045) 6px 7px,transparent 8px 13px),linear-gradient(90deg,transparent 0 12%,rgba(47,128,255,.08) 12.4% 17%,transparent 17.5% 43%,rgba(111,63,175,.10) 43.5% 48%,transparent 48.5% 74%,rgba(47,128,255,.07) 74.5% 80%,transparent 80.5%);mix-blend-mode:screen;opacity:.75;transform:skewX(-4deg);animation:heroDistort 7s steps(2,end) infinite;}
+.skyline-mount-royal{fill:rgba(16,20,24,.94);}
+.skyline-mount-royal-slope{fill:rgba(28,31,34,.72);}
+.skyline-buildings{fill:rgba(242,242,237,.16);}
+.skyline-downtown-tower{fill:rgba(242,242,237,.24);}
+.skyline-olympic{fill:rgba(242,242,237,.28);}
+.skyline-cross{fill:rgba(242,242,237,.26);}
+.skyline-habitat{fill:rgba(242,242,237,.18);}
+.skyline-bridge{fill:rgba(242,242,237,.12);}
+.hero-skyline-distortion{position:absolute;inset:7% 0 3%;background:repeating-linear-gradient(0deg,transparent 0 5px,rgba(242,242,237,.05) 6px 7px,transparent 8px 13px),linear-gradient(90deg,transparent 0 9%,rgba(47,128,255,.09) 9.5% 15%,transparent 15.5% 39%,rgba(111,63,175,.12) 39.5% 47%,transparent 47.5% 70%,rgba(47,128,255,.08) 70.5% 77%,transparent 77.5%);mix-blend-mode:screen;opacity:.8;transform:skewX(-4deg);animation:heroDistort 7s steps(2,end) infinite;}
 @keyframes heroDistort{0%,88%,100%{transform:translateX(0) skewX(-4deg);opacity:.55}90%{transform:translateX(-8px) skewX(-5deg);opacity:.85}92%{transform:translateX(6px) skewX(-3deg);opacity:.62}95%{transform:translateX(-3px) skewX(-4deg);opacity:.78}}
 .site-header{background:linear-gradient(180deg,rgba(5,5,5,.78),rgba(5,5,5,.06));-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);}
 .site-logo{padding:8px 10px;margin-left:-10px;border:1px solid rgba(255,255,255,.12);background:rgba(5,5,5,.38);box-shadow:0 4px 18px rgba(0,0,0,.22);}
