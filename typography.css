@@ -11,14 +11,14 @@
 @font-face{
   font-family:"ESCIE";
   src:url("./fonts/release/ESCIE.woff2") format("woff2"),url("./fonts/release/ESCIE.ttf") format("truetype");
-  font-weight:400 900;
+  font-weight:400;
   font-style:normal;
   font-display:swap;
 }
 @font-face{
   font-family:"ESCIE SIGNAL";
   src:url("./fonts/release/ESCIE-SIGNAL.woff2") format("woff2"),url("./fonts/release/ESCIE-SIGNAL.ttf") format("truetype");
-  font-weight:400 700;
+  font-weight:400;
   font-style:normal;
   font-display:swap;
 }
@@ -36,3 +36,23 @@ body,.section-lede,.content-container,.font-body{font-family:var(--escie-font-bo
 .entry-inner h1,main > .site-section:not(#entry) h2{letter-spacing:.06em;font-weight:700}
 .hero-location,.section-drop-trigger{letter-spacing:.14em;text-transform:uppercase}
 .font-script{letter-spacing:.015em;font-weight:400}
+
+
+/* Production faces are local repository assets. Keep display roles explicit so
+   the authored faces cannot be silently replaced by the generic page stack. */
+.hero h1,
+.entry-inner h1,
+.site-logo,
+main > .site-section:not(#entry) h2,
+.escie-display,
+.font-escie{font-family:"ESCIE",var(--escie-font-escie)}
+.index-navigation,
+.index-trigger,
+.site-preferences,
+.hero-location,
+.section-drop-trigger,
+.font-signal{font-family:"ESCIE SIGNAL",var(--escie-font-signal)}
+.font-script,
+.glass-eye-personal,
+.visitor-trace,
+.personal-note{font-family:"ESCIE SCRIPT",var(--escie-font-script)}
