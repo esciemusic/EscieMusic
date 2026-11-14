@@ -446,22 +446,22 @@ test("A-Z Pass 3 hero distortion stays restrained",()=>{
    assert.match(style,/opacity:\.75/);
    assert.match(style,/@keyframes heroDistort/);
    assert.doesNotMatch(style,/signalPulse|signalScan/);
+});
 
 test("A-Z Pass 3 Montréal skyline scales for mobile",()=>{
   const style=read("style.css");
-   assert.match(style,/@media\(max-width:700px\)\{[\s\S]*\.hero-skyline\{height:92px;margin-top:16px\}/);
-   assert.match(style,/\.skyline-buildings\{fill:rgba\(242,242,237,\.13\)\}/);
-   assert.match(style,/\.skyline-olympic\{fill:rgba\(242,242,237,\.18\)\}/);
-   assert.match(style,/\.hero-skyline-distortion\{inset:8% 0 4%;opacity:\.68\}/);
-   assert.doesNotMatch(style,/signal-window|signal-city/);
+  assert.match(style,/@media\(max-width:700px\)\{[\s\S]*\.hero-skyline\{height:92px;margin-top:16px\}/);
+  assert.match(style,/\.skyline-buildings\{fill:rgba\(242,242,237,\.13\)\}/);
+  assert.match(style,/\.skyline-olympic\{fill:rgba\(242,242,237,\.18\)\}/);
+  assert.match(style,/\.hero-skyline-distortion\{inset:8% 0 4%;opacity:\.68\}/);
+  assert.doesNotMatch(style,/signal-window|signal-city/);
+});
 
 test("A-Z Pass 3 Montréal distortion remains visual-only without runtime status state",()=>{
   const style=read("style.css");
-   assert.match(style,/\.hero-skyline-distortion/);
-   assert.doesNotMatch(style,/\.signal-chamber\s*\{|transition: opacity 900ms/);
-  assert.doesNotMatch(style,/transition: opacity 900ms/);
+  assert.match(style,/\.hero-skyline-distortion/);
+  assert.doesNotMatch(style,/\.signal-chamber\s*\{|transition: opacity 900ms/);
 });
-
 test("A-Z Pass 3 keeps the Montreal distortion visual-only",()=>{
   const index=read("index.html");
   const css=read("style.css");
