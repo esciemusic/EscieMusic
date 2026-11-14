@@ -1403,3 +1403,12 @@ test("A-Z Pass 9 protects Web thread path navigation",()=>{
   assert.match(style,/\.web-thread-trail/);
   assert.match(style,/\.web-trail-node/);
 });
+
+test("A-Z Pass 10 protects semantic Web thread paths",()=>{
+  const app=read("app.js");
+  const style=read("style.css");
+  assert.match(app,/trailEdges/);
+  assert.match(app,/CONNECTED_TO/);
+  assert.match(app,/web-trail-step/);
+  assert.match(style,/\.web-trail-step/);
+});
