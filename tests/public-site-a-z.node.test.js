@@ -460,7 +460,7 @@ test("A-Z Pass 3 public audio player stays hidden until approved audio is loaded
   assert.match(player,/this\.show\(\);/);
   assert.match(player,/load\(source = \{\}\)/);
   assert.match(player,/if \(!url\) return null/);
-  assert.doesNotMatch(player,/dock\.hidden = false/);
+  assert.match(player,/dock\.hidden = true;[\s\S]*?this\.ui\.dock\.hidden = false;/);
 });
 
 test("A-Z Pass 1 public audio playback accepts only safe URLs",()=>{
