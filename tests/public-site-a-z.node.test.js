@@ -1243,6 +1243,17 @@ test("A-Z Pass 4 world node links preserve the active layer",()=>{
 });
 
 
+test("A-Z Pass 4 hero identity and place doors use canonical World/ESCIE routes",()=>{
+  const index=read("index.html");
+  const app=read("app.js");
+  const world=read("world-engine.js");
+  assert.match(index,/class="hero-identity-link" href="#escie"/);
+  assert.match(index,/class="hero-skyline-link" href="#world-tab=places&world-node=parc-extension"/);
+  assert.match(index,/href="#world-tab=places&world-node=montreal"/);
+  assert.match(app,/const route = \/\^\(world-node=\|world-tab=\)\/\.test\(hashRoute\) \? "world" : hashRoute;/);
+  assert.match(world,/function applyWorldRoute\(\)/);
+});
+
 test("A-Z Pass 4 hero creative doorways map to canonical destinations",()=>{
   const index=read("index.html");
   const svg=read("assets/escie-symbols.svg");
