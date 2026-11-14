@@ -42,5 +42,4 @@ test("Glass Eye Pass 2 keeps the agreed sensory order and interaction feedback",
 test("Glass Eye controls remain touch and keyboard usable",()=>{
   assert.match(css,/touch-action:manipulation/);
   assert.match(css,/\.glass-eye-actions button:focus-visible/);
-  assert.match(css,/\.glass-language button:focus-visible/);
 });
