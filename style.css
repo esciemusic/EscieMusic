@@ -1698,6 +1698,43 @@ body[data-route="escie"] #escie {
 
 }
 
+
+/* =========================================================
+   ART CAROUSEL — CANONICAL VIEWER
+   One space. Four forms. Move through them.
+   ========================================================= */
+.art-forms{display:block;margin-top:clamp(28px,5vw,56px);}
+.art-carousel-nav{display:flex;align-items:flex-end;gap:clamp(14px,3vw,34px);width:100%;overflow-x:auto;padding:0 0 8px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+.art-carousel-nav::-webkit-scrollbar{display:none;}
+.art-carousel-tab{flex:0 0 auto;position:relative;padding:7px 0 9px;border:0;border-bottom:1px solid transparent;background:transparent;color:var(--faint);cursor:pointer;font-family:var(--escie-font-signal);font-size:clamp(.68rem,1.2vw,.82rem);letter-spacing:.16em;line-height:1;text-transform:uppercase;transition:color 180ms ease,opacity 180ms ease,border-color 180ms ease;}
+.art-carousel-tab:hover{color:var(--white);}
+.art-carousel-tab.is-active{color:var(--white);border-bottom-color:var(--escie-ultraviolet);}
+.art-carousel-viewport{position:relative;min-height:clamp(300px,42vw,460px);margin-top:10px;overflow:hidden;border:1px solid rgba(154,120,255,.20);background:linear-gradient(180deg,rgba(255,255,255,.018),transparent 24%),rgba(4,5,7,.32);touch-action:pan-y;}
+.art-carousel-viewport::before,.art-carousel-viewport::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;}
+.art-carousel-viewport::before{background:repeating-linear-gradient(0deg,transparent 0,transparent 6px,rgba(255,255,255,.018) 7px);opacity:.45;}
+.art-carousel-viewport::after{background:linear-gradient(90deg,rgba(47,128,255,.035),transparent 35%,rgba(111,63,175,.045));}
+.art-carousel-track{position:relative;z-index:1;min-height:inherit;}
+.art-carousel-slide{width:100%;min-height:clamp(300px,42vw,460px);margin:0;padding:clamp(28px,5vw,64px);border:0;background:transparent;}
+.art-carousel-slide[hidden]{display:none;}
+.art-carousel-slide > h3{margin:0 0 10px;color:var(--white);font-family:var(--escie-font-signal);font-size:clamp(1.5rem,4vw,3rem);font-weight:400;letter-spacing:.08em;line-height:1;}
+.art-carousel-slide .art-category-note{margin:0 0 28px;color:var(--faint);font-size:9px;letter-spacing:.18em;line-height:1.8;text-transform:uppercase;}
+.art-carousel-slide .content-container{width:100%;}
+.art-carousel-slide .empty-state{min-height:150px;border-color:rgba(154,120,255,.12);}
+.art-carousel-slide .art-form-group{padding:0;}
+.art-carousel-slide .art-form-label{margin-bottom:10px;}
+.art-carousel-controls{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:14px;}
+.art-carousel-arrow{width:32px;height:28px;padding:0;border:0;background:transparent;color:var(--faint);cursor:pointer;font-size:22px;line-height:1;transition:color 180ms ease,transform 180ms ease;}
+.art-carousel-arrow:hover{color:var(--white);}
+.art-carousel-arrow[data-art-prev]:hover{transform:translateX(-2px);}
+.art-carousel-arrow[data-art-next]:hover{transform:translateX(2px);}
+.art-carousel-position{min-width:54px;color:var(--faint);font-family:var(--escie-font-signal);font-size:9px;letter-spacing:.18em;text-align:center;}
+.art-carousel-slide.is-entering-next{animation:art-carousel-enter-next 220ms var(--ease) both;}
+.art-carousel-slide.is-entering-previous{animation:art-carousel-enter-previous 220ms var(--ease) both;}
+@keyframes art-carousel-enter-next{from{opacity:.35;transform:translateX(18px);}to{opacity:1;transform:translateX(0);}}
+@keyframes art-carousel-enter-previous{from{opacity:.35;transform:translateX(-18px);}to{opacity:1;transform:translateX(0);}}
+@media(max-width:700px){.art-carousel-nav{gap:18px;}.art-carousel-viewport{min-height:clamp(300px,92vw,380px);}.art-carousel-slide{min-height:clamp(300px,92vw,380px);padding:26px 18px;}.art-carousel-slide .art-category-note{margin-bottom:22px;}}
+@media(prefers-reduced-motion:reduce){.art-carousel-slide.is-entering-next,.art-carousel-slide.is-entering-previous{animation:none!important;}}
+
 /* =========================================================
    PUBLIC THRESHOLDS
    ========================================================= */
