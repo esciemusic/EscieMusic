@@ -1210,6 +1210,21 @@ test("A-Z Pass 3 ESCIE master sigil remains an identity mark distinct from world
 });
 
 
+test("A-Z Pass 4 language runtime has parity across EN, FR and ES",()=>{
+  const language=read("language.js");
+  const runtime=language.slice(language.indexOf("const ESCIE_INTERFACE_RUNTIME"),language.indexOf("const ESCIE_LANGUAGE_MODES"));
+  const blockKeys=(name,next)=>{
+    const start=runtime.indexOf("  "+name+": {");
+    const end=next?runtime.indexOf("  "+next+": {",start+1):runtime.lastIndexOf("\n  }");
+    return [...runtime.slice(start,end).matchAll(/"([^"]+)"\s*:/g)].map(match=>match[1]);
+  };
+  const en=blockKeys("en","fr"), fr=blockKeys("fr","es"), es=blockKeys("es");
+  for(const key of en){
+    assert.ok(fr.includes(key),"French runtime translation missing: "+key);
+    assert.ok(es.includes(key),"Spanish runtime translation missing: "+key);
+  }
+});
+
 test("A-Z Pass 4 ESCIE emblem is a standalone identity mark and the Index uses the canonical glyph",()=>{
   const index=read("index.html");
   const svg=read("assets/escie-symbols.svg");
