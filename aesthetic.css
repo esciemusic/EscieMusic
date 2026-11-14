@@ -2215,6 +2215,20 @@ html[data-theme="light"] .hero-index-link:focus-visible{
 }
 
 
+.hero-location-link{display:inline-block;color:inherit;text-decoration:none;cursor:pointer;transition:color 180ms ease,opacity 180ms ease,text-shadow 180ms ease;}
+.hero-location-link:hover,.hero-location-link:focus-visible{color:var(--escie-blue-bright);text-shadow:0 0 16px rgba(47,128,255,.14);outline:none;}
+.hero-location-link:focus-visible{text-decoration:underline;text-underline-offset:5px;}
+.hero-art-doors{display:flex;align-items:center;justify-content:center;gap:clamp(18px,4vw,38px);margin:clamp(18px,3vw,28px) auto 0;}
+.hero-art-door{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:54px;color:rgba(216,212,202,.48);text-decoration:none;transition:color 180ms ease,transform 180ms ease,filter 180ms ease;}
+.hero-art-door .escie-symbol-glyph{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;}
+.hero-art-door span{font-size:7px;letter-spacing:.16em;opacity:0;transform:translateY(-2px);transition:opacity 180ms ease,transform 180ms ease;}
+.hero-art-door:hover,.hero-art-door:focus-visible{color:var(--escie-blue-bright);transform:translateY(-2px);filter:drop-shadow(0 0 12px rgba(47,128,255,.12));outline:none;}
+.hero-art-door:hover span,.hero-art-door:focus-visible span{opacity:.82;transform:translateY(0);}
+html[data-theme="light"] .hero-art-door{color:rgba(23,23,26,.48);}
+html[data-theme="light"] .hero-art-door:hover,html[data-theme="light"] .hero-art-door:focus-visible{color:var(--escie-blue);}
+@media(max-width:700px){.hero-art-doors{gap:12px;margin-top:16px}.hero-art-door{min-width:48px}.hero-art-door .escie-symbol-glyph{width:22px;height:22px}.hero-art-door span{font-size:6px;opacity:.64;transform:none;}}
+@media(prefers-reduced-motion:reduce){.hero-location-link,.hero-art-door,.hero-art-door span{transition:none}.hero-art-door span{transform:none;}}
+
 /* Montréal world lens — city first, database second. */
 .montreal-world-card{
   margin:8px 0 24px;
