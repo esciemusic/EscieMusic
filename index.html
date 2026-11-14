@@ -428,6 +428,8 @@
       });
       prev&&prev.addEventListener("click",function(){show(index-1,false,true,"previous");});
       next&&next.addEventListener("click",function(){show(index+1,false,true,"next");});
+      prev&&prev.addEventListener("keydown",function(event){if(event.key==="Enter"||event.key===" "){event.preventDefault();show(index-1,false,true,"previous");}});
+      next&&next.addEventListener("keydown",function(event){if(event.key==="Enter"||event.key===" "){event.preventDefault();show(index+1,false,true,"next");}});
       viewport&&viewport.addEventListener("touchstart",function(event){
         if(!event.touches||!event.touches[0])return;
         startX=event.touches[0].clientX;startY=event.touches[0].clientY;tracking=true;
