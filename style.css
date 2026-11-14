@@ -2323,216 +2323,24 @@ body.inspector-open{overflow:hidden}
 }
 
 /* =========================================================
-   EMPTY UNIVERSE / SIGNAL CHAMBER
-   A living placeholder for the period before transmissions.
-   No external asset required.
+   HERO / MONTRÉAL DISTORTION
+   The city sits beneath the location. The signal is an effect,
+   not a room the visitor has to enter.
    ========================================================= */
-
-.entry-section {
-  isolation: isolate;
-  overflow: hidden;
-}
-
-.signal-chamber {
-  position: absolute;
-  inset: 72px 0 0;
-  z-index: -1;
-  pointer-events: none;
-  overflow: hidden;
-  opacity: .72;
-  transition: none;
-}
-
-.signal-chamber::before {
-  content: "";
-  position: absolute;
-  inset: 4% 8% 8%;
-  border: 1px solid rgba(242,242,237,.08);
-  background:
-    radial-gradient(ellipse at 50% 48%, rgba(41,55,72,.22), transparent 42%),
-    linear-gradient(180deg, rgba(4,8,12,.18), rgba(0,0,0,.72));
-  box-shadow: inset 0 0 120px rgba(0,0,0,.75);
-}
-
-.signal-window {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: min(82vw, 1080px);
-  height: min(48vw, 590px);
-  transform: translate(-50%,-50%);
-  overflow: hidden;
-  border: 1px solid rgba(242,242,237,.10);
-  background:
-    linear-gradient(180deg, rgba(15,24,34,.68), rgba(2,3,5,.96));
-  box-shadow: 0 0 100px rgba(0,0,0,.7), inset 0 0 80px rgba(0,0,0,.8);
-}
-
-.signal-window::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    repeating-linear-gradient(0deg, transparent 0 3px, rgba(242,242,237,.018) 4px),
-    linear-gradient(90deg, transparent 0 18%, rgba(90,112,132,.08) 18.2%, transparent 18.5% 62%, rgba(90,112,132,.05) 62.2%, transparent 62.5%);
-  mix-blend-mode: screen;
-  animation: signalFlicker 7s steps(2,end) infinite;
-}
-
-.signal-window::after {
-  content: "";
-  position: absolute;
-  left: -10%;
-  right: -10%;
-  bottom: 0;
-  height: 38%;
-  background:
-    linear-gradient(165deg, transparent 0 48%, rgba(242,242,237,.06) 48.2% 48.6%, transparent 48.8%),
-    linear-gradient(15deg, transparent 0 56%, rgba(242,242,237,.045) 56.2% 56.5%, transparent 56.7%);
-  opacity: .8;
-}
-
-.signal-city {
-  position: absolute;
-  left: 8%;
-  right: 8%;
-  bottom: 17%;
-  height: 29%;
-  opacity: .64;
-  /* Montréal skyline: dense downtown profile with Mount Royal and Olympic-tower cues. */
-  background:
-    linear-gradient(90deg,
-      transparent 0 4%, rgba(242,242,237,.08) 4% 9%, transparent 9% 11%,
-      rgba(242,242,237,.10) 11% 17%, transparent 17% 19%,
-      rgba(242,242,237,.07) 19% 25%, transparent 25% 27%,
-      rgba(242,242,237,.12) 27% 34%, transparent 34% 36%,
-      rgba(242,242,237,.09) 36% 42%, transparent 42% 44%,
-      rgba(242,242,237,.13) 44% 50%, transparent 50% 52%,
-      rgba(242,242,237,.10) 52% 59%, transparent 59% 61%,
-      rgba(242,242,237,.08) 61% 68%, transparent 68% 71%,
-      rgba(242,242,237,.12) 71% 78%, transparent 78% 81%,
-      rgba(242,242,237,.08) 81% 89%, transparent 89%);
-  clip-path: polygon(0 100%,0 64%,6% 64%,6% 48%,12% 48%,12% 57%,18% 57%,18% 37%,24% 37%,24% 52%,30% 52%,30% 29%,36% 29%,36% 47%,42% 47%,42% 20%,48% 20%,48% 47%,54% 47%,54% 33%,60% 33%,60% 52%,66% 52%,66% 40%,72% 40%,72% 55%,78% 55%,78% 31%,84% 31%,84% 48%,90% 48%,90% 38%,96% 38%,96% 61%,100% 61%,100% 100%);
-}
-.signal-city::before {
-  content: "";
-  position: absolute;
-  left: 43%;
-  bottom: 57%;
-  width: 10%;
-  height: 43%;
-  /* Mount Royal cross — the strongest Montréal skyline cue. */
-  background:
-    linear-gradient(90deg, transparent 0 43%, rgba(242,242,237,.22) 43% 57%, transparent 57%),
-    linear-gradient(0deg, transparent 0 43%, rgba(242,242,237,.22) 43% 57%, transparent 57%);
-  opacity: .86;
-}
-.signal-city::after {
-  content: "";
-  position: absolute;
-  left: 72%;
-  bottom: 43%;
-  width: 12%;
-  height: 67%;
-  /* Olympic Stadium tower — a second unmistakable Montréal cue. */
-  background: linear-gradient(90deg, transparent 0 38%, rgba(242,242,237,.17) 38% 62%, transparent 62%);
-  clip-path: polygon(0 100%,36% 0,57% 0,100% 100%,69% 100%,47% 18%,28% 100%);
-  opacity: .78;
-}
-
-.signal-light {
-  position: absolute;
-  bottom: 23%;
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: rgba(242,242,237,.75);
-  box-shadow: 0 0 9px rgba(180,205,230,.55);
-  animation: signalPulse 5.6s ease-in-out infinite;
-}
-
-.signal-light-a { left: 24%; animation-delay: -.7s; }
-.signal-light-b { left: 51%; animation-delay: -2.1s; }
-.signal-light-c { left: 77%; animation-delay: -3.2s; }
-
-.signal-scan {
-  position: absolute;
-  left: 12%;
-  right: 12%;
-  top: 18%;
-  height: 1px;
-  background: rgba(242,242,237,.09);
-  box-shadow: 0 0 12px rgba(150,180,210,.10);
-  animation: signalScan 12s linear infinite;
-}
-
-.entry-inner {
-  position: relative;
-  z-index: 2;
-  isolation: isolate;
-  text-shadow: 0 2px 18px rgba(0,0,0,.85);
-}
-
-.entry-section #entry-container h1,
-.entry-section #entry-container #entry-social,
-.entry-section #entry-container #entry-tagline,
-.entry-section #entry-container #entry-location {
-  position: relative;
-  z-index: 3;
-}
-
-.signal-window {
-  opacity: .82;
-}
-
-.signal-city {
-  opacity: .56;
-}
-
-@media(max-width:700px) {
-  .signal-window { opacity: .74; }
-  .signal-city { opacity: .50; }
-}
-
-@keyframes signalScan {
-  0% { top: 16%; opacity: 0; }
-  10% { opacity: .45; }
-  50% { opacity: .10; }
-  90% { opacity: .45; }
-  100% { top: 82%; opacity: 0; }
-}
-
-@keyframes signalPulse {
-  0%,100% { opacity: .22; transform: scale(.8); }
-  50% { opacity: .9; transform: scale(1.6); }
-}
-
-@keyframes signalFlicker {
-  0%,94%,100% { opacity: 1; }
-  95% { opacity: .84; }
-  96% { opacity: .98; }
-  98% { opacity: .9; }
-}
-
-@media(max-width:700px){
-  .signal-window{width:94vw;height:min(58vw,360px)}
-  .signal-city{left:4%;right:4%;bottom:13%;height:36%;opacity:.72}
-  .signal-city::before{left:41%;bottom:54%;width:13%;height:46%}
-  .signal-city::after{left:71%;bottom:39%;width:16%;height:68%}
-  .signal-light{bottom:20%}
-  .signal-scan{left:7%;right:7%}
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .signal-chamber,
-  .signal-scan,
-  .signal-light,
-  .signal-window::before {
-    animation: none;
-    transition: none;
-  }
-}
-
+.entry-section{isolation:isolate;overflow:hidden;}
+.entry-inner{position:relative;z-index:2;isolation:isolate;text-shadow:0 2px 18px rgba(0,0,0,.85);}
+.entry-section #entry-container h1,.entry-section #entry-container #entry-social,.entry-section #entry-container #entry-tagline,.entry-section #entry-container #entry-location{position:relative;z-index:3;}
+.hero-skyline{position:relative;z-index:1;width:min(900px,94vw);height:clamp(86px,15vw,150px);margin:clamp(18px,3vw,30px) auto 0;overflow:hidden;opacity:.72;pointer-events:none;mask-image:linear-gradient(90deg,transparent,black 10%,black 90%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,black 10%,black 90%,transparent);}
+.hero-skyline-city{position:absolute;left:4%;right:4%;bottom:10%;height:76%;opacity:.64;background:linear-gradient(90deg,transparent 0 4%,rgba(242,242,237,.10) 4% 9%,transparent 9% 11%,rgba(242,242,237,.12) 11% 17%,transparent 17% 19%,rgba(242,242,237,.08) 19% 25%,transparent 25% 27%,rgba(242,242,237,.13) 27% 34%,transparent 34% 36%,rgba(242,242,237,.10) 36% 42%,transparent 42% 44%,rgba(242,242,237,.15) 44% 50%,transparent 50% 52%,rgba(242,242,237,.11) 52% 59%,transparent 59% 61%,rgba(242,242,237,.09) 61% 68%,transparent 68% 71%,rgba(242,242,237,.13) 71% 78%,transparent 78% 81%,rgba(242,242,237,.09) 81% 89%);clip-path:polygon(0 100%,0 64%,6% 64%,6% 48%,12% 48%,12% 57%,18% 57%,18% 37%,24% 37%,24% 52%,30% 52%,30% 29%,36% 29%,36% 47%,42% 47%,42% 20%,48% 20%,48% 47%,54% 47%,54% 33%,60% 33%,60% 52%,66% 52%,66% 40%,72% 40%,72% 55%,78% 55%,78% 31%,84% 31%,84% 48%,90% 48%,90% 38%,96% 38%,96% 61%,100% 61%,100% 100%);}
+.hero-skyline-city::before{content:"";position:absolute;left:43%;bottom:57%;width:10%;height:43%;background:linear-gradient(90deg,transparent 0 43%,rgba(242,242,237,.25) 43% 57%,transparent 57%),linear-gradient(0deg,transparent 0 43%,rgba(242,242,237,.25) 43% 57%,transparent 57%);}
+.hero-skyline-city::after{content:"";position:absolute;left:72%;bottom:43%;width:12%;height:67%;background:linear-gradient(90deg,transparent 0 38%,rgba(242,242,237,.19) 38% 62%,transparent 62%);clip-path:polygon(0 100%,36% 0,57% 0,100% 100%,69% 100%,47% 18%,28% 100%);}
+.hero-skyline-distortion{position:absolute;inset:12% 2% 8%;background:repeating-linear-gradient(0deg,transparent 0 5px,rgba(242,242,237,.045) 6px 7px,transparent 8px 13px),linear-gradient(90deg,transparent 0 12%,rgba(47,128,255,.08) 12.4% 17%,transparent 17.5% 43%,rgba(111,63,175,.10) 43.5% 48%,transparent 48.5% 74%,rgba(47,128,255,.07) 74.5% 80%,transparent 80.5%);mix-blend-mode:screen;opacity:.75;transform:skewX(-4deg);animation:heroDistort 7s steps(2,end) infinite;}
+@keyframes heroDistort{0%,88%,100%{transform:translateX(0) skewX(-4deg);opacity:.55}90%{transform:translateX(-8px) skewX(-5deg);opacity:.85}92%{transform:translateX(6px) skewX(-3deg);opacity:.62}95%{transform:translateX(-3px) skewX(-4deg);opacity:.78}}
+.site-header{background:linear-gradient(180deg,rgba(5,5,5,.72),rgba(5,5,5,0));-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);}
+.site-logo{padding:8px 10px;margin-left:-10px;border:1px solid rgba(255,255,255,.10);background:rgba(5,5,5,.30);box-shadow:0 4px 18px rgba(0,0,0,.18);}
+.site-logo:hover{background:rgba(5,5,5,.46)}
+@media(max-width:700px){.hero-skyline{height:86px;margin-top:18px}.hero-skyline-city{left:2%;right:2%;opacity:.56}.hero-skyline-distortion{inset:10% 0 6%;opacity:.68}.site-logo{padding:7px 8px;margin-left:-8px}}
+@media(prefers-reduced-motion:reduce){.hero-skyline-distortion{animation:none}}
 /* =========================================================
    THE WEB / identity pass 3
    ========================================================= */
