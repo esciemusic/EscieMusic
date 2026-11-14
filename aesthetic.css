@@ -2226,6 +2226,9 @@ html[data-theme="light"] .hero-index-link:focus-visible{
 .hero-art-door:hover span,.hero-art-door:focus-visible span{opacity:.82;transform:translateY(0);}
 html[data-theme="light"] .hero-art-door{color:rgba(23,23,26,.48);}
 html[data-theme="light"] .hero-art-door:hover,html[data-theme="light"] .hero-art-door:focus-visible{color:var(--escie-blue);}
+.hero-art-door-disabled{opacity:.22;cursor:default;pointer-events:none;}
+.hero-art-door-disabled .escie-symbol-glyph{opacity:.72;}
+.hero-art-door-disabled span{opacity:.42;transform:none;}
 @media(max-width:700px){.hero-art-doors{gap:12px;margin-top:16px}.hero-art-door{min-width:48px}.hero-art-door .escie-symbol-glyph{width:22px;height:22px}.hero-art-door span{font-size:6px;opacity:.64;transform:none;}}
 @media(prefers-reduced-motion:reduce){.hero-location-link,.hero-art-door,.hero-art-door span{transition:none}.hero-art-door span{transform:none;}}
 
