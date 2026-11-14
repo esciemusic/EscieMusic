@@ -2429,6 +2429,12 @@ body.inspector-open{overflow:hidden}
 .web-thread-node small{display:block;margin-top:7px;color:var(--faint);font:700 7px/1.2 var(--escie-font-mono);letter-spacing:.12em;text-transform:uppercase}
 .web-thread-node-current{border-color:rgba(77,163,255,.48);box-shadow:inset 2px 0 0 var(--escie-blue-bright)}
 .web-field-label{display:flex;justify-content:space-between;padding:12px 0;color:var(--faint);font:700 8px/1 var(--escie-font-mono);letter-spacing:.16em}
+.web-next-step{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.web-next-nodes{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:7px;margin-top:10px}
+.web-next-node{padding:11px;text-align:left;border:1px solid rgba(77,163,255,.2);background:rgba(47,128,255,.018);color:inherit;cursor:pointer}
+.web-next-node strong{display:block;font:600 10px/1.25 var(--escie-font-display);letter-spacing:.05em}
+.web-next-node span{display:block;margin-top:6px;color:var(--escie-blue-bright);font:700 7px/1 var(--escie-font-mono);letter-spacing:.1em}
+.web-next-quiet{margin:16px 0 0;color:var(--faint);font:700 8px/1.4 var(--escie-font-mono);letter-spacing:.12em}
 .web-governing-principle{margin:26px 0 0;color:var(--faint);font-size:8px;letter-spacing:.22em;text-transform:uppercase}
 .investigation-case:focus-visible{outline:1px solid var(--white);outline-offset:8px}
 @keyframes webSignalDrift{to{transform:translateX(100%)}}
