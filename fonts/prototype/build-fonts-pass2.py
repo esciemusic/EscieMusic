@@ -65,75 +65,82 @@ SKELETON={
 "Z":[(95,665),(505,665),(120,80),(505,80)]}
 
 def display(ch,p,clean=False):
-    # Pass 4: narrow architectural gothic construction.
-    # Signature letters receive individual identity instead of generic skeletons.
-    w=82 if not clean else 70
-    if ch=="A":
-        stroke(p,[(115,45),(205,700),(300,700),(505,45)],w)
-        wedge(p,195,305,205,48,24)
-    elif ch=="E":
-        rect(p,112,45,78,650,.018)
-        wedge(p,168,635,332,62,34)
-        wedge(p,168,345,245,54,28)
-        wedge(p,168,45,332,62,34,False)
-    elif ch=="G":
-        arc(p,315,380,210,325,math.radians(42),math.radians(326),w)
-        stroke(p,[(325,365),(520,365),(520,145)],w*.82)
-        wedge(p,438,345,82,40,20)
-    elif ch=="R":
-        rect(p,112,45,78,650,.018)
-        arc(p,188,525,235,175,-math.pi/2,math.pi/2,w)
-        stroke(p,[(205,355),(505,45)],w*.9)
-    elif ch=="S":
-        arc(p,325,535,215,150,math.radians(205),math.radians(18),w)
-        arc(p,300,215,215,150,math.radians(18),math.radians(205),w)
-    elif ch=="M":
-        stroke(p,[(95,45),(145,700),(305,410),(465,700),(520,45)],w)
-        stroke(p,[(150,690),(305,410),(460,690)],w*.58)
-    elif ch=="T":
-        wedge(p,82,635,456,64,34)
-        rect(p,272,45,78,650,.012)
-    elif ch=="C":
-        arc(p,330,380,220,325,math.radians(48),math.radians(312),w)
-        wedge(p,112,665,122,48,28)
-        wedge(p,112,45,122,48,28,False)
-    elif ch=="O":
-        ring(p,315,380,214,322,w)
-        wedge(p,112,650,48,38,20)
-        wedge(p,470,50,48,38,20,False)
+    # Pass 4 refinement: original architectural gothic display construction.
+    # Identity comes from proportion, terminals and rhythm — not texture effects.
+    w = 78 if not clean else 66
+
+    if ch == "A":
+        stroke(p,[(118,42),(202,690),(318,690),(498,42)],w)
+        wedge(p,188,300,220,50,22)
+    elif ch == "E":
+        rect(p,112,42,76,654,.018)
+        wedge(p,170,636,312,58,34)
+        wedge(p,170,344,232,50,26)
+        wedge(p,170,42,312,58,34,False)
+    elif ch == "G":
+        arc(p,308,382,202,320,math.radians(48),math.radians(318),w)
+        stroke(p,[(316,364),(500,364),(500,154)],w*.86)
+        wedge(p,414,340,86,42,18)
+    elif ch == "R":
+        rect(p,112,42,76,654,.018)
+        arc(p,186,522,220,166,-math.pi/2,math.pi/2,w)
+        stroke(p,[(200,350),(488,42)],w*.92)
+    elif ch == "S":
+        arc(p,304,526,194,142,math.radians(206),math.radians(18),w)
+        arc(p,304,238,194,142,math.radians(18),math.radians(206),w)
+    elif ch == "M":
+        stroke(p,[(96,42),(148,694),(304,402),(460,694),(512,42)],w)
+        stroke(p,[(148,690),(304,402),(460,690)],w*.46)
+    elif ch == "T":
+        wedge(p,86,636,438,58,32)
+        rect(p,270,42,76,652,.012)
+    elif ch == "C":
+        arc(p,316,382,204,320,math.radians(50),math.radians(310),w)
+        wedge(p,112,650,116,42,24)
+        wedge(p,112,42,116,42,24,False)
+    elif ch == "O":
+        ring(p,316,382,202,320,w)
+        wedge(p,116,650,44,34,18)
+        wedge(p,472,52,44,34,18,False)
     elif ch in SKELETON:
         stroke(p,SKELETON[ch],w*.88)
-    elif ch=="B":
-        rect(p,112,45,78,650,.018)
-        arc(p,188,520,230,175,-math.pi/2,math.pi/2,w)
-        arc(p,188,245,230,175,-math.pi/2,math.pi/2,w)
-    elif ch=="D":
-        rect(p,112,45,78,650,.018)
-        arc(p,188,370,255,325,-math.pi/2,math.pi/2,w)
-    elif ch=="F":
-        rect(p,112,45,78,650,.018)
-        wedge(p,168,635,332,62,34)
-        wedge(p,168,345,245,54,28)
-    elif ch=="H":
-        rect(p,112,45,78,650,.018); rect(p,430,45,78,650,.018)
-        wedge(p,178,350,264,58,22)
-    elif ch=="I":
-        wedge(p,112,635,366,62,34); rect(p,260,45,78,650,.012); wedge(p,112,45,366,62,34,False)
-    elif ch=="J":
-        wedge(p,168,635,310,62,34)
-        stroke(p,[(430,665),(430,155),(390,72),(270,42),(155,105)],w)
-    elif ch=="L":
-        rect(p,112,45,78,650,.018); wedge(p,168,45,332,62,34,False)
-    elif ch=="P":
-        rect(p,112,45,78,650,.018); arc(p,188,525,235,175,-math.pi/2,math.pi/2,w)
-    elif ch=="Q":
-        ring(p,305,405,205,300,w); stroke(p,[(382,170),(520,42)],w*.72)
-    elif ch=="U":
-        rect(p,112,360,78,335,.018); rect(p,430,360,78,335,.018); arc(p,315,365,220,300,math.pi,2*math.pi,w)
+    elif ch == "B":
+        rect(p,112,42,76,654,.018)
+        arc(p,186,520,220,166,-math.pi/2,math.pi/2,w)
+        arc(p,186,242,220,166,-math.pi/2,math.pi/2,w)
+    elif ch == "D":
+        rect(p,112,42,76,654,.018)
+        arc(p,186,370,244,320,-math.pi/2,math.pi/2,w)
+    elif ch == "F":
+        rect(p,112,42,76,654,.018)
+        wedge(p,170,636,312,58,34)
+        wedge(p,170,344,232,50,26)
+    elif ch == "H":
+        rect(p,112,42,76,654,.018)
+        rect(p,430,42,76,654,.018)
+        wedge(p,188,350,242,54,20)
+    elif ch == "I":
+        wedge(p,112,636,356,58,32)
+        rect(p,252,42,76,652,.012)
+        wedge(p,112,42,356,58,32,False)
+    elif ch == "J":
+        wedge(p,170,636,300,58,32)
+        stroke(p,426,[(426,666),(426,156),(390,76),(276,42),(166,112)],w) if False else stroke(p,[(426,666),(426,156),(390,76),(276,42),(166,112)],w)
+    elif ch == "L":
+        rect(p,112,42,76,654,.018)
+        wedge(p,170,42,312,58,32,False)
+    elif ch == "P":
+        rect(p,112,42,76,654,.018)
+        arc(p,186,522,220,166,-math.pi/2,math.pi/2,w)
+    elif ch == "Q":
+        ring(p,306,402,196,300,w)
+        stroke(p,376,[(376,170),(510,42)],w*.72) if False else stroke(p,[(376,170),(510,42)],w*.72)
+    elif ch == "U":
+        rect(p,112,360,76,336,.018)
+        rect(p,430,360,76,336,.018)
+        arc(p,309,365,218,300,math.pi,2*math.pi,w)
     else:
-        # Keep the remaining glyphs in the established family construction.
-        if ch in SKELETON: stroke(p,SKELETON[ch],w*.88)
-        else: wedge(p,112,45,396,650,34)
+        wedge(p,112,42,396,654,34)
 
 SCRIPT={
 "A":[(110,80),(170,650),(300,700),(505,90)],"B":[(125,60),(130,700),(330,650),(220,380),(390,330),(450,130),(260,70)],
