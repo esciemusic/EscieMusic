@@ -13,7 +13,8 @@
     version: "1.0.0",
     initialized: false,
     ready: false,
-    universeContract: null
+    universeContract: null,
+    webTrail: []
   };
 
   function byId(id) {
@@ -776,6 +777,11 @@
       return '<button type="button" class="web-record-result" data-record-id="'+escapeHTML(recordId(r))+'"><strong>'+escapeHTML(recordTitle(r))+'</strong><span>'+escapeHTML(r.type||"record")+' · '+(links.length?links.length+" CONNECTION"+(links.length===1?"":"S"):"NO CONNECTIONS YET")+'</span></button>';
     }).join("");
 
+    const trailIds=Array.isArray(ESCIE_RUNTIME.webTrail)?ESCIE_RUNTIME.webTrail:[];
+    const trailRecords=trailIds.map(id=>byIdMap.get(id)).filter(Boolean);
+    const trailMarkup=trailRecords.length
+      ? '<div class="web-thread-trail"><div class="web-thread-trail-head"><span class="eyebrow">THREAD PATH</span><span>'+trailRecords.length+' STEPS</span></div><div class="web-thread-trail-list">'+trailRecords.map((node,index)=>'<button type="button" class="web-trail-node" data-record-id="'+escapeHTML(recordId(node))" aria-label="Return to '+escapeHTML(recordTitle(node))+'"><span>'+String(index+1).padStart(2,"0")+'</span><strong>'+escapeHTML(recordTitle(node))+'</strong></button>').join('<i aria-hidden="true">→</i>')+'</div></div>'
+      : "";
     const networkMap=selected
       ? '<div class="web-thread-map"><div class="web-thread-map-head"><div><span class="eyebrow">THREAD MAP</span><h4>'+escapeHTML(recordTitle(selected))+'</h4></div><span>'+selectedLinks.length+' DIRECT '+(selectedLinks.length===1?"CONNECTION":"CONNECTIONS")+'</span></div>'+
         '<div class="web-hub-summary"><span>CONNECTED BY</span><strong>'+escapeHTML(selectedConnectionTypes.join(" · ")||"PUBLIC RELATIONSHIPS")+'</strong></div>'+
@@ -799,7 +805,7 @@
             ?"UNKNOWN CONNECTION"
             :rawStatus.toUpperCase();
       const reason=relationship.context||relationship.note||"THE RECORD CONNECTS THESE TWO POINTS. THE REASON REMAINS OPEN.";
-      const relationType=StringrelationType;
+      const relationType=String(relationship.type||"CONNECTED_TO").replace(/_/g," ");
       const nextIds=new Set(all.filter(link=>link.from===recordId(to)||link.to===recordId(to)).flatMap(link=>[link.from,link.to])).filter(id=>id!==recordId(from)&&id!==recordId(to));
       const nextNodes=Array.from(nextIds).map(id=>byIdMap.get(id)).filter(Boolean).slice(0,4);
       const nextStep=nextNodes.length ? '<div class="web-next-step"><p class="eyebrow">WHERE THIS THREAD CAN GO</p><div class="web-next-nodes">'+nextNodes.map(node=>'<button type="button" class="web-next-node" data-record-id="'+escapeHTML(recordId(node))+'"><strong>'+escapeHTML(recordTitle(node))+'</strong><span>FOLLOW '+escapeHTML(String(node.type||"RECORD").toUpperCase())+'</span></button>').join("")+'</div></div>' : '<p class="web-next-quiet">NO NEXT PUBLIC CONNECTION IS ESTABLISHED YET.</p>';
@@ -807,7 +813,7 @@
       return '<article class="web-connection web-status-'+statusClass+'" data-relationship-id="'+escapeHTML(relationship.id||("connection-"+index))+'">'+
         '<button type="button" class="web-connection-main" data-web-connection-toggle aria-expanded="false">'+
           '<span class="web-node"><strong>'+escapeHTML(recordTitle(from))+'</strong><em>'+escapeHTML(from.type||"record")+'</em></span>'+
-          '<span class="web-connection-line" aria-hidden="true"><i></i><b>'+escapeHTML((relationship.type||"CONNECTED_TO").replace(/_/g," "))+'</b><i></i></span>'+
+          '<span class="web-connection-line" aria-hidden="true"><i></i><b>'+escapeHTML(relationType)+'</b><i></i></span>'+
           '<span class="web-node"><strong>'+escapeHTML(recordTitle(to))+'</strong><em>'+escapeHTML(to.type||"record")+'</em></span>'+
         '</button>'+
         '<div class="web-connection-detail" hidden>'+
@@ -832,6 +838,7 @@
         '<div class="web-discovery-actions"><p class="web-discovery-count">'+escapeHTML(String(relationships.length))+' CONNECTION'+(relationships.length===1?"":"S")+' · '+escapeHTML(String(connectedIds.size))+' NODES</p>'+clear+'</div>'+
       '</div>'+
       '<div class="web-record-results">'+recordResults+'</div>'+
+      trailMarkup+
       networkMap+
       (list?'<div class="web-connection-field"><div class="web-field-label"><span>PUBLIC CONNECTIONS</span><span>'+relationships.length+'</span></div>'+list+'</div>':'<div class="web-empty-state"><p class="eyebrow">THE PUBLIC GRAPH IS QUIET</p><h3>NO PUBLIC THREADS HAVE BEEN ESTABLISHED HERE YET.</h3><p>The system stays honest when a connection does not exist. Public findings can enter through Glass Eye and become a thread only after they earn a place in the record.</p><button type="button" class="web-participate-link" data-web-participate>BRING A FINDING THROUGH GLASS EYE</button></div>')+
       '<p class="web-governing-principle">EVERYTHING CAN CONNECT. NOTHING CONNECTS WITHOUT A REASON.</p>'+
@@ -1716,6 +1723,20 @@ function renderClothing(){
       if (!trigger) return;
       const record = getAllPublicRecords().find(item => recordId(item) === trigger.getAttribute("data-record-id"));
       if (!record) return;
+
+      const webContainer = byId("web-container");
+      if (webContainer && webContainer.contains(trigger)) {
+        const id = recordId(record);
+        ESCIE_RUNTIME.webTrail = Array.isArray(ESCIE_RUNTIME.webTrail) ? ESCIE_RUNTIME.webTrail : [];
+        if (ESCIE_RUNTIME.webTrail[ESCIE_RUNTIME.webTrail.length - 1] !== id) {
+          ESCIE_RUNTIME.webTrail.push(id);
+        }
+        ESCIE_RUNTIME.webTrail = ESCIE_RUNTIME.webTrail.slice(-8);
+        ESCIE_RUNTIME.webFilters = ESCIE_RUNTIME.webFilters || {};
+        ESCIE_RUNTIME.webFilters.record = id;
+        renderWeb();
+        return;
+      }
 
       const player = window.ESCIE_UI_PLAYER;
       if (record.type === "music" && player && typeof player.load === "function") {
