@@ -1,4 +1,6 @@
 /* ESCIE PUBLISHING — VALIDATE */
+(function(){
+"use strict";
 const PUBLIC_GATE=typeof module!=="undefined"&&module.exports?require("../data/public-publishing.js"):window.ESCIE_PUBLIC_PUBLISHING;
 const REQUIRED_PUBLIC_FIELDS=Object.freeze(["id","type"]);
 function validatePublicRecord(record={}){
@@ -24,3 +26,4 @@ function validateBuild(build={}){
 const ESCIE_PUBLISH_VALIDATE={validatePublicRecord,validateBuild};
 if(typeof window!=="undefined")window.ESCIE_PUBLISH_VALIDATE=ESCIE_PUBLISH_VALIDATE;
 if(typeof module!=="undefined"&&module.exports)module.exports=ESCIE_PUBLISH_VALIDATE;
+})();
