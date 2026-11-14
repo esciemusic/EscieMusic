@@ -1273,8 +1273,8 @@ test("A-Z Pass 4 hero art deep links resolve to the ART section while preserving
   assert.match(index,/href="#art\/words"/);
   assert.match(index,/href="#art\/visual"/);
   assert.match(index,/href="#glass-eye"/);
-  assert.match(index,/hero-art-door-disabled/);
-  assert.match(index,/title="Projects will appear when a public project is transmitted"/);
+  assert.doesNotMatch(index,/hero-art-door-disabled/);
+  assert.doesNotMatch(index,/title="Projects will appear when a public project is transmitted"/);
   assert.match(index,/window\.addEventListener\("hashchange",function\(\)\{/);
   assert.match(index,/show\(targetIndex,false,false\)/);
 });
