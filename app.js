@@ -980,7 +980,7 @@ function renderClothing(){
       '<div class="archive-index">' +
         motifMarkup("archives") +
         '<div class="archive-index-head"><p class="eyebrow">PRESERVED TRACE / ' + escapeHTML(String(ordered.length)) + ' RECORD' + (ordered.length === 1 ? '' : 'S') + '</p><span class="archive-index-note">OPEN THE RECORD TO FOLLOW ITS TRACE.</span></div>' +
-        '<div class="archive-list"><div class="archive-record archive-record-carousel" data-record-carousel="archive"><div class="record-carousel-viewport" tabindex="0" aria-live="polite"><div class="record-carousel-track">' +
+        '<div class="archive-list"><div class="archive-record"><div class="archive-record-carousel" data-record-carousel="archive"><div class="record-carousel-viewport" tabindex="0" aria-live="polite"><div class="record-carousel-track">' +
           ordered.map((record,index) => {
             const type = String(record.type || record.identity?.type || "record").toUpperCase();
             const dateSource = record.date || record.created_at || record.updated_at || "";
