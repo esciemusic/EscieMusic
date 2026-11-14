@@ -1385,3 +1385,11 @@ test("A-Z Pass 7 protects established Montréal neighbourhood relationships",()=
   assert.match(rel,/context:"Mile End is a Montréal neighbourhood/);
   assert.match(rel,/context:"Rosemont is a Montréal neighbourhood/);
 });
+
+test("A-Z Pass 8 protects Web hub context",()=>{
+  const app=read("app.js");
+  const style=read("style.css");
+  assert.match(app,/selectedConnectionTypes/);
+  assert.match(app,/CONNECTED BY/);
+  assert.match(style,/\.web-hub-summary/);
+});
