@@ -1776,7 +1776,7 @@ function renderClothing(){
     if (tagline) {
       tagline.textContent = getSiteValue(
         "tagline",
-        "REALITY WITH THE SIGNAL DISTORTED."
+        "A GOOD PERSON. I'M JUST NOT NICE."
       );
     }
 
