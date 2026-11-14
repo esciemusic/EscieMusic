@@ -16,6 +16,10 @@
       });
       assert(engine.translate("NO TRANSMISSION LOADED","fr")==="AUCUNE TRANSMISSION CHARGÉE","French runtime translation must resolve");
       assert(engine.translate("NO TRANSMISSION LOADED","es")==="NO HAY TRANSMISIÓN CARGADA","Spanish runtime translation must resolve");
+      assert(engine.translate("A GOOD PERSON. I'M JUST NOT NICE.","fr")==="UNE BONNE PERSONNE. JE NE SUIS SIMPLEMENT PAS GENTIL.","French hero tagline must resolve");
+      assert(engine.translate("A GOOD PERSON. I'M JUST NOT NICE.","es")==="UNA BUENA PERSONA. SIMPLEMENTE NO SOY AMABLE.","Spanish hero tagline must resolve");
+      assert(engine.translate("ESCIE THE ARTIST. THE ART SPEAKS FOR ITSELF.","fr")==="ESCIE EST L’ARTISTE. L’ART PARLE DE LUI-MÊME.","French artist statement must preserve intended meaning");
+      assert(engine.translate("ESCIE THE ARTIST. THE ART SPEAKS FOR ITSELF.","es")==="ESCIE ES EL ARTISTA. EL ARTE HABLA POR SÍ MISMO.","Spanish artist statement must preserve intended meaning");
       assert(engine.translate("SIGNAL QUIET","fr")==="SIGNAL SILENCIEUX","French signal status must resolve");
       assert(engine.translate("SIGNAL QUIET","es")==="SEÑAL EN SILENCIO","Spanish signal status must resolve");
       assert(engine.translate("The signal is quiet. The record remains.","fr")==="Le signal est silencieux. Le registre demeure.","French signal message must resolve");
