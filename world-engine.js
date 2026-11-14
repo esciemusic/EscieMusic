@@ -153,6 +153,20 @@ function render(){
  bind(root);
  }
 function syncNodeHash(id){try{if(id)history.replaceState(null,"","#world-node="+encodeURIComponent(String(id)));else history.replaceState(null,"",location.pathname+location.search)}catch(e){}}
+function applyWorldRoute(){
+ const raw=location.hash.replace(/^#/,"");
+ const match=raw.match(/^world-tab=([^&]+)(?:&world-node=(.+))?$/);
+ if(!match)return false;
+ try{
+   const tab=decodeURIComponent(match[1]);
+   if(tabs.some(t=>t[0]===tab))state.tab=tab;
+   if(match[2]){
+     const id=decodeURIComponent(match[2]);
+     if(records().some(r=>String(r.id)===String(id))){state.selected=id;remember(id);}
+   }else state.selected=null;
+   return true;
+ }catch(e){return false}
+}
 function bind(root){
  root.querySelectorAll("[data-game-open]").forEach(b=>b.onclick=()=>{const game=document.getElementById("game-container");const api=window.ESCIE_GAME_GATEWAY;if(api&&api.enter)api.enter()}); root.querySelectorAll("[data-game-route]").forEach(b=>b.onclick=()=>{const api=window.ESCIE_GAME_GATEWAY;if(api&&api.route)api.route(b.dataset.gameRoute);}); root.querySelectorAll("[data-glass-eye]").forEach(b=>{b.setAttribute("aria-expanded",state.eyeOpen?"true":"false");b.onclick=()=>{state.eyeOpen=!state.eyeOpen;render()}});
  root.querySelectorAll("[data-eye-clear]").forEach(b=>b.onclick=()=>{state.trail=[];state.visited=[];try{sessionStorage.removeItem("escie_world_trail");sessionStorage.removeItem("escie_world_visited")}catch(e){}render()});
@@ -166,10 +180,15 @@ function bind(root){
  root.querySelectorAll("[data-close-node]").forEach(b=>b.onclick=()=>{state.selected=null;syncNodeHash(null);render()});
  root.querySelectorAll("[data-focus-search]").forEach(b=>b.onclick=()=>{const s=$("world-public-search");if(s){s.value=title(records().find(r=>String(r.id)===String(state.selected))||{});s.dispatchEvent(new Event("input"));s.focus()}});
 }
-function handleWorldHash(){const hash=location.hash.match(/^#world-node=(.+)$/);if(!hash){state.selected=null;render();return}try{const id=decodeURIComponent(hash[1]);if(records().some(r=>String(r.id)===String(id))){state.selected=id;remember(id);render();return}state.selected=null;render();}catch(e){state.selected=null;render();}}
+function handleWorldHash(){
+ if(applyWorldRoute()){render();return}
+ const hash=location.hash.match(/^#world-node=(.+)$/);
+ if(!hash){state.selected=null;render();return}
+ try{const id=decodeURIComponent(hash[1]);if(records().some(r=>String(r.id)===String(id))){state.selected=id;remember(id);render();return}state.selected=null;render();}catch(e){state.selected=null;render();}
+}
 function init(){
  loadTrail();
- const hash=location.hash.match(/^#world-node=(.+)$/);if(hash){try{const id=decodeURIComponent(hash[1]);if(records().some(r=>String(r.id)===String(id))){state.selected=id;remember(id)}}catch(e){state.selected=null}}
+ if(!applyWorldRoute()){const hash=location.hash.match(/^#world-node=(.+)$/);if(hash){try{const id=decodeURIComponent(hash[1]);if(records().some(r=>String(r.id)===String(id))){state.selected=id;remember(id)}}catch(e){state.selected=null}}}
  const nav=document.getElementById("main-navigation"),root=$("world-container");if(!nav||!root)return;
  if(!nav.querySelector('a[href="#world"]')){const a=document.createElement("a");a.href="#world";a.textContent="THE WORLD";a.dataset.route="world";nav.appendChild(a)}
  render();
