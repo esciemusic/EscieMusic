@@ -1186,3 +1186,13 @@ test("A-Z Pass 3 recurring world symbols have controlled canonical placement",()
   assert.doesNotMatch(index,/visual-daisy[^<]*>✳/);
   assert.doesNotMatch(index,/visual-key[^<]*>⌕/);
 });
+
+
+test("A-Z Pass 3 ESCIE master sigil remains an identity mark distinct from world motifs",()=>{
+  const svg=read("assets/escie-symbols.svg");
+  const style=read("style.css");
+  assert.match(svg,/<symbol id="escie" viewBox="0 0 32 32">[\s\S]*M16 2\.5l10\.5 13\.5L16 29\.5 5\.5 16 16 2\.5/);
+  assert.match(svg,/id="escie"[\s\S]*M16 7v18/);
+  assert.match(style,/\.escie-master-sigil/);
+  assert.match(style,/\.site-logo \.escie-symbol-glyph/);
+});
