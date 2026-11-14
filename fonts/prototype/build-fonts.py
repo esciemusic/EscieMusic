@@ -14,7 +14,7 @@ coverage review is complete.
 from fontTools.fontBuilder import FontBuilder
 from fontTools.pens.ttGlyphPen import TTGlyphPen
 from fontTools.ttLib.tables._g_l_y_f import Glyph
-import os, string
+import os, string, math
 
 # The prototype uses a compact architectural grid. Final art direction will
 # replace these primitives after the specimen review.
@@ -80,6 +80,61 @@ def pattern(pen, ch, stroke, skew, scale=1.0, dx=0, dy=0, damage=False):
         rect(pen, dx+(80+2.1*112)*scale, dy+405*scale,
              31*scale, stroke*.35*scale, skew)
 
+def display_pass4(pen, ch):
+    w = 78
+    if ch == "A":
+        stroke_poly(pen,[(118,42),(202,690),(318,690),(498,42)],w)
+        wedge_poly(pen,[(188,300),(408,300),(386,350),(210,350)])
+    elif ch == "E":
+        rect(pen,112,42,76,654,.018)
+        wedge_poly(pen,[(170,636),(482,636),(448,694),(170,694)])
+        wedge_poly(pen,[(170,344),(402,344),(376,394),(170,394)])
+        wedge_poly(pen,[(170,42),(482,42),(448,100),(170,100)],True)
+    elif ch == "G":
+        arc_poly(pen,308,382,202,320,math.radians(48),math.radians(318),w)
+        stroke_poly(pen,[(316,364),(500,364),(500,154)],67)
+    elif ch == "R":
+        rect(pen,112,42,76,654,.018)
+        arc_poly(pen,186,522,220,166,-math.pi/2,math.pi/2,w)
+        stroke_poly(pen,[(200,350),(488,42)],72)
+    elif ch == "S":
+        arc_poly(pen,304,526,194,142,math.radians(206),math.radians(18),w)
+        arc_poly(pen,304,238,194,142,math.radians(18),math.radians(206),w)
+    elif ch == "M":
+        stroke_poly(pen,[(96,42),(148,694),(304,402),(460,694),(512,42)],w)
+    elif ch == "T":
+        wedge_poly(pen,[(86,636),(524,636),(492,694),(86,694)])
+        rect(pen,270,42,76,652,.012)
+    elif ch == "C":
+        arc_poly(pen,316,382,204,320,math.radians(50),math.radians(310),w)
+    elif ch == "O":
+        ring_poly(pen,316,382,202,320,w)
+    else:
+        pattern(pen,ch,110,.03,.88,0,0,False)
+
+def stroke_poly(pen, points, width):
+    for a,b in zip(points,points[1:]):
+        dx=b[0]-a[0]; dy=b[1]-a[1]
+        length=max(1,(dx*dx+dy*dy)**0.5)
+        nx=-dy/length; ny=dx/length; half=width/2
+        poly(pen,[(a[0]+nx*half,a[1]+ny*half),(b[0]+nx*half,b[1]+ny*half),(b[0]-nx*half,b[1]-ny*half),(a[0]-nx*half,a[1]-ny*half)])
+
+def wedge_poly(pen, points, reverse=False):
+    poly(pen,points[::-1] if reverse else points)
+
+def arc_poly(pen,cx,cy,rx,ry,a0,a1,width,n=36):
+    pts=[]
+    for i in range(n+1):
+        a=a0+(a1-a0)*i/n
+        pts.append((cx+rx*math.cos(a),cy+ry*math.sin(a)))
+    stroke_poly(pen,pts,width)
+
+def ring_poly(pen,cx,cy,rx,ry,width):
+    outer=[(cx+rx*math.cos(2*math.pi*i/40),cy+ry*math.sin(2*math.pi*i/40)) for i in range(40)]
+    inner=[(cx+(rx-width)*math.cos(2*math.pi*i/40),cy+(ry-width)*math.sin(2*math.pi*i/40)) for i in range(40)]
+    poly(pen,outer); poly(pen,inner[::-1])
+
+
 def build(path, family, weight, stroke, skew, narrow, damaged):
     base = list(string.ascii_uppercase + string.digits) + list(".,!?'-/:;()&")
     lower = list(string.ascii_lowercase)
@@ -97,7 +152,9 @@ def build(path, family, weight, stroke, skew, narrow, damaged):
 
     for ch in base:
         pen = TTGlyphPen(None)
-        if ch in PATTERNS:
+        if family == "ESCIE" and ch in PATTERNS:
+            display_pass4(pen, ch)
+        elif ch in PATTERNS:
             pattern(pen, ch, stroke, skew, narrow, 0, 0, damaged)
         else:
             for spec in {
