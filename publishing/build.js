@@ -1,26 +1,14 @@
 /* ESCIE PUBLISHING — BUILD */
-function isPublicRecord(record={}){
-  if(!record)return false;
-  const gate=typeof window!=="undefined"?window.ESCIE_PUBLIC_PUBLISHING:null;
-  if(gate&&typeof gate.approved==="function")return gate.approved(record);
-  const registry=typeof window!=="undefined"?window.ESCIE_RECORD_REGISTRY:null;
-  if(registry&&typeof registry.releaseVisible==="function"){if(!registry.releaseVisible(record))return false;}
-  else if(record.release_state!==undefined&&record.release_state!==null&&String(record.release_state).toUpperCase()!=="RELEASED")return false;
-  else if(record.release_status&&String(record.release_status).toLowerCase()!=="released")return false;
-  else if(record.type==="project"&&record.release_mode==="progressive")return false;
-  if(!(record.published===true||record.status==="published"))return false;
-  if(["private","withheld","limited"].includes(String(record.visibility||"").toLowerCase()))return false;
-  return record.public_disclosure!==false;
-}
+const PUBLIC_GATE=require("../data/public-publishing.js");
+function isPublicRecord(record={}){return !!record&&PUBLIC_GATE.boundaryAudit(record).ok&&PUBLIC_GATE.approved(record);}
 function buildPublicRecords(records=[]){
   if(!Array.isArray(records))return [];
   const seenIds=new Set();
   return records.filter(isPublicRecord).filter(record=>{const id=record&&record.id;if(!id||seenIds.has(id))return false;seenIds.add(id);return true;}).map(record=>({id:record.id||null,type:record.type||null,title:record.title||"",data:{...record}}));
 }
 function createBuildPlan(input={}){
-  const registry=typeof window!=="undefined"?window.ESCIE_RECORD_REGISTRY:null;
   const supplied=Array.isArray(input.records)?input.records:[];
-  const records=registry&&typeof registry.allPublicRecords==="function"?registry.allPublicRecords():supplied;
+  const records=supplied;
   const seenIds=new Set();
   records.forEach(record=>{if(!isPublicRecord(record))return;const id=record&&record.id;if(!id)return;if(seenIds.has(id))throw new Error("Duplicate public record id: "+id);seenIds.add(id);});
   return {createdAt:new Date().toISOString(),environment:input.environment||"production",records:buildPublicRecords(records),routes:Array.isArray(input.routes)?[...input.routes]:[],assets:Array.isArray(input.assets)?[...input.assets]:[]};
