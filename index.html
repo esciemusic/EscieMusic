@@ -170,12 +170,14 @@
       state.theme=theme;
 
       var themeButton=document.getElementById("theme-toggle");
+      var themeColorMeta=document.querySelector('meta[name="theme-color"]');
       var languageButtons=[].slice.call(document.querySelectorAll("[data-language]"));
 
       function applyTheme(next){
         theme=next==="light"?"light":"dark";
         root.dataset.theme=theme;
         state.theme=theme;
+        if(themeColorMeta)themeColorMeta.setAttribute("content",theme==="light"?"#f0ede4":"#050505");
         try{localStorage.setItem("escie-theme",theme);}catch(error){}
         if(themeButton){
           themeButton.setAttribute("aria-pressed",theme==="light"?"true":"false");
