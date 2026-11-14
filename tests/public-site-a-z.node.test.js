@@ -364,12 +364,12 @@ test("A-Z Pass 3 keeps the hero-to-NOW transition as a quiet threshold",()=>{
   assert.match(style,/@media\s*\(max-width:\s*700px\)\s*\{[\s\S]*?\.entry-section\s*\+\s*\.now-section\s*\{[\s\S]*?padding-top:\s*64px/);
 });
 
-test("A-Z Pass 3 hero vertical hierarchy keeps the live state above identity",()=>{
+test("A-Z Pass 3 hero vertical hierarchy keeps identity primary without runtime state",()=>{
   const aesthetic=read("aesthetic.css");
   const index=read("index.html");
-  assert.match(index,/id="entry-state" class="entry-state"/);
-  assert.match(aesthetic,/\.entry-state\{margin:0 0 12px;color:var\(--escie-aesthetic-purple\)/);
-  assert.match(index,/id="entry-state" class="entry-state"[^>]*><\/p>\s*<h1>ESCIE<\/h1>/);
+  assert.doesNotMatch(index,/id="entry-state"/);
+  assert.doesNotMatch(aesthetic,/\.entry-state\{/);
+  assert.match(index,/<h1>ESCIE<\/h1>\s*<p id="entry-tagline"/);
 });
 
 test("A-Z Pass 3 desktop hero scales without over-constraining identity",()=>{
