@@ -1,25 +1,38 @@
-/* TEMPORARY TYPOGRAPHY CANDIDATE — Oswald + Space Grotesk
-   Purpose: give the public site a usable Ghetto Goth / architectural / urban
-   direction while the authored ESCIE family is still under development.
-   This is intentionally reversible. Do not delete the prototype font work.
+/* =========================================================
+   ESCIE TYPOGRAPHY SYSTEM
+   Three authored local faces: ESCIE / ESCIE SIGNAL / ESCIE SCRIPT.
+   No external font service. Local binaries are the production candidates.
+   ========================================================= */
 
-   Candidate roles:
-   - Oswald: identity, hero titles, section headings, strong labels.
-   - Space Grotesk: navigation, metadata, body, interface copy.
-   - Script remains a restrained system fallback until the authored SCRIPT face
-     is visually approved.
+@font-face{
+  font-family:"ESCIE";
+  src:url("fonts/release/ESCIE.woff2") format("woff2");
+  font-style:normal;
+  font-weight:100 900;
+  font-display:swap;
+}
 
-   Source: Google Fonts. Next production-hardening step is to self-host the
-   selected font binaries and document the license/provenance in-repo.
-*/
+@font-face{
+  font-family:"ESCIE SIGNAL";
+  src:url("fonts/release/ESCIE-SIGNAL.woff2") format("woff2");
+  font-style:normal;
+  font-weight:100 900;
+  font-display:swap;
+}
 
-@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap");
+@font-face{
+  font-family:"ESCIE SCRIPT";
+  src:url("fonts/release/ESCIE-SCRIPT.woff2") format("woff2");
+  font-style:normal;
+  font-weight:100 900;
+  font-display:swap;
+}
 
 :root{
-  --escie-font-escie:"Oswald",Arial,Helvetica,sans-serif;
-  --escie-font-signal:"Space Grotesk",Arial,Helvetica,sans-serif;
-  --escie-font-script:"Segoe Script","Brush Script MT",cursive;
-  --escie-font-body:"Space Grotesk",Arial,Helvetica,sans-serif;
+  --escie-font-escie:"ESCIE",Arial,Helvetica,sans-serif;
+  --escie-font-signal:"ESCIE SIGNAL","Courier New",Courier,monospace;
+  --escie-font-script:"ESCIE SCRIPT","Segoe Script","Brush Script MT",cursive;
+  --escie-font-body:Arial,Helvetica,sans-serif;
 }
 
 .site-logo,
