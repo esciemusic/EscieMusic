@@ -32,10 +32,10 @@
 .site-logo,.entry-inner h1,main > .site-section:not(#entry) h2,.escie-display,.font-escie{font-family:var(--escie-font-escie)}
 .index-navigation,.index-trigger,.site-preferences,.hero-location,.section-drop-trigger,.font-signal{font-family:var(--escie-font-signal)}
 .font-script,.glass-eye-personal,.visitor-trace,.personal-note{font-family:var(--escie-font-script)}
-body,.section-lede,.content-container,.font-body{font-family:var(--escie-font-body)}
-.entry-inner h1,main > .site-section:not(#entry) h2{letter-spacing:.06em;font-weight:700}
+body,.section-lede,.content-container,.font-body{font-family:var(--escie-font-body);font-synthesis:none}
+.entry-inner h1,main > .site-section:not(#entry) h2{letter-spacing:.035em;font-weight:400;font-synthesis:none;text-rendering:geometricPrecision;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 .hero-location,.section-drop-trigger{letter-spacing:.14em;text-transform:uppercase}
-.font-script{letter-spacing:.015em;font-weight:400}
+.font-script{letter-spacing:.015em;font-weight:400;font-synthesis:none}
 
 
 /* Production faces are local repository assets. Keep display roles explicit so
@@ -56,3 +56,8 @@ main > .site-section:not(#entry) h2,
 .glass-eye-personal,
 .visitor-trace,
 .personal-note{font-family:"ESCIE SCRIPT",var(--escie-font-script)}
+
+/* Typography contract: never synthesize weights/styles for the authored ESCIE faces. */
+html,body{font-synthesis:none;}
+.hero-identity-link,.site-logo,main > .site-section:not(#entry) h2,.font-escie{font-weight:400;font-synthesis:none;}
+.index-navigation,.index-trigger,.site-preferences,.hero-location,.section-drop-trigger,.font-signal{font-weight:400;font-synthesis:none;}
