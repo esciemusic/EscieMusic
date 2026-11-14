@@ -454,6 +454,15 @@ test("A-Z Pass 1 merch filter listeners are bound once per control",()=>{
   assert.match(app,/button\.dataset\.bound="1"/);
 });
 
+test("A-Z Pass 3 public audio player stays hidden until approved audio is loaded",()=>{
+  const player=read("ui/player.js");
+  assert.match(player,/dock\.hidden = true/);
+  assert.match(player,/this\.show\(\);/);
+  assert.match(player,/load\(source = \{\}\)/);
+  assert.match(player,/if \(!url\) return null/);
+  assert.doesNotMatch(player,/dock\.hidden = false/);
+});
+
 test("A-Z Pass 1 public audio playback accepts only safe URLs",()=>{
   const app=read("app.js");
   assert.ok(app.includes('safeExternalURL(item.url)'));
