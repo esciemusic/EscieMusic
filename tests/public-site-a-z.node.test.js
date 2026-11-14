@@ -432,7 +432,7 @@ test("A-Z Pass 3 mobile hero respects viewport and safe-area composition",()=>{
 test("A-Z Pass 3 hero identity stays dominant over the Montreal distortion and links to the ESCIE bio",()=>{
   const index=read("index.html");
    const style=read("style.css");
-   assert.ok(index.includes("A GOOD PERSON. I'M JUST NOT NICE."));
+   assert.ok(index.includes("THE FATHER / THE MAN / THE MONSTER."));
   assert.ok(index.includes('<h1><a class="hero-identity-link" href="#escie" aria-label="Go to ESCIE bio" data-depth-door="surface">ESCIE</a></h1>'));
   assert.match(index,/MONTRÉAL, QUÉBEC, CANADA/);
   assert.match(index,/hero-skyline-art/);
