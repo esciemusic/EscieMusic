@@ -1755,9 +1755,6 @@ function renderClothing(){
       );
     }
 
-    const state = byId("entry-state");
-    if (state) state.textContent = updateTimeState().toUpperCase();
-
     const philosophy = byId("entry-philosophy");
     if (philosophy) {
       philosophy.textContent = getSiteValue(
