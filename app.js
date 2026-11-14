@@ -2026,7 +2026,7 @@ function renderClothing(){
       const hashRoute = window.location.hash.replace(/^#/, "") || "entry";
       // Node links are deep links into THE WORLD, not standalone page sections.
       // Keep the world accordion open while world-engine.js resolves the selected node.
-      const route = /^world-node=/.test(hashRoute) ? "world" : hashRoute;
+      const route = /^(world-node=|world-tab=)/.test(hashRoute) ? "world" : hashRoute;
       const resolved = typeof router.resolve === "function" ? router.resolve(route) : null;
       const activeRoute = resolved || route || "entry";
       document.body.dataset.route = activeRoute;
