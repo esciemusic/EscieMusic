@@ -1940,7 +1940,7 @@ main > .site-section.section-open .section-visual::after{animation:escieSignalSc
 
 
 /* Pass 3 — hero supporting-copy hierarchy: identity first, signal second, place last. */
-.entry-section #entry-container #entry-tagline{margin:clamp(20px,3vw,34px) auto 0;max-width:min(92vw,760px);color:var(--escie-white);font-family:var(--escie-font-signal);font-size:clamp(17px,2.5vw,30px);font-weight:500;letter-spacing:.08em;line-height:1.25;text-align:center;text-wrap:balance;text-shadow:0 0 22px rgba(47,128,255,.14)}
+.entry-section #entry-container #entry-tagline{margin:clamp(20px,3vw,34px) auto 0;max-width:min(92vw,760px);color:var(--escie-white);font-family:var(--escie-font-signal);font-size:clamp(17px,2.5vw,30px);font-weight:400;font-synthesis:none;letter-spacing:.08em;line-height:1.25;text-align:center;text-wrap:balance;text-shadow:0 0 22px rgba(47,128,255,.14)}
 .entry-section #entry-container #entry-location{margin-top:clamp(12px,1.8vw,18px);color:var(--muted);font-family:var(--escie-font-signal);font-size:8px;letter-spacing:.24em;line-height:1.6;text-transform:uppercase;opacity:.72}
 @media(max-width:700px){.entry-section #entry-container #entry-tagline{font-size:clamp(14px,4.4vw,19px);letter-spacing:.055em;line-height:1.3}.entry-section #entry-container #entry-location{font-size:7px;letter-spacing:.16em}}
 @media(prefers-reduced-motion:reduce){.entry-section #entry-container #entry-tagline{animation:none!important}}
