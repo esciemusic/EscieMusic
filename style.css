@@ -1938,7 +1938,7 @@ body.inspector-open{overflow:hidden}
 .section-motif{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin:0 0 1.25rem;opacity:.72;letter-spacing:.12em;text-transform:uppercase;font-size:.65rem}
 .section-motif-item{display:inline-flex;align-items:center;gap:.45rem;border:0;background:transparent;color:inherit;padding:0;cursor:pointer;font:inherit;text-transform:inherit;letter-spacing:inherit}
 .section-motif-item:hover,.section-motif-item:focus-visible{opacity:1;color:var(--escie-blue-bright);outline:1px solid rgba(47,128,255,.45);outline-offset:4px}.section-motif-item:focus-visible{border-radius:2px}
-.section-motif-glyph{display:inline-flex;align-items:center;justify-content:center;width:1.8rem;height:1.8rem;border:1px solid currentColor;font-size:1rem;line-height:1}
+.section-motif-glyph{display:inline-flex;align-items:center;justify-content:center;width:1.8rem;height:1.8rem;border:1px solid currentColor;line-height:1}
 .section-motif-name{font-size:.62rem}
 .record-context{margin-top:1.25rem;padding-top:1rem;border-top:1px solid currentColor;opacity:.82}
 .record-context p{margin:.4rem 0;font-size:.78rem;line-height:1.45}
@@ -2153,11 +2153,16 @@ body.inspector-open{overflow:hidden}
 }
 .node-link-symbol{
   flex:0 0 auto;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:1.15rem;
+  height:1.15rem;
   color:var(--faint);
-  font-size:13px;
-  line-height:1;
   transition:color 250ms ease,transform 350ms var(--ease);
 }
+.node-link-symbol .escie-symbol-glyph{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.35;stroke-linecap:round;stroke-linejoin:round}
+.section-motif-glyph .escie-symbol-glyph{width:1.25rem;height:1.25rem;fill:none;stroke:currentColor;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round}
 .node-link:hover{
   padding-left:10px;
   background:transparent;
