@@ -417,6 +417,8 @@
         if (!exists) return "";
         return '<a class="nav-link node-link' + (route === currentRoute ? ' is-current' : '') + '" href="' + escapeHTML(target) + '"' +
           (route === currentRoute ? ' aria-current="page"' : '') + ' data-node-target="' + escapeHTML(targetId) + '">' +
+          ' data-nav-number="' + String(Number(node.order) || 0).padStart(2, "0") + '"' +
+          '>' +
           '<span class="node-link-label">' + escapeHTML(node.label || node.id || "") + '</span>' +
           '<span class="node-link-symbol">' + customSymbolMarkup(node.symbol || "", node.label || node.id || "") + '</span>' +
           '</a>';
