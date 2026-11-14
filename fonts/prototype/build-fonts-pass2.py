@@ -122,7 +122,11 @@ def build(path,family,weight,kind):
         else: punct(ch,p)
         g[ch]=p.glyph(); m[ch]=(590 if kind!="escie" else 565,0); cmap[ord(ch)]=ch
     for ch in lower:
-        p=TTGlyphPen(None); (script if kind=="script" else display)(ch,p,clean=(kind=="signal"))
+        p=TTGlyphPen(None)
+        if kind=="script":
+            script(ch,p)
+        else:
+            display(ch,p,clean=(kind=="signal"))
         g[ch]=p.glyph(); m[ch]=(455 if kind=="script" else 450,0); cmap[ord(ch)]=ch
     for mark in marks:
         p=TTGlyphPen(None)
