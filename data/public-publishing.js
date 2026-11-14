@@ -58,5 +58,6 @@
     });
     return {ok:errors.length===0,errors};
   }
-  window.ESCIE_PUBLIC_PUBLISHING={version:"1.3.0",sections:Array.from(PUBLIC_SECTIONS),approved,boundaryAudit,sectionAudit,sectionsFor,canEnter,publicRecords,audit};
+  window.ESCIE_PUBLIC_PUBLISHING={version:"1.4.0",sections:Array.from(PUBLIC_SECTIONS),approved,boundaryAudit,sectionAudit,sectionsFor,canEnter,publicRecords,audit};
+  if(typeof module!=="undefined"&&module.exports)module.exports=window.ESCIE_PUBLIC_PUBLISHING;
 })();
