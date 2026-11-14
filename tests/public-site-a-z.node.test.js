@@ -81,6 +81,18 @@ test("A-Z Pass 1 rejects remaining legacy shell visual class",()=>{
 });
 
 
+test("A-Z Pass 4 locks standalone ESCIE identity metadata",()=>{
+  const index=read("index.html");
+  const emblem=read("assets/escie-emblem.svg");
+  assert.match(index,/rel="icon" href="\.\/assets\/escie-emblem\.svg"/);
+  assert.match(index,/rel="apple-touch-icon" href="\.\/assets\/escie-emblem\.svg"/);
+  assert.match(index,/property="og:image" content="\.\/assets\/escie-emblem\.svg"/);
+  assert.match(index,/name="theme-color" content="#050505"/);
+  assert.match(emblem,/<title id="title">ESCIE<\/title>/);
+  assert.match(emblem,/M32 3L54 30 32 61 10 30 32 3Z/);
+  assert.match(emblem,/M32 10v54/);
+});
+
 test("A-Z Pass 3 public index follows visitor priority and restrained palette",()=>{
   const navigation=read("navigation.js");
   const nodes=read("data/nodes.js");
