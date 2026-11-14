@@ -37,9 +37,8 @@
 .entry-inner h1,
 main > .site-section:not(#entry) h2,
 .escie-display,
-.font-escie,
-.hero h1{
-  font-family:var(--escie-font-escie);
+.font-escie{
+  font-family:"ESCIE",var(--escie-font-escie);
   font-weight:400;
   font-synthesis:none;
 }
@@ -50,7 +49,7 @@ main > .site-section:not(#entry) h2,
 .hero-location,
 .section-drop-trigger,
 .font-signal{
-  font-family:var(--escie-font-signal);
+  font-family:"ESCIE SIGNAL",var(--escie-font-signal);
   font-weight:400;
   font-synthesis:none;
 }
@@ -59,7 +58,7 @@ main > .site-section:not(#entry) h2,
 .glass-eye-personal,
 .visitor-trace,
 .personal-note{
-  font-family:var(--escie-font-script);
+  font-family:"ESCIE SCRIPT",var(--escie-font-script);
   font-weight:400;
   font-synthesis:none;
 }
@@ -73,7 +72,8 @@ body,
 }
 
 .entry-inner h1,
-main > .site-section:not(#entry) h2{
+main > .site-section:not(#entry) h2,
+.hero h1{
   letter-spacing:.035em;
   text-rendering:geometricPrecision;
   -webkit-font-smoothing:antialiased;
