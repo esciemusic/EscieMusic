@@ -1,12 +1,38 @@
-/* TEMPORARY TYPOGRAPHY FALLBACK
-   Native system fonts are intentionally used while the authored ESCIE font
-   loading/rendering issue is isolated. Keep the authored font assets intact. */
+/* ESCIE TYPOGRAPHY
+   Authored web fonts are loaded locally with system fallbacks.
+   The font assets remain self-hosted so GitHub Pages is the only dependency. */
+
+@font-face{
+  font-family:"ESCIE";
+  src:url("./fonts/release/ESCIE.woff2") format("woff2");
+  font-style:normal;
+  font-weight:400;
+  font-display:swap;
+}
+
+@font-face{
+  font-family:"ESCIE SIGNAL";
+  src:url("./fonts/release/ESCIE-SIGNAL.woff2") format("woff2");
+  font-style:normal;
+  font-weight:400;
+  font-display:swap;
+}
+
+@font-face{
+  font-family:"ESCIE SCRIPT";
+  src:url("./fonts/release/ESCIE-SCRIPT.woff2") format("woff2");
+  font-style:normal;
+  font-weight:400;
+  font-display:swap;
+}
+
 :root{
-  --escie-font-escie:Arial,Helvetica,sans-serif;
-  --escie-font-signal:"Courier New",Courier,monospace;
-  --escie-font-script:"Segoe Script","Brush Script MT",cursive;
+  --escie-font-escie:"ESCIE",Arial Black,Arial,Helvetica,sans-serif;
+  --escie-font-signal:"ESCIE SIGNAL","Courier New",Courier,monospace;
+  --escie-font-script:"ESCIE SCRIPT","Brush Script MT","Segoe Script",cursive;
   --escie-font-body:Arial,Helvetica,sans-serif;
 }
+
 .site-logo,
 .entry-inner h1,
 main > .site-section:not(#entry) h2,
@@ -17,6 +43,7 @@ main > .site-section:not(#entry) h2,
   font-weight:400;
   font-synthesis:none;
 }
+
 .index-navigation,
 .index-trigger,
 .site-preferences,
@@ -27,6 +54,7 @@ main > .site-section:not(#entry) h2,
   font-weight:400;
   font-synthesis:none;
 }
+
 .font-script,
 .glass-eye-personal,
 .visitor-trace,
@@ -35,6 +63,7 @@ main > .site-section:not(#entry) h2,
   font-weight:400;
   font-synthesis:none;
 }
+
 body,
 .section-lede,
 .content-container,
@@ -42,6 +71,7 @@ body,
   font-family:var(--escie-font-body);
   font-synthesis:none;
 }
+
 .entry-inner h1,
 main > .site-section:not(#entry) h2{
   letter-spacing:.035em;
@@ -49,10 +79,13 @@ main > .site-section:not(#entry) h2{
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
 }
+
 .hero-location,
 .section-drop-trigger{
   letter-spacing:.14em;
   text-transform:uppercase;
 }
+
 .font-script{letter-spacing:.015em;}
+
 html,body{font-synthesis:none;}
