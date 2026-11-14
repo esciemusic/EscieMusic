@@ -1,46 +1,23 @@
-/* ESCIE TYPOGRAPHY
-   Authored web fonts are loaded locally with system fallbacks.
-   The font assets remain self-hosted so GitHub Pages is the only dependency. */
-
-@font-face{
-  font-family:"ESCIE";
-  src:url("./fonts/release/ESCIE.woff2") format("woff2");
-  font-style:normal;
-  font-weight:400;
-  font-display:swap;
-}
-
-@font-face{
-  font-family:"ESCIE SIGNAL";
-  src:url("./fonts/release/ESCIE-SIGNAL.woff2") format("woff2");
-  font-style:normal;
-  font-weight:400;
-  font-display:swap;
-}
-
-@font-face{
-  font-family:"ESCIE SCRIPT";
-  src:url("./fonts/release/ESCIE-SCRIPT.woff2") format("woff2");
-  font-style:normal;
-  font-weight:400;
-  font-display:swap;
-}
+/* TEMPORARY TYPOGRAPHY FALLBACK
+   The current release binaries are prototype geometry, not the approved
+   ESCIE display direction. Keep them out of production until the correct
+   original family is finished and visually approved.
+   System fonts are intentional during this isolation pass. */
 
 :root{
-  --escie-font-escie:"ESCIE",Arial Black,Arial,Helvetica,sans-serif;
-  --escie-font-signal:"ESCIE SIGNAL","Courier New",Courier,monospace;
-  --escie-font-script:"ESCIE SCRIPT","Brush Script MT","Segoe Script",cursive;
+  --escie-font-escie:Arial,Helvetica,sans-serif;
+  --escie-font-signal:"Courier New",Courier,monospace;
+  --escie-font-script:"Segoe Script","Brush Script MT",cursive;
   --escie-font-body:Arial,Helvetica,sans-serif;
 }
 
-.hero h1,
 .site-logo,
 .entry-inner h1,
 main > .site-section:not(#entry) h2,
 .escie-display,
 .font-escie{
-  font-family:"ESCIE",var(--escie-font-escie);
-  font-weight:400;
+  font-family:var(--escie-font-escie);
+  font-weight:700;
   font-synthesis:none;
 }
 
@@ -50,7 +27,7 @@ main > .site-section:not(#entry) h2,
 .hero-location,
 .section-drop-trigger,
 .font-signal{
-  font-family:"ESCIE SIGNAL",var(--escie-font-signal);
+  font-family:var(--escie-font-signal);
   font-weight:400;
   font-synthesis:none;
 }
@@ -59,7 +36,7 @@ main > .site-section:not(#entry) h2,
 .glass-eye-personal,
 .visitor-trace,
 .personal-note{
-  font-family:"ESCIE SCRIPT",var(--escie-font-script);
+  font-family:var(--escie-font-script);
   font-weight:400;
   font-synthesis:none;
 }
