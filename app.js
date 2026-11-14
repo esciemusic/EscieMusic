@@ -124,8 +124,17 @@
   }
 
   function symbolGlyph(name) {
-    const glyphs = {"CAMERA":"◎","DAISY":"✳","CHILD'S SHOE":"⌁","NIGHTLIGHT":"◌","KEY":"⌕","EMPTY CHAIR":"□","VHS":"▣"};
-    return glyphs[name] || "·";
+    const glyphs = {
+      "CAMERA":"camera","DAISY":"daisy","CHILD'S SHOE":"child-shoe",
+      "NIGHTLIGHT":"nightlight","KEY":"key","EMPTY CHAIR":"empty-chair","VHS":"vhs"
+    };
+    return glyphs[name] || "";
+  }
+
+  function customSymbolMarkup(glyph, label) {
+    const safeGlyph = String(glyph || "").replace(/[^a-z0-9-]/gi, "");
+    if (!safeGlyph) return "";
+    return '<svg class="escie-symbol-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#' + escapeHTML(safeGlyph) + '"></use></svg>';
   }
 
   function motifMarkup(sectionId) {
@@ -134,7 +143,7 @@
     return '<div class="section-motif" aria-label="Recurring motifs: ' + escapeHTML(symbols.map(symbol => symbol.name).join(", ")) + '">' +
       symbols.map(symbol =>
         '<button class="section-motif-item" type="button" data-symbol-id="' + escapeHTML(symbol.id) + '" title="' + escapeHTML(symbol.motif || symbol.name) + '">' +
-          '<span class="section-motif-glyph" aria-hidden="true">' + escapeHTML(symbolGlyph(symbol.name)) + '</span>' +
+          '<span class="section-motif-glyph">' + customSymbolMarkup(symbol.glyph || symbolGlyph(symbol.name), symbol.name) + '</span>' +
           '<span class="section-motif-name">' + escapeHTML(symbol.name) + '</span>' +
         '</button>'
       ).join("") +
@@ -387,7 +396,7 @@
         return '<a class="nav-link node-link' + (route === currentRoute ? ' is-current' : '') + '" href="' + escapeHTML(target) + '"' +
           (route === currentRoute ? ' aria-current="page"' : '') + ' data-node-target="' + escapeHTML(targetId) + '">' +
           '<span class="node-link-label">' + escapeHTML(node.label || node.id || "") + '</span>' +
-          '<span class="node-link-symbol" aria-hidden="true">' + escapeHTML(node.symbol || "·") + '</span>' +
+          '<span class="node-link-symbol">' + customSymbolMarkup(node.symbol || "", node.label || node.id || "") + '</span>' +
           '</a>';
       }).join("");
   }
