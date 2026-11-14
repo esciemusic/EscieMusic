@@ -780,7 +780,7 @@
     const trailIds=Array.isArray(ESCIE_RUNTIME.webTrail)?ESCIE_RUNTIME.webTrail:[];
     const trailRecords=trailIds.map(id=>byIdMap.get(id)).filter(Boolean);
     const trailMarkup=trailRecords.length
-      ? '<div class="web-thread-trail"><div class="web-thread-trail-head"><span class="eyebrow">THREAD PATH</span><span>'+trailRecords.length+' STEPS</span></div><div class="web-thread-trail-list">'+trailRecords.map((node,index)=>'<button type="button" class="web-trail-node" data-record-id="'+escapeHTML(recordId(node))" aria-label="Return to '+escapeHTML(recordTitle(node))+'"><span>'+String(index+1).padStart(2,"0")+'</span><strong>'+escapeHTML(recordTitle(node))+'</strong></button>').join('<i aria-hidden="true">→</i>')+'</div></div>'
+      ? '<div class="web-thread-trail"><div class="web-thread-trail-head"><span class="eyebrow">THREAD PATH</span><span>'+trailRecords.length+' STEPS</span></div><div class="web-thread-trail-list">'+trailRecords.map((node,index)=>'<button type="button" class="web-trail-node" data-record-id="'+escapeHTML(recordId(node))+'" aria-label="Return to '+escapeHTML(recordTitle(node))+'"><span>'+String(index+1).padStart(2,"0")+'</span><strong>'+escapeHTML(recordTitle(node))+'</strong></button>').join('<i aria-hidden="true">→</i>')+'</div></div>'
       : "";
     const networkMap=selected
       ? '<div class="web-thread-map"><div class="web-thread-map-head"><div><span class="eyebrow">THREAD MAP</span><h4>'+escapeHTML(recordTitle(selected))+'</h4></div><span>'+selectedLinks.length+' DIRECT '+(selectedLinks.length===1?"CONNECTION":"CONNECTIONS")+'</span></div>'+
