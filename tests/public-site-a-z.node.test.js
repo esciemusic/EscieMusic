@@ -1225,6 +1225,15 @@ test("A-Z Pass 4 language runtime has parity across EN, FR and ES",()=>{
   }
 });
 
+test("A-Z Pass 4 share identity metadata and theme chrome stay aligned",()=>{
+  const index=read("index.html");
+  assert.match(index,/property="og:site_name" content="ESCIE"/);
+  assert.match(index,/name="twitter:card" content="summary"/);
+  assert.match(index,/name="twitter:image" content="\.\/assets\/escie-emblem\.svg"/);
+  assert.match(index,/var themeColorMeta=document\.querySelector\('meta\[name="theme-color"\]'\)/);
+  assert.match(index,/themeColorMeta\.setAttribute\("content",theme==="light"\?"#f0ede4":"#050505"\)/);
+});
+
 test("A-Z Pass 4 ESCIE emblem is a standalone identity mark and the Index uses the canonical glyph",()=>{
   const index=read("index.html");
   const svg=read("assets/escie-symbols.svg");
