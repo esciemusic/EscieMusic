@@ -1211,3 +1211,26 @@ test("A-Z Pass 4 preference controls use the canonical theme glyph",()=>{
   assert.match(index,/class="theme-toggle-icon"[^>]*aria-hidden="true">[\s\S]*escie-symbols\.svg#theme/);
   assert.match(aesthetic,/\.theme-toggle-icon\{/);
 });
+
+
+test("A-Z Pass 4 skyline backdoors preserve obvious city entry and deeper destinations",()=>{
+  const index=read("index.html");
+  const engine=read("world-engine.js");
+  const app=read("app.js");
+  const aesthetic=read("aesthetic.css");
+  assert.match(index,/hero-skyline-map/);
+  assert.match(index,/href="#world-node=montreal"/);
+  assert.match(index,/data-skyline-door="places" data-skyline-node="parc-extension"/);
+  assert.match(index,/data-skyline-door="people" data-skyline-node="a-good-person"/);
+  assert.match(index,/data-skyline-door="moments"/);
+  assert.match(index,/href="#art"/);
+  assert.match(engine,/function applyWorldRoute()/);
+  assert.match(engine,/^.*world-tab=\(\[\^&\]\+\).*$/m);
+  assert.match(engine,/state\.tab=tab/);
+  assert.match(app,/\/\^\(world-node=\|world-tab=\)\//);
+  assert.match(aesthetic,/\.hero-skyline-backdoor/);
+  assert.match(aesthetic,/\.skyline-door-place/);
+  assert.match(aesthetic,/\.skyline-door-people/);
+  assert.match(aesthetic,/\.skyline-door-moments/);
+  assert.match(aesthetic,/\.skyline-door-art/);
+});
