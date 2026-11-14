@@ -154,6 +154,31 @@ async function auditCurrentExperience(label){
   check(whiteBlocks===0, label+' generic white section blocks detected: '+whiteBlocks);
 }
 
+async function auditCarousels(label){
+  const carousels = page.locator('[data-record-carousel], #art-forms');
+  const count = await carousels.count();
+  check(count >= 1, label + ' expected at least one public carousel');
+  for(let i=0;i<count;i++){
+    const carousel = carousels.nth(i);
+    if(!(await carousel.isVisible().catch(()=>false))) continue;
+    const slides = carousel.locator('.record-carousel-slide, .art-carousel-slide');
+    const slideCount = await slides.count();
+    if(slideCount < 2) continue;
+    const visible = carousel.locator('.record-carousel-slide:not([hidden]), .art-carousel-slide:not([hidden])');
+    check(await visible.count() === 1, label + ' carousel must expose exactly one active slide');
+    const position = carousel.locator('.record-carousel-position, .art-carousel-position').first();
+    check(await position.count() === 1, label + ' carousel position indicator missing');
+    const viewport = carousel.locator('.record-carousel-viewport, .art-carousel-viewport').first();
+    check(await viewport.count() === 1, label + ' carousel viewport missing');
+    if(await viewport.count()){
+      await viewport.focus();
+      await page.keyboard.press('ArrowRight');
+      check(await visible.count() === 1, label + ' carousel keyboard navigation broke active-slide invariant');
+      await page.keyboard.press('ArrowLeft');
+      check(await visible.count() === 1, label + ' carousel reverse keyboard navigation broke active-slide invariant');
+    }
+  }
+}
 async function auditSymbols(label) {
   const symbols = page.locator(".section-motif-item");
   let visibleCount = 0;
@@ -237,6 +262,7 @@ await auditAccordions("mobile");
 await auditGlassEye("mobile");
 await auditCurrentExperience("mobile");
 await auditWorldLenses("mobile");
+await auditCarousels("mobile");
 check(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 2), "mobile public layout has horizontal overflow");
 
 for (const lang of ["en", "fr", "es"]) {
@@ -262,6 +288,7 @@ await auditAccordions("desktop");
 await auditGlassEye("desktop");
 await auditCurrentExperience("desktop");
 await auditWorldLenses("desktop");
+await auditCarousels("desktop");
 check(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 2), "desktop public layout has horizontal overflow");
 await auditSymbols("desktop");
 await scanRenderedBoundary("desktop");
@@ -295,6 +322,7 @@ console.log(JSON.stringify({
     "accordion open/close",
     "closed-row zero-space",
     "interactive symbols",
+    "ART, Archives, and Case Files carousel behavior",
     "Glass Eye actions and media gate",
     "language/theme controls",
     "same-origin request health",
