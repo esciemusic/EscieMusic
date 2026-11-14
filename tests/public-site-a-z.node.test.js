@@ -1212,7 +1212,7 @@ test("A-Z Pass 4 preference controls use the canonical theme glyph",()=>{
 });
 
 
-test("A-Z Pass 4 skyline backdoors preserve obvious city entry and deeper destinations",()=>{
+test("A-Z Pass 4 skyline doorway preserves the city entry without duplicate hero navigation",()=>{
   const index=read("index.html");
   const engine=read("world-engine.js");
   const app=read("app.js");
@@ -1220,10 +1220,9 @@ test("A-Z Pass 4 skyline backdoors preserve obvious city entry and deeper destin
   assert.match(index,/hero-skyline-map/);
   assert.match(index,/href="#world-tab=places&world-node=parc-extension"/);
   assert.match(index,/aria-label="Enter Parc-Extension"/);
-  assert.match(index,/data-skyline-door="places" data-skyline-node="parc-extension"/);
-  assert.match(index,/data-skyline-door="people" data-skyline-node="a-good-person"/);
-  assert.match(index,/data-skyline-door="moments"/);
-  assert.match(index,/href="#art"/);
+  assert.doesNotMatch(index,/hero-skyline-backdoor/);
+  assert.doesNotMatch(index,/data-skyline-door=/);
+  assert.doesNotMatch(index,/hero-index-links/);
   assert.match(engine,/function applyWorldRoute()/);
   assert.match(engine,/^.*world-tab=\(\[\^&\]\+\).*$/m);
   assert.match(engine,/state\.tab=tab/);
