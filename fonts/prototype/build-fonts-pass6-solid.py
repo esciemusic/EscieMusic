@@ -103,8 +103,9 @@ def build_pass6(path,family,weight,kind):
         ns["display"]=old
 
 if __name__=="__main__":
-    os.makedirs("dist/pass6",exist_ok=True)
-    build_pass6("dist/pass6/ESCIE.ttf","ESCIE",800,"escie")
-    build_pass6("dist/pass6/ESCIE-SIGNAL.ttf","ESCIE SIGNAL",600,"signal")
-    build_pass6("dist/pass6/ESCIE-SCRIPT.ttf","ESCIE SCRIPT",400,"script")
-    print("Generated Pass-6 prototype family in dist/pass6/")
+    OUT=os.path.join(os.path.dirname(__file__),"dist","pass6")
+    os.makedirs(OUT,exist_ok=True)
+    build_pass6(os.path.join(OUT,"ESCIE.ttf"),"ESCIE",800,"escie")
+    build_pass6(os.path.join(OUT,"ESCIE-SIGNAL.ttf"),"ESCIE SIGNAL",600,"signal")
+    build_pass6(os.path.join(OUT,"ESCIE-SCRIPT.ttf"),"ESCIE SCRIPT",400,"script")
+    print("Generated Pass-6 prototype family in",OUT)
