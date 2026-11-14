@@ -1684,6 +1684,26 @@ function renderClothing(){
       }
       const webClear=event.target.closest("[data-web-filter-clear]");
       if(webClear){ ESCIE_RUNTIME.webFilters={}; renderWeb(); return; }
+      const webTrailBack=event.target.closest("[data-web-trail-back]");
+      if(webTrailBack){
+        const trail=Array.isArray(ESCIE_RUNTIME.webTrail)?ESCIE_RUNTIME.webTrail:[];
+        if(trail.length>1){
+          trail.pop();
+          ESCIE_RUNTIME.webFilters=ESCIE_RUNTIME.webFilters||{};
+          ESCIE_RUNTIME.webFilters.record=trail[trail.length-1]||"";
+          renderWeb();
+        }
+        return;
+      }
+      const webTrailClear=event.target.closest("[data-web-trail-clear]");
+      if(webTrailClear){
+        ESCIE_RUNTIME.webTrail=[];
+        ESCIE_RUNTIME.webFilters=ESCIE_RUNTIME.webFilters||{};
+        ESCIE_RUNTIME.webFilters.record="";
+        renderWeb();
+        return;
+      }
+
 
       const webControl=event.target.closest("[data-web-filter],[data-web-record-type]");
       if(webControl)return;
