@@ -424,13 +424,17 @@ test("A-Z Pass 3 mobile hero respects viewport and safe-area composition",()=>{
   assert.match(style,/\.entry-inner\{[\s\S]*width:min\(100%,100%\)/);
 });
 
-test("A-Z Pass 3 hero identity stays dominant over signal chamber",()=>{
+test("A-Z Pass 3 hero identity stays dominant over the Montreal distortion",()=>{
+  const index=read("index.html");
   const style=read("style.css");
-  assert.match(style,/\.entry-inner \{[\s\S]*isolation: isolate/);
-  assert.match(style,/\.entry-section #entry-container h1,[\s\S]*z-index: 3/);
-  assert.match(style,/\.signal-window \{\s*opacity: \.82;\s*\}/);
-  assert.match(style,/\.signal-city \{\s*opacity: \.56;\s*\}/);
-  assert.match(style,/@media\(max-width:700px\) \{\s*\.signal-window \{ opacity: \.74; \}\s*\.signal-city \{ opacity: \.50; \}\s*\}/);
+  assert.match(index,/A GOOD PERSON\. I['’]M JUST NOT NICE\./);
+  assert.match(index,/MONTRÉAL, QUÉBEC, CANADA/);
+  assert.match(index,/hero-skyline-art/);
+  assert.match(style,/\.hero-inner \{[\s\S]*isolation: isolate/);
+  assert.match(style,/\.entry-section #entry-container h1,[\s\S]*z-index:3/);
+  assert.match(style,/\.hero-skyline-art/);
+  assert.match(style,/\.hero-skyline-distortion/);
+  assert.doesNotMatch(index,/signal-chamber|signal-window|signal-city/);
 });
 
 test("A-Z Pass 3 signal atmosphere stays restrained",()=>{
