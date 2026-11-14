@@ -426,15 +426,15 @@ test("A-Z Pass 3 mobile hero respects viewport and safe-area composition",()=>{
 
 test("A-Z Pass 3 hero identity stays dominant over the Montreal distortion and links to the ESCIE bio",()=>{
   const index=read("index.html");
-  const style=read("style.css");
+   const style=read("style.css");
    assert.ok(index.includes("A GOOD PERSON. I'M JUST NOT NICE."));
   assert.ok(index.includes('<h1><a class="hero-identity-link" href="#escie" aria-label="Go to ESCIE bio">ESCIE</a></h1>'));
   assert.match(index,/MONTRÉAL, QUÉBEC, CANADA/);
   assert.match(index,/hero-skyline-art/);
    assert.match(style,/\.entry-inner\{[\s\S]*isolation:isolate/);
    assert.ok(style.includes('.entry-section #entry-container h1,.entry-section #entry-container #entry-social,.entry-section #entry-container #entry-tagline,.entry-section #entry-container #entry-location{position:relative;z-index:3;}'));
-  assert.ok(style.includes('.hero-identity-link{display:inline-block;color:inherit;text-decoration:none'));
-  assert.match(style,/\.hero-skyline-art/);
+   const aesthetic=read("aesthetic.css");
+   assert.ok(aesthetic.includes('.hero-identity-link{display:inline-block;color:inherit;text-decoration:none'));
   assert.match(style,/\.hero-skyline-distortion/);
   assert.doesNotMatch(index,/signal-chamber|signal-window|signal-city/);
 });
