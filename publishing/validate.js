@@ -1,5 +1,5 @@
 /* ESCIE PUBLISHING — VALIDATE */
-const PUBLIC_GATE=require("../data/public-publishing.js");
+const PUBLIC_GATE=typeof module!=="undefined"&&module.exports?require("../data/public-publishing.js"):window.ESCIE_PUBLIC_PUBLISHING;
 const REQUIRED_PUBLIC_FIELDS=Object.freeze(["id","type"]);
 function validatePublicRecord(record={}){
   const errors=[];
