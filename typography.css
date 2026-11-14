@@ -37,7 +37,8 @@
 .entry-inner h1,
 main > .site-section:not(#entry) h2,
 .escie-display,
-.font-escie{
+.font-escie,
+.hero h1{
   font-family:"ESCIE",var(--escie-font-escie);
   font-weight:400;
   font-synthesis:none;
