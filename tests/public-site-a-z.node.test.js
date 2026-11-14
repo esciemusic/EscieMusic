@@ -1412,3 +1412,13 @@ test("A-Z Pass 10 protects semantic Web thread paths",()=>{
   assert.match(app,/web-trail-step/);
   assert.match(style,/\.web-trail-step/);
 });
+
+test("A-Z Pass 11 protects Web thread backtracking",()=>{
+  const app=read("app.js");
+  const style=read("style.css");
+  assert.match(app,/data-web-trail-back/);
+  assert.match(app,/data-web-trail-clear/);
+  assert.match(app,/trail.pop\(\)/);
+  assert.match(style,/\.web-thread-trail-controls/);
+  assert.match(style,/\.web-trail-back/);
+});
