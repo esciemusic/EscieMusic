@@ -106,14 +106,10 @@ test("A-Z Pass 3 public index follows visitor priority and restrained palette",(
   assert.match(navigation,/id:"archives".*order:6/);
   assert.match(navigation,/id:"investigation".*order:7/);
   assert.match(navigation,/id:"escie".*order:8/);
-  assert.match(nodes,/id:"node-glass-eye"[^
-]*order:4/);
-  assert.match(nodes,/id:"node-web"[^
-]*order:5/);
-  assert.match(nodes,/id:"node-archives"[^
-]*order:6/);
-  assert.match(nodes,/id:"node-investigation"[^
-]*order:7/);
+  assert.match(nodes,/id:"node-glass-eye"[\\s\\S]*?order:4/);
+  assert.match(nodes,/id:"node-web"[\\s\\S]*?order:5/);
+  assert.match(nodes,/id:"node-archives"[\\s\\S]*?order:6/);
+  assert.match(nodes,/id:"node-investigation"[\\s\\S]*?order:7/);
   assert.match(aesthetic,/main > #now\{--section-accent:#4da3ff/);
   assert.match(aesthetic,/main > #art\{--section-accent:#9b59ff/);
   assert.match(aesthetic,/main > #archives\{--section-accent:#9a9da3/);
@@ -338,8 +334,7 @@ test("A-Z Pass 3 ART filters produce a distinct zero-match state without crossin
   assert.match(language,/AUCUNE ŒUVRE PUBLIQUE NE CORRESPOND À CETTE TRACE/);
   assert.match(language,/NINGUNA OBRA PÚBLICA COINCIDE CON ESTA HUELLA/);
   assert.match(app,/getFilteredWorkRecords\(\)/);
-  assert.doesNotMatch(app,/getAllRecords\(\)\.filter\([^
-]*workFilters/);
+  assert.doesNotMatch(app,/getAllRecords\\(\\)\\.filter\\([\\s\\S]*?workFilters/);
 });
 
 test("A-Z Pass 3 ART metadata filters are rendered, public-scoped, and usable",()=>{
@@ -1055,8 +1050,7 @@ test("A-Z Pass 3 ESCIE field preserves the external signal without exposing priv
 test("A-Z Pass 3 ESCIE section remains a collapsible public doorway",()=>{
   const index=read("index.html");
   assert.match(index,/id="escie" class="site-section escie-section"/);
-  assert.match(index,/var symbols=\{[^
-]*escie:"escie"/);
+  assert.match(index,/var symbols=\\{[\\s\\S]*?escie:"escie"/);
   assert.match(index,/section-drop-trigger/);
   assert.match(index,/section-drop-panel/);
   assert.match(index,/aria-expanded="false"/);
