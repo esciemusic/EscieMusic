@@ -21,6 +21,7 @@ ring = ns["ring"]
 build = ns["build"]
 
 ANCHORS = {"A","C","E","G","I","M","O","R","S","T"}
+BASE_DISPLAY = ns["display"]
 
 def signature_pass7(ch, p, clean=False):
     weight = 82 if clean else 88
@@ -86,7 +87,7 @@ def signature_pass7(ch, p, clean=False):
         rect(p,274,45,72,620,.01)
         return
 
-    ns["display"](ch,p,clean=clean)
+    BASE_DISPLAY(ch,p,clean=clean)
 
 def display_pass7(ch,p,clean=False):
     if ch.islower() and ch.upper().isalpha():
@@ -95,12 +96,12 @@ def display_pass7(ch,p,clean=False):
         if up in ANCHORS:
             signature_pass7(up,tp,clean=clean)
         else:
-            ns["display"](up,tp,clean=clean)
+            BASE_DISPLAY(up,tp,clean=clean)
         return
     if ch in ANCHORS:
         signature_pass7(ch,p,clean=clean)
     else:
-        ns["display"](ch,p,clean=clean)
+        BASE_DISPLAY(ch,p,clean=clean)
 
 def build_pass7(path,family,weight,kind):
     old=ns["display"]
