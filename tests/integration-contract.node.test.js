@@ -32,7 +32,7 @@ test("public source contains no Central secret key material",()=>{
 
 test("public projection boundary rejects unsafe Central states",()=>{
   const gate=loadPublishing();
-  const base={id:"x",status:"published",published:true,visibility:"public",release_status:"released",public_disclosure:true};
+  const base={id:"x",status:"published",published:true,visibility:"public",release_status:"released",public_disclosure:true,approved:false};
   assert.equal(gate.canEnter({...base,public_sections:["art"]},"art"),false);
   assert.equal(gate.canEnter({...base,approved:true,public_sections:["art"]},"art"),true);
   assert.equal(gate.canEnter({...base,approved:true,canonical_write:true,public_sections:["art"]},"art"),false);
