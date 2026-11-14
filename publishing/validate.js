@@ -1,25 +1,12 @@
 /* ESCIE PUBLISHING — VALIDATE */
+const PUBLIC_GATE=require("../data/public-publishing.js");
 const REQUIRED_PUBLIC_FIELDS=Object.freeze(["id","type"]);
-const PUBLIC_SECTIONS=Object.freeze(["now","art","world","web","archives","investigation","glass-eye","escie"]);
 function validatePublicRecord(record={}){
   const errors=[];
   for(const field of REQUIRED_PUBLIC_FIELDS)if(!record[field])errors.push(`Missing required public field: ${field}`);
-  const registry=typeof window!=="undefined"?window.ESCIE_RECORD_REGISTRY:null;
-  const gate=typeof window!=="undefined"?window.ESCIE_PUBLIC_PUBLISHING:null;
-  if(gate&&typeof gate.approved==="function"){if(!gate.approved(record))errors.push("Record is not approved by the canonical public publishing gate.");}
-  else{
-    if(registry&&typeof registry.releaseVisible==="function"){if(!registry.releaseVisible(record))errors.push("Record is not visible under the canonical release gate.");}
-    else if(record.release_status&&record.release_status!=="released")errors.push("Record release status is not released.");
-    else if(record.type==="project"&&record.release_mode==="progressive")errors.push("Progressive project is not visible without a released transmission.");
-    if(!(record.published===true||record.status==="published"))errors.push("Record is not marked for publication.");
-    if(["private","withheld","limited"].includes(String(record.visibility||"").toLowerCase()))errors.push(`Record visibility is ${String(record.visibility).toLowerCase()}.`);
-    if(record.public_disclosure===false)errors.push("Record does not permit public disclosure.");
-  }
-  const sections=record.public_sections;
-  if(sections!==undefined&&sections!==null){
-    if(!Array.isArray(sections))errors.push("public_sections must be an array.");
-    else sections.forEach(section=>{if(!PUBLIC_SECTIONS.includes(section))errors.push(`Unknown public section: ${section}`);});
-  }
+  if(!PUBLIC_GATE.boundaryAudit(record).ok)PUBLIC_GATE.boundaryAudit(record).errors.forEach(error=>errors.push(error));
+  if(!PUBLIC_GATE.approved(record))errors.push("Record is not approved by the canonical public publishing gate.");
+  PUBLIC_GATE.sectionAudit(record).forEach(error=>errors.push(error.error||"Invalid public section."));
   return {valid:errors.length===0,errors};
 }
 function validateBuild(build={}){
