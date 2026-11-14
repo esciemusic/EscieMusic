@@ -189,7 +189,22 @@ function handleWorldHash(){
  if(applyWorldRoute()){render();return}
  const hash=location.hash.match(/^#world-node=(.+)$/);
  if(!hash){state.selected=null;render();return}
- try{const id=decodeURIComponent(hash[1]);if(records().some(r=>String(r.id)===String(id))){state.selected=id;remember(id);render();return}state.selected=null;render();}catch(e){state.selected=null;render();}
+ try{
+   const id=decodeURIComponent(hash[1]);
+   const node=records().find(r=>String(r.id)===String(id));
+   if(node){
+     const nodeType=type(node).toLowerCase();
+     const inferred=nodeType==="place"?"places":nodeType==="person"?"people":nodeType==="moment"?"moments":nodeType==="fragment"?"fragments":nodeType==="body"?"bodies":nodeType==="proof"?"proof":nodeType==="path"?"path":"atlas";
+     state.tab=inferred;
+     state.selected=id;
+     remember(id);
+     syncNodeHash(id);
+     render();
+     return;
+   }
+   state.selected=null;
+   render();
+ }catch(e){state.selected=null;render();}
 }
 function init(){
  loadTrail();
