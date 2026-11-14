@@ -21,7 +21,10 @@ const ESCIE_UI_ROUTER = {
     if (this.routes.has(raw)) return raw;
     const normalized = raw.charAt(0) === "#" ? raw.slice(1) : raw;
     if (this.routes.has(normalized)) return normalized;
-    const aliases = { work: "art", archive: "archives", cases: "investigation" };\n    // Art category deep links are presentation routes into the ART section.\n    // The carousel owns the category state; the shared router only resolves the section.\n    if (/^art\\/(music|words|visual|projects)$/i.test(normalized) && this.routes.has("art")) return "art";
+    const aliases = { work: "art", archive: "archives", cases: "investigation" };
+    // Art category deep links are presentation routes into the ART section.
+    // The carousel owns the category state; the shared router only resolves the section.
+    if (/^art\\/(music|words|visual|projects)$/i.test(normalized) && this.routes.has("art")) return "art";
     const alias = aliases[normalized];
     return alias && this.routes.has(alias) ? alias : null;
   },
