@@ -1,5 +1,5 @@
 /* ESCIE PUBLISHING — BUILD */
-const PUBLIC_GATE=require("../data/public-publishing.js");
+const PUBLIC_GATE=typeof module!=="undefined"&&module.exports?require("../data/public-publishing.js"):window.ESCIE_PUBLIC_PUBLISHING;
 function isPublicRecord(record={}){return !!record&&PUBLIC_GATE.boundaryAudit(record).ok&&PUBLIC_GATE.approved(record);}
 function buildPublicRecords(records=[]){
   if(!Array.isArray(records))return [];
