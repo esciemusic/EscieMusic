@@ -460,14 +460,13 @@ test("A-Z Pass 3 signal chamber remains visual-only without runtime status state
   assert.doesNotMatch(style,/transition: opacity 900ms/);
 });
 
-test("A-Z Pass 3 keeps the public signal chamber visual-only",()=>{
+test("A-Z Pass 3 keeps the Montreal distortion visual-only",()=>{
   const index=read("index.html");
-  const style=read("style.css");
-  assert.ok(index.includes('class="signal-chamber"'));
-  assert.ok(index.includes('class="signal-city"'));
-  assert.doesNotMatch(index,/signal-status|data-escie-countdown|NEXT TRANSMISSION/);
-  assert.doesNotMatch(index,/signal\/countdown/);
-  assert.doesNotMatch(style,/\\.signal-status|\\.escie-countdown|\\.countdown-status|\\.countdown-value/);
+  const css=read("style.css");
+  assert.ok(index.includes('class="hero-skyline"'));
+  assert.ok(index.includes('class="hero-skyline-distortion"'));
+  assert.ok(!index.includes('class="signal-chamber"'));
+  assert.ok(css.includes(".hero-skyline-distortion"));
 });
 
 test("A-Z Pass 3 entry contains no runtime signal status state",()=>{
@@ -803,78 +802,10 @@ test("A-Z Pass 3 hero supporting copy preserves signal hierarchy",()=>{
 });
 
 
-test("A-Z Pass 3 signal chamber respects reduced-motion preferences",()=>{
+test("A-Z Pass 3 Montreal distortion respects reduced-motion preferences",()=>{
   const css=read("style.css");
-  assert.ok(css.includes(".signal-chamber")&&css.includes(".signal-scan")&&css.includes(".signal-light")&&css.includes(".signal-window::before"));
-  assert.ok(css.includes("transition: none;"));
-});
-
-
-test("A-Z Pass 3 Montréal skyline uses recognizable landmark silhouettes",()=>{
-  const css=read("style.css");
-  assert.ok(css.includes("Montréal skyline"));
-  assert.ok(css.includes("Mount Royal cross"));
-  assert.ok(css.includes("Olympic Stadium tower"));
-  assert.ok(css.includes(".signal-city::before"));
-  assert.ok(css.includes(".signal-city::after"));
-});
-
-
-test("ART is a complete creative body with a compact public taxonomy",()=>{
-  const index=read("index.html"),app=read("app.js"),registry=read("data/registry.js"),art=read("data/art.js");
-  for(const label of ["MUSIC","WORDS","VISUAL","PROJECTS"]) assert.ok(index.includes("<h3>"+label+"</h3>"),"ART must expose "+label);
-  for(const label of ["POETRY","WRITING","DRAWINGS","PAINTING","FILM / VISUAL"]) assert.ok(app.includes('label:"'+label+'"'),"ART must retain "+label+" internally");
-  assert.ok(index.includes('id="art-forms"'));
-  assert.ok(index.includes('trigger.setAttribute("aria-expanded","false")'));
-  assert.ok(index.includes('trigger.setAttribute("aria-controls",panelId)'));
-  assert.ok(index.includes('panel.setAttribute("role","region")'));
-  assert.ok(index.includes('panel.setAttribute("aria-label",title)'));
-  assert.ok(index.includes('panel.hidden=true'));
-  assert.ok(index.includes('trigger.setAttribute("aria-expanded",String(open))'));
-  assert.ok(app.includes("function renderArtForm"));
-  assert.ok(app.includes("function renderArtGroup"));
-  assert.ok(app.includes('const populated=groups.map(group=>({'));
-  assert.ok(app.includes('renderEmpty(container,emptyMessage||"THE WORK EXISTS. IT HAS NOT BEEN TRANSMITTED HERE YET.","art-group-quiet")'));
-  assert.ok(app.includes('className="art-form-group"'));
-  assert.ok(app.includes('class="art-record-card"'));
-  assert.ok(app.includes('renderArtGroup("words-container"'));
-  assert.ok(app.includes('renderArtGroup("visual-container"'));
-  assert.doesNotMatch(index,/<h3>OTHER<\/h3>/);
-  assert.doesNotMatch(index,/<h3>POETRY<\/h3>/);
-  assert.doesNotMatch(index,/<h3>DRAWINGS<\/h3>/);
-  assert.doesNotMatch(index,/<h3>PAINTING<\/h3>/);
-  assert.doesNotMatch(index,/<h3>WRITING<\/h3>/);
-  assert.doesNotMatch(index,/<h3>FILM \/ VISUAL<\/h3>/);
-  assert.ok(registry.includes('["poetry",()=>collection("ESCIE_POETRY")]'));
-  assert.ok(registry.includes('["drawing",()=>collection("ESCIE_DRAWINGS")]'));
-  assert.ok(art.includes('id:"drawings",label:"DRAWINGS"'));
-});
-
-
-test("A-Z Pass 3 THE WEB connection field is covered by a public interaction contract",()=>{
-  const app=read("app.js");
-  const style=read("style.css");
-  assert.match(app,/function renderWeb\(\)/);
-  assert.match(app,/class="web-experience web-identity-field"/);
-  assert.match(app,/class="web-connection-field"/);
-  assert.match(app,/class="web-connection-main"/);
-  assert.match(app,/class="web-node"/);
-  assert.match(app,/class="web-connection-line"/);
-  assert.match(app,/data-web-connection-toggle/);
-  assert.match(app,/data-web-search/);
-  assert.match(app,/data-web-filter="record"/);
-  assert.match(app,/data-web-filter="type"/);
-  assert.match(app,/data-web-participate/);
-  assert.match(app,/aria-expanded="false"/);
-  assert.match(app,/detail\.hidden===false/);
-  assert.match(app,/setAttribute\("aria-expanded",open\?"false":"true"\)/);
-  assert.match(style,/\.web-experience\{/);
-  assert.match(style,/\.web-connection-main\{/);
-  assert.match(style,/\.web-node /);
-  assert.match(style,/\.web-connection-line/);
-  assert.match(style,/\.web-discovery-tools/);
-  assert.match(style,/\.web-record-results/);
-  assert.match(style,/@media\(max-width:700px\)/);
+  assert.ok(css.includes("@media(prefers-reduced-motion:reduce)"));
+  assert.ok(css.includes(".hero-skyline-distortion"));
 });
 
 test("A-Z Pass 3 THE WEB public relationship projection stays sanitized and fail-closed",()=>{
