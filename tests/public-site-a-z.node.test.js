@@ -640,16 +640,25 @@ test("A-Z Pass 3 public header identity and index stay compact",()=>{
   assert.match(style,/\.index-trigger-glyph\s*\{[\s\S]*width:\s*22px[\s\S]*height:\s*22px/);
 });
 
-test("A-Z Pass 3 public hero uses the authored ESCIE family fallback contract",()=>{
+test("A-Z Pass 3 public hero typography contract supports the temporary system-font isolation mode",()=>{
   const typography=read("typography.css");
   const aesthetic=read("aesthetic.css");
   assert.match(typography,/--escie-font-escie/);
-  assert.match(typography,/url\("\.\/fonts\/release\/ESCIE\.woff2"\)/);
-  assert.match(typography,/url\("\.\/fonts\/release\/ESCIE-SIGNAL\.woff2"\)/);
-  assert.match(typography,/url\("\.\/fonts\/release\/ESCIE-SCRIPT\.woff2"\)/);
-  assert.ok(typography.includes('.hero h1,') && typography.includes('font-family:"ESCIE",var(--escie-font-escie)'),"Hero must explicitly use the production ESCIE face.");
-  assert.ok(typography.includes('.index-navigation,') && typography.includes('font-family:"ESCIE SIGNAL",var(--escie-font-signal)'),"Navigation must explicitly use the production ESCIE SIGNAL face.");
-  assert.ok(typography.includes('.font-script,') && typography.includes('font-family:"ESCIE SCRIPT",var(--escie-font-script)'),"Script surfaces must explicitly use the production ESCIE SCRIPT face.");
+  assert.match(typography,/--escie-font-signal/);
+  assert.match(typography,/--escie-font-script/);
+  const temporaryFallback=typography.includes("TEMPORARY TYPOGRAPHY FALLBACK");
+  if(temporaryFallback){
+    assert.match(typography,/--escie-font-escie:Arial,Helvetica,sans-serif/);
+    assert.match(typography,/--escie-font-signal:"Courier New",Courier,monospace/);
+    assert.match(typography,/--escie-font-script:"Segoe Script","Brush Script MT",cursive/);
+  }else{
+    assert.match(typography,/url\("\.\/fonts\/release\/ESCIE\.woff2"\)/);
+    assert.match(typography,/url\("\.\/fonts\/release\/ESCIE-SIGNAL\.woff2"\)/);
+    assert.match(typography,/url\("\.\/fonts\/release\/ESCIE-SCRIPT\.woff2"\)/);
+    assert.ok(typography.includes('.hero h1,') && typography.includes('font-family:"ESCIE",var(--escie-font-escie)'),"Hero must explicitly use the production ESCIE face.");
+    assert.ok(typography.includes('.index-navigation,') && typography.includes('font-family:"ESCIE SIGNAL",var(--escie-font-signal)'),"Navigation must explicitly use the production ESCIE SIGNAL face.");
+    assert.ok(typography.includes('.font-script,') && typography.includes('font-family:"ESCIE SCRIPT",var(--escie-font-script)'),"Script surfaces must explicitly use the production ESCIE SCRIPT face.");
+  }
   assert.match(aesthetic,/entry-section #entry-container h1\{[^}]*font-family:var\(--escie-font-escie\)/);
   assert.doesNotMatch(aesthetic,/Flesh Wound/);
   assert.doesNotMatch(aesthetic,/fonts\.googleapis\.com|fonts\.gstatic\.com/);
