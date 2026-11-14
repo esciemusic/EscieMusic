@@ -1196,3 +1196,18 @@ test("A-Z Pass 3 ESCIE master sigil remains an identity mark distinct from world
   assert.match(style,/\.escie-master-sigil/);
   assert.match(style,/\.site-logo \.escie-symbol-glyph/);
 });
+
+
+test("A-Z Pass 4 ESCIE emblem is a standalone identity mark and the Index uses the canonical glyph",()=>{
+  const index=read("index.html");
+  const svg=read("assets/escie-symbols.svg");
+  const aesthetic=read("aesthetic.css");
+  assert.match(svg,/<symbol id="escie-emblem" viewBox="0 0 64 64">[\s\S]*<\/symbol>/);
+  assert.match(svg,/<symbol id="index" viewBox="0 0 32 32">[\s\S]*<\/symbol>/);
+  assert.match(index,/class="escie-emblem"[^>]*aria-hidden="true"/);
+  assert.match(index,/assets\/escie-symbols\.svg#escie-emblem/);
+  assert.match(index,/assets\/escie-symbols\.svg#index/);
+  assert.match(aesthetic,/\.escie-emblem\{/);
+  assert.match(aesthetic,/\.escie-emblem-glyph\{/);
+  assert.match(aesthetic,/The emblem is identity, not decoration/);
+});
