@@ -1228,11 +1228,10 @@ test("A-Z Pass 4 skyline doorway preserves the city entry without duplicate hero
   assert.match(engine,/state\.tab=tab/);
   assert.match(engine,/function applyWorldRoute\(\)/);
   assert.match(app,/\/\^\(world-node=\|world-tab=\)\//);
-  assert.match(aesthetic,/\.hero-skyline-backdoor/);
-  assert.match(aesthetic,/\.skyline-door-place/);
-  assert.match(aesthetic,/\.skyline-door-people/);
-  assert.match(aesthetic,/\.skyline-door-moments/);
-  assert.match(aesthetic,/\.skyline-door-art/);
+  assert.match(aesthetic,/\.hero-skyline-map/);
+  assert.match(aesthetic,/\.hero-art-doors/);
+  assert.match(aesthetic,/\.hero-art-door/);
+  assert.match(aesthetic,/hero-art-door span/);
 });
 
 
