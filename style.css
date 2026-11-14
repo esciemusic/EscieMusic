@@ -1735,6 +1735,64 @@ body[data-route="escie"] #escie {
 @media(max-width:700px){.art-carousel-nav{gap:18px;}.art-carousel-viewport{min-height:clamp(300px,92vw,380px);}.art-carousel-slide{min-height:clamp(300px,92vw,380px);padding:26px 18px;}.art-carousel-slide .art-category-note{margin-bottom:22px;}}
 @media(prefers-reduced-motion:reduce){.art-carousel-slide.is-entering-next,.art-carousel-slide.is-entering-previous{animation:none!important;}}
 
+
+/* =========================================================
+   RECORD CAROUSELS — ARCHIVE / CASE FILES
+   ========================================================= */
+.record-carousel-viewport{
+  position:relative;
+  min-height:clamp(260px,34vw,400px);
+  margin-top:12px;
+  overflow:hidden;
+  border:1px solid rgba(154,120,255,.16);
+  background:rgba(4,5,7,.24);
+  touch-action:pan-y;
+}
+.record-carousel-track{min-height:inherit;}
+.record-carousel-slide{
+  min-height:clamp(260px,34vw,400px);
+}
+.record-carousel-slide[hidden]{display:none;}
+.record-carousel-slide.is-entering-next{animation:art-carousel-enter-next 220ms var(--ease) both;}
+.record-carousel-slide.is-entering-previous{animation:art-carousel-enter-previous 220ms var(--ease) both;}
+.record-carousel-controls{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+  margin-top:12px;
+}
+.record-carousel-arrow{
+  width:32px;
+  height:28px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--faint);
+  cursor:pointer;
+  font-size:22px;
+  line-height:1;
+  user-select:none;
+  transition:color 180ms ease,transform 180ms ease;
+}
+.record-carousel-arrow:hover{color:var(--white);}
+.record-carousel-position{
+  min-width:54px;
+  color:var(--faint);
+  font-family:var(--escie-font-signal);
+  font-size:9px;
+  letter-spacing:.18em;
+  text-align:center;
+}
+@media(max-width:700px){
+  .record-carousel-viewport{min-height:clamp(280px,86vw,360px);}
+  .record-carousel-slide{min-height:clamp(280px,86vw,360px);}
+}
+@media(prefers-reduced-motion:reduce){
+  .record-carousel-slide.is-entering-next,
+  .record-carousel-slide.is-entering-previous{animation:none!important;}
+}
+
 /* =========================================================
    PUBLIC THRESHOLDS
    ========================================================= */
