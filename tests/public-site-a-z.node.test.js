@@ -432,7 +432,7 @@ test("A-Z Pass 3 hero identity stays dominant over the Montreal distortion and l
   assert.match(index,/MONTRÉAL, QUÉBEC, CANADA/);
   assert.match(index,/hero-skyline-art/);
    assert.match(style,/\.entry-inner\{[\s\S]*isolation:isolate/);
-   assert.match(style,/\.entry-section #entry-container h1,[\s\S]*z-index:3/);
+   assert.ok(style.includes('.entry-section #entry-container h1,.entry-section #entry-container #entry-social,.entry-section #entry-container #entry-tagline,.entry-section #entry-container #entry-location{position:relative;z-index:3;}'));
   assert.ok(style.includes('.hero-identity-link{display:inline-block;color:inherit;text-decoration:none'));
   assert.match(style,/\.hero-skyline-art/);
   assert.match(style,/\.hero-skyline-distortion/);
