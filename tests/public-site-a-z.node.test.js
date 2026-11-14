@@ -98,18 +98,30 @@ test("A-Z Pass 3 public index follows visitor priority and restrained palette",(
   const nodes=read("data/nodes.js");
   const aesthetic=read("aesthetic.css");
   const language=read("language.js");
-  assert.match(navigation,/id:"now"[^\n]*order:1/);
-  assert.match(navigation,/id:"art"[^\n]*order:2/);
-  assert.match(navigation,/id:"world"[^\n]*order:3/);
-  assert.match(navigation,/id:"glass-eye"[^\n]*order:4/);
-  assert.match(navigation,/id:"web"[^\n]*order:5/);
-  assert.match(navigation,/id:"archives"[^\n]*order:6/);
-  assert.match(navigation,/id:"investigation"[^\n]*order:7/);
-  assert.match(navigation,/id:"escie"[^\n]*order:8/);
-  assert.match(nodes,/id:"node-glass-eye"[^\n]*order:4/);
-  assert.match(nodes,/id:"node-web"[^\n]*order:5/);
-  assert.match(nodes,/id:"node-archives"[^\n]*order:6/);
-  assert.match(nodes,/id:"node-investigation"[^\n]*order:7/);
+  assert.match(navigation,/id:"now"[^
+]*order:1/);
+  assert.match(navigation,/id:"art"[^
+]*order:2/);
+  assert.match(navigation,/id:"world"[^
+]*order:3/);
+  assert.match(navigation,/id:"glass-eye"[^
+]*order:4/);
+  assert.match(navigation,/id:"web"[^
+]*order:5/);
+  assert.match(navigation,/id:"archives"[^
+]*order:6/);
+  assert.match(navigation,/id:"investigation"[^
+]*order:7/);
+  assert.match(navigation,/id:"escie"[^
+]*order:8/);
+  assert.match(nodes,/id:"node-glass-eye"[^
+]*order:4/);
+  assert.match(nodes,/id:"node-web"[^
+]*order:5/);
+  assert.match(nodes,/id:"node-archives"[^
+]*order:6/);
+  assert.match(nodes,/id:"node-investigation"[^
+]*order:7/);
   assert.match(aesthetic,/main > #now\{--section-accent:#4da3ff/);
   assert.match(aesthetic,/main > #art\{--section-accent:#9b59ff/);
   assert.match(aesthetic,/main > #archives\{--section-accent:#9a9da3/);
@@ -334,7 +346,8 @@ test("A-Z Pass 3 ART filters produce a distinct zero-match state without crossin
   assert.match(language,/AUCUNE ŒUVRE PUBLIQUE NE CORRESPOND À CETTE TRACE/);
   assert.match(language,/NINGUNA OBRA PÚBLICA COINCIDE CON ESTA HUELLA/);
   assert.match(app,/getFilteredWorkRecords\(\)/);
-  assert.doesNotMatch(app,/getAllRecords\(\)\.filter\([^\n]*workFilters/);
+  assert.doesNotMatch(app,/getAllRecords\(\)\.filter\([^
+]*workFilters/);
 });
 
 test("A-Z Pass 3 ART metadata filters are rendered, public-scoped, and usable",()=>{
@@ -848,8 +861,10 @@ test("A-Z Pass 3 THE WEB connection expansion stays local and links back into pu
   assert.match(app,/const detail=webConnection\.parentElement&&webConnection\.parentElement\.querySelector\("\.web-connection-detail"\)/);
   assert.match(app,/webConnection\.setAttribute\("aria-expanded"/);
   assert.match(app,/data-record-id=/);
-  assert.match(app,/OPEN [^\\n]*escapeHTML\(recordTitle\(from\)\.toUpperCase\(\)/);
-  assert.match(app,/OPEN [^\\n]*escapeHTML\(recordTitle\(to\)\.toUpperCase\(\)/);
+  assert.match(app,/OPEN [^\
+]*escapeHTML\(recordTitle\(from\)\.toUpperCase\(\)/);
+  assert.match(app,/OPEN [^\
+]*escapeHTML\(recordTitle\(to\)\.toUpperCase\(\)/);
 });
 
 test("A-Z Pass 3 THE WEB empty state preserves the Glass Eye participation doorway",()=>{
@@ -1048,7 +1063,8 @@ test("A-Z Pass 3 ESCIE field preserves the external signal without exposing priv
 test("A-Z Pass 3 ESCIE section remains a collapsible public doorway",()=>{
   const index=read("index.html");
   assert.match(index,/id="escie" class="site-section escie-section"/);
-  assert.match(index,/var symbols=\{[^\n]*escie:"escie"/);
+  assert.match(index,/var symbols=\{[^
+]*escie:"escie"/);
   assert.match(index,/section-drop-trigger/);
   assert.match(index,/section-drop-panel/);
   assert.match(index,/aria-expanded="false"/);
@@ -1166,7 +1182,8 @@ test("A-Z Pass 4 language runtime has parity across EN, FR and ES",()=>{
   const runtime=language.slice(language.indexOf("const ESCIE_INTERFACE_RUNTIME"),language.indexOf("const ESCIE_LANGUAGE_MODES"));
   const blockKeys=(name,next)=>{
     const start=runtime.indexOf("  "+name+": {");
-    const end=next?runtime.indexOf("  "+next+": {",start+1):runtime.lastIndexOf("\n  }");
+    const end=next?runtime.indexOf("  "+next+": {",start+1):runtime.lastIndexOf("
+  }");
     return [...runtime.slice(start,end).matchAll(/"([^"]+)"\s*:/g)].map(match=>match[1]);
   };
   const en=blockKeys("en","fr"), fr=blockKeys("fr","es"), es=blockKeys("es");
