@@ -34,7 +34,7 @@ const ESCIE_UI_PLAYER = {
     const dock = document.createElement("aside");
     dock.id = "escie-player";
     dock.className = "escie-player escie-player-node";
-    dock.hidden = false;
+    dock.hidden = true;
     dock.setAttribute("aria-label", "ESCIE player");
     dock.innerHTML =
       '<div class="escie-player-main">' +
