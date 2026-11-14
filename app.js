@@ -368,12 +368,33 @@
 
   function getInformationNodes() {
     const registry = getGlobal("ESCIE_RECORD_REGISTRY", null);
-    if (registry && typeof registry.publicNodes === "function") {
-      return registry.publicNodes();
-    }
-    return normalizeCollection(getGlobal("ESCIE_NODES", []))
-      .filter(node => node && node.public !== false)
+    const metadata = registry && typeof registry.publicNodes === "function"
+      ? registry.publicNodes()
+      : normalizeCollection(getGlobal("ESCIE_NODES", []))
+          .filter(node => node && node.public !== false);
+    const metadataBySection = new Map(
+      metadata
+        .filter(node => node && node.section)
+        .map(node => [String(node.section), node])
+    );
+    const navigation = normalizeCollection(getNavigation())
+      .filter(node => node && node.public !== false && node.target)
       .sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999));
+
+    // NAVIGATION is the single source of truth for public route, label, symbol,
+    // and order. NODE metadata supplies only descriptive/registry fields.
+    return navigation.map(route => {
+      const section = String(route.id || "").trim();
+      const node = metadataBySection.get(section) || {};
+      return Object.assign({}, node, {
+        id: node.id || "node-" + section,
+        label: route.label,
+        target: route.target,
+        symbol: route.symbol,
+        order: route.order,
+        public: route.public !== false
+      });
+    });
   }
 
   function renderNavigation() {
