@@ -1298,3 +1298,11 @@ test("A-Z Pass 4 hero art deep links resolve to the ART section while preserving
   assert.match(index,/window\.addEventListener\("hashchange",function\(\)\{/);
   assert.match(index,/show\(targetIndex,false,false\)/);
 });
+
+test("A-Z Pass 3 world deep links preserve tab integrity and full node context",()=>{
+  const world=read("world-engine.js");
+  assert.match(world,/const expected=tab==="people"\?"person":tab==="places"\?"place"/);
+  assert.match(world,/type\(node\)===String\(expected\)\.toUpperCase\(\)/);
+  assert.match(world,/#world-tab=/);
+  assert.match(world,/&world-node=/);
+});
