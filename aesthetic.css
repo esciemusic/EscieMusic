@@ -2291,3 +2291,18 @@ html[data-theme="light"] .montreal-neighbourhood{background:rgba(232,225,212,.28
 .world-node-card[data-depth="deep"] .world-kicker{color:var(--escie-blue-bright);}
 .world-node-card[data-depth="deep"] .world-arrow{color:var(--escie-blue-bright);}
 .montreal-world-card[data-depth="deep"]{box-shadow:inset 0 0 0 1px rgba(47,128,255,.08);}
+
+
+/* HERO CALM — the hero is a doorway, not a second index. */
+.entry-section #entry-tagline{margin-top:clamp(16px,2.5vw,26px);}
+.hero-art-doors{gap:clamp(16px,3vw,28px);margin-top:12px;}
+.hero-art-door{min-width:42px;}
+.hero-art-door span{opacity:0;transform:translateY(-2px);}
+.hero-skyline-map{margin-top:clamp(10px,2vw,18px);}
+@media(max-width:700px){
+  .hero-art-doors{gap:18px;margin-top:10px;}
+  .hero-art-door{min-width:34px;}
+  .hero-art-door .escie-symbol-glyph{width:20px;height:20px;}
+  .hero-art-door span{opacity:0;transform:translateY(-2px);}
+  .hero-skyline-map{margin-top:10px;}
+}
