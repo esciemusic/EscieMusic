@@ -2897,3 +2897,16 @@ html[data-theme="light"] #now .empty-state[data-empty-state="now-quiet"]{
   background:rgba(255,248,237,.20);
   color:rgba(23,23,25,.48);
 }
+
+/* WORLD PASS 2 — lens navigation uses the same quiet symbol language as the Index. */
+.world-tabs{display:flex;gap:4px;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;padding:4px;border:1px solid rgba(216,212,202,.10);background:rgba(5,6,8,.72);-webkit-overflow-scrolling:touch}
+.world-tabs button{flex:0 0 auto;min-height:42px;padding:7px 10px;border:1px solid transparent;background:transparent;color:rgba(216,212,202,.55);display:inline-flex;align-items:center;gap:7px;font:400 8px/1 var(--escie-font-signal);letter-spacing:.12em;cursor:pointer;white-space:nowrap}
+.world-tab-glyph{display:inline-flex;width:17px;height:17px;align-items:center;justify-content:center;color:currentColor}
+.world-tab-glyph .world-entry-glyph{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round}
+.world-tabs button:hover,.world-tabs button:focus-visible{color:var(--escie-paper);border-color:rgba(47,128,255,.24);background:rgba(47,128,255,.055);outline:none}
+.world-tabs button.active{color:var(--escie-white);border-color:rgba(47,128,255,.30);background:linear-gradient(90deg,rgba(47,128,255,.09),rgba(155,89,255,.05))}
+.world-tabs button.active .world-tab-glyph{color:var(--escie-aesthetic-purple)}
+@media(max-width:700px){.world-tabs{gap:3px}.world-tabs button{min-height:44px;padding:7px 9px}}
+html[data-theme="light"] .world-tabs{background:rgba(224,217,205,.72);border-color:rgba(36,95,190,.16)}
+html[data-theme="light"] .world-tabs button{color:rgba(23,23,26,.58)}
+html[data-theme="light"] .world-tabs button.active{color:#17171a;background:linear-gradient(90deg,rgba(36,95,190,.09),rgba(112,65,159,.05));border-color:rgba(36,95,190,.28)}
