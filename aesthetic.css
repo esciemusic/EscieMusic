@@ -2469,3 +2469,160 @@ html[data-theme="light"] .montreal-neighbourhood{background:rgba(232,225,212,.28
 @media(prefers-reduced-motion:reduce){
   .index-navigation .nav-link,.index-navigation .nav-link::after{transition:none}
 }
+
+/* =========================================================
+   INDEX / TAB PASS 2 — identity, symbol language, hierarchy
+   The Index is navigation, not a control dashboard.
+   ========================================================= */
+.index-navigation{
+  border-color:rgba(216,212,202,.16);
+  background:
+    linear-gradient(180deg,rgba(12,13,16,.98),rgba(5,6,8,.98));
+  box-shadow:
+    0 24px 76px rgba(0,0,0,.58),
+    inset 0 1px 0 rgba(255,255,255,.035),
+    inset 0 0 0 1px rgba(47,128,255,.025);
+}
+.index-navigation::before{
+  content:"INDEX";
+  padding:8px 10px 9px;
+  color:rgba(216,212,202,.32);
+  letter-spacing:.34em;
+}
+.index-navigation .nav-link{
+  grid-template-columns:28px minmax(0,1fr) 22px;
+  min-height:50px;
+  padding:0 10px;
+  gap:9px;
+  background:linear-gradient(90deg,rgba(216,212,202,.018),transparent 72%);
+  color:rgba(240,237,228,.68);
+  font-family:var(--escie-font-signal);
+  font-weight:400;
+  letter-spacing:.12em;
+}
+.index-navigation .nav-link::before{
+  color:rgba(216,212,202,.22);
+  font-family:var(--escie-font-mono);
+  font-size:7px;
+  letter-spacing:.12em;
+}
+.index-navigation .nav-link .node-link-symbol{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:18px;
+  height:18px;
+  justify-self:end;
+  color:rgba(216,212,202,.28);
+  transition:color 180ms ease,filter 180ms ease,transform 180ms ease;
+}
+.index-navigation .nav-link .node-link-symbol .escie-symbol-glyph{
+  width:100%;
+  height:100%;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.15;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.index-navigation .nav-link::after{
+  display:none;
+}
+.index-navigation .nav-link:hover,
+.index-navigation .nav-link:focus-visible{
+  background:
+    linear-gradient(90deg,rgba(47,128,255,.075),rgba(47,128,255,.018) 72%,transparent);
+  border-color:rgba(47,128,255,.24);
+  color:var(--escie-paper);
+  transform:translateX(2px);
+}
+.index-navigation .nav-link:hover .node-link-symbol,
+.index-navigation .nav-link:focus-visible .node-link-symbol{
+  color:var(--escie-blue-bright);
+  filter:drop-shadow(0 0 8px rgba(47,128,255,.18));
+  transform:translateX(-1px);
+}
+.index-navigation .nav-link.is-current{
+  background:
+    linear-gradient(90deg,rgba(47,128,255,.105),rgba(155,89,255,.06) 72%,transparent);
+  border-color:rgba(47,128,255,.30);
+  color:var(--escie-white);
+}
+.index-navigation .nav-link.is-current::before{
+  color:var(--escie-blue-bright);
+}
+.index-navigation .nav-link.is-current .node-link-symbol{
+  color:var(--escie-aesthetic-purple);
+  filter:drop-shadow(0 0 9px rgba(155,89,255,.20));
+}
+.index-navigation .nav-link:focus-visible{
+  outline:1px solid rgba(77,163,255,.78);
+  outline-offset:1px;
+}
+@media(max-width:700px){
+  .index-navigation{
+    width:min(360px,calc(100vw - 16px));
+    padding:6px;
+  }
+  .index-navigation::before{
+    padding:7px 9px 8px;
+    letter-spacing:.30em;
+  }
+  .index-navigation .nav-link{
+    grid-template-columns:24px minmax(0,1fr) 20px;
+    min-height:46px;
+    padding:0 8px;
+    gap:8px;
+    font-size:8px;
+    letter-spacing:.11em;
+  }
+  .index-navigation .nav-link .node-link-symbol{
+    width:17px;
+    height:17px;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .index-navigation .nav-link,
+  .index-navigation .nav-link .node-link-symbol{
+    transition:none;
+  }
+}
+
+/* Keep the Index visually quiet in light mode while preserving the same hierarchy. */
+html[data-theme="light"] .index-navigation{
+  background:linear-gradient(180deg,rgba(224,217,205,.92),rgba(205,198,187,.90));
+  border-color:rgba(36,95,190,.24);
+  box-shadow:0 22px 62px rgba(40,35,28,.20),inset 0 1px 0 rgba(255,246,229,.52);
+}
+html[data-theme="light"] .index-navigation::before{
+  color:rgba(23,23,26,.38);
+  border-bottom-color:rgba(23,23,26,.10);
+}
+html[data-theme="light"] .index-navigation .nav-link{
+  background:linear-gradient(90deg,rgba(23,23,26,.018),transparent 72%);
+  color:rgba(23,23,26,.72);
+}
+html[data-theme="light"] .index-navigation .nav-link::before{
+  color:rgba(23,23,26,.28);
+}
+html[data-theme="light"] .index-navigation .nav-link .node-link-symbol{
+  color:rgba(23,23,26,.34);
+}
+html[data-theme="light"] .index-navigation .nav-link:hover,
+html[data-theme="light"] .index-navigation .nav-link:focus-visible{
+  background:linear-gradient(90deg,rgba(36,95,190,.09),rgba(36,95,190,.025) 72%,transparent);
+  border-color:rgba(36,95,190,.28);
+  color:#17171a;
+}
+html[data-theme="light"] .index-navigation .nav-link:hover .node-link-symbol,
+html[data-theme="light"] .index-navigation .nav-link:focus-visible .node-link-symbol{
+  color:#245fbe;
+}
+html[data-theme="light"] .index-navigation .nav-link.is-current{
+  background:linear-gradient(90deg,rgba(36,95,190,.11),rgba(112,65,159,.07) 72%,transparent);
+  border-color:rgba(36,95,190,.32);
+  color:#17171a;
+}
+html[data-theme="light"] .index-navigation .nav-link.is-current .node-link-symbol{
+  color:#70419f;
+}
