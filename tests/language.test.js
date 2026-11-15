@@ -36,3 +36,6 @@
   window.ESCIE_TESTS.push(test);
   if(typeof module!=="undefined"&&module.exports)module.exports=test;
 })();
+assert(language.includes("WHAT IS ALIVE RIGHT NOW. THE WORK AND EVENTS BEING PUSHED INTO THE PRESENT."), "NOW present-tense copy must be translatable");
+assert(language.includes("RIEN N’EST POUSSÉ ICI POUR L’INSTANT."), "French NOW empty state must be defined");
+assert(language.includes("TODAVÍA NO SE ESTÁ IMPULSANDO NADA AQUÍ."), "Spanish NOW empty state must be defined");
