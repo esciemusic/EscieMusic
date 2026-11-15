@@ -3590,3 +3590,11 @@ body.light .world-home-place-atmosphere,.body.light .world-home-place .world-roo
 @media (prefers-reduced-motion:reduce){
  .world-street-neighbor{transition:none}
 }
+
+/* World place / building threshold */
+.world-place-detail .world-home-place-copy{border-top:1px solid rgba(255,255,255,.08)}
+.world-place-child{min-height:100px}
+.world-place-detail .world-home-place-threshold{position:relative}
+@media (max-width:680px){
+ .world-place-child{min-height:92px}
+}
