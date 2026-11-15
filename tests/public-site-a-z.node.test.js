@@ -1119,6 +1119,22 @@ test("A-Z Pass 3 footer social links remain public external links only",()=>{
 });
 
 
+test("A-Z World Pass 1 keeps entry doors semantic and routable",()=>{
+  const world=read("world-engine.js");
+  const svg=read("assets/escie-symbols.svg");
+  assert.match(world,/function glyph\(name,label\)/);
+  assert.match(world,/data-world-tab="places"/);
+  assert.match(world,/data-world-tab="people"/);
+  assert.match(world,/data-world-tab="moments"/);
+  assert.match(world,/href="#art"/);
+  assert.doesNotMatch(world,/data-world-tab="art"/);
+  assert.match(world,/THE WORLD AS IT IS LIVED\./);
+  assert.match(world,/Explore the world\. Follow what you find\. Decide what you believe\./);
+  assert.doesNotMatch(world,/Follow the signal/);
+  for(const glyph of ["world","person","moment","art"]) assert.match(svg,new RegExp('id="'+glyph+'"'));
+  assert.doesNotMatch(world,/[⌖◎◒✳]/);
+});
+
 test("THE WORLD exposes the complete public lens architecture without creating duplicate top-level worlds",()=>{
   const engine=read("world-engine.js");
   const index=read("index.html");
@@ -1150,7 +1166,7 @@ test("A-Z Pass 3 custom ESCIE glyph system is canonical and replaces Unicode nav
   for(const glyph of ["now","art","world","glass-eye","web","archives","case-files","escie"]) assert.match(nodes,new RegExp('symbol:"'+glyph+'"'));
   for(const glyph of ["now","art","world","glass-eye","web","archives","case-files","escie"]) assert.match(navigation,new RegExp('symbol:"'+glyph+'"'));
   for(const glyph of ["camera","daisy","child-shoe","nightlight","key","empty-chair","vhs"]) assert.match(symbols,new RegExp('glyph:"'+glyph+'"'));
-  for(const glyph of ["now","art","world","glass-eye","web","archives","case-files","escie","camera","daisy","child-shoe","nightlight","key","empty-chair","vhs"]) assert.match(svg,new RegExp('id="'+glyph+'"'));
+  for(const glyph of ["now","art","world","glass-eye","web","archives","case-files","escie","person","moment","camera","daisy","child-shoe","nightlight","key","empty-chair","vhs"]) assert.match(svg,new RegExp('id="'+glyph+'"'));
   assert.match(app,/function customSymbolMarkup\(glyph, label\)/);
   assert.match(app,/assets\/escie-symbols\.svg#/);
   assert.match(index,/assets\/escie-symbols\.svg#/);
