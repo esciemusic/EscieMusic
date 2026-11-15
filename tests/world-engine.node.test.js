@@ -18,6 +18,9 @@ assert(/aria-selected="/.test(src)&&/state\.tab===t\[0\]/.test(src),"world tabs 
 assert(/id=\\"glass-eye-panel\\" role=\\"region\\" aria-label=\\"The Glass Eye\\"/.test(src),"Glass Eye needs an accessible region");
 assert(/const reduceMotion=\(\)=>typeof window\.matchMedia==="function"/.test(src),"World Engine needs reduced-motion detection");
 assert(/function safeMediaURL\(value\)/.test(src),"World Engine media must use a safe URL boundary");
+assert(/function syncWorldLayer\(\)/.test(src),"World Engine needs a spatial atmosphere layer");
+assert(/data\.worldSeason=String\(env\.season/.test(src),"World Engine must expose live season to the visual layer");
+assert(/data\.worldSurface=String\(.*visual_state/.test(src),"World Engine must expose live surface to the visual layer");
 assert(/function worldNow\(\)/.test(src),"World Engine needs a present-tense environment surface");
 assert(/function worldNowMarkup\(\)/.test(src),"World Engine needs a present-tense environment renderer");
 assert(/function refreshWorldClock\(container\)/.test(src),"World Engine present clock needs live refresh");
