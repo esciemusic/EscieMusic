@@ -149,13 +149,21 @@ function lunarPhase(date){
 function celestialContext(){
  const env=liveEnvironment()||{};
  const now=new Date();
- const hour=Number(new Intl.DateTimeFormat("en-US",{hour:"numeric",hour12:false,timeZone:"America/Toronto"}).format(now));
- const minute=Number(new Intl.DateTimeFormat("en-US",{minute:"numeric",timeZone:"America/Toronto"}).format(now));
+ const parts=new Intl.DateTimeFormat("en-US",{hour:"numeric",minute:"numeric",hour12:false,timeZone:"America/Toronto"}).formatToParts(now);
+ const hour=Number(parts.find(function(p){return p.type==="hour";})?.value||0);
+ const minute=Number(parts.find(function(p){return p.type==="minute";})?.value||0);
  const clock=hour+(minute/60);
- const daylight=String(env.daylight||env.visual_state?.light||"").toUpperCase();
  const sunrise=env.sunrise?new Date(env.sunrise):null;
  const sunset=env.sunset?new Date(env.sunset):null;
- const phase=clock<6||clock>=20?"NIGHT":clock<8?"DAWN":clock>=18?"DUSK":"DAY";
+ let phase=clock<6?"NIGHT":clock<8?"DAWN":clock>=20?"NIGHT":clock>=18?"DUSK":"DAY";
+ if(sunrise&&!isNaN(sunrise)&&sunset&&!isNaN(sunset)){
+  const localMinutes=function(d){return Number(new Intl.DateTimeFormat("en-US",{hour:"numeric",minute:"numeric",hour12:false,timeZone:"America/Toronto"}).format(d).replace(":","."));};
+  const sr=localMinutes(sunrise), ss=localMinutes(sunset);
+  if(clock>=sr-0.75&&clock<sr+0.75)phase="DAWN";
+  else if(clock>=ss-0.75&&clock<ss+0.75)phase="DUSK";
+  else if(clock>=sr+0.75&&clock<ss-0.75)phase="DAY";
+  else phase="NIGHT";
+ }
  const night=phase==="NIGHT";
  const moon=lunarPhase(now);
  return {
@@ -166,9 +174,9 @@ function celestialContext(){
   moonAge:moon.age,
   moonIllumination:moon.illumination,
   stars:night?"VISIBLE_IF_SKY_ALLOWS":"DAYLIGHT",
-  sunrise:sunrise?sunrise.toISOString():null,
-  sunset:sunset?sunset.toISOString():null,
-  daylight
+  sunrise:sunrise&&!isNaN(sunrise)?sunrise.toISOString():null,
+  sunset:sunset&&!isNaN(sunset)?sunset.toISOString():null,
+  daylight:env.daylight||env.visual_state?.light||null
  };
 }
 function celestialMarkup(){
