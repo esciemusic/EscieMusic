@@ -47,8 +47,10 @@ function filtered(){
  return records().filter(r=>(state.type==="ALL"||type(r)===state.type)&&(!q||searchText(r).includes(q)));
 }
 function card(r){
- const depth=related(r.id).length?"DEEPER THREAD":"SURFACE RECORD";
- return '<button type="button" class="world-card world-node-card" data-node="'+esc(r.id)+'" data-depth="'+(related(r.id).length?"deep":"surface")+'"><div class="world-card-main"><span class="world-kicker">'+esc(type(r))+' // '+depth+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3><p>'+esc(String(r.description||r.summary||r.story||"A doorway into the ESCIE universe.").slice(0,220))+'</p></div><span class="world-arrow" aria-hidden="true">↗</span></button>';
+ const links=related(r.id);
+ const depth=links.length?"DEEPER THREAD":"SURFACE";
+ const why=links.length?"CONNECTED TO "+links.length+" THREAD"+(links.length===1?"":"S");
+ return '<button type="button" class="world-card world-node-card" data-node="'+esc(r.id)+'" data-depth="'+(links.length?"deep":"surface")+'"><div class="world-card-main"><span class="world-kicker">'+esc(type(r))+' // '+depth+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3><p>'+esc(String(r.description||r.summary||r.story||"A doorway into the World.").slice(0,220))+'</p>'+(why?'<small class="world-card-thread">'+esc(why)+'</small>':'')+'</div><span class="world-arrow" aria-hidden="true">OPEN</span></button>';
 }
 function remember(id){if(id==null)return;const value=String(id).trim();if(!value)return;if(!state.visited.includes(value))state.visited.push(value);if(state.trail[state.trail.length-1]!==value)state.trail.push(value);state.trail=state.trail.slice(-12);state.visited=state.visited.slice(-100);try{sessionStorage.setItem("escie_world_trail",JSON.stringify(state.trail));sessionStorage.setItem("escie_world_visited",JSON.stringify(state.visited))}catch(e){}}
 function pathContext(){const rs=records(),out=[];for(let i=1;i<state.trail.length;i++){const from=rs.find(r=>String(r.id)===String(state.trail[i-1])),to=rs.find(r=>String(r.id)===String(state.trail[i]));if(!from||!to)continue;const link=related(from.id).find(x=>String(x.node.id)===String(to.id));out.push({from,to,relationship:link&&link.r&&link.r.type?String(link.r.type).replace(/_/g," "):"UNLINKED THREAD"});}return out;}
@@ -76,7 +78,7 @@ function roomDetail(room){
    '<div class="world-room-threshold"><button type="button" class="world-home-return" data-close-node>← MONTRÉAL</button><span class="world-kicker">A ROOM IN THE HOME</span><span class="world-kicker">INSIDE</span><h3 data-no-translate class="record-identity">'+esc(title(room))+'</h3><p>'+esc(room.description||"A room in the Montréal home.")+'</p></div>'+
    '<div class="world-room-place"><div class="world-room-place-image" aria-hidden="true"><span></span><span></span><span></span></div><div class="world-room-place-copy"><span class="world-kicker">PLACE</span><strong>'+esc(room.profile&&room.profile.role||"LIVED PLACE")+'</strong><p>This is a place first. The records live inside it.</p></div></div>'+
    (textureLine?'<div class="world-room-details"><div><span class="world-kicker">TEXTURE</span><div class="world-room-tags">'+textureLine+'</div></div>'+(anchorLine?'<div><span class="world-kicker">LANDMARKS / ANCHORS</span><div class="world-room-tags">'+anchorLine+'</div></div>':'')+'</div>':'')+
-   '<div class="world-room-life"><div class="world-room-life-head"><span class="world-kicker">WHAT LIVES HERE</span><p>People, moments, art, music, objects and traces appear as they are actually added to this place.</p></div>'+(items||'<div class="world-empty">Nothing has been opened here yet.</div>')+'</div>'+
+   '<div class="world-room-life"><div class="world-room-life-head"><span class="world-kicker">WHAT LIVES HERE</span><p>People, moments, art, music, objects and traces appear as they are actually added to this place.</p></div>'+(items||'<div class="world-empty">Nothing has been opened here yet.</div>')+'</div>'+(contents.length?'<div class="world-room-next"><span class="world-kicker">START SOMEWHERE</span><p>Open one thing. Follow what connects.</p></div>':'')+
  '</div>';
 }
 function detail(r){
