@@ -3800,3 +3800,72 @@ body.light .world-object-origin{border-color:rgba(0,0,0,.1)}
 
 /* Celestial contrast is scoped to visual atmosphere surfaces only. */
 .world-engine [data-world-celestial-surface]{filter:brightness(var(--world-celestial-contrast,1))}
+
+/* WORLD MOBILE TOUCH PASS — touch targets stay generous; hover effects never hijack the phone. */
+#world-container .world-card,
+#world-container .world-room,
+#world-container .world-room-item,
+#world-container .world-discovery-link,
+#world-container .world-trace-step,
+#world-container .world-close,
+#world-container [data-node],
+#world-container [data-close-node],
+#world-container [data-return-node],
+#world-container [data-room-place-return],
+#world-container [data-outside-world],
+#world-container [data-world-tab]{
+  -webkit-tap-highlight-color:transparent;
+}
+#world-container .world-card,
+#world-container .world-room,
+#world-container .world-room-item,
+#world-container .world-discovery-link,
+#world-container .world-trace-step{
+  min-width:0;
+}
+#world-container img,
+#world-container video,
+#world-container audio{
+  max-width:100%;
+}
+@media(max-width:700px){
+  #world-container{
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    overflow-x:hidden;
+  }
+  #world-container button,
+  #world-container a{
+    touch-action:manipulation;
+  }
+  #world-container .world-close{
+    min-width:44px;
+    min-height:44px;
+    padding:10px;
+    margin:-6px -6px -6px 4px;
+  }
+  #world-container .world-card,
+  #world-container .world-room,
+  #world-container .world-room-item,
+  #world-container .world-discovery-link,
+  #world-container .world-trace-step{
+    min-height:44px;
+  }
+  #world-container .world-card:hover,
+  #world-container .world-room:hover,
+  #world-container .world-room-item:hover,
+  #world-container .world-discovery-link:hover,
+  #world-container .world-trace-step:hover{
+    transform:none;
+  }
+}
+@media(pointer:coarse){
+  #world-container .world-card:hover,
+  #world-container .world-room:hover,
+  #world-container .world-room-item:hover,
+  #world-container .world-discovery-link:hover,
+  #world-container .world-trace-step:hover{
+    transform:none;
+  }
+}
