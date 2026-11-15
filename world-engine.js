@@ -352,18 +352,32 @@ function worldLensContent(){
  const rows=lensRows();
  return '<div class="world-list">'+(rows.length?rows.map(card).join(""):'<div class="world-empty">Nothing has been opened here yet.</div>')+'</div>';
 }
+function outsideWorldMarkup(){
+ if(!state.outsideOpen)return "";
+ const homeIds=new Set(["montreal","world-montreal","little-italy","parc-extension","world-parc-extension","world-apartment","world-street-corner"]);
+ const places=records().filter(function(r){
+   const k=String(type(r)).toUpperCase(),id=String(r.id||"").toLowerCase(),name=title(r).toLowerCase();
+   if(!["PLACE","LOCATION"].includes(k)||homeIds.has(id))return false;
+   return !name.includes("montréal")&&!name.includes("montreal");
+ }).slice(0,8);
+ const cards=places.length?places.map(function(r){
+   return '<button type="button" class="world-outside-place" data-node="'+esc(r.id)+'"><span class="world-kicker">PLACE</span><strong>'+esc(title(r))+'</strong><small>'+esc(r.description||r.summary||"A place beyond Home.")+'</small><span aria-hidden="true">↗</span></button>';
+ }).join(""):'<div class="world-outside-empty"><span class="world-kicker">OPEN SPACE</span><p>The World does not end at Montréal. It simply has not been filled in here yet.</p><small>Places enter this threshold as they become part of the public World.</small></div>';
+ return '<section class="world-outside-layer" aria-label="The world beyond Montréal"><div class="world-outside-head"><span class="world-kicker">BEYOND HOME</span><h4>THE WORLD OUTSIDE</h4><p>Montréal is where the World is entered from. It is not where the World ends.</p></div><div class="world-outside-places">'+cards+'</div></section>';
+}
 function worldHome(){
  const city=montrealRecord(),rooms=homeRooms();
  const roomCards=rooms.map(function(room){
    return '<button type="button" class="world-room" data-node="'+esc(room.id)+'"><span class="world-room-mark" aria-hidden="true"></span><div><span class="world-kicker">ROOM</span><strong>'+esc(title(room))+'</strong><p>'+esc(room.description||"A room in the Montréal home.")+'</p></div><span class="world-arrow" aria-hidden="true">↗</span></button>';
  }).join("");
  const currentTab=state.tab!=="atlas";
+ const outside=outsideWorldMarkup();
  return '<div class="world-home">'+
    '<div class="world-home-intro"><span class="world-kicker">MY WORLD</span><h3>THE WORLD</h3><p>The world is already here. ESCIE is one way of seeing it.</p><small>Montréal is home. The world continues.</small></div>'+
    ((currentTab||state.exploreOpen)?worldLensMarkup():'')+
    (currentTab?worldLensContent():'<div class="world-home-house"><button type="button" class="world-home-city" data-node="world-montreal"><span class="world-kicker">HOME</span><strong>'+esc(city&&city.title||"MONTRÉAL")+'</strong><p>WHERE MY WORLD AND THE WORLD INTERTWINE.</p><span class="world-arrow" aria-hidden="true">↗</span></button><div class="world-home-rooms">'+(roomCards||'<span class="world-empty">Nothing has been opened yet.</span>')+'</div></div>')+
    ((currentTab||state.exploreOpen)?'':'<div class="world-home-actions"><button type="button" class="world-enter-index" data-world-explore aria-expanded="false"><span class="world-kicker">DISCOVER</span><strong>OPEN THE WORLD</strong><span aria-hidden="true">↗</span></button></div>')+
-   '<button type="button" class="world-home-outside" data-outside-world><span class="world-kicker">THE OUTSIDE WORLD</span><strong>THE WORLD CONTINUES</strong><p>Everything beyond Montréal can enter here too.</p></button>'+
+   '<button type="button" class="world-home-outside" data-outside-world aria-expanded="'+(state.outsideOpen?"true":"false")+'"><span class="world-kicker">THE OUTSIDE WORLD</span><strong>'+(state.outsideOpen?"COME BACK INSIDE":"THE WORLD CONTINUES")+'</strong><p>'+(state.outsideOpen?"Return to Montréal home.":"Everything beyond Montréal can enter here too.")+'</p></button>'+outside+
    (currentTab?'':'<p class="world-home-note">You do not have to understand the whole thing. Start somewhere.</p>')+
  '</div>';
 }
