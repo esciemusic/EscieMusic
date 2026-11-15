@@ -184,7 +184,8 @@ function openWorldNode(id,options){
    const api=window.ESCIE_WORLD_LIVE;
    if(api&&typeof api.navigate==="function")api.navigate(target);
  }catch(_e){}
- history.replaceState(null,"","#world-node="+encodeURIComponent(target));
+ const originHash=state.roomOrigin&&state.roomOrigin.placeId?"&world-origin="+encodeURIComponent(String(state.roomOrigin.placeId)):"";
+ history.replaceState(null,"","#world-node="+encodeURIComponent(target)+originHash);
  draw();
  focusDetail();
 }
@@ -706,10 +707,18 @@ function mountWorld(){
    const sm=h.match(/(?:world-street=)([^&]+)/);
    const pm=h.match(/(?:world-place=)([^&]+)/);
    const m=h.match(/(?:world-node=)([^&]+)/);
+   const om=h.match(/(?:world-origin=)([^&]+)/);
    state.street=null;
    state.roomOrigin=null;
    state.selected=pm?decodeURIComponent(pm[1]):(m?decodeURIComponent(m[1]):null);
+   if(om&&state.selected){
+     const origin=records().find(function(r){return String(r.id)===String(decodeURIComponent(om[1]));});
+     if(origin)state.roomOrigin={placeId:String(origin.id),place:origin,street:null};
+   }
    if(pm){const place=records().find(function(r){return String(r.id)===String(state.selected);});if(place)state.placeStreet={placeId:String(place.id),place:place,street:null};}
+   if(m&&om&&state.roomOrigin&&["world-apartment","world-street-corner","world-parc-extension"].includes(String(state.selected))){
+     state.placeStreet=null;
+   }
    if(sm){
      const parts=decodeURIComponent(sm[1]).split(":");
      const placeId=parts.shift()||"";
