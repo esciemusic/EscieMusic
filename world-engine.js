@@ -368,6 +368,10 @@ function liveWorldNode(id){
  const base=records().find(r=>String(r.id)===target);
  return base||null;
 }
+function writeWorldHash(hash,mode){
+ const method=mode==="push"?"pushState":"replaceState";
+ try{history[method](null,"",hash);}catch(_e){location.hash=hash;}
+}
 function openWorldNode(id,options){
  const target=String(id||"").trim();
  if(!target)return;
@@ -385,7 +389,7 @@ function openWorldNode(id,options){
    if(api&&typeof api.navigate==="function")api.navigate(target);
  }catch(_e){}
  const originHash=state.roomOrigin&&state.roomOrigin.placeId?"&world-origin="+encodeURIComponent(String(state.roomOrigin.placeId))+(state.roomOrigin.street&&state.roomOrigin.street.id?"&world-origin-street="+encodeURIComponent(String(state.roomOrigin.street.id)):""):"";
- history.replaceState(null,"","#world-node="+encodeURIComponent(target)+originHash);
+ writeWorldHash("#world-node="+encodeURIComponent(target)+originHash,"push");
  draw();
  focusDetail();
 }
@@ -873,7 +877,7 @@ function draw(){
      state.tab=lens.getAttribute("data-world-tab")||"atlas";
      state.outsideOpen=false;
      state.selected=null;
-     history.replaceState(null,"","#world");
+     writeWorldHash("#world","replace");
      draw();
      return;
    }
@@ -909,7 +913,7 @@ function draw(){
        state.street={placeId:String(targetPlace.id),node:street};
        state.selected=String(targetPlace.id);
        remember("street:"+String(targetPlace.id)+":"+String(street.id));
-       history.replaceState(null,"","#world-street="+encodeURIComponent(String(targetPlace.id)+":"+String(street.id)));
+       writeWorldHash("#world-street="+encodeURIComponent(String(targetPlace.id)+":"+String(street.id)),"push");
        draw();
        focusDetail();
      }
@@ -925,7 +929,7 @@ function draw(){
        state.placeStreet=null;
        state.street={placeId:String(place.id),node:street};
        state.selected=String(place.id);
-       history.replaceState(null,"","#world-street="+encodeURIComponent(String(place.id)+":"+String(street.id)));
+       writeWorldHash("#world-street="+encodeURIComponent(String(place.id)+":"+String(street.id)),"push");
        draw();
        focusDetail();
      }
@@ -972,7 +976,7 @@ function draw(){
    if(roomReturn){
      const placeId=roomReturn.getAttribute("data-room-place-return")||"";
      const origin=state.roomOrigin;
-     if(origin&&String(origin.placeId)===String(placeId)){state.selected=String(placeId);state.placeStreet=origin;state.roomOrigin=null;const streetHash=origin.street&&origin.street.id?"&world-place-street="+encodeURIComponent(String(origin.street.id)):"";history.replaceState(null,"","#world-place="+encodeURIComponent(String(placeId))+streetHash);draw();focusDetail();}
+     if(origin&&String(origin.placeId)===String(placeId)){state.selected=String(placeId);state.placeStreet=origin;state.roomOrigin=null;const streetHash=origin.street&&origin.street.id?"&world-place-street="+encodeURIComponent(String(origin.street.id)):"";writeWorldHash("#world-place="+encodeURIComponent(String(placeId))+streetHash,"replace");draw();focusDetail();}
      return;
    }
    const node=event.target.closest("[data-node]");
@@ -984,7 +988,7 @@ function draw(){
          state.placeStreet={placeId:String(streetPlace.id),place:streetPlace,street:state.street.node};
          state.street=null;
          state.selected=String(streetPlace.id);
-         history.replaceState(null,"","#world-place="+encodeURIComponent(String(streetPlace.id)));
+         writeWorldHash("#world-place="+encodeURIComponent(String(streetPlace.id)),"push");
          draw();
          focusDetail();
          return;
