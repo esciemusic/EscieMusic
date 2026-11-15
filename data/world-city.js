@@ -335,7 +335,7 @@ Object.keys(densityNPCs).forEach(d=>{
   npcPopulations[d]=(npcPopulations[d]||[]).concat(densityNPCs[d]);
 });
 
-Object.assign(window.ESCIE_WORLD_CITY,{streetNodes:streetNodes,landmarks:world_landmarks,buildings:world_buildings,interiors,buildingSecurity:building_security,cityBackbone:city_backbone,cityConnections:city_connections,publicTransit:public_transit,districts});
+Object.assign(window.ESCIE_WORLD_CITY,{streetNodes:streetNodes,streetEdges:streetEdges,streetContext:streetContext,landmarks:world_landmarks,buildings:world_buildings,interiors,buildingSecurity:building_security,cityBackbone:city_backbone,cityConnections:city_connections,publicTransit:public_transit,districts});
 
 
 })();
