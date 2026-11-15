@@ -124,10 +124,14 @@ function openWorldNode(id){
  if(!target)return;
  const local=records().find(r=>String(r.id)===target);
  const live=liveWorldNode(target);
- const node=local||live;
- if(!node)return;
+ const node=local||live||{id:target,type:"PLACE",title:target.replace(/^world-/,"").replace(/-/g," "),description:"A place in the World."};
  state.selected=target;
  remember(target);
+ try{
+   const api=window.ESCIE_WORLD_LIVE;
+   if(api&&typeof api.navigate==="function")api.navigate(target);
+ }catch(_e){}
+ history.replaceState(null,"","#world-node="+encodeURIComponent(target));
  draw();
  focusDetail();
 }
@@ -315,7 +319,7 @@ function mountWorld(){
    const node=event.target.closest("[data-node]");
    if(node){
      const id=node.getAttribute("data-node");
-     if(id){state.selected=id;remember(id);history.replaceState(null,"","#world-node="+encodeURIComponent(id));draw();}
+     if(id){openWorldNode(id);}
      return;
    }
    if(event.target.closest("[data-close-node]")||event.target.closest("[data-outside-world]")){
