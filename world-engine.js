@@ -139,6 +139,24 @@ function worldNow(){
 const WORLD_LAYERS=[
  "EXISTENCE","PRESENCE","PLACE","TIME","LIFE","EXPERIENCE","INTERPRETATION","ART","PERSPECTIVE","VISITOR","PARTICIPATION","MEMORY","OUTSIDE_WORLD"
 ];
+const WORLD_LAYER_RULES={
+ EXISTENCE:function(){return true;},
+ PRESENCE:function(r){return !!r;},
+ PLACE:function(r){return /PLACE|LOCATION|ROOM|BUILDING|STREET|NEIGHBORHOOD|HOME/i.test(String(r?.type||r?.kind||""));},
+ TIME:function(r){return !!(r?.date||r?.moment_date||r?.event_date||r?.release_date||r?.occurred_at||r?.temporal_state||r?.time_state);},
+ LIFE:function(r){return /PERSON|PEOPLE|ANIMAL/i.test(String(r?.type||r?.kind||""));},
+ EXPERIENCE:function(r){return !!(r?.description||r?.atmosphere||r?.mood||r?.experience);},
+ INTERPRETATION:function(r){return !!(r?.interpretation||r?.theory||r?.reason||r?.notes);},
+ ART:function(r){return /ART|MUSIC|POEM|PAINT|DRAW|WRITING|PHOTO|VIDEO|AUDIO/i.test(String(r?.type||r?.kind||""));},
+ PERSPECTIVE:function(r){return !!(r?.perspective||r?.point_of_view||r?.voice);},
+ VISITOR:function(){return !!state.selected;},
+ PARTICIPATION:function(r){return !!(r?.glass_eye||r?.contributor||r?.submission);},
+ MEMORY:function(r){return !!(r?.memory||r?.remembered||r?.source==="memory");},
+ OUTSIDE_WORLD:function(r){return !!(r?.outside_world||r?.external); }
+};
+function worldLayerCoverage(r){
+ return WORLD_LAYERS.filter(function(layer){return WORLD_LAYER_RULES[layer](r);});
+}
 function worldLayerFor(r){
  const x=String(r?.type||r?.kind||"").toUpperCase();
  if(/ART|MUSIC|POEM|PAINT|DRAW|WRITING/.test(x))return "ART";
@@ -716,7 +734,7 @@ function mountWorld(){
    else if(state.selected&&state.selected!=="world-montreal")layer="place";
    container.dataset.worldLayer=layer;
    const record=state.selected?records().find(function(r){return String(r.id)===String(state.selected);}):null;
-   container.dataset.worldOntologyLayer=record?worldLayerFor(record):"EXISTENCE";
+   container.dataset.worldOntologyLayer=record?worldLayerFor(record):"EXISTENCE";\n   container.dataset.worldOntologyCoverage=record?worldLayerCoverage(record).join("|"):"EXISTENCE";
  }
  syncLiveState();
  loadTrail();
