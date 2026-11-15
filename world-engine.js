@@ -181,6 +181,7 @@ function openWorldNode(id,options){
  if(!options.preserveTrail)remember(target);
  try{
    state.street=null;
+   if(!options.preserveSpatial)state.placeStreet=null;
    const api=window.ESCIE_WORLD_LIVE;
    if(api&&typeof api.navigate==="function")api.navigate(target);
  }catch(_e){}
