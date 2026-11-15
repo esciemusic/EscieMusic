@@ -316,6 +316,16 @@ test("A-Z NOW hands visitors from the present into the work",()=>{
   assert.doesNotMatch(app,/CURRENT TRANSMISSION/);
 });
 
+test("A-Z ART music presentation does not impersonate transmission state",()=>{
+  const start=app.indexOf("function renderMusic()");
+  const end=app.indexOf("function renderArtGroup",start);
+  const renderer=app.slice(start,end);
+  assert.match(renderer,/const stage = "WORK";/);
+  assert.match(renderer,/\|\| "MUSIC"\)/);
+  assert.doesNotMatch(renderer,/const stage = "TRANSMISSION"/);
+  assert.doesNotMatch(renderer,/\|\| "SIGNAL"\)/);
+});
+
 test("A-Z Pass 3 ART record opening stays public-scoped",()=>{
   const app=read("app.js");
   const start=app.indexOf("function showRecordInspector(record)");
