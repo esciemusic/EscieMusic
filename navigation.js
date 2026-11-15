@@ -1,12 +1,12 @@
 const ESCIE_NAVIGATION=[
-{id:"now",label:"NOW",target:"#now",primary:true,order:1,symbol:"now"},
-{id:"art",label:"ART",target:"#art",primary:true,order:2,symbol:"art"},
-{id:"world",label:"THE WORLD",target:"#world",primary:true,order:3,symbol:"world"},
-{id:"glass-eye",label:"GLASS EYE",target:"#glass-eye",primary:true,order:4,symbol:"glass-eye"},
-{id:"web",label:"THE WEB",target:"#web",primary:true,order:5,symbol:"web"},
-{id:"archives",label:"THE ARCHIVES",target:"#archives",primary:true,order:6,symbol:"archives"},
-{id:"investigation",label:"THE CASE FILES",target:"#investigation",primary:true,order:7,symbol:"case-files"},
-{id:"escie",label:"ESCIE",target:"#escie",primary:true,order:8,symbol:"escie"}
+{id:"now",label:"NOW",target:"#now",primary:true,order:1,symbol:"now",symbolMeaning:"Present state",symbolPurpose:"See what is current"},
+{id:"art",label:"ART",target:"#art",primary:true,order:2,symbol:"art",symbolMeaning:"Creation",symbolPurpose:"Enter the work"},
+{id:"world",label:"THE WORLD",target:"#world",primary:true,order:3,symbol:"world",symbolMeaning:"Place and experience",symbolPurpose:"Enter the world"},
+{id:"glass-eye",label:"GLASS EYE",target:"#glass-eye",primary:true,order:4,symbol:"glass-eye",symbolMeaning:"Witness",symbolPurpose:"See through the screen"},
+{id:"web",label:"THE WEB",target:"#web",primary:true,order:5,symbol:"web",symbolMeaning:"Connections",symbolPurpose:"Follow the network"},
+{id:"archives",label:"THE ARCHIVES",target:"#archives",primary:true,order:6,symbol:"archives",symbolMeaning:"Record",symbolPurpose:"Open the preserved record"},
+{id:"investigation",label:"THE CASE FILES",target:"#investigation",primary:true,order:7,symbol:"case-files",symbolMeaning:"Inquiry",symbolPurpose:"Follow the evidence"},
+{id:"escie",label:"ESCIE",target:"#escie",primary:true,order:8,symbol:"escie",symbolMeaning:"Identity",symbolPurpose:"Return to ESCIE"}
 ];
 
 const ESCIE_NAVIGATION_CONTRACT={
