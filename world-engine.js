@@ -137,16 +137,28 @@ function worldNow(){
  return {date:dateLabel,time:timeLabel,season:String(env.season||"").trim(),weather:String(env.weather||"").trim(),temperature:env.temperature};
 }
 const CELESTIAL_LAYERS=["UNIVERSE","SUN","MOON","STARS","CELESTIAL_EVENT"];
+function lunarPhase(date){
+ const synodic=29.530588853;
+ const known=Date.UTC(2000,0,6,18,14,0);
+ const days=(date.getTime()-known)/86400000;
+ const age=((days%synodic)+synodic)%synodic;
+ const names=["NEW MOON","WAXING CRESCENT","FIRST QUARTER","WAXING GIBBOUS","FULL MOON","WANING GIBBOUS","LAST QUARTER","WANING CRESCENT"];
+ const index=Math.round(age/synodic*8)%8;
+ return {age,name:names[index],illumination:(1-Math.cos(age/synodic*2*Math.PI))/2};
+}
 function celestialContext(){
  const env=liveEnvironment()||{};
  const now=new Date();
  const hour=Number(new Intl.DateTimeFormat("en-US",{hour:"numeric",hour12:false,timeZone:"America/Toronto"}).format(now));
  const daylight=String(env.daylight||env.visual_state?.light||"").toUpperCase();
  const night=daylight.includes("NIGHT")||hour<6||hour>=20;
+ const moon=lunarPhase(now);
  return {
   universe:"EARTH",
   sun:night?"BELOW_HORIZON":"ABOVE_HORIZON",
-  moon:"UNKNOWN",
+  moon:moon.name,
+  moonAge:moon.age,
+  moonIllumination:moon.illumination,
   stars:night?"VISIBLE_IF_SKY_ALLOWS":"DAYLIGHT",
   event:null
  };
