@@ -3181,3 +3181,12 @@ html[data-theme="light"] .world-index-toggle,html[data-theme="light"] .world-ent
 html[data-theme="light"] .world-index-toggle strong,html[data-theme="light"] .world-enter-index strong{color:#17171a}
 html[data-theme="light"] .world-home-note{color:rgba(23,23,26,.48)}
 @media(max-width:700px){.world-index-toggle,.world-enter-index{padding:14px 2px}.world-home-note{margin-left:2px}}
+
+/* World discovery cues */
+.world-card-thread{display:block;margin-top:9px;color:var(--escie-aesthetic-purple);font:700 8px/1.4 var(--escie-font-mono);letter-spacing:.08em}
+.world-card .world-arrow{font:700 8px/1 var(--escie-font-mono);letter-spacing:.08em;color:rgba(216,212,202,.5)}
+.world-card:hover .world-arrow,.world-card:focus-visible .world-arrow{color:var(--escie-blue-bright)}
+.world-room-next{padding:18px 0 4px;border-top:1px solid rgba(216,212,202,.08)}
+.world-room-next p{margin:6px 0 0;color:rgba(216,212,202,.5);font-size:10px;line-height:1.6}
+html[data-theme="light"] .world-card-thread{color:#7045b8}
+html[data-theme="light"] .world-room-next p{color:rgba(23,23,26,.52)}
