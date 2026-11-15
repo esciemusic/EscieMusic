@@ -3152,3 +3152,17 @@ html[data-theme="light"] .world-room-tags span{border-color:rgba(23,23,26,.1)}
  .world-room-details{grid-template-columns:1fr;gap:16px}
  .world-room-life .world-room-item{min-height:96px}
 }
+
+
+/* MY WORLD — compact lens navigation. */
+.world-lens-nav{display:flex;gap:6px;overflow-x:auto;padding:14px 0;border-top:1px solid rgba(216,212,202,.08);border-bottom:1px solid rgba(216,212,202,.08);scrollbar-width:none}
+.world-lens-nav::-webkit-scrollbar{display:none}
+.world-lens-nav button{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;padding:7px 9px;border:1px solid rgba(216,212,202,.1);background:transparent;color:rgba(216,212,202,.52);font:inherit;font-size:8px;letter-spacing:.1em;white-space:nowrap}
+.world-lens-nav button[aria-selected="true"]{border-color:rgba(155,89,255,.45);color:var(--escie-white);background:rgba(155,89,255,.045)}
+.world-lens-nav button:hover{color:var(--escie-white);border-color:rgba(47,128,255,.35)}
+.world-lens-nav .world-entry-glyph{width:13px;height:13px}
+.world-home-city p{margin:6px 0 0;color:rgba(216,212,202,.52);font-size:10px;letter-spacing:.12em}
+html[data-theme="light"] .world-lens-nav button{color:rgba(23,23,26,.55);border-color:rgba(23,23,26,.1)}
+html[data-theme="light"] .world-lens-nav button[aria-selected="true"]{color:#17171a}
+html[data-theme="light"] .world-home-city p{color:rgba(23,23,26,.55)}
+@media(max-width:700px){.world-lens-nav{margin-right:-10px;padding-right:10px}}
