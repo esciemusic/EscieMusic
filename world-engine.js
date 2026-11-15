@@ -239,7 +239,12 @@ function objectDetail(r){
  const originId=object.originRecordId||null;
  const originLabel=origin.name||"THE PLACE";
  const links=related(r.id);
- const connections=links.length?links.map(x=>'<button type="button" data-node="'+esc(x.node.id)+'"><strong>'+esc(title(x.node))+'</strong><small>'+esc(x.r.type||"related")+'</small></button>').join(""):'<span class="world-empty">Nothing is explicitly connected to this object yet.</span>';
+ const connections=links.length?links.map(x=>{
+   const relation=String(x.r.type||"related").replace(/_/g," ");
+   const reason=relation==="related"?"something nearby in the World":relation;
+   return '<button type="button" data-node="'+esc(x.node.id)+'"><span class="world-kicker">'+esc(relation.toUpperCase())+'</span><strong>'+esc(title(x.node))+'</strong><small>'+esc(reason)+'</small></button>';
+ }).join(""):'<span class="world-empty">Nothing is explicitly connected to this object yet.</span>';
+ const connectionHint=links.length?'<p class="world-object-connection-hint">Connections are invitations, not instructions. You decide whether this thread matters.</p>':'';
  const notice=object.notice||String(r.description||"").trim();
  const presence=object.presence||"PRESENT";
  const rawContext=object.context&&typeof object.context==="object"?object.context:{};
@@ -260,7 +265,7 @@ function objectDetail(r){
    +'<div class="world-object-body"><div class="world-object-mark" aria-hidden="true"><span></span><span></span><span></span></div><div class="world-object-copy"><span class="world-kicker">'+esc(sensory[0])+'</span><p>'+esc(notice||sensory[2])+'</p><small class="world-object-sense">'+esc(sensory[1])+'</small></div></div>'
    +'<div class="world-object-context"><div><span class="world-kicker">WHERE IT WAS FOUND</span><strong>'+esc(originLabel)+'</strong><small>the place remains behind you</small></div><div><span class="world-kicker">PRESENCE</span><strong>'+esc(presence.replace(/_/g," "))+'</strong><small>how it sits in the room</small></div></div>'
    +'<div class="world-object-depth"><span class="world-kicker">GO DEEPER</span><p>Stay with the object before following anything else.</p>'+depthFactsBlock+discoveryRail(r)+'</div>'
-   +'<div class="world-object-connections"><span class="world-kicker">WHAT THIS TOUCHES · '+links.length+'</span><div class="world-connections">'+connections+'</div></div>'
+   +'<div class="world-object-connections"><span class="world-kicker">WHAT THIS TOUCHES · '+links.length+'</span>'+connectionHint+'<div class="world-connections">'+connections+'</div></div>'
    +'<div class="world-object-return-bottom">'+returnButton+'</div>'
    +'</div>';
 }
