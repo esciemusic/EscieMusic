@@ -3675,3 +3675,11 @@ body.light .world-home-place-atmosphere,.body.light .world-home-place .world-roo
  .world-object-origin-dot{box-shadow:none}
 }
 body.light .world-object-origin{border-color:rgba(0,0,0,.1)}
+
+/* Spatial breadcrumbs remain quiet: orientation, not navigation chrome */
+.world-room-threshold .world-kicker + .world-kicker{
+ opacity:.58;
+}
+.world-room-threshold .world-kicker + .world-kicker + .world-kicker{
+ opacity:.42;
+}
