@@ -3190,3 +3190,17 @@ html[data-theme="light"] .world-home-note{color:rgba(23,23,26,.48)}
 .world-room-next p{margin:6px 0 0;color:rgba(216,212,202,.5);font-size:10px;line-height:1.6}
 html[data-theme="light"] .world-card-thread{color:#7045b8}
 html[data-theme="light"] .world-room-next p{color:rgba(23,23,26,.52)}
+
+/* Connected encounter layer */
+.world-discovery-rail{margin:22px 0 0;padding-top:18px;border-top:1px solid rgba(216,212,202,.1)}
+.world-discovery-head p{margin:6px 0 12px;color:rgba(216,212,202,.5);font-size:10px;line-height:1.6}
+.world-discovery-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;border-top:1px solid rgba(216,212,202,.08)}
+.world-discovery-link{position:relative;display:grid;grid-template-columns:1fr auto;gap:5px 12px;min-height:82px;padding:14px;border:0;border-bottom:1px solid rgba(216,212,202,.08);border-right:1px solid rgba(216,212,202,.08);background:transparent;color:var(--escie-paper);text-align:left;cursor:pointer}
+.world-discovery-link:nth-child(even){border-right:0}
+.world-discovery-link strong{font-size:13px;letter-spacing:.025em;color:var(--escie-white)}
+.world-discovery-link>span:last-child{grid-column:2;grid-row:2;color:var(--escie-aesthetic-purple)}
+.world-discovery-link:hover,.world-discovery-link:focus-visible{background:rgba(47,128,255,.035);outline:none}
+html[data-theme="light"] .world-discovery-head p{color:rgba(23,23,26,.5)}
+html[data-theme="light"] .world-discovery-link{color:#17171a;border-color:rgba(23,23,26,.1)}
+html[data-theme="light"] .world-discovery-link strong{color:#17171a}
+@media(max-width:700px){.world-discovery-links{grid-template-columns:1fr}.world-discovery-link{border-right:0}}
