@@ -10,6 +10,15 @@ function assert(condition, message) {
 assert(scripts.length > 0, "index.html should load JavaScript modules");
 assert(!html.includes("\\\\n"), "index.html must not contain malformed literal newline escapes");
 assert(/<section id="world"[^>]*>/.test(html), "THE WORLD section must remain part of the public doorway");
+assert(html.includes("data/now.js"), "NOW editorial registry must load before app.js");
+assert(html.includes("WHAT IS ALIVE RIGHT NOW. THE WORK AND EVENTS BEING PUSHED INTO THE PRESENT."), "NOW must describe the present-tense work/event foreground");
+const nowSource=fs.readFileSync("data/now.js","utf8");
+assert(nowSource.includes("ESCIE_NOW"), "NOW editorial registry must exist");
+assert(nowSource.includes("entries: []"), "NOW must allow an intentionally empty foreground");
+assert(fs.readFileSync("app.js","utf8").includes("getNowConfig"), "NOW must use the curated present-tense registry");
+assert(fs.readFileSync("app.js","utf8").includes("NOTHING IS BEING PUSHED HERE YET."), "NOW must fail quietly without inventing activity");
+assert(!fs.readFileSync("app.js","utf8").includes("ACTIVE SIGNAL"), "NOW must not be framed as a signal dashboard");
+assert(!fs.readFileSync("app.js","utf8").includes("CURRENT TRANSMISSION"), "NOW must not be framed as a transmission dashboard");
 const games = fs.readFileSync("data/games.js", "utf8");
 assert(games.includes('status:"EXTERNAL_PLATFORM_EVALUATION"'), "playable game hosting must remain externally evaluated");
 assert(games.includes("public_link:null"), "playable game must remain unlinked until an external host is chosen");
@@ -45,6 +54,7 @@ assert(duplicates.length === 0, "index.html contains duplicate script loads: " +
 });
 
 const appIndex = scripts.indexOf("app.js");
+assert(scripts.indexOf("data/now.js") < appIndex, "NOW editorial registry must load before app.js");
 assert(scripts.indexOf("record.js") < appIndex, "record contract must load before app.js");
 assert(scripts.indexOf("relationship.js") < appIndex, "relationship contract must load before app.js");
 
