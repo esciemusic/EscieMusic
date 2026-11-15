@@ -18,6 +18,10 @@ assert(/aria-selected="/.test(src)&&/state\.tab===t\[0\]/.test(src),"world tabs 
 assert(/id=\\"glass-eye-panel\\" role=\\"region\\" aria-label=\\"The Glass Eye\\"/.test(src),"Glass Eye needs an accessible region");
 assert(/const reduceMotion=\(\)=>typeof window\.matchMedia==="function"/.test(src),"World Engine needs reduced-motion detection");
 assert(/function safeMediaURL\(value\)/.test(src),"World Engine media must use a safe URL boundary");
+assert(/function worldNow\(\)/.test(src),"World Engine needs a present-tense environment surface");
+assert(/function worldNowMarkup\(\)/.test(src),"World Engine needs a present-tense environment renderer");
+assert(/localStorage\.removeItem\("escie_world_trail"\)/.test(src),"TRACE clear must clear persistent local trace");
+
 assert(/function isPublicWorldRecord\(r\)/.test(src),"World Engine needs a public-record release boundary");
 assert(/function encounterContext\(r\)/.test(src),"World encounters need optional place/time context");
 assert(/encounterContext\(r\)/.test(src),"World encounter detail must render contextual provenance when available");
