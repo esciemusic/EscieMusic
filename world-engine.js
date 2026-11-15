@@ -57,9 +57,19 @@ function pathContext(){const rs=records(),out=[];for(let i=1;i<state.trail.lengt
 function investigationSummary(){const p=pathContext();const unknowns=state.visited.map(id=>records().find(r=>String(r.id)===String(id))).filter(Boolean).filter(r=>String(r.certainty||"").toUpperCase()==="UNKNOWN").length;return {steps:p.length,unknowns};}
 function loadTrail(){try{const a=JSON.parse(sessionStorage.getItem("escie_world_trail")||"[]");const b=JSON.parse(sessionStorage.getItem("escie_world_visited")||"[]");if(Array.isArray(a))state.trail=a.filter(v=>typeof v==="string"&&v.trim()).slice(-12);if(Array.isArray(b))state.visited=b.filter(v=>typeof v==="string"&&v.trim()).slice(-100)}catch(e){state.trail=[];state.visited=[]}}
 const focusDetail=()=>{const el=container.querySelector(".world-detail");if(el){el.setAttribute("tabindex","-1");if(typeof el.focus==="function")el.focus();}};
+function safeMediaURL(value){
+ const raw=String(value==null?"":value).trim();
+ if(!raw)return "";
+ try{
+   const parsed=new URL(raw,window.location.href);
+   if(["http:","https:"].includes(parsed.protocol))return parsed.href;
+   if(parsed.origin===window.location.origin&&(parsed.protocol==="http:"||parsed.protocol==="https:"))return parsed.href;
+ }catch(e){}
+ return "";
+}
 function mediaPreview(r){
  const media=(r&&r.media&&typeof r.media==="object")?r.media:{};
- const url=media.url||r.media_url||r.image_url||r.thumbnail||"";
+ const url=safeMediaURL(media.url||r.media_url||r.image_url||r.thumbnail||"");
  const kind=String(media.type||r.media_type||"").toLowerCase();
  if(!url){
    const quote=r.quote||r.excerpt||r.fragment||r.text;
