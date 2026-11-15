@@ -219,7 +219,7 @@ function roomDetail(room){
  const textureLine=texture.length?texture.map(function(x){return '<span>'+esc(String(x).replace(/-/g," "))+'</span>';}).join(''):'';
  const anchorLine=anchors.length?anchors.map(function(x){return '<span>'+esc(x)+'</span>';}).join(''):'';
  return '<div class="world-room-scene">'+returnNotice+
-   '<div class="world-room-threshold"><button type="button" class="world-home-return" data-node="world-montreal">← MONTRÉAL</button><span class="world-kicker">A ROOM IN THE HOME</span><span class="world-kicker">INSIDE</span><h3 data-no-translate class="record-identity">'+esc(title(room))+'</h3><p>'+esc(room.description||"A room in the Montréal home.")+'</p></div>'+
+   '<div class="world-room-threshold"><button type="button" class="world-home-return" data-node="world-montreal">← MONTRÉAL</button><span class="world-kicker">MONTRÉAL / '+esc(roomNeighborhood[String(room.id)]||"PLACE")+</span><span class="world-kicker">A ROOM IN THE HOME</span><span class="world-kicker">INSIDE</span><h3 data-no-translate class="record-identity">'+esc(title(room))+'</h3><p>'+esc(room.description||"A room in the Montréal home.")+'</p></div>'+
    '<div class="world-room-place"><div class="world-room-place-image" aria-hidden="true"><span></span><span></span><span></span></div><div class="world-room-place-copy"><span class="world-kicker">PLACE</span><strong>'+esc(live.role||room.profile&&room.profile.role||"LIVED PLACE")+'</strong><p>'+esc(atmosphere.light+" · "+atmosphere.surface+" · "+atmosphere.sound)+'</p></div></div>'+
    '<div class="world-room-details"><div><span class="world-kicker">THE AIR</span><div class="world-room-tags"><span>'+esc(atmosphere.weather)+'</span><span>'+esc(atmosphere.temperature==null?"":String(atmosphere.temperature)+"°")+'</span><span>'+esc(atmosphere.signal)+'</span></div></div><div><span class="world-kicker">WHAT IS AROUND YOU</span><div class="world-room-tags">'+(live.texture.length?live.texture.map(x=>"<span>"+esc(x)+"</span>").join(""):"<span>lived-in</span>")+'</div></div></div>'+
    (textureLine?'<div class="world-room-details"><div><span class="world-kicker">TEXTURE</span><div class="world-room-tags">'+textureLine+'</div></div>'+(anchorLine?'<div><span class="world-kicker">LANDMARKS / ANCHORS</span><div class="world-room-tags">'+anchorLine+'</div></div>':'')+'</div>':'')+
@@ -378,6 +378,7 @@ function homeNeighborhoods(){
  return ["little-italy","parc-extension"].map(id=>locations.find(r=>r&&String(r.id||"")===id)).filter(r=>r&&String(r.visibility||"").toLowerCase()!=="withheld"&&r.public_disclosure!==false);
 }
 const neighborhoodRooms={"parc-extension":["world-apartment","world-street-corner"],"little-italy":[]};
+const roomNeighborhood={"world-apartment":"parc-extension","world-street-corner":"parc-extension","world-parc-extension":"parc-extension"};
 // Canonical World entry contracts: data-world-tab="places" data-world-tab="people" data-world-tab="moments" href="#art"
 // Entry tone: Come in. Look around.
 function worldLensMarkup(){
