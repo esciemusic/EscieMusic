@@ -327,7 +327,7 @@ function card(r){
 function remember(id){if(id==null)return;const value=String(id).trim();if(!value)return;if(!state.visited.includes(value))state.visited.push(value);if(state.trail[state.trail.length-1]!==value)state.trail.push(value);state.trail=state.trail.slice(-12);state.visited=state.visited.slice(-100);try{localStorage.setItem("escie_world_trail",JSON.stringify(state.trail));localStorage.setItem("escie_world_visited",JSON.stringify(state.visited))}catch(e){}}
 function rememberReturn(target,from){const t=String(target||"").trim(),f=String(from||"").trim();if(!t)return;state.returningFrom=f||null;state.returnFlash={from:f,to:t,at:Date.now()};}
  
-function returnToPlace(id,from){const target=String(id||"").trim();if(!target)return;rememberReturn(target,from);openWorldNode(target,{preserveTrail:true});window.clearTimeout(window.__ESCIE_WORLD_RETURN_TIMER);window.__ESCIE_WORLD_RETURN_TIMER=window.setTimeout(function(){state.returningFrom=null;state.returnFlash=null;draw();},4200);}
+function returnToPlace(id,from){const target=String(id||"").trim();if(!target)return;rememberReturn(target,from);openWorldNode(target,{preserveTrail:true,preserveReturnReturn:true});window.clearTimeout(window.__ESCIE_WORLD_RETURN_TIMER);window.__ESCIE_WORLD_RETURN_TIMER=window.setTimeout(function(){state.returningFrom=null;state.returnFlash=null;draw();},4200);}
 function pathContext(){const rs=records(),out=[];for(let i=1;i<state.trail.length;i++){const from=rs.find(r=>String(r.id)===String(state.trail[i-1])),to=rs.find(r=>String(r.id)===String(state.trail[i]));if(!from||!to)continue;const link=related(from.id).find(x=>String(x.node.id)===String(to.id));out.push({from,to,relationship:link&&link.r&&link.r.type?String(link.r.type).replace(/_/g," "):"UNLINKED THREAD"});}return out;}
 function investigationSummary(){const p=pathContext();const unknowns=state.visited.map(id=>records().find(r=>String(r.id)===String(id))).filter(Boolean).filter(r=>String(r.certainty||"").toUpperCase()==="UNKNOWN").length;return {steps:p.length,unknowns};}
 function loadTrail(){try{const a=JSON.parse(localStorage.getItem("escie_world_trail")||"[]");const b=JSON.parse(localStorage.getItem("escie_world_visited")||"[]");if(Array.isArray(a))state.trail=a.filter(v=>typeof v==="string"&&v.trim()).slice(-12);if(Array.isArray(b))state.visited=b.filter(v=>typeof v==="string"&&v.trim()).slice(-100)}catch(e){state.trail=[];state.visited=[]}}
@@ -372,10 +372,18 @@ function writeWorldHash(hash,mode){
  const method=mode==="push"?"pushState":"replaceState";
  try{history[method](null,"",hash);}catch(_e){location.hash=hash;}
 }
+function clearWorldTransition(options){
+ options=options||{};
+ window.clearTimeout(window.__ESCIE_WORLD_RETURN_TIMER);
+ state.attentionSince=0;
+ state.attentionNoticed=false;
+ if(!options.preserveReturn){state.returningFrom=null;state.returnFlash=null;}
+}
 function openWorldNode(id,options){
  const target=String(id||"").trim();
  if(!target)return;
  options=options||{};
+ clearWorldTransition({preserveReturn:!!options.preserveReturnReturn});
  const local=records().find(r=>String(r.id)===target);
  const live=liveWorldNode(target);
  const node=local||live||{id:target,type:"PLACE",title:target.replace(/^world-/,"").replace(/-/g," "),description:"A place in the World."};
@@ -1010,6 +1018,10 @@ function draw(){
    }
  });
  function syncFromHash(){
+   clearWorldTransition();
+   state.exploreOpen=false;
+   state.outsideOpen=false;
+   state.tab="atlas";
    const h=String(location.hash||"");
    const sm=h.match(/(?:world-street=)([^&]+)/);
    const pm=h.match(/(?:world-place=)([^&]+)/);
