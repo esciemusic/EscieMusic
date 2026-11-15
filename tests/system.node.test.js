@@ -18,6 +18,11 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
+function esc(v) {
+  return String(v ?? "").replace(/[&<>"]/g, (m) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"' : "&quot;" }[m]));
+}
+
+
 assert(state.API.validate(state).valid, "initial runtime state should be valid");
 assert(state.API.setStatus("ready") === true, "valid state status should be accepted");
 assert(state.API.setStatus("invalid") === false, "invalid state status must be rejected");
