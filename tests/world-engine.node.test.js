@@ -61,4 +61,5 @@ assert(/state\.focusDetailRequest=event\.detail===0/.test(src),"World should onl
 assert(/state\.focusRestoreRequest=!!restore/.test(src),"Closing a World encounter must restore the originating control");
 assert(/state\.focusDetailRequest=false;\n   state\.focusRestoreRequest=false;\n   state\.focusOrigin=null;/.test(src),"Back/forward restoration must clear stale focus state");
 assert(!/scrollIntoView\(/.test(src),"World Engine must not force scrolling during focus restoration");
+assert(/touch-action:manipulation/.test(css),"World mobile controls should use manipulation touch behavior");
 console.log("ESCIE world-engine contracts OK");
