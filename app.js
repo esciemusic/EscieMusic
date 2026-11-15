@@ -726,7 +726,7 @@
 
       return '<article class="project-card" data-record-type="body" data-record-id="' +
         escapeHTML(recordId(project)) + '"' + narrationAttributes(project) + '>' +
-        '<p class="eyebrow">CURRENT TRANSMISSION</p>' +
+        '<p class="eyebrow">PRESENT WORK</p>' +
         '<h3>' + escapeHTML(recordTitle(project)) + "</h3>" +
         '<div class="project-structure">' +
           releasedStructure.map(part =>
