@@ -150,17 +150,25 @@ function celestialContext(){
  const env=liveEnvironment()||{};
  const now=new Date();
  const hour=Number(new Intl.DateTimeFormat("en-US",{hour:"numeric",hour12:false,timeZone:"America/Toronto"}).format(now));
+ const minute=Number(new Intl.DateTimeFormat("en-US",{minute:"numeric",timeZone:"America/Toronto"}).format(now));
+ const clock=hour+(minute/60);
  const daylight=String(env.daylight||env.visual_state?.light||"").toUpperCase();
- const night=daylight.includes("NIGHT")||hour<6||hour>=20;
+ const sunrise=env.sunrise?new Date(env.sunrise):null;
+ const sunset=env.sunset?new Date(env.sunset):null;
+ const phase=clock<6||clock>=20?"NIGHT":clock<8?"DAWN":clock>=18?"DUSK":"DAY";
+ const night=phase==="NIGHT";
  const moon=lunarPhase(now);
  return {
   universe:"EARTH",
   sun:night?"BELOW_HORIZON":"ABOVE_HORIZON",
+  skyPhase:phase,
   moon:moon.name,
   moonAge:moon.age,
   moonIllumination:moon.illumination,
   stars:night?"VISIBLE_IF_SKY_ALLOWS":"DAYLIGHT",
-  event:null
+  sunrise:sunrise?sunrise.toISOString():null,
+  sunset:sunset?sunset.toISOString():null,
+  daylight
  };
 }
 function celestialMarkup(){
@@ -774,6 +782,8 @@ function mountWorld(){
  container.dataset.worldSun=celestial.sun;
  container.dataset.worldMoon=celestial.moon;
  container.dataset.worldStars=celestial.stars;
+ container.dataset.worldSkyPhase=celestial.skyPhase;
+ container.dataset.worldMoonIllumination=String(Math.round(celestial.moonIllumination*100));
  }
  syncLiveState();
  loadTrail();
