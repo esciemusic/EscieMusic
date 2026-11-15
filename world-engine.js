@@ -245,7 +245,7 @@ function objectDetail(r){
    CHAIR:["PAUSE","absence / fabric / position","someone can leave a presence behind."]
  }[objectKind]||["NOTICE","surface / weight / memory","ordinary things can remain ordinary."];
  const returnButton=originId?'<button type="button" class="world-object-return" data-node="'+esc(originId)+'">← RETURN TO '+esc(originLabel).toUpperCase()+'</button>':'<button type="button" class="world-object-return" data-close-node>← RETURN TO THE WORLD</button>';
- return '<div class="world-object-encounter world-object-${objectKind.toLowerCase()}" aria-live="polite">'
+ return '<div class="world-object-encounter world-object-'+objectKind.toLowerCase()+'" aria-live="polite">'
    +'<div class="world-object-threshold">'+returnButton+'<span class="world-kicker">OBJECT // '+esc(objectKind)+' // ENCOUNTER</span><span class="world-object-presence">'+esc(presence)+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3><p class="world-object-line">'+esc(r.description||"An ordinary thing, carrying more than it explains.")+'</p></div>'
    +'<div class="world-object-body"><div class="world-object-mark" aria-hidden="true"><span></span><span></span><span></span></div><div class="world-object-copy"><span class="world-kicker">'+esc(sensory[0])+'</span><p>'+esc(notice||sensory[2])+'</p><small class="world-object-sense">'+esc(sensory[1])+'</small></div></div>'
    +'<div class="world-object-context"><div><span class="world-kicker">WHERE IT WAS FOUND</span><strong>'+esc(originLabel)+'</strong><small>the place remains behind you</small></div><div><span class="world-kicker">PRESENCE</span><strong>'+esc(presence.replace(/_/g," "))+'</strong><small>how it sits in the room</small></div></div>'
