@@ -264,17 +264,38 @@ function roomDetail(room){
    return '<span class="world-room-presence-item'+(returned?' world-room-presence-returned':'')+'" data-presence-index="'+i+'">'+(returned?'<span class="world-room-presence-return-mark">RETURNED</span>':'')+'<i aria-hidden="true"></i><b>'+esc(label)+'</b><span>'+esc(title(r))+'</span></span>';
  }).join('');
  const placeLabel=roomNeighborhood[String(room.id)]||"PLACE";
- const returnNotice=state.returnFlash&&state.returningFrom?'<div class="world-room-return-notice" role="status"><span class="world-kicker">RETURN</span><strong>BACK IN '+esc(live.name||title(room))+'</strong><p>You came back from '+esc(returnedObject?title(returnedObject):"the object")+'.</p></div>':'';
+ const temporal=temporalMarkup(room);
+const returnNotice=state.returnFlash&&state.returningFrom?'<div class="world-room-return-notice" role="status"><span class="world-kicker">RETURN</span><strong>BACK IN '+esc(live.name||title(room))+'</strong><p>You came back from '+esc(returnedObject?title(returnedObject):"the object")+'.</p></div>':'';
  const textureLine=texture.length?texture.map(function(x){return '<span>'+esc(String(x).replace(/-/g," "))+'</span>';}).join(''):'';
  const anchorLine=anchors.length?anchors.map(function(x){return '<span>'+esc(x)+'</span>';}).join(''):'';
  return '<div class="world-room-scene">'+returnNotice+
-   '<div class="world-room-threshold"><button type="button" class="world-home-return" '+(state.roomOrigin&&state.roomOrigin.placeId?'data-room-place-return="'+esc(state.roomOrigin.placeId)+'"':'data-node="world-montreal"')+'">← '+esc(state.roomOrigin&&state.roomOrigin.place?title(state.roomOrigin.place):"MONTRÉAL")+'</button><span class="world-kicker">MONTRÉAL / '+esc(roomNeighborhood[String(room.id)]||"PLACE")+(state.roomOrigin&&state.roomOrigin.place&&String(state.roomOrigin.place.id)!==String(room.id)?' / '+esc(title(state.roomOrigin.place)):'')+'</span><span class="world-kicker">A ROOM IN THE HOME</span><span class="world-kicker">INSIDE</span><h3 data-no-translate class="record-identity">'+esc(title(room))+'</h3><p>'+esc(room.description||"A room in the Montréal home.")+'</p></div>'+
+   '<div class="world-room-threshold"><button type="button" class="world-home-return" '+(state.roomOrigin&&state.roomOrigin.placeId?'data-room-place-return="'+esc(state.roomOrigin.placeId)+'"':'data-node="world-montreal"')+'">← '+esc(state.roomOrigin&&state.roomOrigin.place?title(state.roomOrigin.place):"MONTRÉAL")+'</button><span class="world-kicker">MONTRÉAL / '+esc(roomNeighborhood[String(room.id)]||"PLACE")+(state.roomOrigin&&state.roomOrigin.place&&String(state.roomOrigin.place.id)!==String(room.id)?' / '+esc(title(state.roomOrigin.place)):'')+'</span><span class="world-kicker">'+temporal+</span><span class="world-kicker">A ROOM IN THE HOME</span><span class="world-kicker">INSIDE</span><h3 data-no-translate class="record-identity">'+esc(title(room))+'</h3><p>'+esc(room.description||"A room in the Montréal home.")+'</p></div>'+
    '<div class="world-room-place" data-atmosphere-character="'+esc(atmosphere.character)+'" data-atmosphere-layer="'+esc(atmosphere.layer)+'"><div class="world-room-place-image" aria-hidden="true"><span></span><span></span><span></span></div><div class="world-room-place-copy"><span class="world-kicker">PLACE</span><strong>'+esc(live.role||room.profile&&room.profile.role||"LIVED PLACE")+'</strong><p>'+esc(atmosphere.light+" · "+atmosphere.surface+" · "+atmosphere.sound)+'</p></div></div>'+
    '<div class="world-room-presence"><div class="world-room-presence-head"><span class="world-kicker">PRESENCE</span><p>The room is not a list. Look around first.</p></div><div class="world-room-presence-field">'+(presence||'<span class="world-room-presence-empty">Nothing is visibly present yet.</span>')+'</div></div>'+
    '<div class="world-room-details"><div><span class="world-kicker">THE AIR</span><div class="world-room-tags"><span>'+esc(atmosphere.weather)+'</span><span>'+esc(atmosphere.temperature==null?"":String(atmosphere.temperature)+"°")+'</span><span>'+esc(atmosphere.signal)+'</span></div></div><div><span class="world-kicker">WHAT IS AROUND YOU</span><div class="world-room-tags">'+(live.texture.length?live.texture.map(x=>"<span>"+esc(x)+"</span>").join(""):"<span>lived-in</span>")+'</div></div></div>'+
    (textureLine?'<div class="world-room-details"><div><span class="world-kicker">TEXTURE</span><div class="world-room-tags">'+textureLine+'</div></div>'+(anchorLine?'<div><span class="world-kicker">LANDMARKS / ANCHORS</span><div class="world-room-tags">'+anchorLine+'</div></div>':'')+'</div>':'')+
    '<div class="world-room-life"><div class="world-room-life-head"><span class="world-kicker">WHAT LIVES HERE</span><p>People, moments, art, music, objects and traces appear as they are actually added to this place.</p></div>'+(items||'<div class="world-empty">Nothing has been opened here yet.</div>')+'</div>'+(contents.length?'<div class="world-room-next"><span class="world-kicker">NOTICE</span><p>Nothing here asks to be solved. Notice what is present, then choose where to look.</p></div>':'')+
  '</div>';
+}
+function temporalContext(r){
+ const now=Date.now();
+ const candidates=["date","moment_date","event_date","release_date","occurred_at","created_at","updated_at"];
+ let raw=null,field=null;
+ for(const key of candidates){if(r&&r[key]){raw=r[key];field=key;break;}}
+ if(!raw)return {state:"NOW",field:null,value:null,known:false};
+ const t=Date.parse(String(raw));
+ if(Number.isNaN(t))return {state:"DOCUMENTED",field:field,value:String(raw),known:true};
+ const delta=t-now;
+ let state="DOCUMENTED";
+ if(Math.abs(delta)<86400000)state="NOW";
+ else if(delta>0)state="AFTER";
+ else if(delta<0)state="BEFORE";
+ return {state:state,field:field,value:String(raw),known:true};
+}
+function temporalMarkup(r){
+ const t=temporalContext(r);
+ if(!t.known)return '<span class="world-time-state">NOW</span>';
+ return '<span class="world-time-state" data-temporal-state="'+esc(t.state)+'">'+esc(t.state)+'</span>';
 }
 function encounterContext(r){
  const parts=[];
