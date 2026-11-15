@@ -834,6 +834,12 @@ function draw(){
      if(id)returnToPlace(id,from);
      return;
    }
+   const returnThread=event.target.closest("[data-return-thread]");
+   if(returnThread){
+     const id=returnThread.getAttribute("data-return-thread");
+     if(id){state.outsideOpen=false;state.exploreOpen=false;openWorldNode(id,{preserveTrail:true});}
+     return;
+   }
    const roomReturn=event.target.closest("[data-room-place-return]");
    if(roomReturn){
      const placeId=roomReturn.getAttribute("data-room-place-return")||"";
