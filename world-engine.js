@@ -311,6 +311,7 @@ function encounterContext(r){
 }
 function objectDetail(r){
  const temporal=temporalMarkup(r);
+ const attentionCueText=attentionCue(r.id);
  const object=liveObjectContext()||{};
  const liveOrigin=object.origin||{};
  const contextualOrigin=state.roomOrigin&&state.roomOrigin.place?state.roomOrigin.place:null;
@@ -343,7 +344,7 @@ function objectDetail(r){
  }[objectKind]||["NOTICE","surface / weight / memory","ordinary things can remain ordinary."];
  const returnButton=originId?'<button type="button" class="world-object-return" data-return-node="'+esc(originId)+'" data-return-from="'+esc(r.id)+'">← RETURN TO '+esc(originLabel).toUpperCase()+'</button>':'<button type="button" class="world-object-return" data-close-node>← RETURN TO THE WORLD</button>';
  return '<div class="world-object-encounter world-object-'+objectKind.toLowerCase()+'" aria-live="polite">'
-   +'<div class="world-object-threshold">'+returnButton+'<span class="world-kicker">'+temporal+'</span><span class="world-kicker">OBJECT // '+esc(objectKind)+' // ENCOUNTER</span><span class="world-object-presence">'+esc(presence)+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3><p class="world-object-line">'+esc(r.description||"An ordinary thing, carrying more than it explains.")+'</p></div>'
+   +'<div class="world-object-threshold">'+returnButton+'<span class="world-kicker">'+attentionCueText+'</span><span class="world-kicker">'+temporal+'</span><span class="world-kicker">OBJECT // '+esc(objectKind)+' // ENCOUNTER</span><span class="world-object-presence">'+esc(presence)+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3><p class="world-object-line">'+esc(r.description||"An ordinary thing, carrying more than it explains.")+'</p></div>'
    +'<div class="world-object-body"><div class="world-object-mark" aria-hidden="true"><span></span><span></span><span></span></div><div class="world-object-copy"><span class="world-kicker">'+esc(sensory[0])+'</span><p>'+esc(notice||sensory[2])+'</p><small class="world-object-sense">'+esc(sensory[1])+'</small></div></div>'
    +'<div class="world-object-origin"><span class="world-kicker">YOU ARE HERE</span><div class="world-object-origin-line"><span class="world-object-origin-dot" aria-hidden="true"></span><span>'+esc(originPath)+'</span><span class="world-object-origin-type">'+esc(originKind)+'</span></div></div>'
    +'<div class="world-object-context"><div><span class="world-kicker">WHERE IT WAS FOUND</span><strong>'+esc(originLabel)+'</strong><small>the room remains behind you</small></div><div><span class="world-kicker">PRESENCE</span><strong>'+esc(presence.replace(/_/g," "))+'</strong><small>how it sits in the room</small></div></div>'
@@ -650,21 +651,15 @@ function mountWorld(){
    const place=records().find(function(r){return String(r.id)===String(placeId);});
    if(place){state.selected=String(place.id);state.placeStreet={placeId:String(place.id),place:place,street:null};}
  }
- function syncAttention(container){
- const now=Date.now();
- if(!state.selected){state.attentionSince=0;state.attentionNoticed=false;return;}
- if(!state.attentionSince)state.attentionSince=now;
- if(state.attentionNoticed||now-state.attentionSince<45000)return;
- const root=container.querySelector(".world-fourth-wall");
- if(root)return;
- const note=document.createElement("div");
- note.className="world-fourth-wall";
- note.setAttribute("role","status");
- note.innerHTML='<span class="world-kicker">PRESENCE</span><strong>YOU\'RE STILL HERE.</strong><p>The World noticed the time you gave it.</p>';
- container.appendChild(note);
- state.attentionNoticed=true;
+ function attentionMemory(id){
+ const key=String(id||"");if(!key)return false;
+ try{const a=JSON.parse(localStorage.getItem("escie_world_attention")||"[]");return Array.isArray(a)&&a.includes(key);}catch(_e){return false;}
 }
-function resetAttention(){state.attentionSince=state.selected?Date.now():0;state.attentionNoticed=false;}
+function rememberAttention(id){
+ const key=String(id||"");if(!key)return;
+ try{const a=JSON.parse(localStorage.getItem("escie_world_attention")||"[]");const next=Array.isArray(a)?a.filter(x=>String(x)!==key):[];next.push(key);localStorage.setItem("escie_world_attention",JSON.stringify(next.slice(-100)));}catch(_e){}
+}
+function attentionCue(id){return attentionMemory(id)?'<span class="world-attention-memory">NOTICED BEFORE</span>':"";}
 function draw(){
    syncWorldLayer();
    if(state.selected){
@@ -834,4 +829,5 @@ if(typeof document!=="undefined"){
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",mountWorld,{once:true});
  else mountWorld();
 }
-})();
+})();rememberAttention(state.selected);
+ 
