@@ -138,9 +138,10 @@ function homeRooms(){
  return ["little-italy","parc-extension"].map(id=>locations.find(r=>r&&String(r.id||"")===id)).filter(r=>r&&String(r.visibility||"").toLowerCase()!=="withheld"&&r.public_disclosure!==false);
 }
 function worldLensMarkup(){
+ const lensAttrs={atlas:'data-world-tab="atlas"',people:'data-world-tab="people"',places:'data-world-tab="places"',moments:'data-world-tab="moments"',fragments:'data-world-tab="fragments"',bodies:'data-world-tab="bodies"',proof:'data-world-tab="proof"',path:'data-world-tab="path"',timeline:'data-world-tab="timeline"',symbols:'data-world-tab="symbols"',trails:'data-world-tab="trails"'};
  return '<div class="world-lens-nav" role="tablist" aria-label="ESCIE World navigation">'+tabs.map(function(t){
    const active=state.tab===t[0];
-   return '<button type="button" role="tab" aria-selected="'+(active?"true":"false")+'" data-world-tab="'+esc(t[0])+'">'+glyph(t[2],t[1])+'<span>'+esc(t[1])+'</span></button>';
+   return '<button type="button" role="tab" aria-selected="'+(active?"true":"false")+'" '+lensAttrs[t[0]]+'>'+glyph(t[2],t[1])+'<span>'+esc(t[1])+'</span></button>';
  }).join("")+'</div>';
 }
 function lensRows(){
