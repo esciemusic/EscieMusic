@@ -164,10 +164,10 @@ function worldHome(){
    return '<button type="button" class="world-room" data-node="'+esc(room.id)+'"><span class="world-room-mark" aria-hidden="true"></span><div><strong>'+esc(title(room))+'</strong><p>'+esc(room.description||"A room in the Montréal home.")+'</p></div><span class="world-arrow" aria-hidden="true">↗</span></button>';
  }).join("");
  return '<div class="world-home">'+
-   '<div class="world-home-intro"><span class="world-kicker">MY WORLD</span><h3>MONTRÉAL</h3><p>MONTRÉAL IS HOME.</p></div>'+
+   '<div class="world-home-intro"><span class="world-kicker">MY WORLD</span><h3>THE WORLD</h3><p>MONTRÉAL IS HOME.</p><small>HOME IS THE ANCHOR. THE WORLD CONTINUES.</small></div>'+
    worldLensMarkup()+
-   (state.tab==="atlas"?'<div class="world-home-house"><div class="world-home-city"><span class="world-kicker">THE HOME</span><strong>'+esc(city&&city.title||"MONTRÉAL")+'</strong></div><div class="world-home-rooms">'+(roomCards||'<span class="world-empty">Nothing has been opened yet.</span>')+'</div></div>':worldLensContent())+
-   '<button type="button" class="world-home-outside" data-outside-world><span class="world-kicker">BEYOND THE DOOR</span><strong>THE OUTSIDE WORLD</strong><p>Everything beyond home.</p></button>'+
+   (state.tab==="atlas"?'<div class="world-home-house"><div class="world-home-city"><span class="world-kicker">THE HOME</span><strong>'+esc(city&&city.title||"MONTRÉAL")+'</strong><p>WHERE MY WORLD AND THE WORLD INTERTWINE.</p></div><div class="world-home-rooms">'+(roomCards||'<span class="world-empty">Nothing has been opened yet.</span>')+'</div></div>':worldLensContent())+
+   '<button type="button" class="world-home-outside" data-outside-world><span class="world-kicker">BEYOND HOME</span><strong>THE WORLD CONTINUES</strong><p>Everything beyond Montréal can enter here too.</p></button>'+
  '</div>';
 }
 function mountWorld(){
