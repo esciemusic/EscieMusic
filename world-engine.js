@@ -153,15 +153,19 @@ function celestialContext(){
  const hour=Number(parts.find(function(p){return p.type==="hour";})?.value||0);
  const minute=Number(parts.find(function(p){return p.type==="minute";})?.value||0);
  const clock=hour+(minute/60);
+ const localMinutes=function(d){
+  const ps=new Intl.DateTimeFormat("en-US",{hour:"numeric",minute:"numeric",hour12:false,timeZone:"America/Toronto"}).formatToParts(d);
+  return Number(ps.find(function(p){return p.type==="hour";})?.value||0)*60+Number(ps.find(function(p){return p.type==="minute";})?.value||0);
+ };
+ const nowMinutes=hour*60+minute;
  const sunrise=env.sunrise?new Date(env.sunrise):null;
  const sunset=env.sunset?new Date(env.sunset):null;
  let phase=clock<6?"NIGHT":clock<8?"DAWN":clock>=20?"NIGHT":clock>=18?"DUSK":"DAY";
  if(sunrise&&!isNaN(sunrise)&&sunset&&!isNaN(sunset)){
-  const localMinutes=function(d){return Number(new Intl.DateTimeFormat("en-US",{hour:"numeric",minute:"numeric",hour12:false,timeZone:"America/Toronto"}).format(d).replace(":","."));};
   const sr=localMinutes(sunrise), ss=localMinutes(sunset);
-  if(clock>=sr-0.75&&clock<sr+0.75)phase="DAWN";
-  else if(clock>=ss-0.75&&clock<ss+0.75)phase="DUSK";
-  else if(clock>=sr+0.75&&clock<ss-0.75)phase="DAY";
+  if(nowMinutes>=sr-45&&nowMinutes<sr+45)phase="DAWN";
+  else if(nowMinutes>=ss-45&&nowMinutes<ss+45)phase="DUSK";
+  else if(nowMinutes>=sr+45&&nowMinutes<ss-45)phase="DAY";
   else phase="NIGHT";
  }
  const night=phase==="NIGHT";
