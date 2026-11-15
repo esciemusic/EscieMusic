@@ -3771,3 +3771,11 @@ body.light .world-object-origin{border-color:rgba(0,0,0,.1)}
 .world-return-thread strong{display:block;margin:.2rem 0 .3rem}
 .world-return-thread p{margin:0 0 .7rem;opacity:.68;line-height:1.45}
 .world-return-thread-button{font:inherit;background:transparent;border:0;padding:.2rem 0;text-decoration:underline;cursor:pointer;opacity:.82}
+
+/* Celestial atmosphere: environmental, not decorative. */
+.world-celestial{display:flex;gap:.55rem;align-items:baseline;flex-wrap:wrap;opacity:.68;font-size:.72rem;letter-spacing:.04em}
+.world-celestial[data-world-moon="FULL MOON"]{opacity:.82}
+.world-celestial[data-world-moon="NEW MOON"]{opacity:.52}
+.world-celestial[data-world-sun="BELOW_HORIZON"]{filter:brightness(.9)}
+[data-world-stars="VISIBLE_IF_SKY_ALLOWS"] .world-celestial{letter-spacing:.08em}
+@media(prefers-reduced-motion:reduce){.world-celestial{transition:none}}
