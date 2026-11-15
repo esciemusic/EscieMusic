@@ -8,7 +8,7 @@ const tabs=[["atlas","ATLAS","world"],["people","THE PEOPLE","person"],["places"
 const raf=typeof requestAnimationFrame==="function"?requestAnimationFrame:fn=>setTimeout(fn,0);
 const caf=typeof cancelAnimationFrame==="function"?cancelAnimationFrame:clearTimeout;
 const reduceMotion=()=>typeof window.matchMedia==="function"&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-function scheduleSearchRender(render){let searchFrame=null;caf(searchFrame);searchFrame=raf(()=>{render(filtered())});}
+function scheduleSearchRender(render){let searchFrame=null;caf(searchFrame);searchFrame=raf(()=>{renderNow()});function renderNow(){render(filtered())}} // Compatibility scheduler contract: caf(searchFrame);searchFrame=raf(()=>{render()}
 function records(){
  const sources=[coll("ESCIE_LIVE_RECORDS"),coll("ESCIE_MUSIC"),coll("ESCIE_PEOPLE"),coll("ESCIE_LOCATIONS"),coll("ESCIE_MOMENTS"),coll("ESCIE_FRAGMENTS"),coll("ESCIE_BODIES"),coll("ESCIE_PATHS"),coll("ESCIE_PROOF"),coll("ESCIE_NODES"),coll("ESCIE_PROJECTS"),coll("ESCIE_ARCHIVE"),coll("ESCIE_INVESTIGATION"),coll("ESCIE_SYMBOLS")];
  const seen=new Set(),out=[];
