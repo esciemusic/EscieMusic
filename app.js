@@ -771,8 +771,8 @@
 
   function renderWorld(){
     const container=byId("world-container"); if(!container)return;
-    // THE WORLD is rendered by world-engine.js. Keep this legacy renderer from overwriting the canonical lens experience.
-    if (container.querySelector(".world-engine")) return;
+    // THE WORLD is owned by world-engine.js. This explicit runtime boundary prevents the legacy renderer from overwriting the canonical lens experience, regardless of defer/readyState timing.
+    if (window.ESCIE_WORLD_ENGINE_ACTIVE || container.querySelector(".world-engine")) return;
     const locations=normalizeCollection(getLocations()).filter(isPublic).filter(place=>recordId(place)==="montreal");
     const records=getAllPublicRecords().filter(isPublic);
     const counts={};
