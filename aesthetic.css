@@ -2684,3 +2684,72 @@ html[data-theme="light"] .index-navigation .nav-link.is-current .node-link-symbo
     transition:none;
   }
 }
+
+
+/* =========================================================
+   INDEX / TAB PASS 4 — optical and interaction polish
+   Quiet hierarchy, stable touch targets, no layout jump.
+   ========================================================= */
+.index-navigation{
+  contain:layout paint;
+  overscroll-behavior:contain;
+}
+.index-navigation .nav-link{
+  position:relative;
+  isolation:isolate;
+  min-width:0;
+  min-height:50px;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+.index-navigation .nav-link::before{
+  width:28px;
+  text-align:left;
+  font-variant-numeric:tabular-nums;
+}
+.index-navigation .nav-link .node-link-label{
+  position:relative;
+  z-index:1;
+  min-width:0;
+}
+.index-navigation .nav-link .node-link-symbol{
+  flex:0 0 auto;
+  align-self:center;
+  justify-self:end;
+  transform-origin:center;
+}
+.index-navigation .nav-link:hover .node-link-symbol,
+.index-navigation .nav-link:focus-visible .node-link-symbol{
+  transform:translateX(-1px) scale(1.035);
+}
+.index-navigation .nav-link.is-current{
+  box-shadow:inset 2px 0 0 var(--escie-blue-bright);
+}
+.index-navigation .nav-link.is-current .node-link-symbol{
+  transform:scale(1.04);
+}
+.index-navigation .nav-link:active{
+  transform:translateX(1px);
+}
+.index-navigation .nav-link:active .node-link-symbol{
+  transform:scale(.98);
+}
+.index-navigation .nav-link:focus-visible{
+  outline:2px solid rgba(77,163,255,.72);
+  outline-offset:-2px;
+}
+@media(max-width:700px){
+  .index-navigation .nav-link{
+    min-height:48px;
+  }
+  .index-navigation .nav-link::before{
+    width:24px;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .index-navigation .nav-link,
+  .index-navigation .nav-link .node-link-symbol{
+    transform:none;
+    transition:none;
+  }
+}
