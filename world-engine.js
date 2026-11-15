@@ -273,23 +273,40 @@ function objectDetail(r){
 }
 function homePlaceDetail(place){
  const atmosphere=placeAtmosphere();
- const rooms=homeRooms();
+ const neighborhoods=homeNeighborhoods();
  const live=placeIdentity(place);
- const roomCards=rooms.map(function(room){
-   return '<button type="button" class="world-room" data-node="'+esc(room.id)+'"><span class="world-room-mark" aria-hidden="true"></span><div><span class="world-kicker">ROOM</span><strong>'+esc(title(room))+'</strong><p>'+esc(room.description||"A room in the Montréal home.")+'</p></div><span class="world-arrow" aria-hidden="true">↗</span></button>';
- }).join("");
+ const roomCards=neighborhoods.map(function(place){
+   return '<button type="button" class="world-room world-neighborhood-entry" data-node="'+esc(place.id)+'"><span class="world-room-mark" aria-hidden="true"></span><div><span class="world-kicker">NEIGHBORHOOD</span><strong>'+esc(title(place))+'</strong><p>'+esc(place.description||"A Montréal neighborhood in the World.")+'</p></div><span class="world-arrow" aria-hidden="true">↗</span></button>';
+;
  return '<div class="world-home-place">'+
    '<div class="world-home-place-threshold"><button type="button" class="world-home-return" data-close-node>← WORLD</button><span class="world-kicker">HOME // MONTRÉAL</span><h3 data-no-translate class="record-identity">'+esc(live.name||title(place)||"MONTRÉAL")+'</h3><p>'+esc(place.description||"The place where ESCIE's world and the wider world meet.")+'</p></div>'+
    '<div class="world-home-place-atmosphere"><span class="world-kicker">RIGHT NOW</span><strong>'+esc(atmosphere.weather)+'</strong><span>'+esc(atmosphere.light)+' · '+esc(atmosphere.surface)+' · '+esc(atmosphere.sound)+'</span></div>'+
    '<div class="world-home-place-copy"><span class="world-kicker">HOME IS A PLACE, NOT A BORDER</span><p>Montréal is where this World is entered from. Streets, rooms, people, memories and everything beyond them can continue outward.</p></div>'+
-   '<div class="world-home-rooms"><div class="world-room-life-head"><span class="world-kicker">ENTER SOMEWHERE</span><p>Start with a room. The World gets deeper when you stay somewhere long enough to notice it.</p></div>'+roomCards+'</div>'+
+   '<div class="world-home-rooms"><div class="world-room-life-head"><span class="world-kicker">ENTER THE CITY</span><p>Start with a neighborhood. Streets lead to places, and places lead inside.</p></div>'+roomCards+'</div>'+
    '<div class="world-home-place-outside"><span class="world-kicker">BEYOND HOME</span><button type="button" data-outside-world><strong>THE WORLD CONTINUES</strong><small>Leave Montréal without leaving the World.</small></button></div>'+
+ '</div>';
+}
+function neighborhoodDetail(place){
+ const atmosphere=placeAtmosphere();
+ const childIds=neighborhoodRooms[String(place.id)||""]||[];
+ const all=coll("ESCIE_LOCATIONS",[]).concat(coll("ESCIE_LIVE_RECORDS",[]),coll("ESCIE_ARCHIVE",[]));
+ const children=childIds.map(function(id){return all.find(function(x){return x&&String(x.id)===String(id);});}).filter(Boolean);
+ const live=placeIdentity(place);
+ const childCards=children.length?children.map(function(room){
+   return '<button type="button" class="world-room world-neighborhood-child" data-node="'+esc(room.id)+'"><span class="world-room-mark" aria-hidden="true"></span><div><span class="world-kicker">PLACE INSIDE</span><strong>'+esc(title(room))+'</strong><p>'+esc(room.description||"A place inside "+title(place)+".")+'</p></div><span class="world-arrow" aria-hidden="true">↗</span></button>';
+ }).join(""):'<div class="world-empty">Nothing inside this neighborhood has been opened publicly yet.</div>';
+ return '<div class="world-home-place world-neighborhood-place">'+
+   '<div class="world-home-place-threshold"><button type="button" class="world-home-return" data-node="world-montreal">← MONTRÉAL</button><span class="world-kicker">NEIGHBORHOOD // MONTRÉAL</span><h3 data-no-translate class="record-identity">'+esc(live.name||title(place))+'</h3><p>'+esc(place.description||"A neighborhood in the Montréal home.")+'</p></div>'+
+   '<div class="world-home-place-atmosphere"><span class="world-kicker">RIGHT NOW</span><strong>'+esc(atmosphere.weather)+'</strong><span>'+esc(atmosphere.light)+' · '+esc(atmosphere.surface)+' · '+esc(atmosphere.sound)+'</span></div>'+
+   '<div class="world-home-place-copy"><span class="world-kicker">STREET LEVEL</span><p>Neighborhoods are the rooms of Montréal. From here, the World can narrow to a street, a building, or somewhere lived inside.</p></div>'+
+   '<div class="world-home-rooms"><div class="world-room-life-head"><span class="world-kicker">PLACES WITHIN</span><p>Follow a place inward. Nothing here has to be a clue.</p></div>'+childCards+'</div>'+
  '</div>';
 }
 function detail(r){
  if(r&&String(r.id)==="world-montreal")return homePlaceDetail(r);
+ if(r&&(String(r.id)==="little-italy"||String(r.id)==="parc-extension"))return neighborhoodDetail(r);
  if(r&&String(type(r)).toUpperCase()==="OBJECT")return objectDetail(r);
- const roomIds=["little-italy","parc-extension","world-parc-extension","world-apartment","world-street-corner"];
+ const roomIds=["world-apartment","world-street-corner","world-parc-extension"];
  if(r&&roomIds.includes(String(r.id)))return roomDetail(r);
  const symbol=r&&String(r.id||"").indexOf("symbol-")===0?coll("ESCIE_SYMBOLS").find(x=>x&&String(x.id)===String(r.id)):null;
  if(symbol){
@@ -356,10 +373,11 @@ function montrealRecord(){
  const rows=coll("ESCIE_LOCATIONS",[]).filter(r=>r&&String(r.visibility||"").toLowerCase()!=="withheld"&&r.public_disclosure!==false);
  return rows.find(r=>String(r.id||"").toLowerCase()==="montreal")||rows.find(r=>String(r.title||"").toUpperCase()==="MONTRÉAL")||null;
 }
-function homeRooms(){
+function homeNeighborhoods(){
  const locations=coll("ESCIE_LOCATIONS",[]);
  return ["little-italy","parc-extension"].map(id=>locations.find(r=>r&&String(r.id||"")===id)).filter(r=>r&&String(r.visibility||"").toLowerCase()!=="withheld"&&r.public_disclosure!==false);
 }
+const neighborhoodRooms={"parc-extension":["world-apartment","world-street-corner"],"little-italy":[]};
 // Canonical World entry contracts: data-world-tab="places" data-world-tab="people" data-world-tab="moments" href="#art"
 // Entry tone: Come in. Look around.
 function worldLensMarkup(){
