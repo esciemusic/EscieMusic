@@ -119,7 +119,7 @@ function placeAtmosphere(record,layer){
  const text=[r.title,r.name,r.description].filter(Boolean).join(" ").toLowerCase();
  const tags=rawTags.map(function(x){return String(x).toLowerCase();}).join(" ");
  const source=text+" "+tags;
- let character="LIVED";
+ let character=String(layer||"place").toUpperCase()==="NEIGHBORHOOD"?"DISTRICT":String(layer||"place").toUpperCase()==="STREET"?"STREET":String(layer||"place").toUpperCase()==="ROOM"?"ROOM":"LIVED";
  if(/apartment|home|room|kitchen|bedroom|hallway|interior/.test(source))character="INTERIOR";
  else if(/alley|street|corner|sidewalk|avenue|boulevard|road|station/.test(source))character="STREET";
  else if(/park|garden|river|mountain|forest|yard|outdoor/.test(source))character="OPEN_AIR";
@@ -269,7 +269,7 @@ function roomDetail(room){
  const anchorLine=anchors.length?anchors.map(function(x){return '<span>'+esc(x)+'</span>';}).join(''):'';
  return '<div class="world-room-scene">'+returnNotice+
    '<div class="world-room-threshold"><button type="button" class="world-home-return" '+(state.roomOrigin&&state.roomOrigin.placeId?'data-room-place-return="'+esc(state.roomOrigin.placeId)+'"':'data-node="world-montreal"')+'">← '+esc(state.roomOrigin&&state.roomOrigin.place?title(state.roomOrigin.place):"MONTRÉAL")+'</button><span class="world-kicker">MONTRÉAL / '+esc(roomNeighborhood[String(room.id)]||"PLACE")+(state.roomOrigin&&state.roomOrigin.place&&String(state.roomOrigin.place.id)!==String(room.id)?' / '+esc(title(state.roomOrigin.place)):'')+'</span><span class="world-kicker">A ROOM IN THE HOME</span><span class="world-kicker">INSIDE</span><h3 data-no-translate class="record-identity">'+esc(title(room))+'</h3><p>'+esc(room.description||"A room in the Montréal home.")+'</p></div>'+
-   '<div class="world-room-place"><div class="world-room-place-image" aria-hidden="true"><span></span><span></span><span></span></div><div class="world-room-place-copy"><span class="world-kicker">PLACE</span><strong>'+esc(live.role||room.profile&&room.profile.role||"LIVED PLACE")+'</strong><p>'+esc(atmosphere.light+" · "+atmosphere.surface+" · "+atmosphere.sound)+'</p></div></div>'+
+   '<div class="world-room-place" data-atmosphere-character="'+esc(atmosphere.character)+'" data-atmosphere-layer="'+esc(atmosphere.layer)+'"><div class="world-room-place-image" aria-hidden="true"><span></span><span></span><span></span></div><div class="world-room-place-copy"><span class="world-kicker">PLACE</span><strong>'+esc(live.role||room.profile&&room.profile.role||"LIVED PLACE")+'</strong><p>'+esc(atmosphere.light+" · "+atmosphere.surface+" · "+atmosphere.sound)+'</p></div></div>'+
    '<div class="world-room-presence"><div class="world-room-presence-head"><span class="world-kicker">PRESENCE</span><p>The room is not a list. Look around first.</p></div><div class="world-room-presence-field">'+(presence||'<span class="world-room-presence-empty">Nothing is visibly present yet.</span>')+'</div></div>'+
    '<div class="world-room-details"><div><span class="world-kicker">THE AIR</span><div class="world-room-tags"><span>'+esc(atmosphere.weather)+'</span><span>'+esc(atmosphere.temperature==null?"":String(atmosphere.temperature)+"°")+'</span><span>'+esc(atmosphere.signal)+'</span></div></div><div><span class="world-kicker">WHAT IS AROUND YOU</span><div class="world-room-tags">'+(live.texture.length?live.texture.map(x=>"<span>"+esc(x)+"</span>").join(""):"<span>lived-in</span>")+'</div></div></div>'+
    (textureLine?'<div class="world-room-details"><div><span class="world-kicker">TEXTURE</span><div class="world-room-tags">'+textureLine+'</div></div>'+(anchorLine?'<div><span class="world-kicker">LANDMARKS / ANCHORS</span><div class="world-room-tags">'+anchorLine+'</div></div>':'')+'</div>':'')+
@@ -328,7 +328,7 @@ function objectDetail(r){
    +'</div>';
 }
 function homePlaceDetail(place){
- const atmosphere=placeAtmosphere(place,"place");
+ const atmosphere=placeAtmosphere(place,"neighborhood");
  const neighborhoods=homeNeighborhoods();
  const live=placeIdentity(place);
  const roomCards=neighborhoods.map(function(place){
@@ -375,7 +375,7 @@ function streetPlaceRecords(place,street){
  });
 }
 function placeRecordDetail(place,street){
- const atmosphere=placeAtmosphere(place,"place");
+ const atmosphere=placeAtmosphere(place,"street");
  const live=placeIdentity(place);
  const contents=roomContents(place);
  const rooms=contents.filter(function(r){return String(type(r)).toUpperCase()==="ROOM"||String(r.kind||"").toUpperCase()==="ROOM";});
