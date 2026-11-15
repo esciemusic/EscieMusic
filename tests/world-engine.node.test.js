@@ -15,7 +15,7 @@ assert(/caf\(searchFrame\);searchFrame=raf\(\(\)=>\{render\(\)/.test(src),"searc
 assert(/world-detail.*focus\(\)/.test(src),"node navigation must restore keyboard focus");
 assert(/role="tablist".*aria-label="ESCIE World navigation"/.test(src),"world navigation needs tab semantics");
 assert(/aria-selected="/.test(src)&&/state\.tab===t\[0\]/.test(src),"world tabs need selected-state semantics");
-assert(/id="glass-eye-panel" role="region" aria-label="The Glass Eye"/.test(src),"Glass Eye needs an accessible region");
+assert(/id=\\"glass-eye-panel\\" role=\\"region\\" aria-label=\\"The Glass Eye\\"/.test(src),"Glass Eye needs an accessible region");
 assert(/const reduceMotion=\(\)=>typeof window\.matchMedia==="function"/.test(src),"World Engine needs reduced-motion detection");
 assert(/const reduceMotion=\(\)=>typeof window\.matchMedia==="function"/.test(src),"World Engine needs reduced-motion detection");
 assert(!/scrollIntoView\(/.test(src),"World Engine must not force section scrolling");
