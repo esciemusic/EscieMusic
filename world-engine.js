@@ -220,7 +220,8 @@ function roomDetail(room){
  const presence=contents.slice(0,6).map(function(r,i){
    const kind=String(type(r)||"OBJECT").toUpperCase();
    const label=kind==="OBJECT"?"OBJECT":kind;
-   return '<span class="world-room-presence-item" data-presence-index="'+i+'"><i aria-hidden="true"></i><b>'+esc(label)+'</b><span>'+esc(title(r))+'</span></span>';
+   const returned=String(r.id)===String(returnedId);
+   return '<span class="world-room-presence-item'+(returned?' world-room-presence-returned':'')+'" data-presence-index="'+i+'">'+(returned?'<span class="world-room-presence-return-mark">RETURNED</span>':'')+'<i aria-hidden="true"></i><b>'+esc(label)+'</b><span>'+esc(title(r))+'</span></span>';
  }).join('');
  const placeLabel=roomNeighborhood[String(room.id)]||"PLACE";
  const returnNotice=state.returnFlash&&state.returningFrom?'<div class="world-room-return-notice" role="status"><span class="world-kicker">RETURN</span><strong>BACK IN '+esc(live.name||title(room))+'</strong><p>You came back from '+esc(returnedObject?title(returnedObject):"the object")+'.</p></div>':'';
