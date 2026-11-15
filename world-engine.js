@@ -4,7 +4,7 @@ window.ESCIE_WORLD_ENGINE_ACTIVE=true;
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
 const coll=(name,fallback=[])=>{const v=window[name];return Array.isArray(v)?v:(v&&Array.isArray(v.records)?v.records:fallback)};
-const state={tab:"atlas",q:"",type:"ALL",selected:null,trail:[],visited:[],eyeOpen:false,exploreOpen:false};
+const state={tab:"atlas",q:"",type:"ALL",selected:null,trail:[],visited:[],eyeOpen:false,exploreOpen:false,returningFrom:null,returnFlash:null};
 const tabs=[["atlas","ATLAS","world"],["people","THE PEOPLE","person"],["places","PLACES","world"],["moments","MOMENTS","moment"],["fragments","FRAGMENTS","photo-negative"],["bodies","BODIES","empty-chair"],["proof","PROOF","key"],["path","PATH","web"],["timeline","TIMELINE","now"],["symbols","SYMBOLS","daisy"],["trails","TRAILS","web"]];function glyph(name,label){const safe=String(name||"").replace(/[^a-z0-9-]/gi,"");if(!safe)return "";return '<svg class="escie-symbol-glyph world-entry-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#'+esc(safe)+'"></use></svg>';}
 const raf=typeof requestAnimationFrame==="function"?requestAnimationFrame:fn=>setTimeout(fn,0);
 const caf=typeof cancelAnimationFrame==="function"?cancelAnimationFrame:clearTimeout;
@@ -126,7 +126,8 @@ function card(r){
  const why=links.length?"CONNECTED TO "+links.length+" THREAD"+(links.length===1?"":"S"):"";
  return '<button type="button" class="world-card world-node-card" data-node="'+esc(r.id)+'" data-depth="'+(links.length?"deep":"surface")+'"><div class="world-card-main"><span class="world-kicker">'+esc(type(r))+' // '+depth+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3><p>'+esc(String(r.description||r.summary||r.story||"A doorway into the World.").slice(0,220))+'</p>'+(why?'<small class="world-card-thread">'+esc(why)+'</small>':'')+'</div><span class="world-arrow" aria-hidden="true">OPEN</span></button>';
 }
-function remember(id){if(id==null)return;const value=String(id).trim();if(!value)return;if(!state.visited.includes(value))state.visited.push(value);if(state.trail[state.trail.length-1]!==value)state.trail.push(value);state.trail=state.trail.slice(-12);state.visited=state.visited.slice(-100);try{sessionStorage.setItem("escie_world_trail",JSON.stringify(state.trail));sessionStorage.setItem("escie_world_visited",JSON.stringify(state.visited))}catch(e){}}
+function remember(id){if(id==null)return;const value=String(id).trim();if(!value)return;if(!state.visited.includes(value))state.visited.push(value);if(state.trail[state.trail.length-1]!==value)state.trail.push(value);state.trail=state.trail.slice(-12);state.visited=state.visited.slice(-100);try{sessionStorage.setItem("escie_world_trail",JSON.stringify(state.trail));sessionStorage.setItem("escie_world_visited",JSON.stringify(state.visited))}catch(e){}} 
+function returnToPlace(id,from){const target=String(id||"").trim();if(!target)return;state.returningFrom=String(from||"").trim()||null;state.returnFlash={from:state.returningFrom,at:Date.now()};openWorldNode(target,{preserveTrail:true});}
 function pathContext(){const rs=records(),out=[];for(let i=1;i<state.trail.length;i++){const from=rs.find(r=>String(r.id)===String(state.trail[i-1])),to=rs.find(r=>String(r.id)===String(state.trail[i]));if(!from||!to)continue;const link=related(from.id).find(x=>String(x.node.id)===String(to.id));out.push({from,to,relationship:link&&link.r&&link.r.type?String(link.r.type).replace(/_/g," "):"UNLINKED THREAD"});}return out;}
 function investigationSummary(){const p=pathContext();const unknowns=state.visited.map(id=>records().find(r=>String(r.id)===String(id))).filter(Boolean).filter(r=>String(r.certainty||"").toUpperCase()==="UNKNOWN").length;return {steps:p.length,unknowns};}
 function loadTrail(){try{const a=JSON.parse(sessionStorage.getItem("escie_world_trail")||"[]");const b=JSON.parse(sessionStorage.getItem("escie_world_visited")||"[]");if(Array.isArray(a))state.trail=a.filter(v=>typeof v==="string"&&v.trim()).slice(-12);if(Array.isArray(b))state.visited=b.filter(v=>typeof v==="string"&&v.trim()).slice(-100)}catch(e){state.trail=[];state.visited=[]}}
@@ -167,14 +168,15 @@ function liveWorldNode(id){
  const base=records().find(r=>String(r.id)===target);
  return base||null;
 }
-function openWorldNode(id){
+function openWorldNode(id,options){
  const target=String(id||"").trim();
  if(!target)return;
+ options=options||{};
  const local=records().find(r=>String(r.id)===target);
  const live=liveWorldNode(target);
  const node=local||live||{id:target,type:"PLACE",title:target.replace(/^world-/,"").replace(/-/g," "),description:"A place in the World."};
  state.selected=target;
- remember(target);
+ if(!options.preserveTrail)remember(target);
  try{
    const api=window.ESCIE_WORLD_LIVE;
    if(api&&typeof api.navigate==="function")api.navigate(target);
@@ -210,7 +212,7 @@ function roomDetail(room){
  }).join('');
  const textureLine=texture.length?texture.map(function(x){return '<span>'+esc(String(x).replace(/-/g," "))+'</span>';}).join(''):'';
  const anchorLine=anchors.length?anchors.map(function(x){return '<span>'+esc(x)+'</span>';}).join(''):'';
- return '<div class="world-room-scene">'+
+ return '<div class="world-room-scene">'+returnNotice+
    '<div class="world-room-threshold"><button type="button" class="world-home-return" data-close-node>← MONTRÉAL</button><span class="world-kicker">A ROOM IN THE HOME</span><span class="world-kicker">INSIDE</span><h3 data-no-translate class="record-identity">'+esc(title(room))+'</h3><p>'+esc(room.description||"A room in the Montréal home.")+'</p></div>'+
    '<div class="world-room-place"><div class="world-room-place-image" aria-hidden="true"><span></span><span></span><span></span></div><div class="world-room-place-copy"><span class="world-kicker">PLACE</span><strong>'+esc(live.role||room.profile&&room.profile.role||"LIVED PLACE")+'</strong><p>'+esc(atmosphere.light+" · "+atmosphere.surface+" · "+atmosphere.sound)+'</p></div></div>'+
    '<div class="world-room-details"><div><span class="world-kicker">THE AIR</span><div class="world-room-tags"><span>'+esc(atmosphere.weather)+'</span><span>'+esc(atmosphere.temperature==null?"":String(atmosphere.temperature)+"°")+'</span><span>'+esc(atmosphere.signal)+'</span></div></div><div><span class="world-kicker">WHAT IS AROUND YOU</span><div class="world-room-tags">'+(live.texture.length?live.texture.map(x=>"<span>"+esc(x)+"</span>").join(""):"<span>lived-in</span>")+'</div></div></div>'+
@@ -244,7 +246,7 @@ function objectDetail(r){
    NIGHTLIGHT:["STAY WITH","glow / darkness / safety","small light changes the shape of a room."],
    CHAIR:["PAUSE","absence / fabric / position","someone can leave a presence behind."]
  }[objectKind]||["NOTICE","surface / weight / memory","ordinary things can remain ordinary."];
- const returnButton=originId?'<button type="button" class="world-object-return" data-node="'+esc(originId)+'">← RETURN TO '+esc(originLabel).toUpperCase()+'</button>':'<button type="button" class="world-object-return" data-close-node>← RETURN TO THE WORLD</button>';
+ const returnButton=originId?'<button type="button" class="world-object-return" data-return-node="'+esc(originId)+'" data-return-from="'+esc(r.id)+'">← RETURN TO '+esc(originLabel).toUpperCase()+'</button>':'<button type="button" class="world-object-return" data-close-node>← RETURN TO THE WORLD</button>';
  return '<div class="world-object-encounter world-object-'+objectKind.toLowerCase()+'" aria-live="polite">'
    +'<div class="world-object-threshold">'+returnButton+'<span class="world-kicker">OBJECT // '+esc(objectKind)+' // ENCOUNTER</span><span class="world-object-presence">'+esc(presence)+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3><p class="world-object-line">'+esc(r.description||"An ordinary thing, carrying more than it explains.")+'</p></div>'
    +'<div class="world-object-body"><div class="world-object-mark" aria-hidden="true"><span></span><span></span><span></span></div><div class="world-object-copy"><span class="world-kicker">'+esc(sensory[0])+'</span><p>'+esc(notice||sensory[2])+'</p><small class="world-object-sense">'+esc(sensory[1])+'</small></div></div>'
@@ -378,6 +380,8 @@ function mountWorld(){
      state.selected=null;
    }
    container.innerHTML=worldHome();
+   state.returningFrom=null;
+   state.returnFlash=null;
  }
  container.addEventListener("click",function(event){
    const lens=event.target.closest("[data-world-tab]");
@@ -395,6 +399,13 @@ function mountWorld(){
      state.selected=null;
      history.replaceState(null,"","#world");
      draw();
+     return;
+   }
+   const returnNode=event.target.closest("[data-return-node]");
+   if(returnNode){
+     const id=returnNode.getAttribute("data-return-node");
+     const from=returnNode.getAttribute("data-return-from");
+     if(id)returnToPlace(id,from);
      return;
    }
    const node=event.target.closest("[data-node]");
