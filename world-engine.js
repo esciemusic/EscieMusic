@@ -722,7 +722,7 @@ function mountWorld(){
        if(street)state.placeStreet={placeId:String(origin.id),place:origin,street:street};
      }
    }
-   if(pm){const place=records().find(function(r){return String(r.id)===String(state.selected);});if(place){const street=psm?cityStreetNodes(place).find(function(x){return String(x.id)===String(decodeURIComponent(psm[1]));}):null;state.placeStreet={placeId:String(place.id),place:place,street:street||null};}}
+   if(pm){const place=records().find(function(r){return String(r.id)===String(state.selected);});if(place){const street=psm?cityStreetNodes(title(place)).find(function(x){return String(x.id)===String(decodeURIComponent(psm[1]));}):null;state.placeStreet={placeId:String(place.id),place:place,street:street||null};}}
    if(m&&om&&state.roomOrigin&&["world-apartment","world-street-corner","world-parc-extension"].includes(String(state.selected))){
      state.placeStreet=null;
    }
