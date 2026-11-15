@@ -3539,3 +3539,31 @@ html[data-theme="light"] .world-trace-head p,html[data-theme="light"] .world-tra
 @media(prefers-reduced-motion:reduce){
  .world-trace-step{transition:none}
 }
+
+/* Montréal Home threshold — place before rooms */
+.world-home-place{display:grid;gap:clamp(21px,3.8vw,34px);max-width:1100px;margin:0 auto;padding:clamp(21px,5vw,55px) 0 34px}
+.world-home-place-threshold{display:grid;gap:8px;padding-bottom:13px;border-bottom:1px solid rgba(255,255,255,.14)}
+.world-home-place-threshold .world-home-return{justify-self:start;margin-bottom:8px}
+.world-home-place-threshold p{max-width:680px;margin:0;line-height:1.65}
+.world-home-place-atmosphere{display:grid;grid-template-columns:minmax(120px,.618fr) minmax(0,1fr);gap:13px;align-items:end;padding:21px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.1)}
+.world-home-place-atmosphere strong{font-size:clamp(22px,4vw,42px);font-weight:500;letter-spacing:.02em}
+.world-home-place-atmosphere>span:last-child{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;opacity:.7}
+.world-home-place-copy{max-width:720px;padding-left:clamp(0px,6vw,89px)}
+.world-home-place-copy p{margin:8px 0 0;line-height:1.7;opacity:.82}
+.world-home-rooms{display:grid;gap:13px}
+.world-home-rooms .world-room-life-head{margin-bottom:3px}
+.world-home-place .world-room{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:13px;align-items:center;text-align:left;width:100%;padding:21px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.025);color:inherit;transition:transform .25s ease,border-color .25s ease,background .25s ease}
+.world-home-place .world-room:hover,.world-home-place .world-room:focus-visible{transform:translateX(4px);border-color:rgba(140,100,255,.5);background:rgba(255,255,255,.055)}
+.world-room-mark{width:21px;height:21px;border:1px solid currentColor;border-radius:50%;opacity:.55;position:relative}
+.world-room-mark:after{content:"";position:absolute;left:50%;top:50%;width:5px;height:5px;transform:translate(-50%,-50%);border-radius:50%;background:currentColor}
+.world-home-place .world-room strong{display:block;font-size:1rem;letter-spacing:.04em}
+.world-home-place .world-room p{margin:4px 0 0;font-size:.82rem;line-height:1.45;opacity:.65}
+.world-home-place-outside{display:grid;gap:8px;padding:21px 0 0;border-top:1px solid rgba(255,255,255,.12)}
+.world-home-place-outside button{display:grid;gap:4px;text-align:left;border:0;padding:0;background:none;color:inherit;cursor:pointer}
+.world-home-place-outside button strong{font-size:.95rem;letter-spacing:.09em}
+.world-home-place-outside button small{opacity:.6}
+@media (max-width:640px){.world-home-place-atmosphere{grid-template-columns:1fr}.world-home-place-copy{padding-left:0}.world-home-place .world-room{padding:17px;grid-template-columns:26px minmax(0,1fr) auto}}
+@media (prefers-reduced-motion:reduce){.world-home-place .world-room{transition:none}.world-home-place .world-room:hover,.world-home-place .world-room:focus-visible{transform:none}}
+body.light .world-home-place-threshold{border-color:rgba(0,0,0,.13)}
+body.light .world-home-place-atmosphere,.world-home-place .world-room{border-color:rgba(0,0,0,.12)}
+body.light .world-home-place-atmosphere,.body.light .world-home-place .world-room{background:rgba(0,0,0,.025)}
