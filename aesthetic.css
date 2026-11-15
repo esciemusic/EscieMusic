@@ -3361,3 +3361,33 @@ html[data-theme="light"] .world-object-line,html[data-theme="light"] .world-obje
 .world-object-nightlight .world-object-mark span{box-shadow:0 0 22px rgba(155,89,255,.35)}
 .world-object-chair .world-object-mark:before{left:30%;right:30%;top:58%;box-shadow:0 -42px 0 rgba(216,212,202,.08)}
 html[data-theme="light"] .world-object-sense{color:rgba(23,23,26,.42)}
+
+/* World return layer — returning is re-entry, not closing */
+.world-room-return-notice{
+  display:grid;
+  gap:.28rem;
+  margin:0 0 clamp(1rem,2vw,1.6rem);
+  padding:.8rem 1rem;
+  border-left:2px solid rgba(132,105,255,.72);
+  background:rgba(132,105,255,.055);
+}
+.world-room-return-notice strong{font-size:clamp(.9rem,1.3vw,1.05rem);letter-spacing:.04em}
+.world-room-return-notice p{margin:0;opacity:.72}
+.world-room-item-returned{
+  position:relative;
+  outline:1px solid rgba(132,105,255,.42);
+  box-shadow:0 0 0 1px rgba(132,105,255,.08),0 10px 30px rgba(0,0,0,.08);
+}
+.world-room-return-mark{
+  position:absolute;
+  top:.65rem;
+  right:.7rem;
+  font-size:.58rem;
+  letter-spacing:.16em;
+  opacity:.72;
+}
+.world-object-return{transition:transform .2s ease,opacity .2s ease}
+.world-object-return:hover,.world-object-return:focus-visible{transform:translateX(-2px);opacity:1}
+@media (prefers-reduced-motion: reduce){
+  .world-object-return{transition:none}
+}
