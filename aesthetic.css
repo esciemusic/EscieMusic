@@ -3624,3 +3624,54 @@ body.light .world-home-place-atmosphere,.body.light .world-home-place .world-roo
 @media (prefers-reduced-motion:reduce){
  .world-room-presence-item{transition:none}
 }
+
+/* Object encounters stay spatially anchored to the room they came from */
+.world-object-origin{
+ margin-top:clamp(18px,3vw,34px);
+ padding-top:14px;
+ border-top:1px solid rgba(255,255,255,.08);
+}
+.world-object-origin-line{
+ display:flex;
+ align-items:center;
+ gap:10px;
+ margin-top:8px;
+ min-height:34px;
+ font-size:.82rem;
+ letter-spacing:.08em;
+ text-transform:uppercase;
+ opacity:.78;
+}
+.world-object-origin-dot{
+ width:10px;height:10px;border:1px solid currentColor;border-radius:50%;
+ box-shadow:0 0 0 4px rgba(125,102,255,.08);
+ flex:0 0 auto;
+}
+.world-object-origin-type{
+ margin-left:auto;
+ font-size:.62rem;
+ letter-spacing:.14em;
+ opacity:.55;
+}
+.world-object-encounter .world-object-origin-line{
+ position:relative;
+}
+.world-object-encounter .world-object-origin-line:before{
+ content:"";
+ width:34px;
+ height:1px;
+ background:currentColor;
+ opacity:.2;
+ position:absolute;
+ left:15px;
+ top:50%;
+ transform:translateY(-50%);
+}
+@media(max-width:680px){
+ .world-object-origin-line{font-size:.72rem}
+ .world-object-origin-type{font-size:.56rem}
+}
+@media(prefers-reduced-motion:reduce){
+ .world-object-origin-dot{box-shadow:none}
+}
+body.light .world-object-origin{border-color:rgba(0,0,0,.1)}
