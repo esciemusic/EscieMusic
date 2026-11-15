@@ -242,6 +242,10 @@ function objectDetail(r){
  const connections=links.length?links.map(x=>'<button type="button" data-node="'+esc(x.node.id)+'"><strong>'+esc(title(x.node))+'</strong><small>'+esc(x.r.type||"related")+'</small></button>').join(""):'<span class="world-empty">Nothing is explicitly connected to this object yet.</span>';
  const notice=object.notice||String(r.description||"").trim();
  const presence=object.presence||"PRESENT";
+ const rawContext=object.context&&typeof object.context==="object"?object.context:{};
+ const depthKeys=Object.keys(rawContext).filter(function(k){return !["notice","context"].includes(String(k).toLowerCase())}).slice(0,4);
+ const depthFacts=depthKeys.map(function(k){return '<span><b>'+esc(String(k).replace(/_/g," ").toUpperCase())+'</b>'+esc(String(rawContext[k]??""))+'</span>';}).join("");
+ const depthFactsBlock=depthFacts?'<div class="world-object-depth-facts">'+depthFacts+'</div>':'';
  const objectId=String(r.id||"").toLowerCase();
  const objectKind=objectId.includes("window")?"WINDOW":objectId.includes("key")?"KEY":objectId.includes("nightlight")?"NIGHTLIGHT":objectId.includes("chair")?"CHAIR":"OBJECT";
  const sensory={
@@ -255,7 +259,7 @@ function objectDetail(r){
    +'<div class="world-object-threshold">'+returnButton+'<span class="world-kicker">OBJECT // '+esc(objectKind)+' // ENCOUNTER</span><span class="world-object-presence">'+esc(presence)+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3><p class="world-object-line">'+esc(r.description||"An ordinary thing, carrying more than it explains.")+'</p></div>'
    +'<div class="world-object-body"><div class="world-object-mark" aria-hidden="true"><span></span><span></span><span></span></div><div class="world-object-copy"><span class="world-kicker">'+esc(sensory[0])+'</span><p>'+esc(notice||sensory[2])+'</p><small class="world-object-sense">'+esc(sensory[1])+'</small></div></div>'
    +'<div class="world-object-context"><div><span class="world-kicker">WHERE IT WAS FOUND</span><strong>'+esc(originLabel)+'</strong><small>the place remains behind you</small></div><div><span class="world-kicker">PRESENCE</span><strong>'+esc(presence.replace(/_/g," "))+'</strong><small>how it sits in the room</small></div></div>'
-   +'<div class="world-object-depth"><span class="world-kicker">GO DEEPER</span><p>There may be more here. There may only be the thing itself.</p>'+discoveryRail(r)+'</div>'
+   +'<div class="world-object-depth"><span class="world-kicker">GO DEEPER</span><p>Stay with the object before following anything else.</p>'+depthFactsBlock+discoveryRail(r)+'</div>'
    +'<div class="world-object-connections"><span class="world-kicker">WHAT THIS TOUCHES · '+links.length+'</span><div class="world-connections">'+connections+'</div></div>'
    +'<div class="world-object-return-bottom">'+returnButton+'</div>'
    +'</div>';
