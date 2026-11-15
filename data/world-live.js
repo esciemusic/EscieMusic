@@ -39,7 +39,7 @@
       try{
         let id=sessionStorage.getItem("escie-world-session");
         if(!id){
-          id=(crypto&&crypto.randomUUID)?crypto.randomUUID():"world-"+Date.now()+"-"+Math.random().toString(36).slice(2);
+          id=(typeof crypto!=="undefined"&&typeof crypto.randomUUID==="function")?crypto.randomUUID():"world-"+Date.now()+"-"+Math.random().toString(36).slice(2);
           sessionStorage.setItem("escie-world-session",id);
         }
         return id;
