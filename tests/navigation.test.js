@@ -20,7 +20,7 @@
     assert(contractReport.ok === true, "canonical navigation contract must validate");
     assert(JSON.stringify(contract.order) === JSON.stringify(["now","art","world","glass-eye","web","archives","investigation","escie"]), "canonical navigation order must be explicit");
 
-    const required = ["NOW", "ART", "THE WORLD", "THE WEB", "THE ARCHIVES", "THE CASE FILES", "GLASS EYE", "ESCIE"];
+    const required = ["NOW", "ART", "MY WORLD", "THE WEB", "THE ARCHIVES", "THE CASE FILES", "GLASS EYE", "ESCIE"];
     required.forEach(function (label) {
       assert(N.some(item => item.label === label), "missing navigation item: " + label);
     });
