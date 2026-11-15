@@ -798,6 +798,7 @@ function mountWorld(){
  container.dataset.worldMoonIllumination=String(Math.round(celestial.moonIllumination*100));
  container.dataset.worldMoonlight=celestial.moonIllumination<.2?"LOW":celestial.moonIllumination<.65?"MEDIUM":"HIGH";
  container.dataset.worldCelestialLight=celestial.skyPhase==="NIGHT"?(celestial.moonIllumination<.2?"DARK":celestial.moonIllumination<.65?"MOONLIT":"BRIGHT_MOON"):(celestial.skyPhase==="DAWN"||celestial.skyPhase==="DUSK"?"TRANSITION":"DAYLIGHT");
+ container.style.setProperty("--world-celestial-contrast",celestial.skyPhase==="NIGHT"?(celestial.moonIllumination<.2?".96":celestial.moonIllumination<.65?"1":"1.025"):(celestial.skyPhase==="DAWN"||celestial.skyPhase==="DUSK"?".985":"1.01"));
  }
  syncLiveState();
  loadTrail();
