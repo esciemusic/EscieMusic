@@ -19,6 +19,8 @@ assert(/id=\\"glass-eye-panel\\" role=\\"region\\" aria-label=\\"The Glass Eye\\
 assert(/const reduceMotion=\(\)=>typeof window\.matchMedia==="function"/.test(src),"World Engine needs reduced-motion detection");
 assert(/function safeMediaURL\(value\)/.test(src),"World Engine media must use a safe URL boundary");
 assert(/function isPublicWorldRecord\(r\)/.test(src),"World Engine needs a public-record release boundary");
+assert(/function encounterContext\(r\)/.test(src),"World encounters need optional place/time context");
+assert(/encounterContext\(r\)/.test(src),"World encounter detail must render contextual provenance when available");
 assert(/r\.public_disclosure===false/.test(src),"World Engine must exclude explicitly non-public records");
 assert(/\["withheld","private","internal","draft"\]\.includes\(visibility\)/.test(src),"World Engine must exclude non-public visibility states");
 assert(/r\.released===false\|\|r\.published===false/.test(src),"World Engine must exclude unreleased or unpublished records");
