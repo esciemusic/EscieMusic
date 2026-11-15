@@ -1119,6 +1119,19 @@ test("A-Z Pass 3 footer social links remain public external links only",()=>{
 });
 
 
+test("A-Z World Pass 2 uses canonical symbolic lens navigation",()=>{
+  const world=read("world-engine.js");
+  const css=read("aesthetic.css");
+  assert.match(world,/\["atlas","ATLAS","world"\]/);
+  assert.match(world,/\["people","THE PEOPLE","person"\]/);
+  assert.match(world,/\["moments","MOMENTS","moment"\]/);
+  assert.match(world,/world-tab-glyph/);
+  assert.match(world,/data-glass-eye/);
+  assert.match(css,/\.world-tabs\{display:flex/);
+  assert.match(css,/\.world-tab-glyph/);
+  assert.match(css,/overflow-x:auto/);
+});
+
 test("A-Z World Pass 1 keeps entry doors semantic and routable",()=>{
   const world=read("world-engine.js");
   const svg=read("assets/escie-symbols.svg");
