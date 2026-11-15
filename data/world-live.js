@@ -14,6 +14,7 @@
     return {
       place:world.place||null,
       encounter:world.encounter||null,
+      object:world.object||null,
       contents:Array.isArray(world.contents)?world.contents:[],
       discoveries:Array.isArray(world.discoveries)?world.discoveries:[],
       environment:env,
