@@ -271,9 +271,25 @@ function objectDetail(r){
    +'<div class="world-object-return-bottom">'+returnButton+'</div>'
    +'</div>';
 }
+function homePlaceDetail(place){
+ const atmosphere=placeAtmosphere();
+ const rooms=homeRooms();
+ const live=placeIdentity(place);
+ const roomCards=rooms.map(function(room){
+   return '<button type="button" class="world-room" data-node="'+esc(room.id)+'"><span class="world-room-mark" aria-hidden="true"></span><div><span class="world-kicker">ROOM</span><strong>'+esc(title(room))+'</strong><p>'+esc(room.description||"A room in the Montréal home.")+'</p></div><span class="world-arrow" aria-hidden="true">↗</span></button>';
+ }).join("");
+ return '<div class="world-home-place">'+
+   '<div class="world-home-place-threshold"><button type="button" class="world-home-return" data-close-node>← WORLD</button><span class="world-kicker">HOME // MONTRÉAL</span><h3 data-no-translate class="record-identity">'+esc(live.name||title(place)||"MONTRÉAL")+'</h3><p>'+esc(place.description||"The place where ESCIE's world and the wider world meet.")+'</p></div>'+
+   '<div class="world-home-place-atmosphere"><span class="world-kicker">RIGHT NOW</span><strong>'+esc(atmosphere.weather)+'</strong><span>'+esc(atmosphere.light)+' · '+esc(atmosphere.surface)+' · '+esc(atmosphere.sound)+'</span></div>'+
+   '<div class="world-home-place-copy"><span class="world-kicker">HOME IS A PLACE, NOT A BORDER</span><p>Montréal is where this World is entered from. Streets, rooms, people, memories and everything beyond them can continue outward.</p></div>'+
+   '<div class="world-home-rooms"><div class="world-room-life-head"><span class="world-kicker">ENTER SOMEWHERE</span><p>Start with a room. The World gets deeper when you stay somewhere long enough to notice it.</p></div>'+roomCards+'</div>'+
+   '<div class="world-home-place-outside"><span class="world-kicker">BEYOND HOME</span><button type="button" data-outside-world><strong>THE WORLD CONTINUES</strong><small>Leave Montréal without leaving the World.</small></button></div>'+
+ '</div>';
+}
 function detail(r){
+ if(r&&String(r.id)==="world-montreal")return homePlaceDetail(r);
  if(r&&String(type(r)).toUpperCase()==="OBJECT")return objectDetail(r);
- const roomIds=["little-italy","parc-extension","world-parc-extension","world-apartment","world-montreal","world-street-corner"];
+ const roomIds=["little-italy","parc-extension","world-parc-extension","world-apartment","world-street-corner"];
  if(r&&roomIds.includes(String(r.id)))return roomDetail(r);
  const symbol=r&&String(r.id||"").indexOf("symbol-")===0?coll("ESCIE_SYMBOLS").find(x=>x&&String(x.id)===String(r.id)):null;
  if(symbol){
