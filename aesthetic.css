@@ -3790,3 +3790,10 @@ body.light .world-object-origin{border-color:rgba(0,0,0,.1)}
 [data-world-sky-phase="NIGHT"][data-world-moonlight="HIGH"]{--world-moon-alpha:.18}
 [data-world-sky-phase]{background-image:linear-gradient(to bottom,rgba(70,80,110,var(--world-sky-alpha,.02)),transparent 42%),linear-gradient(to bottom,rgba(125,135,165,var(--world-moon-alpha,0)),transparent 46%)}
 @media(prefers-reduced-motion:reduce){[data-world-sky-phase]{transition:none}}
+
+[data-world-celestial-light="DARK"]{--world-celestial-contrast:.96}
+[data-world-celestial-light="MOONLIT"]{--world-celestial-contrast:1}
+[data-world-celestial-light="BRIGHT_MOON"]{--world-celestial-contrast:1.025}
+[data-world-celestial-light="TRANSITION"]{--world-celestial-contrast:.985}
+[data-world-celestial-light="DAYLIGHT"]{--world-celestial-contrast:1.01}
+[data-world-celestial-light]{filter:contrast(var(--world-celestial-contrast,1))}
