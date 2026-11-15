@@ -246,7 +246,7 @@ function roomContents(room){
 function roomDetail(room){
  const contents=roomContents(room);
  const live=placeIdentity(room);
- const atmosphere=placeAtmosphere(place,"place");
+ const atmosphere=placeAtmosphere(room,"room");
  const profile=room&&room.profile&&typeof room.profile==="object"?room.profile:{};
  const texture=Array.isArray(profile.texture)?profile.texture:[];
  const anchors=Array.isArray(profile.anchors)?profile.anchors:[];
