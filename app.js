@@ -479,45 +479,80 @@
     visuals.forEach(el => observer.observe(el));
   }
 
+  function getNowConfig() {
+    const config = getGlobal("ESCIE_NOW", {});
+    return config && Array.isArray(config.entries) ? config.entries : [];
+  }
+
+  function getNowRecord(recordIdValue) {
+    const registry = getGlobal("ESCIE_RECORD_REGISTRY", null);
+    if (!registry || !recordIdValue) return null;
+    if (typeof registry.publicRecord === "function") {
+      return registry.publicRecord(recordIdValue);
+    }
+    const records = typeof registry.allPublicRecords === "function"
+      ? registry.allPublicRecords()
+      : [];
+    return records.find(record => record && recordId(record) === recordIdValue) || null;
+  }
+
+  function nowEntryRecord(entry) {
+    if (!entry || !entry.record_id) return null;
+    return getNowRecord(entry.record_id);
+  }
+
   function renderNow() {
     const container = byId("now-container");
     if (!container) return;
 
-    const site = getSite();
-    const signalEngine = getSignalEngine();
-    const signals = normalizeCollection(getSignals());
-    const activeSignal = signalEngine && signalEngine.current &&
-      signalEngine.current.active ? signalEngine.current : null;
-    const active = activeSignal || signals.find(signal =>
-      signal && signal.active === true
-    );
+    const entries = getNowConfig()
+      .filter(entry => entry && entry.active !== false)
+      .map((entry, index) => Object.assign({ _index: index }, entry, {
+        record: nowEntryRecord(entry)
+      }))
+      .filter(entry => entry.record)
+      .sort((a, b) => {
+        const priority = Number(b.priority || 0) - Number(a.priority || 0);
+        return priority || a._index - b._index;
+      });
 
-    const location = site.location || "Montréal, Canada";
-    const publicMusic = getAllPublicRecords()
-      .filter(record => record && record.type === "music" && isPublic(record))
-      .sort((a, b) => String(a.number || "").localeCompare(String(b.number || ""), undefined, { numeric: true }))
-      .slice(-1)[0] || null;
-    const publicTransmission = publicMusic && getGlobal("ESCIE_RECORD_REGISTRY", null)?.publicRecord
-      ? getGlobal("ESCIE_RECORD_REGISTRY").publicRecord(recordId(publicMusic))
-      : publicMusic;
-    const transmission = publicTransmission || active;
-    const transmissionLabel = publicTransmission
-      ? "CURRENT TRANSMISSION / " + String(publicTransmission.number || "—").padStart(3, "0")
-      : (active ? "ACTIVE SIGNAL" : "SIGNAL QUIET");
-    const transmissionText = publicTransmission
-      ? recordTitle(publicTransmission)
-      : (active && active.description ? active.description : "The signal is quiet. The record remains.");
+    if (!entries.length) {
+      renderEmpty(
+        container,
+        "NOTHING IS BEING PUSHED HERE YET.",
+        "now-quiet"
+      );
+      return;
+    }
 
     container.innerHTML =
-      '<div class="now-state" data-transmission-state="' + (publicTransmission ? "released" : (active ? "active" : "quiet")) + '">' + motifMarkup("now") + '' +
-        '<h3>' + escapeHTML(transmissionLabel) + "</h3>" +
-        '<p>' + escapeHTML(transmissionText) + "</p>" +
-        (publicTransmission ? '<button class="record-action record-card" type="button" data-record-id="' + escapeHTML(recordId(publicTransmission)) + '">OPEN TRANSMISSION</button>' : '') +
-        '<div class="now-meta">' +
-          '<span>' + escapeHTML(location) + "</span>" +
-          '<span>' + escapeHTML(String(site.publicYear || new Date().getFullYear())) + "</span>" +
-        "</div>" +
-      "</div>";
+      '<div class="now-foreground" aria-label="What is being pushed right now">' +
+        entries.map(entry => {
+          const record = entry.record;
+          const media = Array.isArray(record.media) ? record.media : [];
+          const mediaMarkup =
+            window.ESCIE_MEDIA &&
+            typeof window.ESCIE_MEDIA.renderAll === "function" &&
+            media.length
+              ? window.ESCIE_MEDIA.renderAll(media)
+              : "";
+          const eyebrow = entry.eyebrow || String(record.type || "WORK").replace(/_/g, " / ");
+          const title = entry.title || recordTitle(record);
+          const description = entry.description || record.description || "";
+          const cta = entry.cta || "ENTER THE WORK";
+          const id = recordId(record);
+
+          return '<article class="now-record" data-now-record-id="' + escapeHTML(id) + '">' +
+            '<div class="now-record-copy">' +
+              '<p class="eyebrow">' + escapeHTML(eyebrow) + '</p>' +
+              '<h3>' + escapeHTML(title) + '</h3>' +
+              (description ? '<p>' + escapeHTML(description) + '</p>' : '') +
+              '<button class="record-action record-card" type="button" data-record-id="' + escapeHTML(id) + '">' + escapeHTML(cta) + '</button>' +
+            '</div>' +
+            mediaMarkup +
+          '</article>';
+        }).join("") +
+      '</div>';
   }
 
   function getWorkRecords(){
