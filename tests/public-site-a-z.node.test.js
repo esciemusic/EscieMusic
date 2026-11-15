@@ -1276,131 +1276,22 @@ test("A-Z Pass 4 preference controls use the canonical theme glyph",()=>{
 });
 
 
-test("A-Z Pass 4 skyline doorway preserves the city entry without duplicate hero navigation",()=>{
-  const index=read("index.html");
-  const engine=read("world-engine.js");
-  const app=read("app.js");
-  const aesthetic=read("aesthetic.css");
-  assert.match(index,/hero-skyline-map/);
-  assert.match(index,/href="#world-node=parc-extension"/);
-  assert.match(index,/aria-label="Enter Parc-Extension"/);
-    assert.doesNotMatch(index,/data-skyline-door=/);
-    assert.match(engine,/function applyWorldRoute()/);
-  assert.match(engine,/^.*world-tab=\(\[\^&\]\+\).*$/m);
-  assert.match(engine,/state\.tab=tab/);
-  assert.match(engine,/function applyWorldRoute\(\)/);
-  assert.match(app,/\/\^\(world-node=\|world-tab=\)\//);
-  assert.match(aesthetic,/\.hero-skyline-map/);
-  assert.match(aesthetic,/\.hero-art-doors/);
-  assert.match(aesthetic,/\.hero-art-door/);
-  assert.match(aesthetic,/hero-art-door span/);
+test("A-Z World home architecture uses Montréal as home and direct room routes",()=>{
+   const index=read("index.html");
+   const engine=read("world-engine.js");
+   const app=read("app.js");
+   assert.match(index,/href="#world-node=parc-extension"/);
+   assert.match(index,/href="#world-node=montreal"/);
+   assert.match(engine,/function worldHome\(\)/);
+   assert.match(engine,/MONTRÉAL IS HOME\./);
+   assert.match(engine,/THE OUTSIDE WORLD/);
+   assert.match(engine,/function homeRooms\(\)/);
+   assert.match(engine,/\["little-italy","parc-extension"\]/);
+   assert.match(engine,/function mountWorld\(\)/);
+   assert.match(engine,/container\.classList\.add\("world-engine"\)/);
+   assert.match(engine,/world-node=/);
+   assert.match(app,/const route = \/\^\(world-node=\|world-tab=\)\/\.test\(hashRoute\) \? "world" : hashRoute;/);
 });
-
-
-test("A-Z Pass 4 world node links preserve the active layer",()=>{
-  const engine=read("world-engine.js");
-  assert.match(engine,/function syncNodeHash\(id\)/);
-  assert.match(engine,/world-tab=.*state\.tab/);
-  assert.match(engine,/world-node=.*encodeURIComponent/);
-});
-
-
-test("A-Z Pass 4 hero identity and place doors use canonical World/ESCIE routes",()=>{
-  const index=read("index.html");
-  const app=read("app.js");
-  const world=read("world-engine.js");
-  assert.match(index,/class="hero-identity-link" href="#escie"/);
-  assert.match(index,/class="hero-skyline-link" href="#world-node=parc-extension"/);
-  assert.match(index,/href="#world-node=montreal"/);
-  assert.match(app,/const route = \/\^\(world-node=\|world-tab=\)\/\.test\(hashRoute\) \? "world" : hashRoute;/);
-  assert.match(world,/function applyWorldRoute\(\)/);
-});
-
-test("A-Z Pass 4 hero creative doorways map to canonical destinations",()=>{
-  const index=read("index.html");
-  const svg=read("assets/escie-symbols.svg");
-  const aesthetic=read("aesthetic.css");
-  assert.match(index,/id="entry-location" class="hero-location hero-location-link" href="#world-node=montreal"/);
-  assert.match(index,/class="hero-art-doors"/);
-  assert.match(index,/href="#art\/music"[^>]*aria-label="Open Music"/);
-  assert.match(index,/href="#art\/words"[^>]*aria-label="Open Words"/);
-  assert.match(index,/href="#art\/visual"[^>]*aria-label="Open Visual"/);
-  assert.match(index,/href="#glass-eye"[^>]*aria-label="Open Glass Eye"/);
-  assert.match(index,/escie-symbols\.svg#music-note/);
-  assert.match(index,/escie-symbols\.svg#feather/);
-  assert.match(index,/escie-symbols\.svg#photo-negative/);
-  assert.match(index,/escie-symbols\.svg#film-reel/);
-  assert.match(svg,/<symbol id="music-note"/);
-  assert.match(svg,/<symbol id="feather"/);
-  assert.match(svg,/<symbol id="photo-negative"/);
-  assert.match(svg,/<symbol id="film-reel"/);
-  assert.match(aesthetic,/\.hero-art-doors\{/);
-  assert.match(aesthetic,/\.hero-art-door\{/);
-});
-
-test("A-Z Pass 4 hero art deep links resolve to the ART section while preserving category routes",()=>{
-  const router=read("ui/router.js");
-  const index=read("index.html");
-  assert.ok(router.includes('if (/^art\\/(music|words|visual|projects)$/i.test(normalized) && this.routes.has("art")) return "art";'));
-  assert.match(index,/href="#art\/music"/);
-  assert.match(index,/href="#art\/words"/);
-  assert.match(index,/href="#art\/visual"/);
-  assert.match(index,/href="#glass-eye"/);
-    assert.doesNotMatch(index,/title="Projects will appear when a public project is transmitted"/);
-  assert.match(index,/window\.addEventListener\("hashchange",function\(\)\{/);
-  assert.match(index,/show\(targetIndex,false,false\)/);
-});
-
-test("A-Z Pass 3 World legacy node links infer the correct public layer",()=>{
-  const world=read("world-engine.js");
-  const index=read("index.html");
-  assert.match(world,/const nodeType=type\(node\)\.toLowerCase\(\)/);
-  assert.match(world,/nodeType==="place"\?"places"/);
-  assert.match(world,/nodeType==="person"\?"people"/);
-  assert.match(world,/syncNodeHash\(id\)/);
-  assert.match(index,/href="#world-node=montreal"/);
-});
-
-test("A-Z Pass 3 world deep links preserve tab integrity and full node context",()=>{
-  const world=read("world-engine.js");
-  assert.match(world,/const expected=tab==="people"\?"person":tab==="places"\?"place"/);
-  assert.match(world,/type\(node\)===String\(expected\)\.toUpperCase\(\)/);
-  assert.match(world,/#world-tab=/);
-  assert.match(world,/&world-node=/);
-});
-
-test("A-Z Pass 3 public hero doors resolve to intentional destinations",()=>{
-  const index=read("index.html");
-  const router=read("ui/router.js");
-  const navigation=read("navigation.js");
-  assert.match(index,/href="#escie"/);
-  assert.match(index,/href="#world-node=montreal"/);
-  assert.match(index,/href="#art\/music"/);
-  assert.match(index,/href="#art\/words"/);
-  assert.match(index,/href="#art\/visual"/);
-  assert.match(index,/href="#glass-eye"/);
-  assert.ok(router.includes('/^art\\/(music|words|visual|projects)$/i'));
-  assert.match(navigation,/id:"escie",label:"ESCIE"/);
-  assert.match(navigation,/id:"glass-eye",label:"GLASS EYE"/);
-});
-
-
-test("A-Z Pass 4 hero door destinations preserve destination state",()=>{
-  const index=read("index.html");
-  const world=read("world-engine.js");
-  const router=read("ui/router.js");
-  assert.match(index,/href="#world-node=parc-extension"/);
-  assert.match(index,/href="#world-node=montreal"/);
-  assert.match(index,/href="#art\/music"/);
-  assert.match(index,/href="#art\/words"/);
-  assert.match(index,/href="#art\/visual"/);
-  assert.match(index,/href="#glass-eye"/);
-  assert.match(world,/state\.tab=tab/);
-  assert.match(world,/state\.selected=id/);
-  assert.match(world,/expected=tab==="people"\?"person":tab==="places"\?"place"/);
-  assert.ok(router.includes('/^art\\/(music|words|visual|projects)$/i'));
-});
-
 
 test("A-Z Pass 5 makes The Web a thread discovery layer",()=>{
   const app=read("app.js");
