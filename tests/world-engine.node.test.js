@@ -41,4 +41,10 @@ assert(/r\.released===false\|\|r\.published===false/.test(src),"World Engine mus
 assert(/\["http:","https:"\]\.includes\(parsed\.protocol\)/.test(src),"World Engine media must allow only HTTP(S) URLs");
 assert(/const reduceMotion=\(\)=>typeof window\.matchMedia==="function"/.test(src),"World Engine needs reduced-motion detection");
 assert(!/scrollIntoView\(/.test(src),"World Engine must not force section scrolling");
+
+assert(/function lunarPhase\(date\)/.test(src),"World Engine needs a deterministic lunar phase calculation");
+assert(/function celestialContext\(\)/.test(src),"World Engine needs celestial context");
+assert(/moonIllumination/.test(src)&&/moonAge/.test(src),"Celestial context must expose lunar age and illumination");
+assert(/skyPhase/.test(src)&&/DAWN/.test(src)&&/DUSK/.test(src),"Celestial context must expose continuous sky phases");
+assert(/localMinutes=function/.test(src),"Astronomical phase calculation must use local Montréal time safely");
 console.log("ESCIE world-engine contracts OK");
