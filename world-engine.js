@@ -116,6 +116,28 @@ function placeAtmosphere(){
  const audio=env.audio_state&&typeof env.audio_state==="object"?env.audio_state:{};
  return {weather:env.weather||"UNKNOWN",temperature:env.temperature,light:visual.light||env.daylight||"UNKNOWN",surface:visual.surface||"NATURAL",signal:visual.signal||"AMBIENT",sound:audio.primary||"AMBIENT_CITY"};
 }
+function worldNow(){
+ const env=liveEnvironment()||{};
+ const raw=env.current_time||env.local_time||env.timestamp||env.time||"";
+ let dateLabel="",timeLabel="";
+ if(raw){
+  const d=new Date(raw);
+  if(!Number.isNaN(d.getTime())){
+   dateLabel=new Intl.DateTimeFormat("en-CA",{weekday:"long",month:"long",day:"numeric",timeZone:"America/Toronto"}).format(d);
+   timeLabel=new Intl.DateTimeFormat("en-CA",{hour:"numeric",minute:"2-digit",timeZone:"America/Toronto"}).format(d);
+  }
+ }
+ if(!timeLabel&&env.time_label)timeLabel=String(env.time_label);
+ if(!dateLabel&&env.date_label)dateLabel=String(env.date_label);
+ return {date:dateLabel,time:timeLabel,season:String(env.season||"").trim(),weather:String(env.weather||"").trim(),temperature:env.temperature};
+}
+function worldNowMarkup(){
+ const now=worldNow();
+ const line=[now.date,now.time].filter(Boolean).join(" · ");
+ const conditions=[now.weather,now.temperature==null?"":String(now.temperature)+"°"].filter(Boolean).join(" · ");
+ if(!line&&!conditions)return "";
+ return '<section class="world-now" aria-label="World now"><div><span class="world-kicker">NOW</span><strong>'+esc(line||"THE PRESENT")+'</strong></div><div class="world-now-conditions"><span>'+esc(conditions||"")+'</span><span>'+esc(now.season||"")+'</span></div></section>';
+}
 function filtered(){
  const q=state.q.toLowerCase().trim();
  return records().filter(r=>(state.type==="ALL"||type(r)===state.type)&&(!q||searchText(r).includes(q)));
@@ -534,7 +556,7 @@ function worldHome(){
  const currentTab=state.tab!=="atlas";
  const outside=outsideWorldMarkup();
  return '<div class="world-home">'+
-   '<div class="world-home-intro"><span class="world-kicker">MY WORLD</span><h3>THE WORLD</h3><p>The world is already here. ESCIE is one way of seeing it.</p><small>Montréal is home. The world continues.</small></div>'+
+   '<div class="world-home-intro"><span class="world-kicker">MY WORLD</span><h3>THE WORLD</h3><p>The world is already here. ESCIE is one way of seeing it.</p><small>Montréal is home. The world continues.</small></div>+worldNowMarkup()'+
    ((currentTab||state.exploreOpen)?worldLensMarkup():'')+
    (currentTab?worldLensContent():'<div class="world-home-house"><button type="button" class="world-home-city" data-node="world-montreal"><span class="world-kicker">HOME</span><strong>'+esc(city&&city.title||"MONTRÉAL")+'</strong><p>WHERE MY WORLD AND THE WORLD INTERTWINE.</p><span class="world-arrow" aria-hidden="true">↗</span></button><div class="world-home-rooms">'+(roomCards||'<span class="world-empty">Nothing has been opened yet.</span>')+'</div></div>')+
    ((currentTab||state.exploreOpen)?'':'<div class="world-home-actions"><button type="button" class="world-enter-index" data-world-explore aria-expanded="false"><span class="world-kicker">DISCOVER</span><strong>OPEN THE WORLD</strong><span aria-hidden="true">↗</span></button></div>')+
@@ -589,7 +611,7 @@ function mountWorld(){
  }
  container.addEventListener("click",function(event){
    const traceClear=event.target.closest("[data-trace-clear]");
-   if(traceClear){state.trail=[];state.visited=[];try{sessionStorage.removeItem("escie_world_trail");sessionStorage.removeItem("escie_world_visited")}catch(e){} draw();return;}
+   if(traceClear){state.trail=[];state.visited=[];try{localStorage.removeItem("escie_world_trail");localStorage.removeItem("escie_world_visited")}catch(e){} draw();return;}
    const lens=event.target.closest("[data-world-tab]");
    if(lens){
      state.tab=lens.getAttribute("data-world-tab")||"atlas";
