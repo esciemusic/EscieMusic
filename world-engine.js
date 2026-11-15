@@ -797,6 +797,7 @@ function mountWorld(){
  container.dataset.worldSkyPhase=celestial.skyPhase;
  container.dataset.worldMoonIllumination=String(Math.round(celestial.moonIllumination*100));
  container.dataset.worldMoonlight=celestial.moonIllumination<.2?"LOW":celestial.moonIllumination<.65?"MEDIUM":"HIGH";
+ container.dataset.worldCelestialLight=celestial.skyPhase==="NIGHT"?(celestial.moonIllumination<.2?"DARK":celestial.moonIllumination<.65?"MOONLIT":"BRIGHT_MOON"):(celestial.skyPhase==="DAWN"||celestial.skyPhase==="DUSK"?"TRANSITION":"DAYLIGHT");
  }
  syncLiveState();
  loadTrail();
