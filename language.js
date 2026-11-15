@@ -532,7 +532,7 @@ const ESCIE_WORLD_TRANSLATIONS = Object.freeze({
     "There is no correct entrance. Begin with a person, a place, a moment, a piece of art or a trace. The next thing appears through its relationship to what you found.":"There is no correct entrance. Begin with a person, a place, a moment, a piece of art or a trace. The next thing appears through its relationship to what you found.",
     "PLACE":"PLACE","PEOPLE":"PEOPLE","MOMENT":"MOMENT","ART":"ART","WHERE SOMETHING HAPPENED.":"WHERE SOMETHING HAPPENED.","WHO LEFT A TRACE.":"WHO LEFT A TRACE.","WHAT REMAINED.":"WHAT REMAINED.","WHAT ESCIE MADE FROM IT.":"WHAT ESCIE MADE FROM IT.",
     "ATLAS":"ATLAS","PLACES":"PLACES","MOMENTS":"MOMENTS","FRAGMENTS":"FRAGMENTS","BODIES":"BODIES","PROOF":"PROOF","PATH":"PATH","TIMELINE":"TIMELINE","SYMBOLS":"SYMBOLS","TRAILS":"TRAILS",
-    "ESCIE WORLD ENGINE":"ESCIE WORLD ENGINE","THE WORLD BEHIND THE WORK.":"THE WORLD BEHIND THE WORK.","Explore the universe. Follow the signal. Decide what you believe.":"Explore the universe. Follow the signal. Decide what you believe.",
+    "ESCIE WORLD ENGINE":"ESCIE WORLD ENGINE","THE WORLD AS IT IS LIVED.":"THE WORLD AS IT IS LIVED.","Explore the world. Follow what you find. Decide what you believe.":"Explore the world. Follow what you find. Decide what you believe.",
     "SEARCH THE WORLD…":"SEARCH THE WORLD…","ALL TYPES":"ALL TYPES","A MAP WITHOUT BORDERS":"A MAP WITHOUT BORDERS","ENTER ANYWHERE.":"ENTER ANYWHERE.",
     "ONE WORLD. MANY WAYS IN.":"ONE WORLD. MANY WAYS IN."
   },
@@ -541,7 +541,7 @@ const ESCIE_WORLD_TRANSLATIONS = Object.freeze({
     "There is no correct entrance. Begin with a person, a place, a moment, a piece of art or a trace. The next thing appears through its relationship to what you found.":"Il n’y a pas de bonne entrée. Commencez par une personne, un lieu, un moment, une œuvre ou une trace. La suite apparaît par son lien avec ce que vous avez trouvé.",
     "PLACE":"LIEU","PEOPLE":"PERSONNES","MOMENT":"MOMENT","ART":"ART","WHERE SOMETHING HAPPENED.":"LÀ OÙ QUELQUE CHOSE S’EST PASSÉ.","WHO LEFT A TRACE.":"QUI A LAISSÉ UNE TRACE.","WHAT REMAINED.":"CE QUI EST RESTÉ.","WHAT ESCIE MADE FROM IT.":"CE QU’ESCIE EN A FAIT.",
     "ATLAS":"ATLAS","PLACES":"LIEUX","MOMENTS":"MOMENTS","FRAGMENTS":"FRAGMENTS","BODIES":"ENSEMBLES","PROOF":"PREUVES","PATH":"PARCOURS","TIMELINE":"CHRONOLOGIE","SYMBOLS":"SYMBOLES","TRAILS":"TRACES",
-    "ESCIE WORLD ENGINE":"MOTEUR DU MONDE ESCIE","THE WORLD BEHIND THE WORK.":"LE MONDE DERRIÈRE L’ŒUVRE.","Explore the universe. Follow the signal. Decide what you believe.":"Explorez l’univers. Suivez le signal. Décidez de ce que vous croyez.",
+    "ESCIE WORLD ENGINE":"MOTEUR DU MONDE ESCIE","THE WORLD AS IT IS LIVED.":"LE MONDE TEL QU’IL EST VÉCU.","Explore the world. Follow what you find. Decide what you believe.":"Explorez le monde. Suivez ce que vous trouvez. Décidez de ce que vous croyez.",
     "SEARCH THE WORLD…":"CHERCHER DANS LE MONDE…","ALL TYPES":"TOUS LES TYPES","A MAP WITHOUT BORDERS":"UNE CARTE SANS FRONTIÈRES","ENTER ANYWHERE.":"ENTREZ N’IMPORTE OÙ.",
     "ONE WORLD. MANY WAYS IN.":"UN MONDE. PLUSIEURS ENTRÉES."
   },
