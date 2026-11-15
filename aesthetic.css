@@ -2109,7 +2109,9 @@ html[data-theme="light"] .escie-player-node .escie-player-label{color:#245fbe}
   color:inherit;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;
   transition:transform 180ms ease,border-color 180ms ease,background 180ms ease;
 }
-.world-entry-node span{font-size:20px;color:var(--escie-blue-bright)}
+.world-entry-node span{display:flex;align-items:center;justify-content:center;width:24px;height:24px;color:var(--escie-blue-bright)}
+.world-entry-node .world-entry-glyph{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;transition:transform 180ms ease,filter 180ms ease}
+.world-entry-node:hover .world-entry-glyph,.world-entry-node:focus-visible .world-entry-glyph{transform:scale(1.05);filter:drop-shadow(0 0 7px rgba(47,128,255,.16))}
 .world-entry-node strong{font:700 10px/1.1 var(--escie-font-mono);letter-spacing:.16em}
 .world-entry-node small{font:400 8px/1.45 var(--escie-font-mono);letter-spacing:.08em;color:var(--muted)}
 .world-entry-node:hover,.world-entry-node:focus-visible{
