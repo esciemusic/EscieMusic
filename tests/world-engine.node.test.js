@@ -54,4 +54,11 @@ assert(/function celestialContext\(\)/.test(src),"World Engine needs celestial c
 assert(/moonIllumination/.test(src)&&/moonAge/.test(src),"Celestial context must expose lunar age and illumination");
 assert(/skyPhase/.test(src)&&/DAWN/.test(src)&&/DUSK/.test(src),"Celestial context must expose continuous sky phases");
 assert(/localMinutes=function/.test(src),"Astronomical phase calculation must use local Montréal time safely");
+assert(/focus\(\{preventScroll:true\}\)/.test(src),"World focus restoration must avoid scroll jumps");
+assert(/focusOrigin:null/.test(src)&&/focusDetailRequest:false/.test(src),"World navigation must track focus origin and intent");
+assert(/function focusNodeControl\(id\)/.test(src)&&/function restoreWorldFocus\(\)/.test(src),"World transitions must restore focus to the originating control");
+assert(/state\.focusDetailRequest=event\.detail===0/.test(src),"World should only force detail focus for keyboard-style activation");
+assert(/state\.focusRestoreRequest=!!restore/.test(src),"Closing a World encounter must restore the originating control");
+assert(/state\.focusDetailRequest=false;\n   state\.focusRestoreRequest=false;\n   state\.focusOrigin=null;/.test(src),"Back/forward restoration must clear stale focus state");
+assert(!/scrollIntoView\(/.test(src),"World Engine must not force scrolling during focus restoration");
 console.log("ESCIE world-engine contracts OK");
