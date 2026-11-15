@@ -458,7 +458,7 @@
       var categories=slides.map(function(slide){return slide.dataset.artCategory;});
 
       function readCategory(){
-        var match=(window.location.hash||"").match(/^#art\/(music|words|visual|projects)$/i);
+        var match=(window.location.hash||"").match(new RegExp("^#art/(music|words|visual|projects)$","i"));
         return match?match[1].toLowerCase():null;
       }
       function writeCategory(category){
