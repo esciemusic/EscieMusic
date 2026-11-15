@@ -3685,3 +3685,25 @@ body.light .world-object-origin{border-color:rgba(0,0,0,.1)}
 .world-room-threshold .world-kicker + .world-kicker + .world-kicker{
  opacity:.42;
 }
+
+/* WORLD / PRESENT
+   The World has a present tense. Environmental state is felt before it is explained. */
+.world-now{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:21px;
+  align-items:end;
+  margin:0 0 26px;
+  padding:14px 0 15px;
+  border-top:1px solid rgba(216,212,202,.10);
+  border-bottom:1px solid rgba(216,212,202,.10);
+}
+.world-now>div:first-child{display:grid;gap:6px;min-width:0}
+.world-now strong{font:400 clamp(16px,2.7vw,27px)/1.08 var(--escie-font-display);letter-spacing:.035em;color:var(--white)}
+.world-now-conditions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:7px 14px;color:var(--escie-blue-bright);font:400 8px/1 var(--escie-font-mono);letter-spacing:.14em;text-transform:uppercase}
+.world-now-conditions span+span{color:var(--faint)}
+@media(max-width:700px){
+  .world-now{grid-template-columns:1fr;gap:9px;margin-bottom:20px;padding:12px 0}
+  .world-now-conditions{justify-content:flex-start}
+}
+@media(prefers-reduced-motion:reduce){.world-now{transition:none}}
