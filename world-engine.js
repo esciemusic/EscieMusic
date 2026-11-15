@@ -169,7 +169,7 @@ function celestialMarkup(){
  if(c.sun==="ABOVE_HORIZON")active.push("DAYLIGHT");
  else active.push("NIGHT SKY");
  if(c.stars==="VISIBLE_IF_SKY_ALLOWS")active.push("STARS");
- return '<div class="world-celestial" aria-label="Celestial context"><span class="world-kicker">UNDER THIS SKY</span><span>'+esc(active.join(" · "))+'</span></div>';
+ return '<div class="world-celestial" data-world-moon="'+esc(c.moon)+'" data-world-sun="'+esc(c.sun)+'" aria-label="Celestial context"><span class="world-kicker">UNDER THIS SKY</span><span>'+esc(active.join(" · "))+' · '+esc(c.moon)+'</span></div>';
 }
 const WORLD_LAYERS=[
  "EXISTENCE","PRESENCE","PLACE","TIME","LIFE","EXPERIENCE","INTERPRETATION","ART","PERSPECTIVE","VISITOR","PARTICIPATION","MEMORY","OUTSIDE_WORLD"
@@ -770,6 +770,10 @@ function mountWorld(){
    container.dataset.worldLayer=layer;
    const record=state.selected?records().find(function(r){return String(r.id)===String(state.selected);}):null;
    container.dataset.worldOntologyLayer=record?worldLayerFor(record):"EXISTENCE";\n   container.dataset.worldOntologyCoverage=record?worldLayerCoverage(record).join("|"):"EXISTENCE";
+ const celestial=celestialContext();
+ container.dataset.worldSun=celestial.sun;
+ container.dataset.worldMoon=celestial.moon;
+ container.dataset.worldStars=celestial.stars;
  }
  syncLiveState();
  loadTrail();
