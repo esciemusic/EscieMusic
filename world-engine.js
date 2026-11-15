@@ -167,3 +167,4 @@ if(typeof document!=="undefined"){
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",mountWorld,{once:true});
  else mountWorld();
 }
+})();
