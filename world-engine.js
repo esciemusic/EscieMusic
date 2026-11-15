@@ -236,9 +236,17 @@ function objectDetail(r){
  const connections=links.length?links.map(x=>'<button type="button" data-node="'+esc(x.node.id)+'"><strong>'+esc(title(x.node))+'</strong><small>'+esc(x.r.type||"related")+'</small></button>').join(""):'<span class="world-empty">Nothing is explicitly connected to this object yet.</span>';
  const notice=object.notice||String(r.description||"").trim();
  const presence=object.presence||"PRESENT";
+ const objectId=String(r.id||"").toLowerCase();
+ const objectKind=objectId.includes("window")?"WINDOW":objectId.includes("key")?"KEY":objectId.includes("nightlight")?"NIGHTLIGHT":objectId.includes("chair")?"CHAIR":"OBJECT";
+ const sensory={
+   WINDOW:["LOOK THROUGH","light / weather / outside","the boundary does not explain what is beyond it."],
+   KEY:["HOLD","weight / metal / touch","an object can belong somewhere without telling you where."],
+   NIGHTLIGHT:["STAY WITH","glow / darkness / safety","small light changes the shape of a room."],
+   CHAIR:["PAUSE","absence / fabric / position","someone can leave a presence behind."]
+ }[objectKind]||["NOTICE","surface / weight / memory","ordinary things can remain ordinary."];
  const returnButton=originId?'<button type="button" class="world-object-return" data-node="'+esc(originId)+'">← RETURN TO '+esc(originLabel).toUpperCase()+'</button>':'<button type="button" class="world-object-return" data-close-node>← RETURN TO THE WORLD</button>';
- return '<div class="world-object-encounter" aria-live="polite">'
-   +'<div class="world-object-threshold">'+returnButton+'<span class="world-kicker">OBJECT // ENCOUNTER</span><span class="world-object-presence">'+esc(presence)+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3><p class="world-object-line">'+esc(r.description||"An ordinary thing, carrying more than it explains.")+'</p></div>'
+ return '<div class="world-object-encounter world-object-object" aria-live="polite">'
+   +'<div class="world-object-threshold">'+returnButton+'<span class="world-kicker">OBJECT // '${esc(objectKind)}' // ENCOUNTER</span><span class="world-object-presence">'+esc(presence)+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3><p class="world-object-line">'+esc(r.description||"An ordinary thing, carrying more than it explains.")+'</p></div>'
    +'<div class="world-object-body"><div class="world-object-mark" aria-hidden="true"><span></span><span></span><span></span></div><div class="world-object-copy"><span class="world-kicker">NOTICE</span><p>'+esc(notice||"Look at it long enough to notice what you normally pass by.")+'</p></div></div>'
    +'<div class="world-object-context"><div><span class="world-kicker">WHERE IT WAS FOUND</span><strong>'+esc(originLabel)+'</strong><small>the place remains behind you</small></div><div><span class="world-kicker">PRESENCE</span><strong>'+esc(presence.replace(/_/g," "))+'</strong><small>how it sits in the room</small></div></div>'
    +'<div class="world-object-depth"><span class="world-kicker">GO DEEPER</span><p>There may be more here. There may only be the thing itself.</p>'+discoveryRail(r)+'</div>'
