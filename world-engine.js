@@ -199,7 +199,7 @@ function mountWorld(){
      draw();
      return;
    }
-   const explore=event.target.closest("[data-world-explore]");\n   if(explore){\n     state.exploreOpen=true;\n     state.tab="atlas";\n     state.selected=null;\n     history.replaceState(null,"","#world");\n     draw();\n     return;\n   }\n   const node=event.target.closest("[data-node]");
+   const explore=event.target.closest("[data-world-explore]");\n   if(explore){\n     state.exploreOpen=!state.exploreOpen;\n     if(!state.exploreOpen)state.tab="atlas";\n     state.selected=null;\n     history.replaceState(null,"","#world");\n     draw();\n     return;\n   }\n   const node=event.target.closest("[data-node]");
    if(node){
      const id=node.getAttribute("data-node");
      if(id){state.selected=id;remember(id);history.replaceState(null,"","#world-node="+encodeURIComponent(id));draw();}
