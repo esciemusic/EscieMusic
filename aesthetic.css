@@ -3793,3 +3793,8 @@ body.light .world-object-origin{border-color:rgba(0,0,0,.1)}
 [data-world-sky-phase="NIGHT"][data-world-moon-illumination="50"]{--world-moonlight:.10}
 [data-world-sky-phase="NIGHT"][data-world-moon-illumination="0"]{--world-moonlight:.035}
 [data-world-sky-phase="NIGHT"]{background-image:linear-gradient(to bottom,rgba(125,135,165,var(--world-moonlight,.08)),transparent 46%)}
+
+/* Lunar light bands: use the calculated illumination, not exact phase percentages. */
+[data-world-sky-phase="NIGHT"][data-world-moonlight="LOW"]{background-image:linear-gradient(to bottom,rgba(125,135,165,.035),transparent 46%)}
+[data-world-sky-phase="NIGHT"][data-world-moonlight="MEDIUM"]{background-image:linear-gradient(to bottom,rgba(125,135,165,.10),transparent 46%)}
+[data-world-sky-phase="NIGHT"][data-world-moonlight="HIGH"]{background-image:linear-gradient(to bottom,rgba(125,135,165,.18),transparent 46%)}
