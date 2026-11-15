@@ -3766,3 +3766,8 @@ body.light .world-object-origin{border-color:rgba(0,0,0,.1)}
 .world-return-change{margin:1rem 0;padding:1rem 1.1rem;border:1px solid rgba(120,120,150,.24);background:rgba(255,255,255,.022)}
 .world-return-change strong{display:block;margin:.2rem 0 .3rem;letter-spacing:.04em}
 .world-return-change p{margin:0;opacity:.68;line-height:1.45}
+
+.world-return-thread{margin:1rem 0;padding:1rem 1.1rem;border-top:1px solid rgba(120,120,150,.2)}
+.world-return-thread strong{display:block;margin:.2rem 0 .3rem}
+.world-return-thread p{margin:0 0 .7rem;opacity:.68;line-height:1.45}
+.world-return-thread-button{font:inherit;background:transparent;border:0;padding:.2rem 0;text-decoration:underline;cursor:pointer;opacity:.82}
