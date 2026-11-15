@@ -82,6 +82,10 @@ assert(fs.readFileSync("aesthetic.css","utf8").includes('html[data-theme="light"
 assert(fs.readFileSync("aesthetic.css","utf8").includes(".archive-record-index::before"),"THE ARCHIVES must retain its archival index marker");
 
 
+assert(fs.readFileSync("world-engine.js","utf8").includes("function atlasField(rows)"),"THE WORLD ATLAS must expose a Montréal orientation field");
+assert(fs.readFileSync("world-engine.js","utf8").includes("PHYSICAL ANCHOR"),"THE WORLD ATLAS must retain Montréal as its physical anchor");
+assert(fs.readFileSync("world-engine.js","utf8").includes("without pretending to be a literal map"),"THE WORLD ATLAS must not fabricate geographic coordinates");
+
 console.log("ESCIE site script-load contracts OK");
 
 assert(!html.includes('<a href="#world">ENTER THE WORLD</a>'),"public entry must not expose the deferred game CTA");
