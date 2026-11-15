@@ -123,6 +123,15 @@ function roomDetail(room){
    '<div class="world-room-life"><div class="world-room-life-head"><span class="world-kicker">WHAT LIVES HERE</span><p>People, moments, art, music, objects and traces appear as they are actually added to this place.</p></div>'+(items||'<div class="world-empty">Nothing has been opened here yet.</div>')+'</div>'+(contents.length?'<div class="world-room-next"><span class="world-kicker">START SOMEWHERE</span><p>Open one thing. Follow what connects.</p></div>':'')+
  '</div>';
 }
+function encounterContext(r){
+ const parts=[];
+ const place=r.place||r.location||r.city||r.neighborhood;
+ const date=r.date||r.release_date||r.moment_date||r.created_at;
+ if(place)parts.push('<span><b>WHERE</b>'+esc(String(place))+'</span>');
+ if(date)parts.push('<span><b>WHEN</b>'+esc(String(date))+'</span>');
+ if(r.source)parts.push('<span><b>SOURCE</b>'+esc(String(r.source))+'</span>');
+ return parts.length?'<div class="world-encounter-context">'+parts.join('')+'</div>':'';
+}
 function detail(r){
  const roomIds=["little-italy","parc-extension"];
  if(r&&roomIds.includes(String(r.id)))return roomDetail(r);
@@ -133,7 +142,7 @@ function detail(r){
  }
  const links=related(r.id);
  const connections=links.length?links.map(x=>'<button type="button" data-node="'+esc(x.node.id)+'"><strong>'+esc(title(x.node))+'</strong><small>'+esc(x.r.type||"related")+'</small></button>').join(""):'<span class="world-empty">No public connection recorded yet.</span>';
- return '<aside class="world-detail" aria-live="polite"><div class="world-detail-head"><div><span class="world-kicker">ENCOUNTER // '+esc(type(r))+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3></div><button type="button" class="world-close" data-close-node aria-label="Close node">×</button></div><div class="world-detail-meta"><span>'+esc(String(r.certainty||"UNKNOWN").toUpperCase())+'</span><span>'+esc(String(r.status||"UNKNOWN").toUpperCase())+'</span></div>'+mediaPreview(r)+'<p class="world-encounter-description">'+esc(r.description||r.summary||r.story||"No public description yet.")+'</p>'+encounterMeta(r)+'<div class="world-kicker">WHAT CONNECTS HERE · '+links.length+'</div><div class="world-connections">'+connections+'</div>'+discoveryRail(r)+'<div class="world-detail-actions"><button type="button" data-focus-search>SEARCH THIS NODE</button><button type="button" data-copy-node>COPY NODE LINK</button></div><div class="world-path"><span class="world-kicker">YOUR PATH</span><div id="world-path-items">START HERE</div></div></aside>';
+ return '<aside class="world-detail" aria-live="polite"><div class="world-detail-head"><div><span class="world-kicker">ENCOUNTER // '+esc(type(r))+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3></div><button type="button" class="world-close" data-close-node aria-label="Close node">×</button></div><div class="world-detail-meta"><span>'+esc(String(r.certainty||"UNKNOWN").toUpperCase())+'</span><span>'+esc(String(r.status||"UNKNOWN").toUpperCase())+'</span></div>'+mediaPreview(r)+encounterContext(r)+'<p class="world-encounter-description">'+esc(r.description||r.summary||r.story||"No public description yet.")+'</p>'+encounterMeta(r)+'<div class="world-kicker">WHAT CONNECTS HERE · '+links.length+'</div><div class="world-connections">'+connections+'</div>'+discoveryRail(r)+'<div class="world-detail-actions"><button type="button" data-focus-search>SEARCH THIS NODE</button><button type="button" data-copy-node>COPY NODE LINK</button></div><div class="world-path"><span class="world-kicker">YOUR PATH</span><div id="world-path-items">START HERE</div></div></aside>';
 }
 function graphView(rows){
  const map=new Map(rows.map(r=>[String(r.id),r]));
