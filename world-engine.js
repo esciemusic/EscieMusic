@@ -319,6 +319,23 @@ function streetPlaceRecords(place,street){
    return hay.includes(label)||hay.includes(id)||tags.includes(label)||tags.includes(id);
  });
 }
+function placeRecordDetail(place,street){
+ const atmosphere=placeAtmosphere();
+ const live=placeIdentity(place);
+ const kind=type(place);
+ const contents=roomContents(place);
+ const rooms=contents.filter(function(r){return String(type(r)).toUpperCase()==="ROOM"||String(r.kind||"").toUpperCase()==="ROOM";});
+ const deeper=rooms.length?rooms:contents;
+ const cards=deeper.slice(0,8).map(function(r){
+   return '<button type="button" class="world-room world-place-child" data-node="'+esc(r.id)+'"><span class="world-room-mark" aria-hidden="true"></span><div><span class="world-kicker">'+esc(type(r)||"ROOM")+'</span><strong>'+esc(title(r))+'</strong><p>'+esc(r.description||"A lived space inside "+title(place)+".")+'</p></div><span class="world-arrow" aria-hidden="true">↗</span></button>';
+ }).join("");
+ return '<div class="world-home-place world-place-detail">'+
+   '<div class="world-home-place-threshold"><button type="button" class="world-home-return" data-street-return="'+esc(state.street&&state.street.placeId||"")+'" data-street-id="'+esc(state.street&&state.street.node&&state.street.node.id||"")+'">← '+esc(street&&street.label||"STREET")+'</button><span class="world-kicker">MONTRÉAL / '+esc(street&&street.label||"STREET")+'</span><span class="world-kicker">PLACE / BUILDING</span><h3 data-no-translate class="record-identity">'+esc(live.name||title(place))+'</h3><p>'+esc(place.description||"A public place in the World.")+'</p></div>'+
+   '<div class="world-home-place-atmosphere"><span class="world-kicker">RIGHT NOW</span><strong>'+esc(atmosphere.weather)+'</strong><span>'+esc(atmosphere.light)+' · '+esc(atmosphere.surface)+' · '+esc(atmosphere.sound)+'</span></div>'+
+   '<div class="world-home-place-copy"><span class="world-kicker">PLACE CONTEXT</span><p>'+esc(live.role||"A place within the street.")+'</p></div>'+
+   '<div class="world-home-rooms"><div class="world-room-life-head"><span class="world-kicker">INSIDE</span><p>Rooms and public World objects appear only when they are actually attached to this place.</p></div>'+(cards||'<div class="world-empty">Nothing deeper has been opened here yet.</div>')+'</div>'+
+ '</div>';
+}
 function streetDetail(place,street){
  const atmosphere=placeAtmosphere();
  const context=cityStreetContext(title(place),street.id)||street;
@@ -370,7 +387,8 @@ function neighborhoodDetail(place){
  '</div>';
 }
 function detail(r){
- if(r&&state.street&&String(state.street.placeId)===String(r.id))return streetDetail(r,state.street.node);
+ if(r&&state.street&&String(state.street.placeId)===String(r.id)&&state.street.node&&String(r.id)===String(state.street.placeId))return streetDetail(r,state.street.node);
+ if(r&&state.placeStreet&&String(state.placeStreet.placeId)===String(r.id))return placeRecordDetail(r,state.placeStreet.place,state.placeStreet.street);
  if(r&&String(r.id)==="world-montreal")return homePlaceDetail(r);
  if(r&&(String(r.id)==="little-italy"||String(r.id)==="parc-extension"))return neighborhoodDetail(r);
  if(r&&String(type(r)).toUpperCase()==="OBJECT")return objectDetail(r);
@@ -515,6 +533,7 @@ function mountWorld(){
  loadTrail();
  window.addEventListener("escie:world-state",function(){syncLiveState();draw();});
  const route=String(location.hash||"");
+ const placeMatch=route.match(/(?:world-place=)([^&]+)/);
  const streetMatch=route.match(/(?:world-street=)([^&]+)/);
  const match=route.match(/(?:world-node=)([^&]+)/);
  state.selected=match?decodeURIComponent(match[1]):null;
@@ -525,6 +544,11 @@ function mountWorld(){
    const place=records().find(function(r){return String(r.id)===String(placeId);});
    const street=place?cityStreetNodes(title(place)).find(function(x){return String(x.id)===String(streetId);}):null;
    if(place&&street){state.selected=String(place.id);state.street={placeId:String(place.id),node:street};}
+ }
+ if(placeMatch){
+   const placeId=decodeURIComponent(placeMatch[1]);
+   const place=records().find(function(r){return String(r.id)===String(placeId);});
+   if(place){state.selected=String(place.id);state.placeStreet={placeId:String(place.id),place:place,street:null};}
  }
  function draw(){
    if(state.selected){
@@ -588,6 +612,22 @@ function mountWorld(){
      }
      return;
    }
+   const streetReturn=event.target.closest("[data-street-return]");
+   if(streetReturn){
+     const placeId=streetReturn.getAttribute("data-street-return")||"";
+     const streetId=streetReturn.getAttribute("data-street-id")||"";
+     const place=records().find(function(r){return String(r.id)===String(placeId);});
+     const street=place?cityStreetNodes(title(place)).find(function(x){return String(x.id)===String(streetId);}):null;
+     if(place&&street){
+       state.placeStreet=null;
+       state.street={placeId:String(place.id),node:street};
+       state.selected=String(place.id);
+       history.replaceState(null,"","#world-street="+encodeURIComponent(String(place.id)+":"+String(street.id)));
+       draw();
+       focusDetail();
+     }
+     return;
+   }
    const neighborhoodBack=event.target.closest("[data-neighborhood-id]");
    if(neighborhoodBack){
      const id=neighborhoodBack.getAttribute("data-neighborhood-id");
@@ -604,6 +644,19 @@ function mountWorld(){
    }
    const node=event.target.closest("[data-node]");
    if(node){
+     const id=node.getAttribute("data-node");
+     if(state.street&&state.street.node){
+       const streetPlace=streetPlaceRecords(records().find(function(r){return String(r.id)===String(state.street.placeId);})||{},state.street.node).find(function(r){return String(r.id)===String(id);});
+       if(streetPlace){
+         state.placeStreet={placeId:String(streetPlace.id),place:streetPlace,street:state.street.node};
+         state.street=null;
+         state.selected=String(streetPlace.id);
+         history.replaceState(null,"","#world-place="+encodeURIComponent(String(streetPlace.id)));
+         draw();
+         focusDetail();
+         return;
+       }
+     }
      const id=node.getAttribute("data-node");
      if(id){openWorldNode(id);}
      return;
