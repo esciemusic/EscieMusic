@@ -3018,3 +3018,42 @@ html[data-theme="light"] .world-room-item small{color:rgba(23,23,26,.55)}
 :root:not([data-theme="light"]) .atlas-field-node small{
   color:rgba(216,212,202,.68);
 }
+
+/* DARK SURFACE INHERITANCE — prevent global dark-mode text from resolving to black. */
+:root:not([data-theme="light"]) .world-home,
+:root:not([data-theme="light"]) .world-home *,
+:root:not([data-theme="light"]) .world-room-detail,
+:root:not([data-theme="light"]) .world-room-detail *,
+:root:not([data-theme="light"]) .world-tabs,
+:root:not([data-theme="light"]) .world-tabs *,
+:root:not([data-theme="light"]) .atlas-field,
+:root:not([data-theme="light"]) .atlas-field *,
+:root:not([data-theme="light"]) .montreal-world-card,
+:root:not([data-theme="light"]) .montreal-world-card *{
+  color:inherit;
+}
+:root:not([data-theme="light"]) .world-home,
+:root:not([data-theme="light"]) .world-home h1,
+:root:not([data-theme="light"]) .world-home h2,
+:root:not([data-theme="light"]) .world-home h3,
+:root:not([data-theme="light"]) .world-home h4,
+:root:not([data-theme="light"]) .world-home strong,
+:root:not([data-theme="light"]) .world-home b,
+:root:not([data-theme="light"]) .world-room-detail h1,
+:root:not([data-theme="light"]) .world-room-detail h2,
+:root:not([data-theme="light"]) .world-room-detail h3,
+:root:not([data-theme="light"]) .world-room-detail h4,
+:root:not([data-theme="light"]) .world-room-detail strong,
+:root:not([data-theme="light"]) .world-room-detail b{
+  color:var(--escie-white);
+}
+:root:not([data-theme="light"]) .world-home p,
+:root:not([data-theme="light"]) .world-home small,
+:root:not([data-theme="light"]) .world-home .world-kicker,
+:root:not([data-theme="light"]) .world-room-detail p,
+:root:not([data-theme="light"]) .world-room-detail small,
+:root:not([data-theme="light"]) .world-room-detail .world-kicker,
+:root:not([data-theme="light"]) .montreal-world-card p,
+:root:not([data-theme="light"]) .montreal-world-card small{
+  color:rgba(216,212,202,.68);
+}
