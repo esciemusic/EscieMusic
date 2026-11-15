@@ -1,9 +1,9 @@
 /* ESCIE NOW — PRESENT-TENSE EDITORIAL REGISTRY
  *
  * NOW is the living foreground of the public site.
- * Entries are curated by presence, not by a fixed expiration timer.
+ * Entries are curated by presence, not by a fixed retention schedule.
  *
- * An entry remains here for exactly as long as it belongs to the moment:
+ * An entry remains here for as long as it belongs to the moment:
  * an hour, a day, six weeks, or longer.
  *
  * IMPORTANT:
