@@ -53,7 +53,20 @@ function pathContext(){const rs=records(),out=[];for(let i=1;i<state.trail.lengt
 function investigationSummary(){const p=pathContext();const unknowns=state.visited.map(id=>records().find(r=>String(r.id)===String(id))).filter(Boolean).filter(r=>String(r.certainty||"").toUpperCase()==="UNKNOWN").length;return {steps:p.length,unknowns};}
 function loadTrail(){try{const a=JSON.parse(sessionStorage.getItem("escie_world_trail")||"[]");const b=JSON.parse(sessionStorage.getItem("escie_world_visited")||"[]");if(Array.isArray(a))state.trail=a.filter(v=>typeof v==="string"&&v.trim()).slice(-12);if(Array.isArray(b))state.visited=b.filter(v=>typeof v==="string"&&v.trim()).slice(-100)}catch(e){state.trail=[];state.visited=[]}}
 const focusDetail=()=>{const el=container.querySelector(".world-detail");if(el){el.setAttribute("tabindex","-1");if(typeof el.focus==="function")el.focus();}};
+function roomContents(room){
+ const all=records().filter(function(r){return r&&String(r.id)!==String(room.id);});
+ const linked=related(room.id).map(function(x){return x.node;});
+ const tagged=all.filter(function(r){const tags=Array.isArray(r.tags)?r.tags.map(String):[];return tags.includes(String(room.id))||tags.includes(String(room.slug||room.id));});
+ const seen=new Set(),out=[]; linked.concat(tagged).forEach(function(r){if(r&&!seen.has(String(r.id))){seen.add(String(r.id));out.push(r);}}); return out;
+}
+function roomDetail(room){
+ const contents=roomContents(room);
+ const items=contents.map(function(r){return '<button type="button" class="world-room-item" data-node="'+esc(r.id)+'"><span class="world-kicker">'+esc(type(r))+'</span><strong>'+esc(title(r))+'</strong><small>'+esc(r.description||r.summary||"A piece of life in this room.")+'</small></button>';}).join('');
+ return '<aside class="world-detail world-room-detail" aria-live="polite"><div class="world-detail-head"><div><span class="world-kicker">ROOM // MONTRÉAL</span><h3 data-no-translate class="record-identity">'+esc(title(room))+'</h3></div><button type="button" class="world-close" data-close-node aria-label="Close room">×</button></div><p>'+esc(room.description||"A room in the Montréal home.")+'</p><div class="world-kicker">WHAT LIVES HERE · '+contents.length+'</div><div class="world-room-items">'+(items||'<div class="world-empty">Nothing has been opened here yet.</div>')+'</div><div class="world-kicker">THE HOUSE CONTINUES</div><p>Some things may lead somewhere. Some may simply stay here.</p></aside>';
+}
 function detail(r){
+ const roomIds=["little-italy","parc-extension"];
+ if(r&&roomIds.includes(String(r.id)))return roomDetail(r);
  const symbol=r&&String(r.id||"").indexOf("symbol-")===0?coll("ESCIE_SYMBOLS").find(x=>x&&String(x.id)===String(r.id)):null;
  if(symbol){
    const trail=coll("ESCIE_LIVE_RECORDS").concat(coll("ESCIE_MUSIC"),coll("ESCIE_ARCHIVE"),coll("ESCIE_INVESTIGATION")).filter(x=>x&&Array.isArray(x.symbols)&&x.symbols.includes(symbol.id));
