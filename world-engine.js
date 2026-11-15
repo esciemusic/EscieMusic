@@ -322,18 +322,27 @@ function streetPlaceRecords(place,street){
 function placeRecordDetail(place,street){
  const atmosphere=placeAtmosphere();
  const live=placeIdentity(place);
- const kind=type(place);
  const contents=roomContents(place);
  const rooms=contents.filter(function(r){return String(type(r)).toUpperCase()==="ROOM"||String(r.kind||"").toUpperCase()==="ROOM";});
- const deeper=rooms.length?rooms:contents;
- const cards=deeper.slice(0,8).map(function(r){
-   return '<button type="button" class="world-room world-place-child" data-node="'+esc(r.id)+'"><span class="world-room-mark" aria-hidden="true"></span><div><span class="world-kicker">'+esc(type(r)||"ROOM")+'</span><strong>'+esc(title(r))+'</strong><p>'+esc(r.description||"A lived space inside "+title(place)+".")+'</p></div><span class="world-arrow" aria-hidden="true">↗</span></button>';
+ const objects=contents.filter(function(r){return String(type(r)).toUpperCase()==="OBJECT"||String(r.kind||"").toUpperCase()==="OBJECT";});
+ const deeper=rooms.length?rooms:contents.filter(function(r){return objects.indexOf(r)===-1;});
+ const roomCards=rooms.slice(0,8).map(function(r){
+   return '<button type="button" class="world-room world-place-child" data-node="'+esc(r.id)+'"><span class="world-room-mark" aria-hidden="true"></span><div><span class="world-kicker">ROOM</span><strong>'+esc(title(r))+'</strong><p>'+esc(r.description||"A lived space inside "+title(place)+".")+'</p></div><span class="world-arrow" aria-hidden="true">↗</span></button>';
  }).join("");
+ const objectCards=objects.slice(0,8).map(function(r){
+   return '<button type="button" class="world-room world-place-child world-place-object" data-node="'+esc(r.id)+'"><span class="world-room-mark" aria-hidden="true"></span><div><span class="world-kicker">OBJECT</span><strong>'+esc(title(r))+'</strong><p>'+esc(r.description||"An object present in "+title(place)+".")+'</p></div><span class="world-arrow" aria-hidden="true">↗</span></button>';
+ }).join("");
+ const fallback=(!rooms.length&&!objects.length&&deeper.length)?deeper.slice(0,8).map(function(r){
+   return '<button type="button" class="world-room world-place-child" data-node="'+esc(r.id)+'"><span class="world-room-mark" aria-hidden="true"></span><div><span class="world-kicker">'+esc(type(r)||"WORLD OBJECT")+'</span><strong>'+esc(title(r))+'</strong><p>'+esc(r.description||"Something present inside "+title(place)+".")+'</p></div><span class="world-arrow" aria-hidden="true">↗</span></button>';
+ }).join(""):"";
+ const sections=(roomCards?'<div class="world-place-inside-section"><div class="world-room-life-head"><span class="world-kicker">ROOMS</span><p>Enter the lived space. The World narrows again from here.</p></div>'+roomCards+'</div>':"")+
+   (objectCards?'<div class="world-place-inside-section"><div class="world-room-life-head"><span class="world-kicker">PRESENT OBJECTS</span><p>Objects can be encountered without becoming another menu.</p></div>'+objectCards+'</div>':"")+
+   (fallback?'<div class="world-place-inside-section"><div class="world-room-life-head"><span class="world-kicker">INSIDE</span></div>'+fallback+'</div>':"");
  return '<div class="world-home-place world-place-detail">'+
    '<div class="world-home-place-threshold"><button type="button" class="world-home-return" data-street-return="'+esc(state.street&&state.street.placeId||"")+'" data-street-id="'+esc(state.street&&state.street.node&&state.street.node.id||"")+'">← '+esc(street&&street.label||"STREET")+'</button><span class="world-kicker">MONTRÉAL / '+esc(street&&street.label||"STREET")+'</span><span class="world-kicker">PLACE / BUILDING</span><h3 data-no-translate class="record-identity">'+esc(live.name||title(place))+'</h3><p>'+esc(place.description||"A public place in the World.")+'</p></div>'+
    '<div class="world-home-place-atmosphere"><span class="world-kicker">RIGHT NOW</span><strong>'+esc(atmosphere.weather)+'</strong><span>'+esc(atmosphere.light)+' · '+esc(atmosphere.surface)+' · '+esc(atmosphere.sound)+'</span></div>'+
    '<div class="world-home-place-copy"><span class="world-kicker">PLACE CONTEXT</span><p>'+esc(live.role||"A place within the street.")+'</p></div>'+
-   '<div class="world-home-rooms"><div class="world-room-life-head"><span class="world-kicker">INSIDE</span><p>Rooms and public World objects appear only when they are actually attached to this place.</p></div>'+(cards||'<div class="world-empty">Nothing deeper has been opened here yet.</div>')+'</div>'+
+   '<div class="world-home-rooms"><div class="world-room-life-head"><span class="world-kicker">INSIDE</span><p>Rooms and public World objects appear only when they are actually attached to this place.</p></div>'+sections+(sections?"":'<div class="world-empty">Nothing deeper has been opened here yet.</div>')+'</div>'+
  '</div>';
 }
 function streetDetail(place,street){
