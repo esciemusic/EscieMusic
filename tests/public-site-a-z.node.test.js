@@ -317,6 +317,7 @@ test("A-Z NOW hands visitors from the present into the work",()=>{
 });
 
 test("A-Z ART music presentation does not impersonate transmission state",()=>{
+  const app=read("app.js");
   const start=app.indexOf("function renderMusic()");
   const end=app.indexOf("function renderArtGroup",start);
   const renderer=app.slice(start,end);
