@@ -216,15 +216,22 @@ function roomDetail(room){
    const returned=returnedId&&String(r.id)===String(returnedId);
    return '<button type="button" class="world-room-item'+(returned?' world-room-item-returned':'')+'" data-node="'+esc(r.id)+'">'+(returned?'<span class="world-room-return-mark" aria-hidden="true">RETURNED</span>':'')+'<span class="world-room-item-kind">'+esc(label)+'</span><strong>'+esc(title(r))+'</strong><small>'+esc(r.description||r.summary||"A piece of life in this room.")+'</small></button>';
  }).join('');
+ const presence=contents.slice(0,6).map(function(r,i){
+   const kind=String(type(r)||"OBJECT").toUpperCase();
+   const label=kind==="OBJECT"?"OBJECT":kind;
+   return '<span class="world-room-presence-item" data-presence-index="'+i+'"><i aria-hidden="true"></i><b>'+esc(label)+'</b><span>'+esc(title(r))+'</span></span>';
+ }).join('');
+ const placeLabel=roomNeighborhood[String(room.id)]||"PLACE";
  const returnNotice=state.returnFlash&&state.returningFrom?'<div class="world-room-return-notice" role="status"><span class="world-kicker">RETURN</span><strong>BACK IN '+esc(live.name||title(room))+'</strong><p>You came back from '+esc(returnedObject?title(returnedObject):"the object")+'.</p></div>':'';
  const textureLine=texture.length?texture.map(function(x){return '<span>'+esc(String(x).replace(/-/g," "))+'</span>';}).join(''):'';
  const anchorLine=anchors.length?anchors.map(function(x){return '<span>'+esc(x)+'</span>';}).join(''):'';
  return '<div class="world-room-scene">'+returnNotice+
    '<div class="world-room-threshold"><button type="button" class="world-home-return" data-node="world-montreal">← MONTRÉAL</button><span class="world-kicker">MONTRÉAL / '+esc(roomNeighborhood[String(room.id)]||"PLACE")+</span><span class="world-kicker">A ROOM IN THE HOME</span><span class="world-kicker">INSIDE</span><h3 data-no-translate class="record-identity">'+esc(title(room))+'</h3><p>'+esc(room.description||"A room in the Montréal home.")+'</p></div>'+
    '<div class="world-room-place"><div class="world-room-place-image" aria-hidden="true"><span></span><span></span><span></span></div><div class="world-room-place-copy"><span class="world-kicker">PLACE</span><strong>'+esc(live.role||room.profile&&room.profile.role||"LIVED PLACE")+'</strong><p>'+esc(atmosphere.light+" · "+atmosphere.surface+" · "+atmosphere.sound)+'</p></div></div>'+
+   '<div class="world-room-presence"><div class="world-room-presence-head"><span class="world-kicker">PRESENCE</span><p>The room is not a list. Look around first.</p></div><div class="world-room-presence-field">'+(presence||'<span class="world-room-presence-empty">Nothing is visibly present yet.</span>')+'</div></div>'+
    '<div class="world-room-details"><div><span class="world-kicker">THE AIR</span><div class="world-room-tags"><span>'+esc(atmosphere.weather)+'</span><span>'+esc(atmosphere.temperature==null?"":String(atmosphere.temperature)+"°")+'</span><span>'+esc(atmosphere.signal)+'</span></div></div><div><span class="world-kicker">WHAT IS AROUND YOU</span><div class="world-room-tags">'+(live.texture.length?live.texture.map(x=>"<span>"+esc(x)+"</span>").join(""):"<span>lived-in</span>")+'</div></div></div>'+
    (textureLine?'<div class="world-room-details"><div><span class="world-kicker">TEXTURE</span><div class="world-room-tags">'+textureLine+'</div></div>'+(anchorLine?'<div><span class="world-kicker">LANDMARKS / ANCHORS</span><div class="world-room-tags">'+anchorLine+'</div></div>':'')+'</div>':'')+
-   '<div class="world-room-life"><div class="world-room-life-head"><span class="world-kicker">WHAT LIVES HERE</span><p>People, moments, art, music, objects and traces appear as they are actually added to this place.</p></div>'+(items||'<div class="world-empty">Nothing has been opened here yet.</div>')+'</div>'+(contents.length?'<div class="world-room-next"><span class="world-kicker">START SOMEWHERE</span><p>Open one thing. Follow what connects.</p></div>':'')+
+   '<div class="world-room-life"><div class="world-room-life-head"><span class="world-kicker">WHAT LIVES HERE</span><p>People, moments, art, music, objects and traces appear as they are actually added to this place.</p></div>'+(items||'<div class="world-empty">Nothing has been opened here yet.</div>')+'</div>'+(contents.length?'<div class="world-room-next"><span class="world-kicker">NOTICE</span><p>Nothing here asks to be solved. Notice what is present, then choose where to look.</p></div>':'')+
  '</div>';
 }
 function encounterContext(r){
