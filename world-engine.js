@@ -1005,7 +1005,8 @@ function draw(){
      draw();
    }
  });
- window.addEventListener("hashchange",function(){
+ window.addEventListener("popstate",function(){syncFromHash();});
+ function syncFromHash(){
    const h=String(location.hash||"");
    const sm=h.match(/(?:world-street=)([^&]+)/);
    const pm=h.match(/(?:world-place=)([^&]+)/);
@@ -1037,7 +1038,8 @@ function draw(){
      if(place&&street){state.selected=String(place.id);state.street={placeId:String(place.id),node:street};}
    }
    draw();
- });
+ }
+ syncFromHash();
  draw();
 }
 if(typeof document!=="undefined"){
