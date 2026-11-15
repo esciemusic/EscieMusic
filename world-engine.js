@@ -4,7 +4,7 @@ window.ESCIE_WORLD_ENGINE_ACTIVE=true;
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
 const coll=(name,fallback=[])=>{const v=window[name];return Array.isArray(v)?v:(v&&Array.isArray(v.records)?v.records:fallback)};
-const state={tab:"atlas",q:"",type:"ALL",selected:null,trail:[],visited:[],eyeOpen:false,exploreOpen:false,outsideOpen:false,returningFrom:null,returnFlash:null,street:null,roomOrigin:null};
+const state={tab:"atlas",q:"",type:"ALL",selected:null,trail:[],visited:[],eyeOpen:false,exploreOpen:false,outsideOpen:false,returningFrom:null,returnFlash:null,street:null,roomOrigin:null,attentionSince:0,attentionNoticed:false};
 const tabs=[["atlas","ATLAS","world"],["people","THE PEOPLE","person"],["places","PLACES","world"],["moments","MOMENTS","moment"],["fragments","FRAGMENTS","photo-negative"],["bodies","BODIES","empty-chair"],["proof","PROOF","key"],["path","PATH","web"],["timeline","TIMELINE","now"],["symbols","SYMBOLS","daisy"],["trace","TRACE","web"]];function glyph(name,label){const safe=String(name||"").replace(/[^a-z0-9-]/gi,"");if(!safe)return "";return '<svg class="escie-symbol-glyph world-entry-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#'+esc(safe)+'"></use></svg>';}
 const raf=typeof requestAnimationFrame==="function"?requestAnimationFrame:fn=>setTimeout(fn,0);
 const caf=typeof cancelAnimationFrame==="function"?cancelAnimationFrame:clearTimeout;
@@ -629,7 +629,7 @@ function mountWorld(){
  }
  syncLiveState();
  loadTrail();
- setInterval(function(){refreshWorldClock(container);},30000);
+ setInterval(function(){refreshWorldClock(container);syncAttention(container);},30000);
  window.addEventListener("escie:world-state",function(){syncLiveState();draw();});
  const route=String(location.hash||"");
  const placeMatch=route.match(/(?:world-place=)([^&]+)/);
@@ -649,13 +649,28 @@ function mountWorld(){
    const place=records().find(function(r){return String(r.id)===String(placeId);});
    if(place){state.selected=String(place.id);state.placeStreet={placeId:String(place.id),place:place,street:null};}
  }
- function draw(){
+ function syncAttention(container){
+ const now=Date.now();
+ if(!state.selected){state.attentionSince=0;state.attentionNoticed=false;return;}
+ if(!state.attentionSince)state.attentionSince=now;
+ if(state.attentionNoticed||now-state.attentionSince<45000)return;
+ const root=container.querySelector(".world-fourth-wall");
+ if(root)return;
+ const note=document.createElement("div");
+ note.className="world-fourth-wall";
+ note.setAttribute("role","status");
+ note.innerHTML='<span class="world-kicker">PRESENCE</span><strong>YOU\'RE STILL HERE.</strong><p>The World noticed the time you gave it.</p>';
+ container.appendChild(note);
+ state.attentionNoticed=true;
+}
+function resetAttention(){state.attentionSince=state.selected?Date.now():0;state.attentionNoticed=false;}
+function draw(){
    syncWorldLayer();
    if(state.selected){
      const node=records().find(r=>String(r.id)===String(state.selected))||liveWorldNode(state.selected)||(
        String(state.selected)==="world-montreal"?{id:"world-montreal",type:"PLACE",title:"Montréal",description:"Home. The place where the World begins, without being the boundary of it."}:null
      );
-     if(node){container.innerHTML=detail(node);focusDetail();return;}
+     if(node){container.innerHTML=detail(node);focusDetail();syncAttention(container);return;}
      state.selected=null;
    }
    container.innerHTML=worldHome();
