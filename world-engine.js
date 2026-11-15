@@ -392,7 +392,7 @@ function worldHome(){
    ((currentTab||state.exploreOpen)?worldLensMarkup():'')+
    (currentTab?worldLensContent():'<div class="world-home-house"><button type="button" class="world-home-city" data-node="world-montreal"><span class="world-kicker">HOME</span><strong>'+esc(city&&city.title||"MONTRÉAL")+'</strong><p>WHERE MY WORLD AND THE WORLD INTERTWINE.</p><span class="world-arrow" aria-hidden="true">↗</span></button><div class="world-home-rooms">'+(roomCards||'<span class="world-empty">Nothing has been opened yet.</span>')+'</div></div>')+
    ((currentTab||state.exploreOpen)?'':'<div class="world-home-actions"><button type="button" class="world-enter-index" data-world-explore aria-expanded="false"><span class="world-kicker">DISCOVER</span><strong>OPEN THE WORLD</strong><span aria-hidden="true">↗</span></button></div>')+
-   '<button type="button" class="world-home-outside" data-outside-world aria-expanded="'+(state.outsideOpen?"true":"false")+'"><span class="world-kicker">THE OUTSIDE WORLD</span><strong>'+(state.outsideOpen?"COME BACK INSIDE":"THE WORLD CONTINUES")+'</strong><p>'+(state.outsideOpen?"Return to Montréal home.":"Everything beyond Montréal can enter here too.")+'</p></button>'+outside+
+   (currentTab?'':'<button type="button" class="world-home-outside" data-outside-world aria-expanded="'+(state.outsideOpen?"true":"false")+'"><span class="world-kicker">THE OUTSIDE WORLD</span><strong>'+(state.outsideOpen?"COME BACK INSIDE":"THE WORLD CONTINUES")+'</strong><p>'+(state.outsideOpen?"Return to Montréal home.":"Everything beyond Montréal can enter here too.")+'</p></button>'+outside')+
    (currentTab?'':'<p class="world-home-note">You do not have to understand the whole thing. Start somewhere.</p>')+
  '</div>';
 }
@@ -432,6 +432,7 @@ function mountWorld(){
    const lens=event.target.closest("[data-world-tab]");
    if(lens){
      state.tab=lens.getAttribute("data-world-tab")||"atlas";
+     state.outsideOpen=false;
      state.selected=null;
      history.replaceState(null,"","#world");
      draw();
@@ -440,6 +441,7 @@ function mountWorld(){
    const explore=event.target.closest("[data-world-explore]");
    if(explore){
      state.exploreOpen=!state.exploreOpen;
+     state.outsideOpen=false;
      if(!state.exploreOpen)state.tab="atlas";
      state.selected=null;
      history.replaceState(null,"","#world");
@@ -449,6 +451,8 @@ function mountWorld(){
    const outside=event.target.closest("[data-outside-world]");
    if(outside){
      state.outsideOpen=!state.outsideOpen;
+     state.exploreOpen=false;
+     state.tab="atlas";
      state.selected=null;
      history.replaceState(null,"","#world");
      draw();
