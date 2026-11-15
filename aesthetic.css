@@ -3607,3 +3607,20 @@ body.light .world-home-place-atmosphere,.body.light .world-home-place .world-roo
  .world-place-inside-section{margin-top:27px}
  .world-place-detail .world-place-child{min-height:94px}
 }
+
+.world-room-presence{margin-top:34px;padding-top:20px;border-top:1px solid rgba(255,255,255,.08)}
+.world-room-presence-head p{margin:.35rem 0 0;opacity:.68}
+.world-room-presence-field{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:13px;margin-top:18px}
+.world-room-presence-item{position:relative;display:flex;flex-direction:column;gap:5px;min-height:74px;padding:14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.025)}
+.world-room-presence-item i{display:block;width:10px;height:10px;border:1px solid currentColor;border-radius:50%;opacity:.7}
+.world-room-presence-item b{font-size:.65rem;letter-spacing:.14em;font-weight:500;opacity:.65}
+.world-room-presence-item span{font-size:.9rem}
+.world-room-presence-empty{opacity:.55;font-size:.9rem}
+@media (max-width:680px){
+ .world-room-presence{margin-top:27px}
+ .world-room-presence-field{grid-template-columns:1fr 1fr;gap:10px}
+ .world-room-presence-item{min-height:68px;padding:12px}
+}
+@media (prefers-reduced-motion:reduce){
+ .world-room-presence-item{transition:none}
+}
