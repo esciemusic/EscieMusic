@@ -104,6 +104,27 @@ function encounterMeta(r){
  const tags=Array.isArray(r.tags)?r.tags.slice(0,6):[];
  return tags.length?'<div class="world-encounter-meta">'+tags.map(function(x){return '<span>'+esc(String(x).replace(/-/g," "))+'</span>';}).join('')+'</div>':'';
 }
+function liveWorldNode(id){
+ const live=window.ESCIE_WORLD_LIVE&&window.ESCIE_WORLD_LIVE.data;
+ if(!live)return null;
+ const target=String(id||"");
+ const candidates=(Array.isArray(live.discoveries)?live.discoveries:[]).map(x=>String(x.record_id||""));
+ if(!candidates.includes(target))return null;
+ const base=records().find(r=>String(r.id)===target);
+ return base||null;
+}
+function openWorldNode(id){
+ const target=String(id||"").trim();
+ if(!target)return;
+ const local=records().find(r=>String(r.id)===target);
+ const live=liveWorldNode(target);
+ const node=local||live;
+ if(!node)return;
+ state.selected=target;
+ remember(target);
+ draw();
+ focusDetail();
+}
 function discoveryRail(node){
  const live=liveDiscoveries(node);
  const neighbors=(live.length?live:related(node.id)).slice(0,4);
