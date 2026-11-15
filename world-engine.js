@@ -5,7 +5,7 @@ const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
 const safeDecode=value=>{try{return decodeURIComponent(String(value??""));}catch(_e){return String(value??"");}};
 const coll=(name,fallback=[])=>{const v=window[name];return Array.isArray(v)?v:(v&&Array.isArray(v.records)?v.records:fallback)};
-const state={tab:"atlas",q:"",type:"ALL",selected:null,trail:[],visited:[],eyeOpen:false,exploreOpen:false,outsideOpen:false,returningFrom:null,returnFlash:null,street:null,roomOrigin:null,attentionSince:0,attentionNoticed:false};
+const state={tab:"atlas",q:"",type:"ALL",selected:null,trail:[],visited:[],eyeOpen:false,exploreOpen:false,outsideOpen:false,returningFrom:null,returnFlash:null,street:null,roomOrigin:null,attentionSince:0,attentionNoticed:false,focusOrigin:null,focusDetailRequest:false,focusRestoreRequest:false};
 const tabs=[["atlas","ATLAS","world"],["people","THE PEOPLE","person"],["places","PLACES","world"],["moments","MOMENTS","moment"],["fragments","FRAGMENTS","photo-negative"],["bodies","BODIES","empty-chair"],["proof","PROOF","key"],["path","PATH","web"],["timeline","TIMELINE","now"],["symbols","SYMBOLS","daisy"],["trace","TRACE","web"]];function glyph(name,label){const safe=String(name||"").replace(/[^a-z0-9-]/gi,"");if(!safe)return "";return '<svg class="escie-symbol-glyph world-entry-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#'+esc(safe)+'"></use></svg>';}
 const raf=typeof requestAnimationFrame==="function"?requestAnimationFrame:fn=>setTimeout(fn,0);
 const caf=typeof cancelAnimationFrame==="function"?cancelAnimationFrame:clearTimeout;
@@ -327,11 +327,51 @@ function card(r){
 function remember(id){if(id==null)return;const value=String(id).trim();if(!value)return;if(!state.visited.includes(value))state.visited.push(value);if(state.trail[state.trail.length-1]!==value)state.trail.push(value);state.trail=state.trail.slice(-12);state.visited=state.visited.slice(-100);try{localStorage.setItem("escie_world_trail",JSON.stringify(state.trail));localStorage.setItem("escie_world_visited",JSON.stringify(state.visited))}catch(e){}}
 function rememberReturn(target,from){const t=String(target||"").trim(),f=String(from||"").trim();if(!t)return;state.returningFrom=f||null;state.returnFlash={from:f,to:t,at:Date.now()};}
  
-function returnToPlace(id,from){const target=String(id||"").trim();if(!target)return;rememberReturn(target,from);openWorldNode(target,{preserveTrail:true,preserveReturn:true});window.clearTimeout(window.__ESCIE_WORLD_RETURN_TIMER);window.__ESCIE_WORLD_RETURN_TIMER=window.setTimeout(function(){state.returningFrom=null;state.returnFlash=null;draw();},4200);}
+function returnToPlace(id,from){
+ const target=String(id||"").trim();if(!target)return;
+ rememberReturn(target,from);
+ if(state.focusDetailRequest){
+  state.focusDetailRequest=false;
+  state.focusRestoreRequest=true;
+  state.focusOrigin={nodeId:String(from||"")};
+ }
+ openWorldNode(target,{preserveTrail:true,preserveReturn:true});
+ window.clearTimeout(window.__ESCIE_WORLD_RETURN_TIMER);
+ window.__ESCIE_WORLD_RETURN_TIMER=window.setTimeout(function(){state.returningFrom=null;state.returnFlash=null;draw();},4200);
+}
 function pathContext(){const rs=records(),out=[];for(let i=1;i<state.trail.length;i++){const from=rs.find(r=>String(r.id)===String(state.trail[i-1])),to=rs.find(r=>String(r.id)===String(state.trail[i]));if(!from||!to)continue;const link=related(from.id).find(x=>String(x.node.id)===String(to.id));out.push({from,to,relationship:link&&link.r&&link.r.type?String(link.r.type).replace(/_/g," "):"UNLINKED THREAD"});}return out;}
 function investigationSummary(){const p=pathContext();const unknowns=state.visited.map(id=>records().find(r=>String(r.id)===String(id))).filter(Boolean).filter(r=>String(r.certainty||"").toUpperCase()==="UNKNOWN").length;return {steps:p.length,unknowns};}
 function loadTrail(){try{const a=JSON.parse(localStorage.getItem("escie_world_trail")||"[]");const b=JSON.parse(localStorage.getItem("escie_world_visited")||"[]");if(Array.isArray(a))state.trail=a.filter(v=>typeof v==="string"&&v.trim()).slice(-12);if(Array.isArray(b))state.visited=b.filter(v=>typeof v==="string"&&v.trim()).slice(-100)}catch(e){state.trail=[];state.visited=[]}}
-const focusDetail=()=>{const el=container.querySelector(".world-detail");if(el){el.setAttribute("tabindex","-1");if(typeof el.focus==="function")el.focus();}};
+function focusElement(el){
+ if(!el||!el.isConnected||typeof el.focus!=="function")return false;
+ try{el.focus({preventScroll:true});}catch(_e){try{el.focus();}catch(_e2){return false;}}
+ return document.activeElement===el;
+}
+function focusDetail(){
+ if(!state.focusDetailRequest)return false;
+ const el=container.querySelector(".world-detail");
+ if(!el)return false;
+ el.setAttribute("tabindex","-1");
+ const focused=focusElement(el);
+ if(focused)state.focusDetailRequest=false;
+ return focused;
+}
+function focusNodeControl(id){
+ const target=String(id||"");
+ if(!target)return false;
+ const nodes=container.querySelectorAll("[data-node]");
+ for(let i=0;i<nodes.length;i++){
+  if(String(nodes[i].getAttribute("data-node")||"")===target)return focusElement(nodes[i]);
+ }
+ return false;
+}
+function restoreWorldFocus(){
+ if(!state.focusRestoreRequest||!state.focusOrigin)return false;
+ const focused=focusNodeControl(state.focusOrigin.nodeId);
+ if(focused){state.focusRestoreRequest=false;state.focusOrigin=null;}
+ return focused;
+}
+
 function safeMediaURL(value){
  const raw=String(value==null?"":value).trim();
  if(!raw)return "";
@@ -870,7 +910,7 @@ function draw(){
      const node=records().find(r=>String(r.id)===String(state.selected))||liveWorldNode(state.selected)||(
        String(state.selected)==="world-montreal"?{id:"world-montreal",type:"PLACE",title:"Montréal",description:"Home. The place where the World begins, without being the boundary of it."}:null
      );
-     if(node){container.innerHTML=detail(node);focusDetail();syncAttention(container);return;}
+     if(node){container.innerHTML=detail(node);focusDetail();restoreWorldFocus();syncAttention(container);return;}
      state.selected=null;
    }
    container.innerHTML=worldHome();
@@ -878,6 +918,8 @@ function draw(){
    state.returnFlash=null;
  }
  container.addEventListener("click",function(event){
+   state.focusDetailRequest=event.detail===0;
+   state.focusRestoreRequest=false;
    const traceClear=event.target.closest("[data-trace-clear]");
    if(traceClear){state.trail=[];state.visited=[];try{localStorage.removeItem("escie_world_trail");localStorage.removeItem("escie_world_visited")}catch(e){} draw();return;}
    const lens=event.target.closest("[data-world-tab]");
@@ -990,6 +1032,7 @@ function draw(){
    const node=event.target.closest("[data-node]");
    if(node){
      const id=node.getAttribute("data-node");
+     if(state.focusDetailRequest)state.focusOrigin={nodeId:String(id||"")};
      if(state.street&&state.street.node){
        const streetPlace=streetPlaceRecords(records().find(function(r){return String(r.id)===String(state.street.placeId);})||{},state.street.node).find(function(r){return String(r.id)===String(id);});
        if(streetPlace){
@@ -1012,13 +1055,19 @@ function draw(){
      return;
    }
    if(event.target.closest("[data-close-node]")||event.target.closest("[data-outside-world]")){
+     const restore=state.focusDetailRequest&&state.focusOrigin;
      state.selected=null;
      history.replaceState(null,"","#world");
+     state.focusDetailRequest=false;
+     state.focusRestoreRequest=!!restore;
      draw();
    }
  });
  function syncFromHash(){
    clearWorldTransition();
+   state.focusDetailRequest=false;
+   state.focusRestoreRequest=false;
+   state.focusOrigin=null;
    state.exploreOpen=false;
    state.outsideOpen=false;
    state.tab="atlas";
