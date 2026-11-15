@@ -9,7 +9,7 @@ const raf=typeof requestAnimationFrame==="function"?requestAnimationFrame:fn=>se
 const caf=typeof cancelAnimationFrame==="function"?cancelAnimationFrame:clearTimeout;
 const reduceMotion=()=>typeof window.matchMedia==="function"&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 function records(){
- const sources=[coll("ESCIE_LIVE_RECORDS"),coll("ESCIE_MUSIC"),coll("ESCIE_PEOPLE"),coll("ESCIE_LOCATIONS"),coll("ESCIE_MOMENTS"),coll("ESCIE_FRAGMENTS"),coll("ESCIE_BODIES"),coll("ESCIE_PATHS"),coll("ESCIE_NODES"),coll("ESCIE_PROJECTS"),coll("ESCIE_ARCHIVE"),coll("ESCIE_INVESTIGATION"),coll("ESCIE_SYMBOLS")];
+ const sources=[coll("ESCIE_LIVE_RECORDS"),coll("ESCIE_MUSIC"),coll("ESCIE_PEOPLE"),coll("ESCIE_LOCATIONS"),coll("ESCIE_MOMENTS"),coll("ESCIE_FRAGMENTS"),coll("ESCIE_BODIES"),coll("ESCIE_PATHS"),coll("ESCIE_PROOF"),coll("ESCIE_NODES"),coll("ESCIE_PROJECTS"),coll("ESCIE_ARCHIVE"),coll("ESCIE_INVESTIGATION"),coll("ESCIE_SYMBOLS")];
  const seen=new Set(),out=[];
  sources.flat().forEach(r=>{if(!r||typeof r!=="object")return;const id=r.id||r.recordId||r.slug||r.title;if(id&&!seen.has(id)){seen.add(id);out.push({...r,id})}});
  return out;
@@ -137,17 +137,31 @@ function homeRooms(){
  const locations=coll("ESCIE_LOCATIONS",[]);
  return ["little-italy","parc-extension"].map(id=>locations.find(r=>r&&String(r.id||"")===id)).filter(r=>r&&String(r.visibility||"").toLowerCase()!=="withheld"&&r.public_disclosure!==false);
 }
+function worldLensMarkup(){
+ return '<div class="world-lens-nav" role="tablist" aria-label="ESCIE World navigation">'+tabs.map(function(t){
+   const active=state.tab===t[0];
+   return '<button type="button" role="tab" aria-selected="'+(active?"true":"false")+'" data-world-tab="'+esc(t[0])+'">'+glyph(t[2],t[1])+'<span>'+esc(t[1])+'</span></button>';
+ }).join("")+'</div>';
+}
+function lensRows(){
+ const map={people:"ESCIE_PEOPLE",places:"ESCIE_LOCATIONS",moments:"ESCIE_MOMENTS",fragments:"ESCIE_FRAGMENTS",bodies:"ESCIE_BODIES",proof:"ESCIE_PROOF",path:"ESCIE_PATHS",timeline:"ESCIE_MOMENTS",symbols:"ESCIE_SYMBOLS",trails:"ESCIE_PATHS"};
+ const rows=state.tab==="atlas"?records():coll(map[state.tab],[]);
+ return rows.filter(function(r){return r&&String(r.visibility||"").toLowerCase()!=="withheld"&&r.public_disclosure!==false;}).slice(0,60);
+}
+function worldLensContent(){
+ if(state.tab==="atlas")return '<div class="world-home-house"><div class="world-home-city"><span class="world-kicker">THE HOME</span><strong>MONTRÉAL</strong><p>MONTRÉAL IS HOME.</p></div></div>';
+ const rows=lensRows();
+ return '<div class="world-list">'+(rows.length?rows.map(card).join(""):'<div class="world-empty">Nothing has been opened here yet.</div>')+'</div>';
+}
 function worldHome(){
  const city=montrealRecord(),rooms=homeRooms();
  const roomCards=rooms.map(function(room){
    return '<button type="button" class="world-room" data-node="'+esc(room.id)+'"><span class="world-room-mark" aria-hidden="true"></span><div><strong>'+esc(title(room))+'</strong><p>'+esc(room.description||"A room in the Montréal home.")+'</p></div><span class="world-arrow" aria-hidden="true">↗</span></button>';
  }).join("");
  return '<div class="world-home">'+
-   '<div class="world-home-intro"><span class="world-kicker">MY WORLD</span><h3>MONTRÉAL</h3><p>Home.</p></div>'+
-   '<div class="world-home-house">'+
-     '<div class="world-home-city"><span class="world-kicker">THE HOME</span><strong>'+esc(city&&city.title||"MONTRÉAL")+'</strong></div>'+
-     '<div class="world-home-rooms">'+(roomCards||'<span class="world-empty">Nothing has been opened yet.</span>')+'</div>'+
-   '</div>'+
+   '<div class="world-home-intro"><span class="world-kicker">MY WORLD</span><h3>MONTRÉAL</h3><p>MONTRÉAL IS HOME.</p></div>'+
+   worldLensMarkup()+
+   (state.tab==="atlas"?'<div class="world-home-house"><div class="world-home-city"><span class="world-kicker">THE HOME</span><strong>'+esc(city&&city.title||"MONTRÉAL")+'</strong></div><div class="world-home-rooms">'+(roomCards||'<span class="world-empty">Nothing has been opened yet.</span>')+'</div></div>':worldLensContent())+
    '<button type="button" class="world-home-outside" data-outside-world><span class="world-kicker">BEYOND THE DOOR</span><strong>THE OUTSIDE WORLD</strong><p>Everything beyond home.</p></button>'+
  '</div>';
 }
@@ -166,6 +180,14 @@ function mountWorld(){
    container.innerHTML=worldHome();
  }
  container.addEventListener("click",function(event){
+   const lens=event.target.closest("[data-world-tab]");
+   if(lens){
+     state.tab=lens.getAttribute("data-world-tab")||"atlas";
+     state.selected=null;
+     history.replaceState(null,"","#world");
+     draw();
+     return;
+   }
    const node=event.target.closest("[data-node]");
    if(node){
      const id=node.getAttribute("data-node");
