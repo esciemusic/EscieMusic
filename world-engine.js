@@ -86,6 +86,20 @@ function liveEncounter(){
  const data=window.ESCIE_WORLD_LIVE&&window.ESCIE_WORLD_LIVE.data;
  return data&&data.encounter||null;
 }
+function liveObjectContext(){
+ const data=window.ESCIE_WORLD_LIVE&&window.ESCIE_WORLD_LIVE.data;
+ if(!data||!data.object)return null;
+ const place=data.place||{};
+ const object=data.object||{};
+ const context=object.context&&typeof object.context==="object"?object.context:{};
+ return {
+   presence:object.presence||"PRESENT",
+   weight:object.weight,
+   notice:String(context.notice||context.context||"").trim(),
+   origin:place,
+   originRecordId:place.record_id||null
+ };
+}
 function placeIdentity(room){
  const p=livePlace()||{};
  const meta=p.metadata&&typeof p.metadata==="object"?p.metadata:{};
@@ -213,7 +227,27 @@ function encounterContext(r){
  if(r.source)parts.push('<span><b>SOURCE</b>'+esc(String(r.source))+'</span>');
  return parts.length?'<div class="world-encounter-context">'+parts.join('')+'</div>':'';
 }
+function objectDetail(r){
+ const object=liveObjectContext()||{};
+ const origin=object.origin||{};
+ const originId=object.originRecordId||null;
+ const originLabel=origin.name||"THE PLACE";
+ const links=related(r.id);
+ const connections=links.length?links.map(x=>'<button type="button" data-node="'+esc(x.node.id)+'"><strong>'+esc(title(x.node))+'</strong><small>'+esc(x.r.type||"related")+'</small></button>').join(""):'<span class="world-empty">Nothing is explicitly connected to this object yet.</span>';
+ const notice=object.notice||String(r.description||"").trim();
+ const presence=object.presence||"PRESENT";
+ const returnButton=originId?'<button type="button" class="world-object-return" data-node="'+esc(originId)+'">← RETURN TO '+esc(originLabel).toUpperCase()+'</button>':'<button type="button" class="world-object-return" data-close-node>← RETURN TO THE WORLD</button>';
+ return '<div class="world-object-encounter" aria-live="polite">'
+   +'<div class="world-object-threshold">'+returnButton+'<span class="world-kicker">OBJECT // ENCOUNTER</span><span class="world-object-presence">'+esc(presence)+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3><p class="world-object-line">'+esc(r.description||"An ordinary thing, carrying more than it explains.")+'</p></div>'
+   +'<div class="world-object-body"><div class="world-object-mark" aria-hidden="true"><span></span><span></span><span></span></div><div class="world-object-copy"><span class="world-kicker">NOTICE</span><p>'+esc(notice||"Look at it long enough to notice what you normally pass by.")+'</p></div></div>'
+   +'<div class="world-object-context"><div><span class="world-kicker">WHERE IT WAS FOUND</span><strong>'+esc(originLabel)+'</strong><small>the place remains behind you</small></div><div><span class="world-kicker">PRESENCE</span><strong>'+esc(presence.replace(/_/g," "))+'</strong><small>how it sits in the room</small></div></div>'
+   +'<div class="world-object-depth"><span class="world-kicker">GO DEEPER</span><p>There may be more here. There may only be the thing itself.</p>'+discoveryRail(r)+'</div>'
+   +'<div class="world-object-connections"><span class="world-kicker">WHAT THIS TOUCHES · '+links.length+'</span><div class="world-connections">'+connections+'</div></div>'
+   +'<div class="world-object-return-bottom">'+returnButton+'</div>'
+   +'</div>';
+}
 function detail(r){
+ if(r&&String(type(r)).toUpperCase()==="OBJECT")return objectDetail(r);
  const roomIds=["little-italy","parc-extension","world-parc-extension","world-apartment","world-montreal","world-street-corner"];
  if(r&&roomIds.includes(String(r.id)))return roomDetail(r);
  const symbol=r&&String(r.id||"").indexOf("symbol-")===0?coll("ESCIE_SYMBOLS").find(x=>x&&String(x.id)===String(r.id)):null;
