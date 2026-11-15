@@ -202,7 +202,7 @@ function encounterContext(r){
  return parts.length?'<div class="world-encounter-context">'+parts.join('')+'</div>':'';
 }
 function detail(r){
- const roomIds=["little-italy","parc-extension"];
+ const roomIds=["little-italy","parc-extension","world-parc-extension","world-apartment","world-montreal","world-street-corner"];
  if(r&&roomIds.includes(String(r.id)))return roomDetail(r);
  const symbol=r&&String(r.id||"").indexOf("symbol-")===0?coll("ESCIE_SYMBOLS").find(x=>x&&String(x.id)===String(r.id)):null;
  if(symbol){
