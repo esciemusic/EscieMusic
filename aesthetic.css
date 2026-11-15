@@ -3798,5 +3798,5 @@ body.light .world-object-origin{border-color:rgba(0,0,0,.1)}
 [data-world-celestial-light="DAYLIGHT"]{--world-celestial-contrast:1.01}
 /* Keep celestial contrast as an atmosphere variable; never filter the entire UI. */
 
-/* Celestial contrast belongs to World imagery/atmosphere, never global controls. */
-.world-engine [data-world-celestial-surface]{contrast:normal}
+/* Celestial contrast is scoped to visual atmosphere surfaces only. */
+.world-engine [data-world-celestial-surface]{filter:brightness(var(--world-celestial-contrast,1))}
