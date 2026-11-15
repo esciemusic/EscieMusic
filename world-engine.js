@@ -60,10 +60,15 @@ const focusDetail=()=>{const el=container.querySelector(".world-detail");if(el){
 function mediaPreview(r){
  const media=(r&&r.media&&typeof r.media==="object")?r.media:{};
  const url=media.url||r.media_url||r.image_url||r.thumbnail||"";
- if(!url)return "";
  const kind=String(media.type||r.media_type||"").toLowerCase();
+ if(!url){
+   const quote=r.quote||r.excerpt||r.fragment||r.text;
+   if(quote)return '<div class="world-encounter-artifact world-encounter-writing"><span class="world-kicker">TRACE // WORDS</span><blockquote>'+esc(String(quote).slice(0,420))+'</blockquote></div>';
+   return '<div class="world-encounter-artifact"><span class="world-kicker">TRACE // '+esc(type(r))+'</span><div class="world-artifact-mark" aria-hidden="true"></div><p>A piece of the World, waiting to be seen in full.</p></div>';
+ }
  if(kind.includes("audio"))return '<div class="world-encounter-media world-encounter-audio"><span class="world-kicker">SOUND</span><audio controls preload="metadata" src="'+esc(url)+'"></audio></div>';
- return '<div class="world-encounter-media"><span class="world-kicker">'+esc(kind.includes("video")?"MOVING IMAGE":"IMAGE")+'</span><img loading="lazy" src="'+esc(url)+'" alt="" /></div>';
+ if(kind.includes("video")||/\\.(mp4|webm|mov)(?:$|\\?)/i.test(url))return '<div class="world-encounter-media"><span class="world-kicker">MOVING IMAGE</span><video controls preload="metadata" playsinline src="'+esc(url)+'"></video></div>';
+ return '<div class="world-encounter-media"><span class="world-kicker">IMAGE</span><img loading="lazy" src="'+esc(url)+'" alt="" /></div>';
 }
 function encounterMeta(r){
  const tags=Array.isArray(r.tags)?r.tags.slice(0,6):[];
