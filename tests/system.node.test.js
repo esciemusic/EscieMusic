@@ -311,9 +311,9 @@ assert(playerRuntime.includes("lastFocusedBeforeShow"),"player must remember foc
 assert(playerRuntime.includes("document.contains(restore)"),"player must restore focus only to an attached element");
 
 const worldEngineRuntime=fs.readFileSync("world-engine.js","utf8");
-assert(worldEngineRuntime.includes('esc(state.q)'),"world search query must be HTML-escaped");
-assert(worldEngineRuntime.includes('esc(t)'),"world type options must be HTML-escaped");
-assert(worldEngineRuntime.includes('esc(n.id)'),"world path node ids must be HTML-escaped");
+assert(worldEngineRuntime.includes("function roomContents(room)"),"World rooms must derive their contents from public records");
+assert(worldEngineRuntime.includes('data-node="'+esc(r.id)+'"'),"World room/node links must HTML-escape record ids");
+assert(worldEngineRuntime.includes('esc(title(room))'),"World room titles must be HTML-escaped");
 
 const visualsRuntime=fs.readFileSync("ui/visuals.js","utf8");
 assert(visualsRuntime.includes('const raf=typeof window.requestAnimationFrame==="function"?window.requestAnimationFrame.bind(window):fn=>window.setTimeout(fn,0)'),"visual pointer scheduler needs a requestAnimationFrame fallback");
