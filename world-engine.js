@@ -118,17 +118,12 @@ function placeAtmosphere(){
 }
 function worldNow(){
  const env=liveEnvironment()||{};
- const raw=env.current_time||env.local_time||env.timestamp||env.time||"";
+ const d=new Date();
  let dateLabel="",timeLabel="";
- if(raw){
-  const d=new Date(raw);
-  if(!Number.isNaN(d.getTime())){
-   dateLabel=new Intl.DateTimeFormat("en-CA",{weekday:"long",month:"long",day:"numeric",timeZone:"America/Toronto"}).format(d);
-   timeLabel=new Intl.DateTimeFormat("en-CA",{hour:"numeric",minute:"2-digit",timeZone:"America/Toronto"}).format(d);
-  }
+ if(!Number.isNaN(d.getTime())){
+  dateLabel=new Intl.DateTimeFormat("en-CA",{weekday:"long",month:"long",day:"numeric",timeZone:"America/Toronto"}).format(d);
+  timeLabel=new Intl.DateTimeFormat("en-CA",{hour:"numeric",minute:"2-digit",timeZone:"America/Toronto"}).format(d);
  }
- if(!timeLabel&&env.time_label)timeLabel=String(env.time_label);
- if(!dateLabel&&env.date_label)dateLabel=String(env.date_label);
  return {date:dateLabel,time:timeLabel,season:String(env.season||"").trim(),weather:String(env.weather||"").trim(),temperature:env.temperature};
 }
 function worldNowMarkup(){
@@ -137,6 +132,18 @@ function worldNowMarkup(){
  const conditions=[now.weather,now.temperature==null?"":String(now.temperature)+"°"].filter(Boolean).join(" · ");
  if(!line&&!conditions)return "";
  return '<section class="world-now" aria-label="World now"><div><span class="world-kicker">NOW</span><strong>'+esc(line||"THE PRESENT")+'</strong></div><div class="world-now-conditions"><span>'+esc(conditions||"")+'</span><span>'+esc(now.season||"")+'</span></div></section>';
+}
+function refreshWorldClock(container){
+ const root=container&&container.querySelector(".world-now");
+ if(!root)return;
+ const now=worldNow();
+ const line=[now.date,now.time].filter(Boolean).join(" · ");
+ const conditions=[now.weather,now.temperature==null?"":String(now.temperature)+"°"].filter(Boolean).join(" · ");
+ const strong=root.querySelector("strong");
+ const spans=root.querySelectorAll(".world-now-conditions span");
+ if(strong)strong.textContent=line||"THE PRESENT";
+ if(spans[0])spans[0].textContent=conditions;
+ if(spans[1])spans[1].textContent=now.season||"";
 }
 function filtered(){
  const q=state.q.toLowerCase().trim();
@@ -578,6 +585,7 @@ function mountWorld(){
  }
  syncLiveState();
  loadTrail();
+ setInterval(function(){refreshWorldClock(container);},30000);
  window.addEventListener("escie:world-state",function(){syncLiveState();draw();});
  const route=String(location.hash||"");
  const placeMatch=route.match(/(?:world-place=)([^&]+)/);
