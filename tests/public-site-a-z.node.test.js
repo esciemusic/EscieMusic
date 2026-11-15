@@ -271,25 +271,49 @@ test("A-Z Pass 1 preserves keyboard and preference accessibility contracts",()=>
   assert.match(aesthetic,/:focus-visible/);
 });
 
-test("A-Z Pass 3 NOW quiet state is intentional and visually restrained",()=>{
+test("A-Z NOW is the present-tense work and event foreground",()=>{
   const app=read("app.js");
-  const style=read("style.css");
-  assert.match(app,/data-transmission-state.*publicTransmission.*released.*active.*quiet/);
-  assert.match(style,/\.now-state\[data-transmission-state="quiet"\] h3\{[\s\S]*color:var\(--faint\)/);
-  assert.match(style,/\.now-state\[data-transmission-state="quiet"\] > p:not\(\.eyebrow\)/);
+  const html=read("index.html");
+  const aesthetic=read("aesthetic.css");
+  const now=read("data/now.js");
+  assert.match(html,/data\/now\.js/);
+  assert.match(html,/WHAT IS ALIVE RIGHT NOW\. THE WORK AND EVENTS BEING PUSHED INTO THE PRESENT\./);
+  assert.match(now,/const ESCIE_NOW =/);
+  assert.match(now,/entries: \[\]/);
+  assert.match(app,/function getNowConfig\(\)/);
+  assert.match(app,/function renderNow\(\)/);
+  assert.match(app,/data-now-record-id/);
+  assert.match(aesthetic,/NOW — PRESENT-TENSE WORK \/ EVENT FOREGROUND/);
 });
 
-test("A-Z Pass 3 NOW transmission revalidates through the public registry",()=>{
-  const app=read("app.js");
-  assert.match(app,/const publicTransmission\s*=\s*publicMusic\s*&&\s*getGlobal\("ESCIE_RECORD_REGISTRY",\s*null\)\?\.publicRecord/);
-  assert.match(app,/const transmission = publicTransmission \|\| active/);
-  assert.match(app,/publicTransmission \? '<button class="record-action record-card"/);
+test("A-Z NOW can stay active without a fixed expiration timer",()=>{
+  const now=read("data/now.js");
+  assert.doesNotMatch(now,/expires_at|expiration|expiresAfter|ttl|duration/);
+  assert.match(now,/curated by presence/);
+  assert.match(now,/an hour, a day, six weeks, or longer/);
 });
 
-test("A-Z Pass 3 keeps NOW subordinate to the entry identity",()=>{
-  const style=read("style.css");
-  assert.match(style,/\.now-state h3\{max-width:820px;font-size:clamp\(24px,4\.8vw,58px\);line-height:1\.02\}/);
-  assert.match(style,/\.now-section\{min-height:0\}/);
+test("A-Z NOW is allowed to be intentionally empty",()=>{
+  const app=read("app.js");
+  const aesthetic=read("aesthetic.css");
+  assert.match(app,/NOTHING IS BEING PUSHED HERE YET\./);
+  assert.match(app,/now-quiet/);
+  assert.match(aesthetic,/data-empty-state="now-quiet"/);
+});
+
+test("A-Z NOW resolves only public records",()=>{
+  const app=read("app.js");
+  assert.match(app,/getGlobal\("ESCIE_RECORD_REGISTRY", null\)/);
+  assert.match(app,/publicRecord\(recordIdValue\)/);
+  assert.doesNotMatch(app,/getAllRecords\(\).*now/);
+});
+
+test("A-Z NOW hands visitors from the present into the work",()=>{
+  const app=read("app.js");
+  assert.match(app,/ENTER THE WORK/);
+  assert.match(app,/data-record-id/);
+  assert.doesNotMatch(app,/ACTIVE SIGNAL/);
+  assert.doesNotMatch(app,/CURRENT TRANSMISSION/);
 });
 
 test("A-Z Pass 3 ART record opening stays public-scoped",()=>{
