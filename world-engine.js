@@ -49,7 +49,7 @@ function filtered(){
 function card(r){
  const links=related(r.id);
  const depth=links.length?"DEEPER THREAD":"SURFACE";
- const why=links.length?"CONNECTED TO "+links.length+" THREAD"+(links.length===1?"":"S");
+ const why=links.length?"CONNECTED TO "+links.length+" THREAD"+(links.length===1?"":"S"):"";
  return '<button type="button" class="world-card world-node-card" data-node="'+esc(r.id)+'" data-depth="'+(links.length?"deep":"surface")+'"><div class="world-card-main"><span class="world-kicker">'+esc(type(r))+' // '+depth+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3><p>'+esc(String(r.description||r.summary||r.story||"A doorway into the World.").slice(0,220))+'</p>'+(why?'<small class="world-card-thread">'+esc(why)+'</small>':'')+'</div><span class="world-arrow" aria-hidden="true">OPEN</span></button>';
 }
 function remember(id){if(id==null)return;const value=String(id).trim();if(!value)return;if(!state.visited.includes(value))state.visited.push(value);if(state.trail[state.trail.length-1]!==value)state.trail.push(value);state.trail=state.trail.slice(-12);state.visited=state.visited.slice(-100);try{sessionStorage.setItem("escie_world_trail",JSON.stringify(state.trail));sessionStorage.setItem("escie_world_visited",JSON.stringify(state.visited))}catch(e){}}
@@ -77,7 +77,7 @@ function mediaPreview(r){
    return '<div class="world-encounter-artifact"><span class="world-kicker">TRACE // '+esc(type(r))+'</span><div class="world-artifact-mark" aria-hidden="true"></div><p>A piece of the World, waiting to be seen in full.</p></div>';
  }
  if(kind.includes("audio"))return '<div class="world-encounter-media world-encounter-audio"><span class="world-kicker">SOUND</span><audio controls preload="metadata" src="'+esc(url)+'"></audio></div>';
- if(kind.includes("video")||/\\.(mp4|webm|mov)(?:$|\\?)/i.test(url))return '<div class="world-encounter-media"><span class="world-kicker">MOVING IMAGE</span><video controls preload="metadata" playsinline src="'+esc(url)+'"></video></div>';
+ if(kind.includes("video")||new RegExp("\\.(mp4|webm|mov)(?:$|\\?)","i").test(url))return '<div class="world-encounter-media"><span class="world-kicker">MOVING IMAGE</span><video controls preload="metadata" playsinline src="'+esc(url)+'"></video></div>';
  return '<div class="world-encounter-media"><span class="world-kicker">IMAGE</span><img loading="lazy" src="'+esc(url)+'" alt="" /></div>';
 }
 function encounterMeta(r){
@@ -206,7 +206,7 @@ function worldHome(){
    ((currentTab||state.exploreOpen)?worldLensMarkup():'')+
    (currentTab?worldLensContent():'<div class="world-home-house"><div class="world-home-city"><span class="world-kicker">HOME</span><strong>'+esc(city&&city.title||"MONTRÉAL")+'</strong><p>WHERE MY WORLD AND THE WORLD INTERTWINE.</p></div><div class="world-home-rooms">'+(roomCards||'<span class="world-empty">Nothing has been opened yet.</span>')+'</div></div>')+
    ((currentTab||state.exploreOpen)?'':'<div class="world-home-actions"><button type="button" class="world-enter-index" data-world-explore aria-expanded="false"><span class="world-kicker">DISCOVER</span><strong>OPEN THE WORLD</strong><span aria-hidden="true">↗</span></button></div>')+
-   '<button type="button" class="world-home-outside" data-outside-world><span class="world-kicker">BEYOND HOME</span><strong>THE WORLD CONTINUES</strong><p>Everything beyond Montréal can enter here too.</p></button>'+
+   '<button type="button" class="world-home-outside" data-outside-world><span class="world-kicker">THE OUTSIDE WORLD</span><strong>THE WORLD CONTINUES</strong><p>Everything beyond Montréal can enter here too.</p></button>'+
    (currentTab?'':'<p class="world-home-note">You do not have to understand the whole thing. Start somewhere.</p>')+
  '</div>';
 }
@@ -233,7 +233,16 @@ function mountWorld(){
      draw();
      return;
    }
-   const explore=event.target.closest("[data-world-explore]");\n   if(explore){\n     state.exploreOpen=!state.exploreOpen;\n     if(!state.exploreOpen)state.tab="atlas";\n     state.selected=null;\n     history.replaceState(null,"","#world");\n     draw();\n     return;\n   }\n   const node=event.target.closest("[data-node]");
+   const explore=event.target.closest("[data-world-explore]");
+   if(explore){
+     state.exploreOpen=!state.exploreOpen;
+     if(!state.exploreOpen)state.tab="atlas";
+     state.selected=null;
+     history.replaceState(null,"","#world");
+     draw();
+     return;
+   }
+   const node=event.target.closest("[data-node]");
    if(node){
      const id=node.getAttribute("data-node");
      if(id){state.selected=id;remember(id);history.replaceState(null,"","#world-node="+encodeURIComponent(id));draw();}
