@@ -3598,3 +3598,12 @@ body.light .world-home-place-atmosphere,.body.light .world-home-place .world-roo
 @media (max-width:680px){
  .world-place-child{min-height:92px}
 }
+
+.world-place-inside-section{margin-top:34px}
+.world-place-inside-section+.world-place-inside-section{border-top:1px solid rgba(255,255,255,.07);padding-top:21px}
+.world-place-object .world-room-mark{transform:rotate(45deg)}
+.world-place-detail .world-place-child{min-height:104px}
+@media (max-width:680px){
+ .world-place-inside-section{margin-top:27px}
+ .world-place-detail .world-place-child{min-height:94px}
+}
