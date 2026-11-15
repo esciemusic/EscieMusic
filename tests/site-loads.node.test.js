@@ -8,7 +8,8 @@ function assert(condition, message) {
 }
 
 assert(scripts.length > 0, "index.html should load JavaScript modules");
-assert(!html.includes("\\\\n"), "index.html must not contain malformed literal newline escapes");
+assert(!html.includes("\\\
+"), "index.html must not contain malformed literal newline escapes");
 assert(/<section id="world"[^>]*>/.test(html), "THE WORLD section must remain part of the public doorway");
 assert(html.includes("data/now.js"), "NOW editorial registry must load before app.js");
 assert(html.includes("WHAT IS ALIVE RIGHT NOW. THE WORK AND EVENTS BEING PUSHED INTO THE PRESENT."), "NOW must describe the present-tense work/event foreground");
@@ -85,7 +86,10 @@ assert(fs.readFileSync("aesthetic.css","utf8").includes(".archive-record-index::
 assert(fs.readFileSync("world-engine.js","utf8").includes("function atlasField(rows)"),"THE WORLD ATLAS must expose a Montréal orientation field");
 assert(fs.readFileSync("world-engine.js","utf8").includes("PHYSICAL ANCHOR"),"THE WORLD ATLAS must retain Montréal as its physical anchor");
 assert(fs.readFileSync("world-engine.js","utf8").includes("without pretending to be a literal map"),"THE WORLD ATLAS must not fabricate geographic coordinates");
-assert(fs.readFileSync("world-engine.js","utf8").includes("relatedByPlace"),"THE WORLD ATLAS must derive connected threads from public relationships");\nassert(fs.readFileSync("world-engine.js","utf8").includes("function worldHome()"),"THE WORLD must present Montréal as the home");\nassert(fs.readFileSync("world-engine.js","utf8").includes("little-italy")&&fs.readFileSync("world-engine.js","utf8").includes("parc-extension"),"THE WORLD must currently expose only Little Italy and Parc-Extension as rooms");\nassert(fs.readFileSync("world-engine.js","utf8").includes("THE OUTSIDE WORLD"),"THE WORLD must distinguish the outside world from the Montréal home");
+assert(fs.readFileSync("world-engine.js","utf8").includes("relatedByPlace"),"THE WORLD ATLAS must derive connected threads from public relationships");
+assert(fs.readFileSync("world-engine.js","utf8").includes("function worldHome()"),"THE WORLD must present Montréal as the home");
+assert(fs.readFileSync("world-engine.js","utf8").includes("little-italy")&&fs.readFileSync("world-engine.js","utf8").includes("parc-extension"),"THE WORLD must currently expose only Little Italy and Parc-Extension as rooms");
+assert(fs.readFileSync("world-engine.js","utf8").includes("THE OUTSIDE WORLD"),"THE WORLD must distinguish the outside world from the Montréal home");
 assert(fs.readFileSync("world-engine.js","utf8").includes("is-selected"),"THE WORLD ATLAS must expose a selected-thread focus state");
 assert(fs.readFileSync("aesthetic.css","utf8").includes(".atlas-field-node.is-selected"),"THE WORLD ATLAS selected place must have a visible focus state");
 
