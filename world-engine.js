@@ -651,15 +651,34 @@ function mountWorld(){
    const place=records().find(function(r){return String(r.id)===String(placeId);});
    if(place){state.selected=String(place.id);state.placeStreet={placeId:String(place.id),place:place,street:null};}
  }
- function attentionMemory(id){
- const key=String(id||"");if(!key)return false;
- try{const a=JSON.parse(localStorage.getItem("escie_world_attention")||"[]");return Array.isArray(a)&&a.includes(key);}catch(_e){return false;}
+ function attentionRecord(id){
+ const key=String(id||"");if(!key)return {count:0,last:0};
+ try{
+  const raw=JSON.parse(localStorage.getItem("escie_world_attention")||"{}");
+  if(raw&&typeof raw==="object"&&!Array.isArray(raw)&&raw[key])return raw[key];
+  if(Array.isArray(raw)&&raw.includes(key))return {count:1,last:0};
+ }catch(_e){}
+ return {count:0,last:0};
 }
+function attentionMemory(id){return attentionRecord(id).count>0;}
 function rememberAttention(id){
  const key=String(id||"");if(!key)return;
- try{const a=JSON.parse(localStorage.getItem("escie_world_attention")||"[]");const next=Array.isArray(a)?a.filter(x=>String(x)!==key):[];next.push(key);localStorage.setItem("escie_world_attention",JSON.stringify(next.slice(-100)));}catch(_e){}
+ try{
+  const raw=JSON.parse(localStorage.getItem("escie_world_attention")||"{}");
+  const data=raw&&typeof raw==="object"&&!Array.isArray(raw)?raw:{};
+  const prev=attentionRecord(key);
+  data[key]={count:Number(prev.count||0)+1,last:Date.now()};
+  const keys=Object.keys(data);
+  keys.slice(0,Math.max(0,keys.length-100)).forEach(function(k){delete data[k];});
+  localStorage.setItem("escie_world_attention",JSON.stringify(data));
+ }catch(_e){}
 }
-function attentionCue(id){return attentionMemory(id)?'<span class="world-attention-memory">NOTICED BEFORE</span>':"";}
+function attentionCue(id){
+ const count=attentionRecord(id).count;
+ if(count>1)return '<span class="world-attention-memory">LOOK AGAIN</span>';
+ if(count===1)return '<span class="world-attention-memory">NOTICED BEFORE</span>';
+ return "";
+}
 function draw(){
    syncWorldLayer();
    if(state.selected){
