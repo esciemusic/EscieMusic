@@ -1502,7 +1502,7 @@ function renderClothing(){
     return ({
       now:"NOW",
       art:"ART",
-      world:"THE WORLD",
+      world:"MY WORLD",
       web:"THE WEB",
       archives:"THE ARCHIVES",
       investigation:"THE CASE FILES",
