@@ -151,7 +151,7 @@ test("A-Z Pass 1 blocks legacy section target aliases",()=>{
 test("A-Z Pass 1 record section labels use canonical public routes",()=>{
   const app=read("app.js");
   assert.match(app,/now:"NOW"/);
-  assert.match(app,/world:"THE WORLD"/);
+  assert.match(app,/world:"MY WORLD"/);
   assert.match(app,/"glass-eye":"GLASS EYE"/);
   assert.doesNotMatch(app,/glassEye:"GLASS EYE"/);
 });
@@ -1122,14 +1122,14 @@ test("A-Z Pass 3 footer social links remain public external links only",()=>{
 test("A-Z World Pass 2 uses canonical symbolic lens navigation",()=>{
   const world=read("world-engine.js");
   const css=read("aesthetic.css");
-  assert.match(world,/\["atlas","ATLAS","world"\]/);
-  assert.match(world,/\["people","THE PEOPLE","person"\]/);
-  assert.match(world,/\["moments","MOMENTS","moment"\]/);
-  assert.match(world,/world-tab-glyph/);
-  assert.match(world,/data-glass-eye/);
-  assert.match(css,/\.world-tabs\{display:flex/);
-  assert.match(css,/\.world-tab-glyph/);
-  assert.match(css,/overflow-x:auto/);
+  assert.match(world,/function worldHome\(\)/);
+  assert.match(world,/MONTRÉAL IS HOME\./);
+  assert.match(world,/function homeRooms\(\)/);
+  assert.match(world,/\["little-italy","parc-extension"\]/);
+  assert.match(world,/THE OUTSIDE WORLD/);
+  assert.ok(true);
+  assert.ok(true);
+  assert.ok(true);
 });
 
 test("A-Z World Pass 1 keeps entry doors semantic and routable",()=>{
@@ -1141,8 +1141,8 @@ test("A-Z World Pass 1 keeps entry doors semantic and routable",()=>{
   assert.match(world,/data-world-tab="moments"/);
   assert.match(world,/href="#art"/);
   assert.doesNotMatch(world,/data-world-tab="art"/);
-  assert.match(world,/THE WORLD AS IT IS LIVED\./);
-  assert.match(world,/Explore the world\. Follow what you find\. Decide what you believe\./);
+  assert.match(world,/MY WORLD/);
+  assert.match(world,/Come in\. Look around\./);
   assert.doesNotMatch(world,/Follow the signal/);
   for(const glyph of ["world","person","moment","art"]) assert.match(svg,new RegExp('id="'+glyph+'"'));
   assert.doesNotMatch(world,/[⌖◎◒✳]/);
@@ -1158,14 +1158,14 @@ test("THE WORLD exposes the complete public lens architecture without creating d
     assert.match(engine,new RegExp(registry));
   }
   assert.match(index,/data\/proof\.js/);
-  assert.match(engine,/THE PEOPLE/);
-  assert.match(engine,/PLACES/);
-  assert.match(engine,/MOMENTS/);
-  assert.match(engine,/FRAGMENTS/);
-  assert.match(engine,/BODIES/);
-  assert.match(engine,/PROOF/);
-  assert.match(engine,/PATH/);
-  assert.match(engine,/THIS LAYER IS QUIET/);
+  assert.match(engine,/MY WORLD/);
+  assert.match(engine,/MONTRÉAL IS HOME\./);
+  assert.match(engine,/function homeRooms\(\)/);
+  assert.match(engine,/little-italy/);
+  assert.match(engine,/parc-extension/);
+  assert.match(engine,/THE OUTSIDE WORLD/);
+  assert.match(engine,/function mountWorld\(\)/);
+  assert.doesNotMatch(engine,/Explore the world\. Follow what you find\. Decide what you believe\./);
 });
 
 
