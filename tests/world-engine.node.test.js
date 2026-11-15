@@ -20,6 +20,8 @@ assert(/const reduceMotion=\(\)=>typeof window\.matchMedia==="function"/.test(sr
 assert(/function safeMediaURL\(value\)/.test(src),"World Engine media must use a safe URL boundary");
 assert(/function worldNow\(\)/.test(src),"World Engine needs a present-tense environment surface");
 assert(/function worldNowMarkup\(\)/.test(src),"World Engine needs a present-tense environment renderer");
+assert(/function refreshWorldClock\(container\)/.test(src),"World Engine present clock needs live refresh");
+assert(/setInterval\(function\(\)\{refreshWorldClock\(container\);\},30000\)/.test(src),"World Engine clock should refresh without rebuilding the World");
 assert(/localStorage\.removeItem\("escie_world_trail"\)/.test(src),"TRACE clear must clear persistent local trace");
 
 assert(/function isPublicWorldRecord\(r\)/.test(src),"World Engine needs a public-record release boundary");
