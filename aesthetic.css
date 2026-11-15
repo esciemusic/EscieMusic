@@ -3306,3 +3306,9 @@ html[data-world-light="day"] .section-visual-world .visual-map-grid{
 @media(prefers-reduced-motion:reduce){
   .world-home::before{transition:none}
 }
+
+/* World place doorway: the city is an encounter, not a decorative label. */
+button.world-home-city{appearance:none;border:0;font:inherit;text-align:left;cursor:pointer;color:inherit;width:100%;position:relative;padding:inherit;background:transparent;display:block}
+button.world-home-city:focus-visible{outline:1px solid rgba(155,89,255,.75);outline-offset:6px}
+.world-home-city .world-arrow{position:absolute;right:0;bottom:0;opacity:.55;transition:transform .3s ease,opacity .3s ease}
+.world-home-city:hover .world-arrow,.world-home-city:focus-visible .world-arrow{transform:translate(3px,-3px);opacity:1}
