@@ -3780,21 +3780,13 @@ body.light .world-object-origin{border-color:rgba(0,0,0,.1)}
 [data-world-stars="VISIBLE_IF_SKY_ALLOWS"] .world-celestial{letter-spacing:.08em}
 @media(prefers-reduced-motion:reduce){.world-celestial{transition:none}}
 
-/* Continuous sky state: dawn, day, dusk and night share one environmental field. */
-[data-world-sky-phase="DAWN"]{--world-sky-weight:.72}
-[data-world-sky-phase="DAY"]{--world-sky-weight:.88}
-[data-world-sky-phase="DUSK"]{--world-sky-weight:.66}
-[data-world-sky-phase="NIGHT"]{--world-sky-weight:.52}
-[data-world-sky-phase]{background-image:linear-gradient(to bottom,rgba(70,80,110,calc((1 - var(--world-sky-weight, .8)) * .08)),transparent 42%)}
+/* Continuous sky state: one field, with lunar light layered into it at night. */
+[data-world-sky-phase="DAWN"]{--world-sky-alpha:.022}
+[data-world-sky-phase="DAY"]{--world-sky-alpha:.012}
+[data-world-sky-phase="DUSK"]{--world-sky-alpha:.030}
+[data-world-sky-phase="NIGHT"]{--world-sky-alpha:.045}
+[data-world-sky-phase="NIGHT"][data-world-moonlight="LOW"]{--world-moon-alpha:.035}
+[data-world-sky-phase="NIGHT"][data-world-moonlight="MEDIUM"]{--world-moon-alpha:.10}
+[data-world-sky-phase="NIGHT"][data-world-moonlight="HIGH"]{--world-moon-alpha:.18}
+[data-world-sky-phase]{background-image:linear-gradient(to bottom,rgba(70,80,110,var(--world-sky-alpha,.02)),transparent 42%),linear-gradient(to bottom,rgba(125,135,165,var(--world-moon-alpha,0)),transparent 46%)}
 @media(prefers-reduced-motion:reduce){[data-world-sky-phase]{transition:none}}
-
-/* Moonlight is a field, not an effect: illumination quietly changes night atmosphere. */
-[data-world-sky-phase="NIGHT"][data-world-moon-illumination="100"]{--world-moonlight:.18}
-[data-world-sky-phase="NIGHT"][data-world-moon-illumination="50"]{--world-moonlight:.10}
-[data-world-sky-phase="NIGHT"][data-world-moon-illumination="0"]{--world-moonlight:.035}
-[data-world-sky-phase="NIGHT"]{background-image:linear-gradient(to bottom,rgba(125,135,165,var(--world-moonlight,.08)),transparent 46%)}
-
-/* Lunar light bands: use the calculated illumination, not exact phase percentages. */
-[data-world-sky-phase="NIGHT"][data-world-moonlight="LOW"]{background-image:linear-gradient(to bottom,rgba(125,135,165,.035),transparent 46%)}
-[data-world-sky-phase="NIGHT"][data-world-moonlight="MEDIUM"]{background-image:linear-gradient(to bottom,rgba(125,135,165,.10),transparent 46%)}
-[data-world-sky-phase="NIGHT"][data-world-moonlight="HIGH"]{background-image:linear-gradient(to bottom,rgba(125,135,165,.18),transparent 46%)}
