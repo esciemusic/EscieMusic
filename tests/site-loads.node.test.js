@@ -88,6 +88,9 @@ assert(fs.readFileSync("world-engine.js","utf8").includes("little-italy")&&fs.re
 assert(fs.readFileSync("world-engine.js","utf8").includes("THE OUTSIDE WORLD"),"THE WORLD must distinguish the outside world from the Montréal home");
 assert(fs.readFileSync("data/locations.js","utf8").includes('id:"little-italy"'),"World data must define Little Italy as a public room");
 assert(fs.readFileSync("data/locations.js","utf8").includes('id:"parc-extension"'),"World data must define Parc-Extension as a public room");
+assert(fs.readFileSync("world-engine.js","utf8").includes("function mountWorld()"),"THE WORLD must mount its home experience");
+assert(fs.readFileSync("world-engine.js","utf8").includes("container.classList.add(\"world-engine\")"),"THE WORLD engine must mark its live container before the legacy renderer can replace it");
+assert(fs.readFileSync("world-engine.js","utf8").includes("world-node="),"THE WORLD room discovery must support direct node routes");
 
 console.log("ESCIE site script-load contracts OK");
 
