@@ -85,7 +85,7 @@ assert(fs.readFileSync("aesthetic.css","utf8").includes(".archive-record-index::
 assert(fs.readFileSync("world-engine.js","utf8").includes("function atlasField(rows)"),"THE WORLD ATLAS must expose a Montréal orientation field");
 assert(fs.readFileSync("world-engine.js","utf8").includes("PHYSICAL ANCHOR"),"THE WORLD ATLAS must retain Montréal as its physical anchor");
 assert(fs.readFileSync("world-engine.js","utf8").includes("without pretending to be a literal map"),"THE WORLD ATLAS must not fabricate geographic coordinates");
-assert(fs.readFileSync("world-engine.js","utf8").includes("relatedByPlace"),"THE WORLD ATLAS must derive connected threads from public relationships");
+assert(fs.readFileSync("world-engine.js","utf8").includes("relatedByPlace"),"THE WORLD ATLAS must derive connected threads from public relationships");\nassert(fs.readFileSync("world-engine.js","utf8").includes("function worldHome()"),"THE WORLD must present Montréal as the home");\nassert(fs.readFileSync("world-engine.js","utf8").includes("little-italy")&&fs.readFileSync("world-engine.js","utf8").includes("parc-extension"),"THE WORLD must currently expose only Little Italy and Parc-Extension as rooms");\nassert(fs.readFileSync("world-engine.js","utf8").includes("THE OUTSIDE WORLD"),"THE WORLD must distinguish the outside world from the Montréal home");
 assert(fs.readFileSync("world-engine.js","utf8").includes("is-selected"),"THE WORLD ATLAS must expose a selected-thread focus state");
 assert(fs.readFileSync("aesthetic.css","utf8").includes(".atlas-field-node.is-selected"),"THE WORLD ATLAS selected place must have a visible focus state");
 
