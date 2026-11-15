@@ -446,6 +446,14 @@ function mountWorld(){
      draw();
      return;
    }
+   const outside=event.target.closest("[data-outside-world]");
+   if(outside){
+     state.outsideOpen=!state.outsideOpen;
+     state.selected=null;
+     history.replaceState(null,"","#world");
+     draw();
+     return;
+   }
    const returnNode=event.target.closest("[data-return-node]");
    if(returnNode){
      const id=returnNode.getAttribute("data-return-node");
