@@ -3707,3 +3707,21 @@ body.light .world-object-origin{border-color:rgba(0,0,0,.1)}
   .world-now-conditions{justify-content:flex-start}
 }
 @media(prefers-reduced-motion:reduce){.world-now{transition:none}}
+
+/* WORLD / ATMOSPHERE
+   The environment changes the place without becoming a theme. */
+#world-container{
+  --world-atmosphere-alpha:.028;
+  background:rgba(255,255,255,var(--world-atmosphere-alpha));
+  transition:background 1.2s ease,box-shadow 1.2s ease;
+}
+#world-container[data-world-layer="street"]{--world-atmosphere-alpha:.034}
+#world-container[data-world-layer="place"]{--world-atmosphere-alpha:.040}
+#world-container[data-world-layer="room"]{--world-atmosphere-alpha:.048}
+#world-container[data-world-light="night"]{background:rgba(36,42,64,.075)}
+#world-container[data-world-light="dawn"],#world-container[data-world-light="dusk"]{background:rgba(84,70,104,.055)}
+#world-container[data-world-weather="rain"],#world-container[data-world-weather="drizzle"]{box-shadow:inset 0 0 90px rgba(90,120,145,.045)}
+#world-container[data-world-weather="snow"]{box-shadow:inset 0 0 90px rgba(210,220,230,.035)}
+#world-container[data-world-surface="wet_reflective"] .world-home-place-atmosphere{border-color:rgba(150,180,205,.20)}
+#world-container[data-world-surface="snow_covered"] .world-home-place-atmosphere{border-color:rgba(220,225,235,.18)}
+@media(prefers-reduced-motion:reduce){#world-container{transition:none}}
