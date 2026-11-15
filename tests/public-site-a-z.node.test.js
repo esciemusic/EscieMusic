@@ -346,7 +346,7 @@ test("A-Z Pass 3 ART record cards remain public-projection scoped",()=>{
   const projectEnd=app.indexOf("function getPublicRelationshipRecords()",projectsStart);
   const projects=app.slice(projectsStart,projectEnd);
   assert.match(music,/getAllPublicRecords\(\)\.find\(item => recordId\(item\) === parent\.record && isPublic\(item\)/);
-  assert.match(music,/const stage = "TRANSMISSION"/);
+  assert.match(music,/const stage = "WORK";/);
   assert.match(projects,/new Map\(getAllPublicRecords\(\)\.filter\(item => item && isPublic\(item\)/);
   assert.match(projects,/isReleaseVisible\(track\)/);
   assert.match(projects,/data-record-id/);
