@@ -175,7 +175,8 @@ function worldContentChangeMarkup(){
  const added=current.filter(id=>!previous.includes(id));
  try{localStorage.setItem(key,JSON.stringify(current));}catch(e){}
  if(!previous.length||!added.length)return "";
- return '<div class="world-return-change world-content-change" role="status"><span class="world-kicker">WHILE YOU WERE GONE</span><strong>SOMETHING NEW IS HERE.</strong><p>The World has a new public presence to discover.</p></div>';
+ const id=added[0];
+ return '<div class="world-return-change world-content-change" role="status"><span class="world-kicker">WHILE YOU WERE GONE</span><strong>SOMETHING NEW IS HERE.</strong><p>The World has a new public presence to discover.</p><button type="button" class="world-return-thread-button" data-return-new="'+esc(String(id))+'">SEE WHAT CHANGED</button></div>';
 }
 function worldReturnTrailMarkup(){
  const trail=Array.isArray(state.trail)?state.trail:[]; if(!trail.length)return "";
@@ -832,6 +833,12 @@ function draw(){
      const id=returnNode.getAttribute("data-return-node");
      const from=returnNode.getAttribute("data-return-from");
      if(id)returnToPlace(id,from);
+     return;
+   }
+   const returnNew=event.target.closest("[data-return-new]");
+   if(returnNew){
+     const id=returnNew.getAttribute("data-return-new");
+     if(id){state.outsideOpen=false;state.exploreOpen=false;openWorldNode(id,{preserveTrail:true});}
      return;
    }
    const returnThread=event.target.closest("[data-return-thread]");
