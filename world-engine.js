@@ -330,6 +330,8 @@ function objectDetail(r){
  const connectionHint=links.length?'<p class="world-object-connection-hint">Connections are invitations, not instructions. You decide whether this thread matters.</p>':'';
  const notice=object.notice||String(r.description||"").trim();
  const presence=object.presence||"PRESENT";
+ const attention=attentionRecord(r.id);
+ const reinterpretation=attention.count>1?'<div class="world-reinterpretation" role="note"><span class="world-kicker">LOOK AGAIN</span><p>You have returned to this. The World has not changed its meaning for you. You may have.</p></div>':attention.count===1?'<div class="world-reinterpretation" role="note"><span class="world-kicker">SECOND LOOK</span><p>What you noticed before does not have to be what you notice now.</p></div>':"";
  const rawContext=object.context&&typeof object.context==="object"?object.context:{};
  const depthKeys=Object.keys(rawContext).filter(function(k){return !["notice","context"].includes(String(k).toLowerCase())}).slice(0,4);
  const depthFacts=depthKeys.map(function(k){return '<span><b>'+esc(String(k).replace(/_/g," ").toUpperCase())+'</b>'+esc(String(rawContext[k]??""))+'</span>';}).join("");
@@ -343,7 +345,7 @@ function objectDetail(r){
    CHAIR:["PAUSE","absence / fabric / position","someone can leave a presence behind."]
  }[objectKind]||["NOTICE","surface / weight / memory","ordinary things can remain ordinary."];
  const returnButton=originId?'<button type="button" class="world-object-return" data-return-node="'+esc(originId)+'" data-return-from="'+esc(r.id)+'">← RETURN TO '+esc(originLabel).toUpperCase()+'</button>':'<button type="button" class="world-object-return" data-close-node>← RETURN TO THE WORLD</button>';
- return '<div class="world-object-encounter world-object-'+objectKind.toLowerCase()+'" aria-live="polite">'
+ return '<div class="world-object-encounter world-object-'+objectKind.toLowerCase()+'" aria-live="polite">'+reinterpretation
    +'<div class="world-object-threshold">'+returnButton+'<span class="world-kicker">'+attentionCueText+'</span><span class="world-kicker">'+temporal+'</span><span class="world-kicker">OBJECT // '+esc(objectKind)+' // ENCOUNTER</span><span class="world-object-presence">'+esc(presence)+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3><p class="world-object-line">'+esc(r.description||"An ordinary thing, carrying more than it explains.")+'</p></div>'
    +'<div class="world-object-body"><div class="world-object-mark" aria-hidden="true"><span></span><span></span><span></span></div><div class="world-object-copy"><span class="world-kicker">'+esc(sensory[0])+'</span><p>'+esc(notice||sensory[2])+'</p><small class="world-object-sense">'+esc(sensory[1])+'</small></div></div>'
    +'<div class="world-object-origin"><span class="world-kicker">YOU ARE HERE</span><div class="world-object-origin-line"><span class="world-object-origin-dot" aria-hidden="true"></span><span>'+esc(originPath)+'</span><span class="world-object-origin-type">'+esc(originKind)+'</span></div></div>'
