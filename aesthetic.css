@@ -3779,3 +3779,11 @@ body.light .world-object-origin{border-color:rgba(0,0,0,.1)}
 .world-celestial[data-world-sun="BELOW_HORIZON"]{filter:brightness(.9)}
 [data-world-stars="VISIBLE_IF_SKY_ALLOWS"] .world-celestial{letter-spacing:.08em}
 @media(prefers-reduced-motion:reduce){.world-celestial{transition:none}}
+
+/* Continuous sky state: dawn, day, dusk and night share one environmental field. */
+[data-world-sky-phase="DAWN"]{--world-sky-weight:.72}
+[data-world-sky-phase="DAY"]{--world-sky-weight:.88}
+[data-world-sky-phase="DUSK"]{--world-sky-weight:.66}
+[data-world-sky-phase="NIGHT"]{--world-sky-weight:.52}
+[data-world-sky-phase]{background-image:linear-gradient(to bottom,rgba(70,80,110,calc((1 - var(--world-sky-weight, .8)) * .08)),transparent 42%)}
+@media(prefers-reduced-motion:reduce){[data-world-sky-phase]{transition:none}}
