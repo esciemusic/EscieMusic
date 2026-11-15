@@ -796,6 +796,7 @@ function mountWorld(){
  container.dataset.worldStars=celestial.stars;
  container.dataset.worldSkyPhase=celestial.skyPhase;
  container.dataset.worldMoonIllumination=String(Math.round(celestial.moonIllumination*100));
+ container.dataset.worldMoonlight=celestial.moonIllumination<.2?"LOW":celestial.moonIllumination<.65?"MEDIUM":"HIGH";
  }
  syncLiveState();
  loadTrail();
