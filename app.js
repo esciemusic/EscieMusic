@@ -638,7 +638,7 @@
       const parentRecord = parent ? getAllPublicRecords().find(item => recordId(item) === parent.record && isPublic(item)) : null;
       const media = Array.isArray(track.media) ? track.media : [];
       const audio = media.find(item => String(item && (item.type || item.kind) || "").toLowerCase() === "audio" && safeExternalURL(item.url));
-      const stage = "TRANSMISSION";
+      const stage = "WORK";
       const projectLabel = parentRecord ? recordTitle(parentRecord) : (track.project || "ESCIE");
       const number = track.number ? String(track.number).padStart(3, "0") : "—";
       const listen = audio
@@ -648,7 +648,7 @@
         '<div class="music-card-top"><span class="eyebrow">' + escapeHTML(number) + ' / ' + escapeHTML(projectLabel) + '</span><span class="merch-status">' + escapeHTML(stage) + '</span></div>' +
         '<div class="music-card-body"><h3>' + escapeHTML(recordTitle(track)) + '</h3>' +
         '<p>' + escapeHTML(track.description || track.summary || "ESCIE music record.") + '</p>' +
-        '<div class="music-card-meta"><span>' + escapeHTML(track.release_date || "DATE WITHHELD") + '</span><span>' + escapeHTML((track.tags || []).slice(0, 3).join(" · ") || "SIGNAL") + '</span></div>' +
+        '<div class="music-card-meta"><span>' + escapeHTML(track.release_date || "DATE WITHHELD") + '</span><span>' + escapeHTML((track.tags || []).slice(0, 3).join(" · ") || "MUSIC") + '</span></div>' +
         listen + '</div></article>';
     }).join("");
   }
