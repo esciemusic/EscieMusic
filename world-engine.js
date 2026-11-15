@@ -5,7 +5,7 @@ const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
 const coll=(name,fallback=[])=>{const v=window[name];return Array.isArray(v)?v:(v&&Array.isArray(v.records)?v.records:fallback)};
 const state={tab:"atlas",q:"",type:"ALL",selected:null,trail:[],visited:[],eyeOpen:false,exploreOpen:false,outsideOpen:false,returningFrom:null,returnFlash:null};
-const tabs=[["atlas","ATLAS","world"],["people","THE PEOPLE","person"],["places","PLACES","world"],["moments","MOMENTS","moment"],["fragments","FRAGMENTS","photo-negative"],["bodies","BODIES","empty-chair"],["proof","PROOF","key"],["path","PATH","web"],["timeline","TIMELINE","now"],["symbols","SYMBOLS","daisy"],["trails","TRAILS","web"]];function glyph(name,label){const safe=String(name||"").replace(/[^a-z0-9-]/gi,"");if(!safe)return "";return '<svg class="escie-symbol-glyph world-entry-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#'+esc(safe)+'"></use></svg>';}
+const tabs=[["atlas","ATLAS","world"],["people","THE PEOPLE","person"],["places","PLACES","world"],["moments","MOMENTS","moment"],["fragments","FRAGMENTS","photo-negative"],["bodies","BODIES","empty-chair"],["proof","PROOF","key"],["path","PATH","web"],["timeline","TIMELINE","now"],["symbols","SYMBOLS","daisy"],["trace","TRACE","web"]];function glyph(name,label){const safe=String(name||"").replace(/[^a-z0-9-]/gi,"");if(!safe)return "";return '<svg class="escie-symbol-glyph world-entry-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#'+esc(safe)+'"></use></svg>';}
 const raf=typeof requestAnimationFrame==="function"?requestAnimationFrame:fn=>setTimeout(fn,0);
 const caf=typeof cancelAnimationFrame==="function"?cancelAnimationFrame:clearTimeout;
 const reduceMotion=()=>typeof window.matchMedia==="function"&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -294,7 +294,19 @@ function trails(rows){
  const map=new Map(rows.map(r=>[String(r.id),r])),adj=new Map();
  rels().forEach(x=>{if(map.has(String(x.from))&&map.has(String(x.to))){if(!adj.has(String(x.from)))adj.set(String(x.from),[]);if(!adj.has(String(x.to)))adj.set(String(x.to),[]);adj.get(String(x.from)).push(x.to);adj.get(String(x.to)).push(x.from)}});
  const starts=rows.filter(r=>(adj.get(String(r.id))||[]).length).slice(0,6);
- return '<div class="world-list">'+(starts.length?starts.map(s=>{const ns=(adj.get(String(s.id))||[]).map(id=>map.get(String(id))).filter(Boolean).slice(0,3);return '<article class="world-card"><div class="world-card-main"><span class="world-kicker">TRAILHEAD</span><h3 data-no-translate class="record-identity">'+esc(title(s))+'</h3><p>'+ns.map(n=>'<button type="button" class="inline-node" data-node="'+esc(n.id)+'">'+esc(title(n))+'</button>').join(" · ")+'</p></div><span class="world-arrow">→</span></article>'}).join(""):'<div class="world-intro"><p>Trails appear as public relationships accumulate.</p></div>')+'</div>';
+ return '<div class="world-list">'+(starts.length?starts.map(s=>{const ns=(adj.get(String(s.id))||[]).map(id=>map.get(String(id))).filter(Boolean).slice(0,3);return '<article class="world-card"><div class="world-card-main"><span class="world-kicker">TRAILHEAD</span><h3 data-no-translate class="record-identity">'+esc(title(s))+'</h3><p>'+ns.map(n=>'<button type="button" class="inline-node" data-node="'+esc(n.id)+'">'+esc(title(n))+'</button>').join(" · ")+'</p></div><span class="world-arrow">→</span></article>'}).join(''):'<div class="world-intro"><p>Trails appear as public relationships accumulate.</p></div>')+'</div>';
+}
+function traceView(){
+ const rs=records();
+ const steps=state.trail.map((id,i)=>({node:rs.find(r=>String(r.id)===String(id)),index:i})).filter(x=>x.node);
+ if(!steps.length)return '<section class="world-trace"><div class="world-trace-empty"><span class="world-kicker">TRACE</span><h3>NOTHING TO REMEMBER YET.</h3><p>Move through the World. Places, objects and encounters will leave a quiet trace here on this device.</p><button type="button" class="world-trace-return" data-world-explore><span class="world-kicker">START</span><strong>RETURN TO THE WORLD</strong></button></div></section>';
+ const path=pathContext();
+ const items=steps.map(function(x,i){
+   const next=steps[i+1];
+   const relation=next&&path[i]?path[i].relationship:"";
+   return '<button type="button" class="world-trace-step'+(i===steps.length-1?' world-trace-current':'')+'" data-node="'+esc(x.node.id)+'"><span class="world-trace-number">'+String(i+1).padStart(2,"0")+'</span><span class="world-trace-copy"><span class="world-kicker">'+esc(type(x.node))+'</span><strong>'+esc(title(x.node))+'</strong>'+(relation?'<small>'+esc(relation)+'</small>':'')+'</span><span class="world-trace-arrow" aria-hidden="true">↗</span></button>';
+ }).join('');
+ return '<section class="world-trace"><div class="world-trace-head"><span class="world-kicker">TRACE</span><h3>WHERE YOU HAVE BEEN.</h3><p>This is not a score or a progress bar. It is simply the memory of your route through the World on this device.</p></div><div class="world-trace-path">'+items+'</div><div class="world-trace-foot"><span>'+steps.length+' place'+(steps.length===1?'':'s')+' remembered</span><button type="button" class="world-trace-clear" data-trace-clear>CLEAR TRACE</button></div></section>';
 }
 function discoveryReason(current,node,base){if(!current)return "OPEN THREAD";if(base.some(x=>String(x.id)===String(node.id))){const rel=related(current.id).find(x=>String(x.node.id)===String(node.id));return rel&&rel.type?"FOLLOWED FROM "+String(rel.type).replace(/_/g," "):"DIRECT CONNECTION";}if(state.trail.length>1){const previous=records().find(r=>String(r.id)===String(state.trail[state.trail.length-2]));if(previous&&type(node)===type(previous))return "CONTINUES THE THREAD";}if(type(node)===type(current))return "SAME KIND";if(Array.isArray(node.tags)&&Array.isArray(current.tags)&&node.tags.some(t=>current.tags.includes(t)))return "SHARED SIGNAL";return "UNEXPLORED";}
 function discovery(rows){const seen=new Set(state.visited.map(String));const current=state.selected?records().find(r=>String(r.id)===String(state.selected)):null;const base=current?related(current.id).map(x=>x.node):[];const pool=base.concat(rows).filter(Boolean).filter(r=>!seen.has(String(r.id)));const scored=pool.map(r=>{let score=0;if(base.some(x=>String(x.id)===String(r.id)))score+=10;if(current&&type(r)===type(current))score+=2;if(Array.isArray(r.tags)&&current&&Array.isArray(current.tags))score+=r.tags.filter(t=>current.tags.includes(t)).length;return {r,score,reason:discoveryReason(current,r,base)};}).sort((a,b)=>b.score-a.score);const out=[];const usedTypes=new Set();for(const x of scored){if(out.length>=3)break;if(!usedTypes.has(type(x.r))||x.score>=10){out.push(x);usedTypes.add(type(x.r));}}if(out.length<3)for(const x of scored){if(out.length>=3)break;if(!out.some(y=>String(y.r.id)===String(x.r.id)))out.push(x);}return out;}
@@ -345,12 +357,13 @@ function worldLensMarkup(){
    }).join("")+'</div></div>';
 }
 function lensRows(){
- const map={people:"ESCIE_PEOPLE",places:"ESCIE_LOCATIONS",moments:"ESCIE_MOMENTS",fragments:"ESCIE_FRAGMENTS",bodies:"ESCIE_BODIES",proof:"ESCIE_PROOF",path:"ESCIE_PATHS",timeline:"ESCIE_MOMENTS",symbols:"ESCIE_SYMBOLS",trails:"ESCIE_PATHS"};
+ const map={people:"ESCIE_PEOPLE",places:"ESCIE_LOCATIONS",moments:"ESCIE_MOMENTS",fragments:"ESCIE_FRAGMENTS",bodies:"ESCIE_BODIES",proof:"ESCIE_PROOF",path:"ESCIE_PATHS",timeline:"ESCIE_MOMENTS",symbols:"ESCIE_SYMBOLS",trails:"ESCIE_PATHS",trace:"ESCIE_PATHS"};
  const rows=state.tab==="atlas"?records():coll(map[state.tab],[]);
  return rows.filter(function(r){return r&&String(r.visibility||"").toLowerCase()!=="withheld"&&r.public_disclosure!==false;}).slice(0,60);
 }
 function worldLensContent(){
  if(state.tab==="atlas")return '<div class="world-home-house"><div class="world-home-city"><span class="world-kicker">THE HOME</span><strong>MONTRÉAL</strong><p>MONTRÉAL IS HOME.</p></div></div>';
+ if(state.tab==="trace")return traceView();
  const rows=lensRows();
  return '<div class="world-list">'+(rows.length?rows.map(card).join(""):'<div class="world-empty">Nothing has been opened here yet.</div>')+'</div>';
 }
@@ -396,6 +409,7 @@ function mountWorld(){
    }
  }
  syncLiveState();
+ loadTrail();
  window.addEventListener("escie:world-state",function(){syncLiveState();draw();});
  const route=String(location.hash||"");
  const match=route.match(/(?:world-node=)([^&]+)/);
@@ -413,6 +427,8 @@ function mountWorld(){
    state.returnFlash=null;
  }
  container.addEventListener("click",function(event){
+   const traceClear=event.target.closest("[data-trace-clear]");
+   if(traceClear){state.trail=[];state.visited=[];try{sessionStorage.removeItem("escie_world_trail");sessionStorage.removeItem("escie_world_visited")}catch(e){} draw();return;}
    const lens=event.target.closest("[data-world-tab]");
    if(lens){
      state.tab=lens.getAttribute("data-world-tab")||"atlas";
