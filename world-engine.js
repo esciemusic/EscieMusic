@@ -347,7 +347,7 @@ function homeRooms(){
 // Canonical World entry contracts: data-world-tab="places" data-world-tab="people" data-world-tab="moments" href="#art"
 // Entry tone: Come in. Look around.
 function worldLensMarkup(){
- const lensAttrs={atlas:'data-world-tab="atlas"',people:'data-world-tab="people"',places:'data-world-tab="places"',moments:'data-world-tab="moments"',fragments:'data-world-tab="fragments"',bodies:'data-world-tab="bodies"',proof:'data-world-tab="proof"',path:'data-world-tab="path"',timeline:'data-world-tab="timeline"',symbols:'data-world-tab="symbols"',trails:'data-world-tab="trails"'};
+ const lensAttrs={atlas:'data-world-tab="atlas"',people:'data-world-tab="people"',places:'data-world-tab="places"',moments:'data-world-tab="moments"',fragments:'data-world-tab="fragments"',bodies:'data-world-tab="bodies"',proof:'data-world-tab="proof"',path:'data-world-tab="path"',trace:'data-world-tab="trace"',timeline:'data-world-tab="timeline"',symbols:'data-world-tab="symbols"',trails:'data-world-tab="trails"'};
  return '<div class="world-index-shell">'+
    '<button type="button" class="world-index-toggle" data-world-explore aria-expanded="'+(state.exploreOpen?"true":"false")+'"><span class="world-kicker">EXPLORE</span><strong>OPEN THE WORLD INDEX</strong><span aria-hidden="true">'+(state.exploreOpen?"−":"+")+'</span></button>'+
    '<div class="world-lens-nav" role="tablist" aria-label="ESCIE World navigation"'+(state.exploreOpen?"":" hidden")+'>'
