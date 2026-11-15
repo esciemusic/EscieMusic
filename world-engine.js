@@ -206,10 +206,14 @@ function roomDetail(room){
  const profile=room&&room.profile&&typeof room.profile==="object"?room.profile:{};
  const texture=Array.isArray(profile.texture)?profile.texture:[];
  const anchors=Array.isArray(profile.anchors)?profile.anchors:[];
+ const returnedId=state.returningFrom;
+ const returnedObject=returnedId?contents.find(function(x){return String(x.id)===String(returnedId)}):null;
  const items=contents.map(function(r){
    const kind=type(r),label=kind==="MUSIC"?"MUSIC":kind==="ART"?"ART":kind==="PERSON"?"PERSON":kind==="MOMENT"?"MOMENT":kind;
-   return '<button type="button" class="world-room-item" data-node="'+esc(r.id)+'"><span class="world-room-item-kind">'+esc(label)+'</span><strong>'+esc(title(r))+'</strong><small>'+esc(r.description||r.summary||"A piece of life in this room.")+'</small></button>';
+   const returned=returnedId&&String(r.id)===String(returnedId);
+   return '<button type="button" class="world-room-item'+(returned?' world-room-item-returned':'')+'" data-node="'+esc(r.id)+'">'+(returned?'<span class="world-room-return-mark" aria-hidden="true">RETURNED</span>':'')+'<span class="world-room-item-kind">'+esc(label)+'</span><strong>'+esc(title(r))+'</strong><small>'+esc(r.description||r.summary||"A piece of life in this room.")+'</small></button>';
  }).join('');
+ const returnNotice=state.returnFlash&&state.returningFrom?'<div class="world-room-return-notice" role="status"><span class="world-kicker">RETURN</span><strong>BACK IN '+esc(live.name||title(room))+'</strong><p>You came back from '+esc(returnedObject?title(returnedObject):"the object")+'.</p></div>':'';
  const textureLine=texture.length?texture.map(function(x){return '<span>'+esc(String(x).replace(/-/g," "))+'</span>';}).join(''):'';
  const anchorLine=anchors.length?anchors.map(function(x){return '<span>'+esc(x)+'</span>';}).join(''):'';
  return '<div class="world-room-scene">'+returnNotice+
