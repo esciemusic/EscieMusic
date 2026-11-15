@@ -3746,3 +3746,10 @@ body.light .world-object-origin{border-color:rgba(0,0,0,.1)}
 .world-time-state[data-temporal-state="REMEMBERED"]{font-style:italic}
 .world-time-state[data-temporal-state="DOCUMENTED"]{letter-spacing:.08em}
 @media(prefers-reduced-motion:reduce){.world-time-state{transition:none}}
+
+.world-fourth-wall{position:fixed;right:1rem;bottom:1rem;z-index:40;max-width:min(20rem,calc(100vw - 2rem));padding:1rem 1.1rem;border:1px solid rgba(120,120,150,.28);background:rgba(12,12,16,.78);backdrop-filter:blur(10px);box-shadow:0 8px 30px rgba(0,0,0,.22);animation:world-presence-in .7s ease both}
+.world-fourth-wall strong{display:block;margin:.25rem 0;font-size:1rem;letter-spacing:.04em}
+.world-fourth-wall p{margin:0;opacity:.7;font-size:.78rem;line-height:1.45}
+@keyframes world-presence-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(max-width:600px){.world-fourth-wall{left:1rem;right:1rem;bottom:.75rem;max-width:none}}
+@media(prefers-reduced-motion:reduce){.world-fourth-wall{animation:none}}
