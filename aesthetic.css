@@ -2969,3 +2969,16 @@ html[data-theme="light"] .world-room{background:rgba(255,255,255,.55);color:#171
 html[data-theme="light"] .world-room-item{background:rgba(255,255,255,.55);border-color:rgba(23,23,26,.1);color:#17171a}
 html[data-theme="light"] .world-room-item small{color:rgba(23,23,26,.55)}
 @media(max-width:700px){.world-room-items{grid-template-columns:1fr}.world-room-item{min-height:78px}}
+
+/* WORLD THRESHOLD — the home should feel entered, not selected. */
+.world-home-house{border-left:0;border-right:0;border-top:1px solid rgba(216,212,202,.08);border-bottom:1px solid rgba(216,212,202,.08);background:rgba(255,255,255,.012);padding:20px 4px}
+.world-home-city{padding:4px 4px 20px;border-bottom:0}
+.world-home-city .world-kicker{opacity:.62}
+.world-home-rooms{gap:0}
+.world-room{min-height:132px;padding:18px 14px;border-width:1px 0 0;border-color:rgba(216,212,202,.08);background:transparent}
+.world-room:last-child{border-bottom:1px solid rgba(216,212,202,.08)}
+.world-room:hover,.world-room:focus-visible{transform:none;background:rgba(47,128,255,.025);border-color:rgba(47,128,255,.22)}
+.world-home-outside{margin-top:2px;padding:22px 4px;border:0;border-top:1px solid rgba(155,89,255,.16);background:transparent}
+.world-home-outside p{max-width:420px}
+.world-room-detail{margin-top:20px;padding:22px 4px 4px;border-top:1px solid rgba(47,128,255,.18)}
+@media(max-width:700px){.world-home-house{padding:16px 2px}.world-room{min-height:112px;padding:15px 8px}.world-home-outside{padding:20px 2px}}
