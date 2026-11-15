@@ -307,6 +307,7 @@ function encounterContext(r){
  return parts.length?'<div class="world-encounter-context">'+parts.join('')+'</div>':'';
 }
 function objectDetail(r){
+ const temporal=temporalMarkup(r);
  const object=liveObjectContext()||{};
  const liveOrigin=object.origin||{};
  const contextualOrigin=state.roomOrigin&&state.roomOrigin.place?state.roomOrigin.place:null;
@@ -339,7 +340,7 @@ function objectDetail(r){
  }[objectKind]||["NOTICE","surface / weight / memory","ordinary things can remain ordinary."];
  const returnButton=originId?'<button type="button" class="world-object-return" data-return-node="'+esc(originId)+'" data-return-from="'+esc(r.id)+'">← RETURN TO '+esc(originLabel).toUpperCase()+'</button>':'<button type="button" class="world-object-return" data-close-node>← RETURN TO THE WORLD</button>';
  return '<div class="world-object-encounter world-object-'+objectKind.toLowerCase()+'" aria-live="polite">'
-   +'<div class="world-object-threshold">'+returnButton+'<span class="world-kicker">OBJECT // '+esc(objectKind)+' // ENCOUNTER</span><span class="world-object-presence">'+esc(presence)+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3><p class="world-object-line">'+esc(r.description||"An ordinary thing, carrying more than it explains.")+'</p></div>'
+   +'<div class="world-object-threshold">'+returnButton+'<span class="world-kicker">'+temporal+'</span><span class="world-kicker">OBJECT // '+esc(objectKind)+' // ENCOUNTER</span><span class="world-object-presence">'+esc(presence)+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3><p class="world-object-line">'+esc(r.description||"An ordinary thing, carrying more than it explains.")+'</p></div>'
    +'<div class="world-object-body"><div class="world-object-mark" aria-hidden="true"><span></span><span></span><span></span></div><div class="world-object-copy"><span class="world-kicker">'+esc(sensory[0])+'</span><p>'+esc(notice||sensory[2])+'</p><small class="world-object-sense">'+esc(sensory[1])+'</small></div></div>'
    +'<div class="world-object-origin"><span class="world-kicker">YOU ARE HERE</span><div class="world-object-origin-line"><span class="world-object-origin-dot" aria-hidden="true"></span><span>'+esc(originPath)+'</span><span class="world-object-origin-type">'+esc(originKind)+'</span></div></div>'
    +'<div class="world-object-context"><div><span class="world-kicker">WHERE IT WAS FOUND</span><strong>'+esc(originLabel)+'</strong><small>the room remains behind you</small></div><div><span class="world-kicker">PRESENCE</span><strong>'+esc(presence.replace(/_/g," "))+'</strong><small>how it sits in the room</small></div></div>'
@@ -397,6 +398,7 @@ function streetPlaceRecords(place,street){
 }
 function placeRecordDetail(place,street){
  const atmosphere=placeAtmosphere(place,"street");
+ const temporal=temporalMarkup(place);
  const live=placeIdentity(place);
  const contents=roomContents(place);
  const rooms=contents.filter(function(r){return String(type(r)).toUpperCase()==="ROOM"||String(r.kind||"").toUpperCase()==="ROOM";});
@@ -415,7 +417,7 @@ function placeRecordDetail(place,street){
    (objectCards?'<div class="world-place-inside-section"><div class="world-room-life-head"><span class="world-kicker">PRESENT OBJECTS</span><p>Objects can be encountered without becoming another menu.</p></div>'+objectCards+'</div>':"")+
    (fallback?'<div class="world-place-inside-section"><div class="world-room-life-head"><span class="world-kicker">INSIDE</span></div>'+fallback+'</div>':"");
  return '<div class="world-home-place world-place-detail">'+
-   '<div class="world-home-place-threshold"><button type="button" class="world-home-return" data-street-return="'+esc(state.street&&state.street.placeId||"")+'" data-street-id="'+esc(state.street&&state.street.node&&state.street.node.id||"")+'">← '+esc(street&&street.label||"STREET")+'</button><span class="world-kicker">MONTRÉAL / '+esc(street&&street.label||"STREET")+'</span><span class="world-kicker">PLACE / BUILDING</span><h3 data-no-translate class="record-identity">'+esc(live.name||title(place))+'</h3><p>'+esc(place.description||"A public place in the World.")+'</p></div>'+
+   '<div class="world-home-place-threshold"><button type="button" class="world-home-return" data-street-return="'+esc(state.street&&state.street.placeId||"")+'" data-street-id="'+esc(state.street&&state.street.node&&state.street.node.id||"")+'">← '+esc(street&&street.label||"STREET")+'</button><span class="world-kicker">MONTRÉAL / '+esc(street&&street.label||"STREET")+'</span><span class="world-kicker">'+temporal+'</span><span class="world-kicker">PLACE / BUILDING</span><h3 data-no-translate class="record-identity">'+esc(live.name||title(place))+'</h3><p>'+esc(place.description||"A public place in the World.")+'</p></div>'+
    '<div class="world-home-place-atmosphere" data-atmosphere-character="'+esc(atmosphere.character)+'" data-atmosphere-layer="'+esc(atmosphere.layer)+'"><span class="world-kicker">RIGHT NOW</span><strong>'+esc(atmosphere.weather)+'</strong><span>'+esc(atmosphere.light)+' · '+esc(atmosphere.surface)+' · '+esc(atmosphere.sound)+'</span></div>'+
    '<div class="world-home-place-copy"><span class="world-kicker">PLACE CONTEXT</span><p>'+esc(live.role||"A place within the street.")+'</p></div>'+
    '<div class="world-home-rooms"><div class="world-room-life-head"><span class="world-kicker">INSIDE</span><p>Rooms and public World objects appear only when they are actually attached to this place.</p></div>'+sections+(sections?"":'<div class="world-empty">Nothing deeper has been opened here yet.</div>')+'</div>'+
