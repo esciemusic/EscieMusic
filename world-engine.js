@@ -278,6 +278,8 @@ const returnNotice=state.returnFlash&&state.returningFrom?'<div class="world-roo
  '</div>';
 }
 function temporalContext(r){
+ const explicit=r&&r.temporal_state||r&&r.time_state||r&&r.temporalState||null;
+ if(explicit)return {state:String(explicit).toUpperCase(),field:"explicit",value:null,known:true};
  const now=Date.now();
  const candidates=["date","moment_date","event_date","release_date","occurred_at","created_at","updated_at"];
  let raw=null,field=null;
@@ -397,7 +399,7 @@ function streetPlaceRecords(place,street){
  });
 }
 function placeRecordDetail(place,street){
- const atmosphere=placeAtmosphere(place,"street");
+ const atmosphere=placeAtmosphere(place,"place");
  const temporal=temporalMarkup(place);
  const live=placeIdentity(place);
  const contents=roomContents(place);
