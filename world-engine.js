@@ -10,10 +10,20 @@ const raf=typeof requestAnimationFrame==="function"?requestAnimationFrame:fn=>se
 const caf=typeof cancelAnimationFrame==="function"?cancelAnimationFrame:clearTimeout;
 const reduceMotion=()=>typeof window.matchMedia==="function"&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 function scheduleSearchRender(render){let searchFrame=null;caf(searchFrame);searchFrame=raf(()=>{renderNow()});function renderNow(){render(filtered())}} // Compatibility scheduler contract: caf(searchFrame);searchFrame=raf(()=>{render()}
+function isPublicWorldRecord(r){
+ if(!r||typeof r!=="object")return false;
+ if(r.public_disclosure===false)return false;
+ const visibility=String(r.visibility||"").toLowerCase();
+ if(["withheld","private","internal","draft"].includes(visibility))return false;
+ const status=String(r.status||"").toLowerCase();
+ if(["withheld","private","internal","draft"].includes(status))return false;
+ if(r.released===false||r.published===false)return false;
+ return true;
+}
 function records(){
  const sources=[coll("ESCIE_LIVE_RECORDS"),coll("ESCIE_MUSIC"),coll("ESCIE_PEOPLE"),coll("ESCIE_LOCATIONS"),coll("ESCIE_MOMENTS"),coll("ESCIE_FRAGMENTS"),coll("ESCIE_BODIES"),coll("ESCIE_PATHS"),coll("ESCIE_PROOF"),coll("ESCIE_NODES"),coll("ESCIE_PROJECTS"),coll("ESCIE_ARCHIVE"),coll("ESCIE_INVESTIGATION"),coll("ESCIE_SYMBOLS")];
  const seen=new Set(),out=[];
- sources.flat().forEach(r=>{if(!r||typeof r!=="object")return;const id=r.id||r.recordId||r.slug||r.title;if(id&&!seen.has(id)){seen.add(id);out.push({...r,id})}});
+ sources.flat().forEach(r=>{if(!isPublicWorldRecord(r))return;const id=r.id||r.recordId||r.slug||r.title;if(id&&!seen.has(id)){seen.add(id);out.push({...r,id})}});
  return out;
 }
 function type(r){return String(r.type||r.kind||r.category||"WORK").trim().toUpperCase()||"WORK"}
