@@ -2939,6 +2939,7 @@ html[data-theme="light"] .atlas-field{background:linear-gradient(135deg,rgba(36,
 .world-home-intro{max-width:680px;padding:8px 2px 4px}
 .world-home-intro h3{margin:5px 0 8px;font-family:var(--escie-font-display,Georgia,serif);font-size:clamp(28px,6vw,52px);font-weight:600;letter-spacing:.02em}
 .world-home-intro p{max-width:560px;margin:0;color:rgba(216,212,202,.66);font-size:14px;line-height:1.65}
+.world-home-intro small{display:block;margin-top:7px;color:rgba(216,212,202,.42);font-size:10px;line-height:1.5;letter-spacing:.09em;text-transform:uppercase}.world-home-city p{letter-spacing:.04em}
 .world-home-house{position:relative;display:grid;gap:10px;padding:18px;border:1px solid rgba(216,212,202,.12);background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(47,128,255,.025) 55%,rgba(155,89,255,.025));overflow:hidden}
 .world-home-house:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(255,255,255,.018),transparent)}
 .world-home-city{padding:10px 4px 16px;border-bottom:1px solid rgba(216,212,202,.09)}
@@ -2953,7 +2954,7 @@ html[data-theme="light"] .atlas-field{background:linear-gradient(135deg,rgba(36,
 .world-home-outside{padding:17px 18px;border:1px dashed rgba(155,89,255,.22);background:rgba(155,89,255,.025)}
 .world-home-outside strong{display:block;margin:3px 0 5px;font-family:var(--escie-font-display,Georgia,serif);font-size:18px;letter-spacing:.06em}
 .world-home-outside p{margin:0;color:rgba(216,212,202,.48);font-size:11px;line-height:1.55}
-html[data-theme="light"] .world-home-intro p,html[data-theme="light"] .world-home-city p,html[data-theme="light"] .world-room p,html[data-theme="light"] .world-home-outside p{color:rgba(23,23,26,.58)}
+html[data-theme="light"] .world-home-intro p,html[data-theme="light"] .world-home-intro small,html[data-theme="light"] .world-home-city p,html[data-theme="light"] .world-room p,html[data-theme="light"] .world-home-outside p{color:rgba(23,23,26,.58)}
 html[data-theme="light"] .world-home-house{background:rgba(255,255,255,.45);border-color:rgba(23,23,26,.12)}
 html[data-theme="light"] .world-room{background:rgba(255,255,255,.55);color:#17171a;border-color:rgba(23,23,26,.12)}
 @media(max-width:700px){.world-home-rooms{grid-template-columns:1fr}.world-room{min-height:128px;padding:15px}.world-home-house{padding:14px}}
