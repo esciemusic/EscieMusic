@@ -110,11 +110,21 @@ function placeIdentity(room){
    name:p.name||title(room)
  };
 }
-function placeAtmosphere(){
+function placeAtmosphere(record,layer){
  const env=liveEnvironment()||{};
  const visual=env.visual_state&&typeof env.visual_state==="object"?env.visual_state:{};
  const audio=env.audio_state&&typeof env.audio_state==="object"?env.audio_state:{};
- return {weather:env.weather||"UNKNOWN",temperature:env.temperature,light:visual.light||env.daylight||"UNKNOWN",surface:visual.surface||"NATURAL",signal:visual.signal||"AMBIENT",sound:audio.primary||"AMBIENT_CITY"};
+ const r=record&&typeof record==="object"?record:{};
+ const rawTags=Array.isArray(r.tags)?r.tags:Array.isArray(r.profile&&r.profile.tags)?r.profile.tags:[];
+ const text=[r.title,r.name,r.description].filter(Boolean).join(" ").toLowerCase();
+ const tags=rawTags.map(function(x){return String(x).toLowerCase();}).join(" ");
+ const source=text+" "+tags;
+ let character="LIVED";
+ if(/apartment|home|room|kitchen|bedroom|hallway|interior/.test(source))character="INTERIOR";
+ else if(/alley|street|corner|sidewalk|avenue|boulevard|road|station/.test(source))character="STREET";
+ else if(/park|garden|river|mountain|forest|yard|outdoor/.test(source))character="OPEN_AIR";
+ else if(/church|school|store|shop|bar|cafe|restaurant|building/.test(source))character="PUBLIC_PLACE";
+ return {weather:env.weather||"UNKNOWN",temperature:env.temperature,light:visual.light||env.daylight||"UNKNOWN",surface:visual.surface||"NATURAL",signal:visual.signal||"AMBIENT",sound:audio.primary||"AMBIENT_CITY",season:env.season||"UNKNOWN",character:character,layer:String(layer||"place").toUpperCase()};
 }
 function worldNow(){
  const env=liveEnvironment()||{};
@@ -236,7 +246,7 @@ function roomContents(room){
 function roomDetail(room){
  const contents=roomContents(room);
  const live=placeIdentity(room);
- const atmosphere=placeAtmosphere();
+ const atmosphere=placeAtmosphere(place,"place");
  const profile=room&&room.profile&&typeof room.profile==="object"?room.profile:{};
  const texture=Array.isArray(profile.texture)?profile.texture:[];
  const anchors=Array.isArray(profile.anchors)?profile.anchors:[];
@@ -318,7 +328,7 @@ function objectDetail(r){
    +'</div>';
 }
 function homePlaceDetail(place){
- const atmosphere=placeAtmosphere();
+ const atmosphere=placeAtmosphere(place,"place");
  const neighborhoods=homeNeighborhoods();
  const live=placeIdentity(place);
  const roomCards=neighborhoods.map(function(place){
@@ -365,7 +375,7 @@ function streetPlaceRecords(place,street){
  });
 }
 function placeRecordDetail(place,street){
- const atmosphere=placeAtmosphere();
+ const atmosphere=placeAtmosphere(place,"place");
  const live=placeIdentity(place);
  const contents=roomContents(place);
  const rooms=contents.filter(function(r){return String(type(r)).toUpperCase()==="ROOM"||String(r.kind||"").toUpperCase()==="ROOM";});
@@ -391,7 +401,7 @@ function placeRecordDetail(place,street){
  '</div>';
 }
 function streetDetail(place,street){
- const atmosphere=placeAtmosphere();
+ const atmosphere=placeAtmosphere(place,"place");
  const context=cityStreetContext(title(place),street.id)||street;
  const district=String(place.id||title(place)).toUpperCase();
  const city=window.ESCIE_WORLD_CITY||{};
@@ -420,7 +430,7 @@ function streetDetail(place,street){
  '</div>';
 }
 function neighborhoodDetail(place){
- const atmosphere=placeAtmosphere();
+ const atmosphere=placeAtmosphere(place,"place");
  const childIds=neighborhoodRooms[String(place.id)||""]||[];
  const all=coll("ESCIE_LOCATIONS",[]).concat(coll("ESCIE_LIVE_RECORDS",[]),coll("ESCIE_ARCHIVE",[]));
  const children=childIds.map(function(id){return all.find(function(x){return x&&String(x.id)===String(id);});}).filter(Boolean);
