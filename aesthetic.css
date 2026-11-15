@@ -2982,3 +2982,39 @@ html[data-theme="light"] .world-room-item small{color:rgba(23,23,26,.55)}
 .world-home-outside p{max-width:420px}
 .world-room-detail{margin-top:20px;padding:22px 4px 4px;border-top:1px solid rgba(47,128,255,.18)}
 @media(max-width:700px){.world-home-house{padding:16px 2px}.world-room{min-height:112px;padding:15px 8px}.world-home-outside{padding:20px 2px}}
+
+/* DARK SURFACE CONTRAST PASS — readable text must never fall back to black on dark surfaces. */
+:root:not([data-theme="light"]) .world-home,
+:root:not([data-theme="light"]) .world-home-house,
+:root:not([data-theme="light"]) .world-room,
+:root:not([data-theme="light"]) .world-home-outside,
+:root:not([data-theme="light"]) .world-room-detail,
+:root:not([data-theme="light"]) .world-room-item,
+:root:not([data-theme="light"]) .world-detail,
+:root:not([data-theme="light"]) .world-card,
+:root:not([data-theme="light"]) .world-tabs,
+:root:not([data-theme="light"]) .world-tabs button,
+:root:not([data-theme="light"]) .atlas-field,
+:root:not([data-theme="light"]) .atlas-field-node,
+:root:not([data-theme="light"]) .atlas-field-core{
+  color:var(--escie-paper);
+}
+:root:not([data-theme="light"]) .world-home h3,
+:root:not([data-theme="light"]) .world-home strong,
+:root:not([data-theme="light"]) .world-room strong,
+:root:not([data-theme="light"]) .world-room-item strong,
+:root:not([data-theme="light"]) .world-detail h3,
+:root:not([data-theme="light"]) .world-card h3,
+:root:not([data-theme="light"]) .atlas-field-node strong,
+:root:not([data-theme="light"]) .atlas-field-core strong{
+  color:var(--escie-white);
+}
+:root:not([data-theme="light"]) .world-home p,
+:root:not([data-theme="light"]) .world-room p,
+:root:not([data-theme="light"]) .world-room-item small,
+:root:not([data-theme="light"]) .world-home-outside p,
+:root:not([data-theme="light"]) .world-detail p,
+:root:not([data-theme="light"]) .world-card p,
+:root:not([data-theme="light"]) .atlas-field-node small{
+  color:rgba(216,212,202,.68);
+}
