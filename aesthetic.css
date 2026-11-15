@@ -3339,3 +3339,17 @@ html[data-theme="light"] .world-object-line,html[data-theme="light"] .world-obje
  .world-object-body{grid-template-columns:1fr;min-height:0}.world-object-mark{min-height:150px;border-right:0;border-bottom:1px solid rgba(216,212,202,.1)}.world-object-copy{padding:22px 10px}
  .world-object-context{grid-template-columns:1fr}.world-object-context>div{border-right:0;border-bottom:1px solid rgba(216,212,202,.1);min-height:92px}.world-object-context>div:last-child{border-bottom:0}
 }
+
+.world-object-encounter{--object-signal:rgba(47,128,255,.32)}
+.world-object-window{--object-signal:rgba(47,128,255,.42)}
+.world-object-key{--object-signal:rgba(216,212,202,.32)}
+.world-object-nightlight{--object-signal:rgba(155,89,255,.42)}
+.world-object-chair{--object-signal:rgba(216,212,202,.2)}
+.world-object-encounter .world-object-mark:before{background:var(--object-signal)}
+.world-object-sense{display:block;margin-top:14px;color:rgba(216,212,202,.4);font:8px/1.5 var(--escie-font-mono);letter-spacing:.1em;text-transform:uppercase}
+.world-object-window .world-object-mark{background:linear-gradient(180deg,rgba(47,128,255,.06),transparent 65%)}
+.world-object-key .world-object-mark:before{left:35%;right:35%;transform:rotate(90deg)}
+.world-object-nightlight .world-object-mark{background:radial-gradient(circle at 50% 50%,rgba(155,89,255,.14),transparent 48%)}
+.world-object-nightlight .world-object-mark span{box-shadow:0 0 22px rgba(155,89,255,.35)}
+.world-object-chair .world-object-mark:before{left:30%;right:30%;top:58%;box-shadow:0 -42px 0 rgba(216,212,202,.08)}
+html[data-theme="light"] .world-object-sense{color:rgba(23,23,26,.42)}
