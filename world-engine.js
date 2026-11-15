@@ -278,7 +278,7 @@ function homePlaceDetail(place){
  const live=placeIdentity(place);
  const roomCards=neighborhoods.map(function(place){
    return '<button type="button" class="world-room world-neighborhood-entry" data-node="'+esc(place.id)+'"><span class="world-room-mark" aria-hidden="true"></span><div><span class="world-kicker">NEIGHBORHOOD</span><strong>'+esc(title(place))+'</strong><p>'+esc(place.description||"A Montréal neighborhood in the World.")+'</p></div><span class="world-arrow" aria-hidden="true">↗</span></button>';
-;
+ }).join("");
  return '<div class="world-home-place">'+
    '<div class="world-home-place-threshold"><button type="button" class="world-home-return" data-close-node>← WORLD</button><span class="world-kicker">HOME // MONTRÉAL</span><h3 data-no-translate class="record-identity">'+esc(live.name||title(place)||"MONTRÉAL")+'</h3><p>'+esc(place.description||"The place where ESCIE's world and the wider world meet.")+'</p></div>'+
    '<div class="world-home-place-atmosphere"><span class="world-kicker">RIGHT NOW</span><strong>'+esc(atmosphere.weather)+'</strong><span>'+esc(atmosphere.light)+' · '+esc(atmosphere.surface)+' · '+esc(atmosphere.sound)+'</span></div>'+
