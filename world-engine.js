@@ -3,6 +3,7 @@
 window.ESCIE_WORLD_ENGINE_ACTIVE=true;
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+const safeDecode=value=>{try{return decodeURIComponent(String(value??""));}catch(_e){return String(value??"");}};
 const coll=(name,fallback=[])=>{const v=window[name];return Array.isArray(v)?v:(v&&Array.isArray(v.records)?v.records:fallback)};
 const state={tab:"atlas",q:"",type:"ALL",selected:null,trail:[],visited:[],eyeOpen:false,exploreOpen:false,outsideOpen:false,returningFrom:null,returnFlash:null,street:null,roomOrigin:null,attentionSince:0,attentionNoticed:false};
 const tabs=[["atlas","ATLAS","world"],["people","THE PEOPLE","person"],["places","PLACES","world"],["moments","MOMENTS","moment"],["fragments","FRAGMENTS","photo-negative"],["bodies","BODIES","empty-chair"],["proof","PROOF","key"],["path","PATH","web"],["timeline","TIMELINE","now"],["symbols","SYMBOLS","daisy"],["trace","TRACE","web"]];function glyph(name,label){const safe=String(name||"").replace(/[^a-z0-9-]/gi,"");if(!safe)return "";return '<svg class="escie-symbol-glyph world-entry-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#'+esc(safe)+'"></use></svg>';}
@@ -809,9 +810,9 @@ container.dataset.worldOntologyCoverage=record?worldLayerCoverage(record).join("
  const placeMatch=route.match(/(?:world-place=)([^&]+)/);
  const streetMatch=route.match(/(?:world-street=)([^&]+)/);
  const match=route.match(/(?:world-node=)([^&]+)/);
- state.selected=match?decodeURIComponent(match[1]):null;
+ state.selected=match?safeDecode(match[1]):null;
  if(streetMatch){
-   const parts=decodeURIComponent(streetMatch[1]).split(":");
+   const parts=safeDecode(streetMatch[1]).split(":");
    const placeId=parts.shift()||"";
    const streetId=parts.join(":");
    const place=records().find(function(r){return String(r.id)===String(placeId);});
@@ -819,7 +820,7 @@ container.dataset.worldOntologyCoverage=record?worldLayerCoverage(record).join("
    if(place&&street){state.selected=String(place.id);state.street={placeId:String(place.id),node:street};}
  }
  if(placeMatch){
-   const placeId=decodeURIComponent(placeMatch[1]);
+   const placeId=safeDecode(placeMatch[1]);
    const place=records().find(function(r){return String(r.id)===String(placeId);});
    if(place){state.selected=String(place.id);state.placeStreet={placeId:String(place.id),place:place,street:null};}
  }
@@ -1014,21 +1015,21 @@ function draw(){
    const psm=h.match(/(?:world-place-street=)([^&]+)/);
    state.street=null;
    state.roomOrigin=null;
-   state.selected=pm?decodeURIComponent(pm[1]):(m?decodeURIComponent(m[1]):null);
+   state.selected=pm?safeDecode(pm[1]):(m?safeDecode(m[1]):null);
    if(om&&state.selected){
-     const origin=records().find(function(r){return String(r.id)===String(decodeURIComponent(om[1]));});
+     const origin=records().find(function(r){return String(r.id)===String(safeDecode(om[1]));});
      if(origin){
-       const street= osm ? cityStreetNodes(origin).find(function(x){return String(x.id)===String(decodeURIComponent(osm[1]));}) : null;
+       const street= osm ? cityStreetNodes(origin).find(function(x){return String(x.id)===String(safeDecode(osm[1]));}) : null;
        state.roomOrigin={placeId:String(origin.id),place:origin,street:street||null};
        if(street)state.placeStreet={placeId:String(origin.id),place:origin,street:street};
      }
    }
-   if(pm){const place=records().find(function(r){return String(r.id)===String(state.selected);});if(place){const street=psm?cityStreetNodes(title(place)).find(function(x){return String(x.id)===String(decodeURIComponent(psm[1]));}):null;state.placeStreet={placeId:String(place.id),place:place,street:street||null};}}
+   if(pm){const place=records().find(function(r){return String(r.id)===String(state.selected);});if(place){const street=psm?cityStreetNodes(title(place)).find(function(x){return String(x.id)===String(safeDecode(psm[1]));}):null;state.placeStreet={placeId:String(place.id),place:place,street:street||null};}}
    if(m&&om&&state.roomOrigin&&["world-apartment","world-street-corner","world-parc-extension"].includes(String(state.selected))){
      state.placeStreet=null;
    }
    if(sm){
-     const parts=decodeURIComponent(sm[1]).split(":");
+     const parts=safeDecode(sm[1]).split(":");
      const placeId=parts.shift()||"";
      const streetId=parts.join(":");
      const place=records().find(function(r){return String(r.id)===String(placeId);});
