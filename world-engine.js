@@ -183,6 +183,10 @@ function worldReturnTrailMarkup(){
  const last=trail[trail.length-1]; const label=String(last?.title||last?.name||last?.id||"").trim(); if(!label)return "";
  return '<div class="world-return-thread"><span class="world-kicker">YOUR LAST THREAD</span><strong>'+esc(label)+'</strong><p>You can continue from where you left off, or wander somewhere else.</p><button type="button" class="world-return-thread-button" data-return-thread="'+esc(String(last.id||""))+'">RETURN TO IT</button></div>';
 }
+function worldWanderMarkup(){
+ const trail=Array.isArray(state.trail)?state.trail:[]; if(!trail.length)return "";
+ return '<div class="world-wander-prompt"><span class="world-kicker">OR WANDER</span><p>You do not have to follow the thread you left behind.</p><button type="button" class="world-return-thread-button" data-wander-world>WANDER THE WORLD</button></div>';
+}
 function rememberWorldSnapshot(){
  try{localStorage.setItem("escie_world_last_seen",JSON.stringify({at:Date.now(),snapshot:worldChangeSnapshot()}));}catch(e){}
 }
@@ -662,8 +666,8 @@ function worldHome(){ rememberWorldReturn();
  }).join("");
  const currentTab=state.tab!=="atlas";
  const outside=outsideWorldMarkup();
- const returnChange=returnChangeMarkup(); const contentChange=worldContentChangeMarkup(); const returnThread=worldReturnTrailMarkup(); rememberWorldSnapshot(); return '<div class="world-home">'+
-   '<div class="world-home-intro"><span class="world-kicker">MY WORLD</span><h3>THE WORLD</h3><p>The world is already here. ESCIE is one way of seeing it.</p><small>Montréal is home. The world continues.</small></div>'+worldNowMarkup()+returnWelcomeMarkup()+returnChange+contentChange+returnThread+returnChange+
+ const returnChange=returnChangeMarkup(); const contentChange=worldContentChangeMarkup(); const returnThread=worldReturnTrailMarkup(); const wanderPrompt=worldWanderMarkup(); rememberWorldSnapshot(); return '<div class="world-home">'+
+   '<div class="world-home-intro"><span class="world-kicker">MY WORLD</span><h3>THE WORLD</h3><p>The world is already here. ESCIE is one way of seeing it.</p><small>Montréal is home. The world continues.</small></div>'+worldNowMarkup()+returnWelcomeMarkup()+returnChange+contentChange+returnThread+wanderPrompt+returnChange+
    ((currentTab||state.exploreOpen)?worldLensMarkup():'')+
    (currentTab?worldLensContent():'<div class="world-home-house"><button type="button" class="world-home-city" data-node="world-montreal"><span class="world-kicker">HOME</span><strong>'+esc(city&&city.title||"MONTRÉAL")+'</strong><p>WHERE MY WORLD AND THE WORLD INTERTWINE.</p><span class="world-arrow" aria-hidden="true">↗</span></button><div class="world-home-rooms">'+(roomCards||'<span class="world-empty">Nothing has been opened yet.</span>')+'</div></div>')+
    ((currentTab||state.exploreOpen)?'':'<div class="world-home-actions"><button type="button" class="world-enter-index" data-world-explore aria-expanded="false"><span class="world-kicker">DISCOVER</span><strong>OPEN THE WORLD</strong><span aria-hidden="true">↗</span></button></div>')+
@@ -833,6 +837,11 @@ function draw(){
      const id=returnNode.getAttribute("data-return-node");
      const from=returnNode.getAttribute("data-return-from");
      if(id)returnToPlace(id,from);
+     return;
+   }
+   const wanderWorld=event.target.closest("[data-wander-world]");
+   if(wanderWorld){
+     state.selected=null;state.street=null;state.placeStreet=null;state.roomOrigin=null;state.outsideOpen=false;state.exploreOpen=false;draw();
      return;
    }
    const returnNew=event.target.closest("[data-return-new]");
