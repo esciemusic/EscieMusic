@@ -57,8 +57,14 @@ function liveDiscoveries(node){
  if(!live||!Array.isArray(live.discoveries)||!node)return [];
  const map=new Map(records().map(r=>[String(r.id),r]));
  return live.discoveries.map(function(x){
-   const target=map.get(String(x&&x.record_id||""));
-   return target?{node:target,r:{type:x.relationship||"related",weight:x.weight}}:null;
+   const id=String(x&&x.record_id||"");
+   const target=map.get(id)||{
+     id:id,
+     type:x.type||"WORK",
+     title:x.title||id,
+     description:x.description||"A place in the World."
+   };
+   return {node:target,r:{type:x.relationship||"related",weight:x.weight}};
  }).filter(Boolean);
 }
 function liveEnvironment(){return window.ESCIE_WORLD_LIVE&&window.ESCIE_WORLD_LIVE.data&&window.ESCIE_WORLD_LIVE.data.environment||null;}
@@ -255,7 +261,7 @@ function worldHome(){
  return '<div class="world-home">'+
    '<div class="world-home-intro"><span class="world-kicker">MY WORLD</span><h3>THE WORLD</h3><p>The world is already here. ESCIE is one way of seeing it.</p><small>Montréal is home. The world continues.</small></div>'+
    ((currentTab||state.exploreOpen)?worldLensMarkup():'')+
-   (currentTab?worldLensContent():'<div class="world-home-house"><div class="world-home-city"><span class="world-kicker">HOME</span><strong>'+esc(city&&city.title||"MONTRÉAL")+'</strong><p>WHERE MY WORLD AND THE WORLD INTERTWINE.</p></div><div class="world-home-rooms">'+(roomCards||'<span class="world-empty">Nothing has been opened yet.</span>')+'</div></div>')+
+   (currentTab?worldLensContent():'<div class="world-home-house"><button type="button" class="world-home-city" data-node="world-montreal"><span class="world-kicker">HOME</span><strong>'+esc(city&&city.title||"MONTRÉAL")+'</strong><p>WHERE MY WORLD AND THE WORLD INTERTWINE.</p><span class="world-arrow" aria-hidden="true">↗</span></button><div class="world-home-rooms">'+(roomCards||'<span class="world-empty">Nothing has been opened yet.</span>')+'</div></div>')+
    ((currentTab||state.exploreOpen)?'':'<div class="world-home-actions"><button type="button" class="world-enter-index" data-world-explore aria-expanded="false"><span class="world-kicker">DISCOVER</span><strong>OPEN THE WORLD</strong><span aria-hidden="true">↗</span></button></div>')+
    '<button type="button" class="world-home-outside" data-outside-world><span class="world-kicker">THE OUTSIDE WORLD</span><strong>THE WORLD CONTINUES</strong><p>Everything beyond Montréal can enter here too.</p></button>'+
    (currentTab?'':'<p class="world-home-note">You do not have to understand the whole thing. Start somewhere.</p>')+
@@ -280,7 +286,9 @@ function mountWorld(){
  state.selected=match?decodeURIComponent(match[1]):null;
  function draw(){
    if(state.selected){
-     const node=records().find(r=>String(r.id)===String(state.selected));
+     const node=records().find(r=>String(r.id)===String(state.selected))||liveWorldNode(state.selected)||(
+       String(state.selected)==="world-montreal"?{id:"world-montreal",type:"PLACE",title:"Montréal",description:"Home. The place where the World begins, without being the boundary of it."}:null
+     );
      if(node){container.innerHTML=detail(node);focusDetail();return;}
      state.selected=null;
    }
