@@ -52,6 +52,16 @@ function related(id){
  return out;
 }
 function inverse(t){const inv={created_by:"created",part_of:"contains",located_at:"location_of",recorded_at:"recording_location_of",performed_at:"performance_location_of",inspired_by:"inspires",supports:"supported_by",contradicts:"contradicted_by"};return inv[t]||t||"related"}
+function liveDiscoveries(node){
+ const live=window.ESCIE_WORLD_LIVE&&window.ESCIE_WORLD_LIVE.data;
+ if(!live||!Array.isArray(live.discoveries)||!node)return [];
+ const map=new Map(records().map(r=>[String(r.id),r]));
+ return live.discoveries.map(function(x){
+   const target=map.get(String(x&&x.record_id||""));
+   return target?{node:target,r:{type:x.relationship||"related",weight:x.weight}}:null;
+ }).filter(Boolean);
+}
+function liveEnvironment(){return window.ESCIE_WORLD_LIVE&&window.ESCIE_WORLD_LIVE.data&&window.ESCIE_WORLD_LIVE.data.environment||null;}
 function filtered(){
  const q=state.q.toLowerCase().trim();
  return records().filter(r=>(state.type==="ALL"||type(r)===state.type)&&(!q||searchText(r).includes(q)));
@@ -95,7 +105,8 @@ function encounterMeta(r){
  return tags.length?'<div class="world-encounter-meta">'+tags.map(function(x){return '<span>'+esc(String(x).replace(/-/g," "))+'</span>';}).join('')+'</div>':'';
 }
 function discoveryRail(node){
- const neighbors=related(node.id).slice(0,4);
+ const live=liveDiscoveries(node);
+ const neighbors=(live.length?live:related(node.id)).slice(0,4);
  if(!neighbors.length)return '<div class="world-discovery-rail"><span class="world-kicker">NO OPEN THREADS YET</span><p>Stay here, or return to the World.</p></div>';
  return '<div class="world-discovery-rail"><div class="world-discovery-head"><span class="world-kicker">FOLLOW THE THREAD</span><p>Something here connects to something else.</p></div><div class="world-discovery-links">'+neighbors.map(function(x){return '<button type="button" class="world-discovery-link" data-node="'+esc(x.node.id)+'"><span class="world-kicker">'+esc(x.r&&x.r.type?String(x.r.type).replace(/_/g," "):"related")+'</span><strong>'+esc(title(x.node))+'</strong><span aria-hidden="true">↗</span></button>';}).join('')+'</div></div>';
 }
@@ -232,6 +243,17 @@ function worldHome(){
 function mountWorld(){
  const container=$("world-container"); if(!container)return;
  container.classList.add("world-engine");
+ function syncLiveState(){
+   const live=window.ESCIE_WORLD_LIVE||{};
+   container.dataset.worldLiveStatus=String(live.status||"OFFLINE").toLowerCase();
+   if(live.data&&live.data.environment){
+     const env=live.data.environment;
+     container.dataset.worldWeather=String(env.weather||"UNKNOWN").toLowerCase();
+     container.dataset.worldLight=String((env.visual_state&&env.visual_state.light)||env.daylight||"UNKNOWN").toLowerCase();
+   }
+ }
+ syncLiveState();
+ window.addEventListener("escie:world-state",function(){syncLiveState();draw();});
  const route=String(location.hash||"");
  const match=route.match(/(?:world-node=)([^&]+)/);
  state.selected=match?decodeURIComponent(match[1]):null;
