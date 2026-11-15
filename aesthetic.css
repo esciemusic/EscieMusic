@@ -3755,3 +3755,6 @@ body.light .world-object-origin{border-color:rgba(0,0,0,.1)}
 @media(prefers-reduced-motion:reduce){.world-fourth-wall{animation:none}}
 
 .world-attention-memory{display:inline-block;margin-right:.45rem;opacity:.58;letter-spacing:.08em}
+
+.world-reinterpretation{margin:1rem 0;padding:.85rem 1rem;border-left:1px solid rgba(120,120,150,.32);background:rgba(255,255,255,.025)}
+.world-reinterpretation p{margin:.25rem 0 0;opacity:.72;line-height:1.5}
