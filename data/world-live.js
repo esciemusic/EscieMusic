@@ -34,7 +34,8 @@
     root.dispatchEvent(new CustomEvent("escie:world-state",{detail:data}));
   }
 
-  async function load(){
+  async function load(recordId){
+    const record=String(recordId||"montreal").trim()||"montreal";
     const session=(function(){
       try{
         let id=sessionStorage.getItem("escie-world-session");
@@ -47,7 +48,7 @@
     })();
 
     try{
-      const response=await fetch(API+"?mode=world&record=montreal&session="+encodeURIComponent(session),{
+      const response=await fetch(API+"?mode=world&record="+encodeURIComponent(record)+"&session="+encodeURIComponent(session),{
         headers:{Accept:"application/json"},
         cache:"no-store"
       });
@@ -65,5 +66,10 @@
     }
   }
 
-  state.ready=load();
+  state.navigate=async function(recordId){
+    const data=await load(recordId);
+    if(data)apply(data);
+    return data;
+  };
+  state.ready=load("montreal");
 })(window);
