@@ -2626,3 +2626,61 @@ html[data-theme="light"] .index-navigation .nav-link.is-current{
 html[data-theme="light"] .index-navigation .nav-link.is-current .node-link-symbol{
   color:#70419f;
 }
+
+
+/* =========================================================
+   INDEX / TAB PASS 3 — canonical symbol language
+   Symbols are wayfinding instruments: one stroke system,
+   one scale, one semantic role per destination.
+   ========================================================= */
+.index-navigation .nav-link .node-link-symbol{
+  position:relative;
+  width:19px;
+  height:19px;
+  color:rgba(216,212,202,.30);
+  opacity:.9;
+}
+.index-navigation .nav-link .node-link-symbol .escie-symbol-glyph{
+  display:block;
+  width:100%;
+  height:100%;
+  vector-effect:non-scaling-stroke;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.index-navigation .nav-link[data-symbol="now"] .node-link-symbol,
+.index-navigation .nav-link[data-symbol="glass-eye"] .node-link-symbol{
+  color:rgba(216,212,202,.36);
+}
+.index-navigation .nav-link[data-symbol="escie"] .node-link-symbol{
+  color:rgba(155,89,255,.44);
+}
+.index-navigation .nav-link:hover .node-link-symbol,
+.index-navigation .nav-link:focus-visible .node-link-symbol{
+  opacity:1;
+}
+.index-navigation .nav-link.is-current .node-link-symbol{
+  opacity:1;
+}
+
+/* The semantic metadata is available to assistive/inspection tooling without
+   adding visual clutter to the Index. */
+.index-navigation .nav-link[data-symbol-meaning][data-symbol-purpose]{
+  cursor:pointer;
+}
+
+@media(max-width:700px){
+  .index-navigation .nav-link .node-link-symbol{
+    width:17px;
+    height:17px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .index-navigation .nav-link .node-link-symbol{
+    transition:none;
+  }
+}
