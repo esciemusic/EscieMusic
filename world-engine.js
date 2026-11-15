@@ -4,7 +4,7 @@ window.ESCIE_WORLD_ENGINE_ACTIVE=true;
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
 const coll=(name,fallback=[])=>{const v=window[name];return Array.isArray(v)?v:(v&&Array.isArray(v.records)?v.records:fallback)};
-const state={tab:"atlas",q:"",type:"ALL",selected:null,trail:[],visited:[],eyeOpen:false,exploreOpen:false,outsideOpen:false,returningFrom:null,returnFlash:null};
+const state={tab:"atlas",q:"",type:"ALL",selected:null,trail:[],visited:[],eyeOpen:false,exploreOpen:false,outsideOpen:false,returningFrom:null,returnFlash:null,street:null};
 const tabs=[["atlas","ATLAS","world"],["people","THE PEOPLE","person"],["places","PLACES","world"],["moments","MOMENTS","moment"],["fragments","FRAGMENTS","photo-negative"],["bodies","BODIES","empty-chair"],["proof","PROOF","key"],["path","PATH","web"],["timeline","TIMELINE","now"],["symbols","SYMBOLS","daisy"],["trace","TRACE","web"]];function glyph(name,label){const safe=String(name||"").replace(/[^a-z0-9-]/gi,"");if(!safe)return "";return '<svg class="escie-symbol-glyph world-entry-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#'+esc(safe)+'"></use></svg>';}
 const raf=typeof requestAnimationFrame==="function"?requestAnimationFrame:fn=>setTimeout(fn,0);
 const caf=typeof cancelAnimationFrame==="function"?cancelAnimationFrame:clearTimeout;
@@ -180,6 +180,7 @@ function openWorldNode(id,options){
  state.selected=target;
  if(!options.preserveTrail)remember(target);
  try{
+   state.street=null;
    const api=window.ESCIE_WORLD_LIVE;
    if(api&&typeof api.navigate==="function")api.navigate(target);
  }catch(_e){}
@@ -286,23 +287,90 @@ function homePlaceDetail(place){
    '<div class="world-home-place-outside"><span class="world-kicker">BEYOND HOME</span><button type="button" data-outside-world><strong>THE WORLD CONTINUES</strong><small>Leave Montréal without leaving the World.</small></button></div>'+
  '</div>';
 }
+function cityStreetNodes(district){
+ const city=window.ESCIE_WORLD_CITY||{};
+ const groups=city.streetNodes||{};
+ const key=String(district||"").toUpperCase();
+ return Array.isArray(groups[key])?groups[key]:[];
+}
+function cityStreetContext(district,nodeId){
+ const city=window.ESCIE_WORLD_CITY||{};
+ const fn=city.streetContext;
+ if(typeof fn==="function")return fn(district,nodeId);
+ const node=cityStreetNodes(district).find(function(x){return String(x.id)===String(nodeId);});
+ return node?{district:String(district||"").toUpperCase(),node:node.id,label:node.label,type:node.type,station:node.station||null}:null;
+}
+function neighborhoodPlaceRecords(place){
+ const all=coll("ESCIE_LOCATIONS",[]).concat(coll("ESCIE_LIVE_RECORDS",[]),coll("ESCIE_ARCHIVE",[]));
+ return all.filter(function(r){
+   if(!r||!isPublicWorldRecord(r))return false;
+   const tags=Array.isArray(r.tags)?r.tags.map(function(x){return String(x).toLowerCase();}):[];
+   const hay=[r.id,r.slug,r.title,r.name,r.neighborhood,r.district,r.street,r.address].map(function(x){return String(x||"").toLowerCase();}).join(" ");
+   return hay.includes(String(place.id||"").toLowerCase())||hay.includes(String(title(place)).toLowerCase())||tags.includes(String(place.id||"").toLowerCase());
+ });
+}
+function streetPlaceRecords(place,street){
+ const candidates=neighborhoodPlaceRecords(place);
+ const label=String(street.label||"").toLowerCase();
+ const id=String(street.id||"").toLowerCase();
+ return candidates.filter(function(r){
+   const tags=Array.isArray(r.tags)?r.tags.map(function(x){return String(x).toLowerCase();}):[];
+   const hay=[r.id,r.slug,r.title,r.name,r.street,r.address,r.place].map(function(x){return String(x||"").toLowerCase();}).join(" ");
+   return hay.includes(label)||hay.includes(id)||tags.includes(label)||tags.includes(id);
+ });
+}
+function streetDetail(place,street){
+ const atmosphere=placeAtmosphere();
+ const context=cityStreetContext(title(place),street.id)||street;
+ const district=String(place.id||title(place)).toUpperCase();
+ const city=window.ESCIE_WORLD_CITY||{};
+ const edges=(city.streetEdges&&city.streetEdges[district])||[];
+ const neighbors=[];
+ edges.forEach(function(edge){
+   if(!Array.isArray(edge))return;
+   if(String(edge[0])===String(street.id))neighbors.push(edge[1]);
+   if(String(edge[1])===String(street.id))neighbors.push(edge[0]);
+ });
+ const nodes=cityStreetNodes(district);
+ const nearby=neighbors.map(function(id){return nodes.find(function(n){return String(n.id)===String(id);});}).filter(Boolean);
+ const places=streetPlaceRecords(place,street);
+ const placeCards=places.length?places.slice(0,8).map(function(r){
+   return '<button type="button" class="world-room world-street-place" data-node="'+esc(r.id)+'"><span class="world-room-mark" aria-hidden="true"></span><div><span class="world-kicker">PLACE / BUILDING</span><strong>'+esc(title(r))+'</strong><p>'+esc(r.description||"A place on "+street.label+".")+'</p></div><span class="world-arrow" aria-hidden="true">↗</span></button>';
+ }).join(""):'<div class="world-empty">No public place is attached to this street yet.</div>';
+ const neighborCards=nearby.length?nearby.map(function(n){
+   return '<button type="button" class="world-street-neighbor" data-street-id="'+esc(n.id)+'" data-street-district="'+esc(district)+'"><span class="world-kicker">'+esc(n.type||"STREET")+'</span><strong>'+esc(n.label)+'</strong><span aria-hidden="true">↗</span></button>';
+ }).join(""):'<span class="world-empty">This street has no adjacent public street recorded yet.</span>';
+ return '<div class="world-home-place world-street-detail">'+
+   '<div class="world-home-place-threshold"><button type="button" class="world-home-return" data-neighborhood-id="'+esc(place.id)+'">← '+esc(title(place))+'</button><span class="world-kicker">MONTRÉAL / '+esc(title(place))+'</span><span class="world-kicker">STREET</span><h3 data-no-translate class="record-identity">'+esc(street.label)+'</h3><p>A street-level threshold inside '+esc(title(place))+'.</p></div>'+
+   '<div class="world-home-place-atmosphere"><span class="world-kicker">RIGHT NOW</span><strong>'+esc(atmosphere.weather)+'</strong><span>'+esc(atmosphere.light)+' · '+esc(atmosphere.surface)+' · '+esc(atmosphere.sound)+'</span></div>'+
+   '<div class="world-home-place-copy"><span class="world-kicker">STREET CONTEXT</span><p>'+esc((context.classification||context.type||street.type||"STREET"))+(context.station?" · METRO / "+String(context.station):"")+(context.speed?" · "+String(context.speed)+" KM/H":"")+'</p></div>'+
+   '<div class="world-home-rooms"><div class="world-room-life-head"><span class="world-kicker">PLACES ON THIS STREET</span><p>Only public records actually attached to this street appear here.</p></div>'+placeCards+'</div>'+
+   '<div class="world-home-rooms world-street-neighbors"><div class="world-room-life-head"><span class="world-kicker">CONTINUE</span><p>Move to an adjacent street when one is part of the canonical city graph.</p></div><div class="world-street-neighbor-grid">'+neighborCards+'</div></div>'+
+ '</div>';
+}
 function neighborhoodDetail(place){
  const atmosphere=placeAtmosphere();
  const childIds=neighborhoodRooms[String(place.id)||""]||[];
  const all=coll("ESCIE_LOCATIONS",[]).concat(coll("ESCIE_LIVE_RECORDS",[]),coll("ESCIE_ARCHIVE",[]));
  const children=childIds.map(function(id){return all.find(function(x){return x&&String(x.id)===String(id);});}).filter(Boolean);
+ const streets=cityStreetNodes(title(place));
  const live=placeIdentity(place);
  const childCards=children.length?children.map(function(room){
    return '<button type="button" class="world-room world-neighborhood-child" data-node="'+esc(room.id)+'"><span class="world-room-mark" aria-hidden="true"></span><div><span class="world-kicker">PLACE INSIDE</span><strong>'+esc(title(room))+'</strong><p>'+esc(room.description||"A place inside "+title(place)+".")+'</p></div><span class="world-arrow" aria-hidden="true">↗</span></button>';
  }).join(""):'<div class="world-empty">Nothing inside this neighborhood has been opened publicly yet.</div>';
+ const streetCards=streets.length?streets.map(function(street){
+   return '<button type="button" class="world-room world-neighborhood-street" data-street-id="'+esc(street.id)+'" data-street-district="'+esc(String(place.id||title(place)).toUpperCase())+'"><span class="world-room-mark" aria-hidden="true"></span><div><span class="world-kicker">'+esc(street.type||"STREET")+'</span><strong>'+esc(street.label)+'</strong><p>'+esc(street.station?"Transit / "+street.station:"A street in "+title(place)+".")+'</p></div><span class="world-arrow" aria-hidden="true">↗</span></button>';
+ }).join(""):'<div class="world-empty">The street layer has not been opened for this neighborhood yet.</div>';
  return '<div class="world-home-place world-neighborhood-place">'+
    '<div class="world-home-place-threshold"><button type="button" class="world-home-return" data-node="world-montreal">← MONTRÉAL</button><span class="world-kicker">NEIGHBORHOOD // MONTRÉAL</span><h3 data-no-translate class="record-identity">'+esc(live.name||title(place))+'</h3><p>'+esc(place.description||"A neighborhood in the Montréal home.")+'</p></div>'+
    '<div class="world-home-place-atmosphere"><span class="world-kicker">RIGHT NOW</span><strong>'+esc(atmosphere.weather)+'</strong><span>'+esc(atmosphere.light)+' · '+esc(atmosphere.surface)+' · '+esc(atmosphere.sound)+'</span></div>'+
    '<div class="world-home-place-copy"><span class="world-kicker">STREET LEVEL</span><p>Neighborhoods are the rooms of Montréal. From here, the World can narrow to a street, a building, or somewhere lived inside.</p></div>'+
+   '<div class="world-home-rooms"><div class="world-room-life-head"><span class="world-kicker">STREETS</span><p>Walk into a real street node from the Montréal city graph.</p></div>'+streetCards+'</div>'+
    '<div class="world-home-rooms"><div class="world-room-life-head"><span class="world-kicker">PLACES WITHIN</span><p>Follow a place inward. Nothing here has to be a clue.</p></div>'+childCards+'</div>'+
  '</div>';
 }
 function detail(r){
+ if(r&&state.street&&String(state.street.placeId)===String(r.id))return streetDetail(r,state.street.node);
  if(r&&String(r.id)==="world-montreal")return homePlaceDetail(r);
  if(r&&(String(r.id)==="little-italy"||String(r.id)==="parc-extension"))return neighborhoodDetail(r);
  if(r&&String(type(r)).toUpperCase()==="OBJECT")return objectDetail(r);
@@ -447,8 +515,17 @@ function mountWorld(){
  loadTrail();
  window.addEventListener("escie:world-state",function(){syncLiveState();draw();});
  const route=String(location.hash||"");
+ const streetMatch=route.match(/(?:world-street=)([^&]+)/);
  const match=route.match(/(?:world-node=)([^&]+)/);
  state.selected=match?decodeURIComponent(match[1]):null;
+ if(streetMatch){
+   const parts=decodeURIComponent(streetMatch[1]).split(":");
+   const placeId=parts.shift()||"";
+   const streetId=parts.join(":");
+   const place=records().find(function(r){return String(r.id)===String(placeId);});
+   const street=place?cityStreetNodes(title(place)).find(function(x){return String(x.id)===String(streetId);}):null;
+   if(place&&street){state.selected=String(place.id);state.street={placeId:String(place.id),node:street};}
+ }
  function draw(){
    if(state.selected){
      const node=records().find(r=>String(r.id)===String(state.selected))||liveWorldNode(state.selected)||(
@@ -493,6 +570,31 @@ function mountWorld(){
      draw();
      return;
    }
+   const streetNode=event.target.closest("[data-street-id]");
+   if(streetNode){
+     const streetId=streetNode.getAttribute("data-street-id");
+     const district=streetNode.getAttribute("data-street-district")||"";
+     const placeId=state.selected&&records().find(function(r){return String(r.id)===String(state.selected);})?state.selected:null;
+     const place=placeId?records().find(function(r){return String(r.id)===String(placeId);}):null;
+     const targetPlace=place||records().find(function(r){return String(r.id)===String(district).toLowerCase();})||records().find(function(r){return String(r.id)===String(district);});
+     const street=cityStreetNodes(district).find(function(x){return String(x.id)===String(streetId);});
+     if(targetPlace&&street){
+       state.street={placeId:String(targetPlace.id),node:street};
+       state.selected=String(targetPlace.id);
+       remember("street:"+String(targetPlace.id)+":"+String(street.id));
+       history.replaceState(null,"","#world-street="+encodeURIComponent(String(targetPlace.id)+":"+String(street.id)));
+       draw();
+       focusDetail();
+     }
+     return;
+   }
+   const neighborhoodBack=event.target.closest("[data-neighborhood-id]");
+   if(neighborhoodBack){
+     const id=neighborhoodBack.getAttribute("data-neighborhood-id");
+     state.street=null;
+     if(id)openWorldNode(id);
+     return;
+   }
    const returnNode=event.target.closest("[data-return-node]");
    if(returnNode){
      const id=returnNode.getAttribute("data-return-node");
@@ -513,8 +615,19 @@ function mountWorld(){
    }
  });
  window.addEventListener("hashchange",function(){
-   const m=String(location.hash||"").match(/(?:world-node=)([^&]+)/);
+   const h=String(location.hash||"");
+   const sm=h.match(/(?:world-street=)([^&]+)/);
+   const m=h.match(/(?:world-node=)([^&]+)/);
+   state.street=null;
    state.selected=m?decodeURIComponent(m[1]):null;
+   if(sm){
+     const parts=decodeURIComponent(sm[1]).split(":");
+     const placeId=parts.shift()||"";
+     const streetId=parts.join(":");
+     const place=records().find(function(r){return String(r.id)===String(placeId);});
+     const street=place?cityStreetNodes(title(place)).find(function(x){return String(x.id)===String(streetId);}):null;
+     if(place&&street){state.selected=String(place.id);state.street={placeId:String(place.id),node:street};}
+   }
    draw();
  });
  draw();
