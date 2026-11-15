@@ -61,8 +61,15 @@ function roomContents(room){
 }
 function roomDetail(room){
  const contents=roomContents(room);
- const items=contents.map(function(r){return '<button type="button" class="world-room-item" data-node="'+esc(r.id)+'"><span class="world-kicker">'+esc(type(r))+'</span><strong>'+esc(title(r))+'</strong><small>'+esc(r.description||r.summary||"A piece of life in this room.")+'</small></button>';}).join('');
- return '<aside class="world-detail world-room-detail" aria-live="polite"><div class="world-detail-head"><div><span class="world-kicker">ROOM // MONTRÉAL</span><h3 data-no-translate class="record-identity">'+esc(title(room))+'</h3></div><button type="button" class="world-close" data-close-node aria-label="Close room">×</button></div><p>'+esc(room.description||"A room in the Montréal home.")+'</p><div class="world-kicker">INSIDE · '+contents.length+'</div><div class="world-room-items">'+(items||'<div class="world-empty">Nothing has been opened here yet.</div>')+'</div><div class="world-kicker">THE ROOM CONTINUES</div><p>Some things lead somewhere. Some simply stay.</p></aside>';
+ const items=contents.map(function(r){
+   return '<button type="button" class="world-room-item" data-node="'+esc(r.id)+'"><strong>'+esc(title(r))+'</strong><small>'+esc(r.description||r.summary||"A piece of life in this room.")+'</small></button>';
+ }).join('');
+ return '<aside class="world-detail world-room-detail" aria-live="polite">'+
+   '<div class="world-detail-head"><div><span class="world-kicker">MONTRÉAL · ROOM</span><h3 data-no-translate class="record-identity">'+esc(title(room))+'</h3></div><button type="button" class="world-close" data-close-node aria-label="Return home">×</button></div>'+
+   '<p>'+esc(room.description||"A room in the Montréal home.")+'</p>'+
+   '<div class="world-room-items">'+(items||'<div class="world-empty">Nothing has been opened here yet.</div>')+'</div>'+
+   '<button type="button" class="world-home-return" data-close-node>← BACK HOME</button>'+
+ '</aside>';
 }
 function detail(r){
  const roomIds=["little-italy","parc-extension"];
@@ -126,8 +133,17 @@ function homeRooms(){
 }
 function worldHome(){
  const city=montrealRecord(),rooms=homeRooms();
- const roomCards=rooms.map(function(room){return '<button type="button" class="world-room" data-node="'+esc(room.id)+'"><span class="world-room-mark" aria-hidden="true"></span><div><span class="world-kicker">ROOM</span><strong>'+esc(title(room))+'</strong><p>'+esc(room.description||"A room in the Montréal home.")+'</p></div><span class="world-arrow" aria-hidden="true">↗</span></button>';}).join("");
- return '<div class="world-home"><div class="world-home-intro"><span class="world-kicker">MY WORLD</span><h3>MONTRÉAL IS HOME.</h3><p>Come in. Look around.</p></div><div class="world-home-house"><div class="world-home-city"><span class="world-kicker">HOME</span><strong>MONTRÉAL</strong><p>'+esc(city&&city.description||"The home.")+'</p></div><div class="world-home-rooms">'+(roomCards||'<span class="world-empty">Nothing has been opened yet.</span>')+'</div></div><div class="world-home-outside"><span class="world-kicker">BEYOND THE DOOR</span><strong>THE OUTSIDE WORLD</strong><p>Everything else is out there.</p></div></div>';
+ const roomCards=rooms.map(function(room){
+   return '<button type="button" class="world-room" data-node="'+esc(room.id)+'"><span class="world-room-mark" aria-hidden="true"></span><div><strong>'+esc(title(room))+'</strong><p>'+esc(room.description||"A room in the Montréal home.")+'</p></div><span class="world-arrow" aria-hidden="true">↗</span></button>';
+ }).join("");
+ return '<div class="world-home">'+
+   '<div class="world-home-intro"><span class="world-kicker">MY WORLD</span><h3>MONTRÉAL</h3><p>Home.</p></div>'+
+   '<div class="world-home-house">'+
+     '<div class="world-home-city"><span class="world-kicker">THE HOME</span><strong>'+esc(city&&city.title||"MONTRÉAL")+'</strong></div>'+
+     '<div class="world-home-rooms">'+(roomCards||'<span class="world-empty">Nothing has been opened yet.</span>')+'</div>'+
+   '</div>'+
+   '<button type="button" class="world-home-outside" data-outside-world><span class="world-kicker">BEYOND THE DOOR</span><strong>THE OUTSIDE WORLD</strong><p>Everything beyond home.</p></button>'+
+ '</div>';
 }
 function mountWorld(){
  const container=$("world-container"); if(!container)return;
@@ -150,7 +166,7 @@ function mountWorld(){
      if(id){state.selected=id;remember(id);history.replaceState(null,"","#world-node="+encodeURIComponent(id));draw();}
      return;
    }
-   if(event.target.closest("[data-close-node]")){
+   if(event.target.closest("[data-close-node]")||event.target.closest("[data-outside-world]")){
      state.selected=null;
      history.replaceState(null,"","#world");
      draw();
