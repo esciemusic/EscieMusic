@@ -1039,6 +1039,7 @@ function draw(){
    }
    draw();
  }
+ window.addEventListener("hashchange",function(){syncFromHash();});
  syncFromHash();
  draw();
 }
