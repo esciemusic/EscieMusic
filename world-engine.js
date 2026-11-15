@@ -110,16 +110,38 @@ function montrealRecord(){
 function atlasField(rows){
  const places=coll("ESCIE_LOCATIONS",[]).filter(r=>r&&String(r.id||"").toLowerCase()!=="montreal"&&String(r.visibility||"").toLowerCase()!=="withheld"&&r.public_disclosure!==false);
  const placeIds=new Set(places.map(r=>String(r.id)));
- const relatedByPlace=new Map();
- places.forEach(r=>relatedByPlace.set(String(r.id),related(r.id).map(x=>x.node).filter(n=>n&&!placeIds.has(String(n.id))&&String(n.id).toLowerCase()!=="montreal"));
- const threads=[];const seen=new Set();
- relatedByPlace.forEach(list=>list.forEach(n=>{if(!seen.has(String(n.id))){seen.add(String(n.id));threads.push(n)}}));
- const fallback=rows.filter(r=>String(r.id||"").toLowerCase()!=="montreal"&&!placeIds.has(String(r.id)));
- const visibleThreads=threads.length?threads.slice(0,6):fallback.slice(0,3);
- const placeNodes=places.map((r,i)=>{const selected=String(state.selected||"")===String(r.id)?" is-selected":"";const linked=state.selected&&related(String(state.selected)).some(x=>String(x.node.id)===String(r.id))?" is-related":"";return '<button type="button" class="atlas-field-node atlas-field-place atlas-field-place-'+(i%4)+selected+linked+'" data-node="'+esc(r.id)+'" data-atlas-place="'+esc(r.id)+'"><span class="atlas-field-dot" aria-hidden="true"></span><strong>'+esc(title(r))+'</strong><small>PLACE</small></button>'}).join("");
- const threadNodes=visibleThreads.map(r=>{const selected=String(state.selected||"")===String(r.id)?" is-selected":"";return '<button type="button" class="atlas-field-thread'+selected+'" data-node="'+esc(r.id)+'"><span>'+esc(type(r))+'</span><strong>'+esc(title(r))+'</strong></button>'}).join("");
- const selectedLabel=state.selected?records().find(r=>String(r.id)===String(state.selected)):null;
- return '<div class="atlas-field" aria-label="Montréal orientation field"><div class="atlas-field-grid" aria-hidden="true"></div><div class="atlas-field-core'+(selectedLabel?" is-focused":"")+'"><span class="world-kicker">'+(selectedLabel?"CURRENT THREAD":"PHYSICAL ANCHOR")+'</span><strong>'+esc(selectedLabel?title(selectedLabel):"MONTRÉAL")+'</strong><small>'+(selectedLabel?"FOLLOW THE CONNECTIONS":"CITY / MEMORY / MOVEMENT")+'</small></div>'+placeNodes+'<div class="atlas-field-label atlas-field-label-a">STREETS</div><div class="atlas-field-label atlas-field-label-b">TRANSIT</div><div class="atlas-field-label atlas-field-label-c">MEMORY</div></div><div class="atlas-field-footer"><div><span class="world-kicker">ORIENT HERE</span><p>Places are real anchors. Threads are shown only when the public relationship record connects them. The field shows relationships without pretending to be a literal map.</p></div><div class="atlas-field-threads">'+(threadNodes||'<span class="world-empty">The field is quiet. Public relationships will appear as the world grows.</span>')+'</div></div>';
+ const connected=[];
+ const seen=new Set();
+ places.forEach(function(place){
+  related(place.id).forEach(function(link){
+   const node=link&&link.node;
+   if(!node)return;
+   const id=String(node.id||"");
+   if(!id||id.toLowerCase()==="montreal"||placeIds.has(id)||seen.has(id))return;
+   seen.add(id);
+   connected.push(node);
+  });
+ });
+ const fallback=rows.filter(function(r){return String(r.id||"").toLowerCase()!=="montreal"&&!placeIds.has(String(r.id));});
+ const visibleThreads=(connected.length?connected:fallback).slice(0,6);
+ const placeNodes=places.map(function(r,i){
+  const id=String(r.id);
+  const selected=String(state.selected||"")===id;
+  const relatedSelected=state.selected&&related(String(state.selected)).some(function(x){return x&&x.node&&String(x.node.id)===id;});
+  let cls="atlas-field-node atlas-field-place atlas-field-place-"+(i%4);
+  if(selected)cls+=" is-selected";
+  if(relatedSelected)cls+=" is-related";
+  return '<button type="button" class="'+cls+'" data-node="'+esc(r.id)+'" data-atlas-place="'+esc(r.id)+'"><span class="atlas-field-dot" aria-hidden="true"></span><strong>'+esc(title(r))+'</strong><small>PLACE</small></button>';
+ }).join("");
+ const threadNodes=visibleThreads.map(function(r){
+  const selected=String(state.selected||"")===String(r.id);
+  return '<button type="button" class="atlas-field-thread'+(selected?" is-selected":"")+'" data-node="'+esc(r.id)+'"><span>'+esc(type(r))+'</span><strong>'+esc(title(r))+'</strong></button>';
+ }).join("");
+ const selectedLabel=state.selected?records().find(function(r){return String(r.id)===String(state.selected)}):null;
+ const coreTitle=selectedLabel?title(selectedLabel):"MONTRÉAL";
+ const coreKicker=selectedLabel?"CURRENT THREAD":"PHYSICAL ANCHOR";
+ const coreNote=selectedLabel?"FOLLOW THE CONNECTIONS":"CITY / MEMORY / MOVEMENT";
+ return '<div class="atlas-field" aria-label="Montréal orientation field"><div class="atlas-field-grid" aria-hidden="true"></div><div class="atlas-field-core'+(selectedLabel?" is-focused":"")+'"><span class="world-kicker">'+coreKicker+'</span><strong>'+esc(coreTitle)+'</strong><small>'+coreNote+'</small></div>'+placeNodes+'<div class="atlas-field-label atlas-field-label-a">STREETS</div><div class="atlas-field-label atlas-field-label-b">TRANSIT</div><div class="atlas-field-label atlas-field-label-c">MEMORY</div></div><div class="atlas-field-footer"><div><span class="world-kicker">ORIENT HERE</span><p>Places are real anchors. Threads are shown only when the public relationship record connects them. The field shows relationships without pretending to be a literal map.</p></div><div class="atlas-field-threads">'+(threadNodes||'<span class="world-empty">The field is quiet. Public relationships will appear as the world grows.</span>')+'</div></div>';
 }
 function montrealLens(){
  const city=montrealRecord(); if(!city)return "";
