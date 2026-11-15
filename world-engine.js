@@ -217,6 +217,7 @@ function openWorldNode(id,options){
  const live=liveWorldNode(target);
  const node=local||live||{id:target,type:"PLACE",title:target.replace(/^world-/,"").replace(/-/g," "),description:"A place in the World."};
  state.selected=target;
+ state.attentionSince=Date.now();state.attentionNoticed=false;
  if(!options.preserveTrail)remember(target);
  try{
    state.street=null;
