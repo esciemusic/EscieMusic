@@ -1005,7 +1005,6 @@ function draw(){
      draw();
    }
  });
- window.addEventListener("popstate",function(){syncFromHash();});
  function syncFromHash(){
    const h=String(location.hash||"");
    const sm=h.match(/(?:world-street=)([^&]+)/);
@@ -1039,6 +1038,7 @@ function draw(){
    }
    draw();
  }
+ window.addEventListener("popstate",function(){syncFromHash();});
  window.addEventListener("hashchange",function(){syncFromHash();});
  syncFromHash();
  draw();
