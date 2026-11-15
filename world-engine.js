@@ -670,7 +670,7 @@ function mountWorld(){
    if(roomReturn){
      const placeId=roomReturn.getAttribute("data-room-place-return")||"";
      const origin=state.roomOrigin;
-     if(origin&&String(origin.placeId)===String(placeId)){state.selected=String(placeId);state.placeStreet=origin;state.roomOrigin=null;history.replaceState(null,"","#world-place="+encodeURIComponent(String(placeId)));draw();focusDetail();}
+     if(origin&&String(origin.placeId)===String(placeId)){state.selected=String(placeId);state.placeStreet=origin;state.roomOrigin=null;const streetHash=origin.street&&origin.street.id?"&world-place-street="+encodeURIComponent(String(origin.street.id)):"";history.replaceState(null,"","#world-place="+encodeURIComponent(String(placeId))+streetHash);draw();focusDetail();}
      return;
    }
    const node=event.target.closest("[data-node]");
@@ -710,6 +710,7 @@ function mountWorld(){
    const m=h.match(/(?:world-node=)([^&]+)/);
    const om=h.match(/(?:world-origin=)([^&]+)/);
    const osm=h.match(/(?:world-origin-street=)([^&]+)/);
+   const psm=h.match(/(?:world-place-street=)([^&]+)/);
    state.street=null;
    state.roomOrigin=null;
    state.selected=pm?decodeURIComponent(pm[1]):(m?decodeURIComponent(m[1]):null);
@@ -721,7 +722,7 @@ function mountWorld(){
        if(street)state.placeStreet={placeId:String(origin.id),place:origin,street:street};
      }
    }
-   if(pm){const place=records().find(function(r){return String(r.id)===String(state.selected);});if(place)state.placeStreet={placeId:String(place.id),place:place,street:null};}
+   if(pm){const place=records().find(function(r){return String(r.id)===String(state.selected);});if(place){const street=psm?cityStreetNodes(place).find(function(x){return String(x.id)===String(decodeURIComponent(psm[1]));}):null;state.placeStreet={placeId:String(place.id),place:place,street:street||null};}}
    if(m&&om&&state.roomOrigin&&["world-apartment","world-street-corner","world-parc-extension"].includes(String(state.selected))){
      state.placeStreet=null;
    }
