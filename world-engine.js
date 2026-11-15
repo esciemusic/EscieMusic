@@ -136,6 +136,20 @@ function worldNow(){
  }
  return {date:dateLabel,time:timeLabel,season:String(env.season||"").trim(),weather:String(env.weather||"").trim(),temperature:env.temperature};
 }
+const WORLD_LAYERS=[
+ "EXISTENCE","PRESENCE","PLACE","TIME","LIFE","EXPERIENCE","INTERPRETATION","ART","PERSPECTIVE","VISITOR","PARTICIPATION","MEMORY","OUTSIDE_WORLD"
+];
+function worldLayerFor(r){
+ const x=String(r?.type||r?.kind||"").toUpperCase();
+ if(/ART|MUSIC|POEM|PAINT|DRAW|WRITING/.test(x))return "ART";
+ if(/PERSON|PEOPLE/.test(x))return "LIFE";
+ if(/OBJECT/.test(x))return "PRESENCE";
+ if(/PLACE|LOCATION|ROOM|BUILDING|STREET|NEIGHBORHOOD/.test(x))return "PLACE";
+ return "EXPERIENCE";
+}
+function worldLayerMarkup(r){
+ const layer=worldLayerFor(r); return '<span class="world-layer-mark" data-world-layer="'+esc(layer)+'">'+esc(layer.replace(/_/g," "))+'</span>';
+}
 
 function worldReturnState(){
  const key="escie_world_return_state";
@@ -474,7 +488,7 @@ function streetPlaceRecords(place,street){
  });
 }
 function placeRecordDetail(place,street){
- const atmosphere=placeAtmosphere(place,"place");
+ const atmosphere=placeAtmosphere(place,"place");\n const layerMark=worldLayerMarkup(place);
  const temporal=temporalMarkup(place);
  const live=placeIdentity(place);
  const contents=roomContents(place);
