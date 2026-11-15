@@ -5,7 +5,7 @@
 (function(root){
   "use strict";
   const API="https://ljdkjzvnwnaluevtzker.supabase.co/functions/v1/escie-public";
-  const state={status:"LOADING",data:null,error:null};
+  const state={status:"LOADING",data:null,error:null,lastSuccess:null};
   root.ESCIE_WORLD_LIVE=state;
 
   function normalize(body){
@@ -50,21 +50,26 @@
     })();
 
     try{
+      const controller=typeof AbortController==="function"?new AbortController():null;
+      const timeout=typeof setTimeout==="function"?setTimeout(function(){if(controller)controller.abort();},8000):null;
       const response=await fetch(API+"?mode=world&record="+encodeURIComponent(record)+"&session="+encodeURIComponent(session),{
         headers:{Accept:"application/json"},
-        cache:"no-store"
+        cache:"no-store",
+        signal:controller?controller.signal:undefined
       });
+      if(timeout)clearTimeout(timeout);
       if(!response.ok)throw Error("WORLD_STATE_HTTP_"+response.status);
       const data=normalize(await response.json());
       state.data=data;
       state.status="READY";
+      state.lastSuccess=Date.now();
       apply(data);
       return data;
     }catch(error){
-      state.status="OFFLINE";
-      state.error=String(error&&error.message||error);
-      root.dispatchEvent(new CustomEvent("escie:world-state",{detail:null}));
-      return null;
+      state.error=String(error&&error.name==="AbortError"?"WORLD_STATE_TIMEOUT":error&&error.message||error);
+      state.status=state.data?"STALE":"OFFLINE";
+      root.dispatchEvent(new CustomEvent("escie:world-state",{detail:state.data||null}));
+      return state.data||null;
     }
   }
 
