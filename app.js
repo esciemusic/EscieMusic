@@ -417,7 +417,11 @@
         if (!exists) return "";
         return '<a class="nav-link node-link' + (route === currentRoute ? ' is-current' : '') + '" href="' + escapeHTML(target) + '"' +
           (route === currentRoute ? ' aria-current="page"' : '') + ' data-node-target="' + escapeHTML(targetId) + '"' +
-          ' data-nav-number="' + String(Number(node.order) || 0).padStart(2, "0") + '">' +
+          ' data-nav-number="' + String(Number(node.order) || 0).padStart(2, "0") + '"' +
+          ' data-symbol="' + escapeHTML(node.symbol || "") + '"' +
+          ' data-symbol-meaning="' + escapeHTML(node.symbolMeaning || "") + '"' +
+          ' data-symbol-purpose="' + escapeHTML(node.symbolPurpose || "") + '"' +
+          ' title="' + escapeHTML(node.symbolPurpose || node.label || node.id || "") + '">' +
           '<span class="node-link-label">' + escapeHTML((window.ESCIE_LANGUAGE_ENGINE && typeof window.ESCIE_LANGUAGE_ENGINE.interfaceLabel === "function") ? window.ESCIE_LANGUAGE_ENGINE.interfaceLabel(node.label || node.id || "", (window.ESCIE_STATE && window.ESCIE_STATE.language) || "en") : (node.label || node.id || "")) + '</span>' +
           '<span class="node-link-symbol">' + customSymbolMarkup(node.symbol || "", node.label || node.id || "") + '</span>' +
           '</a>';
