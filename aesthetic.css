@@ -3567,3 +3567,26 @@ html[data-theme="light"] .world-trace-head p,html[data-theme="light"] .world-tra
 body.light .world-home-place-threshold{border-color:rgba(0,0,0,.13)}
 body.light .world-home-place-atmosphere,.world-home-place .world-room{border-color:rgba(0,0,0,.12)}
 body.light .world-home-place-atmosphere,.body.light .world-home-place .world-room{background:rgba(0,0,0,.025)}
+
+/* World street layer — spatial threshold, not another menu */
+.world-neighborhood-street{position:relative}
+.world-street-detail .world-home-place-copy{border-top:1px solid rgba(255,255,255,.08)}
+.world-street-neighbors{margin-top:clamp(24px,3vw,44px)}
+.world-street-neighbor-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:13px}
+.world-street-neighbor{
+ display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;
+ min-height:110px;padding:18px;border:1px solid rgba(255,255,255,.1);
+ background:rgba(255,255,255,.025);color:inherit;text-align:left;cursor:pointer;
+ transition:transform .28s ease,border-color .28s ease,background .28s ease;
+}
+.world-street-neighbor:hover,.world-street-neighbor:focus-visible{
+ transform:translateY(-2px);border-color:rgba(125,102,255,.55);background:rgba(125,102,255,.06);outline:none;
+}
+.world-street-place{min-height:100px}
+@media (max-width:680px){
+ .world-street-neighbor-grid{grid-template-columns:1fr}
+ .world-street-neighbor{min-height:92px}
+}
+@media (prefers-reduced-motion:reduce){
+ .world-street-neighbor{transition:none}
+}
