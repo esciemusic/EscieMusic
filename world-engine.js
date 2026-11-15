@@ -581,7 +581,16 @@ function mountWorld(){
      const env=live.data.environment;
      container.dataset.worldWeather=String(env.weather||"UNKNOWN").toLowerCase();
      container.dataset.worldLight=String((env.visual_state&&env.visual_state.light)||env.daylight||"UNKNOWN").toLowerCase();
+     container.dataset.worldSeason=String(env.season||"UNKNOWN").toLowerCase();
+     container.dataset.worldSurface=String((env.visual_state&&env.visual_state.surface)||"NATURAL").toLowerCase();
    }
+ }
+ function syncWorldLayer(){
+   let layer="home";
+   if(state.street&&state.street.node)layer="street";
+   else if(state.selected&&["world-apartment","world-street-corner","world-parc-extension"].includes(String(state.selected)))layer="room";
+   else if(state.selected&&state.selected!=="world-montreal")layer="place";
+   container.dataset.worldLayer=layer;
  }
  syncLiveState();
  loadTrail();
@@ -606,6 +615,7 @@ function mountWorld(){
    if(place){state.selected=String(place.id);state.placeStreet={placeId:String(place.id),place:place,street:null};}
  }
  function draw(){
+   syncWorldLayer();
    if(state.selected){
      const node=records().find(r=>String(r.id)===String(state.selected))||liveWorldNode(state.selected)||(
        String(state.selected)==="world-montreal"?{id:"world-montreal",type:"PLACE",title:"Montréal",description:"Home. The place where the World begins, without being the boundary of it."}:null
