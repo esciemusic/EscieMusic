@@ -3612,6 +3612,8 @@ body.light .world-home-place-atmosphere,.body.light .world-home-place .world-roo
 .world-room-presence-head p{margin:.35rem 0 0;opacity:.68}
 .world-room-presence-field{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:13px;margin-top:18px}
 .world-room-presence-item{position:relative;display:flex;flex-direction:column;gap:5px;min-height:74px;padding:14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.025)}
+.world-room-presence-returned{border-color:rgba(125,102,255,.34);box-shadow:inset 2px 0 0 rgba(125,102,255,.65)}
+.world-room-presence-return-mark{display:block!important;font-size:.58rem!important;letter-spacing:.16em;text-transform:uppercase;opacity:.72!important;margin-bottom:2px}
 .world-room-presence-item i{display:block;width:10px;height:10px;border:1px solid currentColor;border-radius:50%;opacity:.7}
 .world-room-presence-item b{font-size:.65rem;letter-spacing:.14em;font-weight:500;opacity:.65}
 .world-room-presence-item span{font-size:.9rem}
