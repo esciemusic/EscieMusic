@@ -57,6 +57,23 @@ function pathContext(){const rs=records(),out=[];for(let i=1;i<state.trail.lengt
 function investigationSummary(){const p=pathContext();const unknowns=state.visited.map(id=>records().find(r=>String(r.id)===String(id))).filter(Boolean).filter(r=>String(r.certainty||"").toUpperCase()==="UNKNOWN").length;return {steps:p.length,unknowns};}
 function loadTrail(){try{const a=JSON.parse(sessionStorage.getItem("escie_world_trail")||"[]");const b=JSON.parse(sessionStorage.getItem("escie_world_visited")||"[]");if(Array.isArray(a))state.trail=a.filter(v=>typeof v==="string"&&v.trim()).slice(-12);if(Array.isArray(b))state.visited=b.filter(v=>typeof v==="string"&&v.trim()).slice(-100)}catch(e){state.trail=[];state.visited=[]}}
 const focusDetail=()=>{const el=container.querySelector(".world-detail");if(el){el.setAttribute("tabindex","-1");if(typeof el.focus==="function")el.focus();}};
+function mediaPreview(r){
+ const media=(r&&r.media&&typeof r.media==="object")?r.media:{};
+ const url=media.url||r.media_url||r.image_url||r.thumbnail||"";
+ if(!url)return "";
+ const kind=String(media.type||r.media_type||"").toLowerCase();
+ if(kind.includes("audio"))return '<div class="world-encounter-media world-encounter-audio"><span class="world-kicker">SOUND</span><audio controls preload="metadata" src="'+esc(url)+'"></audio></div>';
+ return '<div class="world-encounter-media"><span class="world-kicker">'+esc(kind.includes("video")?"MOVING IMAGE":"IMAGE")+'</span><img loading="lazy" src="'+esc(url)+'" alt="" /></div>';
+}
+function encounterMeta(r){
+ const tags=Array.isArray(r.tags)?r.tags.slice(0,6):[];
+ return tags.length?'<div class="world-encounter-meta">'+tags.map(function(x){return '<span>'+esc(String(x).replace(/-/g," "))+'</span>';}).join('')+'</div>':'';
+}
+function discoveryRail(node){
+ const neighbors=related(node.id).slice(0,4);
+ if(!neighbors.length)return '<div class="world-discovery-rail"><span class="world-kicker">NO OPEN THREADS YET</span><p>Stay here, or return to the World.</p></div>';
+ return '<div class="world-discovery-rail"><div class="world-discovery-head"><span class="world-kicker">FOLLOW THE THREAD</span><p>Something here connects to something else.</p></div><div class="world-discovery-links">'+neighbors.map(function(x){return '<button type="button" class="world-discovery-link" data-node="'+esc(x.node.id)+'"><span class="world-kicker">'+esc(x.r&&x.r.type?String(x.r.type).replace(/_/g," "):"related")+'</span><strong>'+esc(title(x.node))+'</strong><span aria-hidden="true">↗</span></button>';}).join('')+'</div></div>';
+}
 function roomContents(room){
  const all=records().filter(function(r){return r&&String(r.id)!==String(room.id);});
  const linked=related(room.id).map(function(x){return x.node;});
@@ -91,7 +108,7 @@ function detail(r){
  }
  const links=related(r.id);
  const connections=links.length?links.map(x=>'<button type="button" data-node="'+esc(x.node.id)+'"><strong>'+esc(title(x.node))+'</strong><small>'+esc(x.r.type||"related")+'</small></button>').join(""):'<span class="world-empty">No public connection recorded yet.</span>';
- return '<aside class="world-detail" aria-live="polite"><div class="world-detail-head"><div><span class="world-kicker">ENCOUNTER // '+esc(type(r))+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3></div><button type="button" class="world-close" data-close-node aria-label="Close node">×</button></div><div class="world-detail-meta"><span>'+esc(String(r.certainty||"UNKNOWN").toUpperCase())+'</span><span>'+esc(String(r.status||"UNKNOWN").toUpperCase())+'</span></div><p>'+esc(r.description||r.summary||r.story||"No public description yet.")+'</p><div class="world-kicker">WHAT CONNECTS HERE · '+links.length+'</div><div class="world-connections">'+connections+'</div>'+discoveryRail(r)+'<div class="world-detail-actions"><button type="button" data-focus-search>SEARCH THIS NODE</button><button type="button" data-copy-node>COPY NODE LINK</button></div><div class="world-path"><span class="world-kicker">YOUR PATH</span><div id="world-path-items">START HERE</div></div></aside>';
+ return '<aside class="world-detail" aria-live="polite"><div class="world-detail-head"><div><span class="world-kicker">ENCOUNTER // '+esc(type(r))+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3></div><button type="button" class="world-close" data-close-node aria-label="Close node">×</button></div><div class="world-detail-meta"><span>'+esc(String(r.certainty||"UNKNOWN").toUpperCase())+'</span><span>'+esc(String(r.status||"UNKNOWN").toUpperCase())+'</span></div>'+mediaPreview(r)+'<p class="world-encounter-description">'+esc(r.description||r.summary||r.story||"No public description yet.")+'</p>'+encounterMeta(r)+'<div class="world-kicker">WHAT CONNECTS HERE · '+links.length+'</div><div class="world-connections">'+connections+'</div>'+discoveryRail(r)+'<div class="world-detail-actions"><button type="button" data-focus-search>SEARCH THIS NODE</button><button type="button" data-copy-node>COPY NODE LINK</button></div><div class="world-path"><span class="world-kicker">YOUR PATH</span><div id="world-path-items">START HERE</div></div></aside>';
 }
 function graphView(rows){
  const map=new Map(rows.map(r=>[String(r.id),r]));
