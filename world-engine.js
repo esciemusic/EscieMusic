@@ -160,6 +160,23 @@ function worldChangeState(){
 function worldChangeSnapshot(){
  const env=state.environment||{}; return {weather:String(env.weather||""),temperature:String(env.temperature??""),season:String(env.season||""),light:String(env.light||""),signal:String(env.signal||"")};
 }
+function worldContentSnapshot(){
+ const nodes=[];
+ try{
+   const src=Array.isArray(window.ESCIE_WORLD_DATA)?window.ESCIE_WORLD_DATA:(window.ESCIE_WORLD_DATA?.records||[]);
+   src.forEach(function(r){const id=String(r?.id||"");const pub=String(r?.visibility||r?.publication_state||r?.status||"").toUpperCase();if(id&&(!pub||/PUBLIC|PUBLISHED|RELEASED/.test(pub)))nodes.push(id);});
+ }catch(e){}
+ return nodes.sort().slice(0,200);
+}
+function worldContentChangeMarkup(){
+ const key="escie_world_content_seen"; let previous=[];
+ try{previous=JSON.parse(localStorage.getItem(key)||"[]");if(!Array.isArray(previous))previous=[];}catch(e){}
+ const current=worldContentSnapshot(); if(!current.length)return "";
+ const added=current.filter(id=>!previous.includes(id));
+ try{localStorage.setItem(key,JSON.stringify(current));}catch(e){}
+ if(!previous.length||!added.length)return "";
+ return '<div class="world-return-change world-content-change" role="status"><span class="world-kicker">WHILE YOU WERE GONE</span><strong>SOMETHING NEW IS HERE.</strong><p>The World has a new public presence to discover.</p></div>';
+}
 function rememberWorldSnapshot(){
  try{localStorage.setItem("escie_world_last_seen",JSON.stringify({at:Date.now(),snapshot:worldChangeSnapshot()}));}catch(e){}
 }
@@ -639,8 +656,8 @@ function worldHome(){ rememberWorldReturn();
  }).join("");
  const currentTab=state.tab!=="atlas";
  const outside=outsideWorldMarkup();
- const returnChange=returnChangeMarkup(); rememberWorldSnapshot(); return '<div class="world-home">'+
-   '<div class="world-home-intro"><span class="world-kicker">MY WORLD</span><h3>THE WORLD</h3><p>The world is already here. ESCIE is one way of seeing it.</p><small>Montréal is home. The world continues.</small></div>'+worldNowMarkup()+returnWelcomeMarkup()+returnChange+
+ const returnChange=returnChangeMarkup(); const contentChange=worldContentChangeMarkup(); rememberWorldSnapshot(); return '<div class="world-home">'+
+   '<div class="world-home-intro"><span class="world-kicker">MY WORLD</span><h3>THE WORLD</h3><p>The world is already here. ESCIE is one way of seeing it.</p><small>Montréal is home. The world continues.</small></div>'+worldNowMarkup()+returnWelcomeMarkup()+returnChange+contentChange+returnChange+
    ((currentTab||state.exploreOpen)?worldLensMarkup():'')+
    (currentTab?worldLensContent():'<div class="world-home-house"><button type="button" class="world-home-city" data-node="world-montreal"><span class="world-kicker">HOME</span><strong>'+esc(city&&city.title||"MONTRÉAL")+'</strong><p>WHERE MY WORLD AND THE WORLD INTERTWINE.</p><span class="world-arrow" aria-hidden="true">↗</span></button><div class="world-home-rooms">'+(roomCards||'<span class="world-empty">Nothing has been opened yet.</span>')+'</div></div>')+
    ((currentTab||state.exploreOpen)?'':'<div class="world-home-actions"><button type="button" class="world-enter-index" data-world-explore aria-expanded="false"><span class="world-kicker">DISCOVER</span><strong>OPEN THE WORLD</strong><span aria-hidden="true">↗</span></button></div>')+
