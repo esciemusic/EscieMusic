@@ -3212,6 +3212,7 @@ html[data-theme="light"] .world-discovery-link strong{color:#17171a}
 .world-encounter-meta{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 16px}
 .world-encounter-meta span{padding:4px 7px;border:1px solid rgba(216,212,202,.1);color:rgba(216,212,202,.55);font:8px/1 var(--escie-font-mono);letter-spacing:.08em;text-transform:uppercase}
 .world-encounter-description{max-width:720px;font-size:12px;line-height:1.75}
+.world-encounter-context{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px;max-width:720px}.world-encounter-context span{display:inline-flex;gap:5px;align-items:baseline;font:9px/1.4 var(--escie-font-mono);letter-spacing:.04em;text-transform:uppercase;color:rgba(216,212,202,.55)}.world-encounter-context b{font-size:7px;color:var(--escie-aesthetic-purple);font-weight:600;letter-spacing:.1em}
 html[data-theme="light"] .world-encounter-media{border-color:rgba(23,23,26,.1);background:rgba(23,23,26,.035)}
 html[data-theme="light"] .world-encounter-meta span{border-color:rgba(23,23,26,.12);color:rgba(23,23,26,.55)}
 
