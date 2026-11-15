@@ -68,6 +68,30 @@ function liveDiscoveries(node){
  }).filter(Boolean);
 }
 function liveEnvironment(){return window.ESCIE_WORLD_LIVE&&window.ESCIE_WORLD_LIVE.data&&window.ESCIE_WORLD_LIVE.data.environment||null;}
+function livePlace(){
+ const data=window.ESCIE_WORLD_LIVE&&window.ESCIE_WORLD_LIVE.data;
+ return data&&data.place||null;
+}
+function liveEncounter(){
+ const data=window.ESCIE_WORLD_LIVE&&window.ESCIE_WORLD_LIVE.data;
+ return data&&data.encounter||null;
+}
+function placeIdentity(room){
+ const p=livePlace()||{};
+ const meta=p.metadata&&typeof p.metadata==="object"?p.metadata:{};
+ return {
+   role:meta.role||"",
+   texture:Array.isArray(meta.texture)?meta.texture:[],
+   anchors:Array.isArray(meta.anchors)?meta.anchors:[],
+   name:p.name||title(room)
+ };
+}
+function placeAtmosphere(){
+ const env=liveEnvironment()||{};
+ const visual=env.visual_state&&typeof env.visual_state==="object"?env.visual_state:{};
+ const audio=env.audio_state&&typeof env.audio_state==="object"?env.audio_state:{};
+ return {weather:env.weather||"UNKNOWN",temperature:env.temperature,light:visual.light||env.daylight||"UNKNOWN",surface:visual.surface||"NATURAL",signal:visual.signal||"AMBIENT",sound:audio.primary||"AMBIENT_CITY"};
+}
 function filtered(){
  const q=state.q.toLowerCase().trim();
  return records().filter(r=>(state.type==="ALL"||type(r)===state.type)&&(!q||searchText(r).includes(q)));
@@ -149,6 +173,8 @@ function roomContents(room){
 }
 function roomDetail(room){
  const contents=roomContents(room);
+ const live=placeIdentity(room);
+ const atmosphere=placeAtmosphere();
  const profile=room&&room.profile&&typeof room.profile==="object"?room.profile:{};
  const texture=Array.isArray(profile.texture)?profile.texture:[];
  const anchors=Array.isArray(profile.anchors)?profile.anchors:[];
@@ -160,7 +186,8 @@ function roomDetail(room){
  const anchorLine=anchors.length?anchors.map(function(x){return '<span>'+esc(x)+'</span>';}).join(''):'';
  return '<div class="world-room-scene">'+
    '<div class="world-room-threshold"><button type="button" class="world-home-return" data-close-node>← MONTRÉAL</button><span class="world-kicker">A ROOM IN THE HOME</span><span class="world-kicker">INSIDE</span><h3 data-no-translate class="record-identity">'+esc(title(room))+'</h3><p>'+esc(room.description||"A room in the Montréal home.")+'</p></div>'+
-   '<div class="world-room-place"><div class="world-room-place-image" aria-hidden="true"><span></span><span></span><span></span></div><div class="world-room-place-copy"><span class="world-kicker">PLACE</span><strong>'+esc(room.profile&&room.profile.role||"LIVED PLACE")+'</strong><p>This is a place first. The records live inside it.</p></div></div>'+
+   '<div class="world-room-place"><div class="world-room-place-image" aria-hidden="true"><span></span><span></span><span></span></div><div class="world-room-place-copy"><span class="world-kicker">PLACE</span><strong>'+esc(live.role||room.profile&&room.profile.role||"LIVED PLACE")+'</strong><p>'+esc(atmosphere.light+" · "+atmosphere.surface+" · "+atmosphere.sound)+'</p></div></div>'+
+   '<div class="world-room-details"><div><span class="world-kicker">THE AIR</span><div class="world-room-tags"><span>'+esc(atmosphere.weather)+'</span><span>'+esc(atmosphere.temperature==null?"":String(atmosphere.temperature)+"°")+'</span><span>'+esc(atmosphere.signal)+'</span></div></div><div><span class="world-kicker">WHAT IS AROUND YOU</span><div class="world-room-tags">'+(live.texture.length?live.texture.map(x=>"<span>"+esc(x)+"</span>").join(""):"<span>lived-in</span>")+'</div></div></div>'+
    (textureLine?'<div class="world-room-details"><div><span class="world-kicker">TEXTURE</span><div class="world-room-tags">'+textureLine+'</div></div>'+(anchorLine?'<div><span class="world-kicker">LANDMARKS / ANCHORS</span><div class="world-room-tags">'+anchorLine+'</div></div>':'')+'</div>':'')+
    '<div class="world-room-life"><div class="world-room-life-head"><span class="world-kicker">WHAT LIVES HERE</span><p>People, moments, art, music, objects and traces appear as they are actually added to this place.</p></div>'+(items||'<div class="world-empty">Nothing has been opened here yet.</div>')+'</div>'+(contents.length?'<div class="world-room-next"><span class="world-kicker">START SOMEWHERE</span><p>Open one thing. Follow what connects.</p></div>':'')+
  '</div>';
