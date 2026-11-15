@@ -488,7 +488,7 @@ function streetPlaceRecords(place,street){
  });
 }
 function placeRecordDetail(place,street){
- const atmosphere=placeAtmosphere(place,"place");\n const layerMark=worldLayerMarkup(place);
+ const atmosphere=placeAtmosphere(place,"place");\n
  const temporal=temporalMarkup(place);
  const live=placeIdentity(place);
  const contents=roomContents(place);
@@ -715,6 +715,8 @@ function mountWorld(){
    else if(state.selected&&["world-apartment","world-street-corner","world-parc-extension"].includes(String(state.selected)))layer="room";
    else if(state.selected&&state.selected!=="world-montreal")layer="place";
    container.dataset.worldLayer=layer;
+   const record=state.selected?records().find(function(r){return String(r.id)===String(state.selected);}):null;
+   container.dataset.worldOntologyLayer=record?worldLayerFor(record):"EXISTENCE";
  }
  syncLiveState();
  loadTrail();
