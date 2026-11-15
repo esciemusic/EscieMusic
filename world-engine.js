@@ -136,6 +136,24 @@ function worldNow(){
  }
  return {date:dateLabel,time:timeLabel,season:String(env.season||"").trim(),weather:String(env.weather||"").trim(),temperature:env.temperature};
 }
+
+function worldReturnState(){
+ const key="escie_world_return_state";
+ try{return JSON.parse(localStorage.getItem(key)||"{}")||{};}catch(e){return {};}
+}
+function rememberWorldReturn(){
+ const now=Date.now(); const data=worldReturnState();
+ data.lastVisit=now; data.visits=Math.max(0,Number(data.visits||0))+1;
+ try{localStorage.setItem("escie_world_return_state",JSON.stringify(data));}catch(e){}
+ return data;
+}
+function returnWelcomeMarkup(){
+ const data=worldReturnState();
+ if(!data.lastVisit)return "";
+ const elapsed=Date.now()-Number(data.lastVisit||0);
+ if(elapsed<6*60*60*1000)return "";
+ return '<div class="world-return-welcome" role="status"><span class="world-kicker">RETURN</span><strong>THE WORLD KEPT GOING.</strong><p>Things may be different from the last time you were here.</p></div>';
+}
 function worldNowMarkup(){
  const now=worldNow();
  const line=[now.date,now.time].filter(Boolean).join(" · ");
@@ -594,7 +612,7 @@ function outsideWorldMarkup(){
  }).join(""):'<div class="world-outside-empty"><span class="world-kicker">OPEN SPACE</span><p>The World does not end at Montréal. It simply has not been filled in here yet.</p><small>Places enter this threshold as they become part of the public World.</small></div>';
  return '<section class="world-outside-layer" aria-label="The world beyond Montréal"><div class="world-outside-head"><span class="world-kicker">BEYOND HOME</span><h4>THE WORLD OUTSIDE</h4><p>Montréal is where the World is entered from. It is not where the World ends.</p></div><div class="world-outside-places">'+cards+'</div></section>';
 }
-function worldHome(){
+function worldHome(){ rememberWorldReturn();
  const city=montrealRecord(),rooms=homeRooms();
  const roomCards=rooms.map(function(room){
    return '<button type="button" class="world-room" data-node="'+esc(room.id)+'"><span class="world-room-mark" aria-hidden="true"></span><div><span class="world-kicker">ROOM</span><strong>'+esc(title(room))+'</strong><p>'+esc(room.description||"A room in the Montréal home.")+'</p></div><span class="world-arrow" aria-hidden="true">↗</span></button>';
@@ -602,7 +620,7 @@ function worldHome(){
  const currentTab=state.tab!=="atlas";
  const outside=outsideWorldMarkup();
  return '<div class="world-home">'+
-   '<div class="world-home-intro"><span class="world-kicker">MY WORLD</span><h3>THE WORLD</h3><p>The world is already here. ESCIE is one way of seeing it.</p><small>Montréal is home. The world continues.</small></div>'+worldNowMarkup()+
+   '<div class="world-home-intro"><span class="world-kicker">MY WORLD</span><h3>THE WORLD</h3><p>The world is already here. ESCIE is one way of seeing it.</p><small>Montréal is home. The world continues.</small></div>'+worldNowMarkup()+returnWelcomeMarkup()+
    ((currentTab||state.exploreOpen)?worldLensMarkup():'')+
    (currentTab?worldLensContent():'<div class="world-home-house"><button type="button" class="world-home-city" data-node="world-montreal"><span class="world-kicker">HOME</span><strong>'+esc(city&&city.title||"MONTRÉAL")+'</strong><p>WHERE MY WORLD AND THE WORLD INTERTWINE.</p><span class="world-arrow" aria-hidden="true">↗</span></button><div class="world-home-rooms">'+(roomCards||'<span class="world-empty">Nothing has been opened yet.</span>')+'</div></div>')+
    ((currentTab||state.exploreOpen)?'':'<div class="world-home-actions"><button type="button" class="world-enter-index" data-world-explore aria-expanded="false"><span class="world-kicker">DISCOVER</span><strong>OPEN THE WORLD</strong><span aria-hidden="true">↗</span></button></div>')+
