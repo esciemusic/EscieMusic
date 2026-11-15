@@ -62,14 +62,13 @@ function roomContents(room){
 function roomDetail(room){
  const contents=roomContents(room);
  const items=contents.map(function(r){
-   return '<button type="button" class="world-room-item" data-node="'+esc(r.id)+'"><strong>'+esc(title(r))+'</strong><small>'+esc(r.description||r.summary||"A piece of life in this room.")+'</small></button>';
+   const kind=type(r),label=kind==="MUSIC"?"MUSIC":kind==="ART"?"ART":kind==="PERSON"?"PERSON":kind==="MOMENT"?"MOMENT":"FOUND";
+   return '<button type="button" class="world-room-item" data-node="'+esc(r.id)+'"><span class="world-room-item-kind">'+esc(label)+'</span><strong>'+esc(title(r))+'</strong><small>'+esc(r.description||r.summary||"A piece of life in this room.")+'</small></button>';
  }).join('');
- return '<aside class="world-detail world-room-detail" aria-live="polite">'+
-   '<div class="world-detail-head"><div><span class="world-kicker">MONTRÉAL · ROOM</span><h3 data-no-translate class="record-identity">'+esc(title(room))+'</h3></div><button type="button" class="world-close" data-close-node aria-label="Return home">×</button></div>'+
-   '<p>'+esc(room.description||"A room in the Montréal home.")+'</p>'+
-   '<div class="world-room-items">'+(items||'<div class="world-empty">Nothing has been opened here yet.</div>')+'</div>'+
-   '<button type="button" class="world-home-return" data-close-node>← BACK HOME</button>'+
- '</aside>';
+ return '<div class="world-room-scene">'+
+   '<div class="world-room-head"><button type="button" class="world-home-return" data-close-node>← MONTRÉAL</button><span class="world-kicker">ROOM</span><h3 data-no-translate class="record-identity">'+esc(title(room))+'</h3><p>'+esc(room.description||"A room in the Montréal home.")+'</p></div>'+
+   '<div class="world-room-life">'+(items||'<div class="world-empty">Nothing has been opened here yet.</div>')+'</div>'+
+ '</div>';
 }
 function detail(r){
  const roomIds=["little-italy","parc-extension"];
