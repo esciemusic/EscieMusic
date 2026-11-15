@@ -1,4 +1,5 @@
 name: Deploy ESCIE to GitHub Pages
+# Deployment trigger checkpoint: keep push-to-main and manual dispatch available.
 
 on:
   push:
