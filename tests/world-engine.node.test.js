@@ -45,7 +45,7 @@ assert(/writeWorldHash\("#world-node=.*,"push"\)/.test(src),"World node navigati
 assert(/writeWorldHash\("#world-street=.*,"push"\)/.test(src),"World street navigation must create a browser-history step");
 assert(/writeWorldHash\("#world-place=.*,"push"\)/.test(src),"World place navigation must create a browser-history step");
 assert(/window\.addEventListener\("popstate"/.test(src)&&/window\.addEventListener\("hashchange"/.test(src),"World deep links must restore on browser back/forward and hash changes");\nassert(/function clearWorldTransition\(options\)/.test(src),"World Engine needs centralized transition cleanup");
-assert(/clearWorldTransition\(\{preserveReturn:!!options\.preserveReturnReturn\}\)/.test(src),"World node navigation must clear stale transition state");
+assert(/clearWorldTransition\(\{preserveReturn:!!options\.preserveReturn\}\)/.test(src),"World node navigation must clear stale transition state");
 assert(/state\.exploreOpen=false;/.test(src)&&/state\.outsideOpen=false;/.test(src),"Deep-link restoration must clear stale overlay state");
 assert(!/history\.replaceState\(null,"","#world-node=/.test(src),"World node navigation must not replace browser history");
 
