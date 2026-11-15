@@ -61,13 +61,20 @@ function roomContents(room){
 }
 function roomDetail(room){
  const contents=roomContents(room);
+ const profile=room&&room.profile&&typeof room.profile==="object"?room.profile:{};
+ const texture=Array.isArray(profile.texture)?profile.texture:[];
+ const anchors=Array.isArray(profile.anchors)?profile.anchors:[];
  const items=contents.map(function(r){
-   const kind=type(r),label=kind==="MUSIC"?"MUSIC":kind==="ART"?"ART":kind==="PERSON"?"PERSON":kind==="MOMENT"?"MOMENT":"FOUND";
+   const kind=type(r),label=kind==="MUSIC"?"MUSIC":kind==="ART"?"ART":kind==="PERSON"?"PERSON":kind==="MOMENT"?"MOMENT":kind;
    return '<button type="button" class="world-room-item" data-node="'+esc(r.id)+'"><span class="world-room-item-kind">'+esc(label)+'</span><strong>'+esc(title(r))+'</strong><small>'+esc(r.description||r.summary||"A piece of life in this room.")+'</small></button>';
  }).join('');
+ const textureLine=texture.length?texture.map(function(x){return '<span>'+esc(String(x).replace(/-/g," "))+'</span>';}).join(''):'';
+ const anchorLine=anchors.length?anchors.map(function(x){return '<span>'+esc(x)+'</span>';}).join(''):'';
  return '<div class="world-room-scene">'+
-   '<div class="world-room-head"><button type="button" class="world-home-return" data-close-node>← MONTRÉAL</button><span class="world-kicker">ROOM</span><h3 data-no-translate class="record-identity">'+esc(title(room))+'</h3><p>'+esc(room.description||"A room in the Montréal home.")+'</p></div>'+
-   '<div class="world-room-life">'+(items||'<div class="world-empty">Nothing has been opened here yet.</div>')+'</div>'+
+   '<div class="world-room-threshold"><button type="button" class="world-home-return" data-close-node>← MONTRÉAL</button><span class="world-kicker">A ROOM IN THE HOME</span><h3 data-no-translate class="record-identity">'+esc(title(room))+'</h3><p>'+esc(room.description||"A room in the Montréal home.")+'</p></div>'+
+   '<div class="world-room-place"><div class="world-room-place-image" aria-hidden="true"><span></span><span></span><span></span></div><div class="world-room-place-copy"><span class="world-kicker">PLACE</span><strong>'+esc(room.profile&&room.profile.role||"LIVED PLACE")+'</strong><p>This is a place first. The records live inside it.</p></div></div>'+
+   (textureLine?'<div class="world-room-details"><div><span class="world-kicker">TEXTURE</span><div class="world-room-tags">'+textureLine+'</div></div>'+(anchorLine?'<div><span class="world-kicker">LANDMARKS / ANCHORS</span><div class="world-room-tags">'+anchorLine+'</div></div>':'')+'</div>':'')+
+   '<div class="world-room-life"><div class="world-room-life-head"><span class="world-kicker">WHAT LIVES HERE</span><p>People, moments, art, music, objects and traces appear as they are actually added to this place.</p></div>'+(items||'<div class="world-empty">Nothing has been opened here yet.</div>')+'</div>'+
  '</div>';
 }
 function detail(r){
