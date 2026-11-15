@@ -52,6 +52,16 @@ function related(id){
  return out;
 }
 function inverse(t){const inv={created_by:"created",part_of:"contains",located_at:"location_of",recorded_at:"recording_location_of",performed_at:"performance_location_of",inspired_by:"inspires",supports:"supported_by",contradicts:"contradicted_by"};return inv[t]||t||"related"}
+function liveContents(){
+ const live=window.ESCIE_WORLD_LIVE&&window.ESCIE_WORLD_LIVE.data;
+ if(!live||!Array.isArray(live.contents))return [];
+ const map=new Map(records().map(r=>[String(r.id),r]));
+ return live.contents.map(function(x){
+   const id=String(x&&x.record_id||"");
+   const target=map.get(id)||{id:id,type:x.type||"OBJECT",title:x.title||id,description:x.description||"Something in this place."};
+   return {node:target,presence:x.presence||"PRESENT",weight:x.weight,context:x.context||{}};
+ }).filter(x=>x.node&&x.node.id);
+}
 function liveDiscoveries(node){
  const live=window.ESCIE_WORLD_LIVE&&window.ESCIE_WORLD_LIVE.data;
  if(!live||!Array.isArray(live.discoveries)||!node)return [];
@@ -166,6 +176,8 @@ function discoveryRail(node){
  return '<div class="world-discovery-rail"><div class="world-discovery-head"><span class="world-kicker">FOLLOW THE THREAD</span><p>Something here connects to something else.</p></div><div class="world-discovery-links">'+neighbors.map(function(x){return '<button type="button" class="world-discovery-link" data-node="'+esc(x.node.id)+'"><span class="world-kicker">'+esc(x.r&&x.r.type?String(x.r.type).replace(/_/g," "):"related")+'</span><strong>'+esc(title(x.node))+'</strong><span aria-hidden="true">↗</span></button>';}).join('')+'</div></div>';
 }
 function roomContents(room){
+ const live=liveContents();
+ if(live.length)return live.map(function(x){return x.node;});
  const all=records().filter(function(r){return r&&String(r.id)!==String(room.id);});
  const linked=related(room.id).map(function(x){return x.node;});
  const tagged=all.filter(function(r){const tags=Array.isArray(r.tags)?r.tags.map(String):[];return tags.includes(String(room.id))||tags.includes(String(room.slug||room.id));});
