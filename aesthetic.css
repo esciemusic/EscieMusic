@@ -3204,3 +3204,13 @@ html[data-theme="light"] .world-discovery-head p{color:rgba(23,23,26,.5)}
 html[data-theme="light"] .world-discovery-link{color:#17171a;border-color:rgba(23,23,26,.1)}
 html[data-theme="light"] .world-discovery-link strong{color:#17171a}
 @media(max-width:700px){.world-discovery-links{grid-template-columns:1fr}.world-discovery-link{border-right:0}}
+
+/* Encounter media: make the record feel like a piece of the World. */
+.world-encounter-media{margin:12px 0 18px;overflow:hidden;border:1px solid rgba(216,212,202,.1);background:rgba(0,0,0,.12)}
+.world-encounter-media img{display:block;width:100%;max-height:420px;object-fit:cover;filter:saturate(.82) contrast(1.03)}
+.world-encounter-audio{padding:12px}.world-encounter-audio audio{display:block;width:100%;margin-top:8px}
+.world-encounter-meta{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 16px}
+.world-encounter-meta span{padding:4px 7px;border:1px solid rgba(216,212,202,.1);color:rgba(216,212,202,.55);font:8px/1 var(--escie-font-mono);letter-spacing:.08em;text-transform:uppercase}
+.world-encounter-description{max-width:720px;font-size:12px;line-height:1.75}
+html[data-theme="light"] .world-encounter-media{border-color:rgba(23,23,26,.1);background:rgba(23,23,26,.035)}
+html[data-theme="light"] .world-encounter-meta span{border-color:rgba(23,23,26,.12);color:rgba(23,23,26,.55)}
