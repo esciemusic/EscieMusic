@@ -17,6 +17,8 @@ assert(/role="tablist".*aria-label="ESCIE World navigation"/.test(src),"world na
 assert(/aria-selected="/.test(src)&&/state\.tab===t\[0\]/.test(src),"world tabs need selected-state semantics");
 assert(/id=\\"glass-eye-panel\\" role=\\"region\\" aria-label=\\"The Glass Eye\\"/.test(src),"Glass Eye needs an accessible region");
 assert(/const reduceMotion=\(\)=>typeof window\.matchMedia==="function"/.test(src),"World Engine needs reduced-motion detection");
+assert(/function safeMediaURL\(value\)/.test(src),"World Engine media must use a safe URL boundary");
+assert(/\["http:","https:"\]\.includes\(parsed\.protocol\)/.test(src),"World Engine media must allow only HTTP(S) URLs");
 assert(/const reduceMotion=\(\)=>typeof window\.matchMedia==="function"/.test(src),"World Engine needs reduced-motion detection");
 assert(!/scrollIntoView\(/.test(src),"World Engine must not force section scrolling");
 console.log("ESCIE world-engine contracts OK");
