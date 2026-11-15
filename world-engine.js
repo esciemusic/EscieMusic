@@ -561,8 +561,8 @@ function streetPlaceRecords(place,street){
  });
 }
 function placeRecordDetail(place,street){
- const atmosphere=placeAtmosphere(place,"place");\n
- const temporal=temporalMarkup(place);
+ const atmosphere=placeAtmosphere(place,"place");
+const temporal=temporalMarkup(place);
  const live=placeIdentity(place);
  const contents=roomContents(place);
  const rooms=contents.filter(function(r){return String(type(r)).toUpperCase()==="ROOM"||String(r.kind||"").toUpperCase()==="ROOM";});
@@ -789,7 +789,8 @@ function mountWorld(){
    else if(state.selected&&state.selected!=="world-montreal")layer="place";
    container.dataset.worldLayer=layer;
    const record=state.selected?records().find(function(r){return String(r.id)===String(state.selected);}):null;
-   container.dataset.worldOntologyLayer=record?worldLayerFor(record):"EXISTENCE";\n   container.dataset.worldOntologyCoverage=record?worldLayerCoverage(record).join("|"):"EXISTENCE";
+   container.dataset.worldOntologyLayer=record?worldLayerFor(record):"EXISTENCE";
+container.dataset.worldOntologyCoverage=record?worldLayerCoverage(record).join("|"):"EXISTENCE";
  const celestial=celestialContext();
  container.dataset.worldSun=celestial.sun;
  container.dataset.worldMoon=celestial.moon;
