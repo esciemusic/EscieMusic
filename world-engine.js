@@ -4,7 +4,7 @@ window.ESCIE_WORLD_ENGINE_ACTIVE=true;
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
 const coll=(name,fallback=[])=>{const v=window[name];return Array.isArray(v)?v:(v&&Array.isArray(v.records)?v.records:fallback)};
-const state={tab:"atlas",q:"",type:"ALL",selected:null,trail:[],visited:[],eyeOpen:false,exploreOpen:false,outsideOpen:false,returningFrom:null,returnFlash:null,street:null};
+const state={tab:"atlas",q:"",type:"ALL",selected:null,trail:[],visited:[],eyeOpen:false,exploreOpen:false,outsideOpen:false,returningFrom:null,returnFlash:null,street:null,roomOrigin:null};
 const tabs=[["atlas","ATLAS","world"],["people","THE PEOPLE","person"],["places","PLACES","world"],["moments","MOMENTS","moment"],["fragments","FRAGMENTS","photo-negative"],["bodies","BODIES","empty-chair"],["proof","PROOF","key"],["path","PATH","web"],["timeline","TIMELINE","now"],["symbols","SYMBOLS","daisy"],["trace","TRACE","web"]];function glyph(name,label){const safe=String(name||"").replace(/[^a-z0-9-]/gi,"");if(!safe)return "";return '<svg class="escie-symbol-glyph world-entry-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#'+esc(safe)+'"></use></svg>';}
 const raf=typeof requestAnimationFrame==="function"?requestAnimationFrame:fn=>setTimeout(fn,0);
 const caf=typeof cancelAnimationFrame==="function"?cancelAnimationFrame:clearTimeout;
@@ -226,7 +226,7 @@ function roomDetail(room){
  const textureLine=texture.length?texture.map(function(x){return '<span>'+esc(String(x).replace(/-/g," "))+'</span>';}).join(''):'';
  const anchorLine=anchors.length?anchors.map(function(x){return '<span>'+esc(x)+'</span>';}).join(''):'';
  return '<div class="world-room-scene">'+returnNotice+
-   '<div class="world-room-threshold"><button type="button" class="world-home-return" data-node="world-montreal">← MONTRÉAL</button><span class="world-kicker">MONTRÉAL / '+esc(roomNeighborhood[String(room.id)]||"PLACE")+</span><span class="world-kicker">A ROOM IN THE HOME</span><span class="world-kicker">INSIDE</span><h3 data-no-translate class="record-identity">'+esc(title(room))+'</h3><p>'+esc(room.description||"A room in the Montréal home.")+'</p></div>'+
+   '<div class="world-room-threshold"><button type="button" class="world-home-return" data-room-place-return="esc(state.roomOrigin&&state.roomOrigin.placeId||"")+">← esc(state.roomOrigin&&state.roomOrigin.place?title(state.roomOrigin.place):"MONTRÉAL")+</button><span class="world-kicker">MONTRÉAL / '+esc(roomNeighborhood[String(room.id)]||"PLACE")+</span><span class="world-kicker">A ROOM IN THE HOME</span><span class="world-kicker">INSIDE</span><h3 data-no-translate class="record-identity">'+esc(title(room))+'</h3><p>'+esc(room.description||"A room in the Montréal home.")+'</p></div>'+
    '<div class="world-room-place"><div class="world-room-place-image" aria-hidden="true"><span></span><span></span><span></span></div><div class="world-room-place-copy"><span class="world-kicker">PLACE</span><strong>'+esc(live.role||room.profile&&room.profile.role||"LIVED PLACE")+'</strong><p>'+esc(atmosphere.light+" · "+atmosphere.surface+" · "+atmosphere.sound)+'</p></div></div>'+
    '<div class="world-room-presence"><div class="world-room-presence-head"><span class="world-kicker">PRESENCE</span><p>The room is not a list. Look around first.</p></div><div class="world-room-presence-field">'+(presence||'<span class="world-room-presence-empty">Nothing is visibly present yet.</span>')+'</div></div>'+
    '<div class="world-room-details"><div><span class="world-kicker">THE AIR</span><div class="world-room-tags"><span>'+esc(atmosphere.weather)+'</span><span>'+esc(atmosphere.temperature==null?"":String(atmosphere.temperature)+"°")+'</span><span>'+esc(atmosphere.signal)+'</span></div></div><div><span class="world-kicker">WHAT IS AROUND YOU</span><div class="world-room-tags">'+(live.texture.length?live.texture.map(x=>"<span>"+esc(x)+"</span>").join(""):"<span>lived-in</span>")+'</div></div></div>'+
@@ -658,6 +658,13 @@ function mountWorld(){
      if(id)returnToPlace(id,from);
      return;
    }
+   const roomReturn=event.target.closest("[data-room-place-return]");
+   if(roomReturn){
+     const placeId=roomReturn.getAttribute("data-room-place-return")||"";
+     const origin=state.roomOrigin;
+     if(origin&&String(origin.placeId)===String(placeId)){state.selected=String(placeId);state.placeStreet=origin;state.roomOrigin=null;history.replaceState(null,"","#world-place="+encodeURIComponent(String(placeId)));draw();focusDetail();}
+     return;
+   }
    const node=event.target.closest("[data-node]");
    if(node){
      const id=node.getAttribute("data-node");
@@ -674,7 +681,11 @@ function mountWorld(){
        }
      }
      const id=node.getAttribute("data-node");
-     if(id){openWorldNode(id);}
+     if(id){
+       if(state.placeStreet&&state.placeStreet.place&&roomContents(state.placeStreet.place).some(function(r){return String(r.id)===String(id);})){state.roomOrigin={placeId:String(state.placeStreet.place.id),place:state.placeStreet.place,street:state.placeStreet.street||null};}
+       else if(state.street){state.roomOrigin=null;}
+       openWorldNode(id);
+     }
      return;
    }
    if(event.target.closest("[data-close-node]")||event.target.closest("[data-outside-world]")){
@@ -686,9 +697,12 @@ function mountWorld(){
  window.addEventListener("hashchange",function(){
    const h=String(location.hash||"");
    const sm=h.match(/(?:world-street=)([^&]+)/);
+   const pm=h.match(/(?:world-place=)([^&]+)/);
    const m=h.match(/(?:world-node=)([^&]+)/);
    state.street=null;
-   state.selected=m?decodeURIComponent(m[1]):null;
+   state.roomOrigin=null;
+   state.selected=pm?decodeURIComponent(pm[1]):(m?decodeURIComponent(m[1]):null);
+   if(pm){const place=records().find(function(r){return String(r.id)===String(state.selected);});if(place)state.placeStreet={placeId:String(place.id),place:place,street:null};}
    if(sm){
      const parts=decodeURIComponent(sm[1]).split(":");
      const placeId=parts.shift()||"";
