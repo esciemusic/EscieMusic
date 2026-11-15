@@ -4,7 +4,7 @@ window.ESCIE_WORLD_ENGINE_ACTIVE=true;
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
 const coll=(name,fallback=[])=>{const v=window[name];return Array.isArray(v)?v:(v&&Array.isArray(v.records)?v.records:fallback)};
-const state={tab:"atlas",q:"",type:"ALL",selected:null,trail:[],visited:[],eyeOpen:false};
+const state={tab:"atlas",q:"",type:"ALL",selected:null,trail:[],visited:[],eyeOpen:false,exploreOpen:false};
 const tabs=[["atlas","ATLAS","world"],["people","THE PEOPLE","person"],["places","PLACES","world"],["moments","MOMENTS","moment"],["fragments","FRAGMENTS","photo-negative"],["bodies","BODIES","empty-chair"],["proof","PROOF","key"],["path","PATH","web"],["timeline","TIMELINE","now"],["symbols","SYMBOLS","daisy"],["trails","TRAILS","web"]];function glyph(name,label){const safe=String(name||"").replace(/[^a-z0-9-]/gi,"");if(!safe)return "";return '<svg class="escie-symbol-glyph world-entry-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#'+esc(safe)+'"></use></svg>';}
 const raf=typeof requestAnimationFrame==="function"?requestAnimationFrame:fn=>setTimeout(fn,0);
 const caf=typeof cancelAnimationFrame==="function"?cancelAnimationFrame:clearTimeout;
@@ -169,9 +169,9 @@ function worldHome(){
  const currentTab=state.tab!=="atlas";
  return '<div class="world-home">'+
    '<div class="world-home-intro"><span class="world-kicker">MY WORLD</span><h3>THE WORLD</h3><p>The world is already here. ESCIE is one way of seeing it.</p><small>Montréal is home. The world continues.</small></div>'+
-   (currentTab?worldLensMarkup():'')+
+   ((currentTab||state.exploreOpen)?worldLensMarkup():'')+
    (currentTab?worldLensContent():'<div class="world-home-house"><div class="world-home-city"><span class="world-kicker">HOME</span><strong>'+esc(city&&city.title||"MONTRÉAL")+'</strong><p>WHERE MY WORLD AND THE WORLD INTERTWINE.</p></div><div class="world-home-rooms">'+(roomCards||'<span class="world-empty">Nothing has been opened yet.</span>')+'</div></div>')+
-   (currentTab?'':'<div class="world-home-actions"><button type="button" class="world-enter-index" data-world-explore aria-expanded="false"><span class="world-kicker">DISCOVER</span><strong>OPEN THE WORLD</strong><span aria-hidden="true">↗</span></button></div>')+
+   ((currentTab||state.exploreOpen)?'':'<div class="world-home-actions"><button type="button" class="world-enter-index" data-world-explore aria-expanded="false"><span class="world-kicker">DISCOVER</span><strong>OPEN THE WORLD</strong><span aria-hidden="true">↗</span></button></div>')+
    '<button type="button" class="world-home-outside" data-outside-world><span class="world-kicker">BEYOND HOME</span><strong>THE WORLD CONTINUES</strong><p>Everything beyond Montréal can enter here too.</p></button>'+
    (currentTab?'':'<p class="world-home-note">You do not have to understand the whole thing. Start somewhere.</p>')+
  '</div>';
@@ -199,7 +199,7 @@ function mountWorld(){
      draw();
      return;
    }
-   const node=event.target.closest("[data-node]");
+   const explore=event.target.closest("[data-world-explore]");\n   if(explore){\n     state.exploreOpen=true;\n     state.tab="atlas";\n     state.selected=null;\n     history.replaceState(null,"","#world");\n     draw();\n     return;\n   }\n   const node=event.target.closest("[data-node]");
    if(node){
      const id=node.getAttribute("data-node");
      if(id){state.selected=id;remember(id);history.replaceState(null,"","#world-node="+encodeURIComponent(id));draw();}
