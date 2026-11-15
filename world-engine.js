@@ -129,4 +129,41 @@ function worldHome(){
  const roomCards=rooms.map(function(room){return '<button type="button" class="world-room" data-node="'+esc(room.id)+'"><span class="world-room-mark" aria-hidden="true"></span><div><span class="world-kicker">ROOM</span><strong>'+esc(title(room))+'</strong><p>'+esc(room.description||"A room in the Montréal home.")+'</p></div><span class="world-arrow" aria-hidden="true">↗</span></button>';}).join("");
  return '<div class="world-home"><div class="world-home-intro"><span class="world-kicker">THE WORLD</span><h3>MONTRÉAL IS HOME.</h3><p>Come in. Look around.</p></div><div class="world-home-house"><div class="world-home-city"><span class="world-kicker">HOME</span><strong>MONTRÉAL</strong><p>'+esc(city&&city.description||"The home.")+'</p></div><div class="world-home-rooms">'+(roomCards||'<span class="world-empty">Nothing has been opened yet.</span>')+'</div></div><div class="world-home-outside"><span class="world-kicker">BEYOND THE DOOR</span><strong>THE OUTSIDE WORLD</strong><p>Everything else is out there.</p></div></div>';
 }
-;
+function mountWorld(){
+ const container=$("world-container"); if(!container)return;
+ container.classList.add("world-engine");
+ const route=String(location.hash||"");
+ const match=route.match(/(?:world-node=)([^&]+)/);
+ state.selected=match?decodeURIComponent(match[1]):null;
+ function draw(){
+   if(state.selected){
+     const node=records().find(r=>String(r.id)===String(state.selected));
+     if(node){container.innerHTML=detail(node);focusDetail();return;}
+     state.selected=null;
+   }
+   container.innerHTML=worldHome();
+ }
+ container.addEventListener("click",function(event){
+   const node=event.target.closest("[data-node]");
+   if(node){
+     const id=node.getAttribute("data-node");
+     if(id){state.selected=id;remember(id);history.replaceState(null,"","#world-node="+encodeURIComponent(id));draw();}
+     return;
+   }
+   if(event.target.closest("[data-close-node]")){
+     state.selected=null;
+     history.replaceState(null,"","#world");
+     draw();
+   }
+ });
+ window.addEventListener("hashchange",function(){
+   const m=String(location.hash||"").match(/(?:world-node=)([^&]+)/);
+   state.selected=m?decodeURIComponent(m[1]):null;
+   draw();
+ });
+ draw();
+}
+if(typeof document!=="undefined"){
+ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",mountWorld,{once:true});
+ else mountWorld();
+}
