@@ -3725,3 +3725,8 @@ body.light .world-object-origin{border-color:rgba(0,0,0,.1)}
 #world-container[data-world-surface="wet_reflective"] .world-home-place-atmosphere{border-color:rgba(150,180,205,.20)}
 #world-container[data-world-surface="snow_covered"] .world-home-place-atmosphere{border-color:rgba(220,225,235,.18)}
 @media(prefers-reduced-motion:reduce){#world-container{transition:none}}
+
+#world-container .world-home-place-atmosphere[data-atmosphere-character="INTERIOR"]{background:rgba(255,255,255,.045)}
+#world-container .world-home-place-atmosphere[data-atmosphere-character="STREET"]{background:rgba(255,255,255,.025)}
+#world-container .world-home-place-atmosphere[data-atmosphere-character="OPEN_AIR"]{background:rgba(120,150,170,.025)}
+#world-container .world-home-place-atmosphere[data-atmosphere-character="PUBLIC_PLACE"]{background:rgba(120,105,145,.025)}
