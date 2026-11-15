@@ -123,6 +123,8 @@ async function auditWorldLenses(label){
   check(await world.count()===1, label+" THE WORLD section missing");
   const trigger=world.locator(".section-drop-trigger");
   if(await trigger.count() && !(await world.evaluate(el=>el.classList.contains("section-open")).catch(()=>false))) await trigger.click();
+  const explorer=world.locator("[data-world-explore]").first();
+  if(await explorer.count() && !(await world.locator("[data-world-tab]").first().count())) { await explorer.click(); await page.waitForTimeout(80); }
   for(const tab of ["atlas","people","places","moments","fragments","bodies","proof","path","timeline","symbols","trails"]){
     const button=page.locator('[data-world-tab="'+tab+'"]').first();
     check(await button.count()===1, label+" THE WORLD lens missing: "+tab);
