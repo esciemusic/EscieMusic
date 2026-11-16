@@ -224,6 +224,61 @@
     })[destination] || null;
   }
 
+  function symbolContextDestination(symbolId, sourceRecordId) {
+    const fallback = symbolPortalRoute(symbolId);
+    if (!fallback) return null;
+
+    const sourceId = String(sourceRecordId || "").trim();
+    if (!sourceId) return { route: fallback, record: null, contextual: false };
+
+    const publicRecords = getAllPublicRecords().filter(record => record && isPublic(record));
+    const byId = new Map(publicRecords.map(record => [String(recordId(record)), record]));
+    const source = byId.get(sourceId);
+    if (!source) return { route: fallback, record: null, contextual: false };
+
+    const related = typeof getPublicRelationshipRecords === "function"
+      ? getPublicRelationshipRecords({ record: sourceId })
+          .map(item => {
+            const otherId = String(item.from) === sourceId ? item.to : item.from;
+            return byId.get(String(otherId));
+          })
+          .filter(Boolean)
+      : [];
+
+    const symbolRecords = publicRecords.filter(record =>
+      String(recordId(record)) !== sourceId &&
+      getRecordSymbols(record).some(item => item && item.id === symbolId)
+    );
+
+    const candidates = [];
+    const seen = new Set();
+    related.concat(symbolRecords).forEach(record => {
+      const id = String(recordId(record));
+      if (!id || seen.has(id)) return;
+      seen.add(id);
+      const symbols = getRecordSymbols(record).map(item => item.id);
+      let score = 0;
+      if (symbols.includes(symbolId)) score += 100;
+      if (related.includes(record)) score += 30;
+      if (record.published === true || record.status === "published") score += 10;
+      candidates.push({ record, score });
+    });
+
+    candidates.sort((a, b) => b.score - a.score || recordTitle(a.record).localeCompare(recordTitle(b.record)));
+    const target = candidates[0] ? candidates[0].record : null;
+    if (!target) return { route: fallback, record: null, contextual: false };
+
+    const destination = String(getSymbols().find(item => item && item.id === symbolId)?.destination || "").toLowerCase();
+    if (destination === "people" || destination === "places") {
+      return { route: "#world-node=" + encodeURIComponent(String(recordId(target))), record: target, contextual: true };
+    }
+    if (destination === "traces") {
+      return { route: "#web", record: target, contextual: true };
+    }
+
+    return { route: fallback, record: target, contextual: true };
+  }
+
   function getRuntimeState() {
     return getGlobal("ESCIE_STATE", {});
   }
@@ -1849,18 +1904,28 @@ function renderClothing(){
       if (symbolTrigger) {
         const symbolId = symbolTrigger.getAttribute("data-symbol-id");
         if (symbolTrigger.hasAttribute("data-symbol-portal")) {
-          const route = symbolPortalRoute(symbolId);
-          if (route) {
-            const recordIdValue = symbolTrigger.getAttribute("data-symbol-record") || "";
-            ESCIE_RUNTIME.webFilters = ESCIE_RUNTIME.webFilters || {};
-            if (route === "#web" && recordIdValue) {
-              ESCIE_RUNTIME.webFilters.record = recordIdValue;
-            }
+          const recordIdValue = symbolTrigger.getAttribute("data-symbol-record") || "";
+          const destination = symbolContextDestination(symbolId, recordIdValue);
+          if (destination && destination.route) {
+            const route = destination.route;
             const category = route.indexOf("#art/") === 0 ? route.slice(5) : "";
             const target = route.indexOf("#art/") === 0 ? "art" : route.slice(1);
             const hash = category ? route : "#" + target;
+
+            if (route === "#web" && destination.record) {
+              ESCIE_RUNTIME.webFilters = ESCIE_RUNTIME.webFilters || {};
+              ESCIE_RUNTIME.webFilters.record = recordId(destination.record);
+            }
+
             history.pushState(null, "", hash);
             window.dispatchEvent(new Event("hashchange"));
+
+            if (destination.contextual && destination.record && (category || target === "world")) {
+              window.setTimeout(() => {
+                const current = getAllPublicRecords().find(item => recordId(item) === recordId(destination.record));
+                if (current && target !== "world") showRecordInspector(current);
+              }, 0);
+            }
             return;
           }
         }
