@@ -990,6 +990,7 @@ function draw(){
    if(outside){
      state.outsideOpen=!state.outsideOpen;
      state.exploreOpen=false;
+     state.moreOpen=false;
      state.tab="atlas";
      state.selected=null;
      history.replaceState(null,"","#world");
