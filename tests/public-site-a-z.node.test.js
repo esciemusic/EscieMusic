@@ -1377,3 +1377,21 @@ test("A-Z Pass 11 protects Web thread backtracking",()=>{
   assert.match(style,/\.web-thread-trail-controls/);
   assert.match(style,/\.web-trail-back/);
 });
+
+
+test("A-Z current signal stays factual, quiet, and minute-aligned without an interval timer",()=>{
+  const present=read("data/present-state.js");
+  const index=read("index.html");
+  const aesthetic=read("aesthetic.css");
+  assert.match(index,/id="hero-present-state"[^>]*aria-label="Current signal"/);
+  assert.match(index,/id="hero-present-time"/);
+  assert.match(index,/id="hero-present-conditions"/);
+  assert.match(present,/CURRENT SIGNAL/);
+  assert.match(present,/Intl\.DateTimeFormat\("en-CA"/);
+  assert.match(present,/temperature_c|temperatureC|temp_c|tempC/);
+  assert.match(present,/weather|condition|conditions/);
+  assert.match(present,/scheduleMinuteRefresh/);
+  assert.doesNotMatch(present,/setInterval\s*\(/);
+  assert.match(aesthetic,/\.hero-present-state/);
+  assert.match(aesthetic,/environmental instrument|must not compete/i);
+});
