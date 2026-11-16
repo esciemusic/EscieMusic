@@ -13,17 +13,17 @@ samples = [
 ]
 lines = [
     "ESCIE — THE FATHER / THE MAN / THE MONSTER",
-    "REALITY WITH THE SIGNAL DISTORTED.",
+    "A GOOD PERSON. I\'M JUST NOT NICE.",
     "Montréal, Québec, Canada.",
-    "The art does not create the universe. The universe creates the art.",
-    "É È Ê Ë À Â Ä Î Ï Ô Ö Ù Û Ü Ç  —  €",
+    "THE FATHER / THE MAN / THE MONSTER",
+    "A E G R S M T C O  —  É È Ê Ë À Â Ä Î Ï Ô Ö Ù Û Ü Ç",
 ]
 
 def render(name, path, size, width, height, filename):
     img = Image.new("RGB", (width, height), "black")
     draw = ImageDraw.Draw(img)
     y = 48
-    for label in [name]:
+    for label in [name, "A E G R S M T C O"]:
         font = ImageFont.truetype(str(path), size)
         draw.text((48, y), label, font=font, fill="white")
         y += size + 34

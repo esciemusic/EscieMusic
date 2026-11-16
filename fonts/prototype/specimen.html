@@ -2,20 +2,49 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>ESCIE Font Family — Prototype Specimen</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ESCIE Typography — Pass 4 Specimen</title>
 <style>
-body{margin:0;background:#0d0d10;color:#eee;font-family:Arial,sans-serif;padding:32px}
-h1{font:700 14px monospace;letter-spacing:.2em;text-transform:uppercase}
-.spec{margin:48px 0;border-top:1px solid #333;padding-top:20px}
-.sample{font-size:clamp(42px,8vw,110px);line-height:1.05}
-.meta{font:12px monospace;letter-spacing:.12em;text-transform:uppercase;color:#aaa;margin-bottom:18px}
+:root{color-scheme:dark;--bg:#080808;--fg:#f1f1ec;--muted:#8d8d88;--line:#292929;--accent:#2f80ff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font-family:Arial,Helvetica,sans-serif}
+main{width:min(1100px,92vw);margin:auto;padding:48px 0 80px}
+header{border-bottom:1px solid var(--line);padding-bottom:24px;margin-bottom:36px}
+.kicker{font:12px/1.4 "Courier New",monospace;letter-spacing:.16em;color:var(--accent)}
+h1{margin:12px 0 8px;font:700 clamp(42px,9vw,104px)/.9 Arial,sans-serif;letter-spacing:.02em}
+.note{max-width:720px;color:var(--muted);line-height:1.6}
+section{border-bottom:1px solid var(--line);padding:28px 0}
+.label{font:11px/1.4 "Courier New",monospace;letter-spacing:.16em;color:var(--muted);margin-bottom:14px}
+.display{font-family:Arial,Helvetica,sans-serif;font-weight:800;letter-spacing:.01em;line-height:.9}
+.hero{font-size:clamp(58px,12vw,150px)}
+.medium{font-size:clamp(34px,7vw,78px)}
+.test{font-size:clamp(25px,4vw,48px);line-height:1.05}
+.meta{font:13px/1.7 "Courier New",monospace;color:var(--muted);margin-top:14px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.card{border:1px solid var(--line);padding:18px;min-height:130px}
+@media(max-width:650px){main{padding-top:28px}.grid{grid-template-columns:1fr}.hero{font-size:clamp(48px,16vw,82px)}}
 </style>
 </head>
 <body>
-<h1>ESCIE / Original Letterform Prototype</h1>
-<div class="spec"><div class="meta">ESCIE — identity</div><div class="sample">ESCIE — FATHER / MAN / MONSTER</div></div>
-<div class="spec"><div class="meta">ESCIE SIGNAL — system</div><div class="sample">CASE FILE / SIGNAL / PROOF / 001</div></div>
-<div class="spec"><div class="meta">ESCIE SCRIPT — visitor trace</div><div class="sample">I was here. I saw it. I listened.</div></div>
-<div class="spec"><div class="meta">French glyph coverage</div><div class="sample">Montréal, Québec — ÉCOUTE / DÉTAIL / FRAGMENTS</div></div>
+<main>
+<header>
+<div class="kicker">ESCIE / TYPOGRAPHY / PASS 04 / PROTOTYPE ONLY</div>
+<h1>ESCIE</h1>
+<p class="note">A visual acceptance specimen for the original display face. Production typography is intentionally untouched. The test focuses on identity, narrow authority, signature glyph behavior, French coverage and phone readability.</p>
+</header>
+
+<section><div class="label">IDENTITY</div><div class="display hero">ESCIE</div><div class="display medium">THE FATHER / THE MAN / THE MONSTER</div></section>
+
+<section><div class="label">SIGNATURE GLYPHS</div><div class="display test">A E G R S M T C O</div><div class="display test">ANGEL / GOTHIC / MONTRÉAL / SURVIVAL</div><div class="meta">A E G R S M T C O receive individual construction priority in Pass 4.</div></section>
+
+<section><div class="label">PUBLIC-SITE STRINGS</div><div class="display test">A GOOD PERSON. I'M JUST NOT NICE.</div><div class="display test">MONTRÉAL, QUÉBEC, CANADA</div><div class="display test">THE ART SPEAKS FOR ITSELF.</div></section>
+
+<section><div class="label">FRENCH / ENGLISH GLYPH COVERAGE</div><div class="display test">ÉÈÊË ÀÂÄ ÎÏ ÔÖ ÙÛÜ Ç</div><div class="display test">L'HOMME — LE PÈRE — LE MONSTRE</div></section>
+
+<section><div class="label">SMALL-SIZE READABILITY</div><div class="grid">
+<div class="card"><div class="label">PHONE</div><div class="display test">ESCIE</div><div class="meta">16–20 px target</div></div>
+<div class="card"><div class="label">NAVIGATION</div><div class="display test">ART / WORLD / WEB</div><div class="meta">12–16 px target</div></div>
+<div class="card"><div class="label">IDENTITY</div><div class="display test">FATHER / MAN / MONSTER</div><div class="meta">24–32 px target</div></div>
+</div></section>
+</main>
 </body>
 </html>
