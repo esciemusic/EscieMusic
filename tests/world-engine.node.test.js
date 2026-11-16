@@ -34,6 +34,8 @@ assert(/encounterContext\(r\)/.test(src),"World encounter detail must render con
 assert(/r\.public_disclosure===false/.test(src),"World Engine must exclude explicitly non-public records");
 assert(/\["withheld","private","internal","draft"\]\.includes\(visibility\)/.test(src),"World Engine must exclude non-public visibility states");
 assert(/r\.released===false\|\|r\.published===false/.test(src),"World Engine must exclude unreleased or unpublished records");
+assert(/function worldContentSnapshot\(\)/.test(src)&&/isPublicWorldRecord\(r\)/.test(src),"World content change detection must use the same public-record boundary");
+assert(/function worldHome\(\)\{ const returnWelcome=returnWelcomeMarkup\(\); rememberWorldReturn\(\);/.test(src),"World return welcome must evaluate before updating the visit timestamp");
 assert(/\["http:","https:"\]\.includes\(parsed\.protocol\)/.test(src),"World Engine media must allow only HTTP(S) URLs");
 assert(/const reduceMotion=\(\)=>typeof window\.matchMedia==="function"/.test(src),"World Engine needs reduced-motion detection");
 assert(!/scrollIntoView\(/.test(src),"World Engine must not force section scrolling");
