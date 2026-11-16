@@ -6,6 +6,7 @@ const map = JSON.parse(fs.readFileSync(path.join(root, "fonts", "glyphs", "glyph
 const registry = fs.readFileSync(path.join(root, "data", "symbols.js"), "utf8");
 const docs = fs.readFileSync(path.join(root, "fonts", "glyphs", "README.md"), "utf8");
 const svg = fs.readFileSync(path.join(root, "assets", "escie-symbols.svg"), "utf8");
+const spec = fs.readFileSync(path.join(root, "fonts", "glyphs", "DESIGN-SPEC.md"), "utf8");
 
 assert.strictEqual(map.family, "ESCIE GLYPH");
 assert.strictEqual(map.semanticAuthority, "data/symbols.js");
@@ -33,6 +34,12 @@ assert.strictEqual(vitruvian.codepoint, null);
 assert(docs.includes("historical source → faithful reference → ESCIE interpretation → navigation purpose"));
 assert(docs.includes("VITRUVIAN MAN is intentionally not redrawn"));
 assert(docs.includes("U+E100–U+E105"));
+assert(spec.includes("## OJÚ — SEE"));
+assert(spec.includes("## MAYA SPEECH — HEAR"));
+assert(spec.includes("## THOTH — READ"));
+assert(spec.includes("## VITRUVIAN MAN — MEET"));
+assert(spec.includes("## STARGATE — GO"));
+assert(spec.includes("## ORION — CONNECT"));
 
 ["oju","maya-speech","thoth","vitruvian-man","stargate","orion"].forEach(id => {
   assert(svg.includes('id="' + id + '"'), "missing SVG fallback glyph: " + id);
