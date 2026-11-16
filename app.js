@@ -1864,7 +1864,7 @@ function renderClothing(){
             return;
           }
         }
-        showSymbolInspector(symbolId);
+        showSymbolInspector(symbolTrigger.getAttribute("data-symbol-id"));
         return;
       }
 
