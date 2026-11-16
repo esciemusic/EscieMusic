@@ -1,10 +1,8 @@
 name: ESCIE Glyph Font Specimen
 
 on:
+  workflow_dispatch:
   pull_request:
-  push:
-    branches:
-      - main
 
 permissions:
   contents: read
