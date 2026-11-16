@@ -252,7 +252,10 @@ function worldContentSnapshot(){
  const nodes=[];
  try{
    const src=Array.isArray(window.ESCIE_WORLD_DATA)?window.ESCIE_WORLD_DATA:(window.ESCIE_WORLD_DATA?.records||[]);
-   src.forEach(function(r){const id=String(r?.id||"");const pub=String(r?.visibility||r?.publication_state||r?.status||"").toUpperCase();if(id&&(!pub||/PUBLIC|PUBLISHED|RELEASED/.test(pub)))nodes.push(id);});
+   src.forEach(function(r){
+     const id=String(r?.id||"");
+     if(id&&isPublicWorldRecord(r))nodes.push(id);
+   });
  }catch(e){}
  return nodes.sort().slice(0,200);
 }
