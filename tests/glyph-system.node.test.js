@@ -45,4 +45,9 @@ assert(spec.includes("## ORION — CONNECT"));
   assert(svg.includes('id="' + id + '"'), "missing SVG fallback glyph: " + id);
 });
 
+assert(
+  svg.includes('id="vitruvian-man" viewBox="0 0 32 32"><image href="https://upload.wikimedia.org/wikipedia/commons/1/17/Vitruvian.jpg"'),
+  "Vitruvian fallback must use the source artwork"
+);
+
 console.log("ESCIE glyph system: PASS");
