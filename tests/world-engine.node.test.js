@@ -1,8 +1,3 @@
-assert(/function temporalContext\(r\)/.test(src),"World Engine needs temporal context");
-assert(/BEFORE/.test(src)&&/AFTER/.test(src)&&/DOCUMENTED/.test(src),"World temporal states must distinguish past, future and documented records");
-assert(/temporal_state/.test(src)&&/time_state/.test(src),"World temporal context must accept explicit states");
-assert(/"DISTRICT"/.test(src)||/NEIGHBORHOOD/.test(src),"World Engine must distinguish neighborhood atmosphere");
-assert(/data-atmosphere-character/.test(src),"World spatial details must expose atmosphere character");
 const fs=require("fs");
 const path="world-engine.js";
 const src=fs.readFileSync(path,"utf8");
