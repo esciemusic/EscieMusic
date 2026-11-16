@@ -769,6 +769,11 @@ function homeNeighborhoods(){
 }
 const neighborhoodRooms={"parc-extension":["world-apartment","world-street-corner"],"little-italy":[]};
 const roomNeighborhood={"world-apartment":"parc-extension","world-street-corner":"parc-extension","world-parc-extension":"parc-extension"};
+function homeRooms(){
+ const wanted=["little-italy","parc-extension"];
+ const map=new Map(records().map(function(r){return [String(r.id),r];}));
+ return wanted.map(function(id){return map.get(id);}).filter(function(r){return r&&isPublicWorldRecord(r);});
+}
 // Canonical World entry contracts: data-world-tab="places" data-world-tab="people" data-world-tab="moments" href="#art"
 // Entry tone: Come in. Look around.
 function worldLensMarkup(){
