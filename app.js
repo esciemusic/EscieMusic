@@ -613,6 +613,24 @@
     return getNowRecord(entry.record_id);
   }
 
+  function syncHeroNowNode() {
+    const trigger = byId("hero-now-node");
+    if (!trigger) return;
+    const entries = getNowConfig()
+      .filter(entry => entry && entry.active !== false)
+      .map(entry => nowEntryRecord(entry))
+      .filter(Boolean);
+    const active = entries.length > 0;
+    trigger.hidden = !active;
+    trigger.setAttribute("aria-hidden", active ? "false" : "true");
+    if (active) {
+      const title = recordTitle(entries[0]);
+      trigger.setAttribute("aria-label", "Open NOW" + (title ? " — " + title : ""));
+    } else {
+      trigger.setAttribute("aria-label", "Open NOW");
+    }
+  }
+
   function renderNow() {
     const container = byId("now-container");
     if (!container) return;
@@ -2186,6 +2204,7 @@ function renderClothing(){
         renderEntry();
         renderNavigation();
         renderNow();
+        syncHeroNowNode();
         renderMusic();
         renderArtForms();
         renderProjects();
@@ -2205,6 +2224,7 @@ function renderClothing(){
           state.transmissionLevel = signal && signal.level || 0;
         }
         renderNow();
+        syncHeroNowNode();
         applyUIState();
       });
 
@@ -2214,6 +2234,7 @@ function renderClothing(){
           state.transmissionLevel = 0;
         }
         renderNow();
+        syncHeroNowNode();
         applyUIState();
       });
     }
@@ -2495,6 +2516,7 @@ function renderClothing(){
     renderNavigation();
     renderWorkFilters();
     renderNow();
+        syncHeroNowNode();
     renderMusic();
     renderArtForms();
     renderProjects();
