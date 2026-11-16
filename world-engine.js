@@ -1045,7 +1045,6 @@ function draw(){
          return;
        }
      }
-     const id=node.getAttribute("data-node");
      if(id){
        if(state.placeStreet&&state.placeStreet.place&&roomContents(state.placeStreet.place).some(function(r){return String(r.id)===String(id);})){state.roomOrigin={placeId:String(state.placeStreet.place.id),place:state.placeStreet.place,street:state.placeStreet.street||null};}
        else if(["world-apartment","world-street-corner","world-parc-extension"].includes(String(state.selected))){const currentRoom=records().find(function(r){return String(r.id)===String(state.selected);});if(currentRoom&&roomContents(currentRoom).some(function(r){return String(r.id)===String(id);})){state.roomOrigin={placeId:String(currentRoom.id),place:currentRoom,street:null};}}
