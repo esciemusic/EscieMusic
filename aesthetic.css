@@ -3994,3 +3994,22 @@ body.light .world-object-origin{border-color:rgba(0,0,0,.1)}
   .world-room:nth-child(2),.world-room:nth-child(3){padding-left:32px}
   .world-home-outside{padding-left:4px}
 }
+
+
+/* WORLD HOME SPATIAL PASS — keep dynamic layers inside the composition instead of creating implicit grid rows. */
+.world-home > .world-now{grid-area:now;align-self:end;margin:0;padding:clamp(24px,5vw,64px) clamp(8px,2vw,24px) clamp(34px,5vw,58px);border:0;background:transparent}
+.world-home > .world-now .world-kicker{color:var(--escie-blue-bright)}
+.world-home > .world-return-welcome,
+.world-home > .world-return-change,
+.world-home > .world-return-thread,
+.world-home > .world-wander-prompt,
+.world-home > .world-serendipity,
+.world-home > .world-content-change{grid-column:1 / -1}
+.world-home > .world-index-shell,
+.world-home > .world-lens-content{grid-column:1 / -1}
+.world-home > .world-home-actions{grid-column:1 / -1;margin:0;padding:18px 8px;border-top:1px solid rgba(216,212,202,.10)}
+.world-home > .world-home-actions .world-enter-index{width:100%;max-width:420px;justify-content:space-between}
+@media(max-width:760px){
+  .world-home > .world-now{padding:0 4px 28px}
+  .world-home > .world-home-actions{padding:16px 4px}
+}
