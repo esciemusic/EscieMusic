@@ -802,7 +802,7 @@ function worldLensMarkup(){
       return '<button type="button" class="world-primary-door" '+lensAttrs[t[0]]+' aria-label="'+esc(t[1])+'">'+glyph(t[2],t[1])+'<span>'+esc(t[1])+'</span></button>';
     }).join(""):"")+
    '</div>'+
-   '<div class="world-lens-nav world-deeper-nav" role="tablist" aria-label="World deeper views"'+(advanced?"":" hidden")+'>'+
+   '<div class="world-lens-nav world-deeper-nav" role="tablist" aria-label="ESCIE World navigation"'+(advanced?"":" hidden")+'>'+
     '<span class="world-deeper-label">LOOK CLOSER</span>'+
     closer.map(function(t){
       const active=state.tab===t[0];
