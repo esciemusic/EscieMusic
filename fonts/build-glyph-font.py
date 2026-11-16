@@ -12,9 +12,13 @@ OUT.mkdir(exist_ok=True)
 
 def path(commands):
     pen = TTGlyphPen(None)
+    contour_open = False
     for command, pts in commands:
         if command == "M":
+            if contour_open:
+                pen.closePath()
             pen.moveTo(pts)
+            contour_open = True
         elif command == "L":
             pen.lineTo(pts)
         elif command == "Q":
@@ -22,7 +26,11 @@ def path(commands):
         elif command == "C":
             pen.curveTo(*pts)
         elif command == "Z":
-            pen.closePath()
+            if contour_open:
+                pen.closePath()
+                contour_open = False
+    if contour_open:
+        pen.closePath()
     return pen.glyph()
 
 
