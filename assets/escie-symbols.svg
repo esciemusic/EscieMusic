@@ -27,7 +27,7 @@
   <symbol id="oju" viewBox="0 0 80 64"><path d="M18 32C28 17 52 17 62 32C52 47 28 47 18 32Z"/><ellipse cx="40" cy="32" rx="9" ry="13"/><path d="M31 14C36 10 44 10 49 14M31 50C36 54 44 54 49 50"/></symbol>
   <symbol id="maya-speech" viewBox="0 0 80 64"><path d="M17 35C21 28 29 27 35 31C39 34 42 38 47 37C53 36 55 30 51 26"/><path d="M50 26C56 24 62 27 64 33C66 40 61 47 55 47"/><path d="M55 47C49 49 44 46 43 42"/><path d="M31 31C28 28 24 28 21 30"/></symbol>
   <symbol id="thoth" viewBox="0 0 80 64"><path d="M22 47L48 21M45 18L52 25M19 50L28 47L22 41ZM31 42H58M31 48H52M34 54H60M58 38L62 42L58 46"/></symbol>
-  <symbol id="vitruvian-man" viewBox="0 0 32 32"><circle cx="16" cy="16" r="12"/><circle cx="16" cy="6.5" r="2"/><path d="M16 9v14M10 13l12 0M9 18l14 0M12 25l4-11 4 11M10 13l-4-4M22 13l4-4"/></symbol>
+  <symbol id="vitruvian-man" viewBox="0 0 32 32"><image href="https://upload.wikimedia.org/wikipedia/commons/1/17/Vitruvian.jpg" x="1" y="0" width="30" height="32" preserveAspectRatio="xMidYMid meet"/></symbol>
   <symbol id="stargate" viewBox="0 0 80 64"><ellipse cx="40" cy="32" rx="24" ry="27"/><ellipse cx="40" cy="32" rx="17" ry="20"/><path d="M40 12V52M20 32H60"/><circle cx="40" cy="32" r="4"/></symbol>
   <symbol id="orion" viewBox="0 0 80 64"><path d="M18 18L40 26L60 18M40 26L34 38L40 50L46 38L40 26M34 38L21 43M46 38L59 43"/><circle cx="18" cy="18" r="2"/><circle cx="40" cy="26" r="2"/><circle cx="60" cy="18" r="2"/><circle cx="34" cy="38" r="2"/><circle cx="46" cy="38" r="2"/><circle cx="21" cy="43" r="2"/><circle cx="59" cy="43" r="2"/><circle cx="40" cy="50" r="2"/></symbol>
   <symbol id="home" viewBox="0 0 32 32"><path d="M5 15 16 6l11 9v11H5z"/><path d="M12 26v-7h8v7"/></symbol>
