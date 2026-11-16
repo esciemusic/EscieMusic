@@ -903,6 +903,14 @@ function rememberAttention(id){
   localStorage.setItem("escie_world_attention",JSON.stringify(data));
  }catch(_e){}
 }
+function syncAttention(container){
+ const id=String(state.selected||"");
+ const count=id?attentionRecord(id).count:0;
+ if(container){
+  container.dataset.worldAttention=count>1?"LOOK_AGAIN":count===1?"NOTICED_BEFORE":"UNNOTICED";
+  container.dataset.worldAttentionCount=String(count);
+ }
+}
 function attentionCue(id){
  const count=attentionRecord(id).count;
  if(count>1)return '<span class="world-attention-memory">LOOK AGAIN</span>';
