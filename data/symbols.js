@@ -24,8 +24,7 @@ const ESCIE_SYMBOLS=[
 {id:"symbol-now",name:"NOW",motif:"the living present",placements:["now","entry"],status:"portal",glyph:"now",role:"structural",destination:"now",verb:"PRESENT"},
 {id:"symbol-path",name:"PATH",motif:"movement through connected things",placements:["world","web"],status:"portal",glyph:"path",role:"structural",destination:"path",verb:"FOLLOW"},
 {id:"symbol-gravity",name:"GRAVITY",motif:"what pulls things together",placements:["world","web"],status:"portal",glyph:"gravity",role:"structural",destination:"web",verb:"FOLLOW THE PULL"},
-{id:"symbol-unknown",name:"UNKNOWN",motif:"what remains unresolved",placements:["world","archives","investigation"],status:"portal",glyph:"unknown",role:"structural",destination:"unknown",verb:"GO DEEPER"}
-
+{id:"symbol-unknown",name:"UNKNOWN",motif:"what remains unresolved",placements:["world","archives","investigation"],status:"portal",glyph:"unknown",role:"structural",destination:"unknown",verb:"GO DEEPER"},
 
 {id:"symbol-camera",name:"CAMERA",motif:"observation / recording",placements:["glass-eye","investigation"],status:"recurring",glyph:"camera",role:"motif"},
 {id:"symbol-daisy",name:"DAISY",motif:"beauty / persistence / what survives",placements:["art"],status:"recurring",glyph:"daisy",role:"motif"},
