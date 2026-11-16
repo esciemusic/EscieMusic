@@ -4157,3 +4157,80 @@ body.light .world-object-origin{border-color:rgba(0,0,0,.1)}
 @media(prefers-reduced-motion:reduce){
   .hero-present-state{transition:none}
 }
+
+
+/* =========================================================
+   WORLD SURFACE REDUCTION
+   The first World view offers discovery; the full ontology
+   stays behind LOOK CLOSER.
+   ========================================================= */
+.world-discovery-bar{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:8px;
+  margin:18px 0 8px;
+}
+.world-discovery-bar .world-index-toggle{
+  flex:1 1 220px;
+  min-height:52px;
+}
+.world-primary-door{
+  min-height:52px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:12px 14px;
+  border:1px solid rgba(216,212,202,.12);
+  background:rgba(8,8,9,.72);
+  color:var(--muted);
+  cursor:pointer;
+  font:700 9px/1 var(--escie-font-mono);
+  letter-spacing:.14em;
+  transition:
+    color var(--escie-motion-fast),
+    border-color var(--escie-motion-fast),
+    background var(--escie-motion-standard);
+}
+.world-primary-door .world-entry-glyph{
+  width:20px;
+  height:20px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.2;
+}
+.world-primary-door:hover,
+.world-primary-door:focus-visible{
+  color:var(--white);
+  border-color:var(--escie-blue-line);
+  background:var(--escie-blue-soft);
+}
+.world-deeper-nav{
+  margin-top:8px;
+}
+.world-deeper-label{
+  grid-column:1 / -1;
+  padding:8px 2px 2px;
+  color:var(--faint);
+  font:700 8px/1 var(--escie-font-mono);
+  letter-spacing:.18em;
+}
+@media(max-width:700px){
+  .world-discovery-bar{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:6px;
+  }
+  .world-discovery-bar .world-index-toggle{
+    grid-column:1 / -1;
+    min-height:48px;
+  }
+  .world-primary-door{
+    min-height:46px;
+    padding:10px 8px;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .world-primary-door{transition:none}
+}
