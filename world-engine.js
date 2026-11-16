@@ -787,6 +787,13 @@ function worldLensMarkup(){
   ["moments","MOMENTS","moment"]
  ];
  const advanced=state.exploreOpen;
+ const closer=[
+  ["people","PEOPLE","person"],
+  ["places","PLACES","world"],
+  ["moments","MOMENTS","moment"],
+  ["trace","TRACES","web"],
+  ["path","PATH","web"]
+ ];
  return '<div class="world-index-shell">'+
    '<div class="world-discovery-bar">'+
     '<button type="button" class="world-index-toggle" data-world-explore aria-expanded="'+(advanced?"true":"false")+'"><span class="world-kicker">DISCOVER</span><strong>'+(advanced?"LOOK CLOSER":"EXPLORE")+'</strong><span aria-hidden="true">'+(advanced?"−":"+")+'</span></button>'+
@@ -797,10 +804,11 @@ function worldLensMarkup(){
    '</div>'+
    '<div class="world-lens-nav world-deeper-nav" role="tablist" aria-label="World deeper views"'+(advanced?"":" hidden")+'>'+
     '<span class="world-deeper-label">LOOK CLOSER</span>'+
-    tabs.map(function(t){
+    closer.map(function(t){
       const active=state.tab===t[0];
       return '<button type="button" role="tab" aria-selected="'+(active?"true":"false")+'" '+lensAttrs[t[0]]+'>'+glyph(t[2],t[1])+'<span>'+esc(t[1])+'</span></button>';
     }).join("")+
+    '<button type="button" class="world-more-door" data-world-more aria-expanded="false"><span>MORE</span></button>'+
    '</div>'+
   '</div>';
 }
