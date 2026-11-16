@@ -1,4 +1,4 @@
-/* ESCIE PRESENT STATE
+/* ESCIE CURRENT SIGNAL / PRESENT STATE
  * Quiet factual signal for the hero.
  * The state informs atmosphere; it does not compete with the identity.
  */
