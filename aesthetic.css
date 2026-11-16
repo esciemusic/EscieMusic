@@ -4103,3 +4103,57 @@ body.light .world-object-origin{border-color:rgba(0,0,0,.1)}
 @media(prefers-reduced-motion:reduce){
   .hero-now-node::after{animation:none;}
 }
+
+
+/* =========================================================
+   HERO PRESENT STATE
+   Quiet environmental instrument. It informs the World; it
+   never competes with ESCIE, the human hook, or the doorway.
+   ========================================================= */
+.hero-present-state{
+  display:grid;
+  justify-items:center;
+  gap:5px;
+  width:min(100%,280px);
+  margin:-2px auto 26px;
+  color:var(--faint);
+  text-align:center;
+  opacity:.72;
+  pointer-events:none;
+  transition:opacity 800ms ease;
+}
+.hero-present-kicker{
+  font:700 7px/1 var(--escie-font-mono);
+  letter-spacing:.28em;
+  color:var(--escie-aesthetic-purple);
+}
+.hero-present-line{
+  font:400 8px/1.35 var(--escie-font-mono);
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+#hero-present-conditions{
+  color:var(--escie-blue-bright);
+  opacity:.72;
+}
+.hero-present-state[data-present-light="night"] #hero-present-conditions{
+  opacity:.82;
+}
+.hero-present-state[data-present-weather="rain"],
+.hero-present-state[data-present-weather="snow"],
+.hero-present-state[data-present-weather="drizzle"]{
+  opacity:.78;
+}
+@media(max-width:700px){
+  .hero-present-state{
+    width:min(100%,250px);
+    margin:-1px auto 22px;
+    gap:4px;
+  }
+  .hero-present-kicker{font-size:6px;letter-spacing:.24em}
+  .hero-present-line{font-size:7px;letter-spacing:.11em}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-present-state{transition:none}
+}
