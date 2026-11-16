@@ -781,13 +781,28 @@ function homeRooms(){
 // Entry tone: Come in. Look around.
 function worldLensMarkup(){
  const lensAttrs={atlas:'data-world-tab="atlas"',people:'data-world-tab="people"',places:'data-world-tab="places"',moments:'data-world-tab="moments"',fragments:'data-world-tab="fragments"',bodies:'data-world-tab="bodies"',proof:'data-world-tab="proof"',path:'data-world-tab="path"',trace:'data-world-tab="trace"',timeline:'data-world-tab="timeline"',symbols:'data-world-tab="symbols"',trails:'data-world-tab="trails"'};
+ const primary=[
+  ["places","PLACES","world"],
+  ["people","PEOPLE","person"],
+  ["moments","MOMENTS","moment"]
+ ];
+ const advanced=state.exploreOpen;
  return '<div class="world-index-shell">'+
-   '<button type="button" class="world-index-toggle" data-world-explore aria-expanded="'+(state.exploreOpen?"true":"false")+'"><span class="world-kicker">EXPLORE</span><strong>EXPLORE THE WORLD</strong><span aria-hidden="true">'+(state.exploreOpen?"−":"+")+'</span></button>'+
-   '<div class="world-lens-nav" role="tablist" aria-label="ESCIE World navigation"'+(state.exploreOpen?"":" hidden")+'>'
-   +tabs.map(function(t){
-     const active=state.tab===t[0];
-     return '<button type="button" role="tab" aria-selected="'+(active?"true":"false")+'" '+lensAttrs[t[0]]+'>'+glyph(t[2],t[1])+'<span>'+esc(t[1])+'</span></button>';
-   }).join("")+'</div></div>';
+   '<div class="world-discovery-bar">'+
+    '<button type="button" class="world-index-toggle" data-world-explore aria-expanded="'+(advanced?"true":"false")+'"><span class="world-kicker">DISCOVER</span><strong>'+(advanced?"LOOK CLOSER":"EXPLORE")+'</strong><span aria-hidden="true">'+(advanced?"−":"+")+'</span></button>'+
+    (!advanced?primary.map(function(t){
+      const active=state.tab===t[0];
+      return '<button type="button" class="world-primary-door" '+lensAttrs[t[0]]+' aria-label="'+esc(t[1])+'">'+glyph(t[2],t[1])+'<span>'+esc(t[1])+'</span></button>';
+    }).join(""):"")+
+   '</div>'+
+   '<div class="world-lens-nav world-deeper-nav" role="tablist" aria-label="World deeper views"'+(advanced?"":" hidden")+'>'+
+    '<span class="world-deeper-label">LOOK CLOSER</span>'+
+    tabs.map(function(t){
+      const active=state.tab===t[0];
+      return '<button type="button" role="tab" aria-selected="'+(active?"true":"false")+'" '+lensAttrs[t[0]]+'>'+glyph(t[2],t[1])+'<span>'+esc(t[1])+'</span></button>';
+    }).join("")+
+   '</div>'+
+  '</div>';
 }
 function lensRows(){
  const map={people:"ESCIE_PEOPLE",places:"ESCIE_LOCATIONS",moments:"ESCIE_MOMENTS",fragments:"ESCIE_FRAGMENTS",bodies:"ESCIE_BODIES",proof:"ESCIE_PROOF",path:"ESCIE_PATHS",timeline:"ESCIE_MOMENTS",symbols:"ESCIE_SYMBOLS",trails:"ESCIE_PATHS",trace:"ESCIE_PATHS"};
