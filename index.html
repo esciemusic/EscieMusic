@@ -64,6 +64,11 @@
         <div id="entry-container" class="content-container">
           <div class="entry-inner">
             <a id="hero-now-node" class="hero-now-node" href="#now" hidden aria-hidden="true" aria-label="Open NOW" data-depth-door="deep"><svg class="escie-symbol-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#now"></use></svg><span class="hero-now-label">NOW</span></a>
+            <div id="hero-present-state" class="hero-present-state" aria-label="Current signal">
+              <span class="hero-present-kicker">CURRENT SIGNAL</span>
+              <span id="hero-present-time" class="hero-present-line">--:-- · --- -- · --</span>
+              <span id="hero-present-conditions" class="hero-present-line">-- · --</span>
+            </div>
             <h1><a class="hero-identity-link" href="#escie" aria-label="Go to ESCIE bio" data-depth-door="surface">ESCIE</a></h1>
             <p id="entry-tagline" class="hero-tagline">A GOOD PERSON. I'M JUST NOT NICE.</p>
             <a id="entry-location" class="hero-location hero-location-link" href="#world-node=montreal" aria-label="Explore Montréal">MONTRÉAL, QUÉBEC, CANADA</a>
@@ -615,6 +620,7 @@
   <script src="data/web.js" defer></script>
   <script src="data/world-city.js" defer></script>
   <script src="data/world-live.js" defer></script>
+  <script src="data/present-state.js" defer></script>
 
   <!-- Public navigation / language / narration -->
   <script src="navigation.js" defer></script>
