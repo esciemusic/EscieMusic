@@ -44,21 +44,32 @@
       disclosure:"lived_reality"
     },
     {
-      id:"glass-eye", label:"GLASS EYE", order:4, role:"relationship_surface",
-      purpose:"Show genuine relationships between public people, places, moments, records and signals without manufacturing a network.",
-      contentTypes:["public_relationship","connection","reference","shared_record"],
-      behavior:["sparse","reveal_when_real","follow_connection","never_forced"],
+      id:"glass-eye", label:"GLASS EYE", order:4, role:"audience_eye_surface",
+      purpose:"Make the audience's screen feel like an eye: seeing, hearing, following, missing and returning without turning participation into canon.",
+      contentTypes:["approved_media","viewer_memory","finding","theory","comment","public_participation"],
+      behavior:["observe","listen","follow","miss","return","participate_without_canon"],
+      visualRole:"screen_and_sight",
+      caseFileRole:"audience_participation_layer",
+      inbound:["approved_media","approved_viewer_prompt","approved_public_context"],
+      outbound:["web_connection","archive_reference","candidate_finding"],
+      disclosure:"public_media_plus_non_canonical_participation"
+    },
+    {
+      id:"web", label:"THE WEB", order:5, role:"connection_surface",
+      purpose:"Follow the connections between people, places, moments, records and signals without manufacturing relationships.",
+      contentTypes:["public_relationship","connection","reference","shared_record","thread","trail"],
+      behavior:["follow","filter","trace","backtrack","return"],
       visualRole:"network",
-      caseFileRole:"approved_connection_layer",
+      caseFileRole:"public_connection_layer",
       inbound:["approved_public_connection","approved_relationship","verified_shared_record"],
-      outbound:["related_records","case_file_context"],
+      outbound:["related_records","archive_reference","case_file_context"],
       disclosure:"only_verified_or_explicitly_interpreted"
     },
     {
-      id:"web", label:"THE WEB", order:5, role:"memory_surface",
-      purpose:"Hold records, fragments, sources, images and traces that have earned a place in the public memory of ESCIE.",
+      id:"archives", label:"THE ARCHIVES", order:6, role:"memory_surface",
+      purpose:"Preserve public records, fragments, sources, images and traces that have earned a place in the memory of ESCIE.",
       contentTypes:["archive_record","source","fragment","image","document","historical_context","artifact_history"],
-      behavior:["browse","date","preserve","contextualize"],
+      behavior:["browse","date","preserve","contextualize","return"],
       visualRole:"memory",
       caseFileRole:"public_context_and_history",
       inbound:["approved_archive_record","approved_source","retired_artifact","approved_context"],
@@ -66,7 +77,7 @@
       disclosure:"contextual"
     },
     {
-      id:"archives", label:"THE ARCHIVES", order:6, role:"controlled_investigation_surface",
+      id:"investigation", label:"THE CASE FILES", order:7, role:"controlled_investigation_surface",
       purpose:"Present approved deeper investigation layers without exposing Central's private workspace or turning the site into a puzzle board.",
       contentTypes:["case_file","approved_evidence","timeline","contradiction","question","reference","connection"],
       behavior:["layered","quiet","optional_depth","no_forced_solution"],
@@ -75,17 +86,6 @@
       inbound:["artist_approved_case_layer","approved_evidence","approved_context","approved_question","approved_connection"],
       outbound:["public_artifact","archive_record","world_reference","web_connection"],
       disclosure:"artist_approved_only"
-    },
-    {
-      id:"investigation", label:"THE CASE FILES", order:7, role:"sensory_surface",
-      purpose:"Make the audience's screen feel like an eye: seeing, hearing, missing, following and returning.",
-      contentTypes:["fixed_video","found_media","environmental_audio","image_sequence","screen_experiment","interactive_media"],
-      behavior:["observe","listen","linger","miss","return"],
-      visualRole:"screen_and_sight",
-      caseFileRole:"sensory_artifact_destination",
-      inbound:["approved_video","approved_audio","approved_screen_experiment","approved_visual_trace"],
-      outbound:["artifact_record","case_file_reference","archive_record"],
-      disclosure:"experience_first"
     },
     {
       id:"escie", label:"ESCIE", order:8, role:"artist_identity",
