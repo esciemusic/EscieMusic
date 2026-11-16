@@ -33,7 +33,7 @@
       disclosure:"artifact_first"
     },
     {
-      id:"world", label:"THE WORLD", order:3, role:"physical_reality",
+      id:"world", label:"MY WORLD", order:3, role:"physical_reality",
       purpose:"Ground ESCIE in Montréal, places, routes, environments, objects and lived geography.",
       contentTypes:["place","route","map","photograph","environmental_audio","moment","object","location_trace"],
       behavior:["explore","locate","observe","return"],
@@ -44,7 +44,7 @@
       disclosure:"lived_reality"
     },
     {
-      id:"web", label:"THE WEB", order:4, role:"relationship_surface",
+      id:"glass-eye", label:"GLASS EYE", order:4, role:"relationship_surface",
       purpose:"Show genuine relationships between public people, places, moments, records and signals without manufacturing a network.",
       contentTypes:["public_relationship","connection","reference","shared_record"],
       behavior:["sparse","reveal_when_real","follow_connection","never_forced"],
@@ -55,7 +55,7 @@
       disclosure:"only_verified_or_explicitly_interpreted"
     },
     {
-      id:"archives", label:"THE ARCHIVES", order:5, role:"memory_surface",
+      id:"web", label:"THE WEB", order:5, role:"memory_surface",
       purpose:"Hold records, fragments, sources, images and traces that have earned a place in the public memory of ESCIE.",
       contentTypes:["archive_record","source","fragment","image","document","historical_context","artifact_history"],
       behavior:["browse","date","preserve","contextualize"],
@@ -66,7 +66,7 @@
       disclosure:"contextual"
     },
     {
-      id:"investigation", label:"THE CASE FILES", order:6, role:"controlled_investigation_surface",
+      id:"archives", label:"THE ARCHIVES", order:6, role:"controlled_investigation_surface",
       purpose:"Present approved deeper investigation layers without exposing Central's private workspace or turning the site into a puzzle board.",
       contentTypes:["case_file","approved_evidence","timeline","contradiction","question","reference","connection"],
       behavior:["layered","quiet","optional_depth","no_forced_solution"],
@@ -77,7 +77,7 @@
       disclosure:"artist_approved_only"
     },
     {
-      id:"glass-eye", label:"GLASS EYE", order:7, role:"sensory_surface",
+      id:"investigation", label:"THE CASE FILES", order:7, role:"sensory_surface",
       purpose:"Make the audience's screen feel like an eye: seeing, hearing, missing, following and returning.",
       contentTypes:["fixed_video","found_media","environmental_audio","image_sequence","screen_experiment","interactive_media"],
       behavior:["observe","listen","linger","miss","return"],
