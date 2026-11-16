@@ -13,7 +13,7 @@ assert(/NEXT SIGNALS/.test(src),"Glass Eye discovery surface missing");
 assert(!/\beval\s*\(|new Function\s*\(/.test(src),"dynamic code execution is forbidden");
 assert(/const raf=typeof requestAnimationFrame==="function"\?requestAnimationFrame:fn=>setTimeout\(fn,0\)/.test(src),"world-engine needs a requestAnimationFrame fallback");
 assert(/caf\(searchFrame\);searchFrame=raf\(\(\)=>\{render\(\)/.test(src),"search rendering must use the compatibility scheduler");
-assert(/world-detail.*focus\(\)/.test(src),"node navigation must restore keyboard focus");
+assert(/const el=container\.querySelector\("\.world-detail"\)/.test(src)&&/const focused=focusElement\(el\)/.test(src),"node navigation must restore keyboard focus");
 assert(/role="tablist".*aria-label="ESCIE World navigation"/.test(src),"world navigation needs tab semantics");
 assert(/aria-selected="/.test(src)&&/state\.tab===t\[0\]/.test(src),"world tabs need selected-state semantics");
 assert(/id=\\"glass-eye-panel\\" role=\\"region\\" aria-label=\\"The Glass Eye\\"/.test(src),"Glass Eye needs an accessible region");
