@@ -1,0 +1,133 @@
+{
+  "family": "ESCIE GLYPH",
+  "version": "0.1.0",
+  "range": "private-use",
+  "semanticAuthority": "data/symbols.js",
+  "fallback": "assets/escie-symbols.svg",
+  "portals": [
+    {
+      "id": "symbol-oju",
+      "glyph": "oju",
+      "codepoint": "U+E100",
+      "class": "derived",
+      "verb": "SEE",
+      "source": "Yorùbá",
+      "sourceNote": "ojú òde / ojú inú"
+    },
+    {
+      "id": "symbol-maya-speech",
+      "glyph": "maya-speech",
+      "codepoint": "U+E101",
+      "class": "derived",
+      "verb": "HEAR",
+      "source": "Maya / Mesoamerican",
+      "sourceNote": "speech-scroll convention"
+    },
+    {
+      "id": "symbol-thoth",
+      "glyph": "thoth",
+      "codepoint": "U+E102",
+      "class": "derived",
+      "verb": "READ",
+      "source": "Ancient Egyptian",
+      "sourceNote": "Thoth / scribal tradition"
+    },
+    {
+      "id": "symbol-vitruvian-man",
+      "glyph": "vitruvian-man",
+      "codepoint": null,
+      "class": "source-artwork",
+      "verb": "MEET",
+      "source": "Leonardo da Vinci",
+      "sourceNote": "Use the original artwork; do not redraw",
+      "productionGate": "source-artwork-provenance"
+    },
+    {
+      "id": "symbol-stargate",
+      "glyph": "stargate",
+      "codepoint": "U+E104",
+      "class": "derived",
+      "verb": "GO",
+      "source": "ESCIE original interpretation",
+      "sourceNote": "celestial threshold / passage"
+    },
+    {
+      "id": "symbol-orion",
+      "glyph": "orion",
+      "codepoint": "U+E105",
+      "class": "derived",
+      "verb": "CONNECT",
+      "source": "Orion constellation",
+      "sourceNote": "actual Orion star pattern"
+    }
+  ],
+  "structural": [
+    {
+      "id": "symbol-home",
+      "glyph": "home",
+      "codepoint": "U+E110",
+      "verb": "RETURN"
+    },
+    {
+      "id": "symbol-now",
+      "glyph": "now",
+      "codepoint": "U+E111",
+      "verb": "PRESENT"
+    },
+    {
+      "id": "symbol-path",
+      "glyph": "path",
+      "codepoint": "U+E112",
+      "verb": "FOLLOW"
+    },
+    {
+      "id": "symbol-gravity",
+      "glyph": "gravity",
+      "codepoint": "U+E113",
+      "verb": "FOLLOW THE PULL"
+    },
+    {
+      "id": "symbol-unknown",
+      "glyph": "unknown",
+      "codepoint": "U+E114",
+      "verb": "GO DEEPER"
+    }
+  ],
+  "motifs": [
+    {
+      "id": "symbol-camera",
+      "glyph": "camera",
+      "codepoint": "U+E120"
+    },
+    {
+      "id": "symbol-daisy",
+      "glyph": "daisy",
+      "codepoint": "U+E121"
+    },
+    {
+      "id": "symbol-child-shoe",
+      "glyph": "child-shoe",
+      "codepoint": "U+E122"
+    },
+    {
+      "id": "symbol-nightlight",
+      "glyph": "nightlight",
+      "codepoint": "U+E123"
+    },
+    {
+      "id": "symbol-key",
+      "glyph": "key",
+      "codepoint": "U+E124"
+    },
+    {
+      "id": "symbol-empty-chair",
+      "glyph": "empty-chair",
+      "codepoint": "U+E125"
+    },
+    {
+      "id": "symbol-vhs",
+      "glyph": "vhs",
+      "codepoint": "U+E126"
+    }
+  ]
+}
