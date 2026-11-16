@@ -26,14 +26,14 @@ test("public registries and identity stay aligned",()=>{
 
 test("public section semantics match the canonical World architecture",()=>{
   const sections=read("data/public-sections.js");
-  assert.match(sections,/id:"glass-eye"[\\s\\S]*role:"audience_eye_surface"/);
-  assert.match(sections,/id:"glass-eye"[\\s\\S]*visualRole:"screen_and_sight"/);
-  assert.match(sections,/id:"web"[\\s\\S]*role:"connection_surface"/);
-  assert.match(sections,/id:"web"[\\s\\S]*visualRole:"network"/);
-  assert.match(sections,/id:"archives"[\\s\\S]*role:"memory_surface"/);
-  assert.match(sections,/id:"archives"[\\s\\S]*visualRole:"memory"/);
-  assert.match(sections,/id:"investigation"[\\s\\S]*role:"controlled_investigation_surface"/);
-  assert.match(sections,/id:"investigation"[\\s\\S]*visualRole:"investigation"/);
+  assert.match(sections,/id:"glass-eye"[\s\S]*role:"audience_eye_surface"/);
+  assert.match(sections,/id:"glass-eye"[\s\S]*visualRole:"screen_and_sight"/);
+  assert.match(sections,/id:"web"[\s\S]*role:"connection_surface"/);
+  assert.match(sections,/id:"web"[\s\S]*visualRole:"network"/);
+  assert.match(sections,/id:"archives"[\s\S]*role:"memory_surface"/);
+  assert.match(sections,/id:"archives"[\s\S]*visualRole:"memory"/);
+  assert.match(sections,/id:"investigation"[\s\S]*role:"controlled_investigation_surface"/);
+  assert.match(sections,/id:"investigation"[\s\S]*visualRole:"investigation"/);
 });
 
 test("public section IDs remain canonical",()=>{
