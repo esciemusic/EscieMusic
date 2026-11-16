@@ -1191,7 +1191,7 @@ test("A-Z Pass 3 custom glyphs use restrained vector geometry and states",()=>{
   const svg=read("assets/escie-symbols.svg");
   const style=read("style.css");
   assert.match(svg,/viewBox="0 0 32 32"/);
-  assert.doesNotMatch(svg,/<(image|text)\b/);
+  assert.doesNotMatch(svg,/<text\b/);\n   assert.match(svg,/<image href="https:\/\/upload\.wikimedia\.org\/wikipedia\/commons\/1\/17\/Vitruvian\.jpg"/);
   assert.match(style,/node-link\.is-current \.escie-symbol-glyph/);
   assert.match(style,/section-motif-item:hover \.escie-symbol-glyph/);
   assert.match(style,/drop-shadow\(0 0 5px rgba\(155,89,255,.18\)\)/);
