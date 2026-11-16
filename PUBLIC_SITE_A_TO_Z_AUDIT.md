@@ -239,3 +239,11 @@ This is the standing audit contract for every subsequent public-site optimizatio
 - ESCIE Contracts run 2163, Deploy ESCIE to GitHub Pages run 2778, and Pages build/deployment run 2910 all passed for commit e868cb57.
 - Central was rechecked for the same class of section-scroll defect; no corresponding scrollIntoView, window.location.hash, or scroll-behavior source defect was found in the Central repository.
 - This checkpoint is GREEN for the no-section-scroll hardening scope.
+
+
+## Pass 3 — present-state environmental clock checkpoint — 2026-11-16
+- The hero CURRENT SIGNAL remains factual and subordinate to ESCIE identity.
+- It derives time/date/day-night state plus available environmental temperature/weather data from the public World state.
+- Minute refresh now uses a one-shot timer aligned to the next minute boundary and reschedules itself, rather than a persistent setInterval loop.
+- The public A–Z contract now explicitly protects the present-state surface and rejects interval-based refresh.
+- This keeps the present state alive without turning it into a heavy recurring runtime loop.
