@@ -69,8 +69,15 @@
     render(event&&event.detail?event.detail:null);
   });
 
-  setInterval(function(){
-    setDate();
-    render(root.ESCIE_WORLD_LIVE&&root.ESCIE_WORLD_LIVE.data||null);
-  },60000);
+  function scheduleMinuteRefresh(){
+    const now=new Date();
+    const delay=Math.max(1000,60000-(now.getSeconds()*1000+now.getMilliseconds()));
+    setTimeout(function(){
+      setDate();
+      render(root.ESCIE_WORLD_LIVE&&root.ESCIE_WORLD_LIVE.data||null);
+      scheduleMinuteRefresh();
+    },delay);
+  }
+
+  scheduleMinuteRefresh();
 })(window);
