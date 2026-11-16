@@ -13,14 +13,6 @@
  * Source accuracy rule: historical source first, ESCIE interpretation second.
  */
 const ESCIE_SYMBOLS=[
-{id:"symbol-camera",name:"CAMERA",motif:"observation / recording",placements:["glass-eye","investigation"],status:"recurring",glyph:"camera",role:"motif"},
-{id:"symbol-daisy",name:"DAISY",motif:"beauty / persistence / what survives",placements:["art"],status:"recurring",glyph:"daisy",role:"motif"},
-{id:"symbol-child-shoe",name:"CHILD'S SHOE",motif:"childhood / absence / memory",placements:["archives","investigation"],status:"recurring",glyph:"child-shoe",role:"motif"},
-{id:"symbol-nightlight",name:"NIGHTLIGHT",motif:"small illumination / fear / childhood",placements:["now","archives"],status:"recurring",glyph:"nightlight",role:"motif"},
-{id:"symbol-key",name:"KEY",motif:"access / threshold / what is hidden",placements:["web"],status:"recurring",glyph:"key",role:"motif"},
-{id:"symbol-empty-chair",name:"EMPTY CHAIR",motif:"absence / witness / aftermath",placements:["investigation","archives"],status:"recurring",glyph:"empty-chair",role:"motif"},
-{id:"symbol-vhs",name:"VHS",motif:"distortion / missing time / recorded memory",placements:["archives","glass-eye","art"],status:"recurring",glyph:"vhs",role:"motif"},
-
 {id:"symbol-oju",name:"OJÚ",motif:"seeing / perception / looking beneath the surface",placements:["entry","art","visual"],status:"portal",glyph:"oju",channel:"visual",verb:"SEE",destination:"visual",source:"Yorùbá",sourceNote:"ojú òde / ojú inú",fallbackGlyph:"glass-eye"},
 {id:"symbol-maya-speech",name:"MAYA SPEECH",motif:"voice / sound / transmission",placements:["entry","art","audio"],status:"portal",glyph:"maya-speech",channel:"audio",verb:"HEAR",destination:"audio",source:"Maya / Mesoamerican speech-scroll tradition",fallbackGlyph:"music-note"},
 {id:"symbol-thoth",name:"THOTH",motif:"writing / recording / knowledge",placements:["entry","art","writing"],status:"portal",glyph:"thoth",channel:"writing",verb:"READ",destination:"writing",source:"Ancient Egyptian",sourceNote:"Thoth / scribal tradition",fallbackGlyph:"feather"},
@@ -33,6 +25,15 @@ const ESCIE_SYMBOLS=[
 {id:"symbol-path",name:"PATH",motif:"movement through connected things",placements:["world","web"],status:"portal",glyph:"path",role:"structural",destination:"path",verb:"FOLLOW"},
 {id:"symbol-gravity",name:"GRAVITY",motif:"what pulls things together",placements:["world","web"],status:"portal",glyph:"gravity",role:"structural",destination:"web",verb:"FOLLOW THE PULL"},
 {id:"symbol-unknown",name:"UNKNOWN",motif:"what remains unresolved",placements:["world","archives","investigation"],status:"portal",glyph:"unknown",role:"structural",destination:"unknown",verb:"GO DEEPER"}
+
+
+{id:"symbol-camera",name:"CAMERA",motif:"observation / recording",placements:["glass-eye","investigation"],status:"recurring",glyph:"camera",role:"motif"},
+{id:"symbol-daisy",name:"DAISY",motif:"beauty / persistence / what survives",placements:["art"],status:"recurring",glyph:"daisy",role:"motif"},
+{id:"symbol-child-shoe",name:"CHILD'S SHOE",motif:"childhood / absence / memory",placements:["archives","investigation"],status:"recurring",glyph:"child-shoe",role:"motif"},
+{id:"symbol-nightlight",name:"NIGHTLIGHT",motif:"small illumination / fear / childhood",placements:["now","archives"],status:"recurring",glyph:"nightlight",role:"motif"},
+{id:"symbol-key",name:"KEY",motif:"access / threshold / what is hidden",placements:["web"],status:"recurring",glyph:"key",role:"motif"},
+{id:"symbol-empty-chair",name:"EMPTY CHAIR",motif:"absence / witness / aftermath",placements:["investigation","archives"],status:"recurring",glyph:"empty-chair",role:"motif"},
+{id:"symbol-vhs",name:"VHS",motif:"distortion / missing time / recorded memory",placements:["archives","glass-eye","art"],status:"recurring",glyph:"vhs",role:"motif"},
 ];
 if(typeof window!=="undefined") window.ESCIE_SYMBOLS=ESCIE_SYMBOLS;
 if(typeof module!=="undefined"&&module.exports) module.exports=ESCIE_SYMBOLS;
