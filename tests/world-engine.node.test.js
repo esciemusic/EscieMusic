@@ -41,11 +41,13 @@ assert(/\["withheld","private","internal","draft"\]\.includes\(visibility\)/.tes
 assert(/r\.released===false\|\|r\.published===false/.test(src),"World Engine must exclude unreleased or unpublished records");
 assert(/\["http:","https:"\]\.includes\(parsed\.protocol\)/.test(src),"World Engine media must allow only HTTP(S) URLs");
 assert(/const reduceMotion=\(\)=>typeof window\.matchMedia==="function"/.test(src),"World Engine needs reduced-motion detection");
-assert(!/scrollIntoView\(/.test(src),"World Engine must not force section scrolling");\nassert(/function writeWorldHash\(hash,mode\)/.test(src),"World Engine needs centralized history writes");
+assert(!/scrollIntoView\(/.test(src),"World Engine must not force section scrolling");
+assert(/function writeWorldHash\(hash,mode\)/.test(src),"World Engine needs centralized history writes");
 assert(/writeWorldHash\("#world-node=.*,"push"\)/.test(src),"World node navigation must create a browser-history step");
 assert(/writeWorldHash\("#world-street=.*,"push"\)/.test(src),"World street navigation must create a browser-history step");
 assert(/writeWorldHash\("#world-place=.*,"push"\)/.test(src),"World place navigation must create a browser-history step");
-assert(/window\.addEventListener\("popstate"/.test(src)&&/window\.addEventListener\("hashchange"/.test(src),"World deep links must restore on browser back/forward and hash changes");\nassert(/function clearWorldTransition\(options\)/.test(src),"World Engine needs centralized transition cleanup");
+assert(/window\.addEventListener\("popstate"/.test(src)&&/window\.addEventListener\("hashchange"/.test(src),"World deep links must restore on browser back/forward and hash changes");
+assert(/function clearWorldTransition\(options\)/.test(src),"World Engine needs centralized transition cleanup");
 assert(/clearWorldTransition\(\{preserveReturn:!!options\.preserveReturn\}\)/.test(src),"World node navigation must clear stale transition state");
 assert(/state\.exploreOpen=false;/.test(src)&&/state\.outsideOpen=false;/.test(src),"Deep-link restoration must clear stale overlay state");
 assert(!/history\.replaceState\(null,"","#world-node=/.test(src),"World node navigation must not replace browser history");
