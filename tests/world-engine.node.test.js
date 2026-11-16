@@ -25,7 +25,7 @@ assert(/container\.dataset\.worldSurface=String\(.*visual_state/.test(src),"Worl
 assert(/function worldNow\(\)/.test(src),"World Engine needs a present-tense environment surface");
 assert(/function worldNowMarkup\(\)/.test(src),"World Engine needs a present-tense environment renderer");
 assert(/function refreshWorldClock\(container\)/.test(src),"World Engine present clock needs live refresh");
-assert(/setInterval\(function\(\)\{refreshWorldClock\(container\);\},30000\)/.test(src),"World Engine clock should refresh without rebuilding the World");
+assert(/setInterval\(function\(\)\{refreshWorldClock\(container\);syncAttention\(container\);\},30000\)/.test(src),"World Engine clock should refresh without rebuilding the World");
 assert(/localStorage\.removeItem\("escie_world_trail"\)/.test(src),"TRACE clear must clear persistent local trace");
 
 assert(/function isPublicWorldRecord\(r\)/.test(src),"World Engine needs a public-record release boundary");
