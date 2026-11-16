@@ -116,7 +116,11 @@
 
   function symbolsForSection(sectionId) {
     return getSymbols().filter(symbol =>
-      symbol && Array.isArray(symbol.placements) && symbol.placements.includes(sectionId)
+      symbol &&
+      symbol.role !== "portal" &&
+      (!symbol.role || symbol.role === "motif") &&
+      Array.isArray(symbol.placements) &&
+      symbol.placements.includes(sectionId)
     );
   }
 
@@ -152,19 +156,73 @@
   }
 
   function getRecordSymbols(record) {
-    if (!record || !Array.isArray(record.symbols)) return [];
+    if (!record) return [];
     const symbols = getSymbols();
-    return record.symbols
-      .map(id => symbols.find(symbol => symbol && symbol.id === id))
-      .filter(Boolean);
+    const explicit = Array.isArray(record.symbols)
+      ? record.symbols
+        .map(id => symbols.find(symbol => symbol && symbol.id === id))
+        .filter(Boolean)
+      : [];
+    if (explicit.length) return explicit;
+
+    const type = String(record.type || record.identity?.type || "").toLowerCase();
+    const inferred = {
+      music: "symbol-maya-speech",
+      audio: "symbol-maya-speech",
+      song: "symbol-maya-speech",
+      writing: "symbol-thoth",
+      words: "symbol-thoth",
+      poetry: "symbol-thoth",
+      lyric: "symbol-thoth",
+      visual: "symbol-oju",
+      image: "symbol-oju",
+      photo: "symbol-oju",
+      photography: "symbol-oju",
+      film: "symbol-oju",
+      drawing: "symbol-oju",
+      painting: "symbol-oju",
+      person: "symbol-vitruvian-man",
+      people: "symbol-vitruvian-man",
+      place: "symbol-stargate",
+      location: "symbol-stargate",
+      neighborhood: "symbol-stargate",
+      fragment: "symbol-orion",
+      trace: "symbol-orion",
+      moment: "symbol-orion",
+      archive: "symbol-orion",
+      investigation: "symbol-orion",
+      proof: "symbol-orion"
+    }[type];
+    if (!inferred) return [];
+    const symbol = symbols.find(item => item && item.id === inferred);
+    return symbol ? [symbol] : [];
   }
 
   function symbolTrail(symbolId) {
     const symbol = getSymbols().find(item => item && item.id === symbolId);
     if (!symbol) return [];
     return getAllPublicRecords().filter(record =>
-      Array.isArray(record.symbols) && record.symbols.includes(symbolId)
+      getRecordSymbols(record).some(item => item && item.id === symbolId)
     );
+  }
+
+  function symbolPortalRoute(symbolId) {
+    const symbol = getSymbols().find(item => item && item.id === symbolId);
+    if (!symbol || symbol.status !== "portal") return null;
+    const destination = String(symbol.destination || "").toLowerCase();
+    return ({
+      visual: "#art/visual",
+      audio: "#art/music",
+      writing: "#art/words",
+      people: "#world",
+      places: "#world",
+      traces: "#web",
+      world: "#world",
+      now: "#now",
+      path: "#web",
+      gravity: "#web",
+      unknown: "#investigation"
+    })[destination] || null;
   }
 
   function getRuntimeState() {
@@ -1592,7 +1650,7 @@ function renderClothing(){
         '</div>' : '') +
       (window.ESCIE_MEDIA && media.length ? window.ESCIE_MEDIA.renderAll(media) : "") +
       (symbols.length ? '<div class="record-symbols"><p class="eyebrow">RECURRING MOTIFS</p>' +
-        symbols.map(symbol => '<button class="record-symbol-link" type="button" data-symbol-id="' + escapeHTML(symbol.id) + '">' +
+        symbols.map(symbol => '<button class="record-symbol-link' + (symbol.status === "portal" ? ' record-symbol-portal' : '') + '" type="button" data-symbol-id="' + escapeHTML(symbol.id) + '"' + (symbol.status === "portal" ? ' data-symbol-portal="true"' : '') + ' data-symbol-record="' + escapeHTML(recordId(record)) + '">' +
           escapeHTML(symbol.name) + '<span>' + escapeHTML(symbol.motif || "") + '</span></button>').join("") + '</div>' : '') +
       ((locations.length || people.length || tags.length || media.length || evidence.length) ?
         '<div class="record-context"><p class="eyebrow">DECLARED CONTEXT</p>' +
@@ -1790,7 +1848,24 @@ function renderClothing(){
 
       const symbolTrigger = event.target.closest("[data-symbol-id]");
       if (symbolTrigger) {
-        showSymbolInspector(symbolTrigger.getAttribute("data-symbol-id"));
+        const symbolId = symbolTrigger.getAttribute("data-symbol-id");
+        if (symbolTrigger.hasAttribute("data-symbol-portal")) {
+          const route = symbolPortalRoute(symbolId);
+          if (route) {
+            const recordIdValue = symbolTrigger.getAttribute("data-symbol-record") || "";
+            ESCIE_RUNTIME.webFilters = ESCIE_RUNTIME.webFilters || {};
+            if (route === "#web" && recordIdValue) {
+              ESCIE_RUNTIME.webFilters.record = recordIdValue;
+            }
+            const category = route.indexOf("#art/") === 0 ? route.slice(5) : "";
+            const target = route.indexOf("#art/") === 0 ? "art" : route.slice(1);
+            const hash = category ? route : "#" + target;
+            history.pushState(null, "", hash);
+            window.dispatchEvent(new Event("hashchange"));
+            return;
+          }
+        }
+        showSymbolInspector(symbolId);
         return;
       }
 
