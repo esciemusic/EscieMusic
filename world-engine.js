@@ -808,7 +808,7 @@ function worldLensMarkup(){
       const active=state.tab===t[0];
       return '<button type="button" role="tab" aria-selected="'+(active?"true":"false")+'" '+lensAttrs[t[0]]+'>'+glyph(t[2],t[1])+'<span>'+esc(t[1])+'</span></button>';
     }).join("")+
-    '<button type="button" class="world-more-door" data-world-more aria-expanded="'+(state.moreOpen?"true":"false")+'"><span>'+(state.moreOpen?"LESS":"MORE")+'</span></button>
+    '<button type="button" class="world-more-door" data-world-more aria-expanded="'+(state.moreOpen?"true":"false")+'"><span>'+(state.moreOpen?"LESS":"MORE")+'</span></button>'+
     (state.moreOpen?tabs.filter(function(t){return !["people","places","moments","trace","path"].includes(t[0]);}).map(function(t){
       const active=state.tab===t[0];
       return '<button type="button" role="tab" aria-selected="'+(active?"true":"false")+'" '+lensAttrs[t[0]]+'>'+glyph(t[2],t[1])+'<span>'+esc(t[1])+'</span></button>';
@@ -980,7 +980,7 @@ function draw(){
    if(explore){
      state.exploreOpen=!state.exploreOpen;
      state.outsideOpen=false;
-     if(!state.exploreOpen)state.tab="atlas";
+     if(!state.exploreOpen){state.tab="atlas";state.moreOpen=false;}
      state.selected=null;
      history.replaceState(null,"","#world");
      draw();
@@ -1114,6 +1114,7 @@ function draw(){
    state.focusOrigin=null;
    state.exploreOpen=false;
    state.outsideOpen=false;
+   state.moreOpen=false;
    state.tab="atlas";
    const h=String(location.hash||"");
    const sm=h.match(/(?:world-street=)([^&]+)/);
