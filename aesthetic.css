@@ -4013,3 +4013,93 @@ body.light .world-object-origin{border-color:rgba(0,0,0,.1)}
   .world-home > .world-now{padding:0 4px 28px}
   .world-home > .world-home-actions{padding:16px 4px}
 }
+
+
+/* =========================================================
+   HERO TOP ORIENTATION
+   Header logo is a glyph, not a wordmark. NOW is a live doorway.
+   ========================================================= */
+.site-logo{
+  width:40px;
+  min-width:40px;
+  justify-content:center;
+  font-size:0;
+  letter-spacing:0;
+}
+.site-logo:hover{letter-spacing:0;}
+.site-logo-glyph{
+  width:24px;
+  height:24px;
+  display:block;
+  color:var(--white);
+  opacity:.88;
+  transition:transform 320ms ease,opacity 320ms ease,filter 320ms ease;
+}
+.site-logo:hover .site-logo-glyph{
+  opacity:1;
+  transform:scale(1.06);
+  filter:drop-shadow(0 0 10px rgba(111,63,175,.35));
+}
+
+.hero-now-node{
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:54px;
+  height:54px;
+  margin:0 auto 18px;
+  color:var(--escie-blue-bright);
+  opacity:.82;
+  transition:opacity 240ms ease,transform 320ms ease,filter 320ms ease;
+}
+.hero-now-node[hidden]{display:none;}
+.hero-now-node::before,
+.hero-now-node::after{
+  content:"";
+  position:absolute;
+  inset:7px;
+  border:1px solid rgba(77,163,255,.28);
+  border-radius:50%;
+  pointer-events:none;
+}
+.hero-now-node::after{
+  inset:0;
+  border-color:rgba(155,89,255,.18);
+  animation:escie-now-pulse 2.8s ease-in-out infinite;
+}
+.hero-now-node .escie-symbol-glyph{
+  width:28px;
+  height:28px;
+  position:relative;
+  z-index:1;
+  filter:drop-shadow(0 0 9px rgba(77,163,255,.28));
+}
+.hero-now-label{
+  position:absolute;
+  top:calc(100% + 5px);
+  left:50%;
+  transform:translateX(-50%);
+  color:var(--faint);
+  font-size:7px;
+  letter-spacing:.28em;
+  white-space:nowrap;
+}
+.hero-now-node:hover,
+.hero-now-node:focus-visible{
+  opacity:1;
+  transform:translateY(-2px);
+  filter:drop-shadow(0 0 14px rgba(111,63,175,.28));
+}
+@keyframes escie-now-pulse{
+  0%,100%{transform:scale(.92);opacity:.32;}
+  50%{transform:scale(1.08);opacity:.72;}
+}
+@media(max-width:700px){
+  .site-logo{width:36px;min-width:36px;}
+  .site-logo-glyph{width:22px;height:22px;}
+  .hero-now-node{width:48px;height:48px;margin-bottom:14px;}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-now-node::after{animation:none;}
+}
