@@ -31,7 +31,7 @@
       assert(engine.translate("THE OUTSIDE WORLD","fr")==="LE MONDE EXTÉRIEUR","French Outside World label must resolve");
       assert(engine.translate("THE OUTSIDE WORLD","es")==="EL MUNDO EXTERIOR","Spanish Outside World label must resolve");
       assert(engine.translate("Start anywhere. The World is bigger than the doorway.","fr")==="Commencez n’importe où. Le monde est plus grand que l’entrée.","French World closing copy must resolve");
-      assert(engine.translate("Start anywhere. The World is bigger than the doorway.","es")==="Empieza donde quieras. El mundo es más grand que la entrada.","Spanish World closing copy must resolve");
+      assert(engine.translate("Start anywhere. The World is bigger than the doorway.","es")==="Empieza donde quieras. El mundo es más grande que la entrada.","Spanish World closing copy must resolve");
       assert(engine.translate("SIGNAL QUIET","fr")==="SIGNAL SILENCIEUX","French signal status must resolve");
       assert(engine.translate("SIGNAL QUIET","es")==="SEÑAL EN SILENCIO","Spanish signal status must resolve");
       assert(engine.translate("The signal is quiet. The record remains.","fr")==="Le signal est silencieux. Le registre demeure.","French signal message must resolve");
