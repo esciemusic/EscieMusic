@@ -6,7 +6,7 @@ UPM = 1000
 ASCENT = 800
 DESCENT = -200
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "release-candidate"
+OUT = Path(__file__).resolve().parent / "release-candidate"
 OUT.mkdir(exist_ok=True)
 
 
