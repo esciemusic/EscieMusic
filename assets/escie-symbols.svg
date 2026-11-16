@@ -24,12 +24,12 @@
   <symbol id="feather" viewBox="0 0 32 32"><path d="M26 5C17 4 8 9 7 18c-.4 3.8 1.7 6.5 5.5 6.5C21 24.5 27 14 26 5Z"/><path d="M7 27 15 18M10 21l7-1M13 16l7-2M17 12l6-2"/></symbol>
   <symbol id="photo-negative" viewBox="0 0 32 32"><rect x="5" y="7" width="22" height="18" rx="1"/><path d="M8 10h5v5H8zM19 10h5v5h-5zM8 17h5v5H8zM19 17h5v5h-5z"/><path d="M16 7v18"/></symbol>
   <symbol id="film-reel" viewBox="0 0 32 32"><circle cx="16" cy="16" r="11"/><circle cx="16" cy="16" r="2"/><circle cx="16" cy="9.5" r="2.3"/><circle cx="21.5" cy="19.5" r="2.3"/><circle cx="10.5" cy="19.5" r="2.3"/></symbol>
-  <symbol id="oju" viewBox="0 0 32 32"><path d="M3 16s5.2-8 13-8 13 8 13 8-5.2 8-13 8S3 16 3 16z"/><circle cx="16" cy="16" r="3"/><circle cx="16" cy="16" r="1"/><path d="M9 7c2-2 4-3 7-3M23 7c-2-2-4-3-7-3"/></symbol>
-  <symbol id="maya-speech" viewBox="0 0 32 32"><path d="M6 7c6-3 13-2 18 2 4 4 1 8-4 9-4 1-7 4-10 8"/><path d="M9 11c4-2 8-1 11 1M8 15c4-2 7-1 10 1"/></symbol>
-  <symbol id="thoth" viewBox="0 0 32 32"><path d="M9 5h14v19H9z"/><path d="M12 9h8M12 13h8M12 17h5M12 21h7"/><path d="M9 24l-3 3M23 24l3 3"/></symbol>
+  <symbol id="oju" viewBox="0 0 80 64"><path d="M18 32C28 17 52 17 62 32C52 47 28 47 18 32Z"/><ellipse cx="40" cy="32" rx="9" ry="13"/><path d="M31 14C36 10 44 10 49 14M31 50C36 54 44 54 49 50"/></symbol>
+  <symbol id="maya-speech" viewBox="0 0 80 64"><path d="M17 35C21 28 29 27 35 31C39 34 42 38 47 37C53 36 55 30 51 26"/><path d="M50 26C56 24 62 27 64 33C66 40 61 47 55 47"/><path d="M55 47C49 49 44 46 43 42"/><path d="M31 31C28 28 24 28 21 30"/></symbol>
+  <symbol id="thoth" viewBox="0 0 80 64"><path d="M22 47L48 21M45 18L52 25M19 50L28 47L22 41ZM31 42H58M31 48H52M34 54H60M58 38L62 42L58 46"/></symbol>
   <symbol id="vitruvian-man" viewBox="0 0 32 32"><circle cx="16" cy="16" r="12"/><circle cx="16" cy="6.5" r="2"/><path d="M16 9v14M10 13l12 0M9 18l14 0M12 25l4-11 4 11M10 13l-4-4M22 13l4-4"/></symbol>
-  <symbol id="stargate" viewBox="0 0 32 32"><circle cx="16" cy="16" r="12"/><circle cx="16" cy="16" r="8"/><circle cx="16" cy="16" r="3"/><path d="M16 1v5M16 26v5M1 16h5M26 16h5"/></symbol>
-  <symbol id="orion" viewBox="0 0 32 32"><circle cx="10" cy="7" r="1.5"/><circle cx="22" cy="8" r="1.5"/><circle cx="13" cy="14" r="1.5"/><circle cx="19" cy="15" r="1.5"/><circle cx="11" cy="24" r="1.5"/><circle cx="21" cy="23" r="1.5"/><circle cx="16" cy="16" r="1.2"/><path d="M10 7l3 7 3 2 6-8M13 14l-2 10M19 15l2 8M11 24l10-1"/></symbol>
+  <symbol id="stargate" viewBox="0 0 80 64"><ellipse cx="40" cy="32" rx="24" ry="27"/><ellipse cx="40" cy="32" rx="17" ry="20"/><path d="M40 12V52M20 32H60"/><circle cx="40" cy="32" r="4"/></symbol>
+  <symbol id="orion" viewBox="0 0 80 64"><path d="M18 18L40 26L60 18M40 26L34 38L40 50L46 38L40 26M34 38L21 43M46 38L59 43"/><circle cx="18" cy="18" r="2"/><circle cx="40" cy="26" r="2"/><circle cx="60" cy="18" r="2"/><circle cx="34" cy="38" r="2"/><circle cx="46" cy="38" r="2"/><circle cx="21" cy="43" r="2"/><circle cx="59" cy="43" r="2"/><circle cx="40" cy="50" r="2"/></symbol>
   <symbol id="home" viewBox="0 0 32 32"><path d="M5 15 16 6l11 9v11H5z"/><path d="M12 26v-7h8v7"/></symbol>
   <symbol id="path" viewBox="0 0 32 32"><path d="M5 25c8-12 14-12 22-18"/><circle cx="5" cy="25" r="2"/><circle cx="27" cy="7" r="2"/></symbol>
   <symbol id="gravity" viewBox="0 0 32 32"><circle cx="16" cy="16" r="3"/><circle cx="16" cy="16" r="10"/><path d="M16 3v5M16 24v5M3 16h5M24 16h5"/></symbol>
