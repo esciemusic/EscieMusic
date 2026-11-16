@@ -163,8 +163,6 @@
         .map(id => symbols.find(symbol => symbol && symbol.id === id))
         .filter(Boolean)
       : [];
-    if (explicit.length) return explicit;
-
     const type = String(record.type || record.identity?.type || "").toLowerCase();
     const inferred = {
       music: "symbol-maya-speech",
@@ -193,9 +191,10 @@
       investigation: "symbol-orion",
       proof: "symbol-orion"
     }[type];
-    if (!inferred) return [];
+    if (!inferred) return explicit;
     const symbol = symbols.find(item => item && item.id === inferred);
-    return symbol ? [symbol] : [];
+    if (!symbol) return explicit;
+    return explicit.concat(explicit.some(item => item && item.id === symbol.id) ? [] : [symbol]);
   }
 
   function symbolTrail(symbolId) {
