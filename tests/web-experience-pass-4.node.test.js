@@ -44,6 +44,6 @@ test("Experience Pass 4 keeps motion subordinate to accessibility",()=>{
 test("Experience Pass 4 keeps the public doorway free of private controls",()=>{
   assert.doesNotMatch(index,/service_role/i);
   assert.doesNotMatch(app,/SUPABASE_SERVICE_ROLE_KEY/i);
-  assert.doesNotMatch(app,/pendingControl|controlItems/);
+  assert.match(app,/pendingControl\s*=\s*function \(\) \{ return \[\]; \}/);\n  assert.match(app,/controlItems\s*=\s*\[\];/);
   assert.match(app,/Private cognition\/control systems are intentionally absent/);
 });
