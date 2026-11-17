@@ -126,7 +126,7 @@
     </div>
     <div class="architecture-detail" id="architecture-detail" aria-live="polite">
       <p class="architecture-detail-kicker">SURFACE</p><h3>MY WORLD</h3>
-      <p>The first layer never asks the visitor to understand the machinery. It gives them a place to begin.</p>
+      <p>The first layer gives you a place to begin.</p>
       <div class="architecture-capabilities"><span>NOW</span><span>HOME</span><span>OUTSIDE</span><span>LIVE SIGNAL</span><span>CELESTIAL CONTEXT</span></div>
     </div>
     <div class="architecture-bridges" aria-label="World systems">
@@ -202,15 +202,15 @@ const globe=document.querySelector(".globe");
   globe.querySelectorAll(".globe-world-point").forEach(function(point){point.addEventListener("pointerdown",function(e){e.stopPropagation();});});
 })();
 const architectureDetails={
- surface:{kicker:"SURFACE",title:"MY WORLD",copy:"The first layer gives the visitor a place to begin without asking them to understand the machinery.",caps:["NOW","HOME","OUTSIDE","LIVE SIGNAL","CELESTIAL CONTEXT"]},
+ surface:{kicker:"SURFACE",title:"MY WORLD",copy:"The first layer gives you a place to begin.",caps:["NOW","HOME","OUTSIDE","LIVE SIGNAL","CELESTIAL CONTEXT"]},
  explore:{kicker:"EXPLORE",title:"WHAT IS HERE",copy:"People, places, moments and art are different doors into the same World.",caps:["PEOPLE","PLACES","MOMENTS","ART"]},
- discover:{kicker:"DISCOVER",title:"WHAT CONNECTS",copy:"Connections, relationships and context let the visitor follow meaning instead of menus.",caps:["CONNECTIONS","RELATIONSHIPS","CONTEXT","THE WEB"]},
+ discover:{kicker:"DISCOVER",title:"WHAT CONNECTS",copy:"Connections, relationships and context let you follow what matters.",caps:["CONNECTIONS","RELATIONSHIPS","CONTEXT","THE WEB"]},
  depth:{kicker:"LOOK CLOSER",title:"WHAT IS UNDERNEATH",copy:"Deeper material remains available without becoming the first thing the visitor sees.",caps:["FRAGMENTS","PROOF","BODIES","TIMELINE","SYMBOLS","ARCHIVES","INVESTIGATIONS"]},
  trace:{kicker:"TRACE",title:"YOUR THREAD",copy:"The World remembers the path a visitor chooses to follow, so returning can preserve context.",caps:["PATH","TRAILS","VISITED","RETURN","ATTENTION"]},
  index:{kicker:"INDEX",title:"THE STRUCTURE",copy:"The conventional map. Everything has a place here, but the World does not require you to start here.",caps:["ATLAS","ALL LENSES","SYMBOLS","TIMELINE","NAVIGATION"]},
- "glass-eye":{kicker:"GLASS EYE",title:"THE PARTICIPATION LAYER",copy:"A way to look through the screen, listen, contribute and leave a trace without turning the World into a menu.",caps:["OBSERVE","HEAR","FOLLOW","COMMENT","UPLOAD","LANGUAGE","THEME"]},
+ "glass-eye":{kicker:"GLASS EYE",title:"THE PARTICIPATION LAYER",copy:"A way to look through the screen, listen, contribute and leave something behind.",caps:["OBSERVE","HEAR","FOLLOW","COMMENT","UPLOAD","LANGUAGE","THEME"]},
  archives:{kicker:"ARCHIVES",title:"WHAT REMAINS",copy:"Preserved material sits deeper in the World. It is available when the visitor has reason to look back.",caps:["ARCHIVE","HISTORY","PRESERVED RECORDS","RETURN"]},
- "case-files":{kicker:"CASE FILES",title:"INVESTIGATIONS",copy:"Investigations are discovered depth: evidence, uncertainty and connected records without making the public experience feel like an ARG.",caps:["INVESTIGATIONS","EVIDENCE","PROOF","UNCERTAINTY","CONNECTIONS"]},
+ "case-files":{kicker:"CASE FILES",title:"INVESTIGATIONS",copy:"Investigations are discovered depth: evidence, uncertainty and connected records.",caps:["INVESTIGATIONS","EVIDENCE","PROOF","UNCERTAINTY","CONNECTIONS"]},
  web:{kicker:"THE WEB",title:"BEYOND THE CENTER",copy:"The World extends outward. The Web is how connections continue beyond the immediate place.",caps:["OUTSIDE","CONNECTIONS","RELATIONSHIPS","DISCOVERY"]}
 };
 const architectureDetail=document.getElementById("architecture-detail");
