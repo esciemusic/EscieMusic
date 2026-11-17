@@ -368,6 +368,7 @@ Object.keys(worldWebSeed).forEach(function(from){
 
 const visitorWeb={nodes:["MY WORLD"],edges:[],owner:"VISITOR"};
 const webIntersections=[];
+const webIntersectionMemory=[];
 function webKey(label){return String(label||"").trim().toUpperCase();}
 function recordWebExperience(label,origin){
  const node=webKey(label); if(!node)return;
@@ -383,6 +384,7 @@ function recordWebExperience(label,origin){
  });
  const touched=canonicalNode&&(!previous||canonicalEdge);
  if(touched&&!webIntersections.includes(node))webIntersections.push(node);
+ if(touched&&!webIntersectionMemory.some(function(x){return x.from===previous&&x.to===node;}))webIntersectionMemory.push({from:previous,to:node});
  return {node,previous,intersections:webIntersections.slice(),canonicalNode,canonicalEdge,touched};
 }
 function webNetworkState(){
@@ -434,6 +436,7 @@ function renderIntertwinedWeb(){
  if(hasIntersection){
    if(title)title.textContent="SOME PATHS CROSS";
    if(copy)copy.textContent="Your path has touched a connection that was already here.";
+   if(webIntersectionMemory.length>1&&copy)copy.textContent="Your path has touched the World more than once. The connections are beginning to form a pattern.";
  }
 }
 function renderWebLayers(){
@@ -680,7 +683,7 @@ if(worldReturn)worldReturn.addEventListener("click",function(){
  const target=document.getElementById(worldSpaceOrigin)||document.getElementById("world-entry-view");
  target.scrollIntoView({behavior:"smooth",block:"start"});
 });if(traceReturn)traceReturn.addEventListener("click",function(){returnToWorldContext();});
-if(traceClear)traceClear.addEventListener("click",function(){worldThread=["MY WORLD"];worldThreadOrigins={"MY WORLD":"world-entry-view"};worldTraceHistory=["MY WORLD"];visitorWeb.nodes=["MY WORLD"];visitorWeb.edges=[];webIntersections.splice(0);worldEntryOrigin="MY WORLD";const originCopy=document.getElementById("world-entry-origin-copy");if(originCopy)originCopy.textContent="You are here.";if(window.history&&window.history.replaceState)window.history.replaceState(null,"",window.location.pathname+window.location.search);renderWorldThread();});
+if(traceClear)traceClear.addEventListener("click",function(){worldThread=["MY WORLD"];worldThreadOrigins={"MY WORLD":"world-entry-view"};worldTraceHistory=["MY WORLD"];visitorWeb.nodes=["MY WORLD"];visitorWeb.edges=[];webIntersections.splice(0);webIntersectionMemory.splice(0);worldEntryOrigin="MY WORLD";const originCopy=document.getElementById("world-entry-origin-copy");if(originCopy)originCopy.textContent="You are here.";if(window.history&&window.history.replaceState)window.history.replaceState(null,"",window.location.pathname+window.location.search);renderWorldThread();});
 
 if(lookAround&&around)lookAround.addEventListener("click",function(){around.hidden=!around.hidden;lookAround.textContent=around.hidden?"LOOK AROUND":"CLOSE";});
 
