@@ -818,7 +818,7 @@ function worldLensMarkup(){
     '<button type="button" class="world-index-toggle" data-world-explore aria-expanded="'+(advanced?"true":"false")+'"><span class="world-kicker">DISCOVER</span><strong>'+(advanced?"LOOK CLOSER":"EXPLORE")+'</strong><span aria-hidden="true">'+(advanced?"−":"+")+'</span></button>'+
     (!advanced?primary.map(function(t){
       const active=state.tab===t[0];
-      return '<button type="button" class="world-primary-door" '+lensAttrs[t[0]]+' aria-label="'+esc(t[1])+'">'+glyph(t[2],t[1])+'<span>'+esc(t[1])+'</span></button>';
+      return '<button type="button" role="tab" class="world-primary-door" '+lensAttrs[t[0]]+' aria-selected="'+(active?"true":"false")+'" aria-label="'+esc(t[1])+'">'+glyph(t[2],t[1])+'<span>'+esc(t[1])+'</span></button>';
     }).join(""):"")+
    '</div>'+
    '<div class="world-lens-nav world-deeper-nav" role="tablist" aria-label="ESCIE World navigation"'+(advanced?"":" hidden")+'>'+
