@@ -167,7 +167,7 @@
     <h2 class="world-title">THE WORLD</h2>
     <p class="world-intro">The conventional way in.</p>
     <div class="index-map" aria-label="World index">
-      <div class="index-group"><span>01</span><strong>SURFACE</strong><button type="button" data-index-target="world-entry-view">MY WORLD</button><button type="button" data-index-target="world-entry-view">NOW</button><button type="button" data-index-target="world-space">HOME</button><button type="button" data-index-target="world-space">OUTSIDE</button></div>
+      <div class="index-group"><span>01</span><strong>SURFACE</strong><button type="button" data-index-target="world-entry-view">MY WORLD</button><button type="button" data-index-target="now">NOW</button><button type="button" data-index-target="world-space">HOME</button><button type="button" data-index-target="world-space">OUTSIDE</button></div>
       <div class="index-group"><span>02</span><strong>EXPLORE</strong><button type="button" data-index-target="world-space">PEOPLE</button><button type="button" data-index-target="world-space">PLACES</button><button type="button" data-index-target="world-space">MOMENTS</button><button type="button" data-index-target="world-space">ART</button></div>
       <div class="index-group"><span>03</span><strong>DISCOVER</strong><button type="button" data-index-target="world-space">CONNECTIONS</button><button type="button" data-index-target="world-architecture">RELATIONSHIPS</button><button type="button" data-index-target="world-architecture">CONTEXT</button></div>
       <div class="index-group"><span>04</span><strong>LOOK CLOSER</strong><button type="button" data-index-target="hidden-world">FRAGMENTS</button><button type="button" data-index-target="hidden-world">PROOF</button><button type="button" data-index-target="hidden-world">BODIES</button><button type="button" data-index-target="hidden-world">TIMELINE</button><button type="button" data-index-target="hidden-world">SYMBOLS</button></div>
@@ -327,6 +327,7 @@ if(enterWorld)enterWorld.addEventListener("click",function(){document.getElement
 const lookAround=document.getElementById("look-around");
 const around=document.getElementById("now-around");
 const worldSpace=document.getElementById("world-space");
+let worldSpaceOrigin="world-entry-view";
 const worldTitle=document.getElementById("world-space-title");
 const worldSubtitle=document.getElementById("world-space-subtitle");
 const worldCopy=document.getElementById("world-space-copy");
@@ -363,6 +364,11 @@ function renderWorldDeeper(key){
  worldDeeper.hidden=false;
 }
 
+function enterWorldDoorFrom(key,origin){
+  worldSpaceOrigin=origin||"world-entry-view";
+  if(worldSpace)worldSpace.dataset.spaceOrigin=worldSpaceOrigin;
+  enterWorldDoor(key);
+}
 const worldConnections={
  home:[["PEOPLE","people","people who belong to Home"],["PLACES","places","places inside Home"],["MOMENTS","moments","moments that happened here"]],
  outside:[["PLACES","places","places beyond Home"],["WEB","web","connections that continue outward"],["MOMENTS","moments","moments beyond the center"]],
@@ -382,7 +388,7 @@ function renderWorldDiscover(key){
  const key=button.getAttribute("data-discover-key");
  const label=button.querySelector("strong")?.textContent||key.toUpperCase();
  worldThreadOrigins[label]= "world-space";
- enterWorldDoor(key);
+ enterWorldDoorFrom(key,"world-space");
 });});
 }
 
@@ -405,6 +411,8 @@ function enterWorldDoor(key){
   worldCopy.textContent=destination.copy;
   worldSpace.hidden=false;
   worldSpace.dataset.space=key;
+  worldSpaceOrigin=worldSpace.dataset.spaceOrigin||"world-entry-view";
+  worldSpace.dataset.spaceOrigin=worldSpaceOrigin;
   rememberWorldThread(destination.title,"world-space");
   renderWorldDiscover(key);
   renderWorldDeeper(key);
@@ -414,9 +422,12 @@ function enterWorldDoor(key){
   window.setTimeout(function(){worldSpace.classList.remove("is-entering");},420);
 }
 document.querySelectorAll("[data-world-door]").forEach(function(button){
-  button.addEventListener("click",function(){enterWorldDoor(button.getAttribute("data-world-door"));});
+  button.addEventListener("click",function(){worldSpaceOrigin="world-entry-view";if(worldSpace)worldSpace.dataset.spaceOrigin=worldSpaceOrigin;enterWorldDoor(button.getAttribute("data-world-door"));});
 });
-if(worldReturn)worldReturn.addEventListener("click",function(){document.getElementById("world-entry-view").scrollIntoView({behavior:"smooth"});});if(traceReturn)traceReturn.addEventListener("click",function(){returnToWorldContext();});
+if(worldReturn)worldReturn.addEventListener("click",function(){
+ const target=document.getElementById(worldSpaceOrigin)||document.getElementById("world-entry-view");
+ target.scrollIntoView({behavior:"smooth",block:"start"});
+});if(traceReturn)traceReturn.addEventListener("click",function(){returnToWorldContext();});
 if(traceClear)traceClear.addEventListener("click",function(){worldThread=["MY WORLD"];worldThreadOrigins={"MY WORLD":"world-entry-view"};renderWorldThread();});
 
 if(lookAround&&around)lookAround.addEventListener("click",function(){around.hidden=!around.hidden;lookAround.textContent=around.hidden?"LOOK AROUND":"CLOSE";});
