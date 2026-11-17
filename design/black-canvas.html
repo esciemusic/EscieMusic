@@ -85,7 +85,11 @@
 .intersection-pulse{animation:intersectionPulse .9s ease-out}
 @keyframes intersectionPulse{0%{opacity:1;filter:brightness(1)}35%{opacity:1;filter:brightness(1.8)}100%{opacity:1;filter:brightness(1)}}
 @media (prefers-reduced-motion:reduce){.intersection-pulse{animation:none;outline:1px solid currentColor}}
-\n.world-web-reveal{animation:worldWebReveal 1.2s ease-out}\n@keyframes worldWebReveal{0%{outline:0 solid transparent;opacity:1}30%{outline:1px solid currentColor;opacity:1}100%{outline:0 solid transparent;opacity:1}}\n@media (prefers-reduced-motion:reduce){.world-web-reveal{animation:none;outline:1px solid currentColor}}\n
+
+.world-web-reveal{animation:worldWebReveal 1.2s ease-out}
+@keyframes worldWebReveal{0%{outline:0 solid transparent;opacity:1}30%{outline:1px solid currentColor;opacity:1}100%{outline:0 solid transparent;opacity:1}}
+@media (prefers-reduced-motion:reduce){.world-web-reveal{animation:none;outline:1px solid currentColor}}
+
 .web-trace-field.has-intersection{filter:brightness(1.08)}
 .web-trace-field.has-intersection::after{content:"";position:absolute;inset:12%;border:1px solid currentColor;border-radius:50%;opacity:.16;pointer-events:none;animation:webIntersectionFade 2.4s ease-out}
 @keyframes webIntersectionFade{0%{opacity:0;transform:scale(.82)}30%{opacity:.22;transform:scale(1)}100%{opacity:0;transform:scale(1.08)}}
@@ -391,11 +395,14 @@ function recordWebExperience(label,origin){
  });
  const touched=Boolean(previous&&previous!==node&&canonicalNode&&canonicalEdge);
  if(touched&&!webIntersections.includes(node))webIntersections.push(node);
- if(touched&&!webIntersectionMemory.some(function(x){return x.from===previous&&x.to===node;}))webIntersectionMemory.push({from:previous,to:node});
+ if(touched)webIntersectionMemory.push({from:previous,to:node});
  return {node,previous,intersections:webIntersections.slice(),canonicalNode,canonicalEdge,touched};
 }
 function webSystemReset(){
  visitorWeb.nodes=["MY WORLD"];
+ visitorWeb.edges=[];
+ worldThread=["MY WORLD"];
+ worldThreadOrigins={"MY WORLD":"world-entry-view"};
  visitorWeb.edges=[];
  webIntersections.splice(0);
  webIntersectionMemory.splice(0);
@@ -476,7 +483,7 @@ function webPatternState(){
 function renderIntertwinedWeb(){
  const field=document.getElementById("web-trace-field");
  if(!field)return;
- const hasIntersection=webIntersections.length>1;
+ const hasIntersection=webIntersections.length>0;
  field.classList.toggle("has-intersection",hasIntersection);
  field.setAttribute("data-web-state",hasIntersection?"INTERSECTION":visitorWeb.nodes.length>1?"VISITOR":"WORLD");
  const title=document.getElementById("web-effect-title");
@@ -555,7 +562,10 @@ function renderWebTrace(){
    }
    const node=document.createElement("button");
    node.type="button";
-   const traceNode=webKey(label);\n   const isWorldNode=worldWeb.nodes.includes(traceNode);\n   const isIntersection=webIntersections.includes(traceNode);\n   node.className="web-trace-node"+(index===count-1?" is-current":"")+(index===0?" is-origin":"")+(index<count-4?" is-old":"")+(isWorldNode?" is-world-node":"")+(isIntersection?" is-intersection":"");
+   const traceNode=webKey(label);
+   const isWorldNode=worldWeb.nodes.includes(traceNode);
+   const isIntersection=webIntersections.includes(traceNode);
+   node.className="web-trace-node"+(index===count-1?" is-current":"")+(index===0?" is-origin":"")+(index<count-4?" is-old":"")+(isWorldNode?" is-world-node":"")+(isIntersection?" is-intersection":"");
    node.style.left=pos[0]+"%";
    node.style.top=pos[1]+"%";
    node.textContent=label;
@@ -577,7 +587,8 @@ function renderWebTrace(){
 }
 function rememberWorldThread(label,origin){
  const webState=recordWebExperience(label,origin);
- if(webState&&webState.intersections&&webState.intersections.includes(webKey(label)))intersectionPulse(label);\n if(webState&&webState.previous)revealWorldConnection(webState.previous,webState.node);
+ if(webState&&webState.intersections&&webState.intersections.includes(webKey(label)))intersectionPulse(label);
+ if(webState&&webState.previous)revealWorldConnection(webState.previous,webState.node);
 
  if(!label)return;
  if(origin)worldThreadOrigins[label]=origin;
