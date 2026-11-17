@@ -52,6 +52,7 @@
     ["person",()=>collection("ESCIE_PEOPLE")],
     ["location",()=>collection("ESCIE_LOCATIONS")],
     ["moment",()=>collection("ESCIE_MOMENTS")],
+    ["object",()=>collection("ESCIE_OBJECTS")],
     ["fragment",()=>collection("ESCIE_FRAGMENTS")],
     ["body",()=>collection("ESCIE_BODIES")],
     ["path",()=>collection("ESCIE_PATHS")],
