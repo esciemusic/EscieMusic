@@ -1,17 +1,14 @@
 /*
  * ESCIE BODY REGISTRY
  *
- * Bodies are intentional groupings of existing material:
- * projects, collections, releases, archives, or other coherent bodies
- * of work.
+ * Bodies represent physical presence in the World: a body, bodily presence,
+ * or a recorded representation of a body.
  *
  * IMPORTANT:
- * - A body organizes records; it does not manufacture them.
- * - Inclusion in a body does not automatically establish chronology,
- *   authorship, meaning, or a relationship between its records.
- * - Bodies may contain different record types when the editorial structure
- *   requires it.
- * - A body can be provisional without making its contents provisional.
+ * - A body is presence, not identity; People remain the identity layer.
+ * - A body may be identified, unidentified, partial, represented, or disputed.
+ * - A body does not manufacture a person, event, meaning, or relationship.
+ * - Sensitive inferences about a body are never created automatically.
  *
  * This registry is intentionally empty until ESCIE establishes its records.
  */
