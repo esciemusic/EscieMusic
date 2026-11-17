@@ -93,11 +93,12 @@
   setDepth("home");
   globe.querySelector(".outside").addEventListener("click",function(e){e.stopPropagation();setDepth("outside");});
   globe.querySelector(".deep").addEventListener("click",function(e){e.stopPropagation();setDepth("deep");});
-  globe.addEventListener("pointerdown",function(e){down=true;startX=e.clientX;startY=e.clientY;globe.setPointerCapture(e.pointerId);globe.style.animation="none";});
+  globe.addEventListener("pointerdown",function(e){if(e.target.closest(".globe-world-point"))return;down=true;startX=e.clientX;startY=e.clientY;globe.setPointerCapture(e.pointerId);globe.style.animation="none";});
   globe.addEventListener("pointermove",function(e){if(!down)return;ry+=(e.clientX-startX)*.35;rx-=(e.clientY-startY)*.2;startX=e.clientX;startY=e.clientY;globe.style.transform="rotateX("+rx+"deg) rotateY("+ry+"deg)";});
   globe.addEventListener("pointerup",function(e){down=false;try{globe.releasePointerCapture(e.pointerId)}catch(_){};globe.style.animation="";});
   globe.addEventListener("pointercancel",function(){down=false;globe.style.animation="";});
   globe.addEventListener("dblclick",function(){setDepth("home");});
+  globe.querySelectorAll(".globe-world-point").forEach(function(point){point.addEventListener("pointerdown",function(e){e.stopPropagation();});});
 })();
 const enterWorld=document.getElementById("enter-world");
 if(enterWorld)enterWorld.addEventListener("click",function(){document.getElementById("world-entry-view").scrollIntoView({behavior:"smooth"});});
