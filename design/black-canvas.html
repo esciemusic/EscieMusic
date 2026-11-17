@@ -70,8 +70,9 @@
 .doorway-title{margin:0;font-size:clamp(2.2rem,8vw,5.5rem);line-height:.95;letter-spacing:-.045em}
 .doorway-intro{max-width:620px;margin:1.35rem auto 0;line-height:1.65;opacity:.72}
 .doorway-links{display:flex;flex-wrap:wrap;justify-content:center;gap:.55rem;margin:2rem auto 0}
-.doorway-links button{font:inherit;background:transparent;border:1px solid rgba(255,255,255,.16);color:inherit;padding:.72rem 1rem;min-height:44px;letter-spacing:.1em;cursor:pointer}
-.doorway-links button:hover,.doorway-links button:focus-visible{border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.04)}
+.doorway-links button{font:inherit;background:transparent;border:0;border-bottom:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.68);padding:.72rem .45rem;min-height:44px;letter-spacing:.1em;cursor:pointer;transition:border-color .25s ease,color .25s ease,transform .25s ease}
+.doorway-links button:hover,.doorway-links button:focus-visible{border-color:rgba(255,255,255,.55);color:#fff;transform:translateY(-1px)}
+.doorway-links button:focus-visible{outline:1px solid rgba(255,255,255,.55);outline-offset:5px}
 @media(max-width:600px){.doorway-section{padding-top:4.5rem;padding-bottom:5rem}.doorway-links{gap:.45rem}.doorway-links button{padding:.65rem .8rem}}
 </style></style>
 </head>
@@ -83,7 +84,7 @@
 <section class="doorway-section" id="doorways" aria-label="Ways into My World">
   <p class="doorway-kicker">ONE WORLD</p>
   <h2 class="doorway-title">MANY DOORS</h2>
-  <p class="doorway-intro">A song, image, word, object, person, place, or page can be the way you arrive. The World is the same.</p>
+  <p class="doorway-intro">There is no first door. A song, image, word, object, person, place, or page can bring you here.</p>
   <div class="doorway-links" aria-label="Ways to enter My World">
     <button type="button" data-entry-door="music">MUSIC</button>
     <button type="button" data-entry-door="image">IMAGE</button>
@@ -293,7 +294,7 @@ document.querySelectorAll("[data-index-system]").forEach(function(button){
    e.preventDefault();
    const route=link.getAttribute("data-hero-route");
    if(route==="world"){worldThreadOrigins["MY WORLD"]="world";document.getElementById("world").scrollIntoView({behavior:"smooth",block:"start"});return;}
-   if(route==="art"||route==="web"){worldEntryOrigin=route==="art"?"ART":"PAGE";const originCopy=document.getElementById("world-entry-origin-copy");if(originCopy)originCopy.textContent="You entered through "+worldEntryOrigin+".";rememberWorldThread(worldEntryOrigin,"entry");worldSpaceOrigin="hero";worldSpaceOriginKey=null;if(worldSpace)worldSpace.dataset.spaceOrigin=worldSpaceOrigin;enterWorldDoor(route);return;}
+   if(route==="art"||route==="web"){enterFromDoorKey(route==="art"?"image":"web",false);worldEntryOrigin=route==="art"?"ART":"PAGE";const originCopy=document.getElementById("world-entry-origin-copy");if(originCopy)originCopy.textContent=route==="art"?"ART BROUGHT YOU HERE.":"A PAGE BROUGHT YOU HERE.";rememberWorldThread(worldEntryOrigin,"entry");worldSpaceOrigin="hero";worldSpaceOriginKey=null;if(worldSpace)worldSpace.dataset.spaceOrigin=worldSpaceOrigin;enterWorldDoor(route);return;}
    if(route==="archives"){worldEntryOrigin="ARCHIVES";const originCopy=document.getElementById("world-entry-origin-copy");if(originCopy)originCopy.textContent="You entered through ARCHIVES.";rememberWorldThread("ARCHIVES","entry");document.getElementById("world-architecture").scrollIntoView({behavior:"smooth",block:"start"});activateSystem("archives");}
  });
 });
@@ -331,7 +332,7 @@ function renderWorldThread(){
  const current=worldThread[worldThread.length-1]||"MY WORLD";
  const context=traceContextMap[current]||traceContextMap["MY WORLD"];
  if(traceContextTitle)traceContextTitle.textContent=context[0];
- if(traceContextCopy)traceContextCopy.textContent=context[1];
+ if(traceContextCopy){const arrival=worldEntryOrigin&&worldEntryOrigin!=="MY WORLD"?" You arrived through "+worldEntryOrigin+".":"";traceContextCopy.textContent=context[1]+arrival;}
 }
 function rememberWorldThread(label,origin){
  if(!label)return;
@@ -351,21 +352,26 @@ function returnToWorldContext(){
 }
 renderWorldThread();
 const doorwayLabels={music:"MUSIC",image:"IMAGE",word:"WORD",object:"OBJECT",person:"PERSON",place:"PLACE",web:"PAGE"};
+const doorwayArrivalCopy={music:"A SONG BROUGHT YOU HERE.",image:"AN IMAGE BROUGHT YOU HERE.",word:"A WORD BROUGHT YOU HERE.",object:"AN OBJECT BROUGHT YOU HERE.",person:"A PERSON BROUGHT YOU HERE.",place:"A PLACE BROUGHT YOU HERE.",web:"A PAGE BROUGHT YOU HERE."};
 let worldEntryOrigin="MY WORLD";
-document.querySelectorAll("[data-entry-door]").forEach(function(button){
- button.addEventListener("click",function(){
-   worldEntryOrigin=doorwayLabels[button.getAttribute("data-entry-door")]||"MY WORLD";
-   const entry=document.getElementById("world-entry-view");
-   if(entry){
-     const originNode=entry.querySelector(".now-presence");
-     if(originNode) originNode.setAttribute("data-entry-origin",worldEntryOrigin);
-     entry.scrollIntoView({behavior:"smooth",block:"start"});
-   }
-   rememberWorldThread(worldEntryOrigin,"entry");
- });
-});
+function enterFromDoorKey(key,updateUrl){
+ const label=doorwayLabels[key]||"MY WORLD";
+ worldEntryOrigin=label;
+ const originCopy=document.getElementById("world-entry-origin-copy");
+ if(originCopy)originCopy.textContent=doorwayArrivalCopy[key]||"YOU ARE HERE.";
+ const entry=document.getElementById("world-entry-view");
+ if(entry){
+   const originNode=entry.querySelector(".now-presence");
+   if(originNode)originNode.setAttribute("data-entry-origin",label);
+   entry.scrollIntoView({behavior:"smooth",block:"start"});
+ }
+ rememberWorldThread(label,"entry");
+ if(updateUrl&&window.history&&window.history.replaceState)window.history.replaceState(null,"","#door="+encodeURIComponent(key));
+}
+document.querySelectorAll("[data-entry-door]").forEach(function(button){button.addEventListener("click",function(){enterFromDoorKey(button.getAttribute("data-entry-door"),true);});});
 const worldEntryOriginCopy=document.getElementById("world-entry-origin-copy");
-if(worldEntryOriginCopy){document.addEventListener("click",function(e){const b=e.target.closest("[data-entry-door]");if(!b)return;const label=doorwayLabels[b.getAttribute("data-entry-door")]||"MY WORLD";worldEntryOriginCopy.textContent=label==="MY WORLD"?"You are here.":"You entered through "+label+".";});}
+if(worldEntryOriginCopy){document.addEventListener("click",function(e){const b=e.target.closest("[data-entry-door]");if(!b)return;const key=b.getAttribute("data-entry-door");worldEntryOriginCopy.textContent=doorwayArrivalCopy[key]||"YOU ARE HERE.";});}
+(function(){const match=window.location.hash.match(/^#door=(music|image|word|object|person|place|web)$/i);if(match)window.setTimeout(function(){enterFromDoorKey(match[1].toLowerCase(),false);},0);})();
 const enterWorld=document.getElementById("enter-world");
 if(enterWorld)enterWorld.addEventListener("click",function(){document.getElementById("world-entry-view").scrollIntoView({behavior:"smooth"});});
 const lookAround=document.getElementById("look-around");
@@ -483,7 +489,7 @@ if(worldReturn)worldReturn.addEventListener("click",function(){
  const target=document.getElementById(worldSpaceOrigin)||document.getElementById("world-entry-view");
  target.scrollIntoView({behavior:"smooth",block:"start"});
 });if(traceReturn)traceReturn.addEventListener("click",function(){returnToWorldContext();});
-if(traceClear)traceClear.addEventListener("click",function(){worldThread=["MY WORLD"];worldThreadOrigins={"MY WORLD":"world-entry-view"};renderWorldThread();});
+if(traceClear)traceClear.addEventListener("click",function(){worldThread=["MY WORLD"];worldThreadOrigins={"MY WORLD":"world-entry-view"};worldEntryOrigin="MY WORLD";const originCopy=document.getElementById("world-entry-origin-copy");if(originCopy)originCopy.textContent="You are here.";if(window.history&&window.history.replaceState)window.history.replaceState(null,"",window.location.pathname+window.location.search);renderWorldThread();});
 
 if(lookAround&&around)lookAround.addEventListener("click",function(){around.hidden=!around.hidden;lookAround.textContent=around.hidden?"LOOK AROUND":"CLOSE";});
 
