@@ -733,13 +733,60 @@ const webConsequences={
  outside:[["WEB","The outside can become another door into the World."],["PLACES","A distant place can become connected without becoming Home."],["MOMENTS","What happens elsewhere can still create a consequence here."]],
  web:[["OUTSIDE","The Web can carry a connection beyond the center."],["PEOPLE","A connection can introduce another person into the path."],["PLACES","A connection can lead somewhere you did not expect."]]
 };
+function prototypeContentTestEnabled(){return new URLSearchParams(window.location.search).get("content-test")==="1";}
+function prototypeStressRecordsForWorld(key){
+ if(!prototypeContentTestEnabled()||!window.ESCIE_WORLD_CONTENT_CONTRACT)return [];
+ const contract=window.ESCIE_WORLD_CONTENT_CONTRACT;
+ const all=(contract.fixtures||[]).concat(contract.stressFixtures||[]);
+ const typeMap={home:["person","place","moment"],outside:["place","moment","archive"],people:["person","body","art"],places:["place","moment","symbol"],moments:["moment","fragment","proof","timeline"],art:["art","person","moment"],web:all.map(function(x){return x.type;})};
+ const allowed=typeMap[key]||[];
+ return all.filter(function(r){return allowed.includes(r.type)&&contract.canPublish(r);}).slice(0,8);
+}
+function prototypeRecordRelations(id){
+ const contract=window.ESCIE_WORLD_CONTENT_CONTRACT;
+ if(!contract)return [];
+ const all=(contract.fixtures||[]).concat(contract.stressFixtures||[]);
+ const names={};all.forEach(function(r){names[r.id]=r.title;});
+ return (contract.stressGraph||[]).filter(function(edge){return edge[0]===id||edge[2]===id;}).map(function(edge){return {title:names[edge[0]===id?edge[2]:edge[0]]||"CONNECTED RECORD",type:edge[1]};});
+}
+function renderPrototypeWorldRecords(key){
+ if(!worldDiscoverLinks||!prototypeContentTestEnabled())return;
+ const records=prototypeStressRecordsForWorld(key);
+ if(!records.length)return;
+ const wrap=document.createElement("div");
+ wrap.className="prototype-world-records";
+ wrap.setAttribute("data-prototype-world-records","true");
+ const heading=document.createElement("p");heading.className="prototype-world-records-title";heading.textContent="CONTENT IN THIS WORLD";wrap.appendChild(heading);
+ records.forEach(function(record){
+   const button=document.createElement("button");button.type="button";button.className="prototype-world-record";button.dataset.recordId=record.id;
+   button.innerHTML="<strong>"+record.title+"</strong><small>"+record.type.toUpperCase()+" · "+record.summary+"</small>";
+   button.addEventListener("click",function(){
+     rememberWorldThread(record.title,"world-space");
+     const relations=prototypeRecordRelations(record.id);
+     if(worldDiscoverCopy)worldDiscoverCopy.textContent=record.summary+(relations.length?" Connected to "+relations.map(function(x){return x.title;}).slice(0,3).join(", ")+".":"");
+     renderPrototypeRecordRelations(record);
+   });
+   wrap.appendChild(button);
+ });
+ worldDiscoverLinks.appendChild(wrap);
+}
+function renderPrototypeRecordRelations(record){
+ if(!worldDiscoverLinks||!prototypeContentTestEnabled())return;
+ const old=worldDiscoverLinks.querySelector("[data-prototype-record-relations]");if(old)old.remove();
+ const relations=prototypeRecordRelations(record.id);if(!relations.length)return;
+ const wrap=document.createElement("div");wrap.dataset.prototypeRecordRelations="true";wrap.className="prototype-record-relations";
+ const heading=document.createElement("p");heading.className="prototype-world-records-title";heading.textContent="CONNECTED";wrap.appendChild(heading);
+ relations.slice(0,6).forEach(function(rel){const item=document.createElement("span");item.textContent=rel.title+" · "+rel.type.replace(/_/g," ");wrap.appendChild(item);});
+ worldDiscoverLinks.appendChild(wrap);
+}
+
 function renderWorldDiscover(key){
  const links=worldConnections[key]||worldConnections.home;
  if(!worldDiscoverLinks)return;
  worldDiscoverTitle.textContent=key==="home"?"WHAT CONNECTS":"FOLLOW THE CONNECTION";
  worldDiscoverCopy.textContent=key==="home"?"Home connects outward through people, places and moments.":"The World opens through what connects it. Follow one thing and the meaning around it can change.";
  worldDiscoverLinks.innerHTML=links.map(function(item){return '<button type="button" data-discover-key="'+item[1]+'"><strong>'+item[0]+'</strong><small>'+item[2]+'</small></button>';}).join("");
- worldDiscoverLinks.querySelectorAll("[data-discover-key]").forEach(function(button){button.addEventListener("click",function(){
+ renderPrototypeWorldRecords(key);\n worldDiscoverLinks.querySelectorAll("[data-discover-key]").forEach(function(button){button.addEventListener("click",function(){
  const key=button.getAttribute("data-discover-key");
  const label=button.querySelector("strong")?.textContent||key.toUpperCase();
  const consequence=(webConsequences[worldSpace&&worldSpace.dataset.space]||webConsequences.home).find(function(item){return item[0]===label;});
