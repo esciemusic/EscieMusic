@@ -178,6 +178,22 @@
     {id:"stress-investigation-01",type:"investigation",title:"Prototype Investigation",summary:"A representative investigation layer.",status:"approved",visibility:"public",public_disclosure:true,certainty:"uncertain",created_at:"prototype",updated_at:"prototype",tags:["stress","investigation"],question:"What connects these records?",case_state:"open",references:["stress-proof-01","stress-fragment-01"]}
   ]);
 
+  const stressGraph=Object.freeze([
+    ["prototype-person-escie","located_at","prototype-place-montreal"],
+    ["prototype-art-work","created_by","prototype-person-escie"],
+    ["prototype-art-work","references","stress-moment-01"],
+    ["stress-moment-01","involves","prototype-person-escie"],
+    ["stress-moment-01","happened_at","prototype-place-montreal"],
+    ["stress-fragment-01","derived_from","stress-moment-01"],
+    ["stress-proof-01","documents","stress-moment-01"],
+    ["stress-body-01","related_to","prototype-person-escie"],
+    ["stress-symbol-01","appears_in","stress-moment-01"],
+    ["stress-timeline-01","references","stress-moment-01"],
+    ["stress-archive-01","contains","stress-fragment-01"],
+    ["stress-investigation-01","references","stress-proof-01"],
+    ["stress-investigation-01","references","stress-fragment-01"]
+  ]);
+
   const fixtureRelationships=Object.freeze([
     {
       id:"prototype-escie-montreal",from:"prototype-person-escie",to:"prototype-place-montreal",
@@ -231,6 +247,7 @@
     readiness,
     fixtures,
     stressFixtures,
+    stressGraph,
     fixtureRelationships
   });
 
