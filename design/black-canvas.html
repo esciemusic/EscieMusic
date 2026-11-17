@@ -172,7 +172,7 @@
       <div class="index-group"><span>03</span><strong>DISCOVER</strong><button type="button" data-index-target="world-space">CONNECTIONS</button><button type="button" data-index-target="world-architecture">RELATIONSHIPS</button><button type="button" data-index-target="world-architecture">CONTEXT</button></div>
       <div class="index-group"><span>04</span><strong>LOOK CLOSER</strong><button type="button" data-index-target="hidden-world">FRAGMENTS</button><button type="button" data-index-target="hidden-world">PROOF</button><button type="button" data-index-target="hidden-world">BODIES</button><button type="button" data-index-target="hidden-world">TIMELINE</button><button type="button" data-index-target="hidden-world">SYMBOLS</button></div>
       <div class="index-group"><span>05</span><strong>TRACE</strong><button type="button" data-index-target="world-trace">PATH</button><button type="button" data-index-target="world-trace">TRAILS</button><button type="button" data-index-target="world-trace">YOUR THREAD</button></div>
-      <div class="index-group index-systems"><span>—</span><strong>DEEPER SYSTEMS</strong><button type="button" data-index-target="hidden-world">GLASS EYE</button><button type="button" data-index-target="hidden-world">ARCHIVES</button><button type="button" data-index-target="hidden-world">CASE FILES</button><button type="button" data-index-target="hidden-world">THE WEB</button></div>
+      <div class="index-group index-systems"><span>—</span><strong>DEEPER SYSTEMS</strong><button type="button" data-index-system="glass-eye">GLASS EYE</button><button type="button" data-index-system="archives">ARCHIVES</button><button type="button" data-index-system="case-files">CASE FILES</button><button type="button" data-index-system="web">THE WEB</button></div>
     </div>
     <button class="index-return" type="button" id="index-return">RETURN TO MY WORLD</button>
   </div>
@@ -224,8 +224,27 @@ function setArchitectureDetail(key){
 document.querySelectorAll("[data-architecture-layer]").forEach(function(button){
  button.addEventListener("click",function(){setArchitectureDetail(button.getAttribute("data-architecture-layer"));});
 });
+function activateSystem(key){
+ setArchitectureDetail(key);
+ rememberWorldThread((architectureDetails[key]||{}).title||key.toUpperCase(),"world-architecture");
+ const action=architectureDetail&&architectureDetail.querySelector("[data-system-action]");
+ if(action)action.focus();
+}
 document.querySelectorAll("[data-architecture-jump]").forEach(function(button){
- button.addEventListener("click",function(){setArchitectureDetail(button.getAttribute("data-architecture-jump"));});
+ button.addEventListener("click",function(){const key=button.getAttribute("data-architecture-jump");if(key==="index"){document.getElementById("index").scrollIntoView({behavior:"smooth",block:"start"});return;}activateSystem(key);});
+});
+document.addEventListener("click",function(e){
+ const action=e.target.closest("[data-system-action]");
+ if(!action)return;
+ const key=action.getAttribute("data-system-action");
+ if(key==="index"){document.getElementById("index").scrollIntoView({behavior:"smooth",block:"start"});return;}
+ if(key==="glass-eye"){document.getElementById("hidden-world-trigger")?.click();document.querySelector(".hidden-world-status").textContent="GLASS EYE — the participation layer. The screen can become a place to observe, listen, contribute and leave a trace.";return;}
+ if(key==="archives"){document.getElementById("hidden-world-trigger")?.click();document.querySelector(".hidden-world-status").textContent="ARCHIVES — preserved material. What remains can be revisited without becoming the surface.";return;}
+ if(key==="case-files"){document.getElementById("hidden-world-trigger")?.click();document.querySelector(".hidden-world-status").textContent="CASE FILES — discovered investigations. Evidence and uncertainty belong deeper in the World.";return;}
+ if(key==="web"){enterWorldDoor("web");return;}
+});
+document.querySelectorAll("[data-index-system]").forEach(function(button){
+ button.addEventListener("click",function(){document.getElementById("world-architecture").scrollIntoView({behavior:"smooth",block:"start"});activateSystem(button.getAttribute("data-index-system"));});
 });
 const tracePath=document.getElementById("trace-path");
 const traceReturn=document.getElementById("trace-return");
