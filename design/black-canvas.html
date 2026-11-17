@@ -168,7 +168,7 @@
   <div class="web-shell">
     <p class="web-kicker">THE WEB</p>
     <h2 class="web-title">WHAT YOUR PATH BECAME.</h2>
-    <p class="web-intro">The Web is not a map you enter. It is what your movement through the World leaves behind.</p>
+    <p class="web-intro">The Web is not a map you enter. It is what your movement through the World leaves behind. Your Web is yours. Other paths can touch it.</p>
     <div class="web-field web-trace-field" id="web-trace-field" aria-label="Your accumulated World trace" aria-live="polite"></div>
     <div class="web-effect" aria-live="polite"><strong id="web-effect-title">YOUR TRACE</strong><p id="web-effect-copy">Begin anywhere. Each choice can become a connection.</p></div>
     <button class="web-return" type="button" id="web-return">RETURN TO MY WORLD</button>
@@ -339,6 +339,31 @@ const traceContextMap={
  "THE WEB":["THE WEB / OUTWARD","You followed the World beyond its immediate center." ]
 };
 
+const worldWeb={nodes:["MY WORLD"],edges:[],owner:"ESCIE"};
+const visitorWeb={nodes:["MY WORLD"],edges:[],owner:"VISITOR"};
+const webIntersections=[];
+function webKey(label){return String(label||"").trim().toUpperCase();}
+function recordWebExperience(label,origin){
+ const node=webKey(label); if(!node)return;
+ const previous=visitorWeb.nodes[visitorWeb.nodes.length-1];
+ if(!visitorWeb.nodes.includes(node))visitorWeb.nodes.push(node);
+ if(previous&&previous!==node){
+   const exists=visitorWeb.edges.some(function(e){return e[0]===previous&&e[1]===node;});
+   if(!exists)visitorWeb.edges.push([previous,node]);
+ }
+ if(!worldWeb.nodes.includes(node))worldWeb.nodes.push(node);
+ const worldPrevious=worldWeb.nodes[worldWeb.nodes.length-1];
+ if(worldPrevious&&worldPrevious!==node){
+   const exists=worldWeb.edges.some(function(e){return e[0]===worldPrevious&&e[1]===node;});
+   if(!exists)worldWeb.edges.push([worldPrevious,node]);
+ }
+ const shared=visitorWeb.nodes.filter(function(n){return worldWeb.nodes.includes(n);});
+ webIntersections.splice(0,webIntersections.length,...shared);
+ return {node,previous,intersections:webIntersections.slice()};
+}
+function webNetworkState(){
+ return {world:worldWeb,visitor:visitorWeb,intersections:webIntersections.slice()};
+}
 let worldThread=["MY WORLD"];
 let worldThreadOrigins={"MY WORLD":"world-entry-view"};
 let worldTraceHistory=["MY WORLD"];
@@ -402,6 +427,8 @@ function renderWebTrace(){
  });
 }
 function rememberWorldThread(label,origin){
+ recordWebExperience(label,origin);
+
  if(!label)return;
  if(origin)worldThreadOrigins[label]=origin;
  worldThread=worldThread.filter(function(item){return item!==label;});
@@ -570,7 +597,7 @@ if(worldReturn)worldReturn.addEventListener("click",function(){
  const target=document.getElementById(worldSpaceOrigin)||document.getElementById("world-entry-view");
  target.scrollIntoView({behavior:"smooth",block:"start"});
 });if(traceReturn)traceReturn.addEventListener("click",function(){returnToWorldContext();});
-if(traceClear)traceClear.addEventListener("click",function(){worldThread=["MY WORLD"];worldThreadOrigins={"MY WORLD":"world-entry-view"};worldTraceHistory=["MY WORLD"];worldEntryOrigin="MY WORLD";const originCopy=document.getElementById("world-entry-origin-copy");if(originCopy)originCopy.textContent="You are here.";if(window.history&&window.history.replaceState)window.history.replaceState(null,"",window.location.pathname+window.location.search);renderWorldThread();});
+if(traceClear)traceClear.addEventListener("click",function(){worldThread=["MY WORLD"];worldThreadOrigins={"MY WORLD":"world-entry-view"};worldTraceHistory=["MY WORLD"];visitorWeb.nodes=["MY WORLD"];visitorWeb.edges=[];webIntersections.splice(0);worldEntryOrigin="MY WORLD";const originCopy=document.getElementById("world-entry-origin-copy");if(originCopy)originCopy.textContent="You are here.";if(window.history&&window.history.replaceState)window.history.replaceState(null,"",window.location.pathname+window.location.search);renderWorldThread();});
 
 if(lookAround&&around)lookAround.addEventListener("click",function(){around.hidden=!around.hidden;lookAround.textContent=around.hidden?"LOOK AROUND":"CLOSE";});
 
