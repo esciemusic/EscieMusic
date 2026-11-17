@@ -59,6 +59,8 @@ const ESCIE_RECORD = {
 
     MOMENT: "moment",
 
+    OBJECT: "object",
+
     FRAGMENT: "fragment",
 
     BODY: "body",
