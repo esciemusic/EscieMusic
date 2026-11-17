@@ -425,6 +425,14 @@ function renderWorldThread(){
  if(traceContextCopy){const arrival=worldEntryOrigin&&worldEntryOrigin!=="MY WORLD"?" You arrived through "+worldEntryOrigin+".":"";traceContextCopy.textContent=context[1]+arrival;}
  renderWebTrace();
 }
+function webPatternState(){
+ const counts={};
+ webIntersectionMemory.forEach(function(x){
+   const key=[x.from,x.to].sort().join("→");
+   counts[key]=(counts[key]||0)+1;
+ });
+ return Object.keys(counts).filter(function(k){return counts[k]>1;}).map(function(k){return {key:k,count:counts[k]};});
+}
 function renderIntertwinedWeb(){
  const field=document.getElementById("web-trace-field");
  if(!field)return;
@@ -437,6 +445,8 @@ function renderIntertwinedWeb(){
    if(title)title.textContent="SOME PATHS CROSS";
    if(copy)copy.textContent="Your path has touched a connection that was already here.";
    if(webIntersectionMemory.length>1&&copy)copy.textContent="Your path has touched the World more than once. The connections are beginning to form a pattern.";
+   const patterns=webPatternState();
+   if(patterns.length&&copy)copy.textContent="A pattern is forming between places you have already touched.";
  }
 }
 function renderWebLayers(){
