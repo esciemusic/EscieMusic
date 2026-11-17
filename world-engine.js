@@ -317,6 +317,16 @@ function refreshWorldClock(container){
  if(spans[0])spans[0].textContent=conditions;
  if(spans[1])spans[1].textContent=now.season||"";
 }
+function scheduleWorldRefresh(container){
+ if(!container)return;
+ if(container._escieWorldRefreshTimer)clearTimeout(container._escieWorldRefreshTimer);
+ const tick=function(){
+  if(!document.hidden){refreshWorldClock(container);syncAttention(container);}
+  scheduleWorldRefresh(container);
+ };
+ const delay=30000;
+ container._escieWorldRefreshTimer=setTimeout(tick,delay);
+}
 function filtered(){
  const q=state.q.toLowerCase().trim();
  return records().filter(r=>(state.type==="ALL"||type(r)===state.type)&&(!q||searchText(r).includes(q)));
@@ -891,7 +901,9 @@ container.dataset.worldOntologyCoverage=record?worldLayerCoverage(record).join("
  }
  syncLiveState();
  loadTrail();
- setInterval(function(){refreshWorldClock(container);syncAttention(container);},30000);
+ refreshWorldClock(container);
+ syncAttention(container);
+ scheduleWorldRefresh(container);
  window.addEventListener("escie:world-state",function(){syncLiveState();draw();});
  const route=String(location.hash||"");
  const placeMatch=route.match(/(?:world-place=)([^&]+)/);
