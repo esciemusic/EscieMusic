@@ -786,7 +786,8 @@ function renderWorldDiscover(key){
  worldDiscoverTitle.textContent=key==="home"?"WHAT CONNECTS":"FOLLOW THE CONNECTION";
  worldDiscoverCopy.textContent=key==="home"?"Home connects outward through people, places and moments.":"The World opens through what connects it. Follow one thing and the meaning around it can change.";
  worldDiscoverLinks.innerHTML=links.map(function(item){return '<button type="button" data-discover-key="'+item[1]+'"><strong>'+item[0]+'</strong><small>'+item[2]+'</small></button>';}).join("");
- renderPrototypeWorldRecords(key);\n worldDiscoverLinks.querySelectorAll("[data-discover-key]").forEach(function(button){button.addEventListener("click",function(){
+ renderPrototypeWorldRecords(key);
+ worldDiscoverLinks.querySelectorAll("[data-discover-key]").forEach(function(button){button.addEventListener("click",function(){
  const key=button.getAttribute("data-discover-key");
  const label=button.querySelector("strong")?.textContent||key.toUpperCase();
  const consequence=(webConsequences[worldSpace&&worldSpace.dataset.space]||webConsequences.home).find(function(item){return item[0]===label;});
