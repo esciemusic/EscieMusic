@@ -329,7 +329,7 @@ function scheduleWorldRefresh(container){
  if(!container)return;
  if(container._escieWorldRefreshTimer)clearTimeout(container._escieWorldRefreshTimer);
  const tick=function(){
-  if(!document.hidden){refreshWorldClock(container);syncAttention(container);}
+  if(!document.hidden){refreshWorldClock(container);}
   scheduleWorldRefresh(container);
  };
  const delay=30000;
@@ -867,9 +867,9 @@ function worldHome(){ const returnWelcome=returnWelcomeMarkup(); rememberWorldRe
  const outside=outsideWorldMarkup();
  const returnChange=returnChangeMarkup(); const contentChange=worldContentChangeMarkup(); const returnThread=worldReturnTrailMarkup(); rememberWorldSnapshot(); return '<div class="world-home">'+
    '<div class="world-home-intro"><span class="world-kicker">MY WORLD</span><h3>HOME</h3><p>Montréal is home. Everything else is still the world.</p></div>'+worldNowMarkup()+returnWelcome+returnChange+contentChange+returnThread+
-   ((currentTab||state.exploreOpen)?worldLensMarkup():'')+
+   worldLensMarkup()+
    (currentTab?worldLensContent():'<div class="world-home-house"><button type="button" class="world-home-city" data-node="world-montreal"><span class="world-kicker">HOME</span><strong>'+esc(city&&city.title||"MONTRÉAL")+'</strong><p>WHERE MY WORLD AND THE WORLD INTERTWINE.</p><span class="world-arrow" aria-hidden="true">↗</span></button><div class="world-home-rooms">'+(roomCards||'<span class="world-empty">Nothing has been opened yet.</span>')+'</div></div>')+
-   ((currentTab||state.exploreOpen)?'':'<div class="world-home-actions"><button type="button" class="world-enter-index" data-world-explore aria-expanded="false"><span class="world-kicker">DISCOVER</span><strong>OPEN THE WORLD</strong><span aria-hidden="true">↗</span></button></div>')+
+
    (currentTab?'':'<button type="button" class="world-home-outside" data-outside-world aria-expanded="'+(state.outsideOpen?"true":"false")+'"><span class="world-kicker">THE OUTSIDE WORLD</span><strong>'+(state.outsideOpen?"COME BACK INSIDE":"THE WORLD CONTINUES")+'</strong><p>'+(state.outsideOpen?"Return to Montréal home.":"Everything beyond Montréal can enter here too.")+'</p></button>'+outside)+
    (currentTab?'':'<p class="world-home-note">Start anywhere. The World is bigger than the doorway.</p>')+
  '</div>';
