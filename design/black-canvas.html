@@ -569,6 +569,12 @@ const webNodeData={
  page:["PAGE → WORLD","A page can be the outside door that leads into the same World.","world"]
 };
 const webEffectTrail=[];
+const webFollowMap={
+ music:"people",person:"place",place:"moment",moment:"art",image:"memory",page:"world",world:"music"
+};
+const webWorldMap={
+ music:"art",person:"people",place:"places",moment:"moments",image:"moments",page:"outside",world:"home"
+};
 function advanceWebEffect(key){
  const data=webNodeData[key]||webNodeData.world;
  const next=data[2];
@@ -581,6 +587,16 @@ function advanceWebEffect(key){
  });
  if(webEffectTitle)webEffectTitle.textContent=data[0];
  if(webEffectCopy)webEffectCopy.textContent=data[1]+" The next connection is "+(webNodeData[next]||webNodeData.world)[0].toLowerCase()+".";
+ let follow=document.getElementById("web-follow-connection");
+ if(!follow){
+   follow=document.createElement("button");
+   follow.type="button";
+   follow.id="web-follow-connection";
+   follow.className="web-return";
+   if(webEffectCopy&&webEffectCopy.parentNode)webEffectCopy.parentNode.appendChild(follow);
+ }
+ follow.textContent="FOLLOW "+(webNodeData[next]||webNodeData.world)[0];
+ follow.setAttribute("data-follow-web",next);
  return next;
 }
 const webEffectTitle=document.getElementById("web-effect-title");
@@ -594,6 +610,20 @@ document.querySelectorAll("[data-web-node]").forEach(function(node){node.addEven
 });});
 const webReturnButton=document.getElementById("web-return");
 if(webReturnButton)webReturnButton.addEventListener("click",function(){document.getElementById("world-entry-view").scrollIntoView({behavior:"smooth",block:"start"});});
+document.addEventListener("click",function(e){
+ const follow=e.target.closest("[data-follow-web]");
+ if(!follow)return;
+ const key=follow.getAttribute("data-follow-web");
+ const worldKey=webWorldMap[key]||"home";
+ const label=(webNodeData[key]||webNodeData.world)[0];
+ rememberWorldThread(label,"web-layer");
+ if(worldDestinations&&worldDestinations[worldKey]){
+   worldSpaceOrigin="web-layer";
+   worldSpaceOriginKey="web-layer";
+   if(worldSpace)worldSpace.dataset.spaceOrigin="web-layer";
+   enterWorldDoor(worldKey);
+ }
+});
 </script>
 </body>
 </html>
