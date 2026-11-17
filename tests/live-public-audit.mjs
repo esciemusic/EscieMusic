@@ -38,7 +38,7 @@ page.on("console", m => {
     const message = "console error: " + m.text() + (location?.url ? " [" + location.url + "]" : "");
     // Chromium can report a transient Pages 5xx asset failure before the
     // explicit retrying asset check below gets a successful response.
-    if (/Failed to load resource: the server responded with 5\\d\\d/i.test(m.text())) {
+    if (/Failed to load resource: the server responded with 5\d\d/i.test(m.text())) {
       transientConsoleErrors.push(message);
       return;
     }
