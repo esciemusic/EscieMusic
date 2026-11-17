@@ -386,7 +386,7 @@ function recordWebExperience(label,origin){
  const canonicalEdge=previous&&worldWeb.edges.some(function(e){
    return (e[0]===previous&&e[1]===node)||(e[0]===node&&e[1]===previous);
  });
- const touched=canonicalNode&&(!previous||canonicalEdge);
+ const touched=Boolean(previous&&previous!==node&&canonicalNode&&canonicalEdge);
  if(touched&&!webIntersections.includes(node))webIntersections.push(node);
  if(touched&&!webIntersectionMemory.some(function(x){return x.from===previous&&x.to===node;}))webIntersectionMemory.push({from:previous,to:node});
  return {node,previous,intersections:webIntersections.slice(),canonicalNode,canonicalEdge,touched};
