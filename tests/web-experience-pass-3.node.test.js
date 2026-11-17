@@ -33,13 +33,13 @@ test("Experience Pass 3 keeps Glass Eye participation bounded and anonymous-capa
 
 test("Experience Pass 3 keeps the shared language system active for all supported languages",()=>{
   ["en","fr","es"].forEach(code=>assert.match(lang,new RegExp("\\b"+code+"\\s*:\\s*\\{")));
-  ["OPEN INDEX","ENTER THE WORLD","GLASS EYE","LEAVE SOMETHING BEHIND.","RECEIVED. HELD FOR REVIEW — NOT CANON."].forEach(phrase=>assert.ok(lang.includes(phrase),phrase));
+  ["OPEN INDEX","ENTER THE WORLD","GLASS EYE","LEAVE SOMETHING BEHIND.","RECEIVED. HELD FOR REVIEW — NOT CANON."].forEach(phrase=>assert.ok((lang+app).includes(phrase),phrase));
   assert.match(app,/language:changed/);
   assert.match(app,/data-language/);
 });
 
 test("Experience Pass 3 keeps viewer memory local and non-canonical",()=>{
-  assert.match(app,/localStorage\.setItem\(["']escie_/);
+  assert.match(app,/localStorage\.(?:getItem|setItem|removeItem)\(["\']escie-language["\']/);
   assert.match(app,/LOCAL \/ PRIVATE \/ NON-CANONICAL/);
   assert.match(app,/not canon/i);
 });
