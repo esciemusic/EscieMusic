@@ -217,6 +217,15 @@ function setArchitectureDetail(key){
  architectureDetail.querySelector("p:not(.architecture-detail-kicker)").textContent=d.copy;
  const caps=architectureDetail.querySelector(".architecture-capabilities");
  caps.innerHTML=d.caps.map(function(cap){return "<span>"+cap+"</span>";}).join("");
+ let action=architectureDetail.querySelector("[data-system-action]");
+ if(!action){
+   action=document.createElement("button");
+   action.type="button";
+   action.className="architecture-detail-action";
+   architectureDetail.appendChild(action);
+ }
+ action.setAttribute("data-system-action",key);
+ action.textContent=key==="index"?"OPEN INDEX":key==="glass-eye"?"OPEN GLASS EYE":key==="archives"?"OPEN ARCHIVES":key==="case-files"?"OPEN CASE FILES":key==="web"?"FOLLOW THE WEB":"FOLLOW THIS LAYER";
  document.querySelectorAll("[data-architecture-layer]").forEach(function(button){
    button.classList.toggle("is-active",button.getAttribute("data-architecture-layer")===key);
  });
@@ -265,7 +274,11 @@ const traceContextMap={
  "BODIES":["BODIES / DEPTH","You looked closer at presence and absence. The thread carries that layer."],
  "TIMELINE":["TIMELINE / DEPTH","You looked closer through time. The thread carries that direction."],
  "SYMBOLS":["SYMBOLS / DEPTH","You looked closer at recurring signs. The thread carries what you noticed."],
- "WEB":["WEB / OUTWARD","The thread reached beyond the center of the World."]
+ "WEB":["WEB / OUTWARD","The thread reached beyond the center of the World."],
+ "GLASS EYE":["GLASS EYE / PARTICIPATION","You entered the participation layer. What happens here can become part of your thread."],
+ "ARCHIVES":["ARCHIVES / PRESERVED","You looked back at what remains. The thread carries that return."],
+ "INVESTIGATIONS":["CASE FILES / DISCOVERY","You entered discovered depth. Evidence and uncertainty stay beneath the surface."],
+ "THE WEB":["THE WEB / OUTWARD","You followed the World beyond its immediate center." ]
 };
 
 let worldThread=["MY WORLD"];
