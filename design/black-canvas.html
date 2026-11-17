@@ -82,7 +82,7 @@
 .intersection-pulse{animation:intersectionPulse .9s ease-out}
 @keyframes intersectionPulse{0%{opacity:1;filter:brightness(1)}35%{opacity:1;filter:brightness(1.8)}100%{opacity:1;filter:brightness(1)}}
 @media (prefers-reduced-motion:reduce){.intersection-pulse{animation:none;outline:1px solid currentColor}}
-</style></style>
+\n.world-web-reveal{animation:worldWebReveal 1.2s ease-out}\n@keyframes worldWebReveal{0%{outline:0 solid transparent;opacity:1}30%{outline:1px solid currentColor;opacity:1}100%{outline:0 solid transparent;opacity:1}}\n@media (prefers-reduced-motion:reduce){.world-web-reveal{animation:none;outline:1px solid currentColor}}\n</style></style>
 </head>
 <body><div class="hidden-world-reveal"><button type="button" id="hidden-world-trigger" aria-controls="hidden-world" aria-expanded="false">LOOK CLOSER</button></div>
 <header class="site-header" aria-label="ESCIE header"><div class="header-left"><span class="header-symbol">ESCIE SYMBOL</span></div><div class="header-center"><div class="header-controls" aria-label="Language and light controls"><button class="header-control" type="button">EN</button><button class="header-control" type="button">FR</button><button class="header-control" type="button">ES</button><button class="header-control" type="button">LIGHT</button></div></div><div class="header-right"><button class="header-index" type="button" id="header-index">INDEX</button></div></header>
@@ -384,7 +384,20 @@ function recordWebExperience(label,origin){
 }
 function webNetworkState(){
  return {world:worldWeb,visitor:visitorWeb,intersections:webIntersections.slice()};
-}function intersectionPulse(label){
+}function revealWorldConnection(from,to){
+ const a=webKey(from),b=webKey(to);
+ const connected=worldWeb.edges.some(function(e){return (e[0]===a&&e[1]===b)||(e[0]===b&&e[1]===a);});
+ if(!connected)return false;
+ const el=document.querySelector("#web-trace, .web-trace");
+ if(el){
+  el.classList.remove("world-web-reveal");
+  void el.offsetWidth;
+  el.classList.add("world-web-reveal");
+  setTimeout(function(){el.classList.remove("world-web-reveal");},1200);
+ }
+ return true;
+}
+function intersectionPulse(label){
  const node=webKey(label);
  if(!webIntersections.includes(node))return;
  const el=document.querySelector("#web-trace, .web-trace");
@@ -459,7 +472,7 @@ function renderWebTrace(){
 }
 function rememberWorldThread(label,origin){
  const webState=recordWebExperience(label,origin);
- if(webState&&webState.intersections&&webState.intersections.includes(webKey(label)))intersectionPulse(label);
+ if(webState&&webState.intersections&&webState.intersections.includes(webKey(label)))intersectionPulse(label);\n if(webState&&webState.previous)revealWorldConnection(webState.previous,webState.node);
 
  if(!label)return;
  if(origin)worldThreadOrigins[label]=origin;
