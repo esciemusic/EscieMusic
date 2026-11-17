@@ -258,12 +258,14 @@
   const contract=window.ESCIE_WORLD_CONTENT_CONTRACT;
   const audit=contract.readiness();
   const stress=contract.stressFixtures||[];
+  const graph=contract.stressGraph||[];
   panel.hidden=false;
   title.textContent=audit.ok?"CONTENT CONTRACT READY":"CONTENT CONTRACT NEEDS WORK";
   status.innerHTML=[
     "RECORDS "+Math.round(audit.records*100)+"%",
     "RELATIONSHIPS "+Math.round(audit.relationships*100)+"%",
     "STRESS "+audit.stressValidRecords+"/"+audit.stressRecords,
+    "GRAPH LINKS "+graph.length,
     "PUBLISHABLE "+audit.publishableRecords,
     "PUBLIC LINKS "+audit.publishableRelationships
   ].map(function(item){return "<span>"+item+"</span>";}).join("");
