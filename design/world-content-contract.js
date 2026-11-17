@@ -167,6 +167,17 @@
     }
   ]);
 
+  const stressFixtures=Object.freeze([
+    {id:"stress-moment-01",type:"moment",title:"Prototype Moment",summary:"A representative moment for density testing.",status:"approved",visibility:"public",public_disclosure:true,certainty:"known",created_at:"prototype",updated_at:"prototype",tags:["stress","moment"],date:"2026-01-01",end_date:"",people:["prototype-person-escie"],places:["prototype-place-montreal"]},
+    {id:"stress-fragment-01",type:"fragment",title:"Prototype Fragment",summary:"A short fragment used to test deeper World layers.",status:"approved",visibility:"public",public_disclosure:true,certainty:"probable",created_at:"prototype",updated_at:"prototype",tags:["stress","fragment"],source:"prototype",excerpt:"A representative fragment.",context:"Prototype context."},
+    {id:"stress-proof-01",type:"proof",title:"Prototype Proof",summary:"A representative evidence record.",status:"approved",visibility:"public",public_disclosure:true,certainty:"known",created_at:"prototype",updated_at:"prototype",tags:["stress","proof"],source:"prototype",evidence_type:"image",captured_at:"2026-01-01"},
+    {id:"stress-body-01",type:"body",title:"Prototype Body",summary:"A representative body/media record.",status:"approved",visibility:"public",public_disclosure:true,certainty:"uncertain",created_at:"prototype",updated_at:"prototype",tags:["stress","body"],subject:"prototype-person-escie",medium:"photograph",condition:"preserved"},
+    {id:"stress-symbol-01",type:"symbol",title:"Prototype Symbol",summary:"A representative recurring symbol.",status:"approved",visibility:"public",public_disclosure:true,certainty:"probable",created_at:"prototype",updated_at:"prototype",tags:["stress","symbol"],meaning:"prototype meaning",appearances:["stress-moment-01"]},
+    {id:"stress-timeline-01",type:"timeline",title:"Prototype Timeline Event",summary:"A representative timeline entry.",status:"approved",visibility:"public",public_disclosure:true,certainty:"known",created_at:"prototype",updated_at:"prototype",tags:["stress","timeline"],date:"2026-01-01",event_type:"moment",references:["stress-moment-01"]},
+    {id:"stress-archive-01",type:"archive",title:"Prototype Archive",summary:"A representative preserved record.",status:"approved",visibility:"public",public_disclosure:true,certainty:"known",created_at:"prototype",updated_at:"prototype",tags:["stress","archive"],archive_type:"preserved",preserved_at:"2026-01-01",references:["stress-fragment-01"]},
+    {id:"stress-investigation-01",type:"investigation",title:"Prototype Investigation",summary:"A representative investigation layer.",status:"approved",visibility:"public",public_disclosure:true,certainty:"uncertain",created_at:"prototype",updated_at:"prototype",tags:["stress","investigation"],question:"What connects these records?",case_state:"open",references:["stress-proof-01","stress-fragment-01"]}
+  ]);
+
   const fixtureRelationships=Object.freeze([
     {
       id:"prototype-escie-montreal",from:"prototype-person-escie",to:"prototype-place-montreal",
@@ -181,13 +192,15 @@
   ]);
 
   function readiness(){
-    const recordChecks=fixtures.map(validateRecord);
+    const recordChecks=fixtures.concat(stressFixtures).map(validateRecord);
     const relationshipChecks=fixtureRelationships.map(validateRelationship);
     const recordPass=recordChecks.filter(function(x){return x.ok;}).length;
     const relationshipPass=relationshipChecks.filter(function(x){return x.ok;}).length;
     return Object.freeze({
       records:recordChecks.length?recordPass/recordChecks.length:1,
       relationships:relationshipChecks.length?relationshipPass/relationshipChecks.length:1,
+      stressRecords:stressFixtures.length,
+      stressValidRecords:stressFixtures.filter(function(x){return validateRecord(x).ok;}).length,
       publishableRecords:fixtures.filter(canPublish).length,
       publishableRelationships:fixtureRelationships.filter(canPublishRelationship).length,
       ok:recordPass===recordChecks.length && relationshipPass===relationshipChecks.length
@@ -217,6 +230,7 @@
     canPublishRelationship,
     readiness,
     fixtures,
+    stressFixtures,
     fixtureRelationships
   });
 
