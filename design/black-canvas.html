@@ -6,6 +6,8 @@
 <meta name="theme-color" content="#000000">
 <title>ESCIE — Black Canvas</title>
 <style>
+.index-shell{width:min(900px,100%);margin:0 auto}.index-map{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;margin-top:var(--f5);border-top:1px solid rgba(255,255,255,.08)}.index-group{padding:22px 16px 20px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left}.index-group>span{display:block;color:rgba(255,255,255,.25);font:500 7px/1 Arial,sans-serif;letter-spacing:.18em}.index-group>strong{display:block;margin-top:10px;color:rgba(255,255,255,.72);font:500 9px/1 Arial,sans-serif;letter-spacing:.16em}.index-group button{margin:13px 8px 0 0;padding:8px 0;color:rgba(255,255,255,.46);background:transparent;border:0;border-bottom:1px solid rgba(255,255,255,.08);font:500 8px/1 Arial,sans-serif;letter-spacing:.13em;text-transform:uppercase;cursor:pointer}.index-group button:hover,.index-group button:focus-visible{color:#fff;border-color:rgba(255,255,255,.34)}.index-group button:focus-visible{outline:1px solid rgba(255,255,255,.7);outline-offset:4px}.index-systems{grid-column:1 / -1}.index-return{margin:var(--f5) auto 0;display:block;color:rgba(255,255,255,.5);background:transparent;border:0;padding:12px;font:500 8px/1 Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;cursor:pointer}.index-return:hover,.index-return:focus-visible{color:#fff}.index-return:focus-visible{outline:1px solid rgba(255,255,255,.7);outline-offset:5px}@media(max-width:600px){.index-map{grid-template-columns:1fr}.index-systems{grid-column:auto}.index-group{padding:20px 12px}.index-group button{margin-right:12px}}
+
 .trace-context{width:min(520px,100%);margin:var(--f5) auto 0;padding:18px 18px 16px;border:1px solid rgba(255,255,255,.08);text-align:center}.trace-context-kicker{display:block;color:rgba(255,255,255,.32);font:500 7px/1 Arial,sans-serif;letter-spacing:.2em;text-transform:uppercase}.trace-context strong{display:block;margin-top:10px;color:rgba(255,255,255,.8);font:500 10px/1 Arial,sans-serif;letter-spacing:.15em}.trace-context p{margin:10px auto 0;max-width:420px;color:rgba(255,255,255,.48);font:400 12px/1.4 Arial,sans-serif}
 
 .world-deeper{width:min(620px,100%);margin:var(--f5) auto 0;padding-top:var(--f5);border-top:1px solid rgba(255,255,255,.07);text-align:center}.world-deeper-kicker{margin:0;color:rgba(255,255,255,.34);font:500 8px/1 Arial,sans-serif;letter-spacing:.2em;text-transform:uppercase}.world-deeper h3{margin:14px 0 0;font:500 clamp(18px,3.5vw,26px)/1 Arial,sans-serif;letter-spacing:.06em}.world-deeper>p:not(.world-deeper-kicker){margin:12px auto 0;max-width:480px;color:rgba(255,255,255,.5);font:400 13px/1.4 Arial,sans-serif}.world-deeper-links{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin-top:var(--f3)}.world-deeper-links button{min-width:125px;flex:1 1 125px;max-width:175px;padding:13px 11px;background:transparent;border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.58);text-align:left;cursor:pointer}.world-deeper-links button strong{display:block;font:500 8px/1 Arial,sans-serif;letter-spacing:.15em}.world-deeper-links button small{display:block;margin-top:8px;color:rgba(255,255,255,.34);font:400 10px/1.3 Arial,sans-serif;letter-spacing:0}.world-deeper-links button:hover,.world-deeper-links button:focus-visible{border-color:rgba(255,255,255,.28);color:#fff}.world-deeper-links button:focus-visible{outline:1px solid rgba(255,255,255,.7);outline-offset:4px}
@@ -160,9 +162,20 @@
   </div>
 </section>
 <section class="site-index" id="index" aria-label="Site index">
-  <p class="world-kicker">INDEX</p>
-  <h2 class="world-title">THE WORLD</h2>
-  <p class="world-intro">The conventional way in.</p>
+  <div class="index-shell">
+    <p class="world-kicker">INDEX</p>
+    <h2 class="world-title">THE WORLD</h2>
+    <p class="world-intro">The conventional way in.</p>
+    <div class="index-map" aria-label="World index">
+      <div class="index-group"><span>01</span><strong>SURFACE</strong><button type="button" data-index-target="world-entry-view">MY WORLD</button><button type="button" data-index-target="world-entry-view">NOW</button><button type="button" data-index-target="world-space">HOME</button><button type="button" data-index-target="world-space">OUTSIDE</button></div>
+      <div class="index-group"><span>02</span><strong>EXPLORE</strong><button type="button" data-index-target="world-space">PEOPLE</button><button type="button" data-index-target="world-space">PLACES</button><button type="button" data-index-target="world-space">MOMENTS</button><button type="button" data-index-target="world-space">ART</button></div>
+      <div class="index-group"><span>03</span><strong>DISCOVER</strong><button type="button" data-index-target="world-space">CONNECTIONS</button><button type="button" data-index-target="world-architecture">RELATIONSHIPS</button><button type="button" data-index-target="world-architecture">CONTEXT</button></div>
+      <div class="index-group"><span>04</span><strong>LOOK CLOSER</strong><button type="button" data-index-target="hidden-world">FRAGMENTS</button><button type="button" data-index-target="hidden-world">PROOF</button><button type="button" data-index-target="hidden-world">BODIES</button><button type="button" data-index-target="hidden-world">TIMELINE</button><button type="button" data-index-target="hidden-world">SYMBOLS</button></div>
+      <div class="index-group"><span>05</span><strong>TRACE</strong><button type="button" data-index-target="world-trace">PATH</button><button type="button" data-index-target="world-trace">TRAILS</button><button type="button" data-index-target="world-trace">YOUR THREAD</button></div>
+      <div class="index-group index-systems"><span>—</span><strong>DEEPER SYSTEMS</strong><button type="button" data-index-target="hidden-world">GLASS EYE</button><button type="button" data-index-target="hidden-world">ARCHIVES</button><button type="button" data-index-target="hidden-world">CASE FILES</button><button type="button" data-index-target="hidden-world">THE WEB</button></div>
+    </div>
+    <button class="index-return" type="button" id="index-return">RETURN TO MY WORLD</button>
+  </div>
 </section>
 </main>
 
@@ -347,6 +360,20 @@ if(traceClear)traceClear.addEventListener("click",function(){worldThread=["MY WO
 if(lookAround&&around)lookAround.addEventListener("click",function(){around.hidden=!around.hidden;lookAround.textContent=around.hidden?"LOOK AROUND":"CLOSE";});
 
 (function(){const layer=document.getElementById("hidden-world");if(!layer)return;document.querySelectorAll("[data-hidden-route]").forEach(function(node){node.addEventListener("click",function(){const route=node.getAttribute("data-hidden-route");const status=layer.querySelector(".hidden-world-status");const messages={spatial:"SPATIAL — paths through where things are.",context:"CONTEXT — paths through what belongs together.",discovery:"DISCOVERY — paths that reveal themselves.",trace:"TRACE — paths left behind by looking closer."};status.textContent=messages[route]||"Some paths only appear after you look closer.";});});})();
-(function(){const layer=document.getElementById("hidden-world"),trigger=document.getElementById("hidden-world-trigger");if(!layer||!trigger)return;layer.setAttribute("aria-hidden","true");trigger.addEventListener("click",function(){const open=layer.getAttribute("aria-hidden")==="false";layer.setAttribute("aria-hidden",open?"true":"false");trigger.setAttribute("aria-expanded",open?"false":"true");trigger.textContent=open?"LOOK CLOSER":"RETURN TO SURFACE";if(!open){layer.classList.add("is-revealed");layer.scrollIntoView({behavior:"smooth",block:"start"});}else{layer.classList.remove("is-revealed");}});});})();</script>
+(function(){const layer=document.getElementById("hidden-world"),trigger=document.getElementById("hidden-world-trigger");if(!layer||!trigger)return;layer.setAttribute("aria-hidden","true");trigger.addEventListener("click",function(){const open=layer.getAttribute("aria-hidden")==="false";layer.setAttribute("aria-hidden",open?"true":"false");trigger.setAttribute("aria-expanded",open?"false":"true");trigger.textContent=open?"LOOK CLOSER":"RETURN TO SURFACE";if(!open){layer.classList.add("is-revealed");layer.scrollIntoView({behavior:"smooth",block:"start"});}else{layer.classList.remove("is-revealed");}});});})();document.querySelectorAll("[data-index-target]").forEach(function(button){
+ button.addEventListener("click",function(){
+   const target=document.getElementById(button.getAttribute("data-index-target"));
+   if(!target)return;
+   if(target.id==="world-space"&&typeof enterWorldDoor==="function"){
+     const label=button.textContent.trim();
+     const key=Object.keys(worldDestinations).find(function(k){return worldDestinations[k].title===label;});
+     if(key){enterWorldDoor(key);return;}
+   }
+   target.scrollIntoView({behavior:"smooth",block:"start"});
+ });
+});
+const indexReturn=document.getElementById("index-return");
+if(indexReturn)indexReturn.addEventListener("click",function(){document.getElementById("world-entry-view").scrollIntoView({behavior:"smooth",block:"start"});});
+</script>
 </body>
 </html>
