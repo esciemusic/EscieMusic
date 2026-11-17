@@ -1169,7 +1169,8 @@ test("THE WORLD exposes the complete public lens architecture without creating d
   for(const registry of ["ESCIE_PEOPLE","ESCIE_LOCATIONS","ESCIE_MOMENTS","ESCIE_OBJECTS","ESCIE_FRAGMENTS","ESCIE_BODIES","ESCIE_PROOF","ESCIE_PATHS"]) {
     assert.match(engine,new RegExp(registry));
   }
-  assert.match(index,/data\/objects\.js/);\n  assert.match(index,/data\/proof\.js/);
+  assert.match(index,/data\/objects\.js/);
+  assert.match(index,/data\/proof\.js/);
   assert.match(engine,/MY WORLD/);
   assert.match(engine,/MONTRÉAL IS HOME\./);
   assert.match(engine,/function homeRooms\(\)/);
