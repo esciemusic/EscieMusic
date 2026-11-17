@@ -395,10 +395,10 @@ function renderWorldDiscover(key){
 const worldDestinations={
  home:{title:"HOME",subtitle:"MONTRÉAL, QUÉBEC, CANADA",copy:"This is home. There is nothing else to explain until there is something to see."},
  outside:{title:"OUTSIDE",subtitle:"BEYOND HOME",copy:"Everything beyond Montréal is still part of the world."},
- people:{title:"PEOPLE",subtitle:"THE PEOPLE",copy:"Nothing to see here right now."},
- places:{title:"PLACES",subtitle:"PLACES",copy:"Nothing to see here right now."},
- moments:{title:"MOMENTS",subtitle:"MOMENTS",copy:"Nothing to see here right now."},
- art:{title:"ART",subtitle:"WHERE LIFE BECOMES THE MEDIUM",copy:"The work lives here when there is something to show."},
+ people:{title:"PEOPLE",subtitle:"THE PEOPLE",copy:"People belong to the places, moments and traces that make up the World. This space is quiet for now."},
+ places:{title:"PLACES",subtitle:"PLACES",copy:"Places hold people, moments and the marks they leave behind. This space is quiet for now."},
+ moments:{title:"MOMENTS",subtitle:"MOMENTS",copy:"A moment connects who was there, where it happened and what remains. This space is quiet for now."},
+ art:{title:"ART",subtitle:"WHERE LIFE BECOMES THE MEDIUM",copy:"The work comes from the lives, places and moments inside the World. It appears here when there is something to show."},
 web:{title:"THE WEB",subtitle:"BEYOND THE CENTER",copy:"The World continues outward through connections that do not stop at Home."}
 };
 function enterWorldDoor(key){
@@ -409,6 +409,7 @@ function enterWorldDoor(key){
   worldTitle.textContent=destination.title;
   worldSubtitle.textContent=destination.subtitle;
   worldCopy.textContent=destination.copy;
+  if(worldReturn)worldReturn.textContent=worldSpaceOrigin==="world-space"?"RETURN TO PREVIOUS SPACE":"RETURN TO MY WORLD";
   worldSpace.hidden=false;
   worldSpace.dataset.space=key;
   worldSpaceOrigin=worldSpace.dataset.spaceOrigin||"world-entry-view";
