@@ -189,6 +189,5 @@ if(lookAround&&around)lookAround.addEventListener("click",function(){around.hidd
 
 (function(){const layer=document.getElementById("hidden-world");if(!layer)return;document.querySelectorAll("[data-hidden-route]").forEach(function(node){node.addEventListener("click",function(){const route=node.getAttribute("data-hidden-route");const status=layer.querySelector(".hidden-world-status");const messages={spatial:"SPATIAL — paths through where things are.",context:"CONTEXT — paths through what belongs together.",discovery:"DISCOVERY — paths that reveal themselves.",trace:"TRACE — paths left behind by looking closer."};status.textContent=messages[route]||"Some paths only appear after you look closer.";});});})();
 (function(){const layer=document.getElementById("hidden-world"),trigger=document.getElementById("hidden-world-trigger");if(!layer||!trigger)return;layer.setAttribute("aria-hidden","true");trigger.addEventListener("click",function(){const open=layer.getAttribute("aria-hidden")==="false";layer.setAttribute("aria-hidden",open?"true":"false");trigger.setAttribute("aria-expanded",open?"false":"true");trigger.textContent=open?"LOOK CLOSER":"RETURN TO SURFACE";if(!open){layer.classList.add("is-revealed");layer.scrollIntoView({behavior:"smooth",block:"start"});}else{layer.classList.remove("is-revealed");}});});})();</script>
-</script>
 </body>
 </html>
