@@ -64,16 +64,39 @@
 .hidden-world-reveal{position:fixed;inset:auto 0 0 0;z-index:30;display:flex;justify-content:center;pointer-events:none}.hidden-world-reveal button{pointer-events:auto;margin:0 0 1.2rem;background:rgba(0,0,0,.82);border:1px solid rgba(255,255,255,.16);color:#fff;padding:.7rem 1rem;font:inherit;font-size:.62rem;letter-spacing:.2em;opacity:.18;transition:opacity .5s ease,transform .5s ease}.hidden-world-reveal button:hover,.hidden-world-reveal button:focus-visible{opacity:.8;transform:translateY(-2px)}.hidden-world-layer{transition:opacity .6s ease}.hidden-world-layer[aria-hidden="true"]{display:none}.hidden-world-layer[aria-hidden="false"]{display:flex}.hidden-world-layer .hidden-world-kicker{opacity:.38}
 
 .world-architecture{min-height:100svh;box-sizing:border-box;padding:12vh 24px 14vh;background:#000}.architecture-shell{width:min(980px,100%);margin:0 auto}.architecture-intro{max-width:600px;color:rgba(255,255,255,.62);font:400 clamp(15px,2.5vw,21px)/1.5 Arial,sans-serif;margin:var(--f3) 0 var(--f8)}.architecture-stack{display:grid;gap:1px;border-top:1px solid rgba(255,255,255,.1)}.architecture-layer{display:grid;grid-template-columns:48px 1fr;gap:18px;text-align:left;align-items:center;padding:20px 4px;color:rgba(255,255,255,.5);background:transparent;border:0;border-bottom:1px solid rgba(255,255,255,.1);cursor:pointer}.architecture-layer strong{display:block;color:rgba(255,255,255,.78);font:500 13px/1 Arial,sans-serif;letter-spacing:.16em}.architecture-layer small{display:block;margin-top:8px;color:rgba(255,255,255,.34);font:500 8px/1.4 Arial,sans-serif;letter-spacing:.12em}.architecture-layer:hover,.architecture-layer:focus-visible,.architecture-layer.is-active{color:#fff;background:rgba(255,255,255,.025)}.architecture-layer.is-active strong{color:#fff}.architecture-layer:focus-visible{outline:1px solid rgba(255,255,255,.45);outline-offset:-1px}.architecture-number{font:500 9px/1 Arial,sans-serif;letter-spacing:.12em;opacity:.4}.architecture-detail{margin-top:var(--f5);padding:var(--f5) 0;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08)}.architecture-detail-kicker{margin:0;color:rgba(255,255,255,.38);font:500 8px/1 Arial,sans-serif;letter-spacing:.2em}.architecture-detail h3{margin:14px 0 0;font:500 clamp(22px,4vw,38px)/1 Arial,sans-serif;letter-spacing:.08em}.architecture-detail>p:not(.architecture-detail-kicker){max-width:620px;margin:18px 0 0;color:rgba(255,255,255,.6);font:400 15px/1.5 Arial,sans-serif}.architecture-capabilities{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}.architecture-capabilities span{padding:9px 11px;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.48);font:500 7px/1 Arial,sans-serif;letter-spacing:.14em}.architecture-bridges{display:flex;flex-wrap:wrap;gap:8px;margin-top:var(--f5)}.architecture-bridges button{padding:12px 14px;color:rgba(255,255,255,.48);background:transparent;border:1px solid rgba(255,255,255,.1);font:500 8px/1 Arial,sans-serif;letter-spacing:.16em;cursor:pointer}.architecture-bridges button:hover,.architecture-bridges button:focus-visible{color:#fff;border-color:rgba(255,255,255,.32)}.architecture-bridges button:focus-visible{outline:1px solid rgba(255,255,255,.6);outline-offset:3px}@media(max-width:600px){.world-architecture{padding:10vh 20px 12vh}.architecture-layer{grid-template-columns:34px 1fr;padding:18px 2px}.architecture-layer strong{font-size:11px}.architecture-layer small{font-size:7px}.architecture-bridges{display:grid;grid-template-columns:1fr 1fr}.architecture-bridges button{min-height:42px}}
-</style>
+<style>
+.doorway-section{padding:clamp(5rem,12vw,9rem) clamp(1.1rem,4vw,4rem);max-width:900px;margin:0 auto;text-align:center}
+.doorway-kicker{margin:0 0 .7rem;letter-spacing:.18em;font-size:.68rem;opacity:.62}
+.doorway-title{margin:0;font-size:clamp(2.2rem,8vw,5.5rem);line-height:.95;letter-spacing:-.045em}
+.doorway-intro{max-width:620px;margin:1.35rem auto 0;line-height:1.65;opacity:.72}
+.doorway-links{display:flex;flex-wrap:wrap;justify-content:center;gap:.55rem;margin:2rem auto 0}
+.doorway-links button{font:inherit;background:transparent;border:1px solid rgba(255,255,255,.16);color:inherit;padding:.72rem 1rem;min-height:44px;letter-spacing:.1em;cursor:pointer}
+.doorway-links button:hover,.doorway-links button:focus-visible{border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.04)}
+@media(max-width:600px){.doorway-section{padding-top:4.5rem;padding-bottom:5rem}.doorway-links{gap:.45rem}.doorway-links button{padding:.65rem .8rem}}
+</style></style>
 </head>
 <body><div class="hidden-world-reveal"><button type="button" id="hidden-world-trigger" aria-controls="hidden-world" aria-expanded="false">LOOK CLOSER</button></div>
 <header class="site-header" aria-label="ESCIE header"><div class="header-left"><span class="header-symbol">ESCIE SYMBOL</span></div><div class="header-center"><div class="header-controls" aria-label="Language and light controls"><button class="header-control" type="button">EN</button><button class="header-control" type="button">FR</button><button class="header-control" type="button">ES</button><button class="header-control" type="button">LIGHT</button></div></div><div class="header-right"><button class="header-index" type="button" id="header-index">INDEX</button></div></header>
 <main>
 <section class="hero" aria-label="ESCIE hero"><h1 class="hero-name"><a href="#artist-core">ESCIE</a></h1><p class="hero-statement">A GOOD PERSON,<br>I'M JUST NOT NICE.</p><button class="hero-now" type="button" id="hero-now">PRESENT STATE / NOW</button><p class="hero-location">MONTRÉAL, QUÉBEC, CANADA</p><div class="hero-skyline" aria-label="Montréal skyline"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><nav class="hero-backdoors" aria-label="Back door nodes"><a href="#world" data-hero-route="world">WORLD</a><a href="#world-entry-view" data-hero-route="art">ART</a><a href="#world-entry-view" data-hero-route="web">WEB</a><a href="#world-architecture" data-hero-route="archives">ARCHIVES</a></nav></section>
 <section class="now-section" id="now" aria-label="Present state"><p class="now-kicker">CURRENT SIGNAL</p><h2 class="now-title">NOW</h2><p class="now-state">The present state lives here. The details will be decided when the World is ready to speak.</p><button class="now-return" type="button" id="now-return">RETURN TO ESCIE</button></section>
+<section class="doorway-section" id="doorways" aria-label="Ways into My World">
+  <p class="doorway-kicker">ONE WORLD</p>
+  <h2 class="doorway-title">MANY DOORS</h2>
+  <p class="doorway-intro">A song, image, word, object, person, place, or page can be the way you arrive. The World is the same.</p>
+  <div class="doorway-links" aria-label="Ways to enter My World">
+    <button type="button" data-entry-door="music">MUSIC</button>
+    <button type="button" data-entry-door="image">IMAGE</button>
+    <button type="button" data-entry-door="word">WORD</button>
+    <button type="button" data-entry-door="object">OBJECT</button>
+    <button type="button" data-entry-door="person">PERSON</button>
+    <button type="button" data-entry-door="place">PLACE</button>
+    <button type="button" data-entry-door="web">PAGE</button>
+  </div>
+</section>
 <section class="world-section" id="world" aria-label="My World"><p class="world-kicker">MY WORLD</p><h2 class="world-title">MY WORLD</h2><p class="world-intro">Montréal is home. Everything beyond it is still part of the world.</p><div class="globe-wrap" aria-label="Revolving globe representing My World"><div class="globe" tabindex="0" role="img" aria-label="A slowly revolving three-dimensional world"><div class="globe-sphere"></div><div class="globe-meridian"></div><div class="globe-meridian m2"></div><div class="globe-meridian m3"></div><div class="globe-meridian m4"></div><div class="globe-latitude"></div><div class="globe-latitude l2"></div><div class="globe-latitude l3"></div><div class="globe-latitude l4"></div><span class="globe-golden" aria-hidden="true"></span><span class="globe-orbit" aria-hidden="true"></span><button class="globe-world-point outside" type="button" aria-label="Move to Outside"></button><button class="globe-world-point deep" type="button" aria-label="Move deeper into the World"></button><span class="globe-world-point home-orbit" aria-hidden="true"></span><span class="globe-world-point outer-orbit" aria-hidden="true"></span><span class="globe-home" aria-hidden="true"></span><span class="globe-home-label" aria-hidden="true">HOME</span><span class="globe-depth-label" aria-hidden="true"></span></div></div><div class="world-home">HOME<strong>MONTRÉAL, QUÉBEC, CANADA</strong></div><div class="world-door">MY WORLD</div><div class="world-entry" aria-label="World entry point"><button type="button" id="enter-world">ENTER MY WORLD</button></div></section>
 <section class="world-entry-view" id="world-entry-view" aria-label="Inside My World">
-<p class="world-kicker">NOW</p><h2 class="world-title">MY WORLD</h2><p class="world-intro">You are here.</p>
+<p class="world-kicker">NOW</p><h2 class="world-title">MY WORLD</h2><p class="world-intro" id="world-entry-origin-copy">You are here.</p>
 <div class="now-presence"><span>MONTRÉAL, QUÉBEC, CANADA</span><span>THE PRESENT MOMENT</span></div>
 <div class="now-signal"><p class="now-signal-kicker">CURRENT SIGNAL</p><p class="now-signal-title">ESCIE</p><p class="now-signal-copy">The person at the center of My World.</p></div>
 <div class="now-discover"><button type="button" id="look-around">LOOK AROUND</button></div>
@@ -327,6 +350,22 @@ function returnToWorldContext(){
  target.scrollIntoView({behavior:"smooth",block:"start"});
 }
 renderWorldThread();
+const doorwayLabels={music:"MUSIC",image:"IMAGE",word:"WORD",object:"OBJECT",person:"PERSON",place:"PLACE",web:"PAGE"};
+let worldEntryOrigin="MY WORLD";
+document.querySelectorAll("[data-entry-door]").forEach(function(button){
+ button.addEventListener("click",function(){
+   worldEntryOrigin=doorwayLabels[button.getAttribute("data-entry-door")]||"MY WORLD";
+   const entry=document.getElementById("world-entry-view");
+   if(entry){
+     const originNode=entry.querySelector(".now-presence");
+     if(originNode) originNode.setAttribute("data-entry-origin",worldEntryOrigin);
+     entry.scrollIntoView({behavior:"smooth",block:"start"});
+   }
+   rememberWorldThread(worldEntryOrigin,"entry");
+ });
+});
+const worldEntryOriginCopy=document.getElementById("world-entry-origin-copy");
+if(worldEntryOriginCopy){document.addEventListener("click",function(e){const b=e.target.closest("[data-entry-door]");if(!b)return;const label=doorwayLabels[b.getAttribute("data-entry-door")]||"MY WORLD";worldEntryOriginCopy.textContent=label==="MY WORLD"?"You are here.":"You entered through "+label+".";});}
 const enterWorld=document.getElementById("enter-world");
 if(enterWorld)enterWorld.addEventListener("click",function(){document.getElementById("world-entry-view").scrollIntoView({behavior:"smooth"});});
 const lookAround=document.getElementById("look-around");
