@@ -16,7 +16,7 @@
 
   const COMMON = Object.freeze([
     "id","type","title","summary","status","visibility","public_disclosure",
-    "certainty","created_at","updated_at","tags"
+    "certainty","created_at","updated_at","tags","locale","media","rights","source"
   ]);
 
   const TYPE_FIELDS = Object.freeze({
@@ -147,6 +147,20 @@
     }
   ]);
 
+  function readiness(){
+    const recordChecks=fixtures.map(validateRecord);
+    const relationshipChecks=fixtureRelationships.map(validateRelationship);
+    const recordPass=recordChecks.filter(function(x){return x.ok;}).length;
+    const relationshipPass=relationshipChecks.filter(function(x){return x.ok;}).length;
+    return Object.freeze({
+      records:recordChecks.length?recordPass/recordChecks.length:1,
+      relationships:relationshipChecks.length?relationshipPass/relationshipChecks.length:1,
+      publishableRecords:fixtures.filter(canPublish).length,
+      publishableRelationships:fixtureRelationships.filter(canPublishRelationship).length,
+      ok:recordPass===recordChecks.length && relationshipPass===relationshipChecks.length
+    });
+  }
+
   const contract=Object.freeze({
     version:"0.1.0-prototype",
     principle:"Create once → classify once → connect once → review → approve → publish.",
@@ -163,6 +177,7 @@
     validateRelationship,
     canPublish,
     canPublishRelationship,
+    readiness,
     fixtures,
     fixtureRelationships
   });
