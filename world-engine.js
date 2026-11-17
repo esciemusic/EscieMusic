@@ -835,7 +835,7 @@ function worldLensMarkup(){
   '</div>';
 }
 function lensRows(){
- const map={people:"ESCIE_PEOPLE",places:"ESCIE_LOCATIONS",moments:"ESCIE_MOMENTS",fragments:"ESCIE_FRAGMENTS",bodies:"ESCIE_BODIES",proof:"ESCIE_PROOF",path:"ESCIE_PATHS",timeline:"ESCIE_MOMENTS",symbols:"ESCIE_SYMBOLS",trails:"ESCIE_PATHS",trace:"ESCIE_PATHS"};
+ const map={people:"ESCIE_PEOPLE",places:"ESCIE_LOCATIONS",moments:"ESCIE_MOMENTS",objects:"ESCIE_OBJECTS",fragments:"ESCIE_FRAGMENTS",bodies:"ESCIE_BODIES",proof:"ESCIE_PROOF",path:"ESCIE_PATHS",timeline:"ESCIE_MOMENTS",symbols:"ESCIE_SYMBOLS",trails:"ESCIE_PATHS",trace:"ESCIE_PATHS"};
  const rows=state.tab==="atlas"?records():coll(map[state.tab],[]);
  return rows.filter(function(r){return r&&String(r.visibility||"").toLowerCase()!=="withheld"&&r.public_disclosure!==false;}).slice(0,60);
 }
