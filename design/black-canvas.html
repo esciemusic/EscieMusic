@@ -92,6 +92,18 @@
     <button class="world-space-return" type="button" id="world-space-return">RETURN TO MY WORLD</button>
   </div>
 </section>
+<section class="world-trace" id="world-trace" aria-label="Your World trace">
+  <div class="trace-shell">
+    <p class="world-kicker">TRACE</p>
+    <h2 class="world-title">YOUR THREAD</h2>
+    <p class="trace-copy">The World can remember the places you chose to look at. Nothing here is required. It is simply the path you made.</p>
+    <div class="trace-path" id="trace-path" aria-live="polite"><span>MY WORLD</span></div>
+    <div class="trace-actions">
+      <button type="button" id="trace-return">RETURN TO LAST PLACE</button>
+      <button type="button" id="trace-clear">CLEAR THREAD</button>
+    </div>
+  </div>
+</section>
 <section class="world-architecture" id="world-architecture" aria-label="World architecture">
   <div class="architecture-shell">
     <p class="world-kicker">THE WORLD / UNDER THE SURFACE</p>
@@ -196,6 +208,22 @@ document.querySelectorAll("[data-architecture-layer]").forEach(function(button){
 document.querySelectorAll("[data-architecture-jump]").forEach(function(button){
  button.addEventListener("click",function(){setArchitectureDetail(button.getAttribute("data-architecture-jump"));});
 });
+const tracePath=document.getElementById("trace-path");
+const traceReturn=document.getElementById("trace-return");
+const traceClear=document.getElementById("trace-clear");
+let worldThread=["MY WORLD"];
+function renderWorldThread(){
+ if(!tracePath)return;
+ tracePath.innerHTML=worldThread.map(function(item,index){return "<span"+(index===worldThread.length-1?' class="is-current"':"")+">"+item+"</span>";}).join('<i aria-hidden="true">→</i>');
+}
+function rememberWorldThread(label){
+ if(!label)return;
+ worldThread=worldThread.filter(function(item){return item!==label;});
+ worldThread.push(label);
+ if(worldThread.length>6)worldThread.shift();
+ renderWorldThread();
+}
+renderWorldThread();
 const enterWorld=document.getElementById("enter-world");
 if(enterWorld)enterWorld.addEventListener("click",function(){document.getElementById("world-entry-view").scrollIntoView({behavior:"smooth"});});
 const lookAround=document.getElementById("look-around");
@@ -223,6 +251,7 @@ function enterWorldDoor(key){
   worldCopy.textContent=destination.copy;
   worldSpace.hidden=false;
   worldSpace.dataset.space=key;
+  rememberWorldThread(destination.title);
   worldSpace.classList.add("is-entering");
   window.requestAnimationFrame(function(){worldSpace.style.setProperty("--space-offset",key==="home"?"-2px":"0px");});
   worldSpace.scrollIntoView({behavior:"smooth",block:"start"});
@@ -231,7 +260,14 @@ function enterWorldDoor(key){
 document.querySelectorAll("[data-world-door]").forEach(function(button){
   button.addEventListener("click",function(){enterWorldDoor(button.getAttribute("data-world-door"));});
 });
-if(worldReturn)worldReturn.addEventListener("click",function(){document.getElementById("world-entry-view").scrollIntoView({behavior:"smooth"});});
+if(worldReturn)worldReturn.addEventListener("click",function(){document.getElementById("world-entry-view").scrollIntoView({behavior:"smooth"});});if(traceReturn)traceReturn.addEventListener("click",function(){
+ const last=worldThread.length>1?worldThread[worldThread.length-1]:"MY WORLD";
+ if(last==="MY WORLD"){document.getElementById("world-entry-view").scrollIntoView({behavior:"smooth"});return;}
+ const key=Object.keys(worldDestinations).find(function(k){return worldDestinations[k].title===last;});
+ if(key)enterWorldDoor(key);
+});
+if(traceClear)traceClear.addEventListener("click",function(){worldThread=["MY WORLD"];renderWorldThread();});
+
 if(lookAround&&around)lookAround.addEventListener("click",function(){around.hidden=!around.hidden;lookAround.textContent=around.hidden?"LOOK AROUND":"CLOSE";});
 
 (function(){const layer=document.getElementById("hidden-world");if(!layer)return;document.querySelectorAll("[data-hidden-route]").forEach(function(node){node.addEventListener("click",function(){const route=node.getAttribute("data-hidden-route");const status=layer.querySelector(".hidden-world-status");const messages={spatial:"SPATIAL — paths through where things are.",context:"CONTEXT — paths through what belongs together.",discovery:"DISCOVERY — paths that reveal themselves.",trace:"TRACE — paths left behind by looking closer."};status.textContent=messages[route]||"Some paths only appear after you look closer.";});});})();
