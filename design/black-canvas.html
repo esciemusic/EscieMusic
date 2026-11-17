@@ -6,6 +6,8 @@
 <meta name="theme-color" content="#000000">
 <title>ESCIE — Black Canvas</title>
 <style>
+.world-discover{width:min(620px,100%);margin:var(--f8) auto 0;padding-top:var(--f5);border-top:1px solid rgba(255,255,255,.1);text-align:center}.world-discover-kicker{margin:0;color:rgba(255,255,255,.42);font:500 8px/1 Arial,sans-serif;letter-spacing:.2em;text-transform:uppercase}.world-discover h3{margin:16px 0 0;font:500 clamp(20px,4vw,30px)/1 Arial,sans-serif;letter-spacing:.06em}.world-discover>p:not(.world-discover-kicker){margin:14px auto 0;max-width:480px;color:rgba(255,255,255,.58);font:400 14px/1.4 Arial,sans-serif}.world-discover-links{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:var(--f3)}.world-discover-links button{min-width:150px;flex:1 1 150px;max-width:190px;padding:15px 13px;background:transparent;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.72);text-align:left;cursor:pointer}.world-discover-links button strong{display:block;font:500 8px/1 Arial,sans-serif;letter-spacing:.16em}.world-discover-links button small{display:block;margin-top:9px;color:rgba(255,255,255,.42);font:400 11px/1.3 Arial,sans-serif;letter-spacing:0}.world-discover-links button:hover,.world-discover-links button:focus-visible{border-color:rgba(255,255,255,.35);color:#fff}.world-discover-links button:focus-visible{outline:1px solid rgba(255,255,255,.7);outline-offset:4px}
+
 :root,html,body{background:#000;color:#fff}:root{--phi:1.61803398875;--unit:clamp(8px,1.2vw,13px);--f1:var(--unit);--f2:calc(var(--unit) * 1.618);--f3:calc(var(--unit) * 2.618);--f5:calc(var(--unit) * 4.236);--f8:calc(var(--unit) * 6.854);--f13:calc(var(--unit) * 11.09)}html,body{width:100%;min-height:100%;margin:0;padding:0}body{min-height:260svh;overflow-x:hidden}
 .site-header{min-height:58px;width:100%;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;box-sizing:border-box;padding:0 24px;border-bottom:1px solid rgba(255,255,255,.08);font:500 10px/1 Arial,sans-serif;letter-spacing:.16em}
 .header-left,.header-center,.header-right{display:flex;align-items:center}.header-left{justify-content:flex-start}.header-center{justify-content:center}.header-right{justify-content:flex-end}
@@ -89,7 +91,7 @@
       <div class="space-art"></div>
     </div>
     <p class="world-space-copy" id="world-space-copy"></p>
-    <button class="world-space-return" type="button" id="world-space-return">RETURN TO MY WORLD</button>
+    <div class="world-discover" id="world-discover" aria-live="polite"><p class="world-discover-kicker">DISCOVER</p><h3 id="world-discover-title">WHAT CONNECTS</h3><p id="world-discover-copy">Follow one connection at a time. The World stays simple until you choose to look closer.</p><div class="world-discover-links" id="world-discover-links"></div></div><button class="world-space-return" type="button" id="world-space-return">RETURN TO MY WORLD</button>
   </div>
 </section>
 <section class="world-trace" id="world-trace" aria-label="Your World trace">
@@ -233,6 +235,28 @@ const worldTitle=document.getElementById("world-space-title");
 const worldSubtitle=document.getElementById("world-space-subtitle");
 const worldCopy=document.getElementById("world-space-copy");
 const worldReturn=document.getElementById("world-space-return");
+const worldDiscover=document.getElementById("world-discover");
+const worldDiscoverTitle=document.getElementById("world-discover-title");
+const worldDiscoverCopy=document.getElementById("world-discover-copy");
+const worldDiscoverLinks=document.getElementById("world-discover-links");
+const worldConnections={
+ home:[["PEOPLE","people","people who belong to Home"],["PLACES","places","places inside Home"],["MOMENTS","moments","moments that happened here"]],
+ outside:[["PLACES","places","places beyond Home"],["WEB","web","connections that continue outward"],["MOMENTS","moments","moments beyond the center"]],
+ people:[["PLACES","places","where people meet"],["MOMENTS","moments","what people leave behind"],["ART","art","what becomes from people and life"]],
+ places:[["PEOPLE","people","who belongs to a place"],["MOMENTS","moments","what happened here"],["ART","art","what a place can become in the work"]],
+ moments:[["PEOPLE","people","who was there"],["PLACES","places","where it happened"],["ART","art","what remains as art"]],
+ art:[["PEOPLE","people","the lives inside the work"],["PLACES","places","where the work comes from"],["MOMENTS","moments","the moments that become material"]],
+ web:[["OUTSIDE","outside","the world beyond Home"],["PLACES","places","places reached through the Web"],["PEOPLE","people","people connected beyond the center"]]
+};
+function renderWorldDiscover(key){
+ const links=worldConnections[key]||worldConnections.home;
+ if(!worldDiscoverLinks)return;
+ worldDiscoverTitle.textContent=key==="home"?"WHAT CONNECTS":"FOLLOW THE CONNECTION";
+ worldDiscoverCopy.textContent=key==="home"?"Home connects outward through people, places and moments.":"Choose a connection. Each one opens another part of the same World.";
+ worldDiscoverLinks.innerHTML=links.map(function(item){return '<button type="button" data-discover-key="'+item[1]+'"><strong>'+item[0]+'</strong><small>'+item[2]+'</small></button>';}).join("");
+ worldDiscoverLinks.querySelectorAll("[data-discover-key]").forEach(function(button){button.addEventListener("click",function(){enterWorldDoor(button.getAttribute("data-discover-key"));});});
+}
+
 const worldDestinations={
  home:{title:"HOME",subtitle:"MONTRÉAL, QUÉBEC, CANADA",copy:"This is home. There is nothing else to explain until there is something to see."},
  outside:{title:"OUTSIDE",subtitle:"BEYOND HOME",copy:"Everything beyond Montréal is still part of the world."},
@@ -252,6 +276,7 @@ function enterWorldDoor(key){
   worldSpace.hidden=false;
   worldSpace.dataset.space=key;
   rememberWorldThread(destination.title);
+  renderWorldDiscover(key);
   worldSpace.classList.add("is-entering");
   window.requestAnimationFrame(function(){worldSpace.style.setProperty("--space-offset",key==="home"?"-2px":"0px");});
   worldSpace.scrollIntoView({behavior:"smooth",block:"start"});
