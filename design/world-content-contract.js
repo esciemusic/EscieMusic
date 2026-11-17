@@ -42,7 +42,31 @@
   ]);
 
   const RELATIONSHIP_DIRECTIONS = Object.freeze(["directed","undirected"]);
+  const MEDIA_TYPES = Object.freeze(["image","audio","video","document","embed"]);
+  const RIGHTS_STATES = Object.freeze(["cleared","licensed","owned","unknown","restricted","expired"]);
+  const RELEASE_STATES = Object.freeze(["unreleased","scheduled","released","embargoed","withheld"]);
   const RELATIONSHIP_STRENGTH = Object.freeze(["weak","normal","strong","defining"]);
+
+  function validateMedia(media){
+    const errors=[];
+    if(!isRecord(media)){return {ok:false,errors:["media must be an object"]};}
+    if(!media.id || typeof media.id!=="string") errors.push("media id is required");
+    if(!validEnum(media.type,MEDIA_TYPES)) errors.push("media type is invalid");
+    if(!media.source || typeof media.source!=="string") errors.push("media source is required");
+    if(!validEnum(media.rights_state,RIGHTS_STATES)) errors.push("media rights_state is invalid");
+    if(!media.alt && media.type==="image") errors.push("image alt text is required");
+    if(media.public_disclosure!==true && media.visibility==="public") errors.push("public media must be disclosed");
+    return {ok:errors.length===0,errors};
+  }
+
+  function validateReleaseState(record){
+    const errors=[];
+    if(record.type!=="art") return {ok:true,errors:[]};
+    if(!validEnum(record.release_state,RELEASE_STATES)) errors.push("art release_state is invalid");
+    if(record.release_state==="unreleased" && record.public_disclosure===true) errors.push("unreleased art cannot be publicly disclosed");
+    if(record.release_state==="released" && record.status==="published" && record.visibility!=="public") errors.push("released art must be public when published");
+    return {ok:errors.length===0,errors};
+  }
 
   function isRecord(value){
     return Boolean(value && typeof value==="object" && !Array.isArray(value));
@@ -80,6 +104,15 @@
     if(record.status==="published" && record.public_disclosure!==true){
       errors.push("published records must have public_disclosure=true");
     }
+    if(record.type==="art" && record.media!==undefined){
+      if(!Array.isArray(record.media)) errors.push("media must be an array");
+      else record.media.forEach(function(media){
+        const mediaResult=validateMedia(media);
+        if(!mediaResult.ok) mediaResult.errors.forEach(function(error){errors.push(error);});
+      });
+    }
+    const releaseResult=validateReleaseState(record);
+    if(!releaseResult.ok) releaseResult.errors.forEach(function(error){errors.push(error);});
 
     return {ok:errors.length===0,errors};
   }
@@ -173,8 +206,13 @@
     relationshipTypes:RELATIONSHIP_TYPES,
     relationshipDirections:RELATIONSHIP_DIRECTIONS,
     relationshipStrength:RELATIONSHIP_STRENGTH,
+    mediaTypes:MEDIA_TYPES,
+    rightsStates:RIGHTS_STATES,
+    releaseStates:RELEASE_STATES,
     validateRecord,
     validateRelationship,
+    validateMedia,
+    validateReleaseState,
     canPublish,
     canPublishRelationship,
     readiness,
