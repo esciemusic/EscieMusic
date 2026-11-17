@@ -293,8 +293,8 @@ document.querySelectorAll("[data-index-system]").forEach(function(button){
    e.preventDefault();
    const route=link.getAttribute("data-hero-route");
    if(route==="world"){worldThreadOrigins["MY WORLD"]="world";document.getElementById("world").scrollIntoView({behavior:"smooth",block:"start"});return;}
-   if(route==="art"||route==="web"){worldSpaceOrigin="hero";worldSpaceOriginKey=null;if(worldSpace)worldSpace.dataset.spaceOrigin=worldSpaceOrigin;enterWorldDoor(route);return;}
-   if(route==="archives"){document.getElementById("world-architecture").scrollIntoView({behavior:"smooth",block:"start"});activateSystem("archives");}
+   if(route==="art"||route==="web"){worldEntryOrigin=route==="art"?"ART":"PAGE";const originCopy=document.getElementById("world-entry-origin-copy");if(originCopy)originCopy.textContent="You entered through "+worldEntryOrigin+".";rememberWorldThread(worldEntryOrigin,"entry");worldSpaceOrigin="hero";worldSpaceOriginKey=null;if(worldSpace)worldSpace.dataset.spaceOrigin=worldSpaceOrigin;enterWorldDoor(route);return;}
+   if(route==="archives"){worldEntryOrigin="ARCHIVES";const originCopy=document.getElementById("world-entry-origin-copy");if(originCopy)originCopy.textContent="You entered through ARCHIVES.";rememberWorldThread("ARCHIVES","entry");document.getElementById("world-architecture").scrollIntoView({behavior:"smooth",block:"start"});activateSystem("archives");}
  });
 });
 
