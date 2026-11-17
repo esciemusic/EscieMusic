@@ -87,6 +87,10 @@
 .web-trace-field.has-intersection::after{content:"";position:absolute;inset:12%;border:1px solid currentColor;border-radius:50%;opacity:.16;pointer-events:none;animation:webIntersectionFade 2.4s ease-out}
 @keyframes webIntersectionFade{0%{opacity:0;transform:scale(.82)}30%{opacity:.22;transform:scale(1)}100%{opacity:0;transform:scale(1.08)}}
 @media (prefers-reduced-motion:reduce){.web-trace-field.has-intersection::after{animation:none;opacity:.14}}
+
+.web-trace-node.is-world-node{opacity:.82}
+.web-trace-node.is-intersection{box-shadow:0 0 0 1px currentColor,0 0 18px currentColor}
+.web-trace-node.is-current.is-intersection{box-shadow:0 0 0 1px currentColor,0 0 26px currentColor}
 </style></style>
 </head>
 <body><div class="hidden-world-reveal"><button type="button" id="hidden-world-trigger" aria-controls="hidden-world" aria-expanded="false">LOOK CLOSER</button></div>
@@ -514,7 +518,7 @@ function renderWebTrace(){
    }
    const node=document.createElement("button");
    node.type="button";
-   node.className="web-trace-node"+(index===count-1?" is-current":"")+(index===0?" is-origin":"")+(index<count-4?" is-old":"");
+   const traceNode=webKey(label);\n   const isWorldNode=worldWeb.nodes.includes(traceNode);\n   const isIntersection=webIntersections.includes(traceNode);\n   node.className="web-trace-node"+(index===count-1?" is-current":"")+(index===0?" is-origin":"")+(index<count-4?" is-old":"")+(isWorldNode?" is-world-node":"")+(isIntersection?" is-intersection":"");
    node.style.left=pos[0]+"%";
    node.style.top=pos[1]+"%";
    node.textContent=label;
