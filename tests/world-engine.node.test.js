@@ -12,7 +12,9 @@ assert(/SEE · HEAR · FOLLOW · MISS · RETURN/.test(src),"Glass Eye audience-e
 assert(/NEXT SIGNALS/.test(src),"Glass Eye discovery surface missing");
 assert(!/\beval\s*\(|new Function\s*\(/.test(src),"dynamic code execution is forbidden");
 assert(/const raf=typeof requestAnimationFrame==="function"\?requestAnimationFrame:fn=>setTimeout\(fn,0\)/.test(src),"world-engine needs a requestAnimationFrame fallback");
-assert(/caf\(searchFrame\);searchFrame=raf\(\(\)=>\{render\(\)/.test(src),"search rendering must use the compatibility scheduler");
+assert(/let searchFrame=null;/.test(src), "search scheduler needs shared frame state for cancellation");
+assert(/function scheduleSearchRender\(render,filtered\)/.test(src), "search scheduler must accept render and filtered callbacks");
+assert(/caf\(searchFrame\);/.test(src)&&/searchFrame=raf\(\(\)=>\{/.test(src)&&/render\(filtered\(\)\)/.test(src), "search rendering must use the compatibility scheduler");
 assert(/const el=container\.querySelector\("\.world-detail"\)/.test(src)&&/const focused=focusElement\(el\)/.test(src),"node navigation must restore keyboard focus");
 assert(/role="tablist".*aria-label="ESCIE World navigation"/.test(src),"world navigation needs tab semantics");
 assert(/aria-selected="/.test(src)&&/state\.tab===t\[0\]/.test(src),"world tabs need selected-state semantics");
