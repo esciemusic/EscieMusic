@@ -31,7 +31,7 @@
 .hero-now:focus-visible,.now-return:focus-visible,.hero-backdoors a:focus-visible,.header-control:focus-visible,.header-index:focus-visible{outline:1px solid rgba(255,255,255,.7);outline-offset:5px}
 @media(prefers-reduced-motion:reduce){.globe{animation:none}}
 @media(max-width:600px){.site-header{min-height:54px;padding:0 14px}.header-control{min-width:30px;padding:0 6px;font-size:8px}.header-symbol,.header-index{font-size:8px}.hero{min-height:calc(100svh - 54px);padding:68px 18px 34px}.hero-name{font-size:42px}.hero-statement{margin-top:22px;font-size:18px;max-width:320px}.hero-now{margin-top:34px;min-height:40px}.hero-location{margin-top:28px;font-size:9px;letter-spacing:.16em}.hero-skyline{height:82px;margin-top:18px}.hero-skyline span{width:7px;margin:0 1px}.hero-backdoors{gap:15px;flex-wrap:wrap}.now-section{padding:12vh 20px 10vh}.now-title{font-size:34px}.now-state{margin-top:26px;font-size:18px;max-width:330px}.world-section{padding:10vh 20px 8vh}.world-title{font-size:38px}.world-intro{margin-top:20px;font-size:17px;max-width:330px}.globe-wrap{width:min(82vw,330px);height:min(82vw,330px);margin:34px 0 24px}.globe-home-label{font-size:7px}.world-entry{grid-template-columns:1fr;gap:8px;width:min(330px,100%);margin-top:28px}}
-.artist-core,.site-index{min-height:100svh;box-sizing:border-box;padding:12vh 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border-top:1px solid rgba(255,255,255,.05)}.artist-statement{margin:34px 0 0;font:400 clamp(18px,3vw,28px)/1.35 Arial,sans-serif;color:rgba(255,255,255,.82)}.world-entry-view{min-height:100svh;box-sizing:border-box;padding:12vh 24px 12vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border-top:1px solid rgba(255,255,255,.05)}.world-entry-view .world-intro{margin-top:28px;color:rgba(255,255,255,.72)}</style>
+.artist-core,.site-index{min-height:100svh;box-sizing:border-box;padding:12vh 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border-top:1px solid rgba(255,255,255,.05)}.artist-identity{margin:28px 0 0;font:500 10px/1 Arial,sans-serif;letter-spacing:.2em;color:rgba(255,255,255,.58)}.artist-statement{margin:34px 0 0;font:400 clamp(18px,3vw,28px)/1.35 Arial,sans-serif;color:rgba(255,255,255,.82)}.artist-core-links{margin-top:42px;display:flex;gap:28px;justify-content:center}.artist-core-links a{color:rgba(255,255,255,.5);text-decoration:none;font:500 9px/1 Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;padding:10px}.artist-core-links a:hover,.artist-core-links a:focus-visible{color:#fff}.artist-core-links a:focus-visible{outline:1px solid rgba(255,255,255,.7);outline-offset:5px}.world-entry-view{min-height:100svh;box-sizing:border-box;padding:12vh 24px 12vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border-top:1px solid rgba(255,255,255,.05)}.world-entry-view .world-intro{margin-top:28px;color:rgba(255,255,255,.72)}</style>
 </head>
 <body>
 <header class="site-header" aria-label="ESCIE header"><div class="header-left"><span class="header-symbol">ESCIE SYMBOL</span></div><div class="header-center"><div class="header-controls" aria-label="Language and light controls"><button class="header-control" type="button">EN</button><button class="header-control" type="button">FR</button><button class="header-control" type="button">ES</button><button class="header-control" type="button">LIGHT</button></div></div><div class="header-right"><button class="header-index" type="button" onclick="document.getElementById('index').scrollIntoView({behavior:'smooth'})">INDEX</button></div></header>
@@ -42,8 +42,12 @@
 <section class="artist-core" id="artist-core" aria-label="ESCIE artist core">
   <p class="world-kicker">ESCIE</p>
   <h2 class="world-title">THE ARTIST</h2>
-  <p class="world-intro">The Father. The Man. The Monster.</p>
+  <p class="artist-identity">THE FATHER / THE MAN / THE MONSTER</p>
   <p class="artist-statement">ESCIE the artist.<br>The art speaks for itself.</p>
+  <div class="artist-core-links" aria-label="Artist core">
+    <a href="#world-entry-view">ENTER THE WORLD</a>
+    <a href="#index">INDEX</a>
+  </div>
 </section>
 <section class="site-index" id="index" aria-label="Site index">
   <p class="world-kicker">INDEX</p>
