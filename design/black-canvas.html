@@ -425,6 +425,11 @@ function renderWorldThread(){
  if(traceContextCopy){const arrival=worldEntryOrigin&&worldEntryOrigin!=="MY WORLD"?" You arrived through "+worldEntryOrigin+".":"";traceContextCopy.textContent=context[1]+arrival;}
  renderWebTrace();
 }
+function webSuggestion(){
+ const hint=webPatternHint();
+ if(!hint)return null;
+ return {from:hint[0],to:hint[1],strength:"quiet"};
+}
 function webPatternHint(){
  const patterns=webPatternState();
  if(!patterns.length)return null;
@@ -454,7 +459,10 @@ function renderIntertwinedWeb(){
    const patterns=webPatternState();
    if(patterns.length&&copy)copy.textContent="A pattern is forming between places you have already touched.";
    const hint=webPatternHint();
-   if(hint&&copy)copy.textContent="Something between "+hint[0]+" and "+hint[1]+" keeps pulling your path back.";
+   if(hint&&copy){
+ const suggestion=webSuggestion();
+ copy.textContent=suggestion?"Something between "+suggestion.from+" and "+suggestion.to+" keeps pulling your path back.":"";
+}
  }
 }
 function renderWebLayers(){
