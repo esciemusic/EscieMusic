@@ -454,16 +454,28 @@ const worldConnections={
  art:[["PEOPLE","people","the lives inside the work"],["PLACES","places","where the work comes from"],["MOMENTS","moments","the moments that become material"]],
  web:[["OUTSIDE","outside","the world beyond Home"],["PLACES","places","places reached through the Web"],["PEOPLE","people","people connected beyond the center"]]
 };
+const webConsequences={
+ home:[["PEOPLE","A home becomes a network when you follow who belongs there."],["PLACES","A place gains meaning through what happened there."],["MOMENTS","A moment can become the reason another path exists."]],
+ people:[["PLACES","A person can change the meaning of a place."],["MOMENTS","A person can be the beginning of a moment that remains."],["ART","A life can become material without becoming a boundary."]],
+ places:[["PEOPLE","A place can reveal who was there."],["MOMENTS","What happens somewhere can travel far beyond it."],["ART","A place can become an image, word, sound or memory."]],
+ moments:[["PEOPLE","Who was there changes what the moment means."],["PLACES","Where it happened can change how it is remembered."],["ART","A moment can become something made."]],
+ art:[["PEOPLE","The work can lead back to the life inside it."],["PLACES","The work can point toward where it came from."],["MOMENTS","The work can preserve or transform a moment."]],
+ outside:[["WEB","The outside can become another door into the World."],["PLACES","A distant place can become connected without becoming Home."],["MOMENTS","What happens elsewhere can still create a consequence here."]],
+ web:[["OUTSIDE","The Web can carry a connection beyond the center."],["PEOPLE","A connection can introduce another person into the path."],["PLACES","A connection can lead somewhere you did not expect."]]
+};
 function renderWorldDiscover(key){
  const links=worldConnections[key]||worldConnections.home;
  if(!worldDiscoverLinks)return;
  worldDiscoverTitle.textContent=key==="home"?"WHAT CONNECTS":"FOLLOW THE CONNECTION";
- worldDiscoverCopy.textContent=key==="home"?"Home connects outward through people, places and moments.":"The World opens through what connects it.";
+ worldDiscoverCopy.textContent=key==="home"?"Home connects outward through people, places and moments.":"The World opens through what connects it. Follow one thing and the meaning around it can change.";
  worldDiscoverLinks.innerHTML=links.map(function(item){return '<button type="button" data-discover-key="'+item[1]+'"><strong>'+item[0]+'</strong><small>'+item[2]+'</small></button>';}).join("");
  worldDiscoverLinks.querySelectorAll("[data-discover-key]").forEach(function(button){button.addEventListener("click",function(){
  const key=button.getAttribute("data-discover-key");
  const label=button.querySelector("strong")?.textContent||key.toUpperCase();
+ const consequence=(webConsequences[worldSpace&&worldSpace.dataset.space]||webConsequences.home).find(function(item){return item[0]===label;});
  worldThreadOrigins[label]= "world-space";
+ rememberWorldThread(label,"world-space");
+ if(worldDiscoverCopy&&consequence)worldDiscoverCopy.textContent=consequence[1]+" Follow it and see where it leads.";
  enterWorldDoorFrom(key,"world-space");
 });});
 }
