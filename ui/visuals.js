@@ -192,8 +192,22 @@
     showVisual(section,items[state.index]);
    });
   };
-  const timer=window.setInterval(rotate,9500);
-  WORK_ALBUM_OBSERVER={disconnect:()=>window.clearInterval(timer)};
+  let timer=null;
+  let stopped=false;
+  const schedule=()=>{
+   if(stopped)return;
+   timer=window.setTimeout(()=>{
+    timer=null;
+    if(!document.hidden&&!reducedMotion())rotate();
+    schedule();
+   },9500);
+  };
+  schedule();
+  WORK_ALBUM_OBSERVER={disconnect:()=>{
+   stopped=true;
+   if(timer)window.clearTimeout(timer);
+   timer=null;
+  }};
  }
 
 
