@@ -6,6 +6,8 @@
 <meta name="theme-color" content="#000000">
 <title>ESCIE — Black Canvas</title>
 <style>
+.world-deeper{width:min(620px,100%);margin:var(--f5) auto 0;padding-top:var(--f5);border-top:1px solid rgba(255,255,255,.07);text-align:center}.world-deeper-kicker{margin:0;color:rgba(255,255,255,.34);font:500 8px/1 Arial,sans-serif;letter-spacing:.2em;text-transform:uppercase}.world-deeper h3{margin:14px 0 0;font:500 clamp(18px,3.5vw,26px)/1 Arial,sans-serif;letter-spacing:.06em}.world-deeper>p:not(.world-deeper-kicker){margin:12px auto 0;max-width:480px;color:rgba(255,255,255,.5);font:400 13px/1.4 Arial,sans-serif}.world-deeper-links{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin-top:var(--f3)}.world-deeper-links button{min-width:125px;flex:1 1 125px;max-width:175px;padding:13px 11px;background:transparent;border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.58);text-align:left;cursor:pointer}.world-deeper-links button strong{display:block;font:500 8px/1 Arial,sans-serif;letter-spacing:.15em}.world-deeper-links button small{display:block;margin-top:8px;color:rgba(255,255,255,.34);font:400 10px/1.3 Arial,sans-serif;letter-spacing:0}.world-deeper-links button:hover,.world-deeper-links button:focus-visible{border-color:rgba(255,255,255,.28);color:#fff}.world-deeper-links button:focus-visible{outline:1px solid rgba(255,255,255,.7);outline-offset:4px}
+
 .world-discover{width:min(620px,100%);margin:var(--f8) auto 0;padding-top:var(--f5);border-top:1px solid rgba(255,255,255,.1);text-align:center}.world-discover-kicker{margin:0;color:rgba(255,255,255,.42);font:500 8px/1 Arial,sans-serif;letter-spacing:.2em;text-transform:uppercase}.world-discover h3{margin:16px 0 0;font:500 clamp(20px,4vw,30px)/1 Arial,sans-serif;letter-spacing:.06em}.world-discover>p:not(.world-discover-kicker){margin:14px auto 0;max-width:480px;color:rgba(255,255,255,.58);font:400 14px/1.4 Arial,sans-serif}.world-discover-links{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:var(--f3)}.world-discover-links button{min-width:150px;flex:1 1 150px;max-width:190px;padding:15px 13px;background:transparent;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.72);text-align:left;cursor:pointer}.world-discover-links button strong{display:block;font:500 8px/1 Arial,sans-serif;letter-spacing:.16em}.world-discover-links button small{display:block;margin-top:9px;color:rgba(255,255,255,.42);font:400 11px/1.3 Arial,sans-serif;letter-spacing:0}.world-discover-links button:hover,.world-discover-links button:focus-visible{border-color:rgba(255,255,255,.35);color:#fff}.world-discover-links button:focus-visible{outline:1px solid rgba(255,255,255,.7);outline-offset:4px}
 
 :root,html,body{background:#000;color:#fff}:root{--phi:1.61803398875;--unit:clamp(8px,1.2vw,13px);--f1:var(--unit);--f2:calc(var(--unit) * 1.618);--f3:calc(var(--unit) * 2.618);--f5:calc(var(--unit) * 4.236);--f8:calc(var(--unit) * 6.854);--f13:calc(var(--unit) * 11.09)}html,body{width:100%;min-height:100%;margin:0;padding:0}body{min-height:260svh;overflow-x:hidden}
@@ -91,7 +93,7 @@
       <div class="space-art"></div>
     </div>
     <p class="world-space-copy" id="world-space-copy"></p>
-    <div class="world-discover" id="world-discover" aria-live="polite"><p class="world-discover-kicker">DISCOVER</p><h3 id="world-discover-title">WHAT CONNECTS</h3><p id="world-discover-copy">Follow one connection at a time. The World stays simple until you choose to look closer.</p><div class="world-discover-links" id="world-discover-links"></div></div><button class="world-space-return" type="button" id="world-space-return">RETURN TO MY WORLD</button>
+    <div class="world-discover" id="world-discover" aria-live="polite"><p class="world-discover-kicker">DISCOVER</p><h3 id="world-discover-title">WHAT CONNECTS</h3><p id="world-discover-copy">Follow one connection at a time. The World stays simple until you choose to look closer.</p><div class="world-discover-links" id="world-discover-links"></div></div><div class="world-deeper" id="world-deeper" hidden aria-live="polite"><p class="world-deeper-kicker">LOOK CLOSER</p><h3 id="world-deeper-title">WHAT IS UNDERNEATH</h3><p id="world-deeper-copy">Deeper material appears only when there is a reason to look closer.</p><div class="world-deeper-links" id="world-deeper-links"></div></div><button class="world-space-return" type="button" id="world-space-return">RETURN TO MY WORLD</button>
   </div>
 </section>
 <section class="world-trace" id="world-trace" aria-label="Your World trace">
@@ -239,6 +241,34 @@ const worldDiscover=document.getElementById("world-discover");
 const worldDiscoverTitle=document.getElementById("world-discover-title");
 const worldDiscoverCopy=document.getElementById("world-discover-copy");
 const worldDiscoverLinks=document.getElementById("world-discover-links");
+const worldDeeper=document.getElementById("world-deeper");
+const worldDeeperTitle=document.getElementById("world-deeper-title");
+const worldDeeperCopy=document.getElementById("world-deeper-copy");
+const worldDeeperLinks=document.getElementById("world-deeper-links");
+const worldDepthMap={
+ home:[["MOMENTS","moments","look closer at what happened here"],["SYMBOLS","symbols","look closer at what repeats"]],
+ outside:[["WEB","web","look closer at what continues outward"],["TIMELINE","timeline","look closer at what changed over time"]],
+ people:[["MOMENTS","moments","look closer at shared moments"],["BODIES","bodies","look closer at presence and absence"],["PROOF","proof","look closer at what remains"]],
+ places:[["MOMENTS","moments","look closer at what happened here"],["PROOF","proof","look closer at what can be seen"],["SYMBOLS","symbols","look closer at what marks the place"]],
+ moments:[["PEOPLE","people","look closer at who was there"],["TIMELINE","timeline","look closer at what came before and after"],["FRAGMENTS","fragments","look closer at what remains"]],
+ art:[["FRAGMENTS","fragments","look closer at pieces of the work"],["SYMBOLS","symbols","look closer at recurring signs"],["PROOF","proof","look closer at the record behind the work"]]
+};
+function renderWorldDeeper(key){
+ const links=worldDepthMap[key]||worldDepthMap.home;
+ if(!worldDeeperLinks)return;
+ worldDeeperTitle.textContent="WHAT IS UNDERNEATH";
+ worldDeeperCopy.textContent="These are deeper lenses, not new destinations. Choose one only if you want to look closer.";
+ worldDeeperLinks.innerHTML=links.map(function(item){return '<button type="button" data-deeper-key="'+item[1]+'"><strong>'+item[0]+'</strong><small>'+item[2]+'</small></button>';}).join("");
+ worldDeeperLinks.querySelectorAll("[data-deeper-key]").forEach(function(button){button.addEventListener("click",function(){
+   const key=button.getAttribute("data-deeper-key");
+   const hiddenNode=document.querySelector('[data-hidden-route="'+key.replace("fragments","discovery").replace("proof","context").replace("bodies","context").replace("timeline","context").replace("symbols","discovery")+'"]');
+   if(hiddenNode)hiddenNode.click();
+   if(worldDeeperCopy)worldDeeperCopy.textContent=button.querySelector("small").textContent+" The deeper layer is now open.";
+   rememberWorldThread(button.querySelector("strong").textContent);
+ });});
+ worldDeeper.hidden=false;
+}
+
 const worldConnections={
  home:[["PEOPLE","people","people who belong to Home"],["PLACES","places","places inside Home"],["MOMENTS","moments","moments that happened here"]],
  outside:[["PLACES","places","places beyond Home"],["WEB","web","connections that continue outward"],["MOMENTS","moments","moments beyond the center"]],
@@ -277,6 +307,7 @@ function enterWorldDoor(key){
   worldSpace.dataset.space=key;
   rememberWorldThread(destination.title);
   renderWorldDiscover(key);
+  renderWorldDeeper(key);
   worldSpace.classList.add("is-entering");
   window.requestAnimationFrame(function(){worldSpace.style.setProperty("--space-offset",key==="home"?"-2px":"0px");});
   worldSpace.scrollIntoView({behavior:"smooth",block:"start"});
