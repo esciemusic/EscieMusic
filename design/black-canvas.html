@@ -249,16 +249,26 @@ const traceContextMap={
 };
 
 let worldThread=["MY WORLD"];
+let worldThreadOrigins={"MY WORLD":"world-entry-view"};
 function renderWorldThread(){
  if(!tracePath)return;
  tracePath.innerHTML=worldThread.map(function(item,index){return "<span"+(index===worldThread.length-1?' class="is-current"':"")+">"+item+"</span>";}).join('<i aria-hidden="true">→</i>');
 }
-function rememberWorldThread(label){
+function rememberWorldThread(label,origin){
  if(!label)return;
+ if(origin)worldThreadOrigins[label]=origin;
  worldThread=worldThread.filter(function(item){return item!==label;});
  worldThread.push(label);
  if(worldThread.length>6)worldThread.shift();
  renderWorldThread();
+}
+function returnToWorldContext(){
+ const last=worldThread.length>1?worldThread[worldThread.length-1]:"MY WORLD";
+ const origin=worldThreadOrigins[last]||"world-entry-view";
+ const key=Object.keys(worldDestinations).find(function(k){return worldDestinations[k].title===last;});
+ if(key){enterWorldDoor(key);return;}
+ const target=document.getElementById(origin)||document.getElementById("world-entry-view");
+ target.scrollIntoView({behavior:"smooth",block:"start"});
 }
 renderWorldThread();
 const enterWorld=document.getElementById("enter-world");
@@ -317,7 +327,12 @@ function renderWorldDiscover(key){
  worldDiscoverTitle.textContent=key==="home"?"WHAT CONNECTS":"FOLLOW THE CONNECTION";
  worldDiscoverCopy.textContent=key==="home"?"Home connects outward through people, places and moments.":"Choose a connection. Each one opens another part of the same World.";
  worldDiscoverLinks.innerHTML=links.map(function(item){return '<button type="button" data-discover-key="'+item[1]+'"><strong>'+item[0]+'</strong><small>'+item[2]+'</small></button>';}).join("");
- worldDiscoverLinks.querySelectorAll("[data-discover-key]").forEach(function(button){button.addEventListener("click",function(){enterWorldDoor(button.getAttribute("data-discover-key"));});});
+ worldDiscoverLinks.querySelectorAll("[data-discover-key]").forEach(function(button){button.addEventListener("click",function(){
+ const key=button.getAttribute("data-discover-key");
+ const label=button.querySelector("strong")?.textContent||key.toUpperCase();
+ worldThreadOrigins[label]= "world-space";
+ enterWorldDoor(key);
+});});
 }
 
 const worldDestinations={
@@ -338,7 +353,7 @@ function enterWorldDoor(key){
   worldCopy.textContent=destination.copy;
   worldSpace.hidden=false;
   worldSpace.dataset.space=key;
-  rememberWorldThread(destination.title);
+  rememberWorldThread(destination.title,"world-space");
   renderWorldDiscover(key);
   renderWorldDeeper(key);
   worldSpace.classList.add("is-entering");
@@ -349,12 +364,7 @@ function enterWorldDoor(key){
 document.querySelectorAll("[data-world-door]").forEach(function(button){
   button.addEventListener("click",function(){enterWorldDoor(button.getAttribute("data-world-door"));});
 });
-if(worldReturn)worldReturn.addEventListener("click",function(){document.getElementById("world-entry-view").scrollIntoView({behavior:"smooth"});});if(traceReturn)traceReturn.addEventListener("click",function(){
- const last=worldThread.length>1?worldThread[worldThread.length-1]:"MY WORLD";
- if(last==="MY WORLD"){document.getElementById("world-entry-view").scrollIntoView({behavior:"smooth"});return;}
- const key=Object.keys(worldDestinations).find(function(k){return worldDestinations[k].title===last;});
- if(key)enterWorldDoor(key);
-});
+if(worldReturn)worldReturn.addEventListener("click",function(){document.getElementById("world-entry-view").scrollIntoView({behavior:"smooth"});});if(traceReturn)traceReturn.addEventListener("click",function(){returnToWorldContext();});
 if(traceClear)traceClear.addEventListener("click",function(){worldThread=["MY WORLD"];renderWorldThread();});
 
 if(lookAround&&around)lookAround.addEventListener("click",function(){around.hidden=!around.hidden;lookAround.textContent=around.hidden?"LOOK AROUND":"CLOSE";});
