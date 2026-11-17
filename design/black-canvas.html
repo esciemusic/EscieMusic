@@ -238,9 +238,10 @@ document.addEventListener("click",function(e){
  if(!action)return;
  const key=action.getAttribute("data-system-action");
  if(key==="index"){document.getElementById("index").scrollIntoView({behavior:"smooth",block:"start"});return;}
- if(key==="glass-eye"){document.getElementById("hidden-world-trigger")?.click();document.querySelector(".hidden-world-status").textContent="GLASS EYE — the participation layer. The screen can become a place to observe, listen, contribute and leave a trace.";return;}
- if(key==="archives"){document.getElementById("hidden-world-trigger")?.click();document.querySelector(".hidden-world-status").textContent="ARCHIVES — preserved material. What remains can be revisited without becoming the surface.";return;}
- if(key==="case-files"){document.getElementById("hidden-world-trigger")?.click();document.querySelector(".hidden-world-status").textContent="CASE FILES — discovered investigations. Evidence and uncertainty belong deeper in the World.";return;}
+ const hidden=document.getElementById("hidden-world"),trigger=document.getElementById("hidden-world-trigger"),status=document.querySelector(".hidden-world-status");
+ if(key==="glass-eye"){if(hidden&&trigger&&hidden.getAttribute("aria-hidden")!=="false")trigger.click();if(status)status.textContent="GLASS EYE — the participation layer. The screen can become a place to observe, listen, contribute and leave a trace.";return;}
+ if(key==="archives"){if(hidden&&trigger&&hidden.getAttribute("aria-hidden")!=="false")trigger.click();if(status)status.textContent="ARCHIVES — preserved material. What remains can be revisited without becoming the surface.";return;}
+ if(key==="case-files"){if(hidden&&trigger&&hidden.getAttribute("aria-hidden")!=="false")trigger.click();if(status)status.textContent="CASE FILES — discovered investigations. Evidence and uncertainty belong deeper in the World.";return;}
  if(key==="web"){enterWorldDoor("web");return;}
 });
 document.querySelectorAll("[data-index-system]").forEach(function(button){
@@ -360,7 +361,8 @@ const worldDestinations={
  people:{title:"PEOPLE",subtitle:"THE PEOPLE",copy:"Nothing to see here right now."},
  places:{title:"PLACES",subtitle:"PLACES",copy:"Nothing to see here right now."},
  moments:{title:"MOMENTS",subtitle:"MOMENTS",copy:"Nothing to see here right now."},
- art:{title:"ART",subtitle:"WHERE LIFE BECOMES THE MEDIUM",copy:"The work lives here when there is something to show."}
+ art:{title:"ART",subtitle:"WHERE LIFE BECOMES THE MEDIUM",copy:"The work lives here when there is something to show."},
+web:{title:"THE WEB",subtitle:"BEYOND THE CENTER",copy:"The World continues outward through connections that do not stop at Home."}
 };
 function enterWorldDoor(key){
   const destination=worldDestinations[key];
