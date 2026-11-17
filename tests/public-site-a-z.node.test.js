@@ -1379,6 +1379,16 @@ test("A-Z Pass 11 protects Web thread backtracking",()=>{
 });
 
 
+test("A-Z public visual rotation uses one-shot scheduling and respects reduced motion",()=>{
+  const visuals=read("ui/visuals.js");
+  assert.match(visuals,/function syncWorkAlbumVisuals\(\)/);
+  assert.match(visuals,/window\.setTimeout\(\(\)=>/);
+  assert.match(visuals,/clearTimeout\(timer\)/);
+  assert.doesNotMatch(visuals,/setInterval\s*\(/);
+  assert.match(visuals,/!document\.hidden/);
+  assert.match(visuals,/!reducedMotion\(\)/);
+});
+
 test("A-Z current signal stays factual, quiet, and minute-aligned without an interval timer",()=>{
   const present=read("data/present-state.js");
   const index=read("index.html");
