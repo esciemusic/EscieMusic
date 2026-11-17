@@ -42,7 +42,7 @@ jobs:
           - web-experience-pass-3.node.test.js
           - web-experience-pass-4.node.test.js
           - world-synthetic.node.test.js
-      - content-lifecycle.node.test.js
+          - content-lifecycle.node.test.js
           - world-elements-contract.node.test.js
     runs-on: ubuntu-latest
     name: Contract · ${{ matrix.test }}
