@@ -22,6 +22,16 @@
 .globe.world-depth-deep::before{}
 .globe.world-depth-outside .globe-world-point.outside{animation:depthArrive .8s cubic-bezier(.22,.61,.36,1) both}
 .globe.world-depth-deep .globe-world-point.deep{animation:depthArrive 1s cubic-bezier(.22,.61,.36,1) both}
+.globe-world-point.home-orbit{transition-delay:.05s}.globe-world-point.outside{transition-delay:.08s}.globe-world-point.deep{transition-delay:.12s}
+.globe.world-depth-home .globe-world-point.home-orbit{transform:translateZ(16px) scale(1);opacity:1}
+.globe.world-depth-outside .globe-world-point.home-orbit{transform:translateZ(-18px) scale(.82);opacity:.45}
+.globe.world-depth-deep .globe-world-point.home-orbit{transform:translateZ(-34px) scale(.7);opacity:.25}
+.globe.world-depth-home .globe-world-point.outside{transform:translateZ(-18px) scale(.78);opacity:.3}
+.globe.world-depth-outside .globe-world-point.outside{transform:translateZ(22px) scale(1.08);opacity:1}
+.globe.world-depth-deep .globe-world-point.outside{transform:translateZ(-6px) scale(.82);opacity:.4}
+.globe.world-depth-home .globe-world-point.deep{transform:translateZ(-34px) scale(.68);opacity:.2}
+.globe.world-depth-outside .globe-world-point.deep{transform:translateZ(-12px) scale(.76);opacity:.3}
+.globe.world-depth-deep .globe-world-point.deep{transform:translateZ(30px) scale(1.1);opacity:1}
 @keyframes depthArrive{0%{transform:translateZ(0) scale(.72);opacity:.15;filter:blur(5px)}65%{opacity:1}100%{transform:translateZ(0) scale(1);opacity:1;filter:blur(0)}}{transform:rotate(23.6deg) scaleY(.618) scale(1.14);opacity:.82}
 @media(prefers-reduced-motion:reduce){.globe::after{animation:none}.globe-world-point{transition:none}.globe.world-depth-outside .globe-world-point.outside,.globe.world-depth-deep .globe-world-point.deep{animation:none}}.globe.world-depth-outside{transform:rotateX(var(--depth-shift,0deg)) scale(.985)}.globe.world-depth-deep{transform:rotateX(var(--depth-shift,0deg)) scale(.97)}.globe:hover{filter:drop-shadow(0 0 34px rgba(255,255,255,.11));scale:1.015}
 .globe::before,.globe::after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none}
