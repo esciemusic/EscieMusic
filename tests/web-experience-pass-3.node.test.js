@@ -40,6 +40,6 @@ test("Experience Pass 3 keeps the shared language system active for all supporte
 
 test("Experience Pass 3 keeps viewer memory local and non-canonical",()=>{
   assert.match(app,/localStorage\.(?:getItem|setItem|removeItem)\(["\']escie-language["\']/);
-  assert.match(app,/LOCAL \/ PRIVATE \/ NON-CANONICAL/);
+  assert.match(lang,/LOCAL \/ PRIVATE \/ NON-CANONICAL/);
   assert.match(app,/not canon/i);
 });
