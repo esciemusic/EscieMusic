@@ -403,7 +403,6 @@ function webSystemReset(){
  visitorWeb.edges=[];
  worldThread=["MY WORLD"];
  worldThreadOrigins={"MY WORLD":"world-entry-view"};
- visitorWeb.edges=[];
  webIntersections.splice(0);
  webIntersectionMemory.splice(0);
  worldTraceHistory=["MY WORLD"];
@@ -587,7 +586,7 @@ function renderWebTrace(){
 }
 function rememberWorldThread(label,origin){
  const webState=recordWebExperience(label,origin);
- if(webState&&webState.intersections&&webState.intersections.includes(webKey(label)))intersectionPulse(label);
+ if(webState&&webState.touched)intersectionPulse(label);
  if(webState&&webState.previous)revealWorldConnection(webState.previous,webState.node);
 
  if(!label)return;
