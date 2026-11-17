@@ -57,16 +57,22 @@ async function scanRenderedBoundary(label) {
     nodes.map(node => new URL(node.getAttribute("src") || node.getAttribute("href"), location.href).href)
   );
   const loadedAssets = await page.evaluate(async urls => Promise.all([...new Set(urls)].map(async url => {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 3000);
-    try {
-      const response = await fetch(url, { cache: "no-store", signal: controller.signal });
-      return { url, status: response.status, text: response.ok ? await response.text() : "" };
-    } catch (error) {
-      return { url, status: 0, text: "", error: String(error) };
-    } finally {
-      clearTimeout(timer);
+    let last = { url, status: 0, text: "", error: "" };
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 3000);
+      try {
+        const response = await fetch(url, { cache: "no-store", signal: controller.signal });
+        last = { url, status: response.status, text: response.ok ? await response.text() : "" };
+        if (response.ok || response.status < 500) return last;
+      } catch (error) {
+        last = { url, status: 0, text: "", error: String(error) };
+      } finally {
+        clearTimeout(timer);
+      }
+      await new Promise(resolve => setTimeout(resolve, 500 * (attempt + 1)));
     }
+    return last;
   })), assets);
 
   for (const asset of loadedAssets) {
