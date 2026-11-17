@@ -117,7 +117,7 @@
   globe.addEventListener("pointerup",function(e){down=false;try{globe.releasePointerCapture(e.pointerId)}catch(_){};globe.style.animation="";globe.style.transform="";globe.classList.remove("is-dragging");});
   globe.addEventListener("pointercancel",function(){down=false;globe.style.animation="";globe.style.transform="";globe.classList.remove("is-dragging");});
   globe.addEventListener("dblclick",function(){setDepth("home");});
-  globe.addEventListener("keydown",function(e){if(e.key==="Escape"){setDepth("home");globe.focus();}});
+  globe.addEventListener("keydown",function(e){if(e.key==="Escape"){setDepth("home");globe.focus();return;}if(e.key==="Home"){setDepth("home");globe.focus();return;}if(e.key==="ArrowRight"){setDepth("outside");globe.focus();return;}if(e.key==="ArrowDown"){setDepth("deep");globe.focus();return;}});
   globe.querySelectorAll(".globe-world-point").forEach(function(point){point.addEventListener("pointerdown",function(e){e.stopPropagation();});});
 })();
 const enterWorld=document.getElementById("enter-world");
