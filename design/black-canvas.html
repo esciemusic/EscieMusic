@@ -74,6 +74,10 @@
 .doorway-links button:hover,.doorway-links button:focus-visible{border-color:rgba(255,255,255,.55);color:#fff;transform:translateY(-1px)}
 .doorway-links button:focus-visible{outline:1px solid rgba(255,255,255,.55);outline-offset:5px}
 @media(max-width:600px){.doorway-section{padding-top:4.5rem;padding-bottom:5rem}.doorway-links{gap:.45rem}.doorway-links button{padding:.65rem .8rem}}
+
+
+/* THE WEB — relationship layer */
+.web-layer{min-height:100svh;box-sizing:border-box;padding:clamp(72px,12vh,140px) 24px;display:flex;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden}.web-shell{width:min(900px,100%);margin:0 auto}.web-kicker{margin:0;color:rgba(255,255,255,.38);font:500 8px/1 Arial,sans-serif;letter-spacing:.22em;text-transform:uppercase}.web-title{margin:16px 0 0;font:500 clamp(32px,7vw,64px)/1 Arial,sans-serif;letter-spacing:.05em}.web-intro{max-width:560px;margin:20px auto 0;color:rgba(255,255,255,.58);font:400 15px/1.45 Arial,sans-serif}.web-field{position:relative;width:min(720px,100%);height:min(68vw,520px);min-height:330px;margin:var(--f8) auto 0}.web-line{position:absolute;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);transform-origin:left center;pointer-events:none}.web-line.l1{width:43%;left:27%;top:37%;transform:rotate(12deg)}.web-line.l2{width:42%;left:29%;top:50%;transform:rotate(-24deg)}.web-line.l3{width:38%;left:36%;top:49%;transform:rotate(44deg)}.web-line.l4{width:35%;left:23%;top:59%;transform:rotate(-4deg)}.web-line.l5{width:34%;left:51%;top:31%;transform:rotate(84deg)}.web-node{position:absolute;z-index:2;width:88px;height:88px;border:1px solid rgba(255,255,255,.16);border-radius:50%;background:rgba(0,0,0,.72);color:rgba(255,255,255,.68);font:500 8px/1 Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:transform .35s ease,border-color .35s ease,color .35s ease,background .35s ease}.web-node small{display:block;margin-top:7px;color:rgba(255,255,255,.3);font:400 8px/1 Arial,sans-serif;letter-spacing:0;text-transform:none}.web-node:hover,.web-node:focus-visible,.web-node.is-active{transform:scale(1.08);border-color:rgba(255,255,255,.42);color:#fff;background:rgba(255,255,255,.04)}.web-node:focus-visible{outline:1px solid rgba(255,255,255,.7);outline-offset:5px}.web-node.n-center{left:50%;top:42%;transform:translate(-50%,-50%);width:112px;height:112px;border-color:rgba(255,255,255,.3);color:#fff}.web-node.n-center:hover,.web-node.n-center:focus-visible,.web-node.n-center.is-active{transform:translate(-50%,-50%) scale(1.08)}.web-node.n-music{left:9%;top:25%}.web-node.n-person{left:3%;top:62%}.web-node.n-place{left:42%;top:2%}.web-node.n-moment{right:4%;top:19%}.web-node.n-image{right:7%;top:62%}.web-node.n-page{left:42%;bottom:0}.web-effect{width:min(620px,100%);margin:var(--f5) auto 0;padding:18px 20px;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08)}.web-effect strong{display:block;color:rgba(255,255,255,.76);font:500 8px/1 Arial,sans-serif;letter-spacing:.18em}.web-effect p{margin:10px auto 0;color:rgba(255,255,255,.5);font:400 13px/1.45 Arial,sans-serif}.web-return{margin-top:var(--f5);padding:11px;background:transparent;border:0;color:rgba(255,255,255,.42);font:500 8px/1 Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;cursor:pointer}.web-return:hover,.web-return:focus-visible{color:#fff}.web-return:focus-visible{outline:1px solid rgba(255,255,255,.7);outline-offset:5px}@media(max-width:600px){.web-field{height:420px}.web-node{width:72px;height:72px;font-size:7px}.web-node.n-center{width:92px;height:92px}.web-node.n-music{left:0}.web-node.n-person{left:0}.web-node.n-place{left:39%}.web-node.n-moment{right:0}.web-node.n-image{right:0}.web-node.n-page{left:39%}}
 </style></style>
 </head>
 <body><div class="hidden-world-reveal"><button type="button" id="hidden-world-trigger" aria-controls="hidden-world" aria-expanded="false">LOOK CLOSER</button></div>
@@ -159,6 +163,26 @@
   </div>
 </section>
 
+
+<section class="web-layer" id="web-layer" aria-label="The Web">
+  <div class="web-shell">
+    <p class="web-kicker">THE WEB</p>
+    <h2 class="web-title">EVERYTHING CONNECTS.</h2>
+    <p class="web-intro">A song can lead to a person. A person can lead to a place. A place can lead to a moment. A moment can change how the song is heard.</p>
+    <div class="web-field" aria-label="Relationship map">
+      <span class="web-line l1" aria-hidden="true"></span><span class="web-line l2" aria-hidden="true"></span><span class="web-line l3" aria-hidden="true"></span><span class="web-line l4" aria-hidden="true"></span><span class="web-line l5" aria-hidden="true"></span>
+      <button class="web-node n-center is-active" type="button" data-web-node="world">MY WORLD<small>the center</small></button>
+      <button class="web-node n-music" type="button" data-web-node="music">MUSIC<small>sound</small></button>
+      <button class="web-node n-person" type="button" data-web-node="person">PERSON<small>who</small></button>
+      <button class="web-node n-place" type="button" data-web-node="place">PLACE<small>where</small></button>
+      <button class="web-node n-moment" type="button" data-web-node="moment">MOMENT<small>when</small></button>
+      <button class="web-node n-image" type="button" data-web-node="image">IMAGE<small>what remains</small></button>
+      <button class="web-node n-page" type="button" data-web-node="page">PAGE<small>outside</small></button>
+    </div>
+    <div class="web-effect" aria-live="polite"><strong id="web-effect-title">THE CONNECTION</strong><p id="web-effect-copy">Nothing exists alone. Follow one element and the meaning around it can change.</p></div>
+    <button class="web-return" type="button" id="web-return">RETURN TO MY WORLD</button>
+  </div>
+</section>
 <section class="hidden-world-layer" id="hidden-world" aria-label="Below the Surface" aria-hidden="true">
   <div class="hidden-world-shell">
     <p class="hidden-world-kicker">LOOK CLOSER</p>
@@ -254,7 +278,7 @@ function setArchitectureDetail(key){
    architectureDetail.appendChild(action);
  }
  action.setAttribute("data-system-action",key);
- action.textContent=key==="index"?"OPEN INDEX":key==="glass-eye"?"OPEN GLASS EYE":key==="archives"?"OPEN ARCHIVES":key==="case-files"?"OPEN CASE FILES":key==="web"?"FOLLOW THE WEB":"FOLLOW THIS LAYER";
+ action.textContent=key==="index"?"OPEN INDEX":key==="glass-eye"?"OPEN GLASS EYE":key==="archives"?"OPEN ARCHIVES":key==="case-files"?"OPEN CASE FILES":key==="web"?"ENTER THE WEB":"FOLLOW THIS LAYER";
  document.querySelectorAll("[data-architecture-layer]").forEach(function(button){
    button.classList.toggle("is-active",button.getAttribute("data-architecture-layer")===key);
  });
@@ -280,7 +304,7 @@ document.addEventListener("click",function(e){
  if(key==="glass-eye"){if(hidden&&trigger&&hidden.getAttribute("aria-hidden")!=="false")trigger.click();if(status)status.textContent="GLASS EYE — the participation layer. The screen can become a place to observe, listen, contribute and leave a trace.";return;}
  if(key==="archives"){if(hidden&&trigger&&hidden.getAttribute("aria-hidden")!=="false")trigger.click();if(status)status.textContent="ARCHIVES — preserved material. What remains can be revisited without becoming the surface.";return;}
  if(key==="case-files"){if(hidden&&trigger&&hidden.getAttribute("aria-hidden")!=="false")trigger.click();if(status)status.textContent="CASE FILES — discovered investigations. Evidence and uncertainty belong deeper in the World.";return;}
- if(key==="web"){worldSpaceOrigin="world-architecture";worldSpaceOriginKey=null;if(worldSpace)worldSpace.dataset.spaceOrigin=worldSpaceOrigin;enterWorldDoor("web");return;}
+ if(key==="web"){document.getElementById("web-layer").scrollIntoView({behavior:"smooth",block:"start"});rememberWorldThread("THE WEB","web-layer");return;}
  if(key==="surface"){document.getElementById("world-entry-view").scrollIntoView({behavior:"smooth",block:"start"});return;}
  if(key==="explore"){document.getElementById("world-entry-view").scrollIntoView({behavior:"smooth",block:"start"});if(lookAround&&!around.hidden){around.hidden=true;lookAround.textContent="LOOK AROUND";}return;}
  if(key==="discover"){document.getElementById("world-space").scrollIntoView({behavior:"smooth",block:"start"});renderWorldDiscover(worldSpace&&worldSpace.dataset.space||"home");return;}
@@ -522,6 +546,27 @@ if(lookAround&&around)lookAround.addEventListener("click",function(){around.hidd
 });
 const indexReturn=document.getElementById("index-return");
 if(indexReturn)indexReturn.addEventListener("click",function(){document.getElementById("world-entry-view").scrollIntoView({behavior:"smooth",block:"start"});});
+
+const webNodeData={
+ world:["THE CENTER","Everything here can connect to something else."],
+ music:["MUSIC → LIFE","The sound can lead to the people, places and moments that made it possible."],
+ person:["PERSON → PLACE","A person carries places, relationships and consequences with them."],
+ place:["PLACE → MOMENT","A place holds what happened there, and what happened there can travel."],
+ moment:["MOMENT → MEANING","A moment can change how something else is understood later."],
+ image:["IMAGE → MEMORY","An image can preserve a detail that changes the meaning of another thing."],
+ page:["PAGE → WORLD","A page can be the outside door that leads into the same World." ]
+};
+const webEffectTitle=document.getElementById("web-effect-title");
+const webEffectCopy=document.getElementById("web-effect-copy");
+document.querySelectorAll("[data-web-node]").forEach(function(node){node.addEventListener("click",function(){
+ const key=node.getAttribute("data-web-node"),d=webNodeData[key]||webNodeData.world;
+ document.querySelectorAll("[data-web-node]").forEach(function(n){n.classList.toggle("is-active",n===node);});
+ if(webEffectTitle)webEffectTitle.textContent=d[0];
+ if(webEffectCopy)webEffectCopy.textContent=d[1]+" One connection can create another.";
+ rememberWorldThread(node.textContent.split("\\n")[0].trim(),"web-layer");
+});});
+const webReturnButton=document.getElementById("web-return");
+if(webReturnButton)webReturnButton.addEventListener("click",function(){document.getElementById("world-entry-view").scrollIntoView({behavior:"smooth",block:"start"});});
 </script>
 </body>
 </html>
