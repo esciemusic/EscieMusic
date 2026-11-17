@@ -418,6 +418,25 @@ function renderWorldThread(){
  if(traceContextCopy){const arrival=worldEntryOrigin&&worldEntryOrigin!=="MY WORLD"?" You arrived through "+worldEntryOrigin+".":"";traceContextCopy.textContent=context[1]+arrival;}
  renderWebTrace();
 }
+function renderWebLayers(){
+ const field=document.getElementById("web-trace-field");
+ if(!field)return;
+ field.dataset.worldNodes=String(worldWeb.nodes.length);
+ field.dataset.visitorNodes=String(visitorWeb.nodes.length);
+ field.dataset.intersections=String(webIntersections.length);
+ const effectTitle=document.getElementById("web-effect-title");
+ const effectCopy=document.getElementById("web-effect-copy");
+ if(webIntersections.length>1){
+   if(effectTitle)effectTitle.textContent="A CONNECTION REMAINS";
+   if(effectCopy)effectCopy.textContent="Your path touched something the World was already holding.";
+ }else if(visitorWeb.nodes.length>1){
+   if(effectTitle)effectTitle.textContent="YOUR WEB";
+   if(effectCopy)effectCopy.textContent="Your path is becoming a web.";
+ }else{
+   if(effectTitle)effectTitle.textContent="THE WORLD WEB";
+   if(effectCopy)effectCopy.textContent="The World already connects. Move through it to discover what is there.";
+ }
+}
 function renderWebTrace(){
  const field=document.getElementById("web-trace-field");
  if(!field)return;
@@ -480,6 +499,7 @@ function rememberWorldThread(label,origin){
  if(worldTraceHistory.length>18)worldTraceHistory.shift();
  if(worldThread.length>6)worldThread.shift();
  renderWorldThread();
+ renderWebLayers();
 }
 function returnToWorldContext(){
  const last=worldThread.length>1?worldThread[worldThread.length-2]:"MY WORLD";
@@ -490,6 +510,7 @@ function returnToWorldContext(){
  target.scrollIntoView({behavior:"smooth",block:"start"});
 }
 renderWorldThread();
+renderWebLayers();
 const doorwayLabels={music:"MUSIC",image:"IMAGE",word:"WORD",object:"OBJECT",person:"PERSON",place:"PLACE",web:"PAGE"};
 const doorwayArrivalCopy={music:"A SONG BROUGHT YOU HERE.",image:"AN IMAGE BROUGHT YOU HERE.",word:"A WORD BROUGHT YOU HERE.",object:"AN OBJECT BROUGHT YOU HERE.",person:"A PERSON BROUGHT YOU HERE.",place:"A PLACE BROUGHT YOU HERE.",web:"A PAGE BROUGHT YOU HERE."};
 let worldEntryOrigin="MY WORLD";
