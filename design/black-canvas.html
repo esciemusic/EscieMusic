@@ -314,10 +314,10 @@ function rememberWorldThread(label,origin){
  renderWorldThread();
 }
 function returnToWorldContext(){
- const last=worldThread.length>1?worldThread[worldThread.length-1]:"MY WORLD";
+ const last=worldThread.length>1?worldThread[worldThread.length-2]:"MY WORLD";
  const origin=worldThreadOrigins[last]||"world-entry-view";
  const key=Object.keys(worldDestinations).find(function(k){return worldDestinations[k].title===last;});
- if(key){worldSpaceOrigin="world-entry-view";if(worldSpace)worldSpace.dataset.spaceOrigin=worldSpaceOrigin;enterWorldDoor(key);return;}
+ if(key){worldSpaceOrigin="world-entry-view";worldSpaceOriginKey=null;if(worldSpace)worldSpace.dataset.spaceOrigin=worldSpaceOrigin;enterWorldDoor(key);return;}
  const target=document.getElementById(origin)||document.getElementById("world-entry-view");
  target.scrollIntoView({behavior:"smooth",block:"start"});
 }
@@ -328,6 +328,7 @@ const lookAround=document.getElementById("look-around");
 const around=document.getElementById("now-around");
 const worldSpace=document.getElementById("world-space");
 let worldSpaceOrigin="world-entry-view";
+let worldSpaceOriginKey=null;
 const worldTitle=document.getElementById("world-space-title");
 const worldSubtitle=document.getElementById("world-space-subtitle");
 const worldCopy=document.getElementById("world-space-copy");
@@ -366,6 +367,7 @@ function renderWorldDeeper(key){
 
 function enterWorldDoorFrom(key,origin){
   worldSpaceOrigin=origin||"world-entry-view";
+  worldSpaceOriginKey=(origin==="world-space"&&worldSpace)?(worldSpace.dataset.space||null):null;
   if(worldSpace)worldSpace.dataset.spaceOrigin=worldSpaceOrigin;
   enterWorldDoor(key);
 }
@@ -423,9 +425,17 @@ function enterWorldDoor(key){
   window.setTimeout(function(){worldSpace.classList.remove("is-entering");},420);
 }
 document.querySelectorAll("[data-world-door]").forEach(function(button){
-  button.addEventListener("click",function(){worldSpaceOrigin="world-entry-view";if(worldSpace)worldSpace.dataset.spaceOrigin=worldSpaceOrigin;enterWorldDoor(button.getAttribute("data-world-door"));});
+  button.addEventListener("click",function(){worldSpaceOrigin="world-entry-view";worldSpaceOriginKey=null;if(worldSpace)worldSpace.dataset.spaceOrigin=worldSpaceOrigin;enterWorldDoor(button.getAttribute("data-world-door"));});
 });
 if(worldReturn)worldReturn.addEventListener("click",function(){
+ if(worldSpaceOrigin==="world-space"&&worldSpaceOriginKey){
+   const key=worldSpaceOriginKey;
+   worldSpaceOrigin="world-entry-view";
+   worldSpaceOriginKey=null;
+   if(worldSpace)worldSpace.dataset.spaceOrigin=worldSpaceOrigin;
+   enterWorldDoor(key);
+   return;
+ }
  const target=document.getElementById(worldSpaceOrigin)||document.getElementById("world-entry-view");
  target.scrollIntoView({behavior:"smooth",block:"start"});
 });if(traceReturn)traceReturn.addEventListener("click",function(){returnToWorldContext();});
