@@ -10,7 +10,15 @@ const tabs=[["atlas","ATLAS","world"],["people","THE PEOPLE","person"],["places"
 const raf=typeof requestAnimationFrame==="function"?requestAnimationFrame:fn=>setTimeout(fn,0);
 const caf=typeof cancelAnimationFrame==="function"?cancelAnimationFrame:clearTimeout;
 const reduceMotion=()=>typeof window.matchMedia==="function"&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-function scheduleSearchRender(render){let searchFrame=null;caf(searchFrame);searchFrame=raf(()=>{renderNow()});function renderNow(){render(filtered())}} // Compatibility scheduler contract: caf(searchFrame);searchFrame=raf(()=>{render()}
+let searchFrame=null;
+function scheduleSearchRender(render,filtered){
+ caf(searchFrame);
+ searchFrame=raf(()=>{
+   searchFrame=null;
+   if(typeof render!=="function"||typeof filtered!=="function")return;
+   render(filtered());
+ });
+}
 function isPublicWorldRecord(r){
  if(!r||typeof r!=="object")return false;
  if(r.public_disclosure===false)return false;
