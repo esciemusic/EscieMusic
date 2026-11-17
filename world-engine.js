@@ -809,6 +809,7 @@ function worldLensMarkup(){
   ["people","PEOPLE","person"],
   ["places","PLACES","world"],
   ["moments","MOMENTS","moment"],
+  ["objects","OBJECTS","world"],
   ["trace","TRACES","web"],
   ["path","PATH","web"]
  ];
