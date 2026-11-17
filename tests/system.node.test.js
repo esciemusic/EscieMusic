@@ -519,6 +519,7 @@ console.log("ESCIE NPC time-scale contracts OK");
 /* INTERIOR LIFECYCLE CONTRACTS */
 assert(world3dRuntime.includes("let inputBound=false"),"3D input lifecycle needs a binding guard");
 assert(world3dRuntime.includes("function bind(){\n if(inputBound)return;\n inputBound=true;"),"3D input bindings must not duplicate across restarts");
+assert(world3dRuntime.includes("const base=player.inVehicle?Number(player.speed||9.5):4.2"),"vehicle condition speed must feed actual movement");
 assert(world3dRuntime.includes("function enter3DInterior(building)"),"3D gameplay must own interior transitions");
 assert(world3dRuntime.includes("function use3DInteriorAction()"),"3D interiors need an interaction action layer");
 assert(world3dRuntime.includes("root.ESCIE_WORLD_CITY?.interiors"),"3D interior actions consume canonical interior definitions");
