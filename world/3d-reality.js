@@ -8,7 +8,7 @@ const root=window;
 let renderer,scene,camera,clock,avatar,worldGroup,thirdPerson=true,started=false,paused=false,raf=0,dayLight,ambientLight,playerLight,resizeObserver,visibilityHandler;
 const obstacles=[],actors=[],doors=[],lights=[],evidence=[],interiorActors=[],interiorStations=[];
 const windowLights=[],streetMarkings=[],laneMarkings=[],groundMeshes=[],readabilityLights=[],facadeMeshes=[],playerRimLights=[],doorSignals=[],actorReadabilityMeshes=[],traffic=[];
-const vehicleImpacts={last:0,cooldown:900}; const perf={quality:"auto",frameMs:16,lowFrames:0,last:performance.now(),hud:0,environment:0,pixelRatio:1.7}; let lastEnvironmentKey="";let lastDistrictKey="";let snowMesh=null;
+const vehicleImpacts={last:0,cooldown:900}; let inputBound=false; const perf={quality:"auto",frameMs:16,lowFrames:0,last:performance.now(),hud:0,environment:0,pixelRatio:1.7}; let lastEnvironmentKey="";let lastDistrictKey="";let snowMesh=null;
 const keys=new Set();
 const player={x:0,z:8,y:1.7,yaw:0,pitch:0,speed:4.2,sprint:7.5,lastSync:0,lastGridX:null,lastGridY:null,inVehicle:false,vehicleId:null,npcSync:0,lawSync:0,lastSprintDrain:0,worldTick:0};
 let interiorMode=false,interiorGroup=null,interiorBuilding=null,interiorSaved=null;
@@ -1197,6 +1197,8 @@ function setMode(v){
  const log=document.getElementById("world-log");if(log)log.textContent=thirdPerson?"3D REALITY · THIRD PERSON":"3D REALITY · FIRST PERSON";
 }
 function bind(){
+ if(inputBound)return;
+ inputBound=true;
  document.addEventListener("keydown",e=>{
    if(e.key==="Escape"&&!e.repeat){e.preventDefault();if(interiorMode){exit3DInterior();return}togglePause();}
  });
