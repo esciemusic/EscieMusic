@@ -123,15 +123,44 @@ async function auditWorldLenses(label){
   check(await world.count()===1, label+" THE WORLD section missing");
   const trigger=world.locator(".section-drop-trigger");
   if(await trigger.count() && !(await world.evaluate(el=>el.classList.contains("section-open")).catch(()=>false))) await trigger.click();
-  const explorer=world.locator("[data-world-explore]").first();
-  if(await explorer.count() && !(await world.locator("[data-world-tab]").first().count())) { await explorer.click(); await page.waitForTimeout(80); }
-  for(const tab of ["atlas","people","places","moments","fragments","bodies","proof","path","timeline","symbols","trails"]){
+  const primaryTabs=["people","places","moments"];
+  for(const tab of primaryTabs){
     const button=page.locator('[data-world-tab="'+tab+'"]').first();
-    check(await button.count()===1, label+" THE WORLD lens missing: "+tab);
+    check(await button.count()===1, label+" THE WORLD primary lens missing: "+tab);
     if(await button.count()){
       await button.click();
-      check((await button.getAttribute("aria-selected"))==="true", label+" THE WORLD lens did not activate: "+tab);
-      check((await page.locator("#world-container").innerText()).trim().length>0, label+" THE WORLD lens rendered empty shell: "+tab);
+      check((await button.getAttribute("aria-selected"))==="true", label+" THE WORLD primary lens did not activate: "+tab);
+      check((await page.locator("#world-container").innerText()).trim().length>0, label+" THE WORLD primary lens rendered empty shell: "+tab);
+    }
+  }
+  const explorer=world.locator("[data-world-explore]").first();
+  if(await explorer.count() && (await explorer.getAttribute("aria-expanded"))!=="true"){
+    await explorer.click();
+    await page.waitForTimeout(80);
+  }
+  const deeperTabs=["people","places","moments","trace","path"];
+  for(const tab of deeperTabs){
+    const button=page.locator('[data-world-tab="'+tab+'"]').first();
+    check(await button.count()===1, label+" THE WORLD deeper lens missing: "+tab);
+    if(await button.count()){
+      await button.click();
+      check((await button.getAttribute("aria-selected"))==="true", label+" THE WORLD deeper lens did not activate: "+tab);
+      check((await page.locator("#world-container").innerText()).trim().length>0, label+" THE WORLD deeper lens rendered empty shell: "+tab);
+    }
+  }
+  const more=page.locator("[data-world-more]").first();
+  check(await more.count()===1, label+" THE WORLD MORE threshold missing");
+  if(await more.count()){
+    await more.click();
+    await page.waitForTimeout(80);
+    for(const tab of ["fragments","bodies","proof","timeline","symbols","trails"]){
+      const button=page.locator('[data-world-tab="'+tab+'"]').first();
+      check(await button.count()===1, label+" THE WORLD advanced lens missing: "+tab);
+      if(await button.count()){
+        await button.click();
+        check((await button.getAttribute("aria-selected"))==="true", label+" THE WORLD advanced lens did not activate: "+tab);
+        check((await page.locator("#world-container").innerText()).trim().length>0, label+" THE WORLD advanced lens rendered empty shell: "+tab);
+      }
     }
   }
 }
