@@ -560,22 +560,37 @@ const indexReturn=document.getElementById("index-return");
 if(indexReturn)indexReturn.addEventListener("click",function(){document.getElementById("world-entry-view").scrollIntoView({behavior:"smooth",block:"start"});});
 
 const webNodeData={
- world:["THE CENTER","Everything here can connect to something else."],
- music:["MUSIC → LIFE","The sound can lead to the people, places and moments that made it possible."],
- person:["PERSON → PLACE","A person carries places, relationships and consequences with them."],
- place:["PLACE → MOMENT","A place holds what happened there, and what happened there can travel."],
- moment:["MOMENT → MEANING","A moment can change how something else is understood later."],
- image:["IMAGE → MEMORY","An image can preserve a detail that changes the meaning of another thing."],
- page:["PAGE → WORLD","A page can be the outside door that leads into the same World." ]
+ world:["THE CENTER","Everything here can connect to something else.","music"],
+ music:["MUSIC → LIFE","The sound can lead to the people, places and moments that made it possible.","person"],
+ person:["PERSON → PLACE","A person carries places, relationships and consequences with them.","place"],
+ place:["PLACE → MOMENT","A place holds what happened there, and what happened there can travel.","moment"],
+ moment:["MOMENT → MEANING","A moment can change how something else is understood later.","image"],
+ image:["IMAGE → MEMORY","An image can preserve a detail that changes the meaning of another thing.","page"],
+ page:["PAGE → WORLD","A page can be the outside door that leads into the same World.","world"]
 };
+const webEffectTrail=[];
+function advanceWebEffect(key){
+ const data=webNodeData[key]||webNodeData.world;
+ const next=data[2];
+ webEffectTrail.push(key);
+ if(webEffectTrail.length>5)webEffectTrail.shift();
+ document.querySelectorAll("[data-web-node]").forEach(function(n){
+   const active=n.getAttribute("data-web-node")===key;
+   n.classList.toggle("is-active",active);
+   n.setAttribute("aria-current",active?"step":"false");
+ });
+ if(webEffectTitle)webEffectTitle.textContent=data[0];
+ if(webEffectCopy)webEffectCopy.textContent=data[1]+" The next connection is "+(webNodeData[next]||webNodeData.world)[0].toLowerCase()+".";
+ return next;
+}
 const webEffectTitle=document.getElementById("web-effect-title");
 const webEffectCopy=document.getElementById("web-effect-copy");
 document.querySelectorAll("[data-web-node]").forEach(function(node){node.addEventListener("click",function(){
- const key=node.getAttribute("data-web-node"),d=webNodeData[key]||webNodeData.world;
- document.querySelectorAll("[data-web-node]").forEach(function(n){n.classList.toggle("is-active",n===node);});
- if(webEffectTitle)webEffectTitle.textContent=d[0];
- if(webEffectCopy)webEffectCopy.textContent=d[1]+" One connection can create another.";
+ const key=node.getAttribute("data-web-node");
+ const next=advanceWebEffect(key);
  rememberWorldThread(node.textContent.split("\\n")[0].trim(),"web-layer");
+ const nextNode=document.querySelector('[data-web-node="'+next+'"]');
+ if(nextNode)nextNode.setAttribute("data-next-connection","true");
 });});
 const webReturnButton=document.getElementById("web-return");
 if(webReturnButton)webReturnButton.addEventListener("click",function(){document.getElementById("world-entry-view").scrollIntoView({behavior:"smooth",block:"start"});});
