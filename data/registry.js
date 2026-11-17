@@ -57,6 +57,7 @@
     ["body",()=>collection("ESCIE_BODIES")],
     ["path",()=>collection("ESCIE_PATHS")],
     ["investigation",()=>collection("ESCIE_INVESTIGATION")],
+    ["proof",()=>collection("ESCIE_PROOF")],
     ["archive",()=>collection("ESCIE_ARCHIVE")],
     ["signal",()=>collection("ESCIE_SIGNALS")],
     ["clothing",()=>collection("ESCIE_CLOTHING")],
