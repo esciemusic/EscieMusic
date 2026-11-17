@@ -82,7 +82,12 @@
 .intersection-pulse{animation:intersectionPulse .9s ease-out}
 @keyframes intersectionPulse{0%{opacity:1;filter:brightness(1)}35%{opacity:1;filter:brightness(1.8)}100%{opacity:1;filter:brightness(1)}}
 @media (prefers-reduced-motion:reduce){.intersection-pulse{animation:none;outline:1px solid currentColor}}
-\n.world-web-reveal{animation:worldWebReveal 1.2s ease-out}\n@keyframes worldWebReveal{0%{outline:0 solid transparent;opacity:1}30%{outline:1px solid currentColor;opacity:1}100%{outline:0 solid transparent;opacity:1}}\n@media (prefers-reduced-motion:reduce){.world-web-reveal{animation:none;outline:1px solid currentColor}}\n</style></style>
+\n.world-web-reveal{animation:worldWebReveal 1.2s ease-out}\n@keyframes worldWebReveal{0%{outline:0 solid transparent;opacity:1}30%{outline:1px solid currentColor;opacity:1}100%{outline:0 solid transparent;opacity:1}}\n@media (prefers-reduced-motion:reduce){.world-web-reveal{animation:none;outline:1px solid currentColor}}\n
+.web-trace-field.has-intersection{filter:brightness(1.08)}
+.web-trace-field.has-intersection::after{content:"";position:absolute;inset:12%;border:1px solid currentColor;border-radius:50%;opacity:.16;pointer-events:none;animation:webIntersectionFade 2.4s ease-out}
+@keyframes webIntersectionFade{0%{opacity:0;transform:scale(.82)}30%{opacity:.22;transform:scale(1)}100%{opacity:0;transform:scale(1.08)}}
+@media (prefers-reduced-motion:reduce){.web-trace-field.has-intersection::after{animation:none;opacity:.14}}
+</style></style>
 </head>
 <body><div class="hidden-world-reveal"><button type="button" id="hidden-world-trigger" aria-controls="hidden-world" aria-expanded="false">LOOK CLOSER</button></div>
 <header class="site-header" aria-label="ESCIE header"><div class="header-left"><span class="header-symbol">ESCIE SYMBOL</span></div><div class="header-center"><div class="header-controls" aria-label="Language and light controls"><button class="header-control" type="button">EN</button><button class="header-control" type="button">FR</button><button class="header-control" type="button">ES</button><button class="header-control" type="button">LIGHT</button></div></div><div class="header-right"><button class="header-index" type="button" id="header-index">INDEX</button></div></header>
@@ -418,6 +423,19 @@ function renderWorldThread(){
  if(traceContextCopy){const arrival=worldEntryOrigin&&worldEntryOrigin!=="MY WORLD"?" You arrived through "+worldEntryOrigin+".":"";traceContextCopy.textContent=context[1]+arrival;}
  renderWebTrace();
 }
+function renderIntertwinedWeb(){
+ const field=document.getElementById("web-trace-field");
+ if(!field)return;
+ const hasIntersection=webIntersections.length>1;
+ field.classList.toggle("has-intersection",hasIntersection);
+ field.setAttribute("data-web-state",hasIntersection?"INTERSECTION":visitorWeb.nodes.length>1?"VISITOR":"WORLD");
+ const title=document.getElementById("web-effect-title");
+ const copy=document.getElementById("web-effect-copy");
+ if(hasIntersection){
+   if(title)title.textContent="SOME PATHS CROSS";
+   if(copy)copy.textContent="Your path has touched a connection that was already here.";
+ }
+}
 function renderWebLayers(){
  const field=document.getElementById("web-trace-field");
  if(!field)return;
@@ -500,6 +518,7 @@ function rememberWorldThread(label,origin){
  if(worldThread.length>6)worldThread.shift();
  renderWorldThread();
  renderWebLayers();
+ renderIntertwinedWeb();
 }
 function returnToWorldContext(){
  const last=worldThread.length>1?worldThread[worldThread.length-2]:"MY WORLD";
