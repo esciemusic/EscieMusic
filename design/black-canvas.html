@@ -317,7 +317,7 @@ function returnToWorldContext(){
  const last=worldThread.length>1?worldThread[worldThread.length-1]:"MY WORLD";
  const origin=worldThreadOrigins[last]||"world-entry-view";
  const key=Object.keys(worldDestinations).find(function(k){return worldDestinations[k].title===last;});
- if(key){enterWorldDoor(key);return;}
+ if(key){worldSpaceOrigin="world-entry-view";if(worldSpace)worldSpace.dataset.spaceOrigin=worldSpaceOrigin;enterWorldDoor(key);return;}
  const target=document.getElementById(origin)||document.getElementById("world-entry-view");
  target.scrollIntoView({behavior:"smooth",block:"start"});
 }
