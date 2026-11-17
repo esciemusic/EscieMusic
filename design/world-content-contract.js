@@ -163,7 +163,7 @@
     {
       id:"prototype-art-work",type:"art",title:"Prototype Work",summary:"Safe placeholder for future public art.",
       status:"approved",visibility:"public",public_disclosure:true,certainty:"known",
-      created_at:"prototype",updated_at:"prototype",tags:["prototype"],medium:"mixed",artist:"prototype-person-escie",release_state:"approved",media:[]
+      created_at:"prototype",updated_at:"prototype",tags:["prototype"],medium:"mixed",artist:"prototype-person-escie",release_state:"released",media:[]
     }
   ]);
 
