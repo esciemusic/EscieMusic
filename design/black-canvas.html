@@ -6,6 +6,8 @@
 <meta name="theme-color" content="#000000">
 <title>ESCIE — Black Canvas</title>
 <style>
+.trace-context{width:min(520px,100%);margin:var(--f5) auto 0;padding:18px 18px 16px;border:1px solid rgba(255,255,255,.08);text-align:center}.trace-context-kicker{display:block;color:rgba(255,255,255,.32);font:500 7px/1 Arial,sans-serif;letter-spacing:.2em;text-transform:uppercase}.trace-context strong{display:block;margin-top:10px;color:rgba(255,255,255,.8);font:500 10px/1 Arial,sans-serif;letter-spacing:.15em}.trace-context p{margin:10px auto 0;max-width:420px;color:rgba(255,255,255,.48);font:400 12px/1.4 Arial,sans-serif}
+
 .world-deeper{width:min(620px,100%);margin:var(--f5) auto 0;padding-top:var(--f5);border-top:1px solid rgba(255,255,255,.07);text-align:center}.world-deeper-kicker{margin:0;color:rgba(255,255,255,.34);font:500 8px/1 Arial,sans-serif;letter-spacing:.2em;text-transform:uppercase}.world-deeper h3{margin:14px 0 0;font:500 clamp(18px,3.5vw,26px)/1 Arial,sans-serif;letter-spacing:.06em}.world-deeper>p:not(.world-deeper-kicker){margin:12px auto 0;max-width:480px;color:rgba(255,255,255,.5);font:400 13px/1.4 Arial,sans-serif}.world-deeper-links{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin-top:var(--f3)}.world-deeper-links button{min-width:125px;flex:1 1 125px;max-width:175px;padding:13px 11px;background:transparent;border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.58);text-align:left;cursor:pointer}.world-deeper-links button strong{display:block;font:500 8px/1 Arial,sans-serif;letter-spacing:.15em}.world-deeper-links button small{display:block;margin-top:8px;color:rgba(255,255,255,.34);font:400 10px/1.3 Arial,sans-serif;letter-spacing:0}.world-deeper-links button:hover,.world-deeper-links button:focus-visible{border-color:rgba(255,255,255,.28);color:#fff}.world-deeper-links button:focus-visible{outline:1px solid rgba(255,255,255,.7);outline-offset:4px}
 
 .world-discover{width:min(620px,100%);margin:var(--f8) auto 0;padding-top:var(--f5);border-top:1px solid rgba(255,255,255,.1);text-align:center}.world-discover-kicker{margin:0;color:rgba(255,255,255,.42);font:500 8px/1 Arial,sans-serif;letter-spacing:.2em;text-transform:uppercase}.world-discover h3{margin:16px 0 0;font:500 clamp(20px,4vw,30px)/1 Arial,sans-serif;letter-spacing:.06em}.world-discover>p:not(.world-discover-kicker){margin:14px auto 0;max-width:480px;color:rgba(255,255,255,.58);font:400 14px/1.4 Arial,sans-serif}.world-discover-links{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:var(--f3)}.world-discover-links button{min-width:150px;flex:1 1 150px;max-width:190px;padding:15px 13px;background:transparent;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.72);text-align:left;cursor:pointer}.world-discover-links button strong{display:block;font:500 8px/1 Arial,sans-serif;letter-spacing:.16em}.world-discover-links button small{display:block;margin-top:9px;color:rgba(255,255,255,.42);font:400 11px/1.3 Arial,sans-serif;letter-spacing:0}.world-discover-links button:hover,.world-discover-links button:focus-visible{border-color:rgba(255,255,255,.35);color:#fff}.world-discover-links button:focus-visible{outline:1px solid rgba(255,255,255,.7);outline-offset:4px}
@@ -102,7 +104,7 @@
     <h2 class="world-title">YOUR THREAD</h2>
     <p class="trace-copy">The World can remember the places you chose to look at. Nothing here is required. It is simply the path you made.</p>
     <div class="trace-path" id="trace-path" aria-live="polite"><span>MY WORLD</span></div>
-    <div class="trace-actions">
+    <div class="trace-context" id="trace-context" aria-live="polite"><span class="trace-context-kicker">CURRENT THREAD</span><strong id="trace-context-title">STARTING POINT</strong><p id="trace-context-copy">Your thread begins at MY WORLD. Follow connections and the path will change.</p></div><div class="trace-actions">
       <button type="button" id="trace-return">RETURN TO LAST PLACE</button>
       <button type="button" id="trace-clear">CLEAR THREAD</button>
     </div>
@@ -215,6 +217,24 @@ document.querySelectorAll("[data-architecture-jump]").forEach(function(button){
 const tracePath=document.getElementById("trace-path");
 const traceReturn=document.getElementById("trace-return");
 const traceClear=document.getElementById("trace-clear");
+const traceContextTitle=document.getElementById("trace-context-title");
+const traceContextCopy=document.getElementById("trace-context-copy");
+const traceContextMap={
+ "MY WORLD":["STARTING POINT","The World begins here. Your next choice creates the first thread."],
+ "HOME":["HOME / CONTEXT","You returned to Home. The thread now carries the place with you."],
+ "OUTSIDE":["OUTSIDE / CONTEXT","You moved beyond Home. The thread now carries that distance."],
+ "PEOPLE":["PEOPLE / CONNECTION","People are connected to places, moments and what they leave behind."],
+ "PLACES":["PLACES / CONNECTION","Places connect the people, moments and marks that belong to them."],
+ "MOMENTS":["MOMENTS / CONNECTION","Moments connect who was there, where it happened and what remains."],
+ "ART":["ART / CONNECTION","Art connects the lives, places and moments that become material."],
+ "FRAGMENTS":["FRAGMENTS / DEPTH","You looked closer. The thread now records the deeper lens you chose."],
+ "PROOF":["PROOF / DEPTH","You looked closer at what remains. The thread preserves that decision."],
+ "BODIES":["BODIES / DEPTH","You looked closer at presence and absence. The thread carries that layer."],
+ "TIMELINE":["TIMELINE / DEPTH","You looked closer through time. The thread carries that direction."],
+ "SYMBOLS":["SYMBOLS / DEPTH","You looked closer at recurring signs. The thread carries what you noticed."],
+ "WEB":["WEB / OUTWARD","The thread reached beyond the center of the World."]
+};
+
 let worldThread=["MY WORLD"];
 function renderWorldThread(){
  if(!tracePath)return;
