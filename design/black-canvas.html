@@ -101,6 +101,9 @@
 .web-trace-node.is-world-node{opacity:.82}
 .web-trace-node.is-intersection{box-shadow:0 0 0 1px currentColor,0 0 18px currentColor}
 .web-trace-node.is-current.is-intersection{box-shadow:0 0 0 1px currentColor,0 0 26px currentColor}
+
+
+.prototype-content-test{width:min(760px,100%);margin:var(--f5) auto 0;padding:18px;border:1px dashed rgba(120,170,255,.28);background:rgba(80,120,180,.035);text-align:left}.prototype-content-test[hidden]{display:none}.prototype-content-test-kicker{margin:0;color:rgba(150,190,255,.68);font:500 7px/1 Arial,sans-serif;letter-spacing:.2em;text-transform:uppercase}.prototype-content-test h3{margin:11px 0 0;font:500 clamp(18px,3.5vw,26px)/1 Arial,sans-serif;letter-spacing:.05em}.prototype-content-test-copy{margin:10px 0 0;color:rgba(255,255,255,.48);font:400 12px/1.45 Arial,sans-serif}.prototype-content-test-status{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.prototype-content-test-status span{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.58);font:500 7px/1 Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase}.prototype-content-records{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px}.prototype-content-record{min-height:120px;padding:12px;border:1px solid rgba(255,255,255,.08)}.prototype-content-record small{display:block;color:rgba(255,255,255,.28);font:500 7px/1 Arial,sans-serif;letter-spacing:.15em}.prototype-content-record strong{display:block;margin-top:9px;color:rgba(255,255,255,.78);font:500 10px/1.25 Arial,sans-serif;letter-spacing:.04em}.prototype-content-record p{margin:8px 0 0;color:rgba(255,255,255,.44);font:400 11px/1.4 Arial,sans-serif}.prototype-content-test-note{margin:14px 0 0;color:rgba(255,255,255,.3);font:400 10px/1.4 Arial,sans-serif}@media(max-width:720px){.prototype-content-records{grid-template-columns:1fr}.prototype-content-test{padding:15px}}
 </style></style>
 </head>
 <body><div class="hidden-world-reveal"><button type="button" id="hidden-world-trigger" aria-controls="hidden-world" aria-expanded="false">LOOK CLOSER</button></div>
@@ -148,6 +151,7 @@
       <div class="space-art"></div>
     </div>
     <p class="world-space-copy" id="world-space-copy"></p>
+    <section class="prototype-content-test" id="prototype-content-test" hidden aria-label="Prototype content test"><p class="prototype-content-test-kicker">PROTOTYPE ONLY · CONTENT TEST</p><h3 id="prototype-content-test-title">CONTENT READINESS</h3><p class="prototype-content-test-copy" id="prototype-content-test-copy">Representative records are rendered here to stress the content shell before real material is added.</p><div class="prototype-content-test-status" id="prototype-content-test-status"></div><div class="prototype-content-records" id="prototype-content-records"></div><p class="prototype-content-test-note">This panel is activated only with <code>?content-test=1</code>. It is not part of the public experience.</p></section>
     <div class="world-discover" id="world-discover" aria-live="polite"><p class="world-discover-kicker">DISCOVER</p><h3 id="world-discover-title">WHAT CONNECTS</h3><p id="world-discover-copy">Follow one connection at a time. The World stays simple until you choose to look closer.</p><div class="world-discover-links" id="world-discover-links"></div></div><div class="world-deeper" id="world-deeper" hidden aria-live="polite"><p class="world-deeper-kicker">LOOK CLOSER</p><h3 id="world-deeper-title">UNDER THE SURFACE</h3><p id="world-deeper-copy">There is more here if you want to see it.</p><div class="world-deeper-links" id="world-deeper-links"></div></div><button class="world-space-return" type="button" id="world-space-return">RETURN TO MY WORLD</button>
   </div>
 </section>
@@ -241,7 +245,30 @@
 </section>
 </main>
 
+<script src="./world-content-contract.js"></script>
 <script>
+(function(){
+  const params=new URLSearchParams(window.location.search);
+  const enabled=params.get("content-test")==="1";
+  const panel=document.getElementById("prototype-content-test");
+  const status=document.getElementById("prototype-content-test-status");
+  const records=document.getElementById("prototype-content-records");
+  const title=document.getElementById("prototype-content-test-title");
+  if(!enabled||!panel||!status||!records||!window.ESCIE_WORLD_CONTENT_CONTRACT)return;
+  const contract=window.ESCIE_WORLD_CONTENT_CONTRACT;
+  const audit=contract.readiness();
+  panel.hidden=false;
+  title.textContent=audit.ok?"CONTENT CONTRACT READY":"CONTENT CONTRACT NEEDS WORK";
+  status.innerHTML=[
+    "RECORDS "+Math.round(audit.records*100)+"%",
+    "RELATIONSHIPS "+Math.round(audit.relationships*100)+"%",
+    "PUBLISHABLE "+audit.publishableRecords,
+    "PUBLIC LINKS "+audit.publishableRelationships
+  ].map(function(item){return "<span>"+item+"</span>";}).join("");
+  records.innerHTML=contract.fixtures.map(function(item){
+    return "<article class=\"prototype-content-record\"><small>"+item.type.toUpperCase()+" · "+item.status.toUpperCase()+"</small><strong>"+item.title+"</strong><p>"+item.summary+"</p></article>";
+  }).join("");
+})();
 (function(){
   const scrollToId=function(id){const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:"smooth",block:"start"});};
 const headerIndex=document.getElementById("header-index"); if(headerIndex)headerIndex.addEventListener("click",function(){scrollToId("index");});
@@ -801,6 +828,5 @@ if(indexReturn)indexReturn.addEventListener("click",function(){document.getEleme
 const webReturnButton=document.getElementById("web-return");
 if(webReturnButton)webReturnButton.addEventListener("click",function(){document.getElementById("world-entry-view").scrollIntoView({behavior:"smooth",block:"start"});});
 </script>
-<script src="./world-content-contract.js"></script>
 </body>
 </html>
