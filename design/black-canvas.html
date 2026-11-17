@@ -399,7 +399,19 @@ function webSystemReset(){
  worldTraceHistory=["MY WORLD"];
  renderWorldThread();
  renderWebLayers();
+ updateWebPathContext();
  renderIntertwinedWeb();
+}
+function webWorldPath(){
+ const path=visitorWeb.nodes.slice(-8);
+ const meaningful=path.filter(function(node,index){
+   if(index===0)return true;
+   const prev=path[index-1];
+   return worldWeb.edges.some(function(e){
+     return (e[0]===prev&&e[1]===node)||(e[0]===node&&e[1]===prev);
+   });
+ });
+ return meaningful;
 }
 function webNetworkState(){
  return {world:worldWeb,visitor:visitorWeb,intersections:webIntersections.slice()};
@@ -478,6 +490,12 @@ function renderIntertwinedWeb(){
  copy.textContent=suggestion?"Something between "+suggestion.from+" and "+suggestion.to+" keeps pulling your path back.":"";
 }
  }
+}
+function updateWebPathContext(){
+ const path=webWorldPath();
+ const el=document.getElementById("web-effect-copy");
+ if(!el)return;
+ if(path.length>=3&&webIntersections.length===0)el.textContent="Your path is beginning to follow a shape already present in the World.";
 }
 function renderWebLayers(){
  const field=document.getElementById("web-trace-field");
@@ -561,6 +579,7 @@ function rememberWorldThread(label,origin){
  if(worldThread.length>6)worldThread.shift();
  renderWorldThread();
  renderWebLayers();
+ updateWebPathContext();
  renderIntertwinedWeb();
 }
 function returnToWorldContext(){
