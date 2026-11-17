@@ -372,15 +372,13 @@ function recordWebExperience(label,origin){
    const exists=visitorWeb.edges.some(function(e){return e[0]===previous&&e[1]===node;});
    if(!exists)visitorWeb.edges.push([previous,node]);
  }
- if(!worldWeb.nodes.includes(node))worldWeb.nodes.push(node);
- const worldPrevious=worldWeb.nodes[worldWeb.nodes.length-1];
- if(worldPrevious&&worldPrevious!==node){
-   const exists=worldWeb.edges.some(function(e){return e[0]===worldPrevious&&e[1]===node;});
-   if(!exists)worldWeb.edges.push([worldPrevious,node]);
- }
- const shared=visitorWeb.nodes.filter(function(n){return worldWeb.nodes.includes(n);});
- webIntersections.splice(0,webIntersections.length,...shared);
- return {node,previous,intersections:webIntersections.slice()};
+ const canonicalNode=worldWeb.nodes.includes(node);
+ const canonicalEdge=previous&&worldWeb.edges.some(function(e){
+   return (e[0]===previous&&e[1]===node)||(e[0]===node&&e[1]===previous);
+ });
+ const touched=canonicalNode&&(!previous||canonicalEdge);
+ if(touched&&!webIntersections.includes(node))webIntersections.push(node);
+ return {node,previous,intersections:webIntersections.slice(),canonicalNode,canonicalEdge,touched};
 }
 function webNetworkState(){
  return {world:worldWeb,visitor:visitorWeb,intersections:webIntersections.slice()};
