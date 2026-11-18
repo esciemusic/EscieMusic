@@ -35,7 +35,18 @@ function records(){
  sources.flat().forEach(r=>{if(!isPublicWorldRecord(r))return;const id=r.id||r.recordId||r.slug||r.title;if(id&&!seen.has(id)){seen.add(id);out.push({...r,id})}});
  return out;
 }
-function type(r){return String(r.type||r.kind||r.category||"WORK").trim().toUpperCase()||"WORK"}
+function canonicalType(r){
+ const raw=String(r&&((r.type||r.kind||r.category)||"")).trim().toUpperCase();
+ if(["PERSON","PEOPLE"].includes(raw))return "PERSON";
+ if(["PLACE","PLACES","LOCATION","LOCATIONS","ROOM","BUILDING","STREET","NEIGHBORHOOD"].includes(raw))return "PLACE";
+ if(["MOMENT","MOMENTS","EVENT","SIGNAL"].includes(raw))return "MOMENT";
+ if(["OBJECT","OBJECTS","SYMBOL"].includes(raw))return "OBJECT";
+ if(["ART","MUSIC","WORDS","WORD","WRITING","POETRY","POEM","DRAWING","DRAWINGS","PAINTING","VISUAL","PHOTO","PHOTOGRAPHY","VIDEO","FILM","PROJECT","PROJECTS","OTHER_ART"].includes(raw))return "ART";
+ return raw;
+}
+function type(r){return canonicalType(r)||"ART"}
+function isPrimaryWorldType(r,expected){return canonicalType(r)===expected}
+function isDeepWorldType(r){return ["FRAGMENT","PROOF","BODY","ARCHIVE"].includes(canonicalType(r))}
 function title(r){return String(r.title||r.name||r.label||"UNTITLED").trim()||"UNTITLED"}
 function searchText(r){return [r.id,r.type,r.kind,r.category,r.title,r.name,r.label,r.description,r.summary,r.story,r.date,r.release_date,r.moment_date,r.created_at,Array.isArray(r.tags)?r.tags.join(" "):""] .map(v=>String(v??"")).join(" ").toLowerCase()}
 function rels(){
@@ -798,50 +809,29 @@ function homeRooms(){
 // Canonical World entry contracts: data-world-tab="places" data-world-tab="people" data-world-tab="moments" href="#art"
 // Entry tone: Come in. Look around.
 function worldLensMarkup(){
- const lensAttrs={atlas:'data-world-tab="atlas"',people:'data-world-tab="people"',places:'data-world-tab="places"',moments:'data-world-tab="moments"',fragments:'data-world-tab="fragments"',bodies:'data-world-tab="bodies"',proof:'data-world-tab="proof"',path:'data-world-tab="path"',trace:'data-world-tab="trace"',timeline:'data-world-tab="timeline"',symbols:'data-world-tab="symbols"',trails:'data-world-tab="trails"'};
- const primary=[
-  ["places","PLACES","world"],
-  ["people","PEOPLE","person"],
-  ["moments","MOMENTS","moment"]
- ];
+ const lensAttrs={people:'data-world-tab="people"',places:'data-world-tab="places"',moments:'data-world-tab="moments"',objects:'data-world-tab="objects"',art:'data-world-tab="art"',fragments:'data-world-tab="fragments"',proof:'data-world-tab="proof"',bodies:'data-world-tab="bodies"',archives:'data-world-tab="archives"',trace:'data-world-tab="trace"'};
+ const primary=[["people","PEOPLE","person"],["places","PLACES","world"],["moments","MOMENTS","moment"],["objects","OBJECTS","world"],["art","ART","world"]];
+ const deeper=[["fragments","FRAGMENTS","photo-negative"],["proof","PROOF","key"],["bodies","BODIES","empty-chair"],["archives","ARCHIVES","world"],["trace","TRACE","web"]];
  const advanced=state.exploreOpen;
- const closer=[
-  ["people","PEOPLE","person"],
-  ["places","PLACES","world"],
-  ["moments","MOMENTS","moment"],
-  ["objects","OBJECTS","world"],
-  ["trace","TRACES","web"],
-  ["path","PATH","web"]
- ];
- return '<div class="world-index-shell">'+
-   '<div class="world-discovery-bar">'+
-    '<button type="button" class="world-index-toggle" data-world-explore aria-expanded="'+(advanced?"true":"false")+'"><span class="world-kicker">DISCOVER</span><strong>'+(advanced?"LOOK CLOSER":"EXPLORE")+'</strong><span aria-hidden="true">'+(advanced?"−":"+")+'</span></button>'+
-    (!advanced?primary.map(function(t){
-      const active=state.tab===t[0];
-      return '<button type="button" role="tab" class="world-primary-door" '+lensAttrs[t[0]]+' aria-selected="'+(active?"true":"false")+'" aria-label="'+esc(t[1])+'">'+glyph(t[2],t[1])+'<span>'+esc(t[1])+'</span></button>';
-    }).join(""):"")+
-   '</div>'+
-   '<div class="world-lens-nav world-deeper-nav" role="tablist" aria-label="ESCIE World navigation"'+(advanced?"":" hidden")+'>'+
-    '<span class="world-deeper-label">LOOK CLOSER</span>'+
-    closer.map(function(t){
-      const active=state.tab===t[0];
-      return '<button type="button" role="tab" aria-selected="'+(active?"true":"false")+'" '+lensAttrs[t[0]]+'>'+glyph(t[2],t[1])+'<span>'+esc(t[1])+'</span></button>';
-    }).join("")+
-    '<button type="button" class="world-more-door" data-world-more aria-expanded="'+(state.moreOpen?"true":"false")+'"><span>'+(state.moreOpen?"LESS":"MORE")+'</span></button>'+
-    (state.moreOpen?tabs.filter(function(t){return !["people","places","moments","trace","path"].includes(t[0]);}).map(function(t){
-      const active=state.tab===t[0];
-      return '<button type="button" role="tab" aria-selected="'+(active?"true":"false")+'" '+lensAttrs[t[0]]+'>'+glyph(t[2],t[1])+'<span>'+esc(t[1])+'</span></button>';
-    }).join(""):"")+ 
-   '</div>'+
-  '</div>';
+ return '<div class="world-index-shell"><div class="world-discovery-bar">'+
+ primary.map(function(t){const active=state.tab===t[0];return '<button type="button" role="tab" class="world-primary-door" '+lensAttrs[t[0]]+' aria-selected="'+(active?"true":"false")+'" aria-label="'+esc(t[1])+'">'+glyph(t[2],t[1])+'<span>'+esc(t[1])+'</span></button>';}).join("")+
+ '<button type="button" class="world-index-toggle" data-world-explore aria-expanded="'+(advanced?"true":"false")+'"><span class="world-kicker">'+(advanced?"CLOSE":"DEEPER")+'</span><strong>'+(advanced?"BACK":"LOOK CLOSER")+'</strong><span aria-hidden="true">'+(advanced?"−":"+")+'</span></button></div>'+
+ '<div class="world-lens-nav world-deeper-nav" role="tablist" aria-label="Deeper World layers"'+(advanced?"":" hidden")+'><span class="world-deeper-label">DEEPER</span>'+
+ deeper.map(function(t){const active=state.tab===t[0];return '<button type="button" role="tab" aria-selected="'+(active?"true":"false")+'" '+lensAttrs[t[0]]+'>'+glyph(t[2],t[1])+'<span>'+esc(t[1])+'</span></button>';}).join("")+
+ '</div></div>';
 }
 function lensRows(){
- const map={people:"ESCIE_PEOPLE",places:"ESCIE_LOCATIONS",moments:"ESCIE_MOMENTS",objects:"ESCIE_OBJECTS",fragments:"ESCIE_FRAGMENTS",bodies:"ESCIE_BODIES",proof:"ESCIE_PROOF",path:"ESCIE_PATHS",timeline:"ESCIE_MOMENTS",symbols:"ESCIE_SYMBOLS",trails:"ESCIE_PATHS",trace:"ESCIE_PATHS"};
- const rows=state.tab==="atlas"?records():coll(map[state.tab],[]);
+ const deepMap={fragments:"ESCIE_FRAGMENTS",bodies:"ESCIE_BODIES",proof:"ESCIE_PROOF",archives:"ESCIE_ARCHIVE"};
+ if(state.tab==="atlas")return records().filter(function(r){return ["PERSON","PLACE","MOMENT","OBJECT","ART"].includes(canonicalType(r));}).slice(0,60);
+ if(["people","places","moments","objects","art"].includes(state.tab)){
+   const expected=state.tab==="people"?"PERSON":state.tab==="places"?"PLACE":state.tab==="moments"?"MOMENT":state.tab==="objects"?"OBJECT":"ART";
+   return records().filter(function(r){return canonicalType(r)===expected;}).slice(0,60);
+ }
+ const rows=deepMap[state.tab]?coll(deepMap[state.tab],[]):[];
  return rows.filter(function(r){return r&&String(r.visibility||"").toLowerCase()!=="withheld"&&r.public_disclosure!==false;}).slice(0,60);
 }
 function worldLensContent(){
- if(state.tab==="atlas")return '<div class="world-home-house"><div class="world-home-city"><span class="world-kicker">THE HOME</span><strong>MONTRÉAL</strong><p>MONTRÉAL IS HOME.</p></div></div>';
+ if(state.tab==="atlas")return '<div class="world-home-house"><div class="world-home-city"><span class="world-kicker">HOME</span><strong>MONTRÉAL</strong><p>MONTRÉAL IS HOME.</p></div></div>';
  if(state.tab==="trace")return traceView();
  const rows=lensRows();
  return '<div class="world-list">'+(rows.length?rows.map(card).join(""):'<div class="world-empty">Nothing has been opened here yet.</div>')+'</div>';
@@ -867,7 +857,7 @@ function worldHome(){ const returnWelcome=returnWelcomeMarkup(); rememberWorldRe
  const currentTab=state.tab!=="atlas";
  const outside=outsideWorldMarkup();
  const returnChange=returnChangeMarkup(); const contentChange=worldContentChangeMarkup(); const returnThread=worldReturnTrailMarkup(); rememberWorldSnapshot(); return '<div class="world-home">'+
-   '<div class="world-home-intro"><span class="world-kicker">MY WORLD</span><h3>HOME</h3><p>Montréal is home. Everything else is still the world.</p></div>'+worldNowMarkup()+returnWelcome+returnChange+contentChange+returnThread+
+   '<div class="world-home-intro"><span class="world-kicker">WORLD</span><h3>HOME</h3><p>Montréal is home. Everything else is still the world.</p></div>'+worldNowMarkup()+returnWelcome+returnChange+contentChange+returnThread+
    worldLensMarkup()+
    (currentTab?worldLensContent():'<div class="world-home-house"><button type="button" class="world-home-city" data-node="world-montreal"><span class="world-kicker">HOME</span><strong>'+esc(city&&city.title||"MONTRÉAL")+'</strong><p>WHERE MY WORLD AND THE WORLD INTERTWINE.</p><span class="world-arrow" aria-hidden="true">↗</span></button><div class="world-home-rooms">'+(roomCards||'<span class="world-empty">Nothing has been opened yet.</span>')+'</div></div>')+
 
