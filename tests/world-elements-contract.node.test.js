@@ -27,3 +27,14 @@ test("World layers remain distinct",()=>{
   assert.match(engine,/function graphView\(rows\)/);
   assert.match(engine,/function discovery\(rows\)/);
 });
+
+test("Trace is a visitor path, not a second network interface",()=>{
+  const engine=read("world-engine.js");
+  assert.match(engine,/WHERE THIS CAN LEAD/);
+  assert.match(engine,/YOUR TRACE/);
+  assert.match(engine,/THE TRACE ENDS HERE/);
+  assert.match(engine,/data-node=/);
+  assert.doesNotMatch(engine,/RELATIONSHIP GRAPH/);
+  assert.doesNotMatch(engine,/TRAILHEAD/);
+  assert.doesNotMatch(engine,/ESCIE_PATHS/);
+});
