@@ -83,7 +83,7 @@ function related(id){
  if(selected&&Array.isArray(selected.related_records))selected.related_records.forEach(rid=>{if(map.has(String(rid))&&!out.some(x=>String(x.node.id)===String(rid)))out.push({r:{type:"related"},node:map.get(String(rid))})});
  return out;
 }
-function inverse(t){const inv={created_by:"created",part_of:"contains",located_at:"location_of",recorded_at:"recording_location_of",performed_at:"performance_location_of",inspired_by:"inspires",supports:"supported_by",contradicts:"contradicted_by"};return inv[t]||t||"related"}
+function inverse(t){const inv={CREATED_BY:"CREATED",PART_OF:"CONTAINS",LOCATED_AT:"LOCATION_OF",RECORDED_AT:"RECORDING_LOCATION_OF",PERFORMED_AT:"PERFORMANCE_LOCATION_OF",INSPIRED_BY:"INSPIRES",SUPPORTED_BY:"SUPPORTED_BY",CONTRADICTED_BY:"CONTRADICTED_BY",BELONGS_TO:"BELONGS_TO",PRECEDES:"FOLLOWS",FOLLOWS:"PRECEDES"};return inv[t]||t||"RELATED_TO"}
 function liveContents(){
  const live=window.ESCIE_WORLD_LIVE&&window.ESCIE_WORLD_LIVE.data;
  if(!live||!Array.isArray(live.contents))return [];
