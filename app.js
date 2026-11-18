@@ -941,7 +941,7 @@
   }
 
   function renderWeb(){
-    const container=byId("web-container"); if(!container)return;
+    const container=byId("trace-container"); if(!container)return;
     const state=ESCIE_RUNTIME.webFilters||{};
     const all=getPublicRelationshipRecords();
     const records=getAllPublicRecords();
@@ -978,8 +978,8 @@
     const canStepBack=trailRecords.length>1;
     const trailMarkup=trailRecords.length
       ? '<div class="web-thread-trail">'+
-        '<div class="web-thread-trail-head"><span class="eyebrow">THREAD PATH</span><span>'+trailRecords.length+' STEPS</span></div>'+
-        '<div class="web-thread-trail-controls">'+(canStepBack?'<button type="button" class="web-trail-back" data-web-trail-back>BACK ONE STEP</button>':"")+'<button type="button" class="web-trail-clear" data-web-trail-clear>CLEAR PATH</button></div><div class="web-thread-trail-head"><span class="eyebrow">THREAD PATH</span><span>'+trailRecords.length+' STEPS</span></div><div class="web-thread-trail-list">'+trailRecords.map((node,index)=>{
+        '<div class="web-thread-trail-head"><span class="eyebrow">YOUR TRACE</span><span>'+trailRecords.length+' STEPS</span></div>'+
+        '<div class="web-thread-trail-controls">'+(canStepBack?'<button type="button" class="web-trail-back" data-web-trail-back>BACK ONE STEP</button>':"")+'<button type="button" class="web-trail-clear" data-web-trail-clear>CLEAR PATH</button></div><div class="web-thread-trail-head"><span class="eyebrow">YOUR TRACE</span><span>'+trailRecords.length+' STEPS</span></div><div class="web-thread-trail-list">'+trailRecords.map((node,index)=>{
           const edge=index>0?trailEdges[index-1]:null;
           const relation=edge?String(edge.type||"CONNECTED_TO").replace(/_/g," "):"START";
           return '<span class="web-trail-step">'+(index>0?'<i aria-hidden="true">'+escapeHTML(relation)+'</i>':"")+'<button type="button" class="web-trail-node" data-record-id="'+escapeHTML(recordId(node))+'" aria-label="Return to '+escapeHTML(recordTitle(node))+'"><span>'+String(index+1).padStart(2,"0")+'</span><strong>'+escapeHTML(recordTitle(node))+'</strong></button></span>';
@@ -1034,7 +1034,7 @@
     container.innerHTML=
       '<div class="web-experience web-identity-field" data-web-identity="montreal-signal">'+motifMarkup("web")+
       '<div class="web-signal-grid" aria-hidden="true"></div><div class="web-montreal-trace" aria-hidden="true">MONTRÉAL / SIGNAL FIELD / HERE</div>'+
-      '<div class="web-experience-head"><p class="eyebrow">THE WEB</p><h3>FOLLOW THE THREAD.</h3><p>THE WEB IS NOT ANOTHER ARCHIVE. IT IS THE SPACE BETWEEN THINGS. START WITH ONE RECORD, FOLLOW A CONNECTION, THEN SEE WHAT THAT CONNECTION OPENS.</p></div>'+
+      '<div class="web-experience-head"><p class="eyebrow">TRACE</p><h3>FOLLOW THE THREAD.</h3><p>TRACE IS THE SPACE BETWEEN THINGS. START WITH ONE THING, FOLLOW A CONNECTION, THEN SEE WHERE IT LEADS.</p></div>'+
       '<div class="web-discovery-tools">'+
         '<label>FIND A THREAD<input type="search" data-web-search value="'+escapeHTML(state.search||"")+'" placeholder="People, places, moments, fragments…"></label>'+
         '<div class="web-discovery-selects"><label>START HERE<select data-web-filter="record"><option value="">ANY CONNECTED NODE</option>'+nodeOptions+'</select></label><label>CONNECTION<select data-web-filter="type"><option value="">ALL CONNECTIONS</option>'+typeOptions+'</select></label></div>'+
@@ -1042,7 +1042,6 @@
       '</div>'+
       '<div class="web-record-results">'+recordResults+'</div>'+
       trailMarkup+
-      networkMap+
       (list?'<div class="web-connection-field"><div class="web-field-label"><span>PUBLIC CONNECTIONS</span><span>'+relationships.length+'</span></div>'+list+'</div>':'<div class="web-empty-state"><p class="eyebrow">THE PUBLIC GRAPH IS QUIET</p><h3>NO PUBLIC THREADS HAVE BEEN ESTABLISHED HERE YET.</h3><p>The system stays honest when a connection does not exist. Public findings can enter through Glass Eye and become a thread only after they earn a place in the record.</p><button type="button" class="web-participate-link" data-web-participate>BRING A FINDING THROUGH GLASS EYE</button></div>')+
       '<p class="web-governing-principle">EVERYTHING CAN CONNECT. NOTHING CONNECTS WITHOUT A REASON.</p>'+
       '</div>';
@@ -1633,7 +1632,7 @@ function renderClothing(){
       now:"NOW",
       art:"ART",
       world:"MY WORLD",
-      web:"THE WEB",
+      trace:"TRACE",
       archives:"THE ARCHIVES",
       investigation:"THE CASE FILES",
       "glass-eye":"GLASS EYE",
@@ -1831,7 +1830,7 @@ function renderClothing(){
       clearTimeout(webSearchTimer);
       webSearchTimer=setTimeout(()=>{
         renderWeb();
-        const next=byId("web-container")&&byId("web-container").querySelector("[data-web-search]");
+        const next=byId("trace-container")&&byId("trace-container").querySelector("[data-web-search]");
         if(next){next.focus();next.setSelectionRange(next.value.length,next.value.length);}
       },120);
     });
@@ -1958,7 +1957,7 @@ function renderClothing(){
       const record = getAllPublicRecords().find(item => recordId(item) === trigger.getAttribute("data-record-id"));
       if (!record) return;
 
-      const webContainer = byId("web-container");
+      const webContainer = byId("trace-container");
       if (webContainer && webContainer.contains(trigger)) {
         const id = recordId(record);
         ESCIE_RUNTIME.webTrail = Array.isArray(ESCIE_RUNTIME.webTrail) ? ESCIE_RUNTIME.webTrail : [];
