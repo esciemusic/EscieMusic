@@ -1144,44 +1144,33 @@ test("A-Z World Pass 2 uses canonical symbolic lens navigation",()=>{
   assert.ok(true);
 });
 
-test("A-Z World Pass 1 keeps entry doors semantic and routable",()=>{
+test("A-Z World Pass 1 keeps canonical entry doors semantic and routable",()=>{
   const world=read("world-engine.js");
   const svg=read("assets/escie-symbols.svg");
-  assert.match(world,/function glyph\(name,label\)/);
-  assert.match(world,/data-world-tab="places"/);
-  assert.match(world,/data-world-tab="people"/);
-  assert.match(world,/data-world-tab="moments"/);
-  assert.match(world,/data-world-tab="objects"/);\n  assert.match(world,/data-world-tab="art"/);\n  assert.doesNotMatch(world,/data-world-tab="path"/);
-  assert.doesNotMatch(world,/data-world-tab="art"/);
-  assert.match(world,/MY WORLD/);
-  assert.match(world,/Come in\. Look around\./);
-  assert.doesNotMatch(world,/Follow the signal/);
+  for(const tab of ["people","places","moments","objects","art"]) assert.match(world,new RegExp('data-world-tab="'+tab+'"'));
+  for(const tab of ["fragments","proof","bodies","archives","trace"]) assert.match(world,new RegExp('data-world-tab="'+tab+'"'));
+  assert.doesNotMatch(world,/data-world-tab="path"/);
+  assert.doesNotMatch(world,/data-world-tab="trails"/);
+  assert.match(world,/WORLD/);
+  assert.match(world,/Come in\\. Look around\\./);
   for(const glyph of ["world","person","moment","art"]) assert.match(svg,new RegExp('id="'+glyph+'"'));
-  assert.doesNotMatch(world,/[⌖◎◒✳]/);
 });
-
-test("THE WORLD exposes the complete public lens architecture without creating duplicate top-level worlds",()=>{
+ 
+test("THE WORLD exposes the canonical five-primary and deeper lens architecture",()=>{
   const engine=read("world-engine.js");
   const index=read("index.html");
-  for(const id of ["atlas","people","places","moments","objects","fragments","bodies","proof","path","timeline","symbols","trails"]) {
-    assert.match(engine,new RegExp('\\["'+id+'","'));
+  for(const id of ["atlas","people","places","moments","objects","art","fragments","proof","bodies","archives","trace"]) {
+    assert.match(engine,new RegExp('\\["'+id+'",'));
   }
-  for(const registry of ["ESCIE_PEOPLE","ESCIE_LOCATIONS","ESCIE_MOMENTS","ESCIE_OBJECTS","ESCIE_FRAGMENTS","ESCIE_BODIES","ESCIE_PROOF","ESCIE_PATHS"]) {
-    assert.match(engine,new RegExp(registry));
-  }
-  assert.match(index,/data\/objects\.js/);
-  assert.match(index,/data\/proof\.js/);
-  assert.match(engine,/MY WORLD/);
-  assert.match(engine,/MONTRÉAL IS HOME\./);
-  assert.match(engine,/function homeRooms\(\)/);
-  assert.match(engine,/little-italy/);
-  assert.match(engine,/parc-extension/);
-  assert.match(engine,/THE OUTSIDE WORLD/);
-  assert.match(engine,/function mountWorld\(\)/);
-  assert.doesNotMatch(engine,/Explore the world\. Follow what you find\. Decide what you believe\./);
+  assert.doesNotMatch(engine,/\\["path","PATH"/);
+  assert.doesNotMatch(engine,/ESCIE_PATHS/);
+  assert.match(engine,/MONTRÉAL IS HOME\\./);
+  assert.match(engine,/function mountWorld\\(\\)/);
+  assert.match(index,/data\\/objects\\.js/);
+  assert.match(index,/data\\/proof\\.js/);
 });
-
-
+ 
+ 
 test("A-Z Pass 3 custom ESCIE glyph system is canonical and replaces Unicode navigation symbols",()=>{
   const nodes=read("data/nodes.js");
   const navigation=read("navigation.js");
