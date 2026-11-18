@@ -5,20 +5,19 @@ const path=require("node:path");
 const root=path.resolve(__dirname,"..");
 const read=p=>fs.readFileSync(path.join(root,p),"utf8");
 
-test("World elements have canonical structural coverage",()=>{
+test("World elements use the canonical five primary types and four deeper types",()=>{
   const engine=read("world-engine.js");
   const registry=read("data/registry.js");
-  const record=read("record.js");
-  const bodies=read("data/bodies.js");
-  for(const lens of ["people","places","moments","objects","fragments","bodies","proof","path","trace","trails"]){
-    assert.match(engine,new RegExp('\\"'+lens+'\\"|\\['+"'"+lens+"'"));
+  const contract=read("data/web-contract.js");
+  for(const lens of ["people","places","moments","objects","art","fragments","proof","bodies","archives","trace"]){
+    assert.match(engine,new RegExp('"'+lens+'"'));
   }
-  for(const source of ["ESCIE_PEOPLE","ESCIE_LOCATIONS","ESCIE_MOMENTS","ESCIE_OBJECTS","ESCIE_FRAGMENTS","ESCIE_BODIES","ESCIE_PROOF","ESCIE_PATHS"]){
-    assert.match(registry,new RegExp(source));
-  }
-  assert.match(record,/OBJECT:\s*"object"/);
-  assert.match(bodies,/physical presence in the World/);
-  assert.match(bodies,/People remain the identity layer/);
+  assert.doesNotMatch(engine,/ESCIE_PATHS/);
+  assert.doesNotMatch(engine,/\["path","PATH"/);
+  assert.doesNotMatch(engine,/\["trails","TRAILS"/);
+  assert.match(contract,/WORLD_TYPES=\["PERSON","PLACE","MOMENT","OBJECT","ART"\]/);
+  assert.match(contract,/DEEP_TYPES=\["FRAGMENT","PROOF","BODY","ARCHIVE"\]/);
+  assert.match(registry,/function publicRelationships\(filters\)/);
 });
 
 test("World layers remain distinct",()=>{
