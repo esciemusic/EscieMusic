@@ -1151,7 +1151,7 @@ test("A-Z World Pass 1 keeps entry doors semantic and routable",()=>{
   assert.match(world,/data-world-tab="places"/);
   assert.match(world,/data-world-tab="people"/);
   assert.match(world,/data-world-tab="moments"/);
-  assert.match(world,/href="#art"/);
+  assert.match(world,/data-world-tab="objects"/);\n  assert.match(world,/data-world-tab="art"/);\n  assert.doesNotMatch(world,/data-world-tab="path"/);
   assert.doesNotMatch(world,/data-world-tab="art"/);
   assert.match(world,/MY WORLD/);
   assert.match(world,/Come in\. Look around\./);
