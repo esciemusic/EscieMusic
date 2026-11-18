@@ -1,16 +1,16 @@
 const ESCIE_NAVIGATION=[
 {id:"now",label:"NOW",target:"#now",primary:true,order:1,symbol:"now",symbolMeaning:"Present state",symbolPurpose:"See what is current"},
-{id:"art",label:"ART",target:"#art",primary:true,order:2,symbol:"art",symbolMeaning:"Creation",symbolPurpose:"Enter the work"},
-{id:"world",label:"MY WORLD",target:"#world",primary:true,order:3,symbol:"world",symbolMeaning:"My place and experience",symbolPurpose:"Enter my world"},
-{id:"glass-eye",label:"GLASS EYE",target:"#glass-eye",primary:true,order:4,symbol:"glass-eye",symbolMeaning:"Witness",symbolPurpose:"See through the screen"},
-{id:"web",label:"THE WEB",target:"#web",primary:true,order:5,symbol:"web",symbolMeaning:"Connections",symbolPurpose:"Follow the network"},
-{id:"archives",label:"THE ARCHIVES",target:"#archives",primary:true,order:6,symbol:"archives",symbolMeaning:"Record",symbolPurpose:"Open the preserved record"},
-{id:"investigation",label:"THE CASE FILES",target:"#investigation",primary:true,order:7,symbol:"case-files",symbolMeaning:"Inquiry",symbolPurpose:"Follow the evidence"},
-{id:"escie",label:"ESCIE",target:"#escie",primary:true,order:8,symbol:"escie",symbolMeaning:"Identity",symbolPurpose:"Return to ESCIE"}
+{id:"world",label:"WORLD",target:"#world",primary:true,order:2,symbol:"world",symbolMeaning:"Living environment",symbolPurpose:"Enter the World"},
+{id:"trace",label:"TRACE",target:"#trace",primary:true,order:3,symbol:"web",symbolMeaning:"Connections",symbolPurpose:"Follow what connects"},
+{id:"art",label:"ART",target:"#art",primary:true,order:4,symbol:"art",symbolMeaning:"Creation",symbolPurpose:"Enter the work"},
+{id:"archives",label:"ARCHIVES",target:"#archives",primary:true,order:5,symbol:"archives",symbolMeaning:"Preserved material",symbolPurpose:"Open what remains"},
+{id:"investigation",label:"CASE FILES",target:"#investigation",primary:true,order:6,symbol:"case-files",symbolMeaning:"Inquiry",symbolPurpose:"Investigate deeper"},
+{id:"glass-eye",label:"GLASS EYE",target:"#glass-eye",primary:true,order:7,symbol:"glass-eye",symbolMeaning:"Participation",symbolPurpose:"See and participate"},
+{id:"escie",label:"ESCIE",target:"#escie",primary:true,order:8,symbol:"escie",symbolMeaning:"Artist identity",symbolPurpose:"Return to ESCIE"}
 ];
 
 const ESCIE_NAVIGATION_CONTRACT={
-  order:["now","art","world","glass-eye","web","archives","investigation","escie"],
+  order:["now","world","trace","art","archives","investigation","glass-eye","escie"],
   validate:function(items){
     const list=Array.isArray(items)?items:[];
     const errors=[];
