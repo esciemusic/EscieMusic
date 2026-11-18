@@ -751,18 +751,6 @@ function detail(r){
  const connections=links.length?links.map(x=>'<button type="button" data-node="'+esc(x.node.id)+'"><strong>'+esc(title(x.node))+'</strong><small>'+esc(x.r.type||"related")+'</small></button>').join(""):'<span class="world-empty">No public connection recorded yet.</span>';
  return '<aside class="world-detail" aria-live="polite"><div class="world-detail-head"><div><span class="world-kicker">ENCOUNTER // '+esc(type(r))+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3></div><button type="button" class="world-close" data-close-node aria-label="Close node">×</button></div><div class="world-detail-meta"><span>'+esc(String(r.certainty||"UNKNOWN").toUpperCase())+'</span><span>'+esc(String(r.status||"UNKNOWN").toUpperCase())+'</span></div>'+mediaPreview(r)+encounterContext(r)+'<p class="world-encounter-description">'+esc(r.description||r.summary||r.story||"No public description yet.")+'</p>'+encounterMeta(r)+'<div class="world-kicker">WHAT CONNECTS HERE · '+links.length+'</div><div class="world-connections">'+connections+'</div>'+discoveryRail(r)+'<div class="world-detail-actions"><button type="button" data-focus-search>SEARCH THIS NODE</button><button type="button" data-copy-node>COPY NODE LINK</button></div><div class="world-path"><span class="world-kicker">YOUR PATH</span><div id="world-path-items">START HERE</div></div></aside>';
 }
-function graphView(rows){
- const map=new Map(rows.map(r=>[String(r.id),r]));
- const edges=rels().filter(x=>map.has(String(x.from))&&map.has(String(x.to)));
- const nodes=rows.slice(0,80).map(r=>'<button type="button" class="world-graph-node" data-node="'+esc(r.id)+'"><i></i><span>'+esc(title(r))+'</span><small>'+esc(type(r))+'</small></button>').join("");
- return '<div class="world-graph"><div class="world-graph-note"><span class="world-kicker">RELATIONSHIP GRAPH</span><strong>'+rows.length+' nodes · '+edges.length+' public edges</strong></div><div class="world-graph-grid">'+nodes+'</div></div>';
-}
-function trails(rows){
- const map=new Map(rows.map(r=>[String(r.id),r])),adj=new Map();
- rels().forEach(x=>{if(map.has(String(x.from))&&map.has(String(x.to))){if(!adj.has(String(x.from)))adj.set(String(x.from),[]);if(!adj.has(String(x.to)))adj.set(String(x.to),[]);adj.get(String(x.from)).push(x.to);adj.get(String(x.to)).push(x.from)}});
- const starts=rows.filter(r=>(adj.get(String(r.id))||[]).length).slice(0,6);
- return '<div class="world-list">'+(starts.length?starts.map(s=>{const ns=(adj.get(String(s.id))||[]).map(id=>map.get(String(id))).filter(Boolean).slice(0,3);return '<article class="world-card"><div class="world-card-main"><span class="world-kicker">TRAILHEAD</span><h3 data-no-translate class="record-identity">'+esc(title(s))+'</h3><p>'+ns.map(n=>'<button type="button" class="inline-node" data-node="'+esc(n.id)+'">'+esc(title(n))+'</button>').join(" · ")+'</p></div><span class="world-arrow">→</span></article>'}).join(''):'<div class="world-intro"><p>Trails appear as public relationships accumulate.</p></div>')+'</div>';
-}
 function traceView(){
  const rs=records();
  const byId=new Map(rs.map(r=>[String(r.id),r]));
