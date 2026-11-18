@@ -979,7 +979,7 @@
     const trailMarkup=trailRecords.length
       ? '<div class="web-thread-trail">'+
         '<div class="web-thread-trail-head"><span class="eyebrow">YOUR TRACE</span><span>'+trailRecords.length+' STEPS</span></div>'+
-        '<div class="web-thread-trail-controls">'+(canStepBack?'<button type="button" class="web-trail-back" data-web-trail-back>BACK ONE STEP</button>':"")+'<button type="button" class="web-trail-clear" data-web-trail-clear>CLEAR PATH</button></div><div class="web-thread-trail-head"><span class="eyebrow">YOUR TRACE</span><span>'+trailRecords.length+' STEPS</span></div><div class="web-thread-trail-list">'+trailRecords.map((node,index)=>{
+        '<div class="web-thread-trail-controls">'+(canStepBack?'<button type="button" class="web-trail-back" data-web-trail-back>BACK ONE STEP</button>':"")+'<button type="button" class="web-trail-clear" data-web-trail-clear>CLEAR PATH</button></div><div class="web-thread-trail-list">'+trailRecords.map((node,index)=>{
           const edge=index>0?trailEdges[index-1]:null;
           const relation=edge?String(edge.type||"CONNECTED_TO").replace(/_/g," "):"START";
           return '<span class="web-trail-step">'+(index>0?'<i aria-hidden="true">'+escapeHTML(relation)+'</i>':"")+'<button type="button" class="web-trail-node" data-record-id="'+escapeHTML(recordId(node))+'" aria-label="Return to '+escapeHTML(recordTitle(node))+'"><span>'+String(index+1).padStart(2,"0")+'</span><strong>'+escapeHTML(recordTitle(node))+'</strong></button></span>';
@@ -992,7 +992,7 @@
         '<button type="button" class="web-thread-node web-thread-node-current" data-record-id="'+escapeHTML(recordId(selected))+'"><strong>'+escapeHTML(recordTitle(selected))+'</strong><small>STARTING NODE</small></button>'+
         selectedNeighbours.map(node=>'<button type="button" class="web-thread-node" data-record-id="'+escapeHTML(recordId(node))+'"><strong>'+escapeHTML(recordTitle(node))+'</strong><small>'+escapeHTML(node.type||"record")+' · FOLLOW THREAD</small></button>').join("")+
         '</div></div>'
-      : '<div class="web-thread-map web-thread-map-idle"><div class="web-thread-map-head"><div><span class="eyebrow">THREAD MAP</span><h4>START ANYWHERE.</h4></div><span>PUBLIC GRAPH</span></div><p>Select a connected node to see its immediate neighbours. The map only draws relationships that the public record actually establishes.</p></div>';
+      : '<div class="web-thread-map web-thread-map-idle"><div class="web-thread-map-head"><div><span class="eyebrow">THREAD MAP</span><h4>START ANYWHERE.</h4></div><span>PUBLIC CONNECTIONS</span></div><p>Select a connected node to see its immediate neighbours. The map only draws relationships that the public record actually establishes.</p></div>';
 
     const list=relationships.map((relationship,index)=>{
       const from=byIdMap.get(relationship.from),to=byIdMap.get(relationship.to);
@@ -1042,7 +1042,7 @@
       '</div>'+
       '<div class="web-record-results">'+recordResults+'</div>'+
       trailMarkup+
-      (list?'<div class="web-connection-field"><div class="web-field-label"><span>PUBLIC CONNECTIONS</span><span>'+relationships.length+'</span></div>'+list+'</div>':'<div class="web-empty-state"><p class="eyebrow">THE PUBLIC GRAPH IS QUIET</p><h3>NO PUBLIC THREADS HAVE BEEN ESTABLISHED HERE YET.</h3><p>The system stays honest when a connection does not exist. Public findings can enter through Glass Eye and become a thread only after they earn a place in the record.</p><button type="button" class="web-participate-link" data-web-participate>BRING A FINDING THROUGH GLASS EYE</button></div>')+
+      (list?'<div class="web-connection-field"><div class="web-field-label"><span>PUBLIC CONNECTIONS</span><span>'+relationships.length+'</span></div>'+list+'</div>':'<div class="web-empty-state"><p class="eyebrow">PUBLIC CONNECTIONS ARE QUIET</p><h3>NO PUBLIC THREADS HAVE BEEN ESTABLISHED HERE YET.</h3><p>The system stays honest when a connection does not exist. Public findings can enter through Glass Eye and become a trace only after they earn a place in the record.</p><button type="button" class="web-participate-link" data-web-participate>BRING A FINDING THROUGH GLASS EYE</button></div>')+
       '<p class="web-governing-principle">EVERYTHING CAN CONNECT. NOTHING CONNECTS WITHOUT A REASON.</p>'+
       '</div>';
   }
