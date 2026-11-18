@@ -1,11 +1,11 @@
 /* ESCIE UNIVERSE CONTRACT — shared cross-layer invariants.
- * This is architecture metadata, not editorial canon and never writes player state.
+ * Architecture metadata only. It does not replace public content canon.
  */
 (function(root){
   "use strict";
   const CONTRACT={
     id:"ESCIE_UNIVERSE",
-    version:"1.2.1",
+    version:"2.0.0",
     layers:Object.freeze({
       CENTRAL:"central",
       PUBLIC:"public",
@@ -14,11 +14,20 @@
     identity:{
       artist:"ESCIE",
       universe:"ONE ESCIE REALITY",
-      thesis:"REALITY WITH THE SIGNAL DISTORTED.",
-      musicRule:"THE MUSIC DOES NOT CREATE THE UNIVERSE. THE UNIVERSE CREATES THE MUSIC."
+      thesis:"THE ART DOES NOT CREATE THE UNIVERSE. THE UNIVERSE CREATES THE ART.",
+      musicRule:"MUSIC IS ONE OF THE PRIMARY FORCES THROUGH WHICH THE WORLD IS EXPERIENCED, REMEMBERED AND CHANGED."
     },
+    hierarchy:Object.freeze({
+      level1:["HOME","WORLD","TRACE"],
+      level2:["PEOPLE","PLACES","MOMENTS","OBJECTS","ART"],
+      deeper:["FRAGMENTS","PROOF","BODIES","ARCHIVES","CONNECTIONS"],
+      modes:["CASE FILES","GLASS EYE"]
+    }),
+    worldTypes:Object.freeze(["PERSON","PLACE","MOMENT","OBJECT","ART"]),
+    deepTypes:Object.freeze(["FRAGMENT","PROOF","BODY","ARCHIVE"]),
     boundaries:Object.freeze({
       publicIsCanonicalDoorway:true,
+      centralIsPrivateControlPlane:true,
       gameIsExtension:true,
       gameHosting:"EXTERNAL_PLATFORM_READY",
       gamePublicLink:null,
@@ -28,17 +37,17 @@
       centralHumanApproval:true,
       canonicalGameWriteFromPlayer:false
     }),
-    publicSections:Object.freeze(["NOW","ART","THE WORLD","THE WEB","THE ARCHIVES","THE CASE FILES","GLASS EYE","ESCIE"]),
-    worldClasses:Object.freeze(["DRIFTER","RUNNER","INVESTIGATOR","SURVIVOR"]),
-    worldNodes:Object.freeze(["ART","THE PEOPLE","PLACES","MOMENTS","FRAGMENTS","PROOF","BODIES","PATH","THE WEB","THE ARCHIVES"]),
-    requiredGameSystems:Object.freeze(["simulation","npc-life","npc","law","investigation","rpg","vehicles","interiors","dialogue","3d"]),
+    publicSections:Object.freeze(["NOW","WORLD","TRACE","ART","ARCHIVES","THE CASE FILES","GLASS EYE","ESCIE"]),
+    worldNodes:Object.freeze(["PEOPLE","PLACES","MOMENTS","OBJECTS","ART"]),
     validate(){
       const errors=[];
       if(this.layers.CENTRAL!=="central"||this.layers.PUBLIC!=="public"||this.layers.GAME!=="game")errors.push("layer contract invalid");
       if(this.boundaries.gameplay2D!==false||this.boundaries.pauseMap2DOnly!==true)errors.push("game 3D/2D boundary invalid");
       if(this.boundaries.publicIsCanonicalDoorway!==true||this.boundaries.gameIsExtension!==true)errors.push("public/game ownership boundary invalid");
-      if(this.boundaries.centralHumanApproval!==true)errors.push("central approval guard missing");
-      const expectedSections=["NOW","ART","THE WORLD","THE WEB","THE ARCHIVES","THE CASE FILES","GLASS EYE","ESCIE"];
+      if(this.boundaries.centralHumanApproval!==true||this.boundaries.centralIsPrivateControlPlane!==true)errors.push("central control boundary invalid");
+      const expectedWorldTypes=["PERSON","PLACE","MOMENT","OBJECT","ART"];
+      const expectedSections=["NOW","WORLD","TRACE","ART","ARCHIVES","THE CASE FILES","GLASS EYE","ESCIE"];
+      if(JSON.stringify(this.worldTypes)!==JSON.stringify(expectedWorldTypes))errors.push("world type contract is out of sync");
       if(JSON.stringify(this.publicSections)!==JSON.stringify(expectedSections))errors.push("public section contract is out of sync");
       return {ok:errors.length===0,errors,version:this.version};
     },
