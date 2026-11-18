@@ -251,34 +251,53 @@ function allPublicRecords(){
 
   function publicRelationships(filters){
     const current=build();
-    const relationships=collection("ESCIE_RELATIONSHIPS");
     const f=filters||{};
-    const contract=typeof window!=="undefined"?window.ESCIE_RELATIONSHIP:null;
-    return relationships.filter(rel=>{
-      if(!rel||rel.public_disclosure!==true) return false;
-      if(!rel.from||!rel.to||!current.byId[rel.from]||!current.byId[rel.to]) return false;
-
-      // THE WEB public projection is fail-closed at both boundaries:
-      // relationship safety AND endpoint safety must pass before rendering.
-      if(contract&&typeof contract.validate==="function"&&!contract.validate(rel).valid) return false;
-      if(contract&&typeof contract.canDisclose==="function"&&!contract.canDisclose(rel)) return false;
-      if(!publicRecord(rel.from)||!publicRecord(rel.to)) return false;
-      if(!releaseVisible(current.byId[rel.from])||!releaseVisible(current.byId[rel.to])) return false;
-
-      if(f.type&&String(rel.type||"").toLowerCase()!==String(f.type).toLowerCase()) return false;
-      if(f.category&&contract&&typeof contract.getCategory==="function"){
-        if(contract.getCategory(rel.type)!==f.category) return false;
-      }
-      if(f.record&&rel.from!==f.record&&rel.to!==f.record) return false;
-      return true;
-    }).map(rel=>{
-      if(contract&&typeof contract.toPublicView==="function") return contract.toPublicView(rel);
+    const web=typeof window!=="undefined"?window.ESCIE_WEB:null;
+    const source=collection("ESCIE_RELATIONSHIPS");
+    const normalized=source.map(rel=>{
+      if(web&&typeof web.normalizeRelationship==="function") return web.normalizeRelationship(rel);
+      const r=rel&&typeof rel==="object"?rel:{};
       return {
-        id:rel.id,from:rel.from,type:rel.type,to:rel.to,status:rel.status,
-        confidence:rel.confidence,canonical_status:rel.canonical_status,
-        date:rel.date,context:rel.context,note:rel.note,visibility:rel.visibility
+        id:r.id||null,
+        source_id:r.source_id||r.from||null,
+        target_id:r.target_id||r.to||null,
+        relationship_type:String(r.relationship_type||r.type||"").toUpperCase()||null,
+        direction:String(r.direction||"DIRECTED").toUpperCase(),
+        time:r.time||r.date||null,
+        context:r.context||r.description||"",
+        strength:r.strength||r.confidence||null,
+        certainty:String(r.certainty||"UNKNOWN").toUpperCase(),
+        status:String(r.lifecycle_status||r.status||"UNRESOLVED").toUpperCase(),
+        visibility:String(r.visibility||"PRIVATE").toUpperCase(),
+        release_status:String(r.release_status||"LOCKED").toUpperCase(),
+        provenance:r.provenance||null,
+        evidence:Array.isArray(r.evidence)?r.evidence:[]
       };
-    }).filter(Boolean);
+    });
+    return normalized.filter(rel=>{
+      if(!rel||!rel.source_id||!rel.target_id||!rel.id) return false;
+      if(!current.byId[rel.source_id]||!current.byId[rel.target_id]) return false;
+      if(rel.source_id===rel.target_id) return false;
+      if(rel.visibility!=="PUBLIC"||rel.release_status!=="RELEASED"||rel.status!=="ACTIVE") return false;
+      if(!publicRecord(rel.source_id)||!publicRecord(rel.target_id)) return false;
+      if(f.record&&rel.source_id!==f.record&&rel.target_id!==f.record) return false;
+      if(f.type&&rel.relationship_type!==String(f.type).toUpperCase()) return false;
+      return true;
+    }).map(rel=>({
+      id:rel.id,
+      from:rel.source_id,
+      type:rel.relationship_type,
+      to:rel.target_id,
+      status:rel.status,
+      confidence:rel.strength,
+      certainty:rel.certainty,
+      date:rel.time,
+      context:rel.context,
+      visibility:rel.visibility,
+      release_status:rel.release_status,
+      provenance:rel.provenance,
+      evidence:rel.evidence
+    }));
   }
   function relationshipTypes(filters){
     return Array.from(new Set(publicRelationships(filters).map(rel=>rel.type).filter(Boolean))).sort();
