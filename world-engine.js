@@ -765,15 +765,29 @@ function trails(rows){
 }
 function traceView(){
  const rs=records();
- const steps=state.trail.map((id,i)=>({node:rs.find(r=>String(r.id)===String(id)),index:i})).filter(x=>x.node);
- if(!steps.length)return '<section class="world-trace"><div class="world-trace-empty"><span class="world-kicker">TRACE</span><h3>NOTHING TO REMEMBER YET.</h3><p>Move through the World. Places, objects and encounters will leave a quiet trace here on this device.</p><button type="button" class="world-trace-return" data-world-explore><span class="world-kicker">START</span><strong>RETURN TO THE WORLD</strong></button></div></section>';
- const path=pathContext();
- const items=steps.map(function(x,i){
+ const byId=new Map(rs.map(r=>[String(r.id),r]));
+ const steps=state.trail.map(id=>byId.get(String(id))).filter(Boolean);
+ const current=state.selected?byId.get(String(state.selected)):steps[steps.length-1]||null;
+ const branches=current?related(current.id).filter(x=>x&&x.node).slice(0,6):[];
+ const branchIds=new Set(branches.map(x=>String(x.node.id)));
+ const path=steps.map(function(node,i){
    const next=steps[i+1];
-   const relation=next&&path[i]?path[i].relationship:"";
-   return '<button type="button" class="world-trace-step'+(i===steps.length-1?' world-trace-current':'')+'" data-node="'+esc(x.node.id)+'"><span class="world-trace-number">'+String(i+1).padStart(2,"0")+'</span><span class="world-trace-copy"><span class="world-kicker">'+esc(type(x.node))+'</span><strong>'+esc(title(x.node))+'</strong>'+(relation?'<small>'+esc(relation)+'</small>':'')+'</span><span class="world-trace-arrow" aria-hidden="true">↗</span></button>';
- }).join('');
- return '<section class="world-trace"><div class="world-trace-head"><span class="world-kicker">TRACE</span><h3>WHERE YOU HAVE BEEN.</h3><p>This is not a score or a progress bar. It is simply the memory of your route through the World on this device.</p></div><div class="world-trace-path">'+items+'</div><div class="world-trace-foot"><span>'+steps.length+' place'+(steps.length===1?'':'s')+' remembered</span><button type="button" class="world-trace-clear" data-trace-clear>CLEAR TRACE</button></div></section>';
+   const link=next?related(node.id).find(x=>String(x.node.id)===String(next.id)):null;
+   return {node:node,relation:link&&link.r&&link.r.type?String(link.r.type).replace(/_/g," "):""};
+ });
+ if(!current&&!steps.length)return '<section class="world-trace"><div class="world-trace-empty"><span class="world-kicker">TRACE</span><h3>NOTHING LEADS ANYWHERE YET.</h3><p>Open something in the World. When it connects to something else, Trace will let you follow it.</p><button type="button" class="world-trace-return" data-world-explore><span class="world-kicker">START</span><strong>ENTER THE WORLD</strong></button></div></section>';
+ const branchMarkup=branches.length
+   ?'<div class="world-trace-branches"><div class="world-trace-section-head"><span class="world-kicker">WHERE THIS CAN LEAD</span><p>Choose a connection. There is no correct direction.</p></div><div class="world-trace-branch-list">'+branches.map(function(x){
+      const relation=String(x.r&&x.r.type||"RELATED_TO").replace(/_/g," ");
+      return '<button type="button" class="world-trace-branch" data-node="'+esc(x.node.id)+'"><span class="world-kicker">'+esc(relation)+'</span><strong>'+esc(title(x.node))+'</strong><small>'+esc(type(x.node))+'</small><span aria-hidden="true">↗</span></button>';
+   }).join("")+'</div></div>'
+   :'<div class="world-trace-branches world-trace-ended"><span class="world-kicker">THE TRACE ENDS HERE</span><p>Nothing publicly connected leads further from this point yet.</p></div>';
+ const pathMarkup=path.length
+   ?'<div class="world-trace-history"><div class="world-trace-section-head"><span class="world-kicker">YOUR TRACE</span><p>The path you chose on this device. It does not change the World.</p></div><div class="world-trace-path">'+path.map(function(x,i){
+      return '<button type="button" class="world-trace-step'+(String(x.node.id)===String(current.id)?' world-trace-current':'')+'" data-node="'+esc(x.node.id)+'"><span class="world-trace-number">'+String(i+1).padStart(2,"0")+'</span><span class="world-trace-copy"><span class="world-kicker">'+esc(type(x.node))+'</span><strong>'+esc(title(x.node))+'</strong>'+(x.relation?'<small>'+esc(x.relation)+'</small>':'')+'</span><span class="world-trace-arrow" aria-hidden="true">↗</span></button>';
+   }).join("")+'</div><div class="world-trace-foot"><span>'+path.length+' step'+(path.length===1?'':'s')+'</span><button type="button" class="world-trace-clear" data-trace-clear>CLEAR TRACE</button></div></div>'
+   :'';
+ return '<section class="world-trace"><div class="world-trace-head"><span class="world-kicker">TRACE</span><h3>'+esc(title(current))+'</h3><p>Follow what connects. The World stays the same; your path is your own.</p></div>'+branchMarkup+pathMarkup+'</section>';
 }
 function discoveryReason(current,node,base){if(!current)return "OPEN THREAD";if(base.some(x=>String(x.id)===String(node.id))){const rel=related(current.id).find(x=>String(x.node.id)===String(node.id));return rel&&rel.type?"FOLLOWED FROM "+String(rel.type).replace(/_/g," "):"DIRECT CONNECTION";}if(state.trail.length>1){const previous=records().find(r=>String(r.id)===String(state.trail[state.trail.length-2]));if(previous&&type(node)===type(previous))return "CONTINUES THE THREAD";}if(type(node)===type(current))return "SAME KIND";if(Array.isArray(node.tags)&&Array.isArray(current.tags)&&node.tags.some(t=>current.tags.includes(t)))return "SHARED SIGNAL";return "UNEXPLORED";}
 function discovery(rows){const seen=new Set(state.visited.map(String));const current=state.selected?records().find(r=>String(r.id)===String(state.selected)):null;const base=current?related(current.id).map(x=>x.node):[];const pool=base.concat(rows).filter(Boolean).filter(r=>!seen.has(String(r.id)));const scored=pool.map(r=>{let score=0;if(base.some(x=>String(x.id)===String(r.id)))score+=10;if(current&&type(r)===type(current))score+=2;if(Array.isArray(r.tags)&&current&&Array.isArray(current.tags))score+=r.tags.filter(t=>current.tags.includes(t)).length;return {r,score,reason:discoveryReason(current,r,base)};}).sort((a,b)=>b.score-a.score);const out=[];const usedTypes=new Set();for(const x of scored){if(out.length>=3)break;if(!usedTypes.has(type(x.r))||x.score>=10){out.push(x);usedTypes.add(type(x.r));}}if(out.length<3)for(const x of scored){if(out.length>=3)break;if(!out.some(y=>String(y.r.id)===String(x.r.id)))out.push(x);}return out;}
