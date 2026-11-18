@@ -23,8 +23,8 @@ test("World elements use the canonical five primary types and four deeper types"
 test("World layers remain distinct",()=>{
   const engine=read("world-engine.js");
   assert.match(engine,/function traceView\(\)/);
-  assert.match(engine,/function trails\(rows\)/);
-  assert.match(engine,/function graphView\(rows\)/);
+  assert.doesNotMatch(engine,/function trails\(rows\)/);
+  assert.doesNotMatch(engine,/function graphView\(rows\)/);
   assert.match(engine,/function discovery\(rows\)/);
 });
 
