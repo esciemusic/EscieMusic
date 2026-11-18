@@ -18,25 +18,25 @@
     assert(!!contract && typeof contract.validate === "function", "navigation contract validator should exist");
     const contractReport = contract.validate(N);
     assert(contractReport.ok === true, "canonical navigation contract must validate");
-    assert(JSON.stringify(contract.order) === JSON.stringify(["now","art","world","glass-eye","web","archives","investigation","escie"]), "canonical navigation order must be explicit");
+    assert(JSON.stringify(contract.order) === JSON.stringify(["now","world","trace","art","archives","investigation","glass-eye","escie"]), "canonical navigation order must be explicit");
 
-    const required = ["NOW", "ART", "MY WORLD", "THE WEB", "THE ARCHIVES", "THE CASE FILES", "GLASS EYE", "ESCIE"];
+    const required = ["NOW", "WORLD", "TRACE", "ART", "ARCHIVES", "CASE FILES", "GLASS EYE", "ESCIE"];
     required.forEach(function (label) {
       assert(N.some(item => item.label === label), "missing navigation item: " + label);
     });
 
-    assert(N.filter(item => item.primary === true).length === 8, "public primary navigation should contain seven nodes");
+    assert(N.filter(item => item.primary === true).length === 8, "public primary navigation should contain eight nodes");
 
     const sectionOrder = Array.from(document.querySelectorAll("main > section")).map(function (section) {
       return section.id;
     });
-    const expectedSectionOrder = ["entry", "now", "art", "world", "web", "archives", "investigation", "glass-eye", "escie"];
+    const expectedSectionOrder = ["entry", "now", "world", "trace", "art", "archives", "investigation", "glass-eye", "escie"];
     assert(JSON.stringify(sectionOrder) === JSON.stringify(expectedSectionOrder), "public section order must match the universe contract");
     assert(new Set(N.map(item => item.id)).size === N.length, "navigation IDs should be unique");
     assert(new Set(N.map(item => item.target)).size === N.length, "navigation targets should be unique");
     assert(N.some(item => item.id === "now" && item.target === "#now"), "NOW route should target #now");
     assert(N.some(item => item.id === "art" && item.target === "#art"), "ART route should target #art");
-    assert(N.some(item => item.id === "web" && item.target === "#web"), "THE WEB route should target #web");
+    assert(N.some(item => item.id === "trace" && item.target === "#trace"), "TRACE route should target #trace");
     assert(N.some(item => item.id === "archives" && item.target === "#archives"), "ARCHIVES route should target #archives");
     assert(N.some(item => item.id === "investigation" && item.target === "#investigation"), "INVESTIGATION route should target #investigation");
     assert(N.some(item => item.id === "glass-eye" && item.target === "#glass-eye"), "GLASS EYE route should target #glass-eye");
