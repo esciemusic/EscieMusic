@@ -21,7 +21,7 @@ const ESCIE_UI_ROUTER = {
     if (this.routes.has(raw)) return raw;
     const normalized = raw.charAt(0) === "#" ? raw.slice(1) : raw;
     if (this.routes.has(normalized)) return normalized;
-    const aliases = { work: "art", archive: "archives", cases: "case-files", web: "trace", traces: "trace", path: "trace" };
+    const aliases = { work: "art", archive: "archives", cases: "investigation", web: "trace", traces: "trace", path: "trace" };
     // Art category deep links are presentation routes into the ART section.
     // The carousel owns the category state; the shared router only resolves the section.
     if (/^art\/(music|words|visual|projects)$/i.test(normalized) && this.routes.has("art")) return "art";
