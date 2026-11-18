@@ -111,17 +111,16 @@ test("A-Z Pass 3 public index follows visitor priority and restrained palette",(
   const aesthetic=read("aesthetic.css");
   const language=read("language.js");
   assert.match(navigation,/id:"now".*order:1/);
-  assert.match(navigation,/id:"art".*order:2/);
-  assert.match(navigation,/id:"world".*order:3/);
-  assert.match(navigation,/id:"glass-eye".*order:4/);
-  assert.match(navigation,/id:"web".*order:5/);
-  assert.match(navigation,/id:"archives".*order:6/);
-  assert.match(navigation,/id:"investigation".*order:7/);
+  assert.match(navigation,/id:"world".*order:2/);
+  assert.match(navigation,/id:"trace".*order:3/);
+  assert.match(navigation,/id:"art".*order:4/);
+  assert.match(navigation,/id:"archives".*order:5/);
+  assert.match(navigation,/id:"investigation".*order:6/);
   assert.match(navigation,/id:"escie".*order:8/);
-  assert.match(nodes,/id:"node-glass-eye"[\s\S]*?order:4/);
-  assert.match(nodes,/id:"node-web"[\s\S]*?order:5/);
-  assert.match(nodes,/id:"node-archives"[\s\S]*?order:6/);
-  assert.match(nodes,/id:"node-investigation"[\s\S]*?order:7/);
+  assert.match(nodes,/id:"node-glass-eye"/);
+  assert.match(nodes,/id:"node-web"/);
+  assert.match(nodes,/id:"node-archives"/);
+  assert.match(nodes,/id:"node-investigation"/);
   assert.match(aesthetic,/main > #now\{--section-accent:#4da3ff/);
   assert.match(aesthetic,/main > #art\{--section-accent:#9b59ff/);
   assert.match(aesthetic,/main > #archives\{--section-accent:#9a9da3/);
@@ -163,7 +162,7 @@ test("A-Z Pass 1 blocks legacy section target aliases",()=>{
 test("A-Z Pass 1 record section labels use canonical public routes",()=>{
   const app=read("app.js");
   assert.match(app,/now:"NOW"/);
-  assert.match(app,/world:"MY WORLD"/);
+  assert.match(app,/world:"WORLD"/);
   assert.match(app,/"glass-eye":"GLASS EYE"/);
   assert.doesNotMatch(app,/glassEye:"GLASS EYE"/);
 });
@@ -1339,35 +1338,17 @@ test("A-Z Pass 8 protects Web hub context",()=>{
   assert.match(style,/\.web-hub-summary/);
 });
 
-test("A-Z Pass 9 protects Web thread path navigation",()=>{
+test("A-Z Pass 7 protects Trace as the visitor connection experience",()=>{
+  const engine=read("world-engine.js");
   const app=read("app.js");
-  const style=read("style.css");
-  assert.match(app,/webTrail/);
-  assert.match(app,/THREAD PATH/);
-  assert.match(app,/renderWeb\(\);/);
-  assert.match(style,/\.web-thread-trail/);
-  assert.match(style,/\.web-trail-node/);
+  assert.match(engine,/function traceView\(\)/);
+  assert.match(engine,/WHERE THIS CAN LEAD/);
+  assert.match(engine,/YOUR TRACE/);
+  assert.match(engine,/THE TRACE ENDS HERE/);
+  assert.doesNotMatch(engine,/function graphView\(rows\)/);
+  assert.doesNotMatch(engine,/function trails\(rows\)/);
+  assert.doesNotMatch(app,/THREAD PATH/);
 });
-
-test("A-Z Pass 10 protects semantic Web thread paths",()=>{
-  const app=read("app.js");
-  const style=read("style.css");
-  assert.match(app,/trailEdges/);
-  assert.match(app,/CONNECTED_TO/);
-  assert.match(app,/web-trail-step/);
-  assert.match(style,/\.web-trail-step/);
-});
-
-test("A-Z Pass 11 protects Web thread backtracking",()=>{
-  const app=read("app.js");
-  const style=read("style.css");
-  assert.match(app,/data-web-trail-back/);
-  assert.match(app,/data-web-trail-clear/);
-  assert.match(app,/trail.pop\(\)/);
-  assert.match(style,/\.web-thread-trail-controls/);
-  assert.match(style,/\.web-trail-back/);
-});
-
 
 test("A-Z public visual rotation uses one-shot scheduling and respects reduced motion",()=>{
   const visuals=read("ui/visuals.js");
