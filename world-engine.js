@@ -6,7 +6,7 @@ const esc=v=>String(v??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&g
 const safeDecode=value=>{try{return decodeURIComponent(String(value??""));}catch(_e){return String(value??"");}};
 const coll=(name,fallback=[])=>{const v=window[name];return Array.isArray(v)?v:(v&&Array.isArray(v.records)?v.records:fallback)};
 const state={tab:"atlas",q:"",type:"ALL",selected:null,trail:[],visited:[],eyeOpen:false,exploreOpen:false,outsideOpen:false,moreOpen:false,returningFrom:null,returnFlash:null,street:null,roomOrigin:null,attentionSince:0,attentionNoticed:false,focusOrigin:null,focusDetailRequest:false,focusRestoreRequest:false};
-const tabs=[["atlas","ATLAS","world"],["people","THE PEOPLE","person"],["places","PLACES","world"],["moments","MOMENTS","moment"],["objects","OBJECTS","world"],["fragments","FRAGMENTS","photo-negative"],["bodies","BODIES","empty-chair"],["proof","PROOF","key"],["path","PATH","web"],["timeline","TIMELINE","now"],["symbols","SYMBOLS","daisy"],["trace","TRACE","web"],["trails","TRAILS","web"]];function glyph(name,label){const safe=String(name||"").replace(/[^a-z0-9-]/gi,"");if(!safe)return "";return '<svg class="escie-symbol-glyph world-entry-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#'+esc(safe)+'"></use></svg>';}
+const tabs=[["atlas","WORLD","world"],["people","PEOPLE","person"],["places","PLACES","world"],["moments","MOMENTS","moment"],["objects","OBJECTS","world"],["art","ART","art"],["fragments","FRAGMENTS","photo-negative"],["proof","PROOF","key"],["bodies","BODIES","empty-chair"],["archives","ARCHIVES","archive"],["trace","TRACE","web"]];function glyph(name,label){const safe=String(name||"").replace(/[^a-z0-9-]/gi,"");if(!safe)return "";return '<svg class="escie-symbol-glyph world-entry-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#'+esc(safe)+'"></use></svg>';}
 const raf=typeof requestAnimationFrame==="function"?requestAnimationFrame:fn=>setTimeout(fn,0);
 const caf=typeof cancelAnimationFrame==="function"?cancelAnimationFrame:clearTimeout;
 const reduceMotion=()=>typeof window.matchMedia==="function"&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -30,7 +30,7 @@ function isPublicWorldRecord(r){
  return true;
 }
 function records(){
- const sources=[coll("ESCIE_LIVE_RECORDS"),coll("ESCIE_MUSIC"),coll("ESCIE_PEOPLE"),coll("ESCIE_LOCATIONS"),coll("ESCIE_MOMENTS"),coll("ESCIE_OBJECTS"),coll("ESCIE_FRAGMENTS"),coll("ESCIE_BODIES"),coll("ESCIE_PATHS"),coll("ESCIE_PROOF"),coll("ESCIE_NODES"),coll("ESCIE_PROJECTS"),coll("ESCIE_ARCHIVE"),coll("ESCIE_INVESTIGATION"),coll("ESCIE_SYMBOLS")];
+ const sources=[coll("ESCIE_LIVE_RECORDS"),coll("ESCIE_MUSIC"),coll("ESCIE_PEOPLE"),coll("ESCIE_LOCATIONS"),coll("ESCIE_MOMENTS"),coll("ESCIE_OBJECTS"),coll("ESCIE_FRAGMENTS"),coll("ESCIE_BODIES"),coll("ESCIE_PROOF"),coll("ESCIE_NODES"),coll("ESCIE_PROJECTS"),coll("ESCIE_ARCHIVE"),coll("ESCIE_INVESTIGATION"),coll("ESCIE_VISUAL_ART"),coll("ESCIE_WRITING"),coll("ESCIE_POETRY"),coll("ESCIE_DRAWINGS"),coll("ESCIE_PAINTINGS"),coll("ESCIE_OTHER_ART")];
  const seen=new Set(),out=[];
  sources.flat().forEach(r=>{if(!isPublicWorldRecord(r))return;const id=r.id||r.recordId||r.slug||r.title;if(id&&!seen.has(id)){seen.add(id);out.push({...r,id})}});
  return out;
@@ -50,16 +50,28 @@ function isDeepWorldType(r){return ["FRAGMENT","PROOF","BODY","ARCHIVE"].include
 function title(r){return String(r.title||r.name||r.label||"UNTITLED").trim()||"UNTITLED"}
 function searchText(r){return [r.id,r.type,r.kind,r.category,r.title,r.name,r.label,r.description,r.summary,r.story,r.date,r.release_date,r.moment_date,r.created_at,Array.isArray(r.tags)?r.tags.join(" "):""] .map(v=>String(v??"")).join(" ").toLowerCase()}
 function rels(){
- const local=coll("ESCIE_RELATIONSHIPS").concat(coll("ESCIE_LIVE_RELATIONSHIPS"));
- const seen=new Set();
- return local.concat(coll("ESCIE_RELATIONSHIPS_PUBLIC")).map(r=>r&&({...r,from:r.from||r.source_id||r.sourceId,to:r.to||r.target_id||r.targetId})).filter(r=>{
-   if(!r||!r.from||!r.to)return false;
-   if(r.visibility!==undefined&&String(r.visibility).toLowerCase()!=="public")return false;
-   if(r.status!==undefined&&["withheld","archived","inactive"].includes(String(r.status).toLowerCase()))return false;
-   const key=[String(r.from),String(r.type||"related"),String(r.to)].join("|");
-   if(seen.has(key))return false;
-   seen.add(key);return true;
+ const registry=window.ESCIE_RECORD_REGISTRY;
+ if(registry&&typeof registry.publicRelationships==="function"){
+   return registry.publicRelationships().map(r=>({
+     ...r,
+     from:r.from||r.source_id,
+     to:r.to||r.target_id,
+     type:r.type||r.relationship_type
+   }));
+ }
+ const web=window.ESCIE_WEB;
+ const local=coll("ESCIE_RELATIONSHIPS");
+ const seen=new Set(),out=[];
+ local.forEach(raw=>{
+   const r=web&&typeof web.normalizeRelationship==="function"?web.normalizeRelationship(raw):raw;
+   if(!r||!r.source_id||!r.target_id)return;
+   if(r.visibility!=="PUBLIC"||r.release_status!=="RELEASED"||r.status!=="ACTIVE")return;
+   const key=[r.source_id,r.relationship_type,r.target_id].join("|");
+   if(seen.has(key))return;
+   seen.add(key);
+   out.push({...r,from:r.source_id,to:r.target_id,type:r.relationship_type});
  });
+ return out;
 }
 function related(id){
  const map=new Map(records().map(r=>[String(r.id),r])),out=[];
