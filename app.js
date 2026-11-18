@@ -1631,7 +1631,7 @@ function renderClothing(){
     return ({
       now:"NOW",
       art:"ART",
-      world:"MY WORLD",
+      world:"WORLD",
       trace:"TRACE",
       archives:"THE ARCHIVES",
       investigation:"THE CASE FILES",
