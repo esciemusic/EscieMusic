@@ -16,7 +16,7 @@ console.log("TRACE experience pass 2: PASS");
 assert.match(app,/trace-identity-field/);
 assert.match(app,/MONTRÉAL \/ SIGNAL FIELD \/ HERE/);
 assert.match(app,/trace-status-/);
-assert.match(css,/THE WEB \/ identity pass 3/);
+assert.match(css,/TRACE \/ identity pass 3/);
 assert.match(css,/traceSignalDrift/);
 assert.match(css,/prefers-reduced-motion/);
 console.log("TRACE identity pass 3: PASS");
