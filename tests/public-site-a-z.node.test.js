@@ -1482,3 +1482,18 @@ test("A-Z Pass 15 makes Trace backtracking local, explicit, and non-duplicating"
   assert.match(style,/\.world-trace-controls/);
   assert.match(style,/\.world-trace-back/);
 });
+
+
+test("A-Z Pass 16 decouples the public Trace runtime from legacy Web vocabulary",()=>{
+  const app=read("app.js");
+  const architecture=read("ARCHITECTURE.md");
+  const relationship=read("THE_WEB_ARCHITECTURE.md");
+  assert.match(app,/function renderTrace\(\)/);
+  assert.match(app,/ESCIE_RUNTIME\.traceFilters/);
+  assert.match(app,/ESCIE_RUNTIME\.traceTrail/);
+  assert.doesNotMatch(app,/function renderWeb\(\)/);
+  assert.doesNotMatch(app,/ESCIE_RUNTIME\.webFilters/);
+  assert.doesNotMatch(app,/ESCIE_RUNTIME\.webTrail/);
+  assert.match(architecture,/TRACE \/ relationship architecture/);
+  assert.match(relationship,/TRACE \/ RELATIONSHIP ENGINE/);
+});
