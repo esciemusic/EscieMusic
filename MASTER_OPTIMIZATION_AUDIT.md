@@ -8,7 +8,7 @@ Scope: Public ESCIE doorway + EscieCentral synchronized control layer
 The system has been rebuilt around the approved ESCIE architecture rather than the earlier legacy navigation model.
 
 Canonical public order:
-NOW → ART → THE WORLD → THE WEB → THE ARCHIVES → THE CASE FILES → GLASS EYE → ESCIE
+NOW → ART → THE WORLD → TRACE → THE ARCHIVES → THE CASE FILES → GLASS EYE → ESCIE
 
 Canonical identity:
 ESCIE THE ARTIST. THE ART SPEAKS FOR ITSELF.
@@ -68,7 +68,7 @@ Completed and hardened:
 - Mobile/touch hardening for accordions, filters, controls, media and horizontal overflow.
 
 Final Pass 2 targets audited:
-- THE WEB filter/search lifecycle.
+- TRACE filter/search lifecycle.
 - THE ARCHIVES record expansion.
 - THE CASE FILES disclosure/empty-state behavior.
 - ESCIE identity presentation.
@@ -111,7 +111,7 @@ THE WORLD
 - Physical clothing layer is structurally inside THE WORLD.
 - Merchandise remains locked/hidden until the commerce release gate opens.
 
-THE WEB
+TRACE
 - Public relationship records only.
 - Relationship/category/type filters are consolidated into one change lifecycle.
 - Search is debounced.
