@@ -2005,7 +2005,7 @@ main > .site-section:not(#entry) .section-drop-content{padding:18px 0 8px}
 main > #now{--section-accent:#4da3ff;--section-glow:rgba(77,163,255,.10)}
 main > #art{--section-accent:#9b59ff;--section-glow:rgba(155,89,255,.10)}
 main > #world{--section-accent:#4da3ff;--section-glow:rgba(77,163,255,.10)}
-main > #web{--section-accent:#4da3ff;--section-glow:rgba(77,163,255,.08)}
+main > #trace{--section-accent:#4da3ff;--section-glow:rgba(77,163,255,.08)}
 main > #archives{--section-accent:#9a9da3;--section-glow:rgba(154,157,163,.07)}
 main > #investigation{--section-accent:#6f3faf;--section-glow:rgba(111,63,175,.08)}
 main > #glass-eye{--section-accent:#4da3ff;--section-glow:rgba(77,163,255,.08)}
