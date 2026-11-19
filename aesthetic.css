@@ -3549,7 +3549,7 @@ html[data-theme="light"] .world-trace-subhead h4,html[data-theme="light"] .world
 html[data-theme="light"] .world-trace-subhead p,html[data-theme="light"] .world-trace-music small{color:rgba(23,23,26,.52)}
 @media(max-width:700px){.world-trace-music{padding:.85rem 0}.world-trace-music:hover,.world-trace-music:focus-visible{padding-left:.2rem}}
 .world-trace-foot{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-top:1rem;color:rgba(216,212,202,.38);font:8px/1.4 var(--escie-font-mono);letter-spacing:.08em;text-transform:uppercase}
-.world-trace-clear{border:0;background:transparent;color:rgba(216,212,202,.45);font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer}
+.world-trace-controls{display:inline-flex;align-items:center;gap:.8rem}.world-trace-back,.world-trace-clear{border:0;background:transparent;color:rgba(216,212,202,.45);font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer}.world-trace-back:hover,.world-trace-back:focus-visible,
 .world-trace-clear:hover,.world-trace-clear:focus-visible{color:var(--escie-aesthetic-purple);outline:none}
 html[data-theme="light"] .world-trace-head h3,html[data-theme="light"] .world-trace-empty h3,html[data-theme="light"] .world-trace-copy strong,html[data-theme="light"] .world-trace-return strong{color:#17171a}
 html[data-theme="light"] .world-trace-head p,html[data-theme="light"] .world-trace-empty p{color:rgba(23,23,26,.55)}
