@@ -123,7 +123,7 @@ CENTRAL → CASE FILES → PUBLIC ESCIE → AUDIENCE → CASE FILES
 - NOW — current pulse.
 - ART — things ESCIE makes.
 - THE WORLD — Montréal and physical reality.
-- THE WEB — genuine relationships only.
+- TRACE — genuine relationships only.
 - ARCHIVE — memory of released public work.
 - THE CASE FILES — deeper approved investigation layers.
 - GLASS EYE — seeing/hearing through the screen.
