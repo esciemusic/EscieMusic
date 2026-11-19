@@ -891,9 +891,9 @@ test("A-Z Pass 3 THE WEB public relationship projection stays sanitized and fail
 
 test("A-Z Pass 3 THE WEB connection expansion stays local and links back into public records",()=>{
   const app=read("app.js");
-  assert.match(app,/const webConnection=event\.target\.closest\("\[data-trace-connection-toggle\]"\)/);
-  assert.match(app,/const detail=webConnection\.parentElement&&webConnection\.parentElement\.querySelector\("\.trace-connection-detail"\)/);
-  assert.match(app,/webConnection\.setAttribute\("aria-expanded"/);
+  assert.match(app,/const traceConnection=event\.target\.closest\("\[data-trace-connection-toggle\]"\)/);
+  assert.match(app,/const detail=traceConnection\.parentElement&&traceConnection\.parentElement\.querySelector\("\.trace-connection-detail"\)/);
+  assert.match(app,/traceConnection\.setAttribute\("aria-expanded"/);
   assert.match(app,/data-record-id=/);
   assert.match(app,/OPEN [^"]*escapeHTML\(recordTitle\(from\)\.toUpperCase\(\)/);
   assert.match(app,/OPEN [^"]*escapeHTML\(recordTitle\(to\)\.toUpperCase\(\)/);
