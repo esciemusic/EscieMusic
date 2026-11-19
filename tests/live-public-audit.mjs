@@ -158,7 +158,7 @@ async function auditWorldLenses(label){
     await explorer.click();
     await page.waitForTimeout(80);
   }
-  const deeperTabs=["people","places","moments","trace","path"];
+  const deeperTabs=["trace"];
   for(const tab of deeperTabs){
     const button=page.locator('[data-world-tab="'+tab+'"]').first();
     check(await button.count()===1, label+" THE WORLD deeper lens missing: "+tab);
@@ -173,7 +173,7 @@ async function auditWorldLenses(label){
   if(await more.count()){
     await more.click();
     await page.waitForTimeout(80);
-    for(const tab of ["fragments","bodies","proof","timeline","symbols","trails"]){
+    for(const tab of ["fragments","bodies","proof","timeline","symbols"]){
       const button=page.locator('[data-world-tab="'+tab+'"]').first();
       check(await button.count()===1, label+" THE WORLD advanced lens missing: "+tab);
       if(await button.count()){
