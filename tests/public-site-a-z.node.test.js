@@ -1416,7 +1416,7 @@ test("A-Z Pass 11 makes the constellation an emergent Trace state",()=>{
   assert.match(engine,/Legitimate connections become visible/);
   assert.match(engine,/const rel=related\(prev\.id\)/);
   assert.match(engine,/world-trace-constellation-groups/);
-  assert.match(style,/\\.world-trace-constellation/);
+  assert.match(style,/\.world-trace-constellation/);
   assert.match(style,/\\.world-trace-constellation-group/);
 });
 
