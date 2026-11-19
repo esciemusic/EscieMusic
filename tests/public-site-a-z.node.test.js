@@ -899,7 +899,7 @@ test("A-Z Pass 3 THE WEB connection expansion stays local and links back into pu
   assert.match(app,/OPEN [^"]*escapeHTML\(recordTitle\(to\)\.toUpperCase\(\)/);
 });
 
-test("A-Z Pass 3 THE WEB empty state preserves the Glass Eye participation doorway",()=>{
+test("A-Z Pass 3 TRACE empty state preserves the Glass Eye participation doorway",()=>{
   const app=read("app.js");
   assert.match(app,/THE PUBLIC GRAPH IS QUIET/);
   assert.match(app,/data-web-participate/);
@@ -1307,7 +1307,7 @@ test("A-Z World home architecture uses Montréal as home and direct room routes"
    assert.match(app,/const route = \/\^\(world-node=\|world-tab=\)\/\.test\(hashRoute\) \? "world" : hashRoute;/);
 });
 
-test("A-Z Pass 5 makes The Web a thread discovery layer",()=>{
+test("A-Z Pass 5 makes Trace a thread discovery layer",()=>{
   const app=read("app.js");
   const style=read("style.css");
   assert.match(app,/FOLLOW THE THREAD/);
@@ -1321,7 +1321,7 @@ test("A-Z Pass 5 makes The Web a thread discovery layer",()=>{
   assert.match(style,/\.web-discovery-actions/);
 });
 
-test("A-Z Pass 6 exposes legitimate next steps from Web connections",()=>{
+test("A-Z Pass 6 exposes legitimate next steps from Trace connections",()=>{
   const app=read("app.js");
   const style=read("style.css");
   assert.match(app,/WHERE THIS THREAD CAN GO/);
@@ -1342,7 +1342,7 @@ test("A-Z Pass 7 protects established Montréal neighbourhood relationships",()=
   assert.match(rel,/context:"Rosemont is a Montréal neighbourhood/);
 });
 
-test("A-Z Pass 8 protects Web hub context",()=>{
+test("A-Z Pass 8 protects Trace hub context",()=>{
   const app=read("app.js");
   const style=read("style.css");
   assert.match(app,/selectedConnectionTypes/);
@@ -1350,7 +1350,7 @@ test("A-Z Pass 8 protects Web hub context",()=>{
   assert.match(style,/\.web-hub-summary/);
 });
 
-test("A-Z Pass 9 protects Web thread path navigation",()=>{
+test("A-Z Pass 9 protects Trace thread path navigation",()=>{
   const app=read("app.js");
   const style=read("style.css");
   assert.match(app,/webTrail/);
@@ -1360,7 +1360,7 @@ test("A-Z Pass 9 protects Web thread path navigation",()=>{
   assert.match(style,/\.web-trail-node/);
 });
 
-test("A-Z Pass 10 protects semantic Web thread paths",()=>{
+test("A-Z Pass 10 protects semantic Trace thread paths",()=>{
   const app=read("app.js");
   const style=read("style.css");
   assert.match(app,/trailEdges/);
@@ -1369,7 +1369,7 @@ test("A-Z Pass 10 protects semantic Web thread paths",()=>{
   assert.match(style,/\.web-trail-step/);
 });
 
-test("A-Z Pass 11 protects Web thread backtracking",()=>{
+test("A-Z Pass 11 protects Trace thread backtracking",()=>{
   const app=read("app.js");
   const style=read("style.css");
   assert.match(app,/data-web-trail-back/);
