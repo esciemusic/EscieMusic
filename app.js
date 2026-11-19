@@ -14,7 +14,7 @@
     initialized: false,
     ready: false,
     universeContract: null,
-    webTrail: []
+    traceTrail: []
   };
 
   function byId(id) {
@@ -940,9 +940,9 @@
       '</div>';
   }
 
-  function renderWeb(){
+  function renderTrace(){
     const container=byId("web-container"); if(!container)return;
-    const state=ESCIE_RUNTIME.webFilters||{};
+    const state=ESCIE_RUNTIME.traceFilters||{};
     const all=getPublicRelationshipRecords();
     const records=getAllPublicRecords();
     const byIdMap=new Map(records.filter(Boolean).map(record=>[recordId(record),record]));
@@ -968,7 +968,7 @@
       return '<button type="button" class="web-record-result" data-record-id="'+escapeHTML(recordId(r))+'"><strong>'+escapeHTML(recordTitle(r))+'</strong><span>'+escapeHTML(r.type||"record")+' · '+(links.length?links.length+" CONNECTION"+(links.length===1?"":"S"):"NO CONNECTIONS YET")+'</span></button>';
     }).join("");
 
-    const trailIds=Array.isArray(ESCIE_RUNTIME.webTrail)?ESCIE_RUNTIME.webTrail:[];
+    const trailIds=Array.isArray(ESCIE_RUNTIME.traceTrail)?ESCIE_RUNTIME.traceTrail:[];
     const trailRecords=trailIds.map(id=>byIdMap.get(id)).filter(Boolean);
     const trailEdges=trailRecords.slice(1).map((node,index)=>{
       const fromId=recordId(trailRecords[index]);
@@ -979,7 +979,7 @@
     const trailMarkup=trailRecords.length
       ? '<div class="web-thread-trail">'+
         '<div class="web-thread-trail-head"><span class="eyebrow">THREAD PATH</span><span>'+trailRecords.length+' STEPS</span></div>'+
-        '<div class="web-thread-trail-controls">'+(canStepBack?'<button type="button" class="web-trail-back" data-web-trail-back>BACK ONE STEP</button>':"")+'<button type="button" class="web-trail-clear" data-web-trail-clear>CLEAR PATH</button></div><div class="web-thread-trail-list">'+trailRecords.map((node,index)=>{
+        '<div class="web-thread-trail-controls">'+(canStepBack?'<button type="button" class="web-trail-back" data-trace-trail-back>BACK ONE STEP</button>':"")+'<button type="button" class="web-trail-clear" data-trace-trail-clear>CLEAR PATH</button></div><div class="web-thread-trail-list">'+trailRecords.map((node,index)=>{
           const edge=index>0?trailEdges[index-1]:null;
           const relation=edge?String(edge.type||"CONNECTED_TO").replace(/_/g," "):"START";
           return '<span class="web-trail-step">'+(index>0?'<i aria-hidden="true">'+escapeHTML(relation)+'</i>':"")+'<button type="button" class="web-trail-node" data-record-id="'+escapeHTML(recordId(node))+'" aria-label="Return to '+escapeHTML(recordTitle(node))+'"><span>'+String(index+1).padStart(2,"0")+'</span><strong>'+escapeHTML(recordTitle(node))+'</strong></button></span>';
@@ -1014,7 +1014,7 @@
       const nextStep=nextNodes.length ? '<div class="web-next-step"><p class="eyebrow">WHERE THIS THREAD CAN GO</p><div class="web-next-nodes">'+nextNodes.map(node=>'<button type="button" class="web-next-node" data-record-id="'+escapeHTML(recordId(node))+'"><strong>'+escapeHTML(recordTitle(node))+'</strong><span>FOLLOW '+escapeHTML(String(node.type||"RECORD").toUpperCase())+'</span></button>').join("")+'</div></div>' : '<p class="web-next-quiet">NO NEXT PUBLIC CONNECTION IS ESTABLISHED YET.</p>';
       const statusClass=displayState.toLowerCase().replace(/[^a-z0-9]+/g,"-");
       return '<article class="web-connection web-status-'+statusClass+'" data-relationship-id="'+escapeHTML(relationship.id||("connection-"+index))+'">'+
-        '<button type="button" class="web-connection-main" data-web-connection-toggle aria-expanded="false">'+
+        '<button type="button" class="web-connection-main" data-trace-connection-toggle aria-expanded="false">'+
           '<span class="web-node"><strong>'+escapeHTML(recordTitle(from))+'</strong><em>'+escapeHTML(from.type||"record")+'</em></span>'+
           '<span class="web-connection-line" aria-hidden="true"><i></i><b>'+escapeHTML(relationType)+'</b><i></i></span>'+
           '<span class="web-node"><strong>'+escapeHTML(recordTitle(to))+'</strong><em>'+escapeHTML(to.type||"record")+'</em></span>'+
@@ -1029,21 +1029,21 @@
     }).join("");
 
     const clear=state.search||state.record||state.type
-      ? '<button type="button" class="web-filter-clear" data-web-filter-clear>CLEAR THREAD</button>' : "";
+      ? '<button type="button" class="web-filter-clear" data-trace-filter-clear>CLEAR THREAD</button>' : "";
 
     container.innerHTML=
       '<div class="web-experience web-identity-field" data-web-identity="montreal-signal">'+motifMarkup("web")+
       '<div class="web-signal-grid" aria-hidden="true"></div><div class="web-montreal-trace" aria-hidden="true">MONTRÉAL / SIGNAL FIELD / HERE</div>'+
       '<div class="web-experience-head"><p class="eyebrow">TRACE</p><h3>FOLLOW THE THREAD.</h3><p>THE SPACE BETWEEN THINGS. START WITH ONE RECORD. FOLLOW WHERE IT LEADS.</p></div>'+
       '<div class="web-discovery-tools">'+
-        '<label>FIND A THREAD<input type="search" data-web-search value="'+escapeHTML(state.search||"")+'" placeholder="People, places, moments, fragments…"></label>'+
-        '<div class="web-discovery-selects"><label>START HERE<select data-web-filter="record"><option value="">ANY CONNECTED NODE</option>'+nodeOptions+'</select></label><label>CONNECTION<select data-web-filter="type"><option value="">ALL CONNECTIONS</option>'+typeOptions+'</select></label></div>'+
+        '<label>FIND A THREAD<input type="search" data-trace-search value="'+escapeHTML(state.search||"")+'" placeholder="People, places, moments, fragments…"></label>'+
+        '<div class="web-discovery-selects"><label>START HERE<select data-trace-filter="record"><option value="">ANY CONNECTED NODE</option>'+nodeOptions+'</select></label><label>CONNECTION<select data-trace-filter="type"><option value="">ALL CONNECTIONS</option>'+typeOptions+'</select></label></div>'+
         '<div class="web-discovery-actions"><p class="web-discovery-count">'+escapeHTML(String(relationships.length))+' CONNECTION'+(relationships.length===1?"":"S")+' · '+escapeHTML(String(connectedIds.size))+' NODES</p>'+clear+'</div>'+
       '</div>'+
       '<div class="web-record-results">'+recordResults+'</div>'+
       trailMarkup+
       networkMap+
-      (list?'<div class="web-connection-field"><div class="web-field-label"><span>PUBLIC CONNECTIONS</span><span>'+relationships.length+'</span></div>'+list+'</div>':'<div class="web-empty-state"><p class="eyebrow">THE PUBLIC GRAPH IS QUIET</p><h3>NO PUBLIC THREADS HAVE BEEN ESTABLISHED HERE YET.</h3><p>The system stays honest when a connection does not exist. Public findings can enter through Glass Eye and become a thread only after they earn a place in the record.</p><button type="button" class="web-participate-link" data-web-participate>BRING A FINDING THROUGH GLASS EYE</button></div>')+
+      (list?'<div class="web-connection-field"><div class="web-field-label"><span>PUBLIC CONNECTIONS</span><span>'+relationships.length+'</span></div>'+list+'</div>':'<div class="web-empty-state"><p class="eyebrow">THE PUBLIC GRAPH IS QUIET</p><h3>NO PUBLIC THREADS HAVE BEEN ESTABLISHED HERE YET.</h3><p>The system stays honest when a connection does not exist. Public findings can enter through Glass Eye and become a thread only after they earn a place in the record.</p><button type="button" class="web-participate-link" data-trace-participate>BRING A FINDING THROUGH GLASS EYE</button></div>')+
       '<p class="web-governing-principle">EVERYTHING CAN CONNECT. NOTHING CONNECTS WITHOUT A REASON.</p>'+
       '</div>';
   }
@@ -1254,7 +1254,7 @@ function renderClothing(){
           '<div><span class="eyebrow">CHECK</span><strong>EVIDENCE</strong><p>What can be documented, sourced or reviewed?</p></div>' +
           '<div><span class="eyebrow">LEAVE</span><strong>UNRESOLVED</strong><p>What remains open without being turned into fact?</p></div>' +
         '</div>' +
-        '<button type="button" class="case-participate-link" data-web-participate>BRING A FINDING THROUGH GLASS EYE</button>' +
+        '<button type="button" class="case-participate-link" data-trace-participate>BRING A FINDING THROUGH GLASS EYE</button>' +
       '</div>';
       return;
     }
@@ -1814,24 +1814,24 @@ function renderClothing(){
     });
 
     document.addEventListener("change", event => {
-      const control=event.target.closest("[data-web-filter],[data-web-record-type]");
+      const control=event.target.closest("[data-trace-filter],[data-trace-record-type]");
       if(!control)return;
-      ESCIE_RUNTIME.webFilters=ESCIE_RUNTIME.webFilters||{};
-      const key=control.getAttribute("data-web-filter")||"recordType";
-      ESCIE_RUNTIME.webFilters[key]=control.value||"";
-      renderWeb();
+      ESCIE_RUNTIME.traceFilters=ESCIE_RUNTIME.traceFilters||{};
+      const key=control.getAttribute("data-trace-filter")||"recordType";
+      ESCIE_RUNTIME.traceFilters[key]=control.value||"";
+      renderTrace();
     });
 
     let webSearchTimer=null;
     document.addEventListener("input", event => {
-      const search=event.target.closest("[data-web-search]");
+      const search=event.target.closest("[data-trace-search]");
       if(!search)return;
-      ESCIE_RUNTIME.webFilters=ESCIE_RUNTIME.webFilters||{};
-      ESCIE_RUNTIME.webFilters.search=search.value||"";
+      ESCIE_RUNTIME.traceFilters=ESCIE_RUNTIME.traceFilters||{};
+      ESCIE_RUNTIME.traceFilters.search=search.value||"";
       clearTimeout(webSearchTimer);
       webSearchTimer=setTimeout(()=>{
-        renderWeb();
-        const next=byId("web-container")&&byId("web-container").querySelector("[data-web-search]");
+        renderTrace();
+        const next=byId("web-container")&&byId("web-container").querySelector("[data-trace-search]");
         if(next){next.focus();next.setSelectionRange(next.value.length,next.value.length);}
       },120);
     });
@@ -1845,42 +1845,42 @@ function renderClothing(){
     });
 
     document.addEventListener("click", event => {
-      const webConnection=event.target.closest("[data-web-connection-toggle]");
+      const webConnection=event.target.closest("[data-trace-connection-toggle]");
       if(webConnection){
         const detail=webConnection.parentElement&&webConnection.parentElement.querySelector(".web-connection-detail");
         if(detail){const open=detail.hidden===false;detail.hidden=open;webConnection.setAttribute("aria-expanded",open?"false":"true");}
         return;
       }
-      const webParticipate=event.target.closest("[data-web-participate]");
+      const webParticipate=event.target.closest("[data-trace-participate]");
       if(webParticipate){
         const glass=byId("glass-eye"),button=glass&&glass.querySelector(".section-drop-trigger");
         if(button&&!glass.classList.contains("section-open"))button.click();
         return;
       }
-      const webClear=event.target.closest("[data-web-filter-clear]");
-      if(webClear){ ESCIE_RUNTIME.webFilters={}; renderWeb(); return; }
-      const webTrailBack=event.target.closest("[data-web-trail-back]");
-      if(webTrailBack){
-        const trail=Array.isArray(ESCIE_RUNTIME.webTrail)?ESCIE_RUNTIME.webTrail:[];
+      const webClear=event.target.closest("[data-trace-filter-clear]");
+      if(webClear){ ESCIE_RUNTIME.traceFilters={}; renderTrace(); return; }
+      const traceTrailBack=event.target.closest("[data-trace-trail-back]");
+      if(traceTrailBack){
+        const trail=Array.isArray(ESCIE_RUNTIME.traceTrail)?ESCIE_RUNTIME.traceTrail:[];
         if(trail.length>1){
           trail.pop();
-          ESCIE_RUNTIME.webFilters=ESCIE_RUNTIME.webFilters||{};
-          ESCIE_RUNTIME.webFilters.record=trail[trail.length-1]||"";
-          renderWeb();
+          ESCIE_RUNTIME.traceFilters=ESCIE_RUNTIME.traceFilters||{};
+          ESCIE_RUNTIME.traceFilters.record=trail[trail.length-1]||"";
+          renderTrace();
         }
         return;
       }
-      const webTrailClear=event.target.closest("[data-web-trail-clear]");
-      if(webTrailClear){
-        ESCIE_RUNTIME.webTrail=[];
-        ESCIE_RUNTIME.webFilters=ESCIE_RUNTIME.webFilters||{};
-        ESCIE_RUNTIME.webFilters.record="";
-        renderWeb();
+      const traceTrailClear=event.target.closest("[data-trace-trail-clear]");
+      if(traceTrailClear){
+        ESCIE_RUNTIME.traceTrail=[];
+        ESCIE_RUNTIME.traceFilters=ESCIE_RUNTIME.traceFilters||{};
+        ESCIE_RUNTIME.traceFilters.record="";
+        renderTrace();
         return;
       }
 
 
-      const webControl=event.target.closest("[data-web-filter],[data-web-record-type]");
+      const webControl=event.target.closest("[data-trace-filter],[data-trace-record-type]");
       if(webControl)return;
 
       const clearFilters=event.target.closest(".record-filter-clear");
@@ -1931,8 +1931,8 @@ function renderClothing(){
             const hash = category ? route : "#" + target;
 
             if (route === "#web" && destination.record) {
-              ESCIE_RUNTIME.webFilters = ESCIE_RUNTIME.webFilters || {};
-              ESCIE_RUNTIME.webFilters.record = recordId(destination.record);
+              ESCIE_RUNTIME.traceFilters = ESCIE_RUNTIME.traceFilters || {};
+              ESCIE_RUNTIME.traceFilters.record = recordId(destination.record);
             }
 
             history.pushState(null, "", hash);
@@ -1961,16 +1961,16 @@ function renderClothing(){
       const webContainer = byId("web-container");
       if (webContainer && webContainer.contains(trigger)) {
         const id = recordId(record);
-        ESCIE_RUNTIME.webTrail = Array.isArray(ESCIE_RUNTIME.webTrail) ? ESCIE_RUNTIME.webTrail : [];
-        if (ESCIE_RUNTIME.webTrail[ESCIE_RUNTIME.webTrail.length - 1] !== id) {
-          ESCIE_RUNTIME.webTrail.push(id);
+        ESCIE_RUNTIME.traceTrail = Array.isArray(ESCIE_RUNTIME.traceTrail) ? ESCIE_RUNTIME.traceTrail : [];
+        if (ESCIE_RUNTIME.traceTrail[ESCIE_RUNTIME.traceTrail.length - 1] !== id) {
+          ESCIE_RUNTIME.traceTrail.push(id);
         }
-        const existingIndex=ESCIE_RUNTIME.webTrail.indexOf(id);
-        if(existingIndex>=0) ESCIE_RUNTIME.webTrail=ESCIE_RUNTIME.webTrail.slice(0,existingIndex+1);
-        else ESCIE_RUNTIME.webTrail=ESCIE_RUNTIME.webTrail.slice(-8);
-        ESCIE_RUNTIME.webFilters = ESCIE_RUNTIME.webFilters || {};
-        ESCIE_RUNTIME.webFilters.record = id;
-        renderWeb();
+        const existingIndex=ESCIE_RUNTIME.traceTrail.indexOf(id);
+        if(existingIndex>=0) ESCIE_RUNTIME.traceTrail=ESCIE_RUNTIME.traceTrail.slice(0,existingIndex+1);
+        else ESCIE_RUNTIME.traceTrail=ESCIE_RUNTIME.traceTrail.slice(-8);
+        ESCIE_RUNTIME.traceFilters = ESCIE_RUNTIME.traceFilters || {};
+        ESCIE_RUNTIME.traceFilters.record = id;
+        renderTrace();
         return;
       }
 
@@ -2210,7 +2210,7 @@ function renderClothing(){
         renderProjects();
         renderClothing();
         renderMerch();
-        renderWeb();
+        renderTrace();
         renderArchive();
         renderInvestigation();
         renderAbout();
@@ -2524,7 +2524,7 @@ function renderClothing(){
     renderMerch();
     bindMerchFilters();
     renderWorld();
-    renderWeb();
+    renderTrace();
     renderArchive();
     renderInvestigation();
     renderAbout();
