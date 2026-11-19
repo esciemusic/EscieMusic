@@ -759,12 +759,23 @@ function traceConstellationMarkup(rs){
  if(ids.length<2)return "";
  const map=new Map(rs.map(function(r){return [String(r.id),r];}));
  const names=ids.map(function(id){return map.get(id);}).filter(Boolean).slice(-9);
- const edges=[];
- for(let i=1;i<names.length;i++){
-  const rel=related(names[i-1].id).find(function(x){return String(x.node.id)===String(names[i].id);});
-  if(rel)edges.push(rel.type||"related");
+ const groups=[],current=[];
+ for(let i=0;i<names.length;i++){
+  const node=names[i];
+  if(!current.length){current.push(node);continue;}
+  const prev=current[current.length-1];
+  const rel=related(prev.id).find(function(x){return String(x.node.id)===String(node.id);});
+  if(rel){current.push(node);}
+  else{if(current.length>1)groups.push(current.slice());current.length=0;current.push(node);}
  }
- return '<div class="world-trace-constellation"><div class="world-trace-subhead"><span class="world-kicker">CONSTELLATION</span><h4>THE THREAD IS BECOMING A PATTERN.</h4><p>Each legitimate connection adds another point to the constellation you are building through the World.</p></div><div class="world-trace-constellation-points">'+names.map(function(r){return '<span class="world-trace-constellation-point"><i aria-hidden="true"></i><strong>'+esc(title(r))+'</strong><small>'+esc(type(r))+'</small></span>';}).join("")+'</div><div class="world-trace-constellation-meta">'+esc(String(names.length))+' points · '+esc(String(edges.length))+' connected steps</div></div>';
+ if(current.length>1)groups.push(current.slice());
+ if(!groups.length)return "";
+ const points=groups.map(function(group){
+   return '<div class="world-trace-constellation-group">'+group.map(function(r){return '<span class="world-trace-constellation-point"><i aria-hidden="true"></i><strong>'+esc(title(r))+'</strong><small>'+esc(type(r))+'</small></span>';}).join("")+'</div>';
+ }).join("");
+ const pointCount=groups.reduce(function(n,g){return n+g.length;},0);
+ const linkCount=groups.reduce(function(n,g){return n+Math.max(0,g.length-1);},0);
+ return '<div class="world-trace-constellation"><div class="world-trace-subhead"><span class="world-kicker">CONSTELLATION</span><h4>THE THREAD IS BECOMING A PATTERN.</h4><p>Legitimate connections become visible as your route gathers into connected groups. Wandering can start another thread without pretending the two are related.</p></div><div class="world-trace-constellation-groups">'+points+'</div><div class="world-trace-constellation-meta">'+esc(String(pointCount))+' connected points · '+esc(String(linkCount))+' links · '+esc(String(groups.length))+' thread'+(groups.length===1?'':'s')+'</div></div>';
 }
 function traceView(){
  const rs=records();
