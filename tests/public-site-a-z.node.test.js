@@ -1402,7 +1402,7 @@ test("A-Z Pass 13 separates relationship threads from wandering discovery",()=>{
 
 test("A-Z Pass 12 distinguishes wandering from relationship threads",()=>{
   const engine=read("world-engine.js");
-  assert.match(engine,/relationship:"WANDERED"/);
+  assert.match(engine,/function pathContext\(\)/);\n  assert.match(engine,/WANDERED/);
   assert.match(engine,/memory of what you encountered through the World/);
   assert.match(engine,/steps\.length\+' point'/);
 });
@@ -1413,7 +1413,7 @@ test("A-Z Pass 11 makes the constellation an emergent Trace state",()=>{
   assert.match(engine,/function traceConstellationMarkup\(rs\)/);
   assert.match(engine,/THE THREAD IS BECOMING A PATTERN\./);
   assert.match(engine,/Legitimate connections become visible/);
-  assert.match(engine,/related\\(prev\\.id\\)/);
+  assert.match(engine,/const rel=related\\(prev\\.id\\)/);
   assert.match(engine,/world-trace-constellation-groups/);
   assert.match(style,/\\.world-trace-constellation/);
   assert.match(style,/\\.world-trace-constellation-group/);
