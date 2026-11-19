@@ -2350,7 +2350,7 @@ body.inspector-open{overflow:hidden}
 @media(max-width:700px){.hero-skyline{height:92px;margin-top:16px}.skyline-buildings{fill:rgba(242,242,237,.13)}.skyline-olympic{fill:rgba(242,242,237,.18)}.hero-skyline-distortion{inset:8% 0 4%;opacity:.68}.site-logo{padding:7px 8px;margin-left:-8px}}
 @media(prefers-reduced-motion:reduce){.hero-skyline-distortion{animation:none}}
 /* =========================================================
-   THE WEB / identity pass 3
+   TRACE / identity pass 3
    ========================================================= */
 .trace-experience{
   position:relative;
