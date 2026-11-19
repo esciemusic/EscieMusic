@@ -25,9 +25,9 @@ ESCIE is file-based. Content, world definitions, records, configuration, and sys
 The public World Engine is exploratory: search, type, connections, trails and Glass Eye context are allowed. It does not expose a reality-level filter. Ambiguity belongs in the records and their context, not in a player-facing sorting control.
 
 
-## THE WEB architecture
+## TRACE / relationship architecture
 
-THE WEB is the public relationship layer defined by `THE_WEB_ARCHITECTURE.md` and implemented by `relationship.js`.
+TRACE is the public relationship surface. The underlying relationship engine remains defined by `THE_WEB_ARCHITECTURE.md` (legacy filename retained during migration) and implemented by `relationship.js`.
 
 - Nodes resolve from the canonical record/registry layer.
 - Relationships are explicit FROM → TYPE → TO records.
