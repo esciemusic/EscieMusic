@@ -8,7 +8,7 @@ const read=p=>fs.readFileSync(path.join(root,p),"utf8");
 test("A-Z audit contract exists and names all public sections",()=>{
   const audit=read("PUBLIC_SITE_A_TO_Z_AUDIT.md");
   for(const letter of "ABCDEFGHIJKLMNOPQRSTUVWXYZ") assert.match(audit,new RegExp("\\b"+letter+"\\b"),"A-Z audit must cover "+letter);
-  for(const id of ["now","art","world","web","archives","investigation","glass-eye","escie"]) assert.match(audit,new RegExp(id.replace("-","\\-"),"i"));
+  for(const id of ["now","art","world","trace","archives","investigation","glass-eye","escie"]) assert.match(audit,new RegExp(id.replace("-","\\-"),"i"));
 });
 
 test("public registries and identity stay aligned",()=>{
@@ -20,7 +20,7 @@ test("public registries and identity stay aligned",()=>{
   assert.match(nodes,/role:"THE FATHER \/ THE MAN \/ THE MONSTER"/);
   assert.match(nodes,/description:"ESCIE THE ARTIST\. THE ART SPEAKS FOR ITSELF\."/);
   assert.match(symbols,/placements:\["archives","investigation"\]/);
-  assert.match(symbols,/name:"KEY"[\s\S]*placements:\["web"\]/);
+  assert.match(symbols,/name:"KEY"[\s\S]*placements:\["trace"\]/);
   assert.doesNotMatch(language,/ESCIE IS THE ARTIST\. THE WORK SPEAKS FROM HERE\./);
 });
 
@@ -39,7 +39,7 @@ test("public section semantics match the canonical World architecture",()=>{
 test("public section IDs remain canonical",()=>{
   const nav=read("navigation.js");
   const sections=read("data/public-sections.js");
-  for(const id of ["now","art","world","web","archives","investigation","glass-eye","escie"]){
+  for(const id of ["now","art","world","trace","archives","investigation","glass-eye","escie"]){
     assert.match(nav,new RegExp('id:"'+id+'"'));
     assert.match(sections,new RegExp('id:"'+id+'"'));
   }
@@ -73,7 +73,7 @@ test("A-Z Pass 1 locks the live shell to the eight-section model",()=>{
   assert.doesNotMatch(index,/data-visual-section="the-web"/);
   assert.doesNotMatch(index,/data-visual-section="archive"/);
   assert.match(visuals,/section:"art"/);
-  assert.match(visuals,/section:"web"/);
+  assert.match(visuals,/section:"trace"/);
   assert.match(visuals,/section:"archives"/);
   assert.doesNotMatch(visuals,/section:"work"/);
   assert.doesNotMatch(visuals,/section:"the-web"/);
@@ -114,7 +114,7 @@ test("A-Z Pass 3 public index follows visitor priority and restrained palette",(
   assert.match(navigation,/id:"art".*order:2/);
   assert.match(navigation,/id:"world".*order:3/);
   assert.match(navigation,/id:"glass-eye".*order:4/);
-  assert.match(navigation,/id:"web".*order:5/);
+  assert.match(navigation,/id:"trace".*order:5/);
   assert.match(navigation,/id:"archives".*order:6/);
   assert.match(navigation,/id:"investigation".*order:7/);
   assert.match(navigation,/id:"escie".*order:8/);
@@ -182,7 +182,7 @@ test("A-Z Pass 1 preserves the approved public experience surfaces",()=>{
   assert.match(nav,/id:"now"/);
   assert.match(nav,/id:"art"/);
   assert.match(nav,/id:"world"/);
-  assert.match(nav,/id:"web"/);
+  assert.match(nav,/id:"trace"/);
   assert.match(nav,/id:"archives"/);
   assert.match(nav,/id:"investigation"/);
   assert.match(nav,/id:"glass-eye"/);
@@ -239,7 +239,7 @@ test("A-Z Pass 1 keeps unreleased public registries sealed",()=>{
 
 test("A-Z Pass 1 keeps the canonical eight-section shell",()=>{
   const index=read("index.html");
-  for(const id of ["now","art","world","web","archives","investigation","glass-eye","escie"]){
+  for(const id of ["now","art","world","trace","archives","investigation","glass-eye","escie"]){
     assert.match(index,new RegExp('<section id="'+id+'"'));
   }
 });
@@ -1512,4 +1512,22 @@ test("A-Z Pass 17 removes legacy Web CSS and DOM vocabulary from the public Trac
   assert.doesNotMatch(index,/data-web-[a-z0-9-]+/);
   assert.match(index,/id="web"[^>]*class="site-section trace-section"/);
   assert.match(app,/byId\("trace-container"\)/);
+});
+
+
+test("A-Z Pass 18 makes Trace the canonical public route while preserving legacy Web links",()=>{
+  const app=read("app.js");
+  const navigation=read("navigation.js");
+  const nodes=read("data/nodes.js");
+  const sections=read("data/public-sections.js");
+  const symbols=read("data/symbols.js");
+  const router=read("ui/router.js");
+  const index=read("index.html");
+  assert.match(navigation,/id:"trace",label:"TRACE",target:"#trace"/);
+  assert.match(nodes,/id:"node-trace"[sS]*target:"#trace"[sS]*section:"trace"/);
+  assert.match(sections,/id:"trace"[sS]*role:"connection_surface"/);
+  assert.match(symbols,/placements:["world","trace"]/);
+  assert.match(app,/#trace/);
+  assert.match(index,/id="trace"[^>]*class="site-section trace-section"/);
+  assert.match(router,/web:"trace"/);
 });
