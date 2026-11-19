@@ -1497,3 +1497,19 @@ test("A-Z Pass 16 decouples the public Trace runtime from legacy Web vocabulary"
   assert.match(architecture,/TRACE \/ relationship architecture/);
   assert.match(relationship,/TRACE \/ RELATIONSHIP ENGINE/);
 });
+
+
+test("A-Z Pass 17 removes legacy Web CSS and DOM vocabulary from the public Trace surface",()=>{
+  const app=read("app.js");
+  const style=read("style.css");
+  const aesthetic=read("aesthetic.css");
+  const index=read("index.html");
+  assert.doesNotMatch(app,/\\bweb-[a-z0-9-]+\\b/);
+  assert.doesNotMatch(app,/\\bwebConnection\\b/);
+  assert.doesNotMatch(style,/\\bweb-[a-z0-9-]+\\b/);
+  assert.doesNotMatch(aesthetic,/\\bweb-[a-z0-9-]+\\b/);
+  assert.doesNotMatch(index,/class="[^"]*\\bweb-[a-z0-9-]+/);
+  assert.doesNotMatch(index,/data-web-[a-z0-9-]+/);
+  assert.match(index,/id="web"[^>]*class="site-section trace-section"/);
+  assert.match(app,/byId\\("trace-container"\\)/);
+});
