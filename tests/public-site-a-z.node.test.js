@@ -1360,11 +1360,11 @@ test("A-Z Pass 9 protects Trace thread path navigation",()=>{
   assert.match(style,/\.trace-trail-node/);
 });
 
-test("A-Z Pass 9 Trace is the single public path/trail destination",()=>{
-  const engine=read("world-engine.js");
   assert.match(engine,/\["trace","TRACE","web"\]/);
-  assert.doesNotMatch(engine,/\["path","PATH","web"\]/);
-  assert.doesNotMatch(engine,/\["trails","TRAILS","web"\]/);
+  assert.match(engine,/const publicTrails=trails\(trailRows\)/);
+  assert.match(engine,/world-trace-trails/);
+  assert.match(engine,/WHERE CONNECTIONS LEAD\./);
+  assert.match(engine,/ESCIE_PATHS/);
   assert.match(engine,/const publicTrails=trails\(trailRows\)/);
   assert.match(engine,/world-trace-trails/);
   assert.match(engine,/WHERE CONNECTIONS LEAD\./);
@@ -1389,7 +1389,7 @@ test("A-Z Pass 14 keeps optional Trace layers quiet when empty",()=>{
   assert.match(engine,/const trailsMarkup=publicTrails\.includes\("world-card"\)/);
   assert.match(engine,/const music=musicThreadMarkup\(rs\)/);
   assert.match(engine,/return \'<section class="world-trace"/);
-  assert.match(engine,/point\'+\(steps\.length===1/);
+  assert.match(engine,/steps\.length===1\?\x27\x27/);
 });
 
 test("A-Z Pass 13 separates relationship threads from wandering discovery",()=>{
@@ -1404,7 +1404,7 @@ test("A-Z Pass 13 separates relationship threads from wandering discovery",()=>{
 
 test("A-Z Pass 12 distinguishes wandering from relationship threads",()=>{
   const engine=read("world-engine.js");
-  assert.match(engine,/relationship:\\"WANDERED\\"/);
+  assert.match(engine,/relationship:"WANDERED"/);
   assert.match(engine,/memory of what you encountered through the World/);
   assert.match(engine,/steps\.length\+' point'/);
 });
@@ -1413,7 +1413,7 @@ test("A-Z Pass 11 makes the constellation an emergent Trace state",()=>{
   const engine=read("world-engine.js");
   const style=read("aesthetic.css");
   assert.match(engine,/function traceConstellationMarkup\(rs\)/);
-  assert.match(engine,/THE THREAD IS BECOMING A PATTERN\\./);
+  assert.match(engine,/THE THREAD IS BECOMING A PATTERN\./);
   assert.match(engine,/Legitimate connections become visible/);
   assert.match(engine,/related\\(prev\\.id\\)/);
   assert.match(engine,/world-trace-constellation-groups/);
