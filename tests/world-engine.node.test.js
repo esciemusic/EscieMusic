@@ -9,7 +9,8 @@ assert(!/\\nfunction/.test(src),"world-engine contains an escaped newline regres
 assert(/function pathContext\(\)/.test(src),"world-engine missing pathContext");
 assert(/function investigationSummary\(\)/.test(src),"world-engine missing investigationSummary");
 assert(/SEE · HEAR · FOLLOW · MISS · RETURN/.test(src),"Glass Eye audience-eye descriptor missing");
-assert(/FOLLOW THE THREAD/.test(src),"Glass Eye discovery surface missing");\nassert(/WANDER/.test(src),"Glass Eye wandering surface missing");
+assert(/FOLLOW THE THREAD/.test(src),"Glass Eye discovery surface missing");
+assert(/WANDER/.test(src),"Glass Eye wandering surface missing");
 assert(!/\beval\s*\(|new Function\s*\(/.test(src),"dynamic code execution is forbidden");
 assert(/const raf=typeof requestAnimationFrame==="function"\?requestAnimationFrame:fn=>setTimeout\(fn,0\)/.test(src),"world-engine needs a requestAnimationFrame fallback");
 assert(/let searchFrame=null;/.test(src), "search scheduler needs shared frame state for cancellation");
