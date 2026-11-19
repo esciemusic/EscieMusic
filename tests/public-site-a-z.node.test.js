@@ -28,8 +28,8 @@ test("public section semantics match the canonical World architecture",()=>{
   const sections=read("data/public-sections.js");
   assert.match(sections,/id:"glass-eye"[\s\S]*role:"audience_eye_surface"/);
   assert.match(sections,/id:"glass-eye"[\s\S]*visualRole:"screen_and_sight"/);
-  assert.match(sections,/id:"web"[\s\S]*role:"connection_surface"/);
-  assert.match(sections,/id:"web"[\s\S]*visualRole:"network"/);
+  assert.match(sections,/id:"trace"[\s\S]*role:"connection_surface"/);
+  assert.match(sections,/id:"trace"[\s\S]*visualRole:"network"/);
   assert.match(sections,/id:"archives"[\s\S]*role:"memory_surface"/);
   assert.match(sections,/id:"archives"[\s\S]*visualRole:"memory"/);
   assert.match(sections,/id:"investigation"[\s\S]*role:"controlled_investigation_surface"/);
@@ -63,7 +63,7 @@ test("A-Z Pass 1 locks the live shell to the eight-section model",()=>{
   assert.match(index,/id="now"[^>]*class="site-section now-section"/);
   assert.match(index,/id="art"[^>]*class="site-section art-section"/);
   assert.match(index,/id="world"[^>]*class="site-section world-section"/);
-  assert.match(index,/id="web"[^>]*class="site-section trace-section"/);
+  assert.match(index,/id="trace"[^>]*class="site-section trace-section"/);
   assert.match(index,/id="archives"[^>]*class="site-section archives-section"/);
   assert.match(index,/id="investigation"[^>]*class="site-section investigation-section"/);
   assert.match(index,/id="glass-eye"[^>]*class="site-section glass-eye-section"/);
@@ -119,7 +119,7 @@ test("A-Z Pass 3 public index follows visitor priority and restrained palette",(
   assert.match(navigation,/id:"investigation".*order:7/);
   assert.match(navigation,/id:"escie".*order:8/);
   assert.match(nodes,/id:"node-glass-eye"[\s\S]*?order:4/);
-  assert.match(nodes,/id:"node-web"[\s\S]*?order:5/);
+  assert.match(nodes,/id:"node-trace"[\s\S]*?order:5/);
   assert.match(nodes,/id:"node-archives"[\s\S]*?order:6/);
   assert.match(nodes,/id:"node-investigation"[\s\S]*?order:7/);
   assert.match(aesthetic,/main > #now\{--section-accent:#4da3ff/);
@@ -138,7 +138,7 @@ test("A-Z Pass 1 keeps runtime motif and section labels on canonical IDs",()=>{
   assert.doesNotMatch(app,/motifMarkup\("the-web"\)/);
   assert.doesNotMatch(app,/motifMarkup\("archive"\)/);
   assert.ok(app.includes('motifMarkup("art")'));
-  assert.ok(app.includes('motifMarkup("web")'));
+  assert.ok(app.includes('motifMarkup("trace")'));
   assert.ok(app.includes('motifMarkup("archives")'));
   assert.match(app,/art:"ART"/);
   assert.match(app,/archives:"THE ARCHIVES"/);
@@ -1510,7 +1510,7 @@ test("A-Z Pass 17 removes legacy Web CSS and DOM vocabulary from the public Trac
   assert.doesNotMatch(aesthetic,/\bweb-[a-z0-9-]+\b/);
   assert.doesNotMatch(index,/class="[^"]*\bweb-[a-z0-9-]+/);
   assert.doesNotMatch(index,/data-web-[a-z0-9-]+/);
-  assert.match(index,/id="web"[^>]*class="site-section trace-section"/);
+  assert.match(index,/id="trace"[^>]*class="site-section trace-section"/);
   assert.match(app,/byId\("trace-container"\)/);
 });
 
@@ -1524,9 +1524,9 @@ test("A-Z Pass 18 makes Trace the canonical public route while preserving legacy
   const router=read("ui/router.js");
   const index=read("index.html");
   assert.match(navigation,/id:"trace",label:"TRACE",target:"#trace"/);
-  assert.match(nodes,/id:"node-trace"[sS]*target:"#trace"[sS]*section:"trace"/);
-  assert.match(sections,/id:"trace"[sS]*role:"connection_surface"/);
-  assert.match(symbols,/placements:["world","trace"]/);
+  assert.match(nodes,/id:"node-trace"[\s\S]*target:"#trace"[\s\S]*section:"trace"/);
+  assert.match(sections,/id:"trace"[\s\S]*role:"connection_surface"/);
+  assert.match(symbols,/placements:\["world","trace"\]/);
   assert.match(app,/#trace/);
   assert.match(index,/id="trace"[^>]*class="site-section trace-section"/);
   assert.match(router,/web:"trace"/);
