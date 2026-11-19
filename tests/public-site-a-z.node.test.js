@@ -1360,6 +1360,17 @@ test("A-Z Pass 9 protects Trace thread path navigation",()=>{
   assert.match(style,/\.web-trail-node/);
 });
 
+test("A-Z Pass 9 Trace is the single public path/trail destination",()=>{
+  const engine=read("world-engine.js");
+  assert.match(engine,/\["trace","TRACE","web"\]/);
+  assert.doesNotMatch(engine,/\["path","PATH","web"\]\);/);
+  assert.doesNotMatch(engine,/\["trails","TRAILS","web"\]\);/);
+  assert.match(engine,/const publicTrails=trails\(trailRows\)/);
+  assert.match(engine,/world-trace-trails/);
+  assert.match(engine,/WHERE CONNECTIONS LEAD\./);
+  assert.match(engine,/ESCIE_PATHS/);
+});
+
 test("A-Z Pass 10 protects semantic Trace thread paths",()=>{
   const app=read("app.js");
   const style=read("style.css");
