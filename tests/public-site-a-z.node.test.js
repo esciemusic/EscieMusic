@@ -1383,6 +1383,15 @@ test("A-Z Pass 10 makes released music a Trace threadhead without inventing rela
   assert.match(music,/Only transmitted work belongs here/);
 });
 
+test("A-Z Pass 14 keeps optional Trace layers quiet when empty",()=>{
+  const engine=read("world-engine.js");
+  assert.match(engine,/const constellation=traceConstellationMarkup\(rs\)/);
+  assert.match(engine,/const trailsMarkup=publicTrails\.includes\("world-card"\)/);
+  assert.match(engine,/const music=musicThreadMarkup\(rs\)/);
+  assert.match(engine,/return \'<section class="world-trace"/);
+  assert.match(engine,/point\'+\(steps\.length===1/);
+});
+
 test("A-Z Pass 13 separates relationship threads from wandering discovery",()=>{
   const engine=read("world-engine.js");
   assert.match(engine,/const connected=next\.filter\(x=>x\.connected\)/);
