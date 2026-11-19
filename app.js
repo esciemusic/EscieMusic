@@ -1930,7 +1930,7 @@ function renderClothing(){
             const target = route.indexOf("#art/") === 0 ? "art" : route.slice(1);
             const hash = category ? route : "#" + target;
 
-            if (route === "#web" && destination.record) {
+            if (route === "#trace" && destination.record) {
               ESCIE_RUNTIME.traceFilters = ESCIE_RUNTIME.traceFilters || {};
               ESCIE_RUNTIME.traceFilters.record = recordId(destination.record);
             }
