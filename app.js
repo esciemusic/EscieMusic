@@ -1032,7 +1032,7 @@
       ? '<button type="button" class="web-filter-clear" data-trace-filter-clear>CLEAR THREAD</button>' : "";
 
     container.innerHTML=
-      '<div class="trace-experience trace-identity-field" data-web-identity="montreal-signal">'+motifMarkup("web")+
+      '<div class="trace-experience trace-identity-field" data-trace-identity="montreal-signal">'+motifMarkup("web")+
       '<div class="web-signal-grid" aria-hidden="true"></div><div class="web-montreal-trace" aria-hidden="true">MONTRÉAL / SIGNAL FIELD / HERE</div>'+
       '<div class="trace-experience-head"><p class="eyebrow">TRACE</p><h3>FOLLOW THE THREAD.</h3><p>THE SPACE BETWEEN THINGS. START WITH ONE RECORD. FOLLOW WHERE IT LEADS.</p></div>'+
       '<div class="trace-discovery-tools">'+
@@ -1845,10 +1845,10 @@ function renderClothing(){
     });
 
     document.addEventListener("click", event => {
-      const webConnection=event.target.closest("[data-trace-connection-toggle]");
-      if(webConnection){
-        const detail=webConnection.parentElement&&webConnection.parentElement.querySelector(".trace-connection-detail");
-        if(detail){const open=detail.hidden===false;detail.hidden=open;webConnection.setAttribute("aria-expanded",open?"false":"true");}
+      const traceConnection=event.target.closest("[data-trace-connection-toggle]");
+      if(traceConnection){
+        const detail=traceConnection.parentElement&&traceConnection.parentElement.querySelector(".trace-connection-detail");
+        if(detail){const open=detail.hidden===false;detail.hidden=open;traceConnection.setAttribute("aria-expanded",open?"false":"true");}
         return;
       }
       const webParticipate=event.target.closest("[data-trace-participate]");
