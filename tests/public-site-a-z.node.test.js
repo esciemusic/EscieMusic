@@ -1531,3 +1531,17 @@ test("A-Z Pass 18 makes Trace the canonical public route while preserving legacy
   assert.match(index,/id="trace"[^>]*class="site-section trace-section"/);
   assert.match(router,/web:"trace"/);
 });
+
+
+test("A-Z Pass 22 makes World and public Trace share the same relationship disclosure boundary",()=>{
+  const engine=read("world-engine.js");
+  const app=read("app.js");
+  const relationship=read("relationship.js");
+  assert.match(engine,/const contract=window\.ESCIE_RELATIONSHIP/);
+  assert.match(engine,/contract\.validate\(r\)\.valid/);
+  assert.match(engine,/contract\.canDisclose\(r\)/);
+  assert.match(engine,/public_disclosure!==true/);
+  assert.match(app,/relationshipContract\.validate\(r\)\.valid/);
+  assert.match(app,/relationshipContract\.canDisclose\(r\)/);
+  assert.match(relationship,/canDisclose/);
+});
