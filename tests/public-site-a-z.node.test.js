@@ -1467,3 +1467,18 @@ test("A-Z current signal stays factual, quiet, and minute-aligned without an int
   assert.match(aesthetic,/\.hero-present-state/);
   assert.match(aesthetic,/environmental instrument|must not compete/i);
 });
+
+
+test("A-Z Pass 15 makes Trace backtracking local, explicit, and non-duplicating",()=>{
+  const engine=read("world-engine.js");
+  const style=read("aesthetic.css");
+  assert.match(engine,/function persistTrace\(\)/);
+  assert.match(engine,/function backtrackTrace\(\)/);
+  assert.match(engine,/state\.trail\.pop\(\)/);
+  assert.match(engine,/data-trace-back/);
+  assert.match(engine,/BACK ONE POINT/);
+  assert.match(engine,/data-trace-node/);
+  assert.match(engine,/openWorldNode\(id,\{preserveTrail:true\}\)/);
+  assert.match(style,/\.world-trace-controls/);
+  assert.match(style,/\.world-trace-back/);
+});
