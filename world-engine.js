@@ -40,11 +40,19 @@ function title(r){return String(r.title||r.name||r.label||"UNTITLED").trim()||"U
 function searchText(r){return [r.id,r.type,r.kind,r.category,r.title,r.name,r.label,r.description,r.summary,r.story,r.date,r.release_date,r.moment_date,r.created_at,Array.isArray(r.tags)?r.tags.join(" "):""] .map(v=>String(v??"")).join(" ").toLowerCase()}
 function rels(){
  const local=coll("ESCIE_RELATIONSHIPS").concat(coll("ESCIE_LIVE_RELATIONSHIPS"));
+ const contract=window.ESCIE_RELATIONSHIP;
  const seen=new Set();
  return local.concat(coll("ESCIE_RELATIONSHIPS_PUBLIC")).map(r=>r&&({...r,from:r.from||r.source_id||r.sourceId,to:r.to||r.target_id||r.targetId})).filter(r=>{
    if(!r||!r.from||!r.to)return false;
-   if(r.visibility!==undefined&&String(r.visibility).toLowerCase()!=="public")return false;
-   if(r.status!==undefined&&["withheld","archived","inactive"].includes(String(r.status).toLowerCase()))return false;
+   if(contract&&typeof contract.normalize==="function")r=contract.normalize(r);
+   if(contract&&typeof contract.validate==="function"&&!contract.validate(r).valid)return false;
+   if(contract&&typeof contract.canDisclose==="function"){
+     if(!contract.canDisclose(r))return false;
+   }else{
+     if(r.public_disclosure!==true)return false;
+     if(r.visibility!==undefined&&String(r.visibility).toLowerCase()!=="public")return false;
+     if(r.status!==undefined&&["withheld","archived","inactive"].includes(String(r.status).toLowerCase()))return false;
+   }
    const key=[String(r.from),String(r.type||"related"),String(r.to)].join("|");
    if(seen.has(key))return false;
    seen.add(key);return true;
