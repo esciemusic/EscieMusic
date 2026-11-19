@@ -1383,6 +1383,13 @@ test("A-Z Pass 10 makes released music a Trace threadhead without inventing rela
   assert.match(music,/Only transmitted work belongs here/);
 });
 
+test("A-Z Pass 12 distinguishes wandering from relationship threads",()=>{
+  const engine=read("world-engine.js");
+  assert.match(engine,/relationship:\\"WANDERED\\"/);
+  assert.match(engine,/memory of what you encountered through the World/);
+  assert.match(engine,/steps\.length\+' point'/);
+});
+
 test("A-Z Pass 11 makes the constellation an emergent Trace state",()=>{
   const engine=read("world-engine.js");
   const style=read("aesthetic.css");
