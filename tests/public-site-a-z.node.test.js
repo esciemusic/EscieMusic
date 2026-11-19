@@ -1383,6 +1383,18 @@ test("A-Z Pass 10 makes released music a Trace threadhead without inventing rela
   assert.match(music,/Only transmitted work belongs here/);
 });
 
+test("A-Z Pass 11 makes the constellation an emergent Trace state",()=>{
+  const engine=read("world-engine.js");
+  const style=read("aesthetic.css");
+  assert.match(engine,/function traceConstellationMarkup\(rs\)/);
+  assert.match(engine,/THE THREAD IS BECOMING A PATTERN\./);
+  assert.match(engine,/Each legitimate connection adds another point/);
+  assert.match(engine,/related\(names\[i-1\]\.id\)/);
+  assert.match(engine,/world-trace-constellation-points/);
+  assert.match(style,/\.world-trace-constellation/);
+  assert.match(style,/\.world-trace-constellation-point/);
+});
+
 test("A-Z Pass 10 protects semantic Trace thread paths",()=>{
   const app=read("app.js");
   const style=read("style.css");
