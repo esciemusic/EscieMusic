@@ -754,6 +754,18 @@ function musicThreadMarkup(rs){
  }).join("");
  return '<div class="world-trace-music-layer"><div class="world-trace-subhead"><span class="world-kicker">MUSIC AS A THREADHEAD</span><h4>START WITH A SONG.</h4><p>Music can be a doorway into people, places, moments, objects and memories when a public relationship already exists.</p></div><div class="world-trace-music-list">'+cards+"</div></div>";
 }
+function traceConstellationMarkup(rs){
+ const ids=Array.isArray(state.trail)?state.trail.map(String):[];
+ if(ids.length<2)return "";
+ const map=new Map(rs.map(function(r){return [String(r.id),r];}));
+ const names=ids.map(function(id){return map.get(id);}).filter(Boolean).slice(-9);
+ const edges=[];
+ for(let i=1;i<names.length;i++){
+  const rel=related(names[i-1].id).find(function(x){return String(x.node.id)===String(names[i].id);});
+  if(rel)edges.push(rel.type||"related");
+ }
+ return '<div class="world-trace-constellation"><div class="world-trace-subhead"><span class="world-kicker">CONSTELLATION</span><h4>THE THREAD IS BECOMING A PATTERN.</h4><p>Each legitimate connection adds another point to the constellation you are building through the World.</p></div><div class="world-trace-constellation-points">'+names.map(function(r){return '<span class="world-trace-constellation-point"><i aria-hidden="true"></i><strong>'+esc(title(r))+'</strong><small>'+esc(type(r))+'</small></span>';}).join("")+'</div><div class="world-trace-constellation-meta">'+esc(String(names.length))+' points · '+esc(String(edges.length))+' connected steps</div></div>';
+}
 function traceView(){
  const rs=records();
  const steps=state.trail.map((id,i)=>({node:rs.find(r=>String(r.id)===String(id)),index:i})).filter(x=>x.node);
@@ -766,7 +778,7 @@ function traceView(){
    const relation=next&&path[i]?path[i].relationship:"";
    return '<button type="button" class="world-trace-step'+(i===steps.length-1?' world-trace-current':'')+'" data-node="'+esc(x.node.id)+'"><span class="world-trace-number">'+String(i+1).padStart(2,"0")+'</span><span class="world-trace-copy"><span class="world-kicker">'+esc(type(x.node))+'</span><strong>'+esc(title(x.node))+'</strong>'+(relation?'<small>'+esc(relation)+'</small>':'')+'</span><span class="world-trace-arrow" aria-hidden="true">↗</span></button>';
  }).join('');
- return '<section class="world-trace"><div class="world-trace-head"><span class="world-kicker">TRACE</span><h3>WHERE YOU HAVE BEEN.</h3><p>This is not a score or a progress bar. It is simply the memory of your route through the World on this device.</p></div><div class="world-trace-path">'+items+'</div><div class="world-trace-foot"><span>'+steps.length+' place'+(steps.length===1?'':'s')+' remembered</span><button type="button" class="world-trace-clear" data-trace-clear>CLEAR TRACE</button></div><div class="world-trace-trails"><div class="world-trace-subhead"><span class="world-kicker">TRAILS</span><h4>WHERE CONNECTIONS LEAD.</h4><p>Public trails emerge from relationships already established in the World.</p></div>'+publicTrails+'</div>'+musicThreadMarkup(rs)+'</section>';
+ return '<section class="world-trace"><div class="world-trace-head"><span class="world-kicker">TRACE</span><h3>WHERE YOU HAVE BEEN.</h3><p>This is not a score or a progress bar. It is simply the memory of your route through the World on this device.</p></div><div class="world-trace-path">'+items+'</div><div class="world-trace-foot"><span>'+steps.length+' place'+(steps.length===1?'':'s')+' remembered</span><button type="button" class="world-trace-clear" data-trace-clear>CLEAR TRACE</button></div>'+traceConstellationMarkup(rs)+'<div class="world-trace-trails"><div class="world-trace-subhead"><span class="world-kicker">TRAILS</span><h4>WHERE CONNECTIONS LEAD.</h4><p>Public trails emerge from relationships already established in the World.</p></div>'+publicTrails+'</div>'+musicThreadMarkup(rs)+'</section>';
 }
 function discoveryReason(current,node,base){if(!current)return "OPEN THREAD";if(base.some(x=>String(x.id)===String(node.id))){const rel=related(current.id).find(x=>String(x.node.id)===String(node.id));return rel&&rel.type?"FOLLOWED FROM "+String(rel.type).replace(/_/g," "):"DIRECT CONNECTION";}if(state.trail.length>1){const previous=records().find(r=>String(r.id)===String(state.trail[state.trail.length-2]));if(previous&&type(node)===type(previous))return "CONTINUES THE THREAD";}if(type(node)===type(current))return "SAME KIND";if(Array.isArray(node.tags)&&Array.isArray(current.tags)&&node.tags.some(t=>current.tags.includes(t)))return "SHARED SIGNAL";return "UNEXPLORED";}
 function discovery(rows){const seen=new Set(state.visited.map(String));const current=state.selected?records().find(r=>String(r.id)===String(state.selected)):null;const base=current?related(current.id).map(x=>x.node):[];const pool=base.concat(rows).filter(Boolean).filter(r=>!seen.has(String(r.id)));const scored=pool.map(r=>{let score=0;if(base.some(x=>String(x.id)===String(r.id)))score+=10;if(current&&type(r)===type(current))score+=2;if(Array.isArray(r.tags)&&current&&Array.isArray(current.tags))score+=r.tags.filter(t=>current.tags.includes(t)).length;return {r,score,reason:discoveryReason(current,r,base)};}).sort((a,b)=>b.score-a.score);const out=[];const usedTypes=new Set();for(const x of scored){if(out.length>=3)break;if(!usedTypes.has(type(x.r))||x.score>=10){out.push(x);usedTypes.add(type(x.r));}}if(out.length<3)for(const x of scored){if(out.length>=3)break;if(!out.some(y=>String(y.r.id)===String(x.r.id)))out.push(x);}return out;}
