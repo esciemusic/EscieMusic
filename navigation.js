@@ -3,7 +3,7 @@ const ESCIE_NAVIGATION=[
 {id:"art",label:"ART",target:"#art",primary:true,order:2,symbol:"art",symbolMeaning:"Creation",symbolPurpose:"Enter the work"},
 {id:"world",label:"MY WORLD",target:"#world",primary:true,order:3,symbol:"world",symbolMeaning:"My place and experience",symbolPurpose:"Enter my world"},
 {id:"glass-eye",label:"GLASS EYE",target:"#glass-eye",primary:true,order:4,symbol:"glass-eye",symbolMeaning:"Witness",symbolPurpose:"See through the screen"},
-{id:"web",label:"THE WEB",target:"#web",primary:true,order:5,symbol:"web",symbolMeaning:"Connections",symbolPurpose:"Follow the network"},
+{id:"web",label:"TRACE",target:"#web",primary:true,order:5,symbol:"web",symbolMeaning:"Connections",symbolPurpose:"Follow the thread"},
 {id:"archives",label:"THE ARCHIVES",target:"#archives",primary:true,order:6,symbol:"archives",symbolMeaning:"Record",symbolPurpose:"Open the preserved record"},
 {id:"investigation",label:"THE CASE FILES",target:"#investigation",primary:true,order:7,symbol:"case-files",symbolMeaning:"Inquiry",symbolPurpose:"Follow the evidence"},
 {id:"escie",label:"ESCIE",target:"#escie",primary:true,order:8,symbol:"escie",symbolMeaning:"Identity",symbolPurpose:"Return to ESCIE"}
