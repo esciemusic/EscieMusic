@@ -31,6 +31,11 @@ assert(/function scheduleWorldRefresh\(container\)/.test(src),"World Engine cloc
 assert(/setTimeout\(tick,delay\)/.test(src)&&/scheduleWorldRefresh\(container\)/.test(src),"World Engine clock should reschedule without a persistent interval");
 assert(!/setInterval\(/.test(src),"World Engine must not use a persistent interval timer");
 assert(/localStorage\.removeItem\("escie_world_trail"\)/.test(src),"TRACE clear must clear persistent local trace");
+assert(/function persistTrace\(\)/.test(src)&&/localStorage\.setItem\("escie_world_trail"/.test(src),"TRACE navigation must persist the visitor-local path");
+assert(/function backtrackTrace\(\)/.test(src)&&/state\.trail\.pop\(\)/.test(src),"TRACE must support explicit one-point backtracking");
+assert(/data-trace-back/.test(src)&&/BACK ONE POINT/.test(src),"TRACE must expose a distinct one-point backtrack control");
+assert(/data-trace-node/.test(src)&&/openWorldNode\(id,\{preserveTrail:true\}\)/.test(src),"TRACE point returns must not fabricate a new trail step");
+
 
 assert(/function isPublicWorldRecord\(r\)/.test(src),"World Engine needs a public-record release boundary");
 assert(/function encounterContext\(r\)/.test(src),"World encounters need optional place/time context");
