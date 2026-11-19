@@ -41,7 +41,7 @@ Z Zero-regression — all prior green contracts remain green.
 5. Updated the system identity contract to the current canonical wording.
 
 ## Canonical public order
-NOW → ART → THE WORLD → THE WEB → THE ARCHIVES → THE CASE FILES → GLASS EYE → ESCIE
+NOW → ART → THE WORLD → TRACE → THE ARCHIVES → THE CASE FILES → GLASS EYE → ESCIE
 
 ## Canonical identity
 ESCIE THE ARTIST. THE ART SPEAKS FOR ITSELF.
@@ -56,7 +56,7 @@ This is the standing audit contract for every subsequent public-site optimizatio
 
 ## Pass 1 functional audit — checkpoint
 
-- Public shell contains exactly the eight canonical sections: NOW, ART, THE WORLD, THE WEB, THE ARCHIVES, THE CASE FILES, GLASS EYE, ESCIE.
+- Public shell contains exactly the eight canonical sections: NOW, ART, THE WORLD, TRACE, THE ARCHIVES, THE CASE FILES, GLASS EYE, ESCIE.
 - Navigation registry follows the same order.
 - Visual registry follows the same section IDs.
 - NOW now has its canonical ◉ dropdown symbol.
@@ -94,7 +94,7 @@ This is the standing audit contract for every subsequent public-site optimizatio
 ### Pass 1 — time/performance checkpoint
 - No active November 22 countdown or countdown runtime was found; the previously deferred countdown remains inactive.
 - Time-state behavior is lightweight and derives the current day/dusk/night state without a recurring interval.
-- Public runtime contains no recurring `setInterval` timer; the Web search debounce remains the only short-lived input timer.
+- Public runtime contains no recurring `setInterval` timer; the Trace search debounce remains the only short-lived input timer.
 - This preserves the decision to defer countdown implementation rather than accidentally activating obsolete release timing.
 
 
@@ -231,7 +231,7 @@ This is the standing audit contract for every subsequent public-site optimizatio
 
 ## Pass 3 — no-section-scroll hardening checkpoint — 2026-11-07
 - A full public navigation search found remaining section-to-section scroll paths after the initial accordion correction.
-- Removed the Glass Eye → WORLD scroll path, THE WEB → Glass Eye scroll path, and inspector → section scroll path from the runtime.
+- Removed the Glass Eye → WORLD scroll path, TRACE → Glass Eye scroll path, and inspector → section scroll path from the runtime.
 - Removed the final fragment-navigation fallback that could invoke browser scrolling when changing public section routes.
 - Public section routing now updates history without forcing viewport movement; browser scroll restoration is set to manual for the public shell.
 - Added and synchronized regression coverage for the locked rule: CLOSED = ZERO VISUAL SPACE. OPEN = CONTENT ONLY. NO SECTION-TO-SECTION SCROLLING.
