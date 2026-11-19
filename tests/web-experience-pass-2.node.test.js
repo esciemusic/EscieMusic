@@ -9,7 +9,7 @@ assert.match(app,/data-trace-connection-toggle/);
 assert.match(app,/EVERYTHING CAN CONNECT\. NOTHING CONNECTS WITHOUT A REASON/);
 assert.doesNotMatch(app,/EXPLORE THE NETWORK/);
 assert.match(html,/data\/web-contract\.js/);
-assert.match(html,/data\/web\.js/);
+assert.doesNotMatch(html,/data\/web\.js/);
 assert.match(css,/\.trace-experience/);
 assert.match(css,/\.trace-connection-detail/);
 console.log("TRACE experience pass 2: PASS");
