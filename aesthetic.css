@@ -884,9 +884,9 @@ main > .site-section:not(#entry) .section-drop-trigger[data-section="escie"]::be
 .web-record-tools{margin-top:10px}
 .web-record-results{grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:6px;margin-top:8px}
 .web-record-result{padding:9px}
-.web-connection{padding:14px 0;border-top:1px solid rgba(216,212,202,.1)}
-.web-connection:first-child{border-top:0}
-@media(max-width:520px){.web-record-results{grid-template-columns:1fr}.web-record-result{padding:10px}.web-connection{padding:12px 0}}
+.trace-connection{padding:14px 0;border-top:1px solid rgba(216,212,202,.1)}
+.trace-connection:first-child{border-top:0}
+@media(max-width:520px){.web-record-results{grid-template-columns:1fr}.web-record-result{padding:10px}.trace-connection{padding:12px 0}}
 .web-record-search{margin-top:16px;padding-top:16px;border-top:1px solid rgba(216,212,202,.1)}
 .web-record-search>label{display:block;font:700 9px/1.3 var(--escie-font-mono);letter-spacing:.13em}
 .web-record-search input{display:block;width:100%;margin-top:8px;padding:11px 12px;background:rgba(0,0,0,.2);border:1px solid rgba(216,212,202,.14);color:inherit;font:inherit}
@@ -894,7 +894,7 @@ main > .site-section:not(#entry) .section-drop-trigger[data-section="escie"]::be
 .web-record-result{display:flex;flex-direction:column;gap:5px;text-align:left;padding:10px;background:rgba(255,255,255,.025);border:1px solid rgba(216,212,202,.1);color:inherit;cursor:pointer}
 .web-record-result strong{font:600 11px/1.2 var(--escie-font-display);letter-spacing:.08em}
 .web-record-result span{font:400 8px/1 var(--escie-font-mono);opacity:.5}
-.web-participate-link{margin-top:10px;padding:10px 13px;background:transparent;border:1px solid rgba(77,163,255,.35);color:inherit;font:700 9px/1.2 var(--escie-font-mono);letter-spacing:.1em;cursor:pointer}
+.trace-participate-link{margin-top:10px;padding:10px 13px;background:transparent;border:1px solid rgba(77,163,255,.35);color:inherit;font:700 9px/1.2 var(--escie-font-mono);letter-spacing:.1em;cursor:pointer}
 .glass-participation{margin-top:20px;padding-top:20px;border-top:1px solid rgba(216,212,202,.12)}
 .glass-participation-head{max-width:65ch}
 .glass-participation-head h3{margin:.2rem 0 .5rem;font:500 clamp(18px,4vw,28px)/1.05 var(--escie-font-display);letter-spacing:.08em}
@@ -926,7 +926,7 @@ main > .site-section:not(#entry) .section-drop-trigger[data-section="escie"]::be
    ========================================================= */
 .world-section .section-drop-content,
 .glass-eye-section .section-drop-content,
-.web-section .section-drop-content{
+.trace-section .section-drop-content{
   position:relative;
 }
 .world-index{position:relative}
@@ -946,13 +946,13 @@ main > .site-section:not(#entry) .section-drop-trigger[data-section="escie"]::be
 .world-place-copy h3{margin:0;font:600 clamp(16px,3vw,23px)/1 var(--escie-font-display);letter-spacing:.09em}
 .world-place-copy p{margin:6px 0 0;font:400 9px/1.5 var(--escie-font-mono);letter-spacing:.05em;opacity:.58}
 .world-place-state{font:700 8px/1 var(--escie-font-mono);letter-spacing:.14em;color:var(--escie-aesthetic-purple);opacity:.75}
-.web-connection{
+.trace-connection{
   position:relative;overflow:hidden;
   transition:transform var(--escie-motion-standard),border-color var(--escie-motion-standard),background var(--escie-motion-standard);
 }
-.web-connection:hover{transform:translateX(4px);background:rgba(47,128,255,.025);border-color:rgba(47,128,255,.2)}
-.web-node-button{cursor:pointer;transition:color var(--escie-motion-fast)}
-.web-node-button:hover{color:var(--escie-aesthetic-purple)}
+.trace-connection:hover{transform:translateX(4px);background:rgba(47,128,255,.025);border-color:rgba(47,128,255,.2)}
+.trace-node-button{cursor:pointer;transition:color var(--escie-motion-fast)}
+.trace-node-button:hover{color:var(--escie-aesthetic-purple)}
 .glass-eye-section .section-drop-content::before{
   content:"";position:absolute;inset:0;pointer-events:none;opacity:.13;
   background:
@@ -1002,7 +1002,7 @@ main > .site-section:not(#entry) .section-drop-trigger[data-section="escie"]::be
   .world-index::before{left:-10px}
 }
 @media(prefers-reduced-motion:reduce){
-  .world-place,.web-connection,.glass-participation-types button{transition:none}
+  .world-place,.trace-connection,.glass-participation-types button{transition:none}
 }
 
 .section-drop-trigger .section-drop-symbol{font-size:15px;color:var(--escie-aesthetic-purple);opacity:.82;text-shadow:0 0 12px var(--escie-aesthetic-purple-soft)}
@@ -1972,7 +1972,7 @@ main > .site-section.section-open .section-visual::after{animation:escieSignalSc
 }
 main > .site-section:not(#entry) .section-drop-trigger,
 .world-card,.world-detail,.record-card,.archive-record,.investigation-case,
-.nested-drop-panel,.glass-eye-interface,.web-record-result,.web-node-button,
+.nested-drop-panel,.glass-eye-interface,.web-record-result,.trace-node-button,
 .art-category,.music-card,.project-card,.art-record-card{
   background-color:transparent;
   background-image:linear-gradient(135deg,var(--escie-surface),rgba(5,6,9,.28));
