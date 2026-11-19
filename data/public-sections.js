@@ -55,7 +55,7 @@
       disclosure:"public_media_plus_non_canonical_participation"
     },
     {
-      id:"web", label:"THE WEB", order:5, role:"connection_surface",
+      id:"web", label:"TRACE", order:5, role:"connection_surface",
       purpose:"Follow the connections between people, places, moments, records and signals without manufacturing relationships.",
       contentTypes:["public_relationship","connection","reference","shared_record","thread","trail"],
       behavior:["follow","filter","trace","backtrack","return"],
