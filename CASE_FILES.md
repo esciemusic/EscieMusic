@@ -81,7 +81,7 @@ Disciplines generate possibilities. They do not dictate meaning.
 | NOW | Current pulse / selected active artifact |
 | ART | Photography, drawing, painting, writing, video, objects and experiments |
 | THE WORLD | Montréal places, routes, geography, architecture, maps and environmental observations |
-| THE WEB | Genuine relationships between artifacts, people, places, references and motifs |
+| TRACE | Genuine relationships between artifacts, people, places, references and motifs |
 | ARCHIVE | Public works that remain after their active moment |
 | THE CASE FILES | Approved deeper investigation layers |
 | GLASS EYE | Video, audio, fixed viewpoints, recordings and sensory observation |
