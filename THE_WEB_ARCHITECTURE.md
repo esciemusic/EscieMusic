@@ -1,11 +1,13 @@
-# ESCIE — THE WEB ARCHITECTURE & CONNECTION MODEL
+> Legacy filename: `THE_WEB_ARCHITECTURE.md`. The public experience is now called TRACE; the filename remains temporarily to avoid a risky filesystem migration.
+
+# ESCIE — TRACE / RELATIONSHIP ENGINE
 
 Status: Pass 3 — architecture hardening
 Version: 1.2.0
 
 ## Purpose
 
-THE WEB is ESCIE's relationship layer: the connective tissue between public records.
+TRACE is ESCIE's public relationship surface: the connective tissue between public records. The underlying engine is the relationship model documented here.
 
 It is not a truth engine, a social graph, a generic recommendation system, or a second canon database.
 
@@ -17,7 +19,7 @@ A connection is a recorded relationship. A connection is not automatically truth
 
 ## Canonical node vocabulary
 
-THE WEB operates on the shared public record registry. Its canonical node families are:
+TRACE operates on the shared public record registry. Its canonical node families are:
 
 - PERSON
 - PLACE
@@ -32,7 +34,7 @@ THE WEB operates on the shared public record registry. Its canonical node famili
 - OBJECT
 - EVENT
 
-The registry remains the source of node identity. THE WEB must not create a second identity store.
+The registry remains the source of node identity. TRACE must not create a second identity store.
 
 ## Connection object
 
@@ -108,7 +110,7 @@ If an inverse semantic is not registered as a valid relationship type, the inver
 
 ## Traversal
 
-THE WEB supports:
+TRACE supports:
 
 - direct traversal: A → B
 - reverse traversal: B ← A
@@ -159,7 +161,7 @@ CENTRAL SOURCE/RESEARCH
 → REVIEW
 → HUMAN APPROVAL
 → PUBLIC-SAFE RELATIONSHIP
-→ THE WEB
+→ TRACE
 
 The public site does not automatically ingest Central state.
 
@@ -167,7 +169,7 @@ Audience participation does not automatically become Central canon.
 
 ## Release firewall
 
-Unreleased BAM/Dallas '63, private case files, credentials, private media, and operational Central state must never enter THE WEB public projection.
+Unreleased BAM/Dallas '63, private case files, credentials, private media, and operational Central state must never enter TRACE public projection.
 
 A locked record resolves to no public node.
 
@@ -191,7 +193,7 @@ If the system cannot name the relationship, it should remain unresolved rather t
 
 ## Public experience model
 
-THE WEB should feel like discovering connections in ESCIE's world, not operating a database.
+TRACE should feel like discovering connections in ESCIE's world, not operating a database.
 
 Primary experience:
 
