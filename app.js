@@ -979,7 +979,7 @@
     const trailMarkup=trailRecords.length
       ? '<div class="web-thread-trail">'+
         '<div class="web-thread-trail-head"><span class="eyebrow">THREAD PATH</span><span>'+trailRecords.length+' STEPS</span></div>'+
-        '<div class="web-thread-trail-controls">'+(canStepBack?'<button type="button" class="web-trail-back" data-web-trail-back>BACK ONE STEP</button>':"")+'<button type="button" class="web-trail-clear" data-web-trail-clear>CLEAR PATH</button></div><div class="web-thread-trail-head"><span class="eyebrow">THREAD PATH</span><span>'+trailRecords.length+' STEPS</span></div><div class="web-thread-trail-list">'+trailRecords.map((node,index)=>{
+        '<div class="web-thread-trail-controls">'+(canStepBack?'<button type="button" class="web-trail-back" data-web-trail-back>BACK ONE STEP</button>':"")+'<button type="button" class="web-trail-clear" data-web-trail-clear>CLEAR PATH</button></div><div class="web-thread-trail-list">'+trailRecords.map((node,index)=>{
           const edge=index>0?trailEdges[index-1]:null;
           const relation=edge?String(edge.type||"CONNECTED_TO").replace(/_/g," "):"START";
           return '<span class="web-trail-step">'+(index>0?'<i aria-hidden="true">'+escapeHTML(relation)+'</i>':"")+'<button type="button" class="web-trail-node" data-record-id="'+escapeHTML(recordId(node))+'" aria-label="Return to '+escapeHTML(recordTitle(node))+'"><span>'+String(index+1).padStart(2,"0")+'</span><strong>'+escapeHTML(recordTitle(node))+'</strong></button></span>';
@@ -1034,7 +1034,7 @@
     container.innerHTML=
       '<div class="web-experience web-identity-field" data-web-identity="montreal-signal">'+motifMarkup("web")+
       '<div class="web-signal-grid" aria-hidden="true"></div><div class="web-montreal-trace" aria-hidden="true">MONTRÉAL / SIGNAL FIELD / HERE</div>'+
-      '<div class="web-experience-head"><p class="eyebrow">THE WEB</p><h3>FOLLOW THE THREAD.</h3><p>THE WEB IS NOT ANOTHER ARCHIVE. IT IS THE SPACE BETWEEN THINGS. START WITH ONE RECORD, FOLLOW A CONNECTION, THEN SEE WHAT THAT CONNECTION OPENS.</p></div>'+
+      '<div class="web-experience-head"><p class="eyebrow">TRACE</p><h3>FOLLOW THE THREAD.</h3><p>THE SPACE BETWEEN THINGS. START WITH ONE RECORD. FOLLOW WHERE IT LEADS.</p></div>'+
       '<div class="web-discovery-tools">'+
         '<label>FIND A THREAD<input type="search" data-web-search value="'+escapeHTML(state.search||"")+'" placeholder="People, places, moments, fragments…"></label>'+
         '<div class="web-discovery-selects"><label>START HERE<select data-web-filter="record"><option value="">ANY CONNECTED NODE</option>'+nodeOptions+'</select></label><label>CONNECTION<select data-web-filter="type"><option value="">ALL CONNECTIONS</option>'+typeOptions+'</select></label></div>'+
