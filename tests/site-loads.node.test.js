@@ -68,7 +68,7 @@ assert(fs.readFileSync("data/glass-eye-participation.js","utf8").includes("FormD
 assert(fs.readFileSync("data/glass-eye-participation.js","utf8").includes("glass-eye-public"),"Glass Eye approved media must use the public moderation endpoint");
 assert(fs.readFileSync("app.js","utf8").includes("glass-approved-media"),"approved Glass Eye media must render in the public record");
 assert(fs.readFileSync("data/glass-eye-participation.js","utf8").includes("ONLY PHOTO, VIDEO OR AUDIO FILES ARE ACCEPTED"),"Glass Eye media input must enforce supported media types");
-assert(fs.readFileSync("app.js","utf8").includes("data-web-record-type"),"THE WEB record-type filter must be wired");
+assert(fs.readFileSync("app.js","utf8").includes("data-web-record-type"),"TRACE record-type filter must remain wired during internal migration");
 assert(fs.readFileSync("app.js","utf8").includes("safeExternalURL"),"external storefront URLs must be protocol-validated");
 assert(fs.readFileSync("app.js","utf8").includes('archive_state || record.archive?.state'),"THE ARCHIVES must recognize archived universal records");
 assert(fs.readFileSync("app.js","utf8").includes("PRESERVED TRACE /"),"THE ARCHIVES must expose a preserved-trace hierarchy");
