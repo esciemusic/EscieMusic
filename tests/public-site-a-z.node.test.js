@@ -1412,7 +1412,7 @@ test("A-Z Pass 12 distinguishes wandering from relationship threads",()=>{
 test("A-Z Pass 11 makes the constellation an emergent Trace state",()=>{
   const engine=read("world-engine.js");
   const style=read("aesthetic.css");
-  assert.match(engine,/function traceConstellationMarkup\\(rs\\)/);
+  assert.match(engine,/function traceConstellationMarkup\(rs\)/);
   assert.match(engine,/THE THREAD IS BECOMING A PATTERN\\./);
   assert.match(engine,/Legitimate connections become visible/);
   assert.match(engine,/related\\(prev\\.id\\)/);
@@ -1529,7 +1529,7 @@ test("A-Z Pass 18 makes Trace the canonical public route while preserving legacy
   assert.match(symbols,/placements:\["world","trace"\]/);
   assert.match(app,/#trace/);
   assert.match(index,/id="trace"[^>]*class="site-section trace-section"/);
-  assert.match(router,/web:"trace"/);
+  assert.match(router,/aliases\s*=\s*\{[^}]*web:\s*"trace"/);
 });
 
 
