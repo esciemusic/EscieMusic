@@ -965,7 +965,7 @@
 
     const recordResults=visibleRecords.filter(r=>!state.record||recordId(r)===state.record).slice(0,10).map(r=>{
       const links=all.filter(link=>link.from===recordId(r)||link.to===recordId(r));
-      return '<button type="button" class="web-record-result" data-record-id="'+escapeHTML(recordId(r))+'"><strong>'+escapeHTML(recordTitle(r))+'</strong><span>'+escapeHTML(r.type||"record")+' · '+(links.length?links.length+" CONNECTION"+(links.length===1?"":"S"):"NO CONNECTIONS YET")+'</span></button>';
+      return '<button type="button" class="trace-record-result" data-record-id="'+escapeHTML(recordId(r))+'"><strong>'+escapeHTML(recordTitle(r))+'</strong><span>'+escapeHTML(r.type||"record")+' · '+(links.length?links.length+" CONNECTION"+(links.length===1?"":"S"):"NO CONNECTIONS YET")+'</span></button>';
     }).join("");
 
     const trailIds=Array.isArray(ESCIE_RUNTIME.traceTrail)?ESCIE_RUNTIME.traceTrail:[];
@@ -987,7 +987,7 @@
       : "";
     const networkMap=selected
       ? '<div class="trace-thread-map"><div class="trace-thread-map-head"><div><span class="eyebrow">THREAD MAP</span><h4>'+escapeHTML(recordTitle(selected))+'</h4></div><span>'+selectedLinks.length+' DIRECT '+(selectedLinks.length===1?"CONNECTION":"CONNECTIONS")+'</span></div>'+
-        '<div class="web-hub-summary"><span>CONNECTED BY</span><strong>'+escapeHTML(selectedConnectionTypes.join(" · ")||"PUBLIC RELATIONSHIPS")+'</strong></div>'+
+        '<div class="trace-hub-summary"><span>CONNECTED BY</span><strong>'+escapeHTML(selectedConnectionTypes.join(" · ")||"PUBLIC RELATIONSHIPS")+'</strong></div>'+
         '<div class="trace-thread-map-grid">'+
         '<button type="button" class="trace-thread-node trace-thread-node-current" data-record-id="'+escapeHTML(recordId(selected))+'"><strong>'+escapeHTML(recordTitle(selected))+'</strong><small>STARTING NODE</small></button>'+
         selectedNeighbours.map(node=>'<button type="button" class="trace-thread-node" data-record-id="'+escapeHTML(recordId(node))+'"><strong>'+escapeHTML(recordTitle(node))+'</strong><small>'+escapeHTML(node.type||"record")+' · FOLLOW THREAD</small></button>').join("")+
@@ -1011,13 +1011,13 @@
       const relationType=String(relationship.type||"CONNECTED_TO").replace(/_/g," ");
       const nextIds=new Set(all.filter(link=>link.from===recordId(to)||link.to===recordId(to)).flatMap(link=>[link.from,link.to])).filter(id=>id!==recordId(from)&&id!==recordId(to));
       const nextNodes=Array.from(nextIds).map(id=>byIdMap.get(id)).filter(Boolean).slice(0,4);
-      const nextStep=nextNodes.length ? '<div class="web-next-step"><p class="eyebrow">WHERE THIS THREAD CAN GO</p><div class="web-next-nodes">'+nextNodes.map(node=>'<button type="button" class="web-next-node" data-record-id="'+escapeHTML(recordId(node))+'"><strong>'+escapeHTML(recordTitle(node))+'</strong><span>FOLLOW '+escapeHTML(String(node.type||"RECORD").toUpperCase())+'</span></button>').join("")+'</div></div>' : '<p class="web-next-quiet">NO NEXT PUBLIC CONNECTION IS ESTABLISHED YET.</p>';
+      const nextStep=nextNodes.length ? '<div class="trace-next-step"><p class="eyebrow">WHERE THIS THREAD CAN GO</p><div class="trace-next-nodes">'+nextNodes.map(node=>'<button type="button" class="trace-next-node" data-record-id="'+escapeHTML(recordId(node))+'"><strong>'+escapeHTML(recordTitle(node))+'</strong><span>FOLLOW '+escapeHTML(String(node.type||"RECORD").toUpperCase())+'</span></button>').join("")+'</div></div>' : '<p class="trace-next-quiet">NO NEXT PUBLIC CONNECTION IS ESTABLISHED YET.</p>';
       const statusClass=displayState.toLowerCase().replace(/[^a-z0-9]+/g,"-");
       return '<article class="trace-connection trace-status-'+statusClass+'" data-relationship-id="'+escapeHTML(relationship.id||("connection-"+index))+'">'+
         '<button type="button" class="trace-connection-main" data-trace-connection-toggle aria-expanded="false">'+
-          '<span class="web-node"><strong>'+escapeHTML(recordTitle(from))+'</strong><em>'+escapeHTML(from.type||"record")+'</em></span>'+
+          '<span class="trace-node"><strong>'+escapeHTML(recordTitle(from))+'</strong><em>'+escapeHTML(from.type||"record")+'</em></span>'+
           '<span class="trace-connection-line" aria-hidden="true"><i></i><b>'+escapeHTML(relationType)+'</b><i></i></span>'+
-          '<span class="web-node"><strong>'+escapeHTML(recordTitle(to))+'</strong><em>'+escapeHTML(to.type||"record")+'</em></span>'+
+          '<span class="trace-node"><strong>'+escapeHTML(recordTitle(to))+'</strong><em>'+escapeHTML(to.type||"record")+'</em></span>'+
         '</button>'+
         '<div class="trace-connection-detail" hidden>'+
           '<p class="eyebrow">WHY THIS CONNECTION EXISTS</p><p>'+escapeHTML(reason)+'</p>'+
@@ -1029,22 +1029,22 @@
     }).join("");
 
     const clear=state.search||state.record||state.type
-      ? '<button type="button" class="web-filter-clear" data-trace-filter-clear>CLEAR THREAD</button>' : "";
+      ? '<button type="button" class="trace-filter-clear" data-trace-filter-clear>CLEAR THREAD</button>' : "";
 
     container.innerHTML=
       '<div class="trace-experience trace-identity-field" data-trace-identity="montreal-signal">'+motifMarkup("web")+
-      '<div class="web-signal-grid" aria-hidden="true"></div><div class="web-montreal-trace" aria-hidden="true">MONTRÉAL / SIGNAL FIELD / HERE</div>'+
+      '<div class="trace-signal-grid" aria-hidden="true"></div><div class="trace-montreal-trace" aria-hidden="true">MONTRÉAL / SIGNAL FIELD / HERE</div>'+
       '<div class="trace-experience-head"><p class="eyebrow">TRACE</p><h3>FOLLOW THE THREAD.</h3><p>THE SPACE BETWEEN THINGS. START WITH ONE RECORD. FOLLOW WHERE IT LEADS.</p></div>'+
       '<div class="trace-discovery-tools">'+
         '<label>FIND A THREAD<input type="search" data-trace-search value="'+escapeHTML(state.search||"")+'" placeholder="People, places, moments, fragments…"></label>'+
         '<div class="trace-discovery-selects"><label>START HERE<select data-trace-filter="record"><option value="">ANY CONNECTED NODE</option>'+nodeOptions+'</select></label><label>CONNECTION<select data-trace-filter="type"><option value="">ALL CONNECTIONS</option>'+typeOptions+'</select></label></div>'+
         '<div class="trace-discovery-actions"><p class="trace-discovery-count">'+escapeHTML(String(relationships.length))+' CONNECTION'+(relationships.length===1?"":"S")+' · '+escapeHTML(String(connectedIds.size))+' NODES</p>'+clear+'</div>'+
       '</div>'+
-      '<div class="web-record-results">'+recordResults+'</div>'+
+      '<div class="trace-record-results">'+recordResults+'</div>'+
       trailMarkup+
       networkMap+
-      (list?'<div class="trace-connection-field"><div class="web-field-label"><span>PUBLIC CONNECTIONS</span><span>'+relationships.length+'</span></div>'+list+'</div>':'<div class="web-empty-state"><p class="eyebrow">THE PUBLIC GRAPH IS QUIET</p><h3>NO PUBLIC THREADS HAVE BEEN ESTABLISHED HERE YET.</h3><p>The system stays honest when a connection does not exist. Public findings can enter through Glass Eye and become a thread only after they earn a place in the record.</p><button type="button" class="trace-participate-link" data-trace-participate>BRING A FINDING THROUGH GLASS EYE</button></div>')+
-      '<p class="web-governing-principle">EVERYTHING CAN CONNECT. NOTHING CONNECTS WITHOUT A REASON.</p>'+
+      (list?'<div class="trace-connection-field"><div class="trace-field-label"><span>PUBLIC CONNECTIONS</span><span>'+relationships.length+'</span></div>'+list+'</div>':'<div class="trace-empty-state"><p class="eyebrow">THE PUBLIC GRAPH IS QUIET</p><h3>NO PUBLIC THREADS HAVE BEEN ESTABLISHED HERE YET.</h3><p>The system stays honest when a connection does not exist. Public findings can enter through Glass Eye and become a thread only after they earn a place in the record.</p><button type="button" class="trace-participate-link" data-trace-participate>BRING A FINDING THROUGH GLASS EYE</button></div>')+
+      '<p class="trace-governing-principle">EVERYTHING CAN CONNECT. NOTHING CONNECTS WITHOUT A REASON.</p>'+
       '</div>';
   }
 
@@ -1402,7 +1402,7 @@ function renderClothing(){
     const videoMarkup=videoURL
       ? '<div class="glass-video-window" data-glass-video-window>'+
           '<div class="glass-video-label"><span>GLASS EYE / PRIMARY WINDOW</span><span>YOUTUBE</span></div>'+
-          '<div class="glass-video-frame"><iframe src="'+esc(videoURL)+'" title="Glass Eye primary YouTube window" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>'+
+          '<div class="glass-video-frame"><iframe src="'+esc(videoURL)+'" title="Glass Eye primary YouTube window" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; trace-share" allowfullscreen></iframe></div>'+
         '</div>'
       : '<div class="glass-video-window glass-video-window-empty" data-glass-video-window aria-label="Glass Eye primary video window"><div class="glass-video-label"><span>GLASS EYE / PRIMARY WINDOW</span><span>YOUTUBE</span></div><div class="glass-video-placeholder"><span>PUBLIC VIDEO WINDOW</span><strong>AWAITING APPROVED VIDEO</strong></div></div>';
     container.innerHTML=
