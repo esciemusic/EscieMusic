@@ -844,7 +844,7 @@ html.route-shift .site-section {
 body[data-route="entry"] .entry-section,
 body[data-route="now"] #now,
 body[data-route="art"] #art,
-body[data-route="web"] #web,
+body[data-route="trace"] #trace,
 body[data-route="archives"] #archives,
 body[data-route="investigation"] #investigation,
 body[data-route="glass-eye"] #glass-eye,
