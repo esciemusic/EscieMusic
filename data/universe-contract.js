@@ -30,7 +30,7 @@
     }),
     publicSections:Object.freeze(["NOW","ART","THE WORLD","TRACE","THE ARCHIVES","THE CASE FILES","GLASS EYE","ESCIE"]),
     worldClasses:Object.freeze(["DRIFTER","RUNNER","INVESTIGATOR","SURVIVOR"]),
-    worldNodes:Object.freeze(["ART","THE PEOPLE","PLACES","MOMENTS","FRAGMENTS","PROOF","BODIES","PATH","THE WEB","THE ARCHIVES"]),
+    worldNodes:Object.freeze(["ART","THE PEOPLE","PLACES","MOMENTS","FRAGMENTS","PROOF","BODIES","PATH","TRACE","THE ARCHIVES"]),
     requiredGameSystems:Object.freeze(["simulation","npc-life","npc","law","investigation","rpg","vehicles","interiors","dialogue","3d"]),
     validate(){
       const errors=[];
