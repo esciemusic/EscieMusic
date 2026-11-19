@@ -63,7 +63,7 @@ test("A-Z Pass 1 locks the live shell to the eight-section model",()=>{
   assert.match(index,/id="now"[^>]*class="site-section now-section"/);
   assert.match(index,/id="art"[^>]*class="site-section art-section"/);
   assert.match(index,/id="world"[^>]*class="site-section world-section"/);
-  assert.match(index,/id="web"[^>]*class="site-section web-section"/);
+  assert.match(index,/id="web"[^>]*class="site-section trace-section"/);
   assert.match(index,/id="archives"[^>]*class="site-section archives-section"/);
   assert.match(index,/id="investigation"[^>]*class="site-section investigation-section"/);
   assert.match(index,/id="glass-eye"[^>]*class="site-section glass-eye-section"/);
@@ -892,7 +892,7 @@ test("A-Z Pass 3 THE WEB public relationship projection stays sanitized and fail
 test("A-Z Pass 3 THE WEB connection expansion stays local and links back into public records",()=>{
   const app=read("app.js");
   assert.match(app,/const webConnection=event\.target\.closest\("\[data-trace-connection-toggle\]"\)/);
-  assert.match(app,/const detail=webConnection\.parentElement&&webConnection\.parentElement\.querySelector\("\.web-connection-detail"\)/);
+  assert.match(app,/const detail=webConnection\.parentElement&&webConnection\.parentElement\.querySelector\("\.trace-connection-detail"\)/);
   assert.match(app,/webConnection\.setAttribute\("aria-expanded"/);
   assert.match(app,/data-record-id=/);
   assert.match(app,/OPEN [^"]*escapeHTML\(recordTitle\(from\)\.toUpperCase\(\)/);
@@ -1316,9 +1316,9 @@ test("A-Z Pass 5 makes Trace a thread discovery layer",()=>{
   assert.match(app,/FOLLOW THREAD/);
   assert.match(app,/CLEAR THREAD/);
   assert.match(app,/data-trace-participate/);
-  assert.match(style,/\.web-thread-map/);
-  assert.match(style,/\.web-thread-node/);
-  assert.match(style,/\.web-discovery-actions/);
+  assert.match(style,/\.trace-thread-map/);
+  assert.match(style,/\.trace-thread-node/);
+  assert.match(style,/\.trace-discovery-actions/);
 });
 
 test("A-Z Pass 6 exposes legitimate next steps from Trace connections",()=>{
@@ -1356,8 +1356,8 @@ test("A-Z Pass 9 protects Trace thread path navigation",()=>{
   assert.match(app,/traceTrail/);
   assert.match(app,/THREAD PATH/);
   assert.match(app,/renderTrace\(\);/);
-  assert.match(style,/\.web-thread-trail/);
-  assert.match(style,/\.web-trail-node/);
+  assert.match(style,/\.trace-thread-trail/);
+  assert.match(style,/\.trace-trail-node/);
 });
 
 test("A-Z Pass 9 Trace is the single public path/trail destination",()=>{
@@ -1426,8 +1426,8 @@ test("A-Z Pass 10 protects semantic Trace thread paths",()=>{
   const style=read("style.css");
   assert.match(app,/trailEdges/);
   assert.match(app,/CONNECTED_TO/);
-  assert.match(app,/web-trail-step/);
-  assert.match(style,/\.web-trail-step/);
+  assert.match(app,/trace-trail-step/);
+  assert.match(style,/\.trace-trail-step/);
 });
 
 test("A-Z Pass 11 protects Trace thread backtracking",()=>{
@@ -1436,8 +1436,8 @@ test("A-Z Pass 11 protects Trace thread backtracking",()=>{
   assert.match(app,/data-trace-trail-back/);
   assert.match(app,/data-trace-trail-clear/);
   assert.match(app,/trail.pop\(\)/);
-  assert.match(style,/\.web-thread-trail-controls/);
-  assert.match(style,/\.web-trail-back/);
+  assert.match(style,/\.trace-thread-trail-controls/);
+  assert.match(style,/\.trace-trail-back/);
 });
 
 
