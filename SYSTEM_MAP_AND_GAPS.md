@@ -7,7 +7,7 @@ Status: PASS 1 — structural optimization
 
 ### Public ESCIE / EscieMusic
 - Canonical public doorway and ESCIE universe presentation.
-- Eight-section public order: NOW → ART → THE WORLD → THE WEB → THE ARCHIVES → THE CASE FILES → GLASS EYE → ESCIE.
+- Eight-section public order: NOW → ART → THE WORLD → TRACE → THE ARCHIVES → THE CASE FILES → GLASS EYE → ESCIE.
 - Canonical identity: ESCIE THE ARTIST. THE ART SPEAKS FOR ITSELF. / THE FATHER · THE MAN · THE MONSTER.
 - Montréal-first THE WORLD with the physical clothing layer inside it.
 - Glass Eye as the audience-eye layer with approved media, local non-canonical viewer memory and EN/FR/ES support.
