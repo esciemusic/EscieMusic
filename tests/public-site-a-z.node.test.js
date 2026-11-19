@@ -1383,6 +1383,16 @@ test("A-Z Pass 10 makes released music a Trace threadhead without inventing rela
   assert.match(music,/Only transmitted work belongs here/);
 });
 
+test("A-Z Pass 13 separates relationship threads from wandering discovery",()=>{
+  const engine=read("world-engine.js");
+  assert.match(engine,/const connected=next\.filter\(x=>x\.connected\)/);
+  assert.match(engine,/FOLLOW THE THREAD/);
+  assert.match(engine,/Established relationships only\./);
+  assert.match(engine,/WANDER/);
+  assert.match(engine,/not established connections/);
+  assert.match(engine,/const connected=base\.some\(x=>String\(x\.id\)===String\(r\.id\)\)/);
+});
+
 test("A-Z Pass 12 distinguishes wandering from relationship threads",()=>{
   const engine=read("world-engine.js");
   assert.match(engine,/relationship:\\"WANDERED\\"/);
