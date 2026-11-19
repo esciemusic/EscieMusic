@@ -607,8 +607,8 @@ assert(fs.readFileSync("world-engine.js","utf8").includes("data-node="),"World r
 assert(fs.readFileSync("world-engine.js","utf8").includes("INSIDE"),"World room continuation language must remain quiet");
 assert(aestheticRuntime.includes(".world-room-item"),"World room items must have dedicated styling");
 
-assert(fs.readFileSync("app.js","utf8").includes("renderMerch();\n    bindMerchFilters();\n    renderWorld();\n    renderWeb();"),"public render lifecycle must render THE WORLD before TRACE");
-assert(!fs.readFileSync("app.js","utf8").includes("ESCIE_RUNTIME.webFilters[control.getAttribute(\"data-web-filter\")]=control.value||\"\";\n      renderWorld();"),"TRACE filter changes must not rebuild THE WORLD unnecessarily");
+assert(fs.readFileSync("app.js","utf8").includes("renderMerch();\n    bindMerchFilters();\n    renderWorld();\n    renderTrace();"),"public render lifecycle must render THE WORLD before TRACE");
+assert(!fs.readFileSync("app.js","utf8").includes("ESCIE_RUNTIME.traceFilters[control.getAttribute(\"data-trace-filter\")]=control.value||\"\";\n      renderWorld();"),"TRACE filter changes must not rebuild THE WORLD unnecessarily");
 const publicAppRuntime=fs.readFileSync("app.js","utf8");
 const musicStart=publicAppRuntime.indexOf("function renderMusic()");
 const projectsStart=publicAppRuntime.indexOf("function renderProjects()",musicStart);
