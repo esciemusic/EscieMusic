@@ -215,11 +215,11 @@
       writing: "#art/words",
       people: "#world",
       places: "#world",
-      traces: "#web",
+      traces: "#trace",
       world: "#world",
       now: "#now",
-      path: "#web",
-      gravity: "#web",
+      path: "#trace",
+      gravity: "#trace",
       unknown: "#investigation"
     })[destination] || null;
   }
@@ -273,7 +273,7 @@
       return { route: "#world-node=" + encodeURIComponent(String(recordId(target))), record: target, contextual: true };
     }
     if (destination === "traces") {
-      return { route: "#web", record: target, contextual: true };
+      return { route: "#trace", record: target, contextual: true };
     }
 
     return { route: fallback, record: target, contextual: true };
@@ -1032,7 +1032,7 @@
       ? '<button type="button" class="trace-filter-clear" data-trace-filter-clear>CLEAR THREAD</button>' : "";
 
     container.innerHTML=
-      '<div class="trace-experience trace-identity-field" data-trace-identity="montreal-signal">'+motifMarkup("web")+
+      '<div class="trace-experience trace-identity-field" data-trace-identity="montreal-signal">'+motifMarkup("trace")+
       '<div class="trace-signal-grid" aria-hidden="true"></div><div class="trace-montreal-trace" aria-hidden="true">MONTRÉAL / SIGNAL FIELD / HERE</div>'+
       '<div class="trace-experience-head"><p class="eyebrow">TRACE</p><h3>FOLLOW THE THREAD.</h3><p>THE SPACE BETWEEN THINGS. START WITH ONE RECORD. FOLLOW WHERE IT LEADS.</p></div>'+
       '<div class="trace-discovery-tools">'+
