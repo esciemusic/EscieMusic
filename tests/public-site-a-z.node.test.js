@@ -1371,6 +1371,18 @@ test("A-Z Pass 9 Trace is the single public path/trail destination",()=>{
   assert.match(engine,/ESCIE_PATHS/);
 });
 
+test("A-Z Pass 10 makes released music a Trace threadhead without inventing relationships",()=>{
+  const engine=read("world-engine.js");
+  const music=read("data/music.js");
+  assert.match(engine,/function musicThreadheads\(rs\)/);
+  assert.match(engine,/function musicThreadMarkup\(rs\)/);
+  assert.match(engine,/MUSIC AS A THREADHEAD/);
+  assert.match(engine,/START WITH A SONG\./);
+  assert.match(engine,/related\(r\.id\)\.length>0/);
+  assert.match(engine,/data-node/);
+  assert.match(music,/Only transmitted work belongs here/);
+});
+
 test("A-Z Pass 10 protects semantic Trace thread paths",()=>{
   const app=read("app.js");
   const style=read("style.css");
