@@ -1328,8 +1328,8 @@ test("A-Z Pass 6 exposes legitimate next steps from Trace connections",()=>{
   assert.match(app,/nextIds=new Set/);
   assert.match(app,/data-record-id/);
   assert.match(app,/NO NEXT PUBLIC CONNECTION IS ESTABLISHED YET/);
-  assert.match(style,/\.web-next-step/);
-  assert.match(style,/\.web-next-node/);
+  assert.match(style,/\.trace-next-step/);
+  assert.match(style,/\.trace-next-node/);
 });
 
 test("A-Z Pass 7 protects established Montréal neighbourhood relationships",()=>{
@@ -1347,7 +1347,7 @@ test("A-Z Pass 8 protects Trace hub context",()=>{
   const style=read("style.css");
   assert.match(app,/selectedConnectionTypes/);
   assert.match(app,/CONNECTED BY/);
-  assert.match(style,/\.web-hub-summary/);
+  assert.match(style,/\.trace-hub-summary/);
 });
 
 test("A-Z Pass 9 protects Trace thread path navigation",()=>{
