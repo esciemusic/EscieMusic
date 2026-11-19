@@ -1633,7 +1633,7 @@ function renderClothing(){
       now:"NOW",
       art:"ART",
       world:"MY WORLD",
-      web:"THE WEB",
+      web:"TRACE",
       archives:"THE ARCHIVES",
       investigation:"THE CASE FILES",
       "glass-eye":"GLASS EYE",
