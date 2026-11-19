@@ -577,7 +577,7 @@ test("A-Z Pass 1 web filters use one consolidated change lifecycle",()=>{
   const app=read("app.js");
   const block=app.slice(app.indexOf("function setupRecordInspector"),app.indexOf("function setupRecordInspector")+5000);
   assert.strictEqual((block.match(/document\.addEventListener\("change"/g)||[]).length,2);
-  assert.match(block,/\[data-web-filter\],\[data-web-record-type\]/);
+  assert.match(block,/\[data-trace-filter\],\[data-trace-record-type\]/);
 });
 
 test("A-Z Pass 1 record inspector uses canonical section targets",()=>{
@@ -891,7 +891,7 @@ test("A-Z Pass 3 THE WEB public relationship projection stays sanitized and fail
 
 test("A-Z Pass 3 THE WEB connection expansion stays local and links back into public records",()=>{
   const app=read("app.js");
-  assert.match(app,/const webConnection=event\.target\.closest\("\[data-web-connection-toggle\]"\)/);
+  assert.match(app,/const webConnection=event\.target\.closest\("\[data-trace-connection-toggle\]"\)/);
   assert.match(app,/const detail=webConnection\.parentElement&&webConnection\.parentElement\.querySelector\("\.web-connection-detail"\)/);
   assert.match(app,/webConnection\.setAttribute\("aria-expanded"/);
   assert.match(app,/data-record-id=/);
@@ -902,7 +902,7 @@ test("A-Z Pass 3 THE WEB connection expansion stays local and links back into pu
 test("A-Z Pass 3 TRACE empty state preserves the Glass Eye participation doorway",()=>{
   const app=read("app.js");
   assert.match(app,/THE PUBLIC GRAPH IS QUIET/);
-  assert.match(app,/data-web-participate/);
+  assert.match(app,/data-trace-participate/);
   assert.match(app,/const glass=byId\("glass-eye"\)/);
 });
 
@@ -1001,7 +1001,7 @@ test("A-Z Pass 3 THE CASE FILES empty state preserves the Glass Eye finding door
   assert.match(projection,/What does the record still not explain\?/);
   assert.match(projection,/What can be documented, sourced or reviewed\?/);
   assert.match(projection,/What remains open without being turned into fact\?/);
-  assert.match(projection,/data-web-participate/);
+  assert.match(projection,/data-trace-participate/);
   assert.match(projection,/BRING A FINDING THROUGH GLASS EYE/);
 });
 
@@ -1315,7 +1315,7 @@ test("A-Z Pass 5 makes Trace a thread discovery layer",()=>{
   assert.match(app,/STARTING NODE/);
   assert.match(app,/FOLLOW THREAD/);
   assert.match(app,/CLEAR THREAD/);
-  assert.match(app,/data-web-participate/);
+  assert.match(app,/data-trace-participate/);
   assert.match(style,/\.web-thread-map/);
   assert.match(style,/\.web-thread-node/);
   assert.match(style,/\.web-discovery-actions/);
@@ -1353,9 +1353,9 @@ test("A-Z Pass 8 protects Trace hub context",()=>{
 test("A-Z Pass 9 protects Trace thread path navigation",()=>{
   const app=read("app.js");
   const style=read("style.css");
-  assert.match(app,/webTrail/);
+  assert.match(app,/traceTrail/);
   assert.match(app,/THREAD PATH/);
-  assert.match(app,/renderWeb\(\);/);
+  assert.match(app,/renderTrace\(\);/);
   assert.match(style,/\.web-thread-trail/);
   assert.match(style,/\.web-trail-node/);
 });
@@ -1433,8 +1433,8 @@ test("A-Z Pass 10 protects semantic Trace thread paths",()=>{
 test("A-Z Pass 11 protects Trace thread backtracking",()=>{
   const app=read("app.js");
   const style=read("style.css");
-  assert.match(app,/data-web-trail-back/);
-  assert.match(app,/data-web-trail-clear/);
+  assert.match(app,/data-trace-trail-back/);
+  assert.match(app,/data-trace-trail-clear/);
   assert.match(app,/trail.pop\(\)/);
   assert.match(style,/\.web-thread-trail-controls/);
   assert.match(style,/\.web-trail-back/);
