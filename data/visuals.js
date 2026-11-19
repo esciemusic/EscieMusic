@@ -5,7 +5,7 @@ const ESCIE_VISUALS=[
 {id:"visual-world",section:"world",mode:"montreal-grid",symbols:["symbol-key"],intensity:.66,status:"active",asset:null},
 {id:"visual-now",section:"now",mode:"nightlight",symbols:["symbol-nightlight"],intensity:.72,status:"active",asset:null},
 {id:"visual-art",section:"art",mode:"vhs-daisy",symbols:["symbol-vhs","symbol-daisy"],intensity:.68,status:"active",asset:null},
-{id:"visual-web",section:"web",mode:"network",symbols:["symbol-key"],intensity:.64,status:"active",asset:null},
+{id:"visual-web",section:"trace",mode:"network",symbols:["symbol-key"],intensity:.64,status:"active",asset:null},
 {id:"visual-archives",section:"archives",mode:"archive-tape",symbols:["symbol-child-shoe","symbol-empty-chair","symbol-vhs"],intensity:.66,status:"active",asset:null},
 {id:"visual-investigation",section:"investigation",mode:"evidence",symbols:["symbol-camera","symbol-child-shoe","symbol-empty-chair"],intensity:.70,status:"active",asset:null},
 {id:"visual-glass-eye",section:"glass-eye",mode:"camera",symbols:["symbol-camera","symbol-vhs"],intensity:.74,status:"active",asset:null},
