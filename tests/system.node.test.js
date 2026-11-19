@@ -582,7 +582,7 @@ const aestheticRuntime=fs.readFileSync("aesthetic.css","utf8");
 assert(publicNavigationRuntime.includes('id:"now",label:"NOW"'),"public index must retain NOW");
 assert(publicNavigationRuntime.includes('id:"art",label:"ART"'),"public index must retain WORK");
 assert(publicNavigationRuntime.includes('id:"world",label:"MY WORLD"'),"public index must retain MY WORLD");
-assert(publicNavigationRuntime.includes('id:"web",label:"THE WEB"'),"public index must retain THE WEB");
+assert(publicNavigationRuntime.includes('id:"web",label:"TRACE"'),"public index must retain TRACE");
 assert(publicNavigationRuntime.includes('id:"archives",label:"THE ARCHIVES"'),"public index must retain ARCHIVE");
 assert(publicNavigationRuntime.includes('id:"investigation",label:"THE CASE FILES"'),"public index must retain THE CASE FILES");
 assert(publicNavigationRuntime.includes('id:"glass-eye",label:"GLASS EYE"'),"public index must retain GLASS EYE");
@@ -607,8 +607,8 @@ assert(fs.readFileSync("world-engine.js","utf8").includes("data-node="),"World r
 assert(fs.readFileSync("world-engine.js","utf8").includes("INSIDE"),"World room continuation language must remain quiet");
 assert(aestheticRuntime.includes(".world-room-item"),"World room items must have dedicated styling");
 
-assert(fs.readFileSync("app.js","utf8").includes("renderMerch();\n    bindMerchFilters();\n    renderWorld();\n    renderWeb();"),"public render lifecycle must render THE WORLD before THE WEB");
-assert(!fs.readFileSync("app.js","utf8").includes("ESCIE_RUNTIME.webFilters[control.getAttribute(\"data-web-filter\")]=control.value||\"\";\n      renderWorld();"),"THE WEB filter changes must not rebuild THE WORLD unnecessarily");
+assert(fs.readFileSync("app.js","utf8").includes("renderMerch();\n    bindMerchFilters();\n    renderWorld();\n    renderWeb();"),"public render lifecycle must render THE WORLD before TRACE");
+assert(!fs.readFileSync("app.js","utf8").includes("ESCIE_RUNTIME.webFilters[control.getAttribute(\"data-web-filter\")]=control.value||\"\";\n      renderWorld();"),"TRACE filter changes must not rebuild THE WORLD unnecessarily");
 const publicAppRuntime=fs.readFileSync("app.js","utf8");
 const musicStart=publicAppRuntime.indexOf("function renderMusic()");
 const projectsStart=publicAppRuntime.indexOf("function renderProjects()",musicStart);
