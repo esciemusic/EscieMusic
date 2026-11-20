@@ -271,6 +271,32 @@
     try{if("scrollRestoration" in history)history.scrollRestoration="manual";}catch(error){}
     function initSectionAccordion(){
       var sections=[].slice.call(document.querySelectorAll("main > section")).filter(function(section){return section.id!=="entry"&&section.querySelector("h2");});
+      var primarySectionIds={now:true,world:true,trace:true};
+      var secondarySections=sections.filter(function(section){return !primarySectionIds[section.id];});
+      var deeperOpen=false;
+      var firstSecondary=secondarySections[0];
+      if(firstSecondary&&!document.querySelector(".section-depth-gate")){
+        var depthGate=document.createElement("div");
+        depthGate.className="section-depth-gate";
+        depthGate.innerHTML='<button type="button" class="section-depth-trigger" aria-expanded="false" aria-controls="deeper-sections"><span class="section-depth-index">+</span><span class="section-depth-title">MORE</span><span class="section-depth-symbol" aria-hidden="true">⌄</span></button>';
+        firstSecondary.parentNode.insertBefore(depthGate,firstSecondary);
+        depthGate.querySelector(".section-depth-trigger").addEventListener("click",function(){
+          deeperOpen=!deeperOpen;
+          secondarySections.forEach(function(section){section.hidden=!deeperOpen;});
+          this.setAttribute("aria-expanded",String(deeperOpen));
+          this.querySelector(".section-depth-index").textContent=deeperOpen?"−":"+";
+          this.querySelector(".section-depth-symbol").textContent=deeperOpen?"⌃":"⌄";
+          depthGate.classList.toggle("is-open",deeperOpen);
+        });
+      }
+      secondarySections.forEach(function(section){section.hidden=true;section.classList.add("section-secondary");});
+      function openDeeperIfNeeded(target){
+        if(!target||!target.classList.contains("section-secondary")||deeperOpen)return;
+        deeperOpen=true;
+        secondarySections.forEach(function(section){section.hidden=false;});
+        var gate=document.querySelector(".section-depth-gate"),button=gate&&gate.querySelector(".section-depth-trigger");
+        if(button){button.setAttribute("aria-expanded","true");button.querySelector(".section-depth-index").textContent="−";button.querySelector(".section-depth-symbol").textContent="⌃";gate.classList.add("is-open");}
+      }
       sections.forEach(function(section,index){
         if(section.dataset.accordionReady==="1")return;
         var heading=section.querySelector("h2"),inner=section.querySelector(".section-inner")||section,button=document.createElement("button");
@@ -295,6 +321,7 @@
         var resolved=router&&typeof router.resolve==="function"?(router.resolve(raw)||raw):raw;
         var target=document.getElementById(resolved);
         if(!target)return;
+        openDeeperIfNeeded(target);
         var button=target.querySelector(".section-drop-trigger");
         if(button&&!target.classList.contains("section-open")){
           button.click();
@@ -306,6 +333,7 @@
         var router=window.ESCIE_UI_ROUTER;
         var resolved=router&&typeof router.resolve==="function"?(router.resolve(raw)||raw):raw;
         var target=document.getElementById(resolved);
+        openDeeperIfNeeded(target);
         var button=target&&target.querySelector(".section-drop-trigger");
         if(button&&!target.classList.contains("section-open"))button.click();
       }};
