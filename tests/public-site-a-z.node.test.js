@@ -1152,7 +1152,7 @@ test("A-Z World Pass 2 uses canonical symbolic lens navigation",()=>{
   assert.match(world,/Montréal is home\. Everything else is still the world\./);
   assert.match(world,/function homeRooms\(\)/);
   assert.match(world,/\["little-italy","parc-extension"\]/);
-  assert.match(world,/THE OUTSIDE WORLD/);
+  assert.match(world,/WANDER/);
   assert.ok(true);
   assert.ok(true);
   assert.ok(true);
