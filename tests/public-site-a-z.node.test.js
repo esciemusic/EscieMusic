@@ -1186,11 +1186,11 @@ test("THE WORLD exposes the complete public lens architecture without creating d
   assert.match(index,/data\/objects\.js/);
   assert.match(index,/data\/proof\.js/);
   assert.match(engine,/MY WORLD/);
-  assert.match(engine,/MONTRÉAL IS HOME\./);
+  assert.match(engine,/Montréal is home\. Everything else is still the world\./);
   assert.match(engine,/function homeRooms\(\)/);
   assert.match(engine,/little-italy/);
   assert.match(engine,/parc-extension/);
-  assert.match(engine,/THE OUTSIDE WORLD/);
+  assert.match(engine,/WANDER/);
   assert.match(engine,/function mountWorld\(\)/);
   assert.doesNotMatch(engine,/Explore the world\. Follow what you find\. Decide what you believe\./);
 });
