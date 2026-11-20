@@ -1558,3 +1558,16 @@ test("A-Z Pass 22 makes World and public Trace share the same relationship discl
   assert.match(app,/relationshipContract\.canDisclose\(r\)/);
   assert.match(relationship,/canDisclose/);
 });
+
+test("A-Z World experience sequencing keeps the first visit progressive",()=>{
+  const world=read("world-engine.js");
+  const start=world.indexOf("function worldHome()");
+  const end=world.indexOf("function mountWorld()");
+  assert.ok(start>=0&&end>start,"worldHome contract must remain discoverable");
+  const home=world.slice(start,end);
+  assert.ok(home.indexOf("worldNowMarkup()")<home.indexOf("worldLensMarkup()"),"NOW must precede deeper exploration");
+  assert.match(home,/HOME \/ PLACE/);
+  assert.match(home,/WHAT’S HERE/);
+  assert.match(home,/WANDER/);
+  assert.ok(home.indexOf("worldLensMarkup()")<home.indexOf("data-outside-world"),"deeper exploration must precede the wander exit");
+});
