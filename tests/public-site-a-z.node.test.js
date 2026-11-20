@@ -144,6 +144,20 @@ test("A-Z Pass 1 keeps runtime motif and section labels on canonical IDs",()=>{
   assert.match(app,/archives:"THE ARCHIVES"/);
 });
 
+test("A-Z Pass 5 keeps the public surface simple while preserving deeper sections",()=>{
+  const index=read("index.html");
+  const aesthetic=read("aesthetic.css");
+  const audit=read("tests/live-public-audit.mjs");
+  assert.match(index,/var primarySectionIds=\{now:true,world:true,trace:true\}/);
+  assert.match(index,/className="section-depth-gate"/);
+  assert.match(index,/section\.hidden=true;section\.classList\.add\("section-secondary"\)/);
+  assert.match(index,/openDeeperIfNeeded\(target\)/);
+  assert.match(aesthetic,/\.section-depth-gate/);
+  assert.match(aesthetic,/\.section-secondary\[hidden\]\{display:none !important;\}/);
+  assert.match(audit,/\.section-depth-trigger/);
+  assert.match(audit,/public depth gate should start closed/);
+});
+
 test("A-Z Pass 1 accordion labels are section-local",()=>{
   const index=read("index.html");
   assert.ok(index.includes('var otherHeading=other.querySelector("h2")'));
