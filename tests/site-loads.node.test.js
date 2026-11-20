@@ -85,7 +85,7 @@ assert(fs.readFileSync("aesthetic.css","utf8").includes(".archive-record-index::
 
 assert(fs.readFileSync("world-engine.js","utf8").includes("function worldHome()"),"THE WORLD must present Montréal as the home");
 assert(fs.readFileSync("world-engine.js","utf8").includes("little-italy")&&fs.readFileSync("world-engine.js","utf8").includes("parc-extension"),"THE WORLD must currently expose only Little Italy and Parc-Extension as rooms");
-assert(fs.readFileSync("world-engine.js","utf8").includes("THE OUTSIDE WORLD"),"THE WORLD must distinguish the outside world from the Montréal home");
+assert(fs.readFileSync("world-engine.js","utf8").includes("WANDER"),"THE WORLD must provide an explicit way to leave the immediate Montréal thread");
 assert(fs.readFileSync("data/locations.js","utf8").includes('id:"little-italy"'),"World data must define Little Italy as a public room");
 assert(fs.readFileSync("data/locations.js","utf8").includes('id:"parc-extension"'),"World data must define Parc-Extension as a public room");
 assert(fs.readFileSync("world-engine.js","utf8").includes("function mountWorld()"),"THE WORLD must mount its home experience");
