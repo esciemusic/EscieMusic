@@ -98,6 +98,14 @@ async function scanRenderedBoundary(label) {
 }
 
 async function auditAccordions(label) {
+  const depthGate = page.locator(".section-depth-trigger").first();
+  check(await depthGate.count()===1, label + " public depth gate missing");
+  if (await depthGate.count()) {
+    check((await depthGate.getAttribute("aria-expanded"))==="false", label + " public depth gate should start closed");
+    await depthGate.click();
+    await page.waitForTimeout(80);
+    check((await depthGate.getAttribute("aria-expanded"))==="true", label + " public depth gate failed to open");
+  }
   const triggers = page.locator(".section-drop-trigger");
   const count = await triggers.count();
   check(count >= 8, label + " expected canonical section dropdown triggers");
