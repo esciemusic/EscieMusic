@@ -595,7 +595,7 @@ assert(aestheticRuntime.includes("section-open .section-drop-panel"),"expanded s
 assert(aestheticRuntime.includes("padding:28px 0 8px"),"expanded sections must create readable content spacing");
 assert(aestheticRuntime.includes(".section-open .section-drop-trigger"),"expanded sections must receive a distinct visual state");
 assert(fs.readFileSync("world-engine.js","utf8").includes("function mountWorld()"),"public World runtime must mount the home experience");
-assert(fs.readFileSync("world-engine.js","utf8").includes("MONTRÉAL IS HOME."),"MY WORLD must expose Montréal as home");
+assert(fs.readFileSync("world-engine.js","utf8").includes("Montréal is home. Everything else is still the world."),"MY WORLD must expose Montréal as home");
 assert(fs.readFileSync("world-engine.js","utf8").includes("THE OUTSIDE WORLD"),"MY WORLD must distinguish beyond the home");
 assert(fs.readFileSync("world-engine.js","utf8").includes("function homeRooms()"),"MY WORLD must expose its current home rooms");
 assert(fs.readFileSync("world-engine.js","utf8").includes('["little-italy","parc-extension"]'),"MY WORLD must currently expose only the two lived rooms");
