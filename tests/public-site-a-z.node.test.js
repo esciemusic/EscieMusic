@@ -148,7 +148,7 @@ test("A-Z Pass 5 makes the World globe the first-contact doorway",()=>{
   const index=read("index.html");
   assert.match(index,/class="entry-world-globe"/);
   assert.match(index,/aria-label="Three-dimensional globe representing THE WORLD"/);
-  assert.match(index,/href="#world" aria-label="Enter THE WORLD"/);
+  assert.match(index,/href="#world" aria-label="Open THE WORLD"/);
   assert.match(index,/href="#world-node=montreal"/);
   assert.match(index,/href="#art\/music"/);
   assert.match(index,/href="#archives"/);
