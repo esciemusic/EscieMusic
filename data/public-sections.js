@@ -33,7 +33,7 @@
       disclosure:"artifact_first"
     },
     {
-      id:"world", label:"MY WORLD", order:3, role:"physical_reality",
+      id:"world", label:"THE WORLD", order:3, role:"physical_reality",
       purpose:"Ground ESCIE in Montréal, places, routes, environments, objects and lived geography.",
       contentTypes:["place","route","map","photograph","environmental_audio","moment","object","location_trace"],
       behavior:["explore","locate","observe","return"],
