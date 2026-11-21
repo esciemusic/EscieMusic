@@ -22,6 +22,7 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="aesthetic.css">
   <link rel="stylesheet" href="typography.css">
+  <link rel="stylesheet" href="entry-globe.css">
 </head>
 
 <body id="top">
@@ -89,6 +90,30 @@
   <span class="hero-skyline-distortion"></span>
                 </span>
               </a>
+            </div>
+            <div class="entry-world-globe" aria-label="The World">
+              <div class="world-globe" tabindex="0" role="group" aria-label="Three-dimensional globe representing THE WORLD">
+                <span class="entry-globe-sphere" aria-hidden="true"></span>
+                <span class="entry-globe-meridian" aria-hidden="true"></span>
+                <span class="entry-globe-meridian m2" aria-hidden="true"></span>
+                <span class="entry-globe-meridian m3" aria-hidden="true"></span>
+                <span class="entry-globe-meridian m4" aria-hidden="true"></span>
+                <span class="entry-globe-latitude" aria-hidden="true"></span>
+                <span class="entry-globe-latitude l2" aria-hidden="true"></span>
+                <span class="entry-globe-latitude l3" aria-hidden="true"></span>
+                <span class="entry-globe-latitude l4" aria-hidden="true"></span>
+                <span class="entry-globe-orbit" aria-hidden="true"></span>
+                <span class="entry-globe-home" aria-hidden="true"></span>
+                <a class="entry-globe-point home" href="#world-node=montreal" aria-label="Enter Montréal, Home"></a>
+                <a class="entry-globe-point music" href="#art/music" aria-label="Enter music"></a>
+                <a class="entry-globe-point archive" href="#archives" aria-label="Enter the Archives"></a>
+                <a class="entry-globe-point case" href="#investigation" aria-label="Enter the Case Files"></a>
+                <a class="entry-globe-point glass" href="#glass-eye" aria-label="Enter Glass Eye"></a>
+                <span class="entry-globe-core">
+                  <a class="entry-globe-enter" href="#world" aria-label="Enter THE WORLD"></a>
+                </span>
+              </div>
+              <span class="entry-globe-label">THE WORLD</span>
             </div>
             <nav class="hero-art-doors hero-symbol-doors" aria-label="World experiential channels">
               <a class="hero-art-door hero-symbol-door" href="#art/visual" aria-label="See visual work" data-symbol-id="symbol-oju" data-symbol-portal="true"><svg class="escie-symbol-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#oju"></use></svg><span>VISUAL</span></a>
@@ -271,50 +296,38 @@
     try{if("scrollRestoration" in history)history.scrollRestoration="manual";}catch(error){}
     function initSectionAccordion(){
       var sections=[].slice.call(document.querySelectorAll("main > section")).filter(function(section){return section.id!=="entry"&&section.querySelector("h2");});
-      var primarySectionIds={now:true,world:true,trace:true};
-      var secondarySections=sections.filter(function(section){return !primarySectionIds[section.id];});
-      var deeperOpen=false;
-      var firstSecondary=secondarySections[0];
-      if(firstSecondary&&!document.querySelector(".section-depth-gate")){
-        var depthGate=document.createElement("div");
-        depthGate.className="section-depth-gate";
-        depthGate.innerHTML='<button type="button" class="section-depth-trigger" aria-expanded="false" aria-controls="deeper-sections"><span class="section-depth-index">+</span><span class="section-depth-title">MORE</span><span class="section-depth-symbol" aria-hidden="true">⌄</span></button>';
-        firstSecondary.parentNode.insertBefore(depthGate,firstSecondary);
-        depthGate.querySelector(".section-depth-trigger").addEventListener("click",function(){
-          deeperOpen=!deeperOpen;
-          secondarySections.forEach(function(section){section.hidden=!deeperOpen;});
-          this.setAttribute("aria-expanded",String(deeperOpen));
-          this.querySelector(".section-depth-index").textContent=deeperOpen?"−":"+";
-          this.querySelector(".section-depth-symbol").textContent=deeperOpen?"⌃":"⌄";
-          depthGate.classList.toggle("is-open",deeperOpen);
-        });
-      }
-      secondarySections.forEach(function(section){section.hidden=true;section.classList.add("section-secondary");});
-      function openDeeperIfNeeded(target){
-        if(!target||!target.classList.contains("section-secondary")||deeperOpen)return;
-        deeperOpen=true;
-        secondarySections.forEach(function(section){section.hidden=false;});
-        var gate=document.querySelector(".section-depth-gate"),button=gate&&gate.querySelector(".section-depth-trigger");
-        if(button){button.setAttribute("aria-expanded","true");button.querySelector(".section-depth-index").textContent="−";button.querySelector(".section-depth-symbol").textContent="⌃";gate.classList.add("is-open");}
-      }
-      sections.forEach(function(section,index){
+      sections.forEach(function(section){
         if(section.dataset.accordionReady==="1")return;
         var heading=section.querySelector("h2"),inner=section.querySelector(".section-inner")||section,button=document.createElement("button");
-        var symbols={now:"now",art:"art",world:"world",web:"web",archives:"archives",investigation:"case-files","glass-eye":"glass-eye",escie:"escie"};
+        var symbols={now:"now",art:"art",world:"world",trace:"web",web:"web",archives:"archives",investigation:"case-files","glass-eye":"glass-eye",escie:"escie"};
         var symbol=symbols[section.id]||"·";
         button.type="button";button.className="section-drop-trigger";button.setAttribute("aria-controls",section.id+"-panel");button.setAttribute("aria-expanded","false");button.setAttribute("aria-label","Open "+heading.textContent.trim());
-        button.dataset.section=section.id;button.innerHTML='<span class="section-drop-index">'+String(index+1).padStart(2,"0")+'</span><span class="section-drop-title"></span><span class="section-drop-symbol"><svg class="escie-symbol-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#'+symbol+'"></use></svg></span><span class="section-drop-state" aria-hidden="true">+</span>';button.querySelector(".section-drop-title").textContent=heading.textContent.trim();heading.hidden=true;
+        button.dataset.section=section.id;button.innerHTML='<span class="section-drop-index">'+String(Array.prototype.indexOf.call(sections,section)+1).padStart(2,"0")+'</span><span class="section-drop-title"></span><span class="section-drop-symbol"><svg class="escie-symbol-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#'+symbol+'"></use></svg></span><span class="section-drop-state" aria-hidden="true">+</span>';button.querySelector(".section-drop-title").textContent=heading.textContent.trim();heading.hidden=true;
         var panel=document.createElement("div");panel.className="section-drop-panel";panel.id=section.id+"-panel";panel.setAttribute("role","region");panel.hidden=true;
         var content=document.createElement("div");content.className="section-drop-content";
         Array.from(inner.children).forEach(function(child){if(child!==heading)content.appendChild(child);});
         panel.appendChild(content);
-        inner.appendChild(button);inner.appendChild(panel);section.dataset.accordionReady="1";section.classList.add("section-collapsed");
+        inner.appendChild(button);inner.appendChild(panel);section.dataset.accordionReady="1";section.classList.add("section-collapsed");section.hidden=true;
         function setOpen(open){
-          sections.forEach(function(other){var p=other.querySelector(".section-drop-panel"),b=other.querySelector(".section-drop-trigger"),active=other===section&&open;other.classList.toggle("section-open",active);other.classList.toggle("section-collapsed",!active);if(p)p.hidden=!active;if(b){b.setAttribute("aria-expanded",String(active));var s=b.querySelector(".section-drop-state");if(s)s.textContent=active?"−":"+";var otherHeading=other.querySelector("h2");var otherTitle=otherHeading?otherHeading.textContent.trim():(b.querySelector(".section-drop-title")?.textContent.trim()||other.id);b.setAttribute("aria-label",(active?"Close ":"Open ")+otherTitle);}});
+          sections.forEach(function(other){
+            var p=other.querySelector(".section-drop-panel"),b=other.querySelector(".section-drop-trigger"),active=other===section&&open;
+            other.classList.toggle("section-open",active);other.classList.toggle("section-collapsed",!active);other.hidden=!active;
+            if(p)p.hidden=!active;
+            if(b){
+              b.setAttribute("aria-expanded",String(active));
+              var s=b.querySelector(".section-drop-state");if(s)s.textContent=active?"−":"+";
+              var otherHeading=other.querySelector("h2"),otherTitle=otherHeading?otherHeading.textContent.trim():(b.querySelector(".section-drop-title")?.textContent.trim()||other.id);
+              b.setAttribute("aria-label",(active?"Close ":"Open ")+otherTitle);
+            }
+          });
         }
         button.addEventListener("click",function(){setOpen(!section.classList.contains("section-open"));});
       });
-      function openFromHash(shouldScroll){
+      function openDeeperIfNeeded(target){
+        if(!target)return;
+        sections.forEach(function(section){section.hidden=section!==target;});
+      }
+    function openFromHash(shouldScroll){
         var raw=(window.location.hash||"").replace(/^#/,"");
         if(!raw||raw==="top"||raw==="entry")return;
         var router=window.ESCIE_UI_ROUTER;
@@ -659,6 +672,7 @@
 
 
   <!-- Application -->
-  <script src="app.js" defer></script>
+  <script src="entry-globe.js" defer></script>
+<script src="app.js" defer></script>
 <div id="escie-player-profile" class="escie-player-profile" hidden><span class="escie-player-label">THE WORLD PLAYER</span><strong data-player-name>PLAYER</strong></div></body>
 </html>
