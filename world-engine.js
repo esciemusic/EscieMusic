@@ -450,6 +450,10 @@ function clearWorldTransition(options){
  state.attentionNoticed=false;
  if(!options.preserveReturn){state.returningFrom=null;state.returnFlash=null;}
 }
+function recordGlassEyeEvent(type,target){
+ const memory=window.ESCIE_GLASS_EYE_MEMORY;
+ if(memory&&typeof memory.record==="function")memory.record({type:type,target_id:String(target||""),timestamp:new Date().toISOString(),data:{source:"world-navigation"}});
+}
 function openWorldNode(id,options){
  const target=String(id||"").trim();
  if(!target)return;
@@ -461,6 +465,7 @@ function openWorldNode(id,options){
  state.selected=target;
  state.attentionSince=Date.now();state.attentionNoticed=false;
  if(!options.preserveTrail)remember(target);
+ recordGlassEyeEvent("ENTERED",target);
  try{
    state.street=null;
    if(!options.preserveSpatial)state.placeStreet=null;
