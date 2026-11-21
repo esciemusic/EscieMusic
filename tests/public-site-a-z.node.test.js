@@ -1313,8 +1313,8 @@ test("A-Z World home architecture uses Montréal as home and direct room routes"
    assert.match(index,/href="#world-node=parc-extension"/);
    assert.match(index,/href="#world-node=montreal"/);
    assert.match(engine,/function worldHome\(\)/);
-   assert.match(engine,/MONTRÉAL IS HOME\./);
-   assert.match(engine,/THE OUTSIDE WORLD/);
+   assert.match(engine,/Montréal is home\. Everything else is still the world\./);
+   assert.match(engine,/WANDER/);
    assert.match(engine,/function homeRooms\(\)/);
    assert.match(engine,/\["little-italy","parc-extension"\]/);
    assert.match(engine,/function mountWorld\(\)/);
