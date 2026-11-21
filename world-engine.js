@@ -1131,7 +1131,7 @@ function draw(){
    }
    const wanderWorld=event.target.closest("[data-wander-world]");
    if(wanderWorld){
-     state.selected=null;state.street=null;state.placeStreet=null;state.roomOrigin=null;state.outsideOpen=false;state.exploreOpen=false;draw();
+     state.selected=null;state.street=null;state.placeStreet=null;state.roomOrigin=null;state.outsideOpen=true;state.exploreOpen=false;state.moreOpen=false;state.tab="atlas";history.replaceState(null,"","#world");draw();
      return;
    }
    const returnNew=event.target.closest("[data-return-new]");
