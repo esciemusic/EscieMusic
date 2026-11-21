@@ -50,6 +50,9 @@ assert(/\["http:","https:"\]\.includes\(parsed\.protocol\)/.test(src),"World Eng
 assert(/const reduceMotion=\(\)=>typeof window\.matchMedia==="function"/.test(src),"World Engine needs reduced-motion detection");
 assert(!/scrollIntoView\(/.test(src),"World Engine must not force section scrolling");
 assert(/function writeWorldHash\(hash,mode\)/.test(src),"World Engine needs centralized history writes");
+assert(/function recordGlassEyeEvent\(type,target\)/.test(src),"World navigation must bridge into local Glass Eye memory");
+assert(/memory\.record\(\{type:type,target_id:String\(target\|\|""\)/.test(src),"World navigation memory bridge must record a local event");
+assert(/recordGlassEyeEvent\("ENTERED",target\)/.test(src),"World node navigation must record an ENTERED event locally");
 assert(/writeWorldHash\("#world-node=.*,"push"\)/.test(src),"World node navigation must create a browser-history step");
 assert(/writeWorldHash\("#world-street=.*,"push"\)/.test(src),"World street navigation must create a browser-history step");
 assert(/writeWorldHash\("#world-place=.*,"push"\)/.test(src),"World place navigation must create a browser-history step");
