@@ -1,0 +1,25 @@
+/* ESCIE — World as first contact. The globe is the doorway, not a tab. */
+.entry-world-globe{position:relative;width:min(78vw,340px);aspect-ratio:1;margin:clamp(28px,6vh,56px) auto 0;display:grid;place-items:center;perspective:900px}
+.entry-world-globe .world-globe{position:relative;width:100%;height:100%;border:0;background:transparent;border-radius:50%;transform-style:preserve-3d;cursor:grab;touch-action:none;filter:drop-shadow(0 0 24px rgba(255,255,255,.08));animation:entry-globe-turn 34s linear infinite}
+.entry-world-globe .world-globe:focus-visible{outline:1px solid rgba(255,255,255,.72);outline-offset:10px}
+.entry-world-globe .world-globe.is-dragging{cursor:grabbing;animation:none}
+.entry-world-globe .world-globe::before,.entry-world-globe .world-globe::after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none}
+.entry-world-globe .world-globe::before{background:repeating-linear-gradient(90deg,transparent 0 8%,rgba(255,255,255,.17) 8.15% 8.45%,transparent 8.6% 16.65%);transform:rotateY(90deg);border:1px solid rgba(255,255,255,.14)}
+.entry-world-globe .world-globe::after{background:repeating-linear-gradient(0deg,transparent 0 11%,rgba(255,255,255,.14) 11.15% 11.45%,transparent 11.6% 22.2%);transform:rotateX(12deg);border:1px solid rgba(255,255,255,.1)}
+.entry-globe-sphere{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(255,255,255,.34);box-shadow:inset -38px -18px 70px rgba(0,0,0,.88),inset 28px 10px 48px rgba(255,255,255,.055),0 0 0 1px rgba(255,255,255,.04)}
+.entry-globe-meridian{position:absolute;inset:0;border:1px solid rgba(255,255,255,.12);border-radius:50%;transform:rotateY(35deg)}
+.entry-globe-meridian.m2{transform:rotateY(-35deg)}.entry-globe-meridian.m3{transform:rotateY(70deg)}.entry-globe-meridian.m4{transform:rotateY(-70deg)}
+.entry-globe-latitude{position:absolute;left:9%;right:9%;height:20%;top:40%;border:1px solid rgba(255,255,255,.12);border-radius:50%;transform:rotateX(62deg)}
+.entry-globe-latitude.l2{top:28%;transform:rotateX(62deg) scaleX(.82)}.entry-globe-latitude.l3{top:52%;transform:rotateX(-62deg) scaleX(.82)}.entry-globe-latitude.l4{top:64%;transform:rotateX(-62deg)}
+.entry-globe-orbit{position:absolute;inset:-9%;border:1px solid rgba(255,255,255,.06);border-radius:50%;transform:rotate(18deg) scaleX(.618);pointer-events:none}
+.entry-globe-home{position:absolute;left:57%;top:39%;width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 0 5px rgba(255,255,255,.08),0 0 18px rgba(255,255,255,.42)}
+.entry-globe-point{position:absolute;width:7px;height:7px;border:1px solid rgba(255,255,255,.5);border-radius:50%;background:rgba(255,255,255,.08);transform:translate(-50%,-50%);opacity:.38;transition:opacity .25s ease,transform .25s ease,filter .25s ease;z-index:3}
+.entry-globe-point:hover,.entry-globe-point:focus-visible{opacity:1;transform:translate(-50%,-50%) scale(1.35);filter:drop-shadow(0 0 8px rgba(255,255,255,.45))}
+.entry-globe-point.home{left:57%;top:39%;opacity:.95}.entry-globe-point.music{left:35%;top:30%}.entry-globe-point.archive{left:68%;top:62%}.entry-globe-point.case{left:29%;top:67%}.entry-globe-point.glass{left:72%;top:30%}
+.entry-globe-label{position:absolute;bottom:-24px;left:50%;transform:translateX(-50%);font:500 8px/1 var(--escie-font-mono,monospace);letter-spacing:.22em;color:rgba(255,255,255,.48);text-transform:uppercase;white-space:nowrap;pointer-events:none}
+.entry-globe-core{position:absolute;inset:0;display:grid;place-items:center;z-index:4;pointer-events:none}
+.entry-globe-enter{width:48%;aspect-ratio:1;border:1px solid rgba(255,255,255,.12);border-radius:50%;background:transparent;color:transparent;cursor:pointer;pointer-events:auto}
+.entry-globe-enter:focus-visible{outline:1px solid rgba(255,255,255,.8);outline-offset:8px}
+@keyframes entry-globe-turn{from{transform:rotateX(0deg) rotateY(0deg)}to{transform:rotateX(0deg) rotateY(360deg)}}
+@media(max-width:600px){.entry-world-globe{width:min(78vw,300px);margin-top:30px}.entry-globe-label{bottom:-20px;font-size:7px}}
+@media(prefers-reduced-motion:reduce){.entry-world-globe .world-globe{animation:none}.entry-globe-point{transition:none}}
