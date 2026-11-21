@@ -1461,6 +1461,7 @@ function renderClothing(){
     const participation=window.ESCIE_GLASS_EYE_PARTICIPATION;
     const form=container.querySelector("[data-glass-participation-form]");
     const status=container.querySelector("[data-glass-participation-status]");
+    const submitButton=form&&form.querySelector(".glass-submit");
     container.querySelectorAll("[data-glass-kind]").forEach(button=>button.addEventListener("click",()=>{
       container.querySelectorAll("[data-glass-kind]").forEach(b=>{
         const active=b===button;
@@ -1473,6 +1474,8 @@ function renderClothing(){
       event.preventDefault();
       const data=new FormData(form);
       if(status)status.textContent="SENDING…";
+      if(form)form.setAttribute("aria-busy","true");
+      if(submitButton){submitButton.disabled=true;submitButton.setAttribute("aria-disabled","true");}
       try{
         await participation.submit({kind:data.get("kind"),displayName:data.get("displayName"),location:data.get("location"),body:data.get("body"),file:data.get("file")});
         form.reset();
@@ -1485,6 +1488,10 @@ function renderClothing(){
         if(status)status.textContent=p.received;
         loadApproved();
       }catch(error){if(status)status.textContent=error&&error.message?error.message:p.failed;}
+      finally{
+        if(form)form.setAttribute("aria-busy","false");
+        if(submitButton){submitButton.disabled=false;submitButton.setAttribute("aria-disabled","false");}
+      }
     });
     async function loadApproved(){
       if(!participation||typeof participation.approved!=="function")return;
