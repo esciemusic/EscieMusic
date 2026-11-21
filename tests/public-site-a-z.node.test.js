@@ -1053,7 +1053,7 @@ test("A-Z Pass 3 GLASS EYE participation remains reviewed before public record e
   assert.match(app,/participation\.approved/);
   assert.match(app,/form\.setAttribute\("aria-busy","true"\)/);
   assert.match(app,/submitButton\.disabled=true/);
-  assert.match(app,/form\.setAttribute(\"aria-busy\",\"false\"\)/);
+  assert.match(app,/form\.setAttribute\("aria-busy","false"\)/);
   assert.match(app,/submitButton\.disabled=false/);
 });
 
