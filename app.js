@@ -1446,7 +1446,7 @@ function renderClothing(){
         '<div class="glass-participation-head"><p class="eyebrow">'+esc(p.open)+'</p><h3 id="glass-participation-title">'+esc(p.title)+'</h3><p>'+esc(p.intro)+'</p></div><div class="glass-participation-path"><div><span class="eyebrow">01 / '+esc(p.notice)+'</span><strong>'+esc(p.observe)+'</strong><p>'+esc(p.noticeText)+'</p></div><div><span class="eyebrow">02 / '+esc(p.send)+'</span><strong>'+esc(p.contribute)+'</strong><p>'+esc(p.sendText)+'</p></div><div><span class="eyebrow">03 / '+esc(p.review)+'</span><strong>'+esc(p.record)+'</strong><p>'+esc(p.reviewText)+'</p></div></div>'+
         '<form class="glass-participation-form" data-glass-participation-form>'+
           '<div class="glass-participation-types" role="group" aria-label="'+esc(p.submission)+'">'+
-            ["COMMENT","THEORY","FINDING","MENTION"].map((kind,i)=>'<button type="button" class="'+(i===0?"is-active":"")+'" data-glass-kind="'+kind+'">'+kind+'</button>').join("")+
+            ["COMMENT","THEORY","FINDING","MENTION"].map((kind,i)=>'<button type="button" class="'+(i===0?"is-active":"")+'" aria-pressed="'+(i===0?"true":"false")+'" data-glass-kind="'+kind+'">'+kind+'</button>').join("")+
           '</div>'+
           '<input type="hidden" name="kind" value="COMMENT">'+
           '<label>'+esc(p.name)+'<input name="displayName" maxlength="80" placeholder="'+esc(p.placeholderName)+'"></label>'+
@@ -1462,8 +1462,11 @@ function renderClothing(){
     const form=container.querySelector("[data-glass-participation-form]");
     const status=container.querySelector("[data-glass-participation-status]");
     container.querySelectorAll("[data-glass-kind]").forEach(button=>button.addEventListener("click",()=>{
-      container.querySelectorAll("[data-glass-kind]").forEach(b=>b.classList.remove("is-active"));
-      button.classList.add("is-active");
+      container.querySelectorAll("[data-glass-kind]").forEach(b=>{
+        const active=b===button;
+        b.classList.toggle("is-active",active);
+        b.setAttribute("aria-pressed",active?"true":"false");
+      });
       form.querySelector('[name="kind"]').value=button.getAttribute("data-glass-kind")||"COMMENT";
     }));
     if(form&&participation&&typeof participation.submit==="function")form.addEventListener("submit",async event=>{
@@ -1474,7 +1477,11 @@ function renderClothing(){
         await participation.submit({kind:data.get("kind"),displayName:data.get("displayName"),location:data.get("location"),body:data.get("body"),file:data.get("file")});
         form.reset();
         form.querySelector('[name="kind"]').value="COMMENT";
-        container.querySelectorAll("[data-glass-kind]").forEach((b,i)=>b.classList.toggle("is-active",i===0));
+        container.querySelectorAll("[data-glass-kind]").forEach((b,i)=>{
+          const active=i===0;
+          b.classList.toggle("is-active",active);
+          b.setAttribute("aria-pressed",active?"true":"false");
+        });
         if(status)status.textContent=p.received;
         loadApproved();
       }catch(error){if(status)status.textContent=error&&error.message?error.message:p.failed;}
