@@ -581,7 +581,7 @@ const publicNavigationRuntime=fs.readFileSync("navigation.js","utf8");
 const aestheticRuntime=fs.readFileSync("aesthetic.css","utf8");
 assert(publicNavigationRuntime.includes('id:"now",label:"NOW"'),"public index must retain NOW");
 assert(publicNavigationRuntime.includes('id:"art",label:"ART"'),"public index must retain WORK");
-assert(publicNavigationRuntime.includes('id:"world",label:"MY WORLD"'),"public index must retain MY WORLD");
+assert(publicNavigationRuntime.includes('id:"world",label:"THE WORLD"'),"public index must retain THE WORLD");
 assert(publicNavigationRuntime.includes('id:"trace",label:"TRACE"'),"public index must retain TRACE");
 assert(publicNavigationRuntime.includes('id:"archives",label:"THE ARCHIVES"'),"public index must retain ARCHIVE");
 assert(publicNavigationRuntime.includes('id:"investigation",label:"THE CASE FILES"'),"public index must retain THE CASE FILES");
