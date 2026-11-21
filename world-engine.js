@@ -863,9 +863,6 @@ function worldLensMarkup(){
  ];
  const advanced=state.exploreOpen;
  const closer=[
-  ["people","PEOPLE","person"],
-  ["places","PLACES","world"],
-  ["moments","MOMENTS","moment"],
   ["objects","OBJECTS","world"],
   ["trace","TRACE","web"]
  ];
