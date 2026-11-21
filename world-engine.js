@@ -855,7 +855,7 @@ function homeRooms(){
 // Canonical World entry contracts: data-world-tab="places" data-world-tab="people" data-world-tab="moments" href="#art"
 // Entry tone: Come in. Look around.
 function worldLensMarkup(){
- const lensAttrs={atlas:'data-world-tab="atlas"',people:'data-world-tab="people"',places:'data-world-tab="places"',moments:'data-world-tab="moments"',fragments:'data-world-tab="fragments"',bodies:'data-world-tab="bodies"',proof:'data-world-tab="proof"',path:'data-world-tab="path"',trace:'data-world-tab="trace"',timeline:'data-world-tab="timeline"',symbols:'data-world-tab="symbols"',trails:'data-world-tab="trails"'};
+ const lensAttrs={atlas:'data-world-tab="atlas"',objects:'data-world-tab="objects"',people:'data-world-tab="people"',places:'data-world-tab="places"',moments:'data-world-tab="moments"',fragments:'data-world-tab="fragments"',bodies:'data-world-tab="bodies"',proof:'data-world-tab="proof"',path:'data-world-tab="path"',trace:'data-world-tab="trace"',timeline:'data-world-tab="timeline"',symbols:'data-world-tab="symbols"',trails:'data-world-tab="trails"'};
  const primary=[
   ["places","PLACES","world"],
   ["people","PEOPLE","person"],
