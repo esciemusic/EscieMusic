@@ -1169,7 +1169,7 @@ test("A-Z World Pass 1 keeps entry doors semantic and routable",()=>{
   assert.match(world,/data-world-tab="moments"/);
   assert.match(world,/href="#art"/);
   assert.doesNotMatch(world,/data-world-tab="art"/);
-  assert.match(world,/MY WORLD/);
+  assert.match(world,/THE WORLD/);
   assert.match(world,/Come in\. Look around\./);
   assert.doesNotMatch(world,/Follow the signal/);
   for(const glyph of ["world","person","moment","art"]) assert.match(svg,new RegExp('id="'+glyph+'"'));
@@ -1187,7 +1187,7 @@ test("THE WORLD exposes the complete public lens architecture without creating d
   }
   assert.match(index,/data\/objects\.js/);
   assert.match(index,/data\/proof\.js/);
-  assert.match(engine,/MY WORLD/);
+  assert.match(engine,/THE WORLD/);
   assert.match(engine,/Montréal is home\. Everything else is still the world\./);
   assert.match(engine,/function homeRooms\(\)/);
   assert.match(engine,/little-italy/);
