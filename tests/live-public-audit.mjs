@@ -269,7 +269,11 @@ async function auditGlassEye(label) {
   }
   const trigger = section.locator(".section-drop-trigger");
   if (await trigger.count() && !(await section.evaluate(el => el.classList.contains("section-open")).catch(() => false))) {
-    await trigger.click();
+    await page.evaluate(() => {
+      if (window.ESCIE_SECTION_ACCORDION && typeof window.ESCIE_SECTION_ACCORDION.open === "function") {
+        window.ESCIE_SECTION_ACCORDION.open("glass-eye");
+      }
+    });
     await page.waitForTimeout(80);
   }
 
