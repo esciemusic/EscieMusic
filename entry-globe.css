@@ -23,3 +23,6 @@
 @keyframes entry-globe-turn{from{transform:rotateX(0deg) rotateY(0deg)}to{transform:rotateX(0deg) rotateY(360deg)}}
 @media(max-width:600px){.entry-world-globe{width:min(78vw,300px);margin-top:30px}.entry-globe-label{bottom:-20px;font-size:7px}}
 @media(prefers-reduced-motion:reduce){.entry-world-globe .world-globe{animation:none}.entry-globe-point{transition:none}}
+/* The first-contact surface stays clean: deeper experiential doors live on the globe. */
+.entry-section .hero-symbol-doors{display:none}
+@media(max-width:600px){.entry-world-globe{width:190px;margin-top:18px}.entry-globe-label{bottom:-18px}}
