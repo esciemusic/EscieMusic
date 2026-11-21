@@ -329,6 +329,7 @@ assert(visualsRuntime.includes("if(!rotatingSections.length || reducedMotion())r
 const glassMemoryRuntime=fs.readFileSync("data/glass-eye-memory.js","utf8");
 assert(glassMemoryRuntime.includes("escie_glass_eye_memory_v1"),"Glass Eye memory must use a versioned local store");
 assert(glassMemoryRuntime.includes("canonical_write=false"),"Glass Eye memory must never become canonical");
+assert(/safeWrite\(next\);\s*render\(\);/.test(glassMemoryRuntime),"Glass Eye memory must refresh its visible panel after local events");
 assert(glassMemoryRuntime.includes("CLEAR MY MEMORY"),"Glass Eye memory must provide local reset");
 assert(glassMemoryRuntime.includes("LOCAL / PRIVATE / NON-CANONICAL"),"Glass Eye memory must disclose its local non-canonical status");
 assert(fs.readFileSync("index.html","utf8").includes('id="glass-eye-container"'),"public site must expose Glass Eye surface");
