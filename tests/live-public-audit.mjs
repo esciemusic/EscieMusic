@@ -99,31 +99,39 @@ async function scanRenderedBoundary(label) {
 
 async function auditAccordions(label) {
   const depthGate = page.locator(".section-depth-trigger").first();
-  check(await depthGate.count()===1, label + " public depth gate missing");
-  if (await depthGate.count()) {
-    check((await depthGate.getAttribute("aria-expanded"))==="false", label + " public depth gate should start closed");
-    await depthGate.click();
-    await page.waitForTimeout(80);
-    check((await depthGate.getAttribute("aria-expanded"))==="true", label + " public depth gate failed to open");
-  }
+  check(await depthGate.count()===0, label + " obsolete public depth gate is still present");
   const triggers = page.locator(".section-drop-trigger");
   const count = await triggers.count();
   check(count >= 8, label + " expected canonical section dropdown triggers");
+  const sections = page.locator("main > section:not(#entry)[id]");
+  for (let i = 0; i < await sections.count(); i++) {
+    const section = sections.nth(i);
+    check(await section.isHidden().catch(() => false), label + " non-entry section should be hidden at first contact: " + await section.getAttribute("id"));
+  }
   for (let i = 0; i < count; i++) {
     const trigger = triggers.nth(i);
-    if (!(await trigger.isVisible().catch(() => false))) continue;
     const section = trigger.locator("xpath=ancestor::section[1]");
     const id = await section.getAttribute("id");
+    await page.evaluate(id => {
+      if (window.ESCIE_SECTION_ACCORDION && typeof window.ESCIE_SECTION_ACCORDION.open === "function") {
+        window.ESCIE_SECTION_ACCORDION.open(id);
+      }
+    }, id);
+    await page.waitForTimeout(80);
+    const opened = await section.evaluate(el => ({
+      hidden: el.hasAttribute("hidden"),
+      open: el.classList.contains("section-open")
+    }));
+    check(!opened.hidden && opened.open, label + " section failed to open: " + id);
+
     const panel = section.locator(".section-drop-panel");
     if (!(await panel.count())) continue;
-    await trigger.click();
-    await page.waitForTimeout(80);
-    const opened = await panel.evaluate(el => ({
+    const panelState = await panel.evaluate(el => ({
       hidden: el.hasAttribute("hidden"),
       height: el.getBoundingClientRect().height,
       display: getComputedStyle(el).display
     }));
-    check(!opened.hidden && opened.display !== "none" && opened.height > 0, label + " section failed to open: " + id);
+    check(!panelState.hidden && panelState.display !== "none" && panelState.height > 0, label + " section panel failed to open: " + id);
 
     const media = panel.locator("img,video,iframe");
     for (let m = 0; m < await media.count(); m++) {
@@ -137,12 +145,11 @@ async function auditAccordions(label) {
     }
 
     await trigger.click();
-    const closed = await panel.evaluate(el => ({
+    const closed = await section.evaluate(el => ({
       hidden: el.hasAttribute("hidden"),
-      height: el.getBoundingClientRect().height,
-      display: getComputedStyle(el).display
+      open: el.classList.contains("section-open")
     }));
-    check(closed.hidden || closed.height === 0 || closed.display === "none", label + " left dead spacing: " + id);
+    check(closed.hidden && !closed.open, label + " left section visible after close: " + id);
   }
 }
 
