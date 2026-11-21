@@ -37,6 +37,7 @@
     next.path=next.path.slice(-MAX_EVENTS);
     next.canonical_write=false;
     safeWrite(next);
+    render();
     try{root.dispatchEvent(new CustomEvent("escie:glass-eye-memory",{detail:{event,eventCount:next.event_count}}));}catch(e){}
     return next;
   }
