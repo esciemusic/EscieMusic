@@ -144,18 +144,20 @@ test("A-Z Pass 1 keeps runtime motif and section labels on canonical IDs",()=>{
   assert.match(app,/archives:"THE ARCHIVES"/);
 });
 
-test("A-Z Pass 5 keeps the public surface simple while preserving deeper sections",()=>{
+test("A-Z Pass 5 makes the World globe the first-contact doorway",()=>{
   const index=read("index.html");
-  const aesthetic=read("aesthetic.css");
-  const audit=read("tests/live-public-audit.mjs");
-  assert.match(index,/var primarySectionIds=\{now:true,world:true,trace:true\}/);
-  assert.match(index,/className="section-depth-gate"/);
-  assert.match(index,/section\.hidden=true;section\.classList\.add\("section-secondary"\)/);
-  assert.match(index,/openDeeperIfNeeded\(target\)/);
-  assert.match(aesthetic,/\.section-depth-gate/);
-  assert.match(aesthetic,/\.section-secondary\[hidden\]\{display:none !important;\}/);
-  assert.match(audit,/\.section-depth-trigger/);
-  assert.match(audit,/public depth gate should start closed/);
+  assert.match(index,/class="entry-world-globe"/);
+  assert.match(index,/aria-label="Three-dimensional globe representing THE WORLD"/);
+  assert.match(index,/href="#world" aria-label="Enter THE WORLD"/);
+  assert.match(index,/href="#world-node=montreal"/);
+  assert.match(index,/href="#art\/music"/);
+  assert.match(index,/href="#archives"/);
+  assert.match(index,/href="#investigation"/);
+  assert.match(index,/href="#glass-eye"/);
+  assert.match(index,/entry-globe\.css/);
+  assert.match(index,/entry-globe\.js/);
+  assert.match(index,/section\.hidden=true;/);
+  assert.doesNotMatch(index,/className="section-depth-gate"/);
 });
 
 test("A-Z Pass 1 accordion labels are section-local",()=>{
@@ -177,7 +179,7 @@ test("A-Z Pass 1 blocks legacy section target aliases",()=>{
 test("A-Z Pass 1 record section labels use canonical public routes",()=>{
   const app=read("app.js");
   assert.match(app,/now:"NOW"/);
-  assert.match(app,/world:"MY WORLD"/);
+  assert.match(app,/world:"THE WORLD"/);
   assert.match(app,/"glass-eye":"GLASS EYE"/);
   assert.doesNotMatch(app,/glassEye:"GLASS EYE"/);
 });
