@@ -1038,7 +1038,7 @@ test("A-Z Pass 3 GLASS EYE stays personal, local-first, and does not add a secon
 test("A-Z Pass 3 GLASS EYE participation remains reviewed before public record entry",()=>{
   const app=read("app.js");
   assert.match(app,/data-glass-participation-form/);
-  assert.match(app,/aria-pressed="\\'+\(i===0\?"true":"false"\)+\\'/);
+  assert.ok(app.includes('aria-pressed="'+(i===0?"true":"false")+'" data-glass-kind="'+kind+'"'));
   assert.match(app,/setAttribute\("aria-pressed",active\?"true":"false"\)/);
   assert.match(app,/COMMENT/);
   assert.match(app,/THEORY/);
