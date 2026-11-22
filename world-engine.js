@@ -780,6 +780,12 @@ function meaningMarkup(r){
    (memory.length?'<small class="world-meaning-memory">YOUR MEMORY · '+esc(memory[0])+'</small>':'')+
    '</div>';
 }
+function returnMarkup(r){
+ const id=String(r&&r.id||"");
+ if(!id||!memorySignals(r).length)return "";
+ const visited=personalMemoryCount(id);
+ return '<div class="world-return" role="status"><span class="world-kicker">RETURN</span><p>You are back at something you noticed before.</p><small>YOUR MEMORY · '+esc(visited>1?"This place has been part of your path before.":"You have been here before.")+'</small></div>';
+}
 function detail(r){
  if(r&&state.street&&String(state.street.placeId)===String(r.id)&&state.street.node&&String(r.id)===String(state.street.placeId))return streetDetail(r,state.street.node);
  if(r&&state.placeStreet&&String(state.placeStreet.placeId)===String(r.id))return placeRecordDetail(r,state.placeStreet.place,state.placeStreet.street);
@@ -795,7 +801,8 @@ function detail(r){
  }
  const links=related(r.id);
  const connections=links.length?links.map(connectionMarkup).join(""):'<span class="world-empty">No public connection recorded yet.</span>';
- return '<aside class="world-detail" aria-live="polite"><div class="world-detail-head"><div><span class="world-kicker">ENCOUNTER // '+esc(type(r))+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3></div><button type="button" class="world-close" data-close-node aria-label="Close node">×</button></div><div class="world-detail-meta"><span>'+esc(String(r.certainty||"UNKNOWN").toUpperCase())+'</span><span>'+esc(String(r.status||"UNKNOWN").toUpperCase())+'</span></div>'+mediaPreview(r)+encounterContext(r)+'<p class="world-encounter-description">'+esc(r.description||r.summary||r.story||"No public description yet.")+'</p>'+encounterMeta(r)+'<div class="world-kicker">WHAT CONNECTS HERE · '+links.length+'</div><div class="world-connections">'+connections+'</div>'+meaningMarkup(r)+discoveryRail(r)+'<div class="world-detail-actions"><button type="button" data-focus-search>SEARCH THIS NODE</button><button type="button" data-copy-node>COPY NODE LINK</button></div><div class="world-path"><span class="world-kicker">YOUR PATH</span><div id="world-path-items">START HERE</div></div></aside>';
+ const returning=returnMarkup(r);
+ return '<aside class="world-detail" aria-live="polite"><div class="world-detail-head"><div><span class="world-kicker">ENCOUNTER // '+esc(type(r))+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3></div><button type="button" class="world-close" data-close-node aria-label="Close node">×</button></div><div class="world-detail-meta"><span>'+esc(String(r.certainty||"UNKNOWN").toUpperCase())+'</span><span>'+esc(String(r.status||"UNKNOWN").toUpperCase())+'</span></div>'+mediaPreview(r)+encounterContext(r)+'<p class="world-encounter-description">'+esc(r.description||r.summary||r.story||"No public description yet.")+'</p>'+encounterMeta(r)+returning+'<div class="world-kicker">WHAT CONNECTS HERE · '+links.length+'</div><div class="world-connections">'+connections+'</div>'+meaningMarkup(r)+discoveryRail(r)+'<div class="world-detail-actions"><button type="button" data-focus-search>SEARCH THIS NODE</button><button type="button" data-copy-node>COPY NODE LINK</button></div><div class="world-path"><span class="world-kicker">YOUR PATH</span><div id="world-path-items">START HERE</div></div></aside>';
 }
 function graphView(rows){
  const map=new Map(rows.map(r=>[String(r.id),r]));
