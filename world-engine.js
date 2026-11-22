@@ -737,6 +737,26 @@ function neighborhoodDetail(place){
    '<div class="world-home-rooms"><div class="world-room-life-head"><span class="world-kicker">PLACES WITHIN</span><p>Follow a place inward. Nothing here has to be a clue.</p></div>'+childCards+'</div>'+
  '</div>';
 }
+function meaningSignals(r){
+ const id=String(r&&r.id||"");
+ if(!id)return [];
+ const links=related(id);
+ const tags=Array.isArray(r.tags)?r.tags.map(function(x){return String(x).trim();}).filter(Boolean):[];
+ const symbols=Array.isArray(r.symbols)?r.symbols.map(function(x){return String(x).trim();}).filter(Boolean):[];
+ const attention=attentionRecord(id).count;
+ const signals=[];
+ if(links.length)signals.push(links.length+" public connection"+(links.length===1?"":"s"));
+ if(symbols.length)signals.push(symbols.length+" recurring motif"+(symbols.length===1?"":"s"));
+ if(tags.length)signals.push(tags.length+" shared signal"+(tags.length===1?"":"s"));
+ if(attention>1)signals.push("returned to "+attention+" times");
+ else if(attention===1)signals.push("noticed before");
+ return signals.slice(0,4);
+}
+function meaningMarkup(r){
+ const signals=meaningSignals(r);
+ if(!signals.length)return "";
+ return '<div class="world-meaning" role="note"><span class="world-kicker">MEANING GATHERS</span><p>Nothing here is assigned a final meaning. It gathers through what connects, returns, and repeats.</p><div class="world-meaning-signals">'+signals.map(function(x){return '<span>'+esc(x)+'</span>';}).join("")+'</div></div>';
+}
 function detail(r){
  if(r&&state.street&&String(state.street.placeId)===String(r.id)&&state.street.node&&String(r.id)===String(state.street.placeId))return streetDetail(r,state.street.node);
  if(r&&state.placeStreet&&String(state.placeStreet.placeId)===String(r.id))return placeRecordDetail(r,state.placeStreet.place,state.placeStreet.street);
@@ -752,7 +772,7 @@ function detail(r){
  }
  const links=related(r.id);
  const connections=links.length?links.map(connectionMarkup).join(""):'<span class="world-empty">No public connection recorded yet.</span>';
- return '<aside class="world-detail" aria-live="polite"><div class="world-detail-head"><div><span class="world-kicker">ENCOUNTER // '+esc(type(r))+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3></div><button type="button" class="world-close" data-close-node aria-label="Close node">×</button></div><div class="world-detail-meta"><span>'+esc(String(r.certainty||"UNKNOWN").toUpperCase())+'</span><span>'+esc(String(r.status||"UNKNOWN").toUpperCase())+'</span></div>'+mediaPreview(r)+encounterContext(r)+'<p class="world-encounter-description">'+esc(r.description||r.summary||r.story||"No public description yet.")+'</p>'+encounterMeta(r)+'<div class="world-kicker">WHAT CONNECTS HERE · '+links.length+'</div><div class="world-connections">'+connections+'</div>'+discoveryRail(r)+'<div class="world-detail-actions"><button type="button" data-focus-search>SEARCH THIS NODE</button><button type="button" data-copy-node>COPY NODE LINK</button></div><div class="world-path"><span class="world-kicker">YOUR PATH</span><div id="world-path-items">START HERE</div></div></aside>';
+ return '<aside class="world-detail" aria-live="polite"><div class="world-detail-head"><div><span class="world-kicker">ENCOUNTER // '+esc(type(r))+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3></div><button type="button" class="world-close" data-close-node aria-label="Close node">×</button></div><div class="world-detail-meta"><span>'+esc(String(r.certainty||"UNKNOWN").toUpperCase())+'</span><span>'+esc(String(r.status||"UNKNOWN").toUpperCase())+'</span></div>'+mediaPreview(r)+encounterContext(r)+'<p class="world-encounter-description">'+esc(r.description||r.summary||r.story||"No public description yet.")+'</p>'+encounterMeta(r)+'<div class="world-kicker">WHAT CONNECTS HERE · '+links.length+'</div><div class="world-connections">'+connections+'</div>'+meaningMarkup(r)+discoveryRail(r)+'<div class="world-detail-actions"><button type="button" data-focus-search>SEARCH THIS NODE</button><button type="button" data-copy-node>COPY NODE LINK</button></div><div class="world-path"><span class="world-kicker">YOUR PATH</span><div id="world-path-items">START HERE</div></div></aside>';
 }
 function graphView(rows){
  const map=new Map(rows.map(r=>[String(r.id),r]));
