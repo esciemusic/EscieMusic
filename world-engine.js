@@ -737,18 +737,26 @@ function neighborhoodDetail(place){
    '<div class="world-home-rooms"><div class="world-room-life-head"><span class="world-kicker">PLACES WITHIN</span><p>Follow a place inward. Nothing here has to be a clue.</p></div>'+childCards+'</div>'+
  '</div>';
 }
-function personalMemoryCount(id){
+function personalMemoryEntries(id){
  const key=String(id||"");
- if(!key)return 0;
+ if(!key)return [];
  try{
   const memory=window.ESCIE_GLASS_EYE_MEMORY;
   if(memory&&typeof memory.state==="function"){
    const s=memory.state();
    const path=Array.isArray(s&&s.path)?s.path:[];
-   return path.filter(function(e){return String(e&&e.target_id||"")===key;}).length;
+   return path.filter(function(e){return String(e&&e.target_id||"")===key;});
   }
  }catch(_e){}
- return 0;
+ return [];
+}
+function personalMemoryCount(id){
+ return personalMemoryEntries(id).length;
+}
+function personalMemoryLastSeen(id){
+ const entries=personalMemoryEntries(id);
+ const last=entries[entries.length-1];
+ return last&&last.timestamp?String(last.timestamp):"";
 }
 function memorySignals(r){
  const id=String(r&&r.id||"");
@@ -784,7 +792,9 @@ function returnMarkup(r){
  const id=String(r&&r.id||"");
  if(!id||!memorySignals(r).length)return "";
  const visited=personalMemoryCount(id);
- return '<div class="world-return" role="status"><span class="world-kicker">RETURN</span><p>You are back at something you noticed before.</p><small>YOUR MEMORY · '+esc(visited>1?"This place has been part of your path before.":"You have been here before.")+'</small></div>';
+ const lastSeen=personalMemoryLastSeen(id);
+ const stamp=lastSeen?new Date(lastSeen).toLocaleString():"";
+ return '<div class="world-return" role="status"><span class="world-kicker">RETURN</span><p>You are back at something you noticed before.</p><small>YOUR MEMORY · '+esc(visited>1?"This place has been part of your path before.":"You have been here before.")+(stamp?' · LAST NOTICED '+esc(stamp):'')+'</small></div>';
 }
 function detail(r){
  if(r&&state.street&&String(state.street.placeId)===String(r.id)&&state.street.node&&String(r.id)===String(state.street.placeId))return streetDetail(r,state.street.node);
