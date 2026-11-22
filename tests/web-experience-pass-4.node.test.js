@@ -13,7 +13,7 @@ const globe=fs.readFileSync(path.join(root,"entry-globe.js"),"utf8");
 test("Experience Pass 4 preserves the public journey as one simple surface",()=>{
   const expected=["NOW","ART","THE WORLD","GLASS EYE","TRACE","THE ARCHIVES","THE CASE FILES","ESCIE"];
   expected.forEach(label=>assert.ok(nav.includes('label:"'+label+'"'),label));
-  assert.match(nav,/order:\["']now["'],"art","world","glass-eye","web","archives","investigation","escie"\]/);
+  assert.match(nav,/order:\["now","art","world","glass-eye","web","archives","investigation","escie"\]/);
   assert.match(app,/renderNavigation\(\)/);
   assert.match(app,/syncRouteState|bindNavigationRuntime/);
 });
