@@ -7,7 +7,7 @@
     globe.dataset.ready="1";
 
     var down=false,startX=0,startY=0,lastTime=0,frame=0;
-    var ry=0,rx=0,vy=0,vx=0,attentive=false;
+    var ry=0,rx=0,vy=0,vx=0,attentive=false;\n    var reducedMotion=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     var meridians=[].slice.call(globe.querySelectorAll(".entry-globe-meridian"));
     var latitudes=[].slice.call(globe.querySelectorAll(".entry-globe-latitude"));
     var points=[].slice.call(globe.querySelectorAll(".entry-globe-point"));
@@ -20,7 +20,7 @@
       glass:[1.12,0.27]
     };
 
-    function projectPoint(el,lon,lat){
+    function clampPitch(){rx=Math.max(-70,Math.min(70,rx));}\n\n    function projectPoint(el,lon,lat){
       var pitch=rx*Math.PI/180, yaw=ry*Math.PI/180;
       var cl=Math.cos(lat), x=cl*Math.sin(lon+yaw), z=cl*Math.cos(lon+yaw), y=Math.sin(lat);
       var py=y*Math.cos(pitch)-z*Math.sin(pitch);
@@ -73,7 +73,7 @@
       down=false;
       try{if(e)globe.releasePointerCapture(e.pointerId);}catch(_){}
       globe.classList.remove("is-dragging");
-      if(Math.abs(vy)>0.05 || Math.abs(vx)>0.05)startInertia();
+      if(!reducedMotion&&(Math.abs(vy)>0.05 || Math.abs(vx)>0.05))startInertia();
     }
 
     function startInertia(){
@@ -82,7 +82,7 @@
       function step(now){
         var dt=Math.min(32,now-last);last=now;
         if(down)return;
-        ry+=vy*(dt/16);rx+=vx*(dt/16);
+        ry+=vy*(dt/16);rx+=vx*(dt/16);clampPitch();
         vy*=Math.pow(.94,dt/16);vx*=Math.pow(.94,dt/16);
         apply();
         if(Math.abs(vy)>0.05 || Math.abs(vx)>0.05)frame=requestAnimationFrame(step);
@@ -107,7 +107,7 @@
     globe.addEventListener("pointerenter",function(){attentive=true;});
     globe.addEventListener("pointerleave",function(){if(!down)attentive=false;});
     globe.addEventListener("focusin",function(){attentive=true;});
-    globe.addEventListener("focusout",function(){attentive=false;});
+    globe.addEventListener("focusout",function(e){attentive=!!(e.relatedTarget&&globe.contains(e.relatedTarget));});
 
     globe.addEventListener("pointerdown",function(e){
       if(e.target.closest("a")) return;
@@ -122,7 +122,7 @@
       if(!down)return;
       var now=performance.now(),dt=Math.max(8,now-lastTime);
       var dx=e.clientX-startX,dy=e.clientY-startY;
-      ry+=dx*.35;rx-=dy*.2;
+      ry+=dx*.35;rx-=dy*.2;clampPitch();
       vy=(-dy*.2)/(dt/16);vx=(dx*.35)/(dt/16);
       startX=e.clientX;startY=e.clientY;lastTime=now;
       apply();
