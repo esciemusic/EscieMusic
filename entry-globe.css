@@ -18,6 +18,6 @@
 .entry-globe-core{position:absolute;inset:0;display:grid;place-items:center;z-index:5;pointer-events:none}
 .entry-globe-enter{width:48%;aspect-ratio:1;border:1px solid rgba(255,255,255,.12);border-radius:50%;background:transparent;color:transparent;cursor:pointer;pointer-events:auto}
 .entry-globe-enter:focus-visible{outline:1px solid rgba(255,255,255,.8);outline-offset:8px}
-@media(prefers-reduced-motion:reduce){.entry-globe-point{transition:none}}
+@media(prefers-reduced-motion:reduce){.entry-globe-point{transition:none}.entry-world-globe .world-globe{scroll-behavior:auto}}
 .entry-section .hero-symbol-doors{display:none}
 @media(max-width:600px){.entry-world-globe{width:190px;margin-top:18px}.entry-globe-label{bottom:-18px}}
