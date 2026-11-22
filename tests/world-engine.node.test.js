@@ -50,6 +50,10 @@ assert(/\["http:","https:"\]\.includes\(parsed\.protocol\)/.test(src),"World Eng
 assert(/const reduceMotion=\(\)=>typeof window\.matchMedia==="function"/.test(src),"World Engine needs reduced-motion detection");
 assert(!/scrollIntoView\(/.test(src),"World Engine must not force section scrolling");
 assert(/function writeWorldHash\(hash,mode\)/.test(src),"World Engine needs centralized history writes");
+assert(/function personalMemoryCount\(id\)/.test(src),"World memory needs a visitor-local memory bridge");
+assert(/function memorySignals\(r\)/.test(src),"World memory needs visitor-specific memory signals");
+assert(/memory\.state\(\)/.test(src)&&/target_id/.test(src),"World memory must read the existing Glass Eye local memory rather than inventing a second memory store");
+assert(/YOUR MEMORY/.test(src)&&/you noticed this before/.test(src),"World memory must distinguish the visitor's memory from World continuity");
 assert(/function meaningSignals\(r\)/.test(src),"World meaning needs an evidence-based signal collector");
 assert(/function meaningMarkup\(r\)/.test(src),"World meaning needs a visitor-facing accumulation renderer");
 assert(/MEANING GATHERS/.test(src)&&/Nothing here is assigned a final meaning/.test(src),"World meaning must remain open rather than assign interpretation");
