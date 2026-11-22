@@ -56,6 +56,9 @@ assert(/memory\.state\(\)/.test(src)&&/target_id/.test(src),"World memory must r
 assert(/YOUR MEMORY/.test(src)&&/you noticed this before/.test(src),"World memory must distinguish the visitor's memory from World continuity");
 assert(/function meaningSignals\(r\)/.test(src),"World meaning needs an evidence-based signal collector");
 assert(/function meaningMarkup\(r\)/.test(src),"World meaning needs a visitor-facing accumulation renderer");
+assert(/function returnMarkup\(r\)/.test(src),"World return needs a visitor-facing return signal");
+assert(/You are back at something you noticed before/.test(src),"World return must acknowledge a return without anthropomorphizing the World");
+assert(/YOUR MEMORY/.test(src)&&/You have been here before/.test(src),"World return must use visitor memory as its evidence");
 assert(/MEANING GATHERS/.test(src)&&/Nothing here is assigned a final meaning/.test(src),"World meaning must remain open rather than assign interpretation");
 assert(/public connection/.test(src)&&/recurring motif/.test(src)&&/shared signal/.test(src),"World meaning must surface accumulated evidence rather than invented conclusions");
 assert(/function relationshipLabel\(r\)/.test(src),"World associations need a shared relationship label renderer");
