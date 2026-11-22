@@ -65,6 +65,8 @@
       }
       globe.style.setProperty("--globe-yaw",ry+"deg");
       globe.style.setProperty("--globe-pitch",rx+"deg");
+      globe.style.setProperty("--globe-light-x",(34+Math.sin(ry*Math.PI/180)*10).toFixed(2)+"%");
+      globe.style.setProperty("--globe-light-y",(27+Math.sin(rx*Math.PI/180)*8).toFixed(2)+"%");
     }
 
     function stop(e){
