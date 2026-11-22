@@ -75,6 +75,6 @@ test("Experience Pass 7 keeps globe motion subordinate to user motion preference
   assert.match(globe,/reducedMotion=window\.matchMedia/);
   assert.match(globe,/if\(reducedMotion\)\{apply\(\);return;\}/);
   assert.match(globe,/if\(!reducedMotion&&\(Math\.abs\(vy\)>0\.05 \|\| Math\.abs\(vx\)>0\.05\)\)startInertia/);
-  assert.match(globe,/rx=Math\.max\(-70,Math\.min\(70,rx\))/);
+  assert.match(globe,/rx=Math\.max\(-70,Math\.min\(70,rx\)\)/);
   assert.match(globe,/e\.relatedTarget&&globe\.contains\(e\.relatedTarget\)/);
 });
