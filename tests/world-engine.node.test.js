@@ -57,6 +57,9 @@ assert(/YOUR MEMORY/.test(src)&&/you noticed this before/.test(src),"World memor
 assert(/function meaningSignals\(r\)/.test(src),"World meaning needs an evidence-based signal collector");
 assert(/function meaningMarkup\(r\)/.test(src),"World meaning needs a visitor-facing accumulation renderer");
 assert(/function returnMarkup\(r\)/.test(src),"World return needs a visitor-facing return signal");
+assert(/function personalMemoryEntries\(id\)/.test(src),"World continuity needs access to the visitor's prior path entries");
+assert(/function personalMemoryLastSeen\(id\)/.test(src),"World continuity needs the last local observation timestamp");
+assert(/LAST NOTICED/.test(src),"World return should make continuity perceptible without claiming the World remembers");
 assert(/You are back at something you noticed before/.test(src),"World return must acknowledge a return without anthropomorphizing the World");
 assert(/YOUR MEMORY/.test(src)&&/You have been here before/.test(src),"World return must use visitor memory as its evidence");
 assert(/MEANING GATHERS/.test(src)&&/Nothing here is assigned a final meaning/.test(src),"World meaning must remain open rather than assign interpretation");
