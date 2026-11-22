@@ -737,25 +737,48 @@ function neighborhoodDetail(place){
    '<div class="world-home-rooms"><div class="world-room-life-head"><span class="world-kicker">PLACES WITHIN</span><p>Follow a place inward. Nothing here has to be a clue.</p></div>'+childCards+'</div>'+
  '</div>';
 }
+function personalMemoryCount(id){
+ const key=String(id||"");
+ if(!key)return 0;
+ try{
+  const memory=window.ESCIE_GLASS_EYE_MEMORY;
+  if(memory&&typeof memory.state==="function"){
+   const s=memory.state();
+   const path=Array.isArray(s&&s.path)?s.path:[];
+   return path.filter(function(e){return String(e&&e.target_id||"")===key;}).length;
+  }
+ }catch(_e){}
+ return 0;
+}
+function memorySignals(r){
+ const id=String(r&&r.id||"");
+ if(!id)return [];
+ const count=personalMemoryCount(id);
+ if(count>1)return ["you returned here "+count+" times"];
+ if(count===1)return ["you noticed this before"];
+ return [];
+}
 function meaningSignals(r){
  const id=String(r&&r.id||"");
  if(!id)return [];
  const links=related(id);
  const tags=Array.isArray(r.tags)?r.tags.map(function(x){return String(x).trim();}).filter(Boolean):[];
  const symbols=Array.isArray(r.symbols)?r.symbols.map(function(x){return String(x).trim();}).filter(Boolean):[];
- const attention=attentionRecord(id).count;
+ const memory=memorySignals(r);
  const signals=[];
  if(links.length)signals.push(links.length+" public connection"+(links.length===1?"":"s"));
  if(symbols.length)signals.push(symbols.length+" recurring motif"+(symbols.length===1?"":"s"));
  if(tags.length)signals.push(tags.length+" shared signal"+(tags.length===1?"":"s"));
- if(attention>1)signals.push("returned to "+attention+" times");
- else if(attention===1)signals.push("noticed before");
+ if(memory.length)signals.push(memory[0]);
  return signals.slice(0,4);
 }
 function meaningMarkup(r){
  const signals=meaningSignals(r);
+ const memory=memorySignals(r);
  if(!signals.length)return "";
- return '<div class="world-meaning" role="note"><span class="world-kicker">MEANING GATHERS</span><p>Nothing here is assigned a final meaning. It gathers through what connects, returns, and repeats.</p><div class="world-meaning-signals">'+signals.map(function(x){return '<span>'+esc(x)+'</span>';}).join("")+'</div></div>';
+ return '<div class="world-meaning" role="note"><span class="world-kicker">MEANING GATHERS</span><p>Nothing here is assigned a final meaning. It gathers through what connects, returns, and repeats.</p><div class="world-meaning-signals">'+signals.map(function(x){return '<span>'+esc(x)+'</span>';}).join("")+'</div>'+
+   (memory.length?'<small class="world-meaning-memory">YOUR MEMORY · '+esc(memory[0])+'</small>':'')+
+   '</div>';
 }
 function detail(r){
  if(r&&state.street&&String(state.street.placeId)===String(r.id)&&state.street.node&&String(r.id)===String(state.street.placeId))return streetDetail(r,state.street.node);
