@@ -7,7 +7,7 @@
     globe.dataset.ready="1";
 
     var down=false,startX=0,startY=0,lastTime=0,frame=0;
-    var ry=0,rx=0,vy=0,vx=0;
+    var ry=0,rx=0,vy=0,vx=0,attentive=false;
     var meridians=[].slice.call(globe.querySelectorAll(".entry-globe-meridian"));
     var latitudes=[].slice.call(globe.querySelectorAll(".entry-globe-latitude"));
     var points=[].slice.call(globe.querySelectorAll(".entry-globe-point"));
@@ -90,12 +90,17 @@
       function step(now){
         var dt=Math.min(40,now-last);last=now;
         if(down)return;
-        ry+=0.012*dt;
+        ry+=(attentive?0.0035:0.012)*dt;
         apply();
         frame=requestAnimationFrame(step);
       }
       frame=requestAnimationFrame(step);
     }
+
+    globe.addEventListener("pointerenter",function(){attentive=true;});
+    globe.addEventListener("pointerleave",function(){if(!down)attentive=false;});
+    globe.addEventListener("focusin",function(){attentive=true;});
+    globe.addEventListener("focusout",function(){attentive=false;});
 
     globe.addEventListener("pointerdown",function(e){
       if(e.target.closest("a")) return;
