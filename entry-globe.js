@@ -46,8 +46,13 @@
       });
       latitudes.forEach(function(el,i){
         var tilt=[62,62,-62,-62][i]||62;
-        var scale=Math.max(.55,.78+Math.cos((ry+i*.7)*Math.PI/180)*.12);
+        var latitude=[.65,.22,-.22,-.65][i]||0;
+        var pitch=rx*Math.PI/180;
+        var scale=Math.max(.48,.82-Math.abs(Math.sin(latitude)*Math.sin(pitch))*.22);
+        var lift=Math.sin(latitude)*Math.sin(pitch)*36;
+        el.style.top=(50-lift)+"%";
         el.style.transform="rotateX("+tilt+"deg) scaleX("+scale.toFixed(3)+")";
+        el.style.opacity=(0.12+Math.max(0,.26-Math.abs(Math.sin(latitude)*Math.sin(pitch))*.18)).toFixed(2);
       });
       points.forEach(function(el){
         var key=[].slice.call(el.classList).find(function(c){return pointData[c];});
