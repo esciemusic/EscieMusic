@@ -13,7 +13,7 @@ const globe=fs.readFileSync(path.join(root,"entry-globe.js"),"utf8");
 test("Experience Pass 4 preserves the public journey as one simple surface",()=>{
   const expected=["NOW","ART","THE WORLD","GLASS EYE","TRACE","THE ARCHIVES","THE CASE FILES","ESCIE"];
   expected.forEach(label=>assert.ok(nav.includes('label:"'+label+'"'),label));
-  assert.match(nav,/order:\[["']now["'],"art","world","glass-eye","web","archives","investigation","escie"\]/);
+  assert.match(nav,/order:\["']now["'],"art","world","glass-eye","web","archives","investigation","escie"\]/);
   assert.match(app,/renderNavigation\(\)/);
   assert.match(app,/syncRouteState|bindNavigationRuntime/);
 });
@@ -50,7 +50,6 @@ test("Experience Pass 4 keeps the public doorway free of private controls",()=>{
   assert.match(app,/Private cognition\/control systems are intentionally absent/);
 });
 
-
 test("Experience Pass 6 lets globe latitude depth respond to pitch",()=>{
   assert.match(globe,/latitude=\[\.65,\.22,-\.22,-\.65\]/);
   assert.match(globe,/Math\.sin\(latitude\)\*Math\.sin\(pitch\)/);
@@ -63,7 +62,6 @@ test("Experience Pass 5 lets attention change the World pace without stopping it
   assert.match(globe,/focusin/);
   assert.match(globe,/attentive\?0\.0035:0\.012/);
 });
-
 
 test("Experience Pass 7 makes orientation perceptible through restrained light movement",()=>{
   assert.match(globe,/--globe-light-x/);
