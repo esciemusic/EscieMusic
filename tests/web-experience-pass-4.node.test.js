@@ -51,6 +51,12 @@ test("Experience Pass 4 keeps the public doorway free of private controls",()=>{
 });
 
 
+test("Experience Pass 6 lets globe latitude depth respond to pitch",()=>{
+  assert.match(globe,/latitude=[.65,.22,-.22,-.65]/);
+  assert.match(globe,/Math\.sin\(latitude\)\*Math\.sin\(pitch\)/);
+  assert.match(globe,/el\.style\.top=\(50-lift\)+"%"/);
+});
+
 test("Experience Pass 5 lets attention change the World pace without stopping it",()=>{
   assert.match(globe,/attentive=false/);
   assert.match(globe,/pointerenter/);
