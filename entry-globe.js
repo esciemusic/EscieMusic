@@ -96,6 +96,7 @@
 
     function startAutomatic(){
       cancelAnimationFrame(frame);
+      if(reducedMotion){apply();return;}
       var last=performance.now();
       function step(now){
         var dt=Math.min(40,now-last);last=now;
