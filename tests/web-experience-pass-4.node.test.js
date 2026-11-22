@@ -8,6 +8,7 @@ const app=fs.readFileSync(path.join(root,"app.js"),"utf8");
 const nav=fs.readFileSync(path.join(root,"navigation.js"),"utf8");
 const index=fs.readFileSync(path.join(root,"index.html"),"utf8");
 const style=fs.readFileSync(path.join(root,"style.css"),"utf8");
+const globe=fs.readFileSync(path.join(root,"entry-globe.js"),"utf8");
 
 test("Experience Pass 4 preserves the public journey as one simple surface",()=>{
   const expected=["NOW","ART","THE WORLD","GLASS EYE","TRACE","THE ARCHIVES","THE CASE FILES","ESCIE"];
@@ -47,4 +48,12 @@ test("Experience Pass 4 keeps the public doorway free of private controls",()=>{
   assert.match(app,/pendingControl\s*=\s*function \(\) \{ return \[\]; \}/);
   assert.match(app,/controlItems\s*=\s*\[\];/);
   assert.match(app,/Private cognition\/control systems are intentionally absent/);
+});
+
+
+test("Experience Pass 5 lets attention change the World pace without stopping it",()=>{
+  assert.match(globe,/attentive=false/);
+  assert.match(globe,/pointerenter/);
+  assert.match(globe,/focusin/);
+  assert.match(globe,/attentive\?0\.0035:0\.012/);
 });
