@@ -7,7 +7,8 @@
     globe.dataset.ready="1";
 
     var down=false,startX=0,startY=0,lastTime=0,frame=0;
-    var ry=0,rx=0,vy=0,vx=0,attentive=false;\n    var reducedMotion=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var ry=0,rx=0,vy=0,vx=0,attentive=false;
+    var reducedMotion=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     var meridians=[].slice.call(globe.querySelectorAll(".entry-globe-meridian"));
     var latitudes=[].slice.call(globe.querySelectorAll(".entry-globe-latitude"));
     var points=[].slice.call(globe.querySelectorAll(".entry-globe-point"));
@@ -20,7 +21,9 @@
       glass:[1.12,0.27]
     };
 
-    function clampPitch(){rx=Math.max(-70,Math.min(70,rx));}\n\n    function projectPoint(el,lon,lat){
+    function clampPitch(){rx=Math.max(-70,Math.min(70,rx));}
+
+    function projectPoint(el,lon,lat){
       var pitch=rx*Math.PI/180, yaw=ry*Math.PI/180;
       var cl=Math.cos(lat), x=cl*Math.sin(lon+yaw), z=cl*Math.cos(lon+yaw), y=Math.sin(lat);
       var py=y*Math.cos(pitch)-z*Math.sin(pitch);
