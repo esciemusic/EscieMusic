@@ -63,3 +63,11 @@ test("Experience Pass 5 lets attention change the World pace without stopping it
   assert.match(globe,/focusin/);
   assert.match(globe,/attentive\?0\.0035:0\.012/);
 });
+
+
+test("Experience Pass 7 makes orientation perceptible through restrained light movement",()=>{
+  assert.match(globe,/--globe-light-x/);
+  assert.match(globe,/--globe-light-y/);
+  assert.match(globe,/Math\.sin\(ry\*Math\.PI\/180\)/);
+  assert.match(globe,/Math\.sin\(rx\*Math\.PI\/180\)/);
+});
