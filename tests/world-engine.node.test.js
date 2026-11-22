@@ -50,6 +50,10 @@ assert(/\["http:","https:"\]\.includes\(parsed\.protocol\)/.test(src),"World Eng
 assert(/const reduceMotion=\(\)=>typeof window\.matchMedia==="function"/.test(src),"World Engine needs reduced-motion detection");
 assert(!/scrollIntoView\(/.test(src),"World Engine must not force section scrolling");
 assert(/function writeWorldHash\(hash,mode\)/.test(src),"World Engine needs centralized history writes");
+assert(/function meaningSignals\(r\)/.test(src),"World meaning needs an evidence-based signal collector");
+assert(/function meaningMarkup\(r\)/.test(src),"World meaning needs a visitor-facing accumulation renderer");
+assert(/MEANING GATHERS/.test(src)&&/Nothing here is assigned a final meaning/.test(src),"World meaning must remain open rather than assign interpretation");
+assert(/public connection/.test(src)&&/recurring motif/.test(src)&&/shared signal/.test(src),"World meaning must surface accumulated evidence rather than invented conclusions");
 assert(/function relationshipLabel\(r\)/.test(src),"World associations need a shared relationship label renderer");
 assert(/function relationshipContext\(r\)/.test(src),"World associations need contextual relationship evidence");
 assert(/function connectionMarkup\(x\)/.test(src),"World associations need a shared connection renderer");
