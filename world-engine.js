@@ -584,11 +584,7 @@ function objectDetail(r){
  const originNeighborhood=contextualOrigin?roomNeighborhood[String(origin.id)]:"";
  const originPath=contextualOrigin?"MONTRÉAL / "+(originNeighborhood?String(originNeighborhood).toUpperCase()+" / ":"")+String(originLabel).toUpperCase():"MONTRÉAL / "+String(originLabel).toUpperCase();
  const links=related(r.id);
- const connections=links.length?links.map(x=>{
-   const relation=String(x.r.type||"related").replace(/_/g," ");
-   const reason=relation==="related"?"something nearby in the World":relation;
-   return '<button type="button" data-node="'+esc(x.node.id)+'"><span class="world-kicker">'+esc(relation.toUpperCase())+'</span><strong>'+esc(title(x.node))+'</strong><small>'+esc(reason)+'</small></button>';
- }).join(""):'<span class="world-empty">Nothing is explicitly connected to this object yet.</span>';
+ const connections=links.length?links.map(connectionMarkup).join(""):'<span class="world-empty">Nothing is explicitly connected to this object yet.</span>';
  const connectionHint=links.length?'<p class="world-object-connection-hint">Connections are invitations, not instructions. You decide whether this thread matters.</p>':'';
  const notice=object.notice||String(r.description||"").trim();
  const presence=object.presence||"PRESENT";
@@ -755,7 +751,7 @@ function detail(r){
    return '<aside class="world-detail" aria-live="polite"><div class="world-detail-head"><div><span class="world-kicker">MOTIF // RECURRING</span><h3 data-no-translate class="record-identity">'+esc(symbol.name||"SYMBOL")+'</h3></div><button type="button" class="world-close" data-close-node aria-label="Close symbol">×</button></div><div class="world-detail-meta"><span>'+esc(symbol.status||"RECURRING")+'</span><span>'+esc((symbol.placements||[]).join(" / ")||"UNPLACED")+'</span></div><p>'+esc(symbol.motif||"Meaning intentionally left open.")+'</p><div class="world-kicker">PUBLIC RECORD LINKS · '+trail.length+'</div><div class="world-connections">'+(trail.length?trail.map(x=>'<button type="button" data-node="'+esc(x.id)+'"><strong>'+esc(title(x))+'</strong><small>carries motif</small></button>').join(""):'<span class="world-empty">No public record is explicitly carrying this motif yet.</span>')+'</div><div class="world-detail-actions"><button type="button" data-copy-node>COPY NODE LINK</button></div></aside>';
  }
  const links=related(r.id);
- const connections=links.length?links.map(x=>'<button type="button" data-node="'+esc(x.node.id)+'"><strong>'+esc(title(x.node))+'</strong><small>'+esc(x.r.type||"related")+'</small></button>').join(""):'<span class="world-empty">No public connection recorded yet.</span>';
+ const connections=links.length?links.map(connectionMarkup).join(""):'<span class="world-empty">No public connection recorded yet.</span>';
  return '<aside class="world-detail" aria-live="polite"><div class="world-detail-head"><div><span class="world-kicker">ENCOUNTER // '+esc(type(r))+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3></div><button type="button" class="world-close" data-close-node aria-label="Close node">×</button></div><div class="world-detail-meta"><span>'+esc(String(r.certainty||"UNKNOWN").toUpperCase())+'</span><span>'+esc(String(r.status||"UNKNOWN").toUpperCase())+'</span></div>'+mediaPreview(r)+encounterContext(r)+'<p class="world-encounter-description">'+esc(r.description||r.summary||r.story||"No public description yet.")+'</p>'+encounterMeta(r)+'<div class="world-kicker">WHAT CONNECTS HERE · '+links.length+'</div><div class="world-connections">'+connections+'</div>'+discoveryRail(r)+'<div class="world-detail-actions"><button type="button" data-focus-search>SEARCH THIS NODE</button><button type="button" data-copy-node>COPY NODE LINK</button></div><div class="world-path"><span class="world-kicker">YOUR PATH</span><div id="world-path-items">START HERE</div></div></aside>';
 }
 function graphView(rows){
