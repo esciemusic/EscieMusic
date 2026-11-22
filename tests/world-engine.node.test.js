@@ -59,6 +59,8 @@ assert(/function meaningMarkup\(r\)/.test(src),"World meaning needs a visitor-fa
 assert(/function returnMarkup\(r\)/.test(src),"World return needs a visitor-facing return signal");
 assert(/function personalMemoryEntries\(id\)/.test(src),"World continuity needs access to the visitor's prior path entries");
 assert(/function personalMemoryLastSeen\(id\)/.test(src),"World continuity needs the last local observation timestamp");
+assert(/function memoryRelatedIds\(\)/.test(src),"World continuity should derive discovery from existing visitor memory");
+assert(/RETURNING THREAD/.test(src),"World continuity should surface a remembered thread without changing canon");
 assert(/LAST NOTICED/.test(src),"World return should make continuity perceptible without claiming the World remembers");
 assert(/You are back at something you noticed before/.test(src),"World return must acknowledge a return without anthropomorphizing the World");
 assert(/YOUR MEMORY/.test(src)&&/You have been here before/.test(src),"World return must use visitor memory as its evidence");
