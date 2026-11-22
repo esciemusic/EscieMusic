@@ -50,6 +50,11 @@ assert(/\["http:","https:"\]\.includes\(parsed\.protocol\)/.test(src),"World Eng
 assert(/const reduceMotion=\(\)=>typeof window\.matchMedia==="function"/.test(src),"World Engine needs reduced-motion detection");
 assert(!/scrollIntoView\(/.test(src),"World Engine must not force section scrolling");
 assert(/function writeWorldHash\(hash,mode\)/.test(src),"World Engine needs centralized history writes");
+assert(/function relationshipLabel\(r\)/.test(src),"World associations need a shared relationship label renderer");
+assert(/function relationshipContext\(r\)/.test(src),"World associations need contextual relationship evidence");
+assert(/function connectionMarkup\(x\)/.test(src),"World associations need a shared connection renderer");
+assert(/CONNECTED THROUGH/.test(src)&&/LEADS TO/.test(src)&&/LEADS HERE/.test(src),"World associations must communicate relationship direction");
+assert(/established public connection in the World/.test(src),"World associations need a truthful fallback when no context is recorded");
 assert(/function recordGlassEyeEvent\(type,target\)/.test(src),"World navigation must bridge into local Glass Eye memory");
 assert(/memory\.record\(\{type:type,target_id:String\(target\|\|""\)/.test(src),"World navigation memory bridge must record a local event");
 assert(/recordGlassEyeEvent\("ENTERED",target\)/.test(src),"World node navigation must record an ENTERED event locally");
