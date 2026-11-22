@@ -69,3 +69,4 @@ test("Experience Pass 7 makes orientation perceptible through restrained light m
   assert.match(globe,/Math\.sin\(ry\*Math\.PI\/180\)/);
   assert.match(globe,/Math\.sin\(rx\*Math\.PI\/180\)/);
 });
+\n\ntest("Experience Pass 7 keeps globe motion subordinate to user motion preferences and physical bounds",()=>{\n  assert.match(globe,/reducedMotion=window\.matchMedia/);\n  assert.match(globe,/if\(reducedMotion\)\{apply\(\);return;\}/);\n  assert.match(globe,/if\(!reducedMotion&&\(Math\.abs\(vy\)>0\.05 \|\| Math\.abs\(vx\)>0\.05\)\)startInertia/);\n  assert.match(globe,/rx=Math\.max\(-70,Math\.min\(70,rx\))/);\n  assert.match(globe,/e\.relatedTarget&&globe\.contains\(e\.relatedTarget\)/);\n});
