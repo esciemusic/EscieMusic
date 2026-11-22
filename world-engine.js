@@ -477,11 +477,26 @@ function openWorldNode(id,options){
  draw();
  focusDetail();
 }
+function relationshipLabel(r){
+ const raw=String(r&&r.type||"related").replace(/_/g," ").trim();
+ return raw?raw.toUpperCase():"RELATED";
+}
+function relationshipContext(r){
+ const context=String(r&&((r.context||r.reason||r.description)||"")).trim();
+ return context;
+}
+function connectionMarkup(x){
+ const label=relationshipLabel(x.r);
+ const context=relationshipContext(x.r);
+ const direction=String(x.r&&x.r.direction||"").toLowerCase();
+ const directionLabel=direction==="incoming"?"LEADS HERE":direction==="outgoing"?"LEADS TO":"CONNECTED THROUGH";
+ return '<button type="button" data-node="'+esc(x.node.id)+'"><span class="world-kicker">'+esc(directionLabel)+' · '+esc(label)+'</span><strong>'+esc(title(x.node))+'</strong><small>'+esc(context||"An established public connection in the World.")+'</small></button>';
+}
 function discoveryRail(node){
  const live=liveDiscoveries(node);
  const neighbors=(live.length?live:related(node.id)).slice(0,4);
  if(!neighbors.length)return '<div class="world-discovery-rail"><span class="world-kicker">NO OPEN THREADS YET</span><p>Stay here, or return to the World.</p></div>';
- return '<div class="world-discovery-rail"><div class="world-discovery-head"><span class="world-kicker">FOLLOW THE THREAD</span><p>Something here connects to something else.</p></div><div class="world-discovery-links">'+neighbors.map(function(x){return '<button type="button" class="world-discovery-link" data-node="'+esc(x.node.id)+'"><span class="world-kicker">'+esc(x.r&&x.r.type?String(x.r.type).replace(/_/g," "):"related")+'</span><strong>'+esc(title(x.node))+'</strong><span aria-hidden="true">↗</span></button>';}).join('')+'</div></div>';
+ return '<div class="world-discovery-rail"><div class="world-discovery-head"><span class="world-kicker">FOLLOW THE THREAD</span><p>Follow an established connection. The relationship tells you what kind of thread it is.</p></div><div class="world-discovery-links">'+neighbors.map(connectionMarkup).join('')+'</div></div>';
 }
 function roomContents(room){
  const live=liveContents();
