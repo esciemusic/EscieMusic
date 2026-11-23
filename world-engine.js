@@ -812,7 +812,7 @@ function detail(r){
  const links=related(r.id);
  const connections=links.length?links.map(connectionMarkup).join(""):'<span class="world-empty">No public connection recorded yet.</span>';
  const returning=returnMarkup(r);
- return '<aside class="world-detail" aria-live="polite"><div class="world-detail-head"><div><span class="world-kicker">ENCOUNTER // '+esc(type(r))+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3></div><button type="button" class="world-close" data-close-node aria-label="Close node">×</button></div><div class="world-detail-meta"><span>'+esc(String(r.certainty||"UNKNOWN").toUpperCase())+'</span><span>'+esc(String(r.status||"UNKNOWN").toUpperCase())+'</span></div>'+mediaPreview(r)+encounterContext(r)+'<p class="world-encounter-description">'+esc(r.description||r.summary||r.story||"No public description yet.")+'</p>'+encounterMeta(r)+returning+'<div class="world-kicker">WHAT CONNECTS HERE · '+links.length+'</div><div class="world-connections">'+connections+'</div>'+meaningMarkup(r)+discoveryRail(r)+'<div class="world-detail-actions"><button type="button" data-focus-search>SEARCH THIS NODE</button><button type="button" data-copy-node>COPY NODE LINK</button></div><div class="world-path"><span class="world-kicker">YOUR PATH</span><div id="world-path-items">START HERE</div></div></aside>';
+ return '<aside class="world-detail" aria-live="polite"><div class="world-detail-head"><div><span class="world-kicker">ENCOUNTER // '+esc(type(r))+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3></div><button type="button" class="world-close" data-close-node aria-label="Close node">×</button></div><div class="world-detail-meta"><span>'+esc(String(r.certainty||"UNKNOWN").toUpperCase())+'</span><span>'+esc(String(r.status||"UNKNOWN").toUpperCase())+'</span></div>'+mediaPreview(r)+encounterContext(r)+'<p class="world-encounter-description">'+esc(r.description||r.summary||r.story||"No public description yet.")+'</p>'+encounterMeta(r)+returning+'<div class="world-kicker">WHAT CONNECTS HERE · '+links.length+'</div><div class="world-connections">'+connections+'</div>'+meaningMarkup(r)+curiosityMarkup(r)+discoveryRail(r)+'<div class="world-detail-actions"><button type="button" data-focus-search>SEARCH THIS NODE</button><button type="button" data-copy-node>COPY NODE LINK</button></div><div class="world-path"><span class="world-kicker">YOUR PATH</span><div id="world-path-items">START HERE</div></div></aside>';
 }
 function graphView(rows){
  const map=new Map(rows.map(r=>[String(r.id),r]));
@@ -911,6 +911,18 @@ function discoveryAssociationMarkup(x){
  if(x.connected)return '<span class="world-kicker">'+esc(x.relationLabel||"CONNECTED")+"</span><small>"+esc(x.relationContext||"An established public connection in the World.")+"</small>";
  if(x.remembered)return '<span class="world-kicker">RETURNING THREAD</span><small>A thread connected to something you noticed before.</small>';
  return '<span class="world-kicker">'+esc(x.reason||"UNEXPLORED")+"</span><small>Not an established connection yet. Follow only if it interests you.</small>";
+}
+function curiosityMarkup(r){
+ const id=String(r&&r.id||"");
+ if(!id)return "";
+ const links=related(id);
+ const symbols=Array.isArray(r&&r.symbols)?r.symbols.filter(Boolean):[];
+ if(!links.length&&!symbols.length)return "";
+ let line="";
+ if(symbols.length)line="A recurring motif appears here. Its meaning is not settled by this record.";
+ else if(links.length>1)line="This record opens more than one thread. The connections may change what you notice here.";
+ else line="There is another thread attached to this record. The connection is part of the evidence, not an answer.";
+ return '<div class="world-curiosity" role="note"><span class="world-kicker">LOOK CLOSER</span><p>'+esc(line)+'</p></div>';
 }
 function gameMemory(){
  const api=window.ESCIE_GAME_GATEWAY;
