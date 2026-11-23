@@ -1598,3 +1598,16 @@ test("A-Z Pass 3 public language stays inside the ESCIE voice",()=>{
   assert.match(app,/YOUR THREAD/,"visitor path must remain framed as a personal thread");
   assert.doesNotMatch(player,/TRANSMISSION PLAYER|NO TRANSMISSION LOADED|Previous transmission|Next transmission/,"player must use plain audio language");
 });
+
+
+test("A-Z Pass 4 visual language stays authored and restrained",()=>{
+  const style=read("aesthetic.css");
+  const typography=read("typography.css");
+  assert.match(style,/--escie-font-display:var\(--escie-font-escie/,"display typography must inherit the authored ESCIE face");
+  assert.match(style,/\.site-logo-glyph\{[\s\S]*color:var\(--escie-aesthetic-purple\)/,"header ESCIE glyph must stay in the identity purple");
+  assert.doesNotMatch(style,/HERO FONT HOLD|font-family:Georgia,"Times New Roman",serif/,"legacy hero typography override must not return");
+  assert.doesNotMatch(style,/section-depth-gate|section-depth-trigger/,"obsolete depth-gate styling must not return");
+  assert.doesNotMatch(style,/\.escie-player-node\{[\s\S]*border-radius:18px!important/,"audio node must retain the documentary/sharp visual language");
+  assert.match(typography,/fonts\/release\/ESCIE\.woff2/,"authored ESCIE display font must remain locally loaded");
+  assert.match(typography,/fonts\/release\/ESCIE-SIGNAL\.woff2/,"authored ESCIE signal font must remain locally loaded");
+});
