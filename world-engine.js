@@ -845,6 +845,7 @@ function traceConstellationMarkup(rs){
  const ids=Array.isArray(state.trail)?state.trail.map(String):[];
  if(ids.length<2)return "";
  const map=new Map(rs.map(function(r){return [String(r.id),r];}));
+ const discoveredIds=memoryDiscoveredIds();
  const names=ids.map(function(id){return map.get(id);}).filter(Boolean).slice(-9);
  const groups=[],current=[];
  for(let i=0;i<names.length;i++){
@@ -858,11 +859,16 @@ function traceConstellationMarkup(rs){
  if(current.length>1)groups.push(current.slice());
  if(!groups.length)return "";
  const points=groups.map(function(group){
-   return '<div class="world-trace-constellation-group">'+group.map(function(r){return '<span class="world-trace-constellation-point"><i aria-hidden="true"></i><strong>'+esc(title(r))+'</strong><small>'+esc(type(r))+'</small></span>';}).join("")+'</div>';
+   return '<div class="world-trace-constellation-group">'+group.map(function(r){
+     const discovered=discoveredIds.has(String(r.id));
+     return '<span class="world-trace-constellation-point'+(discovered?' world-trace-discovered':'')+'"><i aria-hidden="true"></i><strong>'+esc(title(r))+'</strong><small>'+esc(discovered?"DISCOVERED · "+type(r):type(r))+'</small></span>';
+   }).join("")+'</div>';
  }).join("");
  const pointCount=groups.reduce(function(n,g){return n+g.length;},0);
  const linkCount=groups.reduce(function(n,g){return n+Math.max(0,g.length-1);},0);
- return '<div class="world-trace-constellation"><div class="world-trace-subhead"><span class="world-kicker">CONSTELLATION</span><h4>THE THREAD IS BECOMING A PATTERN.</h4><p>Legitimate connections become visible as your route gathers into connected groups. Wandering can start another thread without pretending the two are related.</p></div><div class="world-trace-constellation-groups">'+points+'</div><div class="world-trace-constellation-meta">'+esc(String(pointCount))+' connected points · '+esc(String(linkCount))+' links · '+esc(String(groups.length))+' thread'+(groups.length===1?'':'s')+'</div></div>';
+ const discoveredCount=groups.reduce(function(n,g){return n+g.filter(function(r){return discoveredIds.has(String(r.id));}).length;},0);
+ const discoveredMeta=discoveredCount?'<span>'+esc(String(discoveredCount))+' deliberate discovery'+(discoveredCount===1?'':'ies')+'</span>':"";
+ return '<div class="world-trace-constellation"><div class="world-trace-subhead"><span class="world-kicker">CONSTELLATION</span><h4>THE THREAD IS BECOMING A PATTERN.</h4><p>Legitimate connections become visible as your route gathers into connected groups. Deliberate discoveries remain marked within your own thread.</p></div><div class="world-trace-constellation-groups">'+points+'</div><div class="world-trace-constellation-meta">'+esc(String(pointCount))+' connected points · '+esc(String(linkCount))+' links · '+esc(String(groups.length))+' thread'+(groups.length===1?'':'s')+(discoveredMeta?' · '+discoveredMeta:'')+'</div></div>';
 }
 function traceView(){
  const rs=records();
