@@ -11,9 +11,12 @@ const style=fs.readFileSync(path.join(root,"style.css"),"utf8");
 const globe=fs.readFileSync(path.join(root,"entry-globe.js"),"utf8");
 
 test("Experience Pass 4 preserves the public journey as one simple surface",()=>{
-  const expected=["NOW","ART","THE WORLD","GLASS EYE","TRACE","THE ARCHIVES","THE CASE FILES","ESCIE"];
+  const expected=["HOME","THE WORLD","TRACE"];
   expected.forEach(label=>assert.ok(nav.includes('label:"'+label+'"'),label));
-  assert.match(nav,/order:\["now","art","world","glass-eye","web","archives","investigation","escie"\]/);
+  assert.match(nav,/order:\["home","world","trace"\]/);
+  assert.match(nav,/id:"home".*primary:true.*order:1/);
+  assert.match(nav,/id:"world".*primary:true.*order:2/);
+  assert.match(nav,/id:"trace".*primary:true.*order:3/);
   assert.match(app,/renderNavigation\(\)/);
   assert.match(app,/syncRouteState|bindNavigationRuntime/);
 });
