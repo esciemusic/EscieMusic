@@ -4,7 +4,7 @@
       container.querySelectorAll("[data-glass-eye-action]").forEach(item=>{
         if(item.getAttribute("data-glass-eye-action")!=="clear-memory")item.setAttribute("aria-pressed","false");
       });
-      button.setAttribute("aria-pressed","true");
+      if(action!=="hear") button.setAttribute("aria-pressed","true");
       if(action==="hear"){
         const wasPressed=button.getAttribute("aria-pressed")==="true";
         const iframe=container.querySelector(".glass-video-frame iframe");
