@@ -39,7 +39,6 @@ test("public section semantics match the canonical World architecture",()=>{
 test("public section IDs remain canonical",()=>{
   const nav=read("navigation.js");
   const sections=read("data/public-sections.js");
-  const sections=read("data/public-sections.js");
   for(const id of ["now","art","world","trace","archives","investigation","glass-eye","escie"]){
     assert.match(sections,new RegExp('id:"'+id+'"'));
   }
