@@ -571,6 +571,120 @@ body.menu-open .index-navigation.is-open {
 
 
 /* =========================================================
+   DETAILED INDEX
+   The surface stays quiet; the map reveals the structure.
+   ========================================================= */
+
+.index-map{
+  display:grid;
+  gap:18px;
+  color:var(--white);
+}
+
+.index-map-primary{
+  display:grid;
+  gap:4px;
+  padding-bottom:12px;
+  border-bottom:1px solid rgba(79,134,173,.28);
+}
+
+.index-map-kicker{
+  color:var(--escie-aesthetic-purple);
+  font:500 8px/1 var(--escie-font-mono,monospace);
+  letter-spacing:.28em;
+}
+
+.index-map-title{
+  margin:2px 0 10px;
+  color:var(--muted);
+  font:400 9px/1.5 var(--escie-font-mono,monospace);
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+
+.index-map-primary .nav-link{
+  padding:8px 6px;
+  font-size:clamp(14px,2vw,17px);
+  letter-spacing:.1em;
+}
+
+.index-map-primary .nav-link:hover{
+  letter-spacing:.16em;
+}
+
+.index-map-detail{
+  display:grid;
+  gap:16px;
+}
+
+.index-map-section{
+  display:grid;
+  gap:5px;
+}
+
+.index-map-heading{
+  margin:0 0 2px;
+  color:var(--faint);
+  font:500 8px/1 var(--escie-font-mono,monospace);
+  letter-spacing:.22em;
+  text-transform:uppercase;
+}
+
+.index-map-links{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:1px 10px;
+}
+
+.index-map-link{
+  display:flex!important;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  min-width:0;
+  padding:6px 4px!important;
+  color:var(--muted)!important;
+  font:400 9px/1.25 var(--escie-font-mono,monospace)!important;
+  letter-spacing:.1em!important;
+  text-transform:uppercase;
+  transform:none!important;
+}
+
+.index-map-link:hover,
+.index-map-link:focus-visible{
+  color:var(--white)!important;
+  letter-spacing:.13em!important;
+  background:rgba(155,89,255,.045);
+  outline:none;
+}
+
+.index-map-arrow{
+  color:var(--escie-blue-bright);
+  opacity:.55;
+  flex:0 0 auto;
+}
+
+@media(max-width:700px){
+  .index-navigation{
+    top:calc(var(--header-height) + 6px);
+    right:10px;
+    width:calc(100vw - 20px);
+    max-height:min(82svh,760px);
+    padding:12px;
+  }
+  .index-map-detail{
+    gap:14px;
+  }
+  .index-map-links{
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .index-map-link,.index-map-primary .nav-link{transition:none!important}
+}
+
+/* =========================================================
    HERO
    ========================================================= */
 
