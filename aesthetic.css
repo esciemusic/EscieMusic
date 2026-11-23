@@ -9,7 +9,7 @@
   --escie-aesthetic-purple-soft:rgba(155,89,255,.22);
   --escie-aesthetic-purple-line:rgba(155,89,255,.58);
 
-  --escie-font-display:Arial,Helvetica,sans-serif;
+  --escie-font-display:var(--escie-font-escie,Arial,Helvetica,sans-serif);
   --escie-font-body:Arial,Helvetica,sans-serif;
   --escie-font-mono:"Courier New",Courier,monospace;
 
@@ -1687,7 +1687,7 @@ html[data-theme="light"] .site-footer{
 .entry-section #entry-container h1 .hero-identity-link{display:inline-block;color:inherit;text-decoration:none;cursor:pointer;transition:color 180ms ease,filter 180ms ease,transform 180ms ease}
 .entry-section #entry-container h1 .hero-identity-link:hover{color:var(--escie-blue-bright);filter:drop-shadow(0 0 18px rgba(47,128,255,.16))}
 .entry-section #entry-container h1 .hero-identity-link:focus-visible{outline:2px solid var(--escie-blue-bright);outline-offset:8px}
-.hero-skyline-link{position:relative;z-index:1;display:block;width:min(1040px,98vw);margin:clamp(16px,2.8vw,28px) auto 0;color:inherit;text-decoration:none;cursor:pointer;border-radius:18px;outline:none;-webkit-tap-highlight-color:transparent;}
+.hero-skyline-link{position:relative;z-index:1;display:block;width:min(1040px,98vw);margin:clamp(16px,2.8vw,28px) auto 0;color:inherit;text-decoration:none;cursor:pointer;border-radius:2px;outline:none;-webkit-tap-highlight-color:transparent;}
 .hero-skyline-map{position:relative;width:min(1040px,98vw);margin:clamp(16px,2.8vw,28px) auto 0;}
 .hero-skyline-map .hero-skyline-link{width:100%;margin:0;}
 .hero-skyline-link .hero-skyline{width:100%;margin:0;pointer-events:none;transition:opacity 220ms ease,transform 220ms ease,filter 220ms ease;}
@@ -4305,59 +4305,4 @@ body.light .world-object-origin{border-color:rgba(0,0,0,.1)}
 @media(prefers-reduced-motion:reduce){
   .world-more-door,
   .world-more-door::after{transition:none}
-}
-
-
-/* =========================================================
-   PUBLIC SURFACE / DEPTH GATE
-   NOW, WORLD and TRACE are the first public layer.
-   Deeper sections remain available behind MORE.
-   ========================================================= */
-.section-depth-gate{
-  margin:4px 0;
-  padding:0;
-}
-.section-depth-trigger{
-  width:100%;
-  min-height:48px;
-  display:grid;
-  grid-template-columns:34px 1fr 28px;
-  gap:10px;
-  align-items:center;
-  padding:12px 14px;
-  border:1px solid rgba(155,89,255,.18);
-  border-left-color:rgba(155,89,255,.34);
-  background:linear-gradient(90deg,rgba(14,12,18,.94),rgba(7,7,8,.9));
-  color:var(--faint);
-  cursor:pointer;
-  font:700 8px/1 var(--escie-font-mono);
-  letter-spacing:.18em;
-  text-align:left;
-  transition:border-color var(--escie-motion-fast),background var(--escie-motion-standard),color var(--escie-motion-fast);
-}
-.section-depth-index{color:var(--escie-aesthetic-purple);text-align:center}
-.section-depth-title{color:var(--muted)}
-.section-depth-symbol{text-align:right;color:var(--escie-aesthetic-purple);font-size:12px}
-.section-depth-trigger:hover,
-.section-depth-trigger:focus-visible{
-  color:var(--white);
-  border-color:var(--escie-blue-line);
-  background:var(--escie-blue-soft);
-}
-.section-depth-gate.is-open .section-depth-trigger{
-  color:var(--white);
-  border-color:var(--escie-aesthetic-purple-line);
-  background:linear-gradient(90deg,rgba(20,16,27,.96),rgba(7,7,8,.92));
-}
-.section-secondary[hidden]{display:none !important;}
-@media(max-width:700px){
-  .section-depth-trigger{
-    min-height:46px;
-    grid-template-columns:30px 1fr 24px;
-    gap:8px;
-    padding:11px 12px;
-  }
-}
-@media(prefers-reduced-motion:reduce){
-  .section-depth-trigger{transition:none}
 }
