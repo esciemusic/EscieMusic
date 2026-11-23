@@ -6,7 +6,7 @@
 (function(){
   "use strict";
   const BLOCKED_VISIBILITY=new Set(["private","withheld","limited"]);
-  const PUBLIC_SECTIONS=new Set(["now","art","world","web","archives","investigation","glass-eye","escie"]);
+  const PUBLIC_SECTIONS=new Set(["now","art","world","trace","archives","investigation","glass-eye","escie"]);
   function approved(record){
     if(!record||!record.id)return false;
     const published=record.published===true||String(record.status||"").toLowerCase()==="published";
