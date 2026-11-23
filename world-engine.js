@@ -883,25 +883,29 @@ function traceView(){
 }
 function discoveryReason(current,node,base){if(!current)return "OPEN THREAD";if(base.some(x=>String(x.id)===String(node.id))){const rel=related(current.id).find(x=>String(x.node.id)===String(node.id));return rel&&rel.type?"FOLLOWED FROM "+String(rel.type).replace(/_/g," "):"DIRECT CONNECTION";}if(state.trail.length>1){const previous=records().find(r=>String(r.id)===String(state.trail[state.trail.length-2]));if(previous&&type(node)===type(previous))return "CONTINUES THE THREAD";}if(type(node)===type(current))return "SAME KIND";if(Array.isArray(node.tags)&&Array.isArray(current.tags)&&node.tags.some(t=>current.tags.includes(t)))return "SHARED SIGNAL";return "UNEXPLORED";}
 function memoryRelatedIds(){const ids=new Set();const memory=window.ESCIE_GLASS_EYE_MEMORY;if(!memory||typeof memory.state!=="function")return ids;try{const path=memory.state().path;const entries=Array.isArray(path)?path:[];entries.forEach(function(e){const id=String(e&&e.target_id||"");if(!id)return;related(id).forEach(function(x){ids.add(String(x.node.id));});});}catch(_e){}return ids;}
+function memoryDiscoveredIds(){const ids=new Set();const memory=window.ESCIE_GLASS_EYE_MEMORY;if(!memory||typeof memory.state!=="function")return ids;try{const path=memory.state().path;const entries=Array.isArray(path)?path:[];entries.forEach(function(e){if(String(e&&e.type||"").toUpperCase()!=="DISCOVERED")return;const id=String(e&&e.target_id||"");if(id)ids.add(id);});}catch(_e){}return ids;}
 function discovery(rows){
  const seen=new Set(state.visited.map(String));
  const current=state.selected?records().find(r=>String(r.id)===String(state.selected)):null;
  const base=current?related(current.id).map(x=>x.node):[];
  const baseLinks=current?related(current.id):[];
  const memoryLinks=memoryRelatedIds();
+ const discoveredIds=memoryDiscoveredIds();
  const pool=base.concat(rows).filter(Boolean).filter(r=>!seen.has(String(r.id)));
  const scored=pool.map(r=>{
   const relation=baseLinks.find(x=>String(x.node.id)===String(r.id))||null;
   const connected=!!relation;
   const remembered=memoryLinks.has(String(r.id));
+  const discovered=discoveredIds.has(String(r.id));
   let score=connected?10:0;
   if(remembered)score+=3;
+  if(discovered)score+=2;
   if(current&&type(r)===type(current))score+=2;
   if(Array.isArray(r.tags)&&current&&Array.isArray(current.tags))score+=r.tags.filter(t=>current.tags.includes(t)).length;
-  const reason=connected?discoveryReason(current,r,base):remembered?"RETURNING THREAD":discoveryReason(current,r,base);
+  const reason=connected?discoveryReason(current,r,base):discovered?"DISCOVERED BEFORE":remembered?"RETURNING THREAD":discoveryReason(current,r,base);
   const relationLabel=relation?relationshipLabel(relation.r):"";
   const relationContext=relation?relationshipContext(relation.r):"";
-  return {r,score,connected,remembered,reason,relationLabel,relationContext};
+  return {r,score,connected,remembered,discovered,reason,relationLabel,relationContext};
  }).sort((a,b)=>b.score-a.score);
  const out=[];const usedTypes=new Set();
  for(const x of scored){if(out.length>=3)break;if(!usedTypes.has(type(x.r))||x.connected){out.push(x);usedTypes.add(type(x.r));}}
