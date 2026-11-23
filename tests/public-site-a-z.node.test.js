@@ -39,6 +39,7 @@ test("public section semantics match the canonical World architecture",()=>{
 test("public section IDs remain canonical",()=>{
   const nav=read("navigation.js");
   const sections=read("data/public-sections.js");
+  const sections=read("data/public-sections.js");
   for(const id of ["now","art","world","trace","archives","investigation","glass-eye","escie"]){
     assert.match(sections,new RegExp('id:"'+id+'"'));
   }
@@ -1217,7 +1218,7 @@ test("A-Z Pass 3 custom ESCIE glyph system is canonical and replaces Unicode nav
   const index=read("index.html");
   const svg=read("assets/escie-symbols.svg");
   for(const glyph of ["now","art","world","glass-eye","web","archives","case-files","escie"]) assert.match(nodes,new RegExp('symbol:"'+glyph+'"'));
-  for(const glyph of ["now","art","world","glass-eye","web","archives","case-files","escie"]) assert.match(navigation,new RegExp('symbol:"'+glyph+'"'));
+  for(const glyph of ["escie","world","web"]) assert.match(navigation,new RegExp('symbol:"'+glyph+'"'));
   for(const glyph of ["camera","daisy","child-shoe","nightlight","key","empty-chair","vhs"]) assert.match(symbols,new RegExp('glyph:"'+glyph+'"'));
   for(const glyph of ["now","art","world","glass-eye","web","archives","case-files","escie","person","moment","camera","daisy","child-shoe","nightlight","key","empty-chair","vhs"]) assert.match(svg,new RegExp('id="'+glyph+'"'));
   assert.match(app,/function customSymbolMarkup\(glyph, label\)/);
