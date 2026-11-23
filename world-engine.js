@@ -1302,7 +1302,9 @@ function draw(){
    const depthToggle=event.target.closest("[data-depth-toggle]");
    if(depthToggle){
      const id=depthToggle.getAttribute("data-depth-toggle")||"";
-     state.depthOpenFor=state.depthOpenFor===id?null:id;
+     const opening=state.depthOpenFor!==id;
+     state.depthOpenFor=opening?id:null;
+     if(opening)recordGlassEyeEvent("DISCOVERED",id);
      draw();
      focusDetail();
      return;
