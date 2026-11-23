@@ -97,6 +97,10 @@ assert(/memory\.record\(\{type:type,target_id:String\(target\|\|""\)/.test(src),
 assert(/recordGlassEyeEvent\("ENTERED",target\)/.test(src),"World node navigation must record an ENTERED event locally");
 assert(/recordGlassEyeEvent\("DISCOVERED",id\)/.test(src),"Chosen discovery depth must be remembered as a local discovery event");
 assert(/const opening=state\.depthOpenFor!==id/.test(src),"Discovery depth memory must only record when the visitor opens depth");
+assert(/function traceConstellationMarkup\(rs\)/.test(src),"TRACE needs a constellation renderer");
+assert(/const discoveredIds=memoryDiscoveredIds\(\)/.test(src),"TRACE constellation must reuse remembered discovery memory");
+assert(/world-trace-discovered/.test(src)&&/DISCOVERED · /.test(src),"TRACE constellation must visibly distinguish deliberate discoveries");
+assert(/Deliberate discoveries remain marked within your own thread/.test(src),"TRACE constellation must explain remembered discoveries without turning them into a score");
 
 assert(/writeWorldHash\("#world-node=.*,"push"\)/.test(src),"World node navigation must create a browser-history step");
 assert(/writeWorldHash\("#world-street=.*,"push"\)/.test(src),"World street navigation must create a browser-history step");
