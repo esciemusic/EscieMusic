@@ -1605,6 +1605,7 @@ test("A-Z Pass 4 visual language stays authored and restrained",()=>{
   const typography=read("typography.css");
   assert.match(style,/--escie-font-display:var\(--escie-font-escie/,"display typography must inherit the authored ESCIE face");
   assert.match(style,/\.site-logo-glyph\{[\s\S]*color:var\(--escie-aesthetic-purple\)/,"header ESCIE glyph must stay in the identity purple");
+  assert.match(style,/html\[data-theme="light"\] \.site-logo,html\[data-theme="light"\] \.index-trigger\{color:#6336a2!important/,"identity purple must survive light mode");
   assert.doesNotMatch(style,/HERO FONT HOLD|font-family:Georgia,"Times New Roman",serif/,"legacy hero typography override must not return");
   assert.doesNotMatch(style,/section-depth-gate|section-depth-trigger/,"obsolete depth-gate styling must not return");
   assert.doesNotMatch(style,/\.escie-player-node\{[\s\S]*border-radius:18px!important/,"audio node must retain the documentary/sharp visual language");
