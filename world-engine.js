@@ -5,7 +5,7 @@ const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
 const safeDecode=value=>{try{return decodeURIComponent(String(value??""));}catch(_e){return String(value??"");}};
 const coll=(name,fallback=[])=>{const v=window[name];return Array.isArray(v)?v:(v&&Array.isArray(v.records)?v.records:fallback)};
-const state={tab:"atlas",q:"",type:"ALL",selected:null,trail:[],visited:[],eyeOpen:false,exploreOpen:false,outsideOpen:false,moreOpen:false,returningFrom:null,returnFlash:null,street:null,roomOrigin:null,attentionSince:0,attentionNoticed:false,focusOrigin:null,focusDetailRequest:false,focusRestoreRequest:false};
+const state={tab:"atlas",q:"",type:"ALL",selected:null,trail:[],visited:[],eyeOpen:false,exploreOpen:false,outsideOpen:false,moreOpen:false,returningFrom:null,returnFlash:null,street:null,roomOrigin:null,depthOpenFor:null,attentionSince:0,attentionNoticed:false,focusOrigin:null,focusDetailRequest:false,focusRestoreRequest:false};
 const tabs=[["atlas","ATLAS","world"],["people","THE PEOPLE","person"],["places","PLACES","world"],["moments","MOMENTS","moment"],["objects","OBJECTS","world"],["fragments","FRAGMENTS","photo-negative"],["bodies","BODIES","empty-chair"],["proof","PROOF","key"],["path","PATH","web"],["timeline","TIMELINE","now"],["symbols","SYMBOLS","daisy"],["trace","TRACE","web"],["trails","TRAILS","web"]];function glyph(name,label){const safe=String(name||"").replace(/[^a-z0-9-]/gi,"");if(!safe)return "";return '<svg class="escie-symbol-glyph world-entry-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#'+esc(safe)+'"></use></svg>';}
 const raf=typeof requestAnimationFrame==="function"?requestAnimationFrame:fn=>setTimeout(fn,0);
 const caf=typeof cancelAnimationFrame==="function"?cancelAnimationFrame:clearTimeout;
@@ -463,6 +463,7 @@ function openWorldNode(id,options){
  const live=liveWorldNode(target);
  const node=local||live||{id:target,type:"PLACE",title:target.replace(/^world-/,"").replace(/-/g," "),description:"A place in the World."};
  state.selected=target;
+ state.depthOpenFor=null;
  state.attentionSince=Date.now();state.attentionNoticed=false;
  if(!options.preserveTrail)remember(target);
  recordGlassEyeEvent("ENTERED",target);
@@ -812,7 +813,7 @@ function detail(r){
  const links=related(r.id);
  const connections=links.length?links.map(connectionMarkup).join(""):'<span class="world-empty">No public connection recorded yet.</span>';
  const returning=returnMarkup(r);
- return '<aside class="world-detail" aria-live="polite"><div class="world-detail-head"><div><span class="world-kicker">ENCOUNTER // '+esc(type(r))+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3></div><button type="button" class="world-close" data-close-node aria-label="Close node">×</button></div><div class="world-detail-meta"><span>'+esc(String(r.certainty||"UNKNOWN").toUpperCase())+'</span><span>'+esc(String(r.status||"UNKNOWN").toUpperCase())+'</span></div>'+mediaPreview(r)+encounterContext(r)+'<p class="world-encounter-description">'+esc(r.description||r.summary||r.story||"No public description yet.")+'</p>'+encounterMeta(r)+returning+'<div class="world-kicker">WHAT CONNECTS HERE · '+links.length+'</div><div class="world-connections">'+connections+'</div>'+meaningMarkup(r)+curiosityMarkup(r)+discoveryRail(r)+'<div class="world-detail-actions"><button type="button" data-focus-search>SEARCH THIS NODE</button><button type="button" data-copy-node>COPY NODE LINK</button></div><div class="world-path"><span class="world-kicker">YOUR PATH</span><div id="world-path-items">START HERE</div></div></aside>';
+ return '<aside class="world-detail" aria-live="polite"><div class="world-detail-head"><div><span class="world-kicker">ENCOUNTER // '+esc(type(r))+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3></div><button type="button" class="world-close" data-close-node aria-label="Close node">×</button></div><div class="world-detail-meta"><span>'+esc(String(r.certainty||"UNKNOWN").toUpperCase())+'</span><span>'+esc(String(r.status||"UNKNOWN").toUpperCase())+'</span></div>'+mediaPreview(r)+encounterContext(r)+'<p class="world-encounter-description">'+esc(r.description||r.summary||r.story||"No public description yet.")+'</p>'+encounterMeta(r)+returning+'<div class="world-kicker">WHAT CONNECTS HERE · '+links.length+'</div><div class="world-connections">'+connections+'</div>'+meaningMarkup(r)+curiosityMarkup(r)+discoveryDepthMarkup(r)+discoveryRail(r)+'<div class="world-detail-actions"><button type="button" data-focus-search>SEARCH THIS NODE</button><button type="button" data-copy-node>COPY NODE LINK</button></div><div class="world-path"><span class="world-kicker">YOUR PATH</span><div id="world-path-items">START HERE</div></div></aside>';
 }
 function graphView(rows){
  const map=new Map(rows.map(r=>[String(r.id),r]));
@@ -911,6 +912,33 @@ function discoveryAssociationMarkup(x){
  if(x.connected)return '<span class="world-kicker">'+esc(x.relationLabel||"CONNECTED")+"</span><small>"+esc(x.relationContext||"An established public connection in the World.")+"</small>";
  if(x.remembered)return '<span class="world-kicker">RETURNING THREAD</span><small>A thread connected to something you noticed before.</small>';
  return '<span class="world-kicker">'+esc(x.reason||"UNEXPLORED")+"</span><small>Not an established connection yet. Follow only if it interests you.</small>";
+}
+function discoveryDepthData(r){
+ const fields=[];
+ const place=r&& (r.place||r.location||r.city||r.neighborhood);
+ const date=r&& (r.date||r.release_date||r.moment_date||r.occurred_at||r.created_at);
+ const source=r&&r.source;
+ if(place)fields.push(["WHERE",String(place)]);
+ if(date)fields.push(["WHEN",String(date)]);
+ if(source)fields.push(["SOURCE",String(source)]);
+ const tags=Array.isArray(r&&r.tags)?r.tags.map(function(x){return String(x).trim();}).filter(Boolean).slice(0,6):[];
+ const symbols=Array.isArray(r&&r.symbols)?r.symbols.map(function(x){return String(x).trim();}).filter(Boolean).slice(0,6):[];
+ if(tags.length)fields.push(["SIGNALS",tags.join(" · ")]);
+ if(symbols.length)fields.push(["MOTIFS",symbols.join(" · ")]);
+ const context=r&&r.context&&typeof r.context==="object"?r.context:null;
+ if(context){
+   Object.keys(context).filter(function(k){return !["notice","context"].includes(String(k).toLowerCase());}).slice(0,3).forEach(function(k){fields.push([String(k).replace(/_/g," ").toUpperCase(),String(context[k]??"")]);});
+ }
+ return fields.slice(0,7);
+}
+function discoveryDepthMarkup(r){
+ const id=String(r&&r.id||"");
+ if(!id)return "";
+ const fields=discoveryDepthData(r);
+ if(!fields.length)return "";
+ const open=String(state.depthOpenFor||"")===id;
+ const body=open?'<div class="world-depth-fields">'+fields.map(function(x){return '<span><b>'+esc(x[0])+'</b>'+esc(x[1])+'</span>';}).join("")+'</div>':"";
+ return '<div class="world-discovery-depth" role="region" aria-label="Deeper record context"><button type="button" class="world-discovery-depth-toggle" data-depth-toggle="'+esc(id)+'" aria-expanded="'+(open?"true":"false")+'"><span class="world-kicker">'+(open?"CLOSE":"GO DEEPER")+'</span><strong>'+(open?"RECORD CONTEXT":"There is more here.")+'</strong><small>'+(open?"Existing record details, nothing added.":"Follow the evidence beneath the first impression.")+'</small></button>'+body+'</div>';
 }
 function curiosityMarkup(r){
  const id=String(r&&r.id||"");
@@ -1269,6 +1297,14 @@ function draw(){
      const placeId=roomReturn.getAttribute("data-room-place-return")||"";
      const origin=state.roomOrigin;
      if(origin&&String(origin.placeId)===String(placeId)){state.selected=String(placeId);state.placeStreet=origin;state.roomOrigin=null;const streetHash=origin.street&&origin.street.id?"&world-place-street="+encodeURIComponent(String(origin.street.id)):"";writeWorldHash("#world-place="+encodeURIComponent(String(placeId))+streetHash,"replace");draw();focusDetail();}
+     return;
+   }
+   const depthToggle=event.target.closest("[data-depth-toggle]");
+   if(depthToggle){
+     const id=depthToggle.getAttribute("data-depth-toggle")||"";
+     state.depthOpenFor=state.depthOpenFor===id?null:id;
+     draw();
+     focusDetail();
      return;
    }
    const node=event.target.closest("[data-node]");
