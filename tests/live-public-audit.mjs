@@ -158,6 +158,7 @@ async function auditWorldLenses(label){
   check(await world.count()===1, label+" THE WORLD section missing");
   const trigger=world.locator(".section-drop-trigger");
   if(await trigger.count() && !(await world.evaluate(el=>el.classList.contains("section-open")).catch(()=>false))) await trigger.click();
+
   const primaryTabs=["people","places","moments","objects"];
   for(const tab of primaryTabs){
     const button=page.locator('[data-world-tab="'+tab+'"]').first();
@@ -168,12 +169,21 @@ async function auditWorldLenses(label){
       check((await page.locator("#world-container").innerText()).trim().length>0, label+" THE WORLD primary lens rendered empty shell: "+tab);
     }
   }
+
+  const art=world.locator('a.world-primary-link[href="#art"]').first();
+  check(await art.count()===1, label+" THE WORLD ART doorway missing");
+  if(await art.count()) check((await art.innerText()).trim()==="ART", label+" THE WORLD ART doorway label drifted");
+
   const explorer=world.locator("[data-world-explore]").first();
-  if(await explorer.count() && (await explorer.getAttribute("aria-expanded"))!=="true"){
+  check(await explorer.count()===1, label+" THE WORLD deeper toggle missing");
+  if(await explorer.count()){
+    check((await explorer.getAttribute("aria-expanded"))==="false", label+" THE WORLD deeper toggle should start closed");
     await explorer.click();
     await page.waitForTimeout(80);
+    check((await explorer.getAttribute("aria-expanded"))==="true", label+" THE WORLD deeper toggle did not open");
   }
-  const deeperTabs=["fragments","proof","bodies"];;
+
+  const deeperTabs=["fragments","proof","bodies"];
   for(const tab of deeperTabs){
     const button=page.locator('[data-world-tab="'+tab+'"]').first();
     check(await button.count()===1, label+" THE WORLD deeper lens missing: "+tab);
@@ -183,21 +193,14 @@ async function auditWorldLenses(label){
       check((await page.locator("#world-container").innerText()).trim().length>0, label+" THE WORLD deeper lens rendered empty shell: "+tab);
     }
   }
-  const more=page.locator("[data-world-more]").first();
-  check(await more.count()===1, label+" THE WORLD MORE threshold missing");
-  if(await more.count()){
-    await more.click();
-    await page.waitForTimeout(80);
-    for(const tab of ["fragments","bodies","proof","timeline","symbols"]){
-      const button=page.locator('[data-world-tab="'+tab+'"]').first();
-      check(await button.count()===1, label+" THE WORLD advanced lens missing: "+tab);
-      if(await button.count()){
-        await button.click();
-        check((await button.getAttribute("aria-selected"))==="true", label+" THE WORLD advanced lens did not activate: "+tab);
-        check((await page.locator("#world-container").innerText()).trim().length>0, label+" THE WORLD advanced lens rendered empty shell: "+tab);
-      }
-    }
-  }
+
+  const archives=world.locator('a.world-deeper-door[href="#archives"]').first();
+  const connections=world.locator('a.world-deeper-door[href="#trace"]').first();
+  check(await archives.count()===1, label+" THE WORLD ARCHIVES doorway missing");
+  check(await connections.count()===1, label+" THE WORLD CONNECTIONS doorway missing");
+
+  const legacyAdvanced=page.locator('[data-world-more], [data-world-tab="timeline"], [data-world-tab="symbols"], [data-world-tab="trails"]');
+  check(await legacyAdvanced.count()===0, label+" obsolete advanced World controls are still exposed");
 }
 async function auditCurrentExperience(label){
   const entryNodes = page.locator("#world .world-entry-node");
