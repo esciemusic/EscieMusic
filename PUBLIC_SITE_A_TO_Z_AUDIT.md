@@ -40,8 +40,10 @@ Z Zero-regression — all prior green contracts remain green.
 4. Updated the language dictionary's obsolete artist statement.
 5. Updated the system identity contract to the current canonical wording.
 
-## Canonical public order
-NOW → ART → THE WORLD → TRACE → THE ARCHIVES → THE CASE FILES → GLASS EYE → ESCIE
+## Canonical public surface
+HOME → THE WORLD → TRACE
+
+Deep World elements remain accessible inside THE WORLD / TRACE / contextual discovery; ART, NOW, ARCHIVES, CASE FILES and GLASS EYE are not competing top-level navigation nodes.
 
 ## Canonical identity
 ESCIE THE ARTIST. THE ART SPEAKS FOR ITSELF.
