@@ -1432,7 +1432,7 @@ test("A-Z Pass 12 distinguishes wandering from relationship threads",()=>{
   const engine=read("world-engine.js");
   assert.match(engine,/function pathContext\(\)/);
   assert.match(engine,/WANDERED/);
-  assert.match(engine,/memory of what you encountered through the World/);
+  assert.match(engine,/YOUR THREAD THROUGH THE WORLD/);
   assert.match(engine,/steps\.length\+' point'/);
 });
 
