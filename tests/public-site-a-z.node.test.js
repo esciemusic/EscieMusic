@@ -196,6 +196,7 @@ test("A-Z Pass 1 restores saved language preference on boot",()=>{
 test("A-Z Pass 1 preserves the approved public experience surfaces",()=>{
   const app=read("app.js");
   const nav=read("navigation.js");
+  const sections=read("data/public-sections.js");
   assert.match(nav,/order:\["home","world","trace"\]/);
   for(const id of ["now","art","world","trace","archives","investigation","glass-eye","escie"]){
     assert.match(sections,new RegExp('id:"'+id+'"'));
