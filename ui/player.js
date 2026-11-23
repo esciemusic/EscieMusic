@@ -38,15 +38,15 @@ const ESCIE_UI_PLAYER = {
     dock.setAttribute("aria-label", "ESCIE player");
     dock.innerHTML =
       '<div class="escie-player-main">' +
-        '<button type="button" class="escie-player-step" data-player-prev aria-label="Previous transmission">PREV</button>' +
+        '<button type="button" class="escie-player-step" data-player-prev aria-label="Previous track">PREV</button>' +
         '<button type="button" class="escie-player-toggle" data-player-toggle aria-label="Play" aria-pressed="false">PLAY</button>' +
         '<div class="escie-player-track">' +
-          '<span class="escie-player-label">TRANSMISSION PLAYER</span>' +
-          '<strong class="escie-player-title" data-player-title>NO TRANSMISSION LOADED</strong>' +
+          '<span class="escie-player-label">AUDIO PLAYER</span>' +
+          '<strong class="escie-player-title" data-player-title>NO AUDIO LOADED</strong>' +
           '<span class="escie-player-time" data-player-time aria-live="off">0:00 / 0:00</span>' +
           '<input class="escie-player-progress" data-player-progress type="range" min="0" max="1000" value="0" step="1" aria-label="Playback position">' +
         '</div>' +
-        '<button type="button" class="escie-player-step" data-player-next aria-label="Next transmission">NEXT</button>' +
+        '<button type="button" class="escie-player-step" data-player-next aria-label="Next track">NEXT</button>' +
         '<button type="button" class="escie-player-close" data-player-close aria-label="Close player">×</button>' +
       '</div>';
 
@@ -281,7 +281,7 @@ const ESCIE_UI_PLAYER = {
 
     const title = this.current && this.current.title
       ? this.current.title
-      : "NO TRANSMISSION LOADED";
+      : "NO AUDIO LOADED";
 
     this.ui.title.textContent = title;
     this.ui.toggle.textContent = this.playing ? "PAUSE" : (this.current ? "PLAY" : "WAIT");
