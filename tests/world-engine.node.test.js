@@ -56,6 +56,13 @@ assert(/memory\.state\(\)/.test(src)&&/target_id/.test(src),"World memory must r
 assert(/YOUR MEMORY/.test(src)&&/you noticed this before/.test(src),"World memory must distinguish the visitor's memory from World continuity");
 assert(/function meaningSignals\(r\)/.test(src),"World meaning needs an evidence-based signal collector");
 assert(/function meaningMarkup\(r\)/.test(src),"World meaning needs a visitor-facing accumulation renderer");
+assert(/function curiosityMarkup\(r\)/.test(src),"World curiosity needs an evidence-based curiosity renderer");
+assert(/LOOK CLOSER/.test(src),"World curiosity should invite closer attention without a puzzle");
+assert(/recurring motif appears here/.test(src),"World curiosity should use recurring motifs as real evidence");
+assert(/opens more than one thread/.test(src),"World curiosity should use multiple public connections as real evidence");
+assert(/There is another thread attached to this record/.test(src),"World curiosity should surface an actual connection rather than inventing mystery");
+assert(/curiosityMarkup\(r\)/.test(src),"World encounter detail must render curiosity only from existing evidence");
+
 assert(/function returnMarkup\(r\)/.test(src),"World return needs a visitor-facing return signal");
 assert(/function personalMemoryEntries\(id\)/.test(src),"World continuity needs access to the visitor's prior path entries");
 assert(/function personalMemoryLastSeen\(id\)/.test(src),"World continuity needs the last local observation timestamp");
