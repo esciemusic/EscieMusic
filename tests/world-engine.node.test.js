@@ -92,6 +92,9 @@ assert(/established public connection in the World/.test(src),"World association
 assert(/function recordGlassEyeEvent\(type,target\)/.test(src),"World navigation must bridge into local Glass Eye memory");
 assert(/memory\.record\(\{type:type,target_id:String\(target\|\|""\)/.test(src),"World navigation memory bridge must record a local event");
 assert(/recordGlassEyeEvent\("ENTERED",target\)/.test(src),"World node navigation must record an ENTERED event locally");
+assert(/recordGlassEyeEvent\("DISCOVERED",id\)/.test(src),"Chosen discovery depth must be remembered as a local discovery event");
+assert(/const opening=state\.depthOpenFor!==id/.test(src),"Discovery depth memory must only record when the visitor opens depth");
+
 assert(/writeWorldHash\("#world-node=.*,"push"\)/.test(src),"World node navigation must create a browser-history step");
 assert(/writeWorldHash\("#world-street=.*,"push"\)/.test(src),"World street navigation must create a browser-history step");
 assert(/writeWorldHash\("#world-place=.*,"push"\)/.test(src),"World place navigation must create a browser-history step");
