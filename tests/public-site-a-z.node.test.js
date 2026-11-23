@@ -1586,3 +1586,15 @@ test("A-Z World experience sequencing keeps the first visit progressive",()=>{
   assert.match(home,/WANDER/);
   assert.ok(home.indexOf("worldLensMarkup()")<home.indexOf("data-outside-world"),"deeper exploration must precede the wander exit");
 });
+
+
+test("A-Z Pass 3 public language stays inside the ESCIE voice",()=>{
+  const index=read("index.html");
+  const app=read("app.js");
+  const player=read("ui/player.js");
+  assert.doesNotMatch(index,/THE WEB/,"public doorway must use TRACE, not THE WEB");
+  assert.doesNotMatch(app,/DISCOVER BY METADATA|METADATA \/ PUBLIC WORK|THREAD PATH|CLEAR PATH/,"database-style public copy must not return");
+  assert.match(app,/PUBLIC WORK/,"public work language must remain explicit");
+  assert.match(app,/YOUR THREAD/,"visitor path must remain framed as a personal thread");
+  assert.doesNotMatch(player,/TRANSMISSION PLAYER|NO TRANSMISSION LOADED|Previous transmission|Next transmission/,"player must use plain audio language");
+});
