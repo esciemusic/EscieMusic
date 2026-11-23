@@ -69,6 +69,10 @@ assert(/public connection/.test(src)&&/recurring motif/.test(src)&&/shared signa
 assert(/function relationshipLabel\(r\)/.test(src),"World associations need a shared relationship label renderer");
 assert(/function relationshipContext\(r\)/.test(src),"World associations need contextual relationship evidence");
 assert(/function connectionMarkup\(x\)/.test(src),"World associations need a shared connection renderer");
+assert(/function discoveryAssociationMarkup\(x\)/.test(src),"World discovery needs to explain why a surfaced thread belongs");
+assert(/relationLabel=relation\?relationshipLabel\(relation\.r\):""/.test(src),"World discovery should reuse established relationship labels");
+assert(/relationContext=relation\?relationshipContext\(relation\.r\):""/.test(src),"World discovery should reuse established relationship context");
+assert(/A thread connected to something you noticed before/.test(src),"Returning discovery should explain its continuity without claiming the World remembers");
 assert(/CONNECTED THROUGH/.test(src)&&/LEADS TO/.test(src)&&/LEADS HERE/.test(src),"World associations must communicate relationship direction");
 assert(/established public connection in the World/.test(src),"World associations need a truthful fallback when no context is recorded");
 assert(/function recordGlassEyeEvent\(type,target\)/.test(src),"World navigation must bridge into local Glass Eye memory");
