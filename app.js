@@ -704,7 +704,7 @@
     const container=byId("work-filters"); if(!container)return;
     const work=getWorkRecords(), filtered=getFilteredWorkRecords(), f=ESCIE_RUNTIME.workFilters||{};
     if(!work.length){
-      container.innerHTML='<div class="record-filters-empty"><span>METADATA / PUBLIC WORK</span><strong>NO PUBLIC WORK RECORDS YET.</strong><p>Released work will appear here with its metadata filters when it enters the public record.</p></div>';
+      container.innerHTML='<div class="record-filters-empty"><span>PUBLIC WORK</span><strong>NO PUBLIC WORK RECORDS YET.</strong><p>Released work will appear here with its work filters when it enters the public record.</p></div>';
       return;
     }
     const vals=k=>Array.from(new Set(work.map(r=>r&&r[k]).filter(Boolean))).sort();
@@ -724,7 +724,7 @@
       container.innerHTML="";
       return;
     }
-    container.innerHTML=`<div class="record-filters-heading"><span>DISCOVER BY METADATA</span><button type="button" class="record-filter-clear">CLEAR</button></div><div class="record-filter-grid">${filterMarkup}</div><p class="record-filter-count">${filtered.length} OF ${work.length} PUBLIC WORK RECORD${work.length===1?"":"S"}</p>`;
+    container.innerHTML=`<div class="record-filters-heading"><span>LOOK THROUGH THE WORK</span><button type="button" class="record-filter-clear">CLEAR</button></div><div class="record-filter-grid">${filterMarkup}</div><p class="record-filter-count">${filtered.length} OF ${work.length} PUBLIC WORK RECORD${work.length===1?"":"S"}</p>`;
   }
 
 
@@ -933,7 +933,7 @@
         '</div>'+
       '</div>'+
       '<div class="world-wear-layer">'+
-        '<div class="world-wear-head"><p class="eyebrow">THE WORLD YOU CAN WEAR</p><span>PHYSICAL LAYER</span></div>'+
+        '<div class="world-wear-head"><p class="eyebrow">THE WORLD, WORN</p><span>PHYSICAL LAYER</span></div>'+
         '<div id="merch-filters" class="merch-controls" aria-label="Clothing filters"></div>'+
         '<div id="merch-container" class="merch-container" hidden></div>'+
       '</div>'+
@@ -961,7 +961,7 @@
     const selectedNeighbourIds=new Set();
     selectedLinks.forEach(link=>selectedNeighbourIds.add(link.from===recordId(selected)?link.to:link.from));
     const selectedNeighbours=Array.from(selectedNeighbourIds).map(id=>byIdMap.get(id)).filter(Boolean);
-    const selectedConnectionTypes=Array.from(new Set(selectedLinks.map(link=>String(link.type||"CONNECTED_TO").replace(/_/g," "))));
+    const selectedConnectionTypes=Array.from(new Set(selectedLinks.map(link=>String(link.type||"CONNECTED").replace(/_/g," "))));
 
     const recordResults=visibleRecords.filter(r=>!state.record||recordId(r)===state.record).slice(0,10).map(r=>{
       const links=all.filter(link=>link.from===recordId(r)||link.to===recordId(r));
@@ -978,10 +978,10 @@
     const canStepBack=trailRecords.length>1;
     const trailMarkup=trailRecords.length
       ? '<div class="trace-thread-trail">'+
-        '<div class="trace-thread-trail-head"><span class="eyebrow">THREAD PATH</span><span>'+trailRecords.length+' STEPS</span></div>'+
-        '<div class="trace-thread-trail-controls">'+(canStepBack?'<button type="button" class="trace-trail-back" data-trace-trail-back>BACK ONE STEP</button>':"")+'<button type="button" class="trace-trail-clear" data-trace-trail-clear>CLEAR PATH</button></div><div class="trace-thread-trail-list">'+trailRecords.map((node,index)=>{
+        '<div class="trace-thread-trail-head"><span class="eyebrow">YOUR THREAD</span><span>'+trailRecords.length+' LINKS</span></div>'+
+        '<div class="trace-thread-trail-controls">'+(canStepBack?'<button type="button" class="trace-trail-back" data-trace-trail-back>BACK ONE STEP</button>':"")+'<button type="button" class="trace-trail-clear" data-trace-trail-clear>CLEAR THREAD</button></div><div class="trace-thread-trail-list">'+trailRecords.map((node,index)=>{
           const edge=index>0?trailEdges[index-1]:null;
-          const relation=edge?String(edge.type||"CONNECTED_TO").replace(/_/g," "):"START";
+          const relation=edge?String(edge.type||"CONNECTED").replace(/_/g," "):"START";
           return '<span class="trace-trail-step">'+(index>0?'<i aria-hidden="true">'+escapeHTML(relation)+'</i>':"")+'<button type="button" class="trace-trail-node" data-record-id="'+escapeHTML(recordId(node))+'" aria-label="Return to '+escapeHTML(recordTitle(node))+'"><span>'+String(index+1).padStart(2,"0")+'</span><strong>'+escapeHTML(recordTitle(node))+'</strong></button></span>';
         }).join("")+'</div></div>'
       : "";
@@ -1008,7 +1008,7 @@
             ?"UNKNOWN CONNECTION"
             :rawStatus.toUpperCase();
       const reason=relationship.context||relationship.note||"THE RECORD CONNECTS THESE TWO POINTS. THE REASON REMAINS OPEN.";
-      const relationType=String(relationship.type||"CONNECTED_TO").replace(/_/g," ");
+      const relationType=String(relationship.type||"CONNECTED").replace(/_/g," ");
       const nextIds=new Set(all.filter(link=>link.from===recordId(to)||link.to===recordId(to)).flatMap(link=>[link.from,link.to])).filter(id=>id!==recordId(from)&&id!==recordId(to));
       const nextNodes=Array.from(nextIds).map(id=>byIdMap.get(id)).filter(Boolean).slice(0,4);
       const nextStep=nextNodes.length ? '<div class="trace-next-step"><p class="eyebrow">WHERE THIS THREAD CAN GO</p><div class="trace-next-nodes">'+nextNodes.map(node=>'<button type="button" class="trace-next-node" data-record-id="'+escapeHTML(recordId(node))+'"><strong>'+escapeHTML(recordTitle(node))+'</strong><span>FOLLOW '+escapeHTML(String(node.type||"RECORD").toUpperCase())+'</span></button>').join("")+'</div></div>' : '<p class="trace-next-quiet">NO NEXT PUBLIC CONNECTION IS ESTABLISHED YET.</p>';
@@ -1053,7 +1053,7 @@
     if(!api||typeof api.inspectGameItem!=="function")return "";
     const inspected=api.inspectGameItem(item,{owned:[],discovered:[],unlocked:[]});
     if(!inspected.ok)return "";
-    const action=inspected.acquisition==="REAL_MONEY"?"ENTER CHECKOUT":
+    const action=inspected.acquisition==="REAL_MONEY"?"CONTINUE TO STORE":
       inspected.acquisition==="EARNED"?"EARN IN THE SIGNAL":
       inspected.acquisition==="FREE"||inspected.acquisition==="CLAIMABLE"?"FOUND / CLAIM IN GAME":
       inspected.acquisition==="OWNED"?"OWNED":"LOCKED";
@@ -1075,7 +1075,7 @@
     const price=type==="REAL_MONEY"&&item.price!==null?("CAD "+esc(item.price)):type==="EARNED"?(esc(item.price||0)+" "+esc(item.currency||"SIGNAL")):"FREE";
     const purchaseURL=safeExternalURL(item.external_purchase_url);
     const action=type==="REAL_MONEY"&&purchaseURL
-      ? '<a class="game-item-action" href="'+esc(purchaseURL)+'" target="_blank" rel="noopener noreferrer">ENTER CHECKOUT</a>'
+      ? '<a class="game-item-action" href="'+esc(purchaseURL)+'" target="_blank" rel="noopener noreferrer">CONTINUE TO STORE</a>'
       : type==="EARNED" ? '<span class="game-item-action is-muted">EARN IN THE SIGNAL</span>'
       : '<span class="game-item-action is-muted">FOUND / CLAIMED IN GAME</span>';
     return '<article class="game-item-card"><div class="game-item-type">'+esc(type)+'</div><h3>'+esc(item.title)+'</h3><p>'+esc(item.description)+'</p><div class="game-item-price">'+price+'</div>'+renderGameItemInspector(item)+action+'</article>';
@@ -1086,7 +1086,7 @@ function renderClothing(){
     if(!container)return;
     const clothing=normalizeCollection(getGlobal("ESCIE_CLOTHING",[])).filter(item=>item&&item.public_visibility!=="hidden"&&item.release_status!=="locked");
     if(!clothing.length){
-      container.innerHTML='<div class="archive-status"><p class="eyebrow">WARDROBE STATE</p><h3>THE CLOTHING LAYER IS READY.</h3><p>The first wardrobe will appear here as garments are approved for public release.</p></div>';
+      container.innerHTML='<div class="archive-status"><p class="eyebrow">CLOTHING STATE</p><h3>THE GARMENTS ARE READY.</h3><p>The first wardrobe will appear here as garments are approved for public release.</p></div>';
       return;
     }
     const cards=clothing.map(item=>{
@@ -1103,7 +1103,7 @@ function renderClothing(){
         '<div class="clothing-markup"><span>'+escapeHTML(front)+'</span><span>'+escapeHTML(back)+'</span></div>'+
       '</article>';
     }).join("");
-    container.innerHTML='<div class="clothing-intro"><p class="eyebrow">DROP 001 / THE FIRST WARDROBE</p><h3>THE GARMENT STANDS ON ITS OWN.</h3><p>Clothing is part of the world, not a requirement for understanding it. Digital connections remain secondary.</p></div><div class="clothing-grid">'+cards+'</div>';
+    container.innerHTML='<div class="clothing-intro"><p class="eyebrow">DROP 001 / THE FIRST GARMENTS</p><h3>THE GARMENT STANDS ON ITS OWN.</h3><p>Clothing stands on its own. It does not require explanation. Digital connections remain secondary.</p></div><div class="clothing-grid">'+cards+'</div>';
   }
 
   function renderMerch(){
@@ -1124,9 +1124,9 @@ function renderClothing(){
     const storeLabel=String(config.storefront_label||"OPEN THE STORE");
     const universeLinks=Array.isArray(config.universe_links)?config.universe_links:[];
     const intro='<div class="merch-world-intro">'+
-      '<div class="merch-world-copy"><p class="eyebrow">THE PHYSICAL LAYER / '+escapeHTML(String(config.shop_concept||"THE WORLD YOU CAN OWN"))+'</p>'+
+      '<div class="merch-world-copy"><p class="eyebrow">WEARABLE WORK / '+escapeHTML(String(config.shop_concept||"THE WORLD YOU CAN OWN"))+'</p>'+
       '<h3>TAKE A TRACE WITH YOU.</h3>'+
-      '<p>Clothing is where the ESCIE universe leaves the screen and enters ordinary life. Montréal, the signal, the archive and the eye become things you can carry.</p></div>'+
+      '<p>The work can leave the screen and enter ordinary life. Montréal, the signal, the archive and the eye become things you can carry.</p></div>'+
       '<div class="merch-universe-links"><span class="eyebrow">CONNECTED RECORDS</span>'+
       universeLinks.map(label=>{const id=String(label).toLowerCase().replace(/[^a-z0-9]+/g,"-");return '<a href="#'+escapeHTML(id)+'" class="merch-universe-link">'+escapeHTML(label)+' ↗</a>';}).join("")+
       '</div></div>';
@@ -1156,7 +1156,7 @@ function renderClothing(){
         '<div><dt>PRODUCTION</dt><dd>'+escapeHTML(priority+" · "+(packet.quantity_decision||"HUMAN GATE"))+'</dd></div></dl>'+action+
         '</div></article>';
     }).join("");
-    const storeAction=storeUrl?'<a class="merch-store-link" href="'+escapeHTML(storeUrl)+'" target="_blank" rel="noopener noreferrer">'+escapeHTML(storeLabel)+' ↗</a>':'<span class="merch-store-link is-disabled">STORE LAYER / NOT CONNECTED</span>';
+    const storeAction=storeUrl?'<a class="merch-store-link" href="'+escapeHTML(storeUrl)+'" target="_blank" rel="noopener noreferrer">'+escapeHTML(storeLabel)+' ↗</a>':'<span class="merch-store-link is-disabled">STORE NOT CONNECTED</span>';
     container.innerHTML=intro+
       '<div class="merch-statusbar"><div><span class="eyebrow">DROP 001 / HEART ON MY SLEEVE</span><strong>'+visible.length+' PHYSICAL RECORD'+(visible.length===1?"":"S")+'</strong></div>'+
       '<p>Presentation lives here. Checkout, inventory, shipping and taxes remain outside the universe interface.</p>'+storeAction+'</div>'+
@@ -1430,7 +1430,7 @@ function renderClothing(){
         '<div class="glass-memory-inline glass-memory-personal">'+
           '<div><span>'+esc(t.memory)+'</span><strong>'+esc(t.private)+'</strong></div>'+
           '<div class="glass-path-line"><span>'+esc(t.last)+'</span><em>'+esc(lastSignal||"NONE RECORDED")+'</em></div>'+
-          '<div class="glass-path-line"><span>'+esc(t.recent)+'</span><em>'+esc(path.length?(path[path.length-1].type+" / "+(path[path.length-1].target_id||"—")):"NO PATH YET")+'</em></div>'+
+          '<div class="glass-path-line"><span>'+esc(t.recent)+'</span><em>'+esc(path.length?(path[path.length-1].type+" / "+(path[path.length-1].target_id||"—")):"NO THREAD YET")+'</em></div>'+
           (recent.length?'<div class="glass-path-events" aria-label="Recent personal trace">'+recent.map(e=>{const type=String(e&&e.type||"").toUpperCase();const label={OBSERVED:"YOU LOOKED",LISTENED:"YOU LISTENED",HEARD:"YOU LISTENED",CONNECTED:"YOU FOLLOWED",RETURNED:"YOU RETURNED"}[type]||"YOU MOVED";return '<span>'+esc(label)+'</span>';}).join("")+'</div>':'')+
           '<button type="button" class="glass-memory-clear-inline" data-glass-eye-action="clear-memory">'+esc(t.clear)+'</button>'+
         '</div>'+
