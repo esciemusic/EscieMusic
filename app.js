@@ -1,3 +1,1550 @@
+/*
+ * ESCIE APPLICATION
+ * Runtime composition layer.
+ *
+ * The application reads canonical data and system contracts, then renders
+ * the public interface. UI state is derived; it does not become canon.
+ */
+
+(function () {
+  "use strict";
+
+  const ESCIE_RUNTIME = {
+    version: "1.0.0",
+    initialized: false,
+    ready: false,
+    universeContract: null,
+    traceTrail: []
+  };
+
+  function byId(id) {
+    return document.getElementById(id);
+  }
+
+  function escapeHTML(value) {
+    return String(value == null ? "" : value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function safeExternalURL(value) {
+    const raw = String(value == null ? "" : value).trim();
+    if (!raw) return "";
+    try {
+      const parsed = new URL(raw, window.location.href);
+      return ["http:", "https:"].includes(parsed.protocol) ? parsed.href : "";
+    } catch (error) {
+      return "";
+    }
+  }
+
+  function glassEyeYouTubeURL(value) {
+    const raw = String(value == null ? "" : value).trim();
+    if (!raw) return "";
+    try {
+      const parsed = new URL(raw, window.location.href);
+      const host = parsed.hostname.toLowerCase().replace(/^www\\./, "");
+      let id = "";
+      if (host === "youtu.be") id = parsed.pathname.replace(/^\//, "").split("/")[0];
+      else if (host === "youtube.com" || host === "youtube-nocookie.com") {
+        if (parsed.pathname === "/watch") id = parsed.searchParams.get("v") || "";
+        else if (parsed.pathname.startsWith("/embed/")) id = parsed.pathname.split("/")[2] || "";
+        else if (parsed.pathname.startsWith("/shorts/")) id = parsed.pathname.split("/")[2] || "";
+      }
+      if (!/^[A-Za-z0-9_-]{11}$/.test(id)) return "";
+      return "https://www.youtube-nocookie.com/embed/" + id + "?rel=0&modestbranding=1&enablejsapi=1&origin=" + encodeURIComponent(window.location.origin);
+    } catch (error) { return ""; }
+  }
+
+  function getGlobal(name, fallback) {
+    return window[name] !== undefined ? window[name] : fallback;
+  }
+
+  function validateUniverseContract() {
+    const contract = getGlobal("ESCIE_UNIVERSE_CONTRACT", null);
+    ESCIE_RUNTIME.universeContract = contract;
+    if (contract && typeof contract.validate === "function") {
+      const result = contract.validate();
+      if (!result.ok) console.error("ESCIE UNIVERSE CONTRACT FAILURE", result.errors);
+      return result;
+    }
+    return { ok: false, errors: ["universe contract unavailable"] };
+  }
+
+  function getSite() {
+    return getGlobal("ESCIE_SITE", {});
+  }
+
+  function getNavigation() {
+    return getGlobal("ESCIE_NAVIGATION", []);
+  }
+
+  function getProjects() {
+    return getGlobal("ESCIE_PROJECTS", []);
+  }
+
+  function getMusic() {
+    return getGlobal("ESCIE_MUSIC", []);
+  }
+
+  function getSignals() {
+    return getGlobal("ESCIE_SIGNALS", []);
+  }
+
+  function getArchive() {
+    return getGlobal("ESCIE_ARCHIVE", []);
+  }
+
+  function getInvestigation() {
+    return getGlobal("ESCIE_INVESTIGATION", []);
+  }
+
+  function getPeople() {
+    return getGlobal("ESCIE_PEOPLE", []);
+  }
+
+  function getLocations() {
+    return getGlobal("ESCIE_LOCATIONS", []);
+  }
+
+  function getSymbols() {
+    return normalizeCollection(getGlobal("ESCIE_SYMBOLS", []));
+  }
+
+  function symbolsForSection(sectionId) {
+    return getSymbols().filter(symbol =>
+      symbol &&
+      symbol.role !== "portal" &&
+      (!symbol.role || symbol.role === "motif") &&
+      Array.isArray(symbol.placements) &&
+      symbol.placements.includes(sectionId)
+    );
+  }
+
+  function symbolFor(sectionId) {
+    return symbolsForSection(sectionId)[0] || null;
+  }
+
+  function symbolGlyph(name) {
+    const glyphs = {
+      "CAMERA":"camera","DAISY":"daisy","CHILD'S SHOE":"child-shoe",
+      "NIGHTLIGHT":"nightlight","KEY":"key","EMPTY CHAIR":"empty-chair","VHS":"vhs"
+    };
+    return glyphs[name] || "";
+  }
+
+  function customSymbolMarkup(glyph, label) {
+    const safeGlyph = String(glyph || "").replace(/[^a-z0-9-]/gi, "");
+    if (!safeGlyph) return "";
+    return '<svg class="escie-symbol-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#' + escapeHTML(safeGlyph) + '"></use></svg>';
+  }
+
+  function motifMarkup(sectionId) {
+    const symbols = symbolsForSection(sectionId);
+    if (!symbols.length) return "";
+    return '<div class="section-motif" aria-label="Recurring motifs: ' + escapeHTML(symbols.map(symbol => symbol.name).join(", ")) + '">' +
+      symbols.map(symbol =>
+        '<button class="section-motif-item" type="button" data-symbol-id="' + escapeHTML(symbol.id) + '" title="' + escapeHTML(symbol.motif || symbol.name) + '">' +
+          '<span class="section-motif-glyph">' + customSymbolMarkup(symbol.glyph || symbolGlyph(symbol.name), symbol.name) + '</span>' +
+          '<span class="section-motif-name">' + escapeHTML(symbol.name) + '</span>' +
+        '</button>'
+      ).join("") +
+      '</div>';
+  }
+
+  function getRecordSymbols(record) {
+    if (!record) return [];
+    const symbols = getSymbols();
+    const explicit = Array.isArray(record.symbols)
+      ? record.symbols
+        .map(id => symbols.find(symbol => symbol && symbol.id === id))
+        .filter(Boolean)
+      : [];
+    const type = String(record.type || record.identity?.type || "").toLowerCase();
+    const inferred = {
+      music: "symbol-maya-speech",
+      audio: "symbol-maya-speech",
+      song: "symbol-maya-speech",
+      writing: "symbol-thoth",
+      words: "symbol-thoth",
+      poetry: "symbol-thoth",
+      lyric: "symbol-thoth",
+      visual: "symbol-oju",
+      image: "symbol-oju",
+      photo: "symbol-oju",
+      photography: "symbol-oju",
+      film: "symbol-oju",
+      drawing: "symbol-oju",
+      painting: "symbol-oju",
+      person: "symbol-vitruvian-man",
+      people: "symbol-vitruvian-man",
+      place: "symbol-stargate",
+      location: "symbol-stargate",
+      neighborhood: "symbol-stargate",
+      fragment: "symbol-orion",
+      trace: "symbol-orion",
+      moment: "symbol-orion",
+      archive: "symbol-orion",
+      investigation: "symbol-orion",
+      proof: "symbol-orion"
+    }[type];
+    if (!inferred) return explicit;
+    const symbol = symbols.find(item => item && item.id === inferred);
+    if (!symbol) return explicit;
+    return explicit.concat(explicit.some(item => item && item.id === symbol.id) ? [] : [symbol]);
+  }
+
+  function symbolTrail(symbolId) {
+    const symbol = getSymbols().find(item => item && item.id === symbolId);
+    if (!symbol) return [];
+    return getAllPublicRecords().filter(record =>
+      getRecordSymbols(record).some(item => item && item.id === symbolId)
+    );
+  }
+
+  function symbolPortalRoute(symbolId) {
+    const symbol = getSymbols().find(item => item && item.id === symbolId);
+    if (!symbol || symbol.status !== "portal") return null;
+    const destination = String(symbol.destination || "").toLowerCase();
+    return ({
+      visual: "#art/visual",
+      audio: "#art/music",
+      writing: "#art/words",
+      people: "#world",
+      places: "#world",
+      traces: "#trace",
+      world: "#world",
+      now: "#now",
+      path: "#trace",
+      gravity: "#trace",
+      unknown: "#investigation"
+    })[destination] || null;
+  }
+
+  function symbolContextDestination(symbolId, sourceRecordId) {
+    const fallback = symbolPortalRoute(symbolId);
+    if (!fallback) return null;
+
+    const sourceId = String(sourceRecordId || "").trim();
+    if (!sourceId) return { route: fallback, record: null, contextual: false };
+
+    const publicRecords = getAllPublicRecords().filter(record => record && isPublic(record));
+    const byId = new Map(publicRecords.map(record => [String(recordId(record)), record]));
+    const source = byId.get(sourceId);
+    if (!source) return { route: fallback, record: null, contextual: false };
+
+    const related = typeof getPublicRelationshipRecords === "function"
+      ? getPublicRelationshipRecords({ record: sourceId })
+          .map(item => {
+            const otherId = String(item.from) === sourceId ? item.to : item.from;
+            return byId.get(String(otherId));
+          })
+          .filter(Boolean)
+      : [];
+
+    const symbolRecords = publicRecords.filter(record =>
+      String(recordId(record)) !== sourceId &&
+      getRecordSymbols(record).some(item => item && item.id === symbolId)
+    );
+
+    const candidates = [];
+    const seen = new Set();
+    related.concat(symbolRecords).forEach(record => {
+      const id = String(recordId(record));
+      if (!id || seen.has(id)) return;
+      seen.add(id);
+      const symbols = getRecordSymbols(record).map(item => item.id);
+      let score = 0;
+      if (symbols.includes(symbolId)) score += 100;
+      if (related.includes(record)) score += 30;
+      if (record.published === true || record.status === "published") score += 10;
+      candidates.push({ record, score });
+    });
+
+    candidates.sort((a, b) => b.score - a.score || recordTitle(a.record).localeCompare(recordTitle(b.record)));
+    const target = candidates[0] ? candidates[0].record : null;
+    if (!target) return { route: fallback, record: null, contextual: false };
+
+    const destination = String(getSymbols().find(item => item && item.id === symbolId)?.destination || "").toLowerCase();
+    if (destination === "people" || destination === "places") {
+      return { route: "#world-node=" + encodeURIComponent(String(recordId(target))), record: target, contextual: true };
+    }
+    if (destination === "traces") {
+      return { route: "#trace", record: target, contextual: true };
+    }
+
+    return { route: fallback, record: target, contextual: true };
+  }
+
+  function getRuntimeState() {
+    return getGlobal("ESCIE_STATE", {});
+  }
+
+  function getLanguageEngine() {
+    return getGlobal("ESCIE_LANGUAGE_ENGINE", null);
+  }
+
+  function normalizeLanguage(value) {
+    const code = String(value || "").toLowerCase().split("-")[0];
+    return ["en", "fr", "es"].includes(code) ? code : "en";
+  }
+
+  function detectLanguage() {
+    const state = getRuntimeState();
+    let saved = state && state.language;
+    try { saved = localStorage.getItem("escie-language") || saved; } catch (error) {}
+    if (saved) {
+      const normalizedSaved = normalizeLanguage(saved);
+      if (["en", "fr", "es"].includes(normalizedSaved)) {
+        return normalizedSaved;
+      }
+    }
+
+    return normalizeLanguage(
+      navigator.language || navigator.userLanguage || "en"
+    );
+  }
+
+  function setLanguage(language) {
+    const state = getRuntimeState();
+    const normalized = normalizeLanguage(language);
+
+    if (state) {
+      state.language = normalized;
+    }
+
+    try { localStorage.setItem("escie-language", normalized); } catch (error) {}
+
+    document.documentElement.lang = normalized;
+    document.querySelectorAll("[data-language]").forEach(button => {
+      const active = button.getAttribute("data-language") === normalized;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", active ? "true" : "false");
+    });
+    ESCIE_RUNTIME.language = normalized;
+
+    const events = getEvents();
+    if (events && typeof events.emit === "function") {
+      events.emit("language:changed", { language: normalized });
+    }
+
+    return normalized;
+  }
+
+  function initializeLanguage() {
+    const detected = detectLanguage();
+    const engine = getLanguageEngine();
+
+    if (engine && typeof engine.setLanguage === "function") {
+      const normalized = engine.setLanguage(detected);
+      ESCIE_RUNTIME.language = normalized;
+      if (typeof engine.mode === "function") {
+        ESCIE_RUNTIME.languageEngine = engine;
+      }
+      return normalized;
+    }
+
+    setLanguage(detected);
+    return detected;
+  }
+
+  function getEvents() {
+    return getGlobal("ESCIE_EVENTS", null);
+  }
+
+  function getShell() {
+    return getGlobal("ESCIE_UI_SHELL", null);
+  }
+
+  function getRouter() {
+    return getGlobal("ESCIE_UI_ROUTER", null);
+  }
+
+  function getSearchIndex() {
+    return getGlobal("ESCIE_SEARCH_INDEX", null);
+  }
+
+  function getPublishBuild() {
+    return getGlobal("ESCIE_PUBLISH_BUILD", null);
+  }
+
+  function getPublishValidate() {
+    return getGlobal("ESCIE_PUBLISH_VALIDATE", null);
+  }
+
+  function getSignalEngine() {
+    return getGlobal("ESCIE_SIGNAL_ENGINE", null);
+  }
+
+  // Private cognition/control systems are intentionally absent from the public runtime.
+  // Central owns observation, evidence, proposals, decisions, audit history, and ingestion.
+  function initializeCognitionBridge() {
+    ESCIE_RUNTIME.brain = null;
+    ESCIE_RUNTIME.control = null;
+    ESCIE_RUNTIME.evidence = null;
+    ESCIE_RUNTIME.correlation = null;
+    ESCIE_RUNTIME.audit = null;
+    ESCIE_RUNTIME.proposals = null;
+    ESCIE_RUNTIME.decisions = null;
+    ESCIE_RUNTIME.observe = function () { return null; };
+    ESCIE_RUNTIME.propose = function () { return null; };
+    ESCIE_RUNTIME.pendingControl = function () { return []; };
+    ESCIE_RUNTIME.controlItems = [];
+  }
+
+  function normalizeCollection(value) {
+    if (Array.isArray(value)) return value;
+    if (value && Array.isArray(value.records)) return value.records;
+    if (value && typeof value === "object") return Object.values(value);
+    return [];
+  }
+
+  function getSiteValue(key, fallback) {
+    const site = getSite();
+    return site[key] !== undefined ? site[key] : fallback;
+  }
+
+  function isPublished(record) {
+    return !!(
+      record &&
+      (record.published === true || record.status === "published")
+    );
+  }
+
+  function isReleaseVisible(record) {
+    if (!record) return false;
+    const registry = getGlobal("ESCIE_RECORD_REGISTRY", null);
+    if (registry && typeof registry.releaseVisible === "function") {
+      return registry.releaseVisible(record);
+    }
+    if (record.release_status) return record.release_status === "released";
+    if (record.type === "project" && record.release_mode === "progressive") {
+      const tracks = normalizeCollection(getMusic());
+      return tracks.some(track =>
+        track && track.project === record.id && track.release_status === "released"
+      );
+    }
+    return true;
+  }
+
+  function isPublic(record) {
+    if (!record || !isReleaseVisible(record)) return false;
+    if (record.visibility && record.visibility !== "PUBLIC" &&
+        record.visibility !== "public") return false;
+    if (record.visibility === "PRIVATE" || record.visibility === "private") return false;
+    if (record.visibility === "WITHHELD" || record.visibility === "withheld") return false;
+    if (record.visibility === "LIMITED" || record.visibility === "limited") return false;
+    const site = getSite();
+    return isPublished(record) || (site.publicPreview === true && record.status === "active");
+  }
+
+  function recordId(record) {
+    return record && (record.id || record.recordId || null);
+  }
+
+  function recordTitle(record) {
+    return record && (record.title || record.name || "UNTITLED");
+  }
+
+  function getNarrationEngine() {
+    return getGlobal("ESCIE_NARRATION_ENGINE", null);
+  }
+
+  function presentRecord(record) {
+    const narration = getNarrationEngine();
+    if (!narration || typeof narration.present !== "function") {
+      return null;
+    }
+
+    return narration.present(record);
+  }
+
+  function narrationAttributes(record) {
+    const presentation = presentRecord(record);
+    if (!presentation) return "";
+
+    return ' data-narration="' + escapeHTML(presentation.narration || "unknown") +
+      '" data-certainty="' + escapeHTML(presentation.certainty || "unknown") + '"';
+  }
+
+  function renderEmpty(container, message, state = "quiet") {
+    if (!container) return;
+    container.innerHTML =
+      '<div class="empty-state" data-empty-state="' + escapeHTML(state) + '"><span>' +
+      escapeHTML(message) +
+      "</span></div>";
+  }
+
+  function getInformationNodes() {
+    const registry = getGlobal("ESCIE_RECORD_REGISTRY", null);
+    const metadata = registry && typeof registry.publicNodes === "function"
+      ? registry.publicNodes()
+      : normalizeCollection(getGlobal("ESCIE_NODES", []))
+          .filter(node => node && node.public !== false);
+    const metadataBySection = new Map(
+      metadata
+        .filter(node => node && node.section)
+        .map(node => [String(node.section), node])
+    );
+    const navigation = normalizeCollection(getNavigation())
+      .filter(node => node && node.public !== false && node.target)
+      .sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999));
+
+    // NAVIGATION is the single source of truth for public route, label, symbol,
+    // and order. NODE metadata supplies only descriptive/registry fields.
+    return navigation.map(route => {
+      const section = String(route.id || "").trim();
+      const node = metadataBySection.get(section) || {};
+      return Object.assign({}, node, {
+        id: node.id || "node-" + section,
+        label: route.label,
+        target: route.target,
+        symbol: route.symbol,
+        order: route.order,
+        public: route.public !== false
+      });
+    });
+  }
+
+  function renderNavigation() {
+    const nav = byId("main-navigation");
+    if (!nav) return;
+
+    const nodes = getInformationNodes();
+    const rawRoute = (window.location.hash || "").replace(/^#/, "");
+    const router = getRouter();
+    const currentRoute = router && typeof router.resolve === "function"
+      ? (router.resolve(rawRoute) || rawRoute)
+      : rawRoute;
+
+    nav.innerHTML =
+      nodes.map(node => {
+        const target = node.target || "#";
+        const route = target.replace(/^#/, "");
+        const targetId = route;
+        const exists = targetId === "entry" || !!byId(targetId);
+        if (!exists) return "";
+        return '<a class="nav-link node-link' + (route === currentRoute ? ' is-current' : '') + '" href="' + escapeHTML(target) + '"' +
+          (route === currentRoute ? ' aria-current="page"' : '') + ' data-node-target="' + escapeHTML(targetId) + '"' +
+          ' data-nav-number="' + String(Number(node.order) || 0).padStart(2, "0") + '"' +
+          ' data-symbol="' + escapeHTML(node.symbol || "") + '"' +
+          ' data-symbol-meaning="' + escapeHTML(node.symbolMeaning || "") + '"' +
+          ' data-symbol-purpose="' + escapeHTML(node.symbolPurpose || "") + '"' +
+          ' title="' + escapeHTML(node.symbolPurpose || node.label || node.id || "") + '">' +
+          '<span class="node-link-label">' + escapeHTML((window.ESCIE_LANGUAGE_ENGINE && typeof window.ESCIE_LANGUAGE_ENGINE.interfaceLabel === "function") ? window.ESCIE_LANGUAGE_ENGINE.interfaceLabel(node.label || node.id || "", (window.ESCIE_STATE && window.ESCIE_STATE.language) || "en") : (node.label || node.id || "")) + '</span>' +
+          '<span class="node-link-symbol">' + customSymbolMarkup(node.symbol || "", node.label || node.id || "") + '</span>' +
+          '</a>';
+      }).join("");
+  }
+
+  function refreshNavigationState() {
+    const nav = byId("main-navigation");
+    if (!nav) return;
+    const rawRoute = (window.location.hash || "").replace(/^#/, "");
+    const router = getRouter();
+    const currentRoute = router && typeof router.resolve === "function"
+      ? (router.resolve(rawRoute) || rawRoute)
+      : rawRoute;
+    nav.querySelectorAll(".nav-link").forEach(link => {
+      const route = String(link.getAttribute("href") || "").replace(/^#/, "");
+      const active = route === currentRoute;
+      link.classList.toggle("is-current", active);
+      if (active) link.setAttribute("aria-current", "page");
+      else link.removeAttribute("aria-current");
+    });
+  }
+
+  function syncRouteState() {
+    const router = getRouter();
+    const raw = (window.location.hash || "#entry").replace(/^#/, "") || "entry";
+    const resolved = router && typeof router.resolve === "function" ? router.resolve(raw) : raw;
+    document.body.dataset.route = resolved || raw || "entry";
+    document.documentElement.dataset.route = document.body.dataset.route;
+    refreshNavigationState();
+    return document.body.dataset.route;
+  }
+
+  function reduceMotion() {
+    return typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+
+  function initializeSectionVisuals() {
+    const visuals = Array.from(document.querySelectorAll(".section-visual"));
+    if (!visuals.length) return;
+    const visualUI = getGlobal("ESCIE_VISUALS_UI", null);
+    if (visualUI && typeof visualUI.init === "function") visualUI.init();
+    if (reduceMotion() || !("IntersectionObserver" in window)) {
+      visuals.forEach(el => el.classList.add("visual-visible"));
+      return;
+    }
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visual-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.18, rootMargin: "0px 0px -8% 0px" });
+    visuals.forEach(el => observer.observe(el));
+  }
+
+  function getNowConfig() {
+    const config = getGlobal("ESCIE_NOW", {});
+    return config && Array.isArray(config.entries) ? config.entries : [];
+  }
+
+  function getNowRecord(recordIdValue) {
+    const registry = getGlobal("ESCIE_RECORD_REGISTRY", null);
+    if (!registry || !recordIdValue) return null;
+    if (typeof registry.publicRecord === "function") {
+      return registry.publicRecord(recordIdValue);
+    }
+    const records = typeof registry.allPublicRecords === "function"
+      ? registry.allPublicRecords()
+      : [];
+    return records.find(record => record && recordId(record) === recordIdValue) || null;
+  }
+
+  function nowEntryRecord(entry) {
+    if (!entry || !entry.record_id) return null;
+    return getNowRecord(entry.record_id);
+  }
+
+  function syncHeroNowNode() {
+    const trigger = byId("hero-now-node");
+    if (!trigger) return;
+    const entries = getNowConfig()
+      .filter(entry => entry && entry.active !== false)
+      .map(entry => nowEntryRecord(entry))
+      .filter(Boolean);
+    const active = entries.length > 0;
+    trigger.hidden = !active;
+    trigger.setAttribute("aria-hidden", active ? "false" : "true");
+    if (active) {
+      const title = recordTitle(entries[0]);
+      trigger.setAttribute("aria-label", "Open NOW" + (title ? " — " + title : ""));
+    } else {
+      trigger.setAttribute("aria-label", "Open NOW");
+    }
+  }
+
+  function renderNow() {
+    const container = byId("now-container");
+    if (!container) return;
+
+    const entries = getNowConfig()
+      .filter(entry => entry && entry.active !== false)
+      .map((entry, index) => Object.assign({ _index: index }, entry, {
+        record: nowEntryRecord(entry)
+      }))
+      .filter(entry => entry.record)
+      .sort((a, b) => {
+        const priority = Number(b.priority || 0) - Number(a.priority || 0);
+        return priority || a._index - b._index;
+      });
+
+    if (!entries.length) {
+      renderEmpty(
+        container,
+        "NOTHING IS BEING PUSHED HERE YET.",
+        "now-quiet"
+      );
+      return;
+    }
+
+    container.innerHTML =
+      '<div class="now-foreground" aria-label="What is being pushed right now">' +
+        entries.map(entry => {
+          const record = entry.record;
+          const media = Array.isArray(record.media) ? record.media : [];
+          const mediaMarkup =
+            window.ESCIE_MEDIA &&
+            typeof window.ESCIE_MEDIA.renderAll === "function" &&
+            media.length
+              ? window.ESCIE_MEDIA.renderAll(media)
+              : "";
+          const eyebrow = entry.eyebrow || String(record.type || "WORK").replace(/_/g, " / ");
+          const title = entry.title || recordTitle(record);
+          const description = entry.description || record.description || "";
+          const cta = entry.cta || "ENTER THE WORK";
+          const id = recordId(record);
+
+          return '<article class="now-record" data-now-record-id="' + escapeHTML(id) + '">' +
+            '<div class="now-record-copy">' +
+              '<p class="eyebrow">' + escapeHTML(eyebrow) + '</p>' +
+              '<h3>' + escapeHTML(title) + '</h3>' +
+              (description ? '<p>' + escapeHTML(description) + '</p>' : '') +
+              '<button class="record-action record-card" type="button" data-record-id="' + escapeHTML(id) + '">' + escapeHTML(cta) + '</button>' +
+            '</div>' +
+            mediaMarkup +
+          '</article>';
+        }).join("") +
+      '</div>';
+  }
+
+  function getWorkRecords(){
+    const registry=getGlobal("ESCIE_RECORD_REGISTRY",null);
+    const all=getAllPublicRecords();
+    return all.filter(record=>{
+      const manifest=registry&&registry.manifestFor?registry.manifestFor(recordId(record)):null;
+      return manifest?manifest.work:["project","music","body"].includes(record.type);
+    });
+  }
+
+  function getFilteredWorkRecords(){
+    const registry=getGlobal("ESCIE_RECORD_REGISTRY",null);
+    const work=getWorkRecords();
+    return registry&&registry.filter?registry.filter(work,ESCIE_RUNTIME.workFilters||{}):work;
+  }
+
+  function renderWorkFilters(){
+    const container=byId("work-filters"); if(!container)return;
+    const work=getWorkRecords(), filtered=getFilteredWorkRecords(), f=ESCIE_RUNTIME.workFilters||{};
+    if(!work.length){
+      container.innerHTML='<div class="record-filters-empty"><span>METADATA / PUBLIC WORK</span><strong>NO PUBLIC WORK RECORDS YET.</strong><p>Released work will appear here with its metadata filters when it enters the public record.</p></div>';
+      return;
+    }
+    const vals=k=>Array.from(new Set(work.map(r=>r&&r[k]).filter(Boolean))).sort();
+    const options=(a,v,l)=>`<option value="">${escapeHTML(l)}</option>`+a.map(x=>`<option value="${escapeHTML(x)}"${v===x?" selected":""}>${escapeHTML(x)}</option>`).join("");
+    const loc=Array.from(new Set(work.flatMap(r=>Array.isArray(r.locations)?r.locations:[]))).sort();
+    const sym=Array.from(new Set(work.flatMap(r=>Array.isArray(r.symbols)?r.symbols:[]))).sort();
+    const projects=Array.from(new Set(work.flatMap(r=>{const p=r&&r.project; if(p)return [p]; return r&&r.type==="project"&&r.id?[r.id]:[];}))).sort();
+    const filterField=(label,key,values,allLabel)=>values.length>1?`<label>${label}<select data-work-filter="${key}">${options(values,f[key],allLabel)}</select></label>`:"";
+    const filterMarkup=[
+      filterField("TYPE","type",vals("type"),"ALL TYPES"),
+      filterField("STATUS","status",vals("status"),"ALL STATUS"),
+      filterField("PROJECT","project",projects,"ALL PROJECTS"),
+      filterField("LOCATION","location",loc,"ALL LOCATIONS"),
+      filterField("MOTIF","symbol",sym,"ALL MOTIFS")
+    ].filter(Boolean).join("");
+    if(!filterMarkup){
+      container.innerHTML="";
+      return;
+    }
+    container.innerHTML=`<div class="record-filters-heading"><span>DISCOVER BY METADATA</span><button type="button" class="record-filter-clear">CLEAR</button></div><div class="record-filter-grid">${filterMarkup}</div><p class="record-filter-count">${filtered.length} OF ${work.length} PUBLIC WORK RECORD${work.length===1?"":"S"}</p>`;
+  }
+
+
+  function renderArtForm(containerId, types, emptyMessage, state){
+    const container=byId(containerId); if(!container)return;
+    const filtered=getFilteredWorkRecords();
+    const records=filtered.filter(record=>types.includes(String(record.type||"").toLowerCase())).filter(isPublic);
+    if(!records.length){
+      renderEmpty(container, filtered.length ? emptyMessage : "NO PUBLIC WORK MATCHES THIS TRACE.", filtered.length ? state : "filter-quiet");
+      return;
+    }
+    container.innerHTML=records.map(record=>{
+      const media=Array.isArray(record.media)?record.media:[];
+      const mediaMarkup=window.ESCIE_MEDIA&&typeof window.ESCIE_MEDIA.renderAll==="function"&&media.length ? window.ESCIE_MEDIA.renderAll(media) : "";
+      const date=record.date||record.date_start||"DATE WITHHELD";
+      return '<article class="art-record-card" data-record-id="'+escapeHTML(recordId(record))+'">'+
+        '<div class="art-record-copy"><p class="eyebrow">'+escapeHTML(String(record.type||"ART").replace(/_/g," / "))+'</p>'+
+        '<h4>'+escapeHTML(recordTitle(record))+'</h4>'+
+        '<p>'+escapeHTML(record.description||record.summary||"The work exists. The record remains.")+'</p>'+
+        '<div class="art-record-meta"><span>'+escapeHTML(date)+'</span></div>'+
+        '<button class="record-action record-card" type="button" data-record-id="'+escapeHTML(recordId(record))+'">OPEN RECORD</button></div>'+mediaMarkup+'</article>';
+    }).join("");
+  }
+
+  function renderMusic() {
+    const container = byId("music-container");
+    if (!container) return;
+
+    const filteredWork = getFilteredWorkRecords();
+    const music = filteredWork.filter(record => record.type === "music");
+    const visible = music.filter(isPublic);
+
+    if (!visible.length) {
+      renderEmpty(container, filteredWork.length ? "THE MUSIC EXISTS. IT HAS NOT BEEN TRANSMITTED HERE YET." : "NO PUBLIC WORK MATCHES THIS TRACE.", filteredWork.length ? "music-quiet" : "filter-quiet");
+      return;
+    }
+
+    container.innerHTML = motifMarkup("art") + visible.map(track => {
+      const context = recordContext(track);
+      const parent = context.parents[0];
+      const parentRecord = parent ? getAllPublicRecords().find(item => recordId(item) === parent.record && isPublic(item)) : null;
+      const media = Array.isArray(track.media) ? track.media : [];
+      const audio = media.find(item => String(item && (item.type || item.kind) || "").toLowerCase() === "audio" && safeExternalURL(item.url));
+      const stage = "WORK";
+      const projectLabel = parentRecord ? recordTitle(parentRecord) : (track.project || "ESCIE");
+      const number = track.number ? String(track.number).padStart(3, "0") : "—";
+      const listen = audio
+        ? '<button class="record-action record-card" type="button" data-record-id="' + escapeHTML(recordId(track)) + '">LISTEN</button>'
+        : '<span class="record-action is-muted">AUDIO PENDING</span>';
+      return '<article class="music-card" data-record-id="' + escapeHTML(recordId(track)) + '"' + narrationAttributes(track) + '>' +
+        '<div class="music-card-top"><span class="eyebrow">' + escapeHTML(number) + ' / ' + escapeHTML(projectLabel) + '</span><span class="merch-status">' + escapeHTML(stage) + '</span></div>' +
+        '<div class="music-card-body"><h3>' + escapeHTML(recordTitle(track)) + '</h3>' +
+        '<p>' + escapeHTML(track.description || track.summary || "ESCIE music record.") + '</p>' +
+        '<div class="music-card-meta"><span>' + escapeHTML(track.release_date || "DATE WITHHELD") + '</span><span>' + escapeHTML((track.tags || []).slice(0, 3).join(" · ") || "MUSIC") + '</span></div>' +
+        listen + '</div></article>';
+    }).join("");
+  }
+
+  function renderArtGroup(containerId, groups, emptyMessage){
+    const container=byId(containerId); if(!container)return;
+    const filtered=getFilteredWorkRecords();
+    const populated=groups.map(group=>({
+      group,
+      records:filtered.filter(record=>group.types.includes(String(record.type||"").toLowerCase())).filter(isPublic)
+    })).filter(entry=>entry.records.length);
+    if(!populated.length){
+      renderEmpty(container,emptyMessage||"THE WORK EXISTS. IT HAS NOT BEEN TRANSMITTED HERE YET.","art-group-quiet");
+      return;
+    }
+    container.innerHTML=populated.map(entry=>{
+      const group=entry.group, records=entry.records;
+      const holder=document.createElement("div");
+      holder.className="art-form-group";
+      holder.dataset.artFormGroup=group.key;
+      holder.innerHTML='<div class="art-form-label">'+escapeHTML(group.label)+'</div><div class="art-form-records"></div>';
+      const recordsContainer=holder.querySelector(".art-form-records");
+      recordsContainer.innerHTML=records.map(record=>{
+        const media=Array.isArray(record.media)?record.media:[];
+        const mediaMarkup=window.ESCIE_MEDIA&&typeof window.ESCIE_MEDIA.renderAll==="function"&&media.length ? window.ESCIE_MEDIA.renderAll(media) : "";
+        const date=record.date||record.date_start||"DATE WITHHELD";
+        return '<article class="art-record-card" data-record-id="'+escapeHTML(recordId(record))+'">'+
+          '<div class="art-record-copy"><p class="eyebrow">'+escapeHTML(String(record.type||group.label||"ART").replace(/_/g," / "))+'</p>'+
+          '<h4>'+escapeHTML(recordTitle(record))+'</h4>'+
+          '<p>'+escapeHTML(record.description||record.summary||"The work exists. The record remains.")+'</p>'+
+          '<div class="art-record-meta"><span>'+escapeHTML(date)+'</span></div>'+
+          '<button class="record-action record-card" type="button" data-record-id="'+escapeHTML(recordId(record))+'">OPEN RECORD</button></div>'+mediaMarkup+'</article>';
+      }).join("");
+      return holder.outerHTML;
+    }).join("");
+  }
+
+  function renderArtForms(){
+    renderArtGroup("words-container",[
+      {key:"poetry",label:"POETRY",types:["poetry"]},
+      {key:"writing",label:"WRITING",types:["writing"]}
+    ],"THE WORDS EXIST. THEY HAVE NOT BEEN TRANSMITTED HERE YET.");
+    renderArtGroup("visual-container",[
+      {key:"drawings",label:"DRAWINGS",types:["drawing","drawings"]},
+      {key:"painting",label:"PAINTING",types:["painting"]},
+      {key:"film-visual",label:"FILM / VISUAL",types:["visual","film","photography"]}
+    ],"THE VISUAL WORK EXISTS. IT HAS NOT BEEN TRANSMITTED HERE YET.");
+  }
+
+  function renderProjects() {
+    const container = byId("projects-container");
+    if (!container) return;
+
+    const filteredWork = getFilteredWorkRecords();
+    const projects = filteredWork.filter(record => record.type === "project");
+    const visible = projects.filter(isPublic);
+
+    if (!visible.length) {
+      renderEmpty(container, filteredWork.length ? "THE WORK IS BEING PREPARED." : "NO PUBLIC WORK MATCHES THIS TRACE.", filteredWork.length ? "work-quiet" : "filter-quiet");
+      return;
+    }
+
+    container.innerHTML = visible.map(project => {
+      const structure = Array.isArray(project.structure) ? project.structure : [];
+      const artwork = project.artwork || project.cover_art || project.cover || project.visual || null;
+      const artworkURL = typeof artwork === "string" ? artwork : (artwork && (artwork.url || artwork.src || artwork.href));
+      const projectVisuals = Array.isArray(project.visuals) ? project.visuals : (artworkURL ? [artworkURL] : []);
+      const recordsById = new Map(getAllPublicRecords().filter(item => item && isPublic(item)).map(item => [recordId(item), item]));
+      const releasedStructure = structure.filter(part => {
+        const track = recordsById.get(part.trackId);
+        return track && isReleaseVisible(track);
+      });
+
+      if (!releasedStructure.length) return "";
+
+      return '<article class="project-card" data-record-type="body" data-record-id="' +
+        escapeHTML(recordId(project)) + '"' + narrationAttributes(project) + '>' +
+        '<p class="eyebrow">PRESENT WORK</p>' +
+        '<h3>' + escapeHTML(recordTitle(project)) + "</h3>" +
+        '<div class="project-structure">' +
+          releasedStructure.map(part =>
+            '<button class="project-part record-card" type="button" data-record-id="' + escapeHTML(part.trackId || "") + '">' +
+              '<span>' + escapeHTML(part.number) + '</span>' +
+              '<strong>' + escapeHTML(part.title) + '</strong>' +
+              '<em>' + escapeHTML(part.role) + '</em>' +
+            '</button>'
+          ).join("") +
+        '</div>' +
+      "</article>";
+    }).join("");
+  }
+
+  function getPublicRelationshipRecords(filters){
+    const registry=getGlobal("ESCIE_RECORD_REGISTRY",null),records=getAllPublicRecords();
+    const byIdMap=new Map(records.filter(Boolean).map(record=>[recordId(record),record]));
+    // Fail closed if the canonical registry projection is unavailable.
+    // The public renderer must never fall back to raw relationship data.
+    const base=registry&&typeof registry.publicRelationships==="function"
+      ? registry.publicRelationships(filters||{})
+      : [];
+    const relationshipContract=getGlobal("ESCIE_RELATIONSHIP",null);
+    const live=relationshipContract&&typeof relationshipContract.validate==="function"&&typeof relationshipContract.canDisclose==="function"
+      ? normalizeCollection(getGlobal("ESCIE_LIVE_RELATIONSHIPS",[])).map(r=>({
+          id:r.id,from:r.from_record_id||r.from,to:r.to_record_id||r.to,type:r.type||"connection",
+          category:r.category||null,status:r.status||"active",confidence:r.confidence||"unknown",
+          canonical_status:r.canonical_status||"unknown",public_disclosure:true,visibility:"public"
+        })).filter(r=>{
+          if(!relationshipContract.validate(r).valid||!relationshipContract.canDisclose(r)) return false;
+          if(filters&&filters.type&&String(r.type||"").toLowerCase()!==String(filters.type).toLowerCase()) return false;
+          if(filters&&filters.record&&r.from!==filters.record&&r.to!==filters.record) return false;
+          if(filters&&filters.category&&typeof relationshipContract.getCategory==="function"&&relationshipContract.getCategory(r.type)!==filters.category) return false;
+          return true;
+        })
+      : [];
+    return base.concat(live).filter(r=>{
+      if(!r||!byIdMap.has(r.from)||!byIdMap.has(r.to)) return false;
+      return true;
+    });
+  }
+
+  function renderWorld(){
+    const container=byId("world-container"); if(!container)return;
+    // THE WORLD is owned by world-engine.js. This explicit runtime boundary prevents the legacy renderer from overwriting the canonical lens experience, regardless of defer/readyState timing.
+    if (window.ESCIE_WORLD_ENGINE_ACTIVE || container.querySelector(".world-engine")) return;
+    const locations=normalizeCollection(getLocations()).filter(isPublic).filter(place=>recordId(place)==="montreal");
+    const records=getAllPublicRecords().filter(isPublic);
+    const counts={};
+    ["person","place","moment","fragment","proof","investigation"].forEach(type=>counts[type]=records.filter(r=>String(r.type||"").toLowerCase()===type).length);
+    const nowRecord=getGlobal("ESCIE_SITE",{});
+    const city=getGlobal("ESCIE_WORLD_CITY",{});
+    const districtCount=city&&city.districts&&typeof city.districts==="object" ? Object.keys(city.districts).length : 0;
+    const districtLabel=districtCount===1?"DISTRICT":"DISTRICTS";
+    const districts=districtCount ? Object.keys(city.districts).sort((x,y)=>x.localeCompare(y)) : [];
+    const cityConnections=Array.isArray(city.cityConnections) ? city.cityConnections : [];
+    const districtLinks=districts.map(district=>cityConnections.filter(connection=>Array.isArray(connection)&&connection.slice(0,2).includes(district)).length);
+    container.innerHTML='<div class="world-index">'+motifMarkup("world")+
+      '<p class="eyebrow">MONTRÉAL / HERE</p>'+
+      '<div class="world-now-strip"><strong>'+escapeHTML(nowRecord.location||"MONTRÉAL, QUÉBEC")+'</strong><em>THE WORLD IS HERE.</em><span class="world-city-scale">'+escapeHTML(String(districtCount))+" "+districtLabel+'</span></div>'+
+      '<div class="world-city-field" aria-label="Authored Montréal district index">'+
+        '<div class="world-city-field-head"><span>MONTRÉAL / DISTRICTS</span><span>LINKS</span></div>'+
+        '<div class="world-city-field-grid">'+districts.map((district,index)=>'<div class="world-city-district"><span>'+String(index+1).padStart(2,"0")+'</span><strong>'+escapeHTML(district)+'</strong><em>'+String(districtLinks[index]).padStart(2,"0")+'</em></div>').join("")+'</div>'+
+      '</div>'+
+      '<div class="world-place-list">'+locations.map((place,index)=>
+        '<article class="world-place world-place-current" role="button" tabindex="0" aria-label="Open '+escapeHTML(recordTitle(place))+'" data-record-id="'+escapeHTML(recordId(place))+'">'+
+          '<span class="world-place-index">'+String(index+1).padStart(2,"0")+'</span>'+
+          '<div class="world-place-copy"><h3>'+escapeHTML(recordTitle(place))+'</h3><p>'+escapeHTML(place.description||"THE CITY ANCHOR.")+'</p></div>'+
+          ''+
+        '</article>').join("")+'</div>'+
+      '<div class="world-record-pulse"><span class="eyebrow">THE CITY RECORD</span>'+
+        '<div class="world-record-stats">'+
+          '<span><strong>'+counts.person+'</strong> PEOPLE</span><span><strong>'+counts.moment+'</strong> MOMENTS</span><span><strong>'+counts.fragment+'</strong> FRAGMENTS</span><span><strong>'+counts.proof+'</strong> PROOF</span>'+
+        '</div>'+
+      '</div>'+
+      '<div class="world-wear-layer">'+
+        '<div class="world-wear-head"><p class="eyebrow">THE WORLD YOU CAN WEAR</p><span>PHYSICAL LAYER</span></div>'+
+        '<div id="merch-filters" class="merch-controls" aria-label="Clothing filters"></div>'+
+        '<div id="merch-container" class="merch-container" hidden></div>'+
+      '</div>'+
+      '</div>';
+  }
+
+  function renderTrace(){
+    const container=byId("trace-container"); if(!container)return;
+    const state=ESCIE_RUNTIME.traceFilters||{};
+    const all=getPublicRelationshipRecords();
+    const records=getAllPublicRecords();
+    const byIdMap=new Map(records.filter(Boolean).map(record=>[recordId(record),record]));
+    const relationships=getPublicRelationshipRecords(state);
+    const connectedIds=new Set();
+    all.forEach(r=>{connectedIds.add(r.from);connectedIds.add(r.to);});
+    const connectedNodes=Array.from(connectedIds).map(id=>byIdMap.get(id)).filter(Boolean);
+    const search=String(state.search||"").trim().toLowerCase();
+    const matchesSearch=r=>!search||recordTitle(r).toLowerCase().includes(search)||(r.description||"").toLowerCase().includes(search);
+    const visibleRecords=records.filter(matchesSearch);
+    const nodeOptions=connectedNodes.sort((a,b)=>recordTitle(a).localeCompare(recordTitle(b))).map(r=>'<option value="'+escapeHTML(recordId(r))+'"'+(state.record===recordId(r)?" selected":"")+'>'+escapeHTML(recordTitle(r))+'</option>').join("");
+    const typeOptions=Array.from(new Set(all.map(r=>String(r.type||"CONNECTION")).filter(Boolean))).sort().map(t=>'<option value="'+escapeHTML(t)+'"'+(state.type===t?" selected":"")+'>'+escapeHTML(t.replace(/_/g," "))+'</option>').join("");
+
+    const selected=state.record?byIdMap.get(String(state.record)):null;
+    const selectedLinks=selected?all.filter(link=>link.from===recordId(selected)||link.to===recordId(selected)):[];
+    const selectedNeighbourIds=new Set();
+    selectedLinks.forEach(link=>selectedNeighbourIds.add(link.from===recordId(selected)?link.to:link.from));
+    const selectedNeighbours=Array.from(selectedNeighbourIds).map(id=>byIdMap.get(id)).filter(Boolean);
+    const selectedConnectionTypes=Array.from(new Set(selectedLinks.map(link=>String(link.type||"CONNECTED_TO").replace(/_/g," "))));
+
+    const recordResults=visibleRecords.filter(r=>!state.record||recordId(r)===state.record).slice(0,10).map(r=>{
+      const links=all.filter(link=>link.from===recordId(r)||link.to===recordId(r));
+      return '<button type="button" class="trace-record-result" data-record-id="'+escapeHTML(recordId(r))+'"><strong>'+escapeHTML(recordTitle(r))+'</strong><span>'+escapeHTML(r.type||"record")+' · '+(links.length?links.length+" CONNECTION"+(links.length===1?"":"S"):"NO CONNECTIONS YET")+'</span></button>';
+    }).join("");
+
+    const trailIds=Array.isArray(ESCIE_RUNTIME.traceTrail)?ESCIE_RUNTIME.traceTrail:[];
+    const trailRecords=trailIds.map(id=>byIdMap.get(id)).filter(Boolean);
+    const trailEdges=trailRecords.slice(1).map((node,index)=>{
+      const fromId=recordId(trailRecords[index]);
+      const toId=recordId(node);
+      return all.find(link=>(link.from===fromId&&link.to===toId)||(link.from===toId&&link.to===fromId))||null;
+    });
+    const canStepBack=trailRecords.length>1;
+    const trailMarkup=trailRecords.length
+      ? '<div class="trace-thread-trail">'+
+        '<div class="trace-thread-trail-head"><span class="eyebrow">THREAD PATH</span><span>'+trailRecords.length+' STEPS</span></div>'+
+        '<div class="trace-thread-trail-controls">'+(canStepBack?'<button type="button" class="trace-trail-back" data-trace-trail-back>BACK ONE STEP</button>':"")+'<button type="button" class="trace-trail-clear" data-trace-trail-clear>CLEAR PATH</button></div><div class="trace-thread-trail-list">'+trailRecords.map((node,index)=>{
+          const edge=index>0?trailEdges[index-1]:null;
+          const relation=edge?String(edge.type||"CONNECTED_TO").replace(/_/g," "):"START";
+          return '<span class="trace-trail-step">'+(index>0?'<i aria-hidden="true">'+escapeHTML(relation)+'</i>':"")+'<button type="button" class="trace-trail-node" data-record-id="'+escapeHTML(recordId(node))+'" aria-label="Return to '+escapeHTML(recordTitle(node))+'"><span>'+String(index+1).padStart(2,"0")+'</span><strong>'+escapeHTML(recordTitle(node))+'</strong></button></span>';
+        }).join("")+'</div></div>'
+      : "";
+    const networkMap=selected
+      ? '<div class="trace-thread-map"><div class="trace-thread-map-head"><div><span class="eyebrow">THREAD MAP</span><h4>'+escapeHTML(recordTitle(selected))+'</h4></div><span>'+selectedLinks.length+' DIRECT '+(selectedLinks.length===1?"CONNECTION":"CONNECTIONS")+'</span></div>'+
+        '<div class="trace-hub-summary"><span>CONNECTED BY</span><strong>'+escapeHTML(selectedConnectionTypes.join(" · ")||"PUBLIC RELATIONSHIPS")+'</strong></div>'+
+        '<div class="trace-thread-map-grid">'+
+        '<button type="button" class="trace-thread-node trace-thread-node-current" data-record-id="'+escapeHTML(recordId(selected))+'"><strong>'+escapeHTML(recordTitle(selected))+'</strong><small>STARTING NODE</small></button>'+
+        selectedNeighbours.map(node=>'<button type="button" class="trace-thread-node" data-record-id="'+escapeHTML(recordId(node))+'"><strong>'+escapeHTML(recordTitle(node))+'</strong><small>'+escapeHTML(node.type||"record")+' · FOLLOW THREAD</small></button>').join("")+
+        '</div></div>'
+      : '<div class="trace-thread-map trace-thread-map-idle"><div class="trace-thread-map-head"><div><span class="eyebrow">THREAD MAP</span><h4>START ANYWHERE.</h4></div><span>PUBLIC GRAPH</span></div><p>Select a connected node to see its immediate neighbours. The map only draws relationships that the public record actually establishes.</p></div>';
+
+    const list=relationships.map((relationship,index)=>{
+      const from=byIdMap.get(relationship.from),to=byIdMap.get(relationship.to);
+      if(!from||!to)return "";
+      const rawStatus=String(relationship.status||"unknown").toLowerCase();
+      const canonicalStatus=String(relationship.canonical_status||"unknown").toLowerCase();
+      const confidenceValue=String(relationship.confidence||"unknown").toLowerCase();
+      const displayState=rawStatus==="disputed"||canonicalStatus==="non_canonical"
+        ?"CONFLICTING RECORDS"
+        :rawStatus==="proposed"||canonicalStatus==="proposed"
+          ?"THREAD UNRESOLVED"
+          :canonicalStatus==="unknown"||confidenceValue==="unknown"||confidenceValue==="unverified"
+            ?"UNKNOWN CONNECTION"
+            :rawStatus.toUpperCase();
+      const reason=relationship.context||relationship.note||"THE RECORD CONNECTS THESE TWO POINTS. THE REASON REMAINS OPEN.";
+      const relationType=String(relationship.type||"CONNECTED_TO").replace(/_/g," ");
+      const nextIds=new Set(all.filter(link=>link.from===recordId(to)||link.to===recordId(to)).flatMap(link=>[link.from,link.to])).filter(id=>id!==recordId(from)&&id!==recordId(to));
+      const nextNodes=Array.from(nextIds).map(id=>byIdMap.get(id)).filter(Boolean).slice(0,4);
+      const nextStep=nextNodes.length ? '<div class="trace-next-step"><p class="eyebrow">WHERE THIS THREAD CAN GO</p><div class="trace-next-nodes">'+nextNodes.map(node=>'<button type="button" class="trace-next-node" data-record-id="'+escapeHTML(recordId(node))+'"><strong>'+escapeHTML(recordTitle(node))+'</strong><span>FOLLOW '+escapeHTML(String(node.type||"RECORD").toUpperCase())+'</span></button>').join("")+'</div></div>' : '<p class="trace-next-quiet">NO NEXT PUBLIC CONNECTION IS ESTABLISHED YET.</p>';
+      const statusClass=displayState.toLowerCase().replace(/[^a-z0-9]+/g,"-");
+      return '<article class="trace-connection trace-status-'+statusClass+'" data-relationship-id="'+escapeHTML(relationship.id||("connection-"+index))+'">'+
+        '<button type="button" class="trace-connection-main" data-trace-connection-toggle aria-expanded="false">'+
+          '<span class="trace-node"><strong>'+escapeHTML(recordTitle(from))+'</strong><em>'+escapeHTML(from.type||"record")+'</em></span>'+
+          '<span class="trace-connection-line" aria-hidden="true"><i></i><b>'+escapeHTML(relationType)+'</b><i></i></span>'+
+          '<span class="trace-node"><strong>'+escapeHTML(recordTitle(to))+'</strong><em>'+escapeHTML(to.type||"record")+'</em></span>'+
+        '</button>'+
+        '<div class="trace-connection-detail" hidden>'+
+          '<p class="eyebrow">WHY THIS CONNECTION EXISTS</p><p>'+escapeHTML(reason)+'</p>'+
+          '<div class="trace-connection-meta"><span>'+escapeHTML(displayState)+'</span><span>'+escapeHTML(confidenceValue.toUpperCase())+'</span></div>'+
+          '<div class="trace-connection-actions"><button type="button" class="trace-node-button" data-record-id="'+escapeHTML(recordId(from))+'">OPEN '+escapeHTML(recordTitle(from).toUpperCase())+'</button><button type="button" class="trace-node-button" data-record-id="'+escapeHTML(recordId(to))+'">OPEN '+escapeHTML(recordTitle(to).toUpperCase())+'</button></div>'+
+        nextStep+
+        '</div>'+
+      '</article>';
+    }).join("");
+
+    const clear=state.search||state.record||state.type
+      ? '<button type="button" class="trace-filter-clear" data-trace-filter-clear>CLEAR THREAD</button>' : "";
+
+    container.innerHTML=
+      '<div class="trace-experience trace-identity-field" data-trace-identity="montreal-signal">'+motifMarkup("trace")+
+      '<div class="trace-signal-grid" aria-hidden="true"></div><div class="trace-montreal-trace" aria-hidden="true">MONTRÉAL / SIGNAL FIELD / HERE</div>'+
+      '<div class="trace-experience-head"><p class="eyebrow">TRACE</p><h3>FOLLOW THE THREAD.</h3><p>THE SPACE BETWEEN THINGS. START WITH ONE RECORD. FOLLOW WHERE IT LEADS.</p></div>'+
+      '<div class="trace-discovery-tools">'+
+        '<label>FIND A THREAD<input type="search" data-trace-search value="'+escapeHTML(state.search||"")+'" placeholder="People, places, moments, fragments…"></label>'+
+        '<div class="trace-discovery-selects"><label>START HERE<select data-trace-filter="record"><option value="">ANY CONNECTED NODE</option>'+nodeOptions+'</select></label><label>CONNECTION<select data-trace-filter="type"><option value="">ALL CONNECTIONS</option>'+typeOptions+'</select></label></div>'+
+        '<div class="trace-discovery-actions"><p class="trace-discovery-count">'+escapeHTML(String(relationships.length))+' CONNECTION'+(relationships.length===1?"":"S")+' · '+escapeHTML(String(connectedIds.size))+' NODES</p>'+clear+'</div>'+
+      '</div>'+
+      '<div class="trace-record-results">'+recordResults+'</div>'+
+      trailMarkup+
+      networkMap+
+      (list?'<div class="trace-connection-field"><div class="trace-field-label"><span>PUBLIC CONNECTIONS</span><span>'+relationships.length+'</span></div>'+list+'</div>':'<div class="trace-empty-state"><p class="eyebrow">THE PUBLIC GRAPH IS QUIET</p><h3>NO PUBLIC THREADS HAVE BEEN ESTABLISHED HERE YET.</h3><p>The system stays honest when a connection does not exist. Public findings can enter through Glass Eye and become a thread only after they earn a place in the record.</p><button type="button" class="trace-participate-link" data-trace-participate>BRING A FINDING THROUGH GLASS EYE</button></div>')+
+      '<p class="trace-governing-principle">EVERYTHING CAN CONNECT. NOTHING CONNECTS WITHOUT A REASON.</p>'+
+      '</div>';
+  }
+
+  function renderGameItemInspector(item){
+    const api=window.ESCIE_GAME_REGISTRY;
+    if(!api||typeof api.inspectGameItem!=="function")return "";
+    const inspected=api.inspectGameItem(item,{owned:[],discovered:[],unlocked:[]});
+    if(!inspected.ok)return "";
+    const action=inspected.acquisition==="REAL_MONEY"?"ENTER CHECKOUT":
+      inspected.acquisition==="EARNED"?"EARN IN THE SIGNAL":
+      inspected.acquisition==="FREE"||inspected.acquisition==="CLAIMABLE"?"FOUND / CLAIM IN GAME":
+      inspected.acquisition==="OWNED"?"OWNED":"LOCKED";
+    return '<div class="game-item-inspection"><span>ACQUISITION</span><strong>'+escapeHTML(action)+'</strong></div>';
+  }
+
+  function renderGameShop(){
+  const root=document.getElementById("game-shop-container");
+  if(!root)return;
+  const api=window.ESCIE_GAME_REGISTRY;
+  const items=api&&typeof api.items==="function"?api.items():[];
+  const esc=v=>typeof escapeHTML==="function"?escapeHTML(String(v??"")):String(v??"");
+  if(!items.length){
+    root.innerHTML='<div class="game-shop-empty">NO ITEMS AVAILABLE.</div>';
+    return;
+  }
+  root.innerHTML=items.map(item=>{
+    const type=String(item.price_type||"FREE").toUpperCase();
+    const price=type==="REAL_MONEY"&&item.price!==null?("CAD "+esc(item.price)):type==="EARNED"?(esc(item.price||0)+" "+esc(item.currency||"SIGNAL")):"FREE";
+    const purchaseURL=safeExternalURL(item.external_purchase_url);
+    const action=type==="REAL_MONEY"&&purchaseURL
+      ? '<a class="game-item-action" href="'+esc(purchaseURL)+'" target="_blank" rel="noopener noreferrer">ENTER CHECKOUT</a>'
+      : type==="EARNED" ? '<span class="game-item-action is-muted">EARN IN THE SIGNAL</span>'
+      : '<span class="game-item-action is-muted">FOUND / CLAIMED IN GAME</span>';
+    return '<article class="game-item-card"><div class="game-item-type">'+esc(type)+'</div><h3>'+esc(item.title)+'</h3><p>'+esc(item.description)+'</p><div class="game-item-price">'+price+'</div>'+renderGameItemInspector(item)+action+'</article>';
+  }).join("");
+}
+function renderClothing(){
+    const container=byId("clothing-container");
+    if(!container)return;
+    const clothing=normalizeCollection(getGlobal("ESCIE_CLOTHING",[])).filter(item=>item&&item.public_visibility!=="hidden"&&item.release_status!=="locked");
+    if(!clothing.length){
+      container.innerHTML='<div class="archive-status"><p class="eyebrow">WARDROBE STATE</p><h3>THE CLOTHING LAYER IS READY.</h3><p>The first wardrobe will appear here as garments are approved for public release.</p></div>';
+      return;
+    }
+    const cards=clothing.map(item=>{
+      const category=String(item.category||"CORE");
+      const stage=String(item.production_stage||"DESIGN");
+      const front=item.front&&item.front.text?item.front.text:"";
+      const back=item.back&&item.back.text?item.back.text:"";
+      const details=[item.color,item.gsm_target,item.fit].filter(Boolean).join(" · ");
+      return '<article class="clothing-card" data-clothing-id="'+escapeHTML(item.id)+'">'+
+        '<div class="clothing-card-head"><span class="eyebrow">'+escapeHTML(category)+'</span><span class="pill">'+escapeHTML(stage)+'</span></div>'+
+        '<h3>'+escapeHTML(item.title||"UNTITLED")+'</h3>'+
+        '<p>'+escapeHTML(item.notes||"Clothing from the ESCIE world.")+'</p>'+
+        '<div class="clothing-specs"><span>'+escapeHTML(details)+'</span><span>'+escapeHTML((item.sizes||[]).join(" / "))+'</span></div>'+
+        '<div class="clothing-markup"><span>'+escapeHTML(front)+'</span><span>'+escapeHTML(back)+'</span></div>'+
+      '</article>';
+    }).join("");
+    container.innerHTML='<div class="clothing-intro"><p class="eyebrow">DROP 001 / THE FIRST WARDROBE</p><h3>THE GARMENT STANDS ON ITS OWN.</h3><p>Clothing is part of the world, not a requirement for understanding it. Digital connections remain secondary.</p></div><div class="clothing-grid">'+cards+'</div>';
+  }
+
+  function renderMerch(){
+    const container=byId("merch-container");
+    if(!container)return;
+    const config=getGlobal("ESCIE_MERCH",{});
+    const merchLocked=String(config.public_visibility||"").toLowerCase()==="hidden"||String(config.release_status||"").toLowerCase()!=="released";
+    if(merchLocked){
+      container.innerHTML="";
+      container.hidden=true;
+      return;
+    }
+    container.hidden=false;
+    const clothing=normalizeCollection(getGlobal("ESCIE_CLOTHING",[])).filter(item=>item&&item.type==="CLOTHING"&&String(item.public_visibility||"").toLowerCase()!=="hidden"&&String(item.release_status||"released").toLowerCase()==="released");
+    const filterState=String(container.dataset.filter||"ALL").toUpperCase();
+    const visible=clothing.filter(item=>filterState==="ALL"||String(item.category||"CORE").toUpperCase()===filterState);
+    const storeUrl=safeExternalURL(config.storefront_url);
+    const storeLabel=String(config.storefront_label||"OPEN THE STORE");
+    const universeLinks=Array.isArray(config.universe_links)?config.universe_links:[];
+    const intro='<div class="merch-world-intro">'+
+      '<div class="merch-world-copy"><p class="eyebrow">THE PHYSICAL LAYER / '+escapeHTML(String(config.shop_concept||"THE WORLD YOU CAN OWN"))+'</p>'+
+      '<h3>TAKE A TRACE WITH YOU.</h3>'+
+      '<p>Clothing is where the ESCIE universe leaves the screen and enters ordinary life. Montréal, the signal, the archive and the eye become things you can carry.</p></div>'+
+      '<div class="merch-universe-links"><span class="eyebrow">CONNECTED RECORDS</span>'+
+      universeLinks.map(label=>{const id=String(label).toLowerCase().replace(/[^a-z0-9]+/g,"-");return '<a href="#'+escapeHTML(id)+'" class="merch-universe-link">'+escapeHTML(label)+' ↗</a>';}).join("")+
+      '</div></div>';
+    if(!visible.length){
+      container.innerHTML=intro+'<div class="merch-empty"><p class="eyebrow">WARDROBE / '+escapeHTML(filterState)+'</p><h3>NOTHING IS PUBLIC HERE YET.</h3><p>The physical layer only shows garments that have a defined production path.</p></div>';
+      return;
+    }
+    const cards=visible.map(item=>{
+      const packet=item.production_packet||{};
+      const stage=String(item.production_stage||"DESIGN");
+      const priority=String(item.priority||"STANDARD");
+      const sizes=Array.isArray(item.sizes)?item.sizes.join(" / "):"";
+      const details=[item.color,item.garment,item.fabric,item.gsm_target].filter(Boolean).join(" · ");
+      const front=item.front&&item.front.text?item.front.text:"";
+      const back=item.back&&item.back.text?item.back.text:"";
+      const image=item.image?String(item.image):"";
+      const ready=String(item.status||"").toUpperCase()==="RELEASED"&&!!storeUrl;
+      const action=ready?'<a class="merch-card-action" href="'+escapeHTML(storeUrl)+'" target="_blank" rel="noopener noreferrer">BUY / '+escapeHTML(storeLabel)+'</a>':'<span class="merch-card-action is-quiet">SAMPLE / HUMAN APPROVAL</span>';
+      return '<article class="merch-card" data-merch-category="'+escapeHTML(item.category||"CORE")+'">'+
+        '<div class="merch-card-top"><span class="eyebrow">'+escapeHTML(item.category||"CORE")+'</span><span class="merch-status">'+escapeHTML(stage)+'</span></div>'+
+        '<div class="merch-card-art">'+(image?'<img src="'+escapeHTML(image)+'" alt="'+escapeHTML(item.title||"ESCIE garment")+'" loading="lazy">':'')+
+        '<span>'+escapeHTML(front||"ESCIE")+'</span><i></i><strong>'+escapeHTML(back||item.title||"")+'</strong></div>'+
+        '<div class="merch-card-body"><h3>'+escapeHTML(item.title||"UNTITLED")+'</h3>'+
+        '<p>'+escapeHTML(item.notes||"Physical ESCIE object.")+'</p>'+
+        '<dl class="merch-specs"><div><dt>GARMENT</dt><dd>'+escapeHTML(details||"SPECIFICATION PENDING")+'</dd></div>'+
+        '<div><dt>FIT / SIZE</dt><dd>'+escapeHTML((item.fit||"FIT PENDING")+" · "+sizes)+'</dd></div>'+
+        '<div><dt>PRODUCTION</dt><dd>'+escapeHTML(priority+" · "+(packet.quantity_decision||"HUMAN GATE"))+'</dd></div></dl>'+action+
+        '</div></article>';
+    }).join("");
+    const storeAction=storeUrl?'<a class="merch-store-link" href="'+escapeHTML(storeUrl)+'" target="_blank" rel="noopener noreferrer">'+escapeHTML(storeLabel)+' ↗</a>':'<span class="merch-store-link is-disabled">STORE LAYER / NOT CONNECTED</span>';
+    container.innerHTML=intro+
+      '<div class="merch-statusbar"><div><span class="eyebrow">DROP 001 / HEART ON MY SLEEVE</span><strong>'+visible.length+' PHYSICAL RECORD'+(visible.length===1?"":"S")+'</strong></div>'+
+      '<p>Presentation lives here. Checkout, inventory, shipping and taxes remain outside the universe interface.</p>'+storeAction+'</div>'+
+      '<div class="merch-grid-list">'+cards+'</div>';
+  }
+
+  function bindMerchFilters(){
+    const host=byId("merch-filters");
+    const clothing=normalizeCollection(getGlobal("ESCIE_CLOTHING",[])).filter(item=>item&&item.type==="CLOTHING");
+    if(host){
+      const categories=Array.from(new Set(clothing.map(item=>String(item.category||"CORE").toUpperCase()))).sort();
+      const current=String(byId("merch-container")?.dataset.filter||"ALL").toUpperCase();
+      host.innerHTML=["ALL"].concat(categories).map(value=>'<button type="button" class="merch-filter '+(current===value?"is-active":"")+'" data-merch-filter="'+escapeHTML(value)+'">'+escapeHTML(value)+'</button>').join("");
+    }
+    const controls=document.querySelectorAll("[data-merch-filter]");
+    controls.forEach(button=>{
+      if(button.dataset.bound==="1")return;
+      button.dataset.bound="1";
+      button.addEventListener("click",()=>{
+        const value=String(button.getAttribute("data-merch-filter")||"ALL").toUpperCase();
+        const container=byId("merch-container");
+        if(container)container.dataset.filter=value;
+        controls.forEach(item=>item.classList.toggle("is-active",item===button));
+        renderMerch();
+      });
+    });
+  }
+
+  function renderArchive() {
+    const container = byId("archive-container");
+    if (!container) return;
+
+    const records = getAllPublicRecords().filter(record => {
+      const manifest = recordManifest(record);
+      const archiveState = String(record.archive_state || record.archive?.state || "").toLowerCase();
+      const manifestArchive = !!(manifest && manifest.sections && manifest.sections.archive === true);
+      const archiveType = String(record.type || record.identity?.type || "").toLowerCase() === "archive";
+      const archivedState = archiveState === "archived";
+      return manifestArchive || archiveType || archivedState;
+    }).filter(isPublic);
+
+    if (!records.length) {
+      renderEmpty(container, "THE ARCHIVE IS BEING PRESERVED. PUBLIC TRACES WILL APPEAR WHEN THEY ENTER THE ARCHIVE.");
+      return;
+    }
+
+    const ordered = records.slice().sort((a, b) => {
+      const aTime = Date.parse(a.updated_at || a.created_at || a.date || "") || 0;
+      const bTime = Date.parse(b.updated_at || b.created_at || b.date || "") || 0;
+      if (aTime !== bTime) return bTime - aTime;
+      return recordTitle(a).localeCompare(recordTitle(b));
+    });
+
+    container.innerHTML =
+      '<div class="archive-index">' +
+        motifMarkup("archives") +
+        '<div class="archive-index-head"><p class="eyebrow">PRESERVED TRACE / ' + escapeHTML(String(ordered.length)) + ' RECORD' + (ordered.length === 1 ? '' : 'S') + '</p><span class="archive-index-note">OPEN THE RECORD TO FOLLOW ITS TRACE.</span></div>' +
+        '<div class="archive-list"><div class="archive-record"><div class="archive-record-carousel" data-record-carousel="archive"><div class="record-carousel-viewport" tabindex="0" aria-live="polite"><div class="record-carousel-track">' +
+          ordered.map((record,index) => {
+            const type = String(record.type || record.identity?.type || "record").toUpperCase();
+            const dateSource = record.date || record.created_at || record.updated_at || "";
+            const dateValue = dateSource ? new Date(dateSource) : null;
+            const year = record.year ? String(record.year) : (dateValue && !Number.isNaN(dateValue.getTime()) ? String(dateValue.getFullYear()) : "");
+            const location = record.location ? String(record.location) : "";
+            const meta = [type, year, location].filter(Boolean).join(" · ");
+            return '<article class="archive-record record-carousel-slide" role="button" tabindex="0" aria-hidden="' + (index === 0 ? 'false' : 'true') + '" aria-label="Open ' + escapeHTML(recordTitle(record)) + '" data-record-id="' + escapeHTML(recordId(record)) + '">' +
+              '<div class="archive-record-index" aria-hidden="true">' + String(index + 1).padStart(2,"0") + '</div>' +
+              '<div class="archive-record-body"><p class="eyebrow">' + escapeHTML(meta || "RECORD") + '</p>' +
+              '<h3>' + escapeHTML(recordTitle(record)) + '</h3>' +
+              (record.description ? '<p>' + escapeHTML(record.description) + '</p>' : '') +
+              '</div>' +
+            '</article>';
+          }).join("") +
+        '</div></div><div class="record-carousel-controls"><span tabindex="0" role="button" class="record-carousel-arrow" data-record-prev aria-label="Previous archive record">‹</span><span class="record-carousel-position" aria-hidden="true">01 / ' + String(ordered.length).padStart(2,"0") + '</span><span tabindex="0" role="button" class="record-carousel-arrow" data-record-next aria-label="Next archive record">›</span></div></div>' +
+      '</div>';
+  }
+
+  function renderInvestigation() {
+    const container = byId("investigation-container");
+    if (!container) return;
+
+    const investigations = getAllPublicRecords().filter(record => {
+      const manifest = recordManifest(record);
+      return manifest ? !!(manifest.sections && manifest.sections.investigation) : String(record.type || "").toLowerCase() === "investigation";
+    }).filter(isPublic);
+
+    if (!investigations.length) {
+      container.innerHTML = '<div class="investigation-status">' +
+        motifMarkup("investigation") +
+        '<p class="eyebrow">THE CASE FILES / OPEN</p>' +
+        '<h3>QUESTIONS BEFORE ANSWERS.</h3>' +
+        '<p>This is the place for questions that matter. A case can gather evidence, contradictions, sources, context and unresolved material without forcing a conclusion.</p>' +
+        '<div class="case-file-tools">' +
+          '<div><span class="eyebrow">FOLLOW</span><strong>QUESTIONS</strong><p>What does the record still not explain?</p></div>' +
+          '<div><span class="eyebrow">CHECK</span><strong>EVIDENCE</strong><p>What can be documented, sourced or reviewed?</p></div>' +
+          '<div><span class="eyebrow">LEAVE</span><strong>UNRESOLVED</strong><p>What remains open without being turned into fact?</p></div>' +
+        '</div>' +
+        '<button type="button" class="case-participate-link" data-trace-participate>BRING A FINDING THROUGH GLASS EYE</button>' +
+      '</div>';
+      return;
+    }
+
+    const ordered = investigations.slice().sort((a,b) => {
+      const aTime = Date.parse(a.updated_at || a.created_at || a.date || "") || 0;
+      const bTime = Date.parse(b.updated_at || b.created_at || b.date || "") || 0;
+      if (aTime !== bTime) return bTime - aTime;
+      return recordTitle(a).localeCompare(recordTitle(b));
+    });
+
+    const countLabel = ordered.length === 1 ? "OPEN CASE FILE" : "OPEN CASE FILES";
+    container.innerHTML =
+      '<div class="investigation-index">' +
+        motifMarkup("investigation") +
+        '<div class="investigation-index-head"><p class="eyebrow">' + String(ordered.length) + ' ' + countLabel + '</p><span class="investigation-index-note">QUESTIONS STAY OPEN UNTIL THE RECORD CAN SUPPORT AN ANSWER.</span></div>' +
+        '<div class="investigation-case"><div class="case-file-list"><div class="record-carousel case-file-carousel" data-record-carousel="case-files"><div class="record-carousel-viewport" tabindex="0" aria-live="polite"><div class="record-carousel-track">' +
+          ordered.map((item,index) => {
+            const evidence = Array.isArray(item.evidence) ? item.evidence.length : (Array.isArray(item.sources) ? item.sources.length : 0);
+            const contradictions = Array.isArray(item.contradictions) ? item.contradictions.length : 0;
+            const status = String(item.status || "OPEN").toUpperCase();
+            const meta = [status, evidence ? evidence + " EVIDENCE" : "", contradictions ? contradictions + " CONTRADICTIONS" : ""].filter(Boolean).join(" · ");
+            return '<article class="investigation-case record-carousel-slide" role="button" tabindex="0" aria-hidden="' + (index === 0 ? 'false' : 'true') + '" aria-label="Open ' + escapeHTML(recordTitle(item)) + '" data-record-id="' + escapeHTML(recordId(item)) + '"' + narrationAttributes(item) + '>' +
+              '<div class="investigation-case-index" aria-hidden="true">' + String(index + 1).padStart(2,"0") + '</div>' +
+              '<div class="investigation-case-body">' +
+                '<p class="eyebrow">' + escapeHTML(meta) + '</p>' +
+                '<h3>' + escapeHTML(recordTitle(item)) + '</h3>' +
+                (item.description ? '<p>' + escapeHTML(item.description) + '</p>' : '') +
+              '</div>' +
+            '</article>';
+          }).join("") +
+        '</div></div><div class="record-carousel-controls"><span tabindex="0" role="button" class="record-carousel-arrow" data-record-prev aria-label="Previous case file">‹</span><span class="record-carousel-position" aria-hidden="true">01 / ' + String(ordered.length).padStart(2,"0") + '</span><span tabindex="0" role="button" class="record-carousel-arrow" data-record-next aria-label="Next case file">›</span></div></div>' +
+      '</div>';
+  }
+
+  function socialIconMarkup(platform) {
+    const icons = {
+      instagram: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"></rect><circle cx="12" cy="12" r="4.1"></circle><circle cx="17.4" cy="6.7" r="1.05" class="social-icon-fill"></circle></svg>',
+      youtube: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.3 7.1a2.7 2.7 0 0 0-1.9-1.9C17.7 4.7 12 4.7 12 4.7s-5.7 0-7.4.5a2.7 2.7 0 0 0-1.9 1.9C2.2 8.8 2.2 12 2.2 12s0 3.2.5 4.9a2.7 2.7 0 0 0 1.9 1.9c1.7.5 7.4.5 7.4.5s5.7 0 7.4-.5a2.7 2.7 0 0 0 1.9-1.9c.5-1.7.5-4.9.5-4.9s0-3.2-.5-4.9Z"></path><path class="social-icon-cut" d="m10 9 5.2 3-5.2 3Z"></path></svg>',
+      spotify: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2"></circle><path class="social-icon-cut" d="M7 9.5c3.3-1 7.2-.7 10.1.7M7.6 12.4c2.8-.7 6.1-.5 8.7.7M8.5 15.1c2.2-.5 4.7-.3 6.7.5"></path></svg>',
+      tiktok: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.2 4.1v10.2a4.7 4.7 0 1 1-3.4-4.5v3.1a1.8 1.8 0 1 0 1.8 1.7V4.1h3.2c.3 1.6 1.3 2.8 2.8 3.4v3a7 7 0 0 1-4.4-2.2v5.9a4.9 4.9 0 1 1-4.9-4.9c.6 0 1.2.1 1.7.3V4.1h3.2Z"></path></svg>',
+      facebook: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.7 20v-7h2.4l.4-2.8h-2.8V8.4c0-.8.3-1.4 1.5-1.4h1.5V4.5c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2H8.3V13h2.5v7Z"></path></svg>',
+      x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.2h3.5l3.2 4.3 3.7-4.3h3.1l-5.4 6.1 6 7.5h-3.5l-3.8-4.9-4.2 4.9H4.5l5.9-6.7Z"></path></svg>'
+    };
+    return icons[String(platform || "").toLowerCase()] || '<span aria-hidden="true">↗</span>';
+  }
+
+  function renderSocialLinks(containerId, className, includeLabel) {
+    const container = byId(containerId);
+    if (!container) return;
+    const socialNormalizer = getGlobal("normalizeEscieSocial", null);
+    const social = typeof socialNormalizer === "function"
+      ? socialNormalizer(getGlobal("ESCIE_SOCIAL", []))
+      : normalizeCollection(getGlobal("ESCIE_SOCIAL", [])).filter(item => item && item.url && /^https?:\/\//i.test(String(item.url)));
+    container.innerHTML = social.length
+      ? (includeLabel ? '<span class="footer-social-label">EXTERNAL SIGNAL</span>' : '') + social.map(item =>
+          '<a class="' + className + '" href="' + escapeHTML(item.url) + '" target="_blank" rel="noopener noreferrer" aria-label="' + escapeHTML(item.label || item.platform || "SIGNAL") + '" title="' + escapeHTML(item.label || item.platform || "SIGNAL") + '">' +
+          '<span class="social-icon" aria-hidden="true">' + socialIconMarkup(item.platform) + '</span>' +
+        '</a>'
+        ).join("")
+      : "";
+  }
+
+  function renderFooterSocial() {
+    const container = byId("footer-social");
+    if (!container) return;
+    renderSocialLinks("footer-social", "footer-social-link", true);
+  }
+
+  function renderAbout() {
+    const container = byId("about-container");
+    if (!container) return;
+
+    const site = getSite();
+    const about = getGlobal("ESCIE_ABOUT", {});
+    const socialNormalizer = getGlobal("normalizeEscieSocial", null);
+    const social = typeof socialNormalizer === "function"
+      ? socialNormalizer(getGlobal("ESCIE_SOCIAL", []))
+      : normalizeCollection(getGlobal("ESCIE_SOCIAL", [])).filter(
+          item => item && item.url && /^https?:\/\//i.test(String(item.url))
+        );
+
+    const socialMarkup = social.length
+      ? '<div class="about-social" aria-label="ESCIE social links">' +
+          '<p class="eyebrow">EXTERNAL SIGNAL</p>' +
+          '<div class="about-social-list">' +
+            social.map(item =>
+              '<a class="about-social-link" href="' + escapeHTML(item.url) + '" target="_blank" rel="noopener noreferrer" aria-label="' + escapeHTML(item.label || item.platform || "SOCIAL") + '" title="' + escapeHTML(item.label || item.platform || "SOCIAL") + '">' +
+                '<span class="social-icon" aria-hidden="true">' + socialIconMarkup(item.platform) + '</span>' +
+              '</a>'
+            ).join("") +
+          '</div>' +
+        '</div>'
+      : '';
+
+    const identity = Array.isArray(about.role) && about.role.length
+      ? about.role.join(" · ").toUpperCase()
+      : "THE FATHER · THE MAN · THE MONSTER";
+
+    container.innerHTML =
+      '<p class="about-identity" aria-label="ESCIE identity facets">' + escapeHTML(identity) + "</p>" +
+      '<div class="about-principles">' +
+        '<p><span>PRINCIPLE</span>' + escapeHTML(
+          about.principle || site.philosophy || "The art does not create the universe. The universe creates the art."
+        ) + "</p>" +
+      '</div>' +
+      socialMarkup;
+  }
+
+  function renderGlassEye() {
+    const container=byId("glass-eye-container"); if(!container)return;
+    const memory=getGlobal("ESCIE_GLASS_EYE_MEMORY",null),journey=getGlobal("ESCIE_GLASS_EYE_JOURNEY",null);
+    const state=memory&&typeof memory.state==="function"?memory.state():{};
+    const path=journey&&typeof journey.journey==="function"?(journey.journey().path||[]):(Array.isArray(state.path)?state.path:[]);
+    const journeyState=journey&&typeof journey.journey==="function"?journey.journey():{};
+    const lastSignal=journeyState.last_signal||null;
+    const recent=path.slice(-6).reverse();
+    const observed=Array.isArray(state.observed)?state.observed.length>0:false;
+    const listened=Array.isArray(state.listened)?state.listened.length>0:false;
+    const heard=Array.isArray(state.heard)?state.heard.length>0:false;
+    const followed=Array.isArray(state.connections)?state.connections.length>0:false;
+    const missed=Array.isArray(state.missed)?state.missed.length>0:false;
+    const returned=path.some(event=>event&&String(event.type||"").toUpperCase()==="RETURNED");
+    const stage=returned?"return":missed?"miss":followed?"follow":(heard||listened)?"hear":"see";
+    const stageIndex={see:0,hear:1,follow:2,miss:3,return:4}[stage];
+    const esc=v=>escapeHTML(v==null?"":v);
+    const t={
+      side:"THIS IS YOUR SIDE OF THE SCREEN.",
+      core:"SEE · HEAR · FOLLOW · MISS · RETURN",
+      body:"What you notice, hear and follow belongs to your journey here.",
+      see:"SEE WHAT I SAW",
+      follow:"FOLLOW MY THREAD",
+      return:"RETURN TO THE WORLD",
+      info:"ⓘ INFO",
+      clear:"CLEAR MY MEMORY",
+      local:"LOCAL MEMORY / NON-CANONICAL",
+      memory:"YOUR MEMORY",
+      private:"LOCAL · PRIVATE · NON-CANONICAL",
+      last:"LAST SIGNAL",
+      recent:"RECENT PATH",
+      footer:["YOUR PATH","YOUR MEMORY","NO CANON","NO CENTRAL HISTORY"],
+      infoMsg:"The Glass Eye is the audience eye: a place to look through the screen, follow what catches you, and leave with your own path."
+    };    const videoConfig=getGlobal("ESCIE_GLASS_EYE_VIDEO",{});
+    const videoURL=glassEyeYouTubeURL(videoConfig&&videoConfig.url);
+    const videoMarkup=videoURL
+      ? '<div class="glass-video-window" data-glass-video-window>'+
+          '<div class="glass-video-label"><span>GLASS EYE / PRIMARY WINDOW</span><span>YOUTUBE</span></div>'+
+          '<div class="glass-video-frame"><iframe src="'+esc(videoURL)+'" title="Glass Eye primary YouTube window" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; trace-share" allowfullscreen></iframe></div>'+
+        '</div>'
+      : '<div class="glass-video-window glass-video-window-empty" data-glass-video-window aria-label="Glass Eye primary video window"><div class="glass-video-label"><span>GLASS EYE / PRIMARY WINDOW</span><span>YOUTUBE</span></div><div class="glass-video-placeholder"><span>PUBLIC VIDEO WINDOW</span><strong>AWAITING APPROVED VIDEO</strong></div></div>';
+    container.innerHTML=
+      '<div class="glass-frame glass-eye-interface">'+
+        '<div class="glass-readout"><span>THE GLASS EYE</span><span>VIEWER LAYER / LOCAL MEMORY</span></div>'+
+
+        '<div class="glass-center glass-center-minimal">'+
+          '<span class="glass-dot"></span>'+
+          '<strong>'+esc(t.side)+'</strong>'+
+          '<span class="glass-core-line">'+esc(t.core)+'</span>'+
+        '</div>'+
+        videoMarkup+
+        '<div class="glass-eye-sequence" aria-label="Glass Eye sequence" data-glass-stage="'+esc(stage)+'">'+
+          ["SEE","HEAR","FOLLOW","MISS","RETURN"].map((label,index)=>'<span class="'+(index===stageIndex?"is-active":"")+'">'+String(index+1).padStart(2,"0")+' / '+label+'</span>').join("")+
+        '</div>'+
+        '<p class="glass-eye-body">'+esc(t.body)+'</p>'+
+        '<div class="glass-eye-actions" role="group" aria-label="Glass Eye actions">'+
+          '<button type="button" data-glass-eye-action="observe" aria-pressed="false">'+esc(t.see)+'</button>'+
+          '<button type="button" data-glass-eye-action="hear" aria-pressed="false"'+(videoURL?'':' disabled')+'>'+esc(videoURL?"PLAY THE SIGNAL":"HEAR / AWAITING APPROVED MEDIA")+'</button>'+
+          '<button type="button" data-glass-eye-action="follow" aria-pressed="false">'+esc(t.follow)+'</button>'+
+          '<button type="button" data-glass-eye-action="return" aria-pressed="false">'+esc(t.return)+'</button>'+
+          '<button type="button" class="glass-info-action" data-glass-eye-action="info" aria-pressed="false" aria-label="Glass Eye information">'+esc(t.info)+'</button>'+
+        '</div>'+
+        '<p class="glass-eye-response" aria-live="polite">'+esc(returned?"YOU ARE BACK. YOUR PATH IS STILL HERE.":path.length?"YOUR PATH IS STILL HERE.":"YOU ARE HERE. NOTHING HAS BEEN DECIDED FOR YOU.")+'</p>'+
+        '<div class="glass-memory-inline glass-memory-personal">'+
+          '<div><span>'+esc(t.memory)+'</span><strong>'+esc(t.private)+'</strong></div>'+
+          '<div class="glass-path-line"><span>'+esc(t.last)+'</span><em>'+esc(lastSignal||"NONE RECORDED")+'</em></div>'+
+          '<div class="glass-path-line"><span>'+esc(t.recent)+'</span><em>'+esc(path.length?(path[path.length-1].type+" / "+(path[path.length-1].target_id||"—")):"NO PATH YET")+'</em></div>'+
+          (recent.length?'<div class="glass-path-events" aria-label="Recent personal trace">'+recent.map(e=>{const type=String(e&&e.type||"").toUpperCase();const label={OBSERVED:"YOU LOOKED",LISTENED:"YOU LISTENED",HEARD:"YOU LISTENED",CONNECTED:"YOU FOLLOWED",RETURNED:"YOU RETURNED"}[type]||"YOU MOVED";return '<span>'+esc(label)+'</span>';}).join("")+'</div>':'')+
+          '<button type="button" class="glass-memory-clear-inline" data-glass-eye-action="clear-memory">'+esc(t.clear)+'</button>'+
+        '</div>'+
+        '<div class="glass-footer">'+t.footer.map(esc).map(item=>'<span>'+item+'</span>').join("")+'</div>'+
+      '<p class="glass-boundary-note">VIEWER STATE IS LOCAL. PUBLIC RECORD IS APPROVED SEPARATELY.</p>'+
+      '</div>';
+    const participationCopy={
+      open:"PARTICIPATION / THE RECORD IS OPEN",title:"LEAVE SOMETHING BEHIND.",intro:"Post a comment, fan theory, finding, mention or media. Submissions are reviewed before anything enters the public record.",notice:"YOU NOTICE",send:"YOU SEND",review:"WE REVIEW",observe:"OBSERVE",contribute:"CONTRIBUTE",record:"RECORD",noticeText:"Something catches your eye, ear or memory.",sendText:"Leave a theory, finding, mention, comment or media.",reviewText:"Approved material can enter the public record and create new connections.",submission:"SUBMISSION TYPE",name:"NAME / ALIAS",location:"LOCATION / CONTEXT",contribution:"YOUR CONTRIBUTION",upload:"UPLOAD PHOTO / VIDEO / AUDIO",placeholderName:"ANONYMOUS",placeholderOptional:"OPTIONAL",placeholderBody:"What did you see, hear, find or think?",submit:"SUBMIT TO THE GLASS EYE",approved:"APPROVED PUBLIC CONTRIBUTIONS",loading:"LOADING…",received:"RECEIVED. HELD FOR REVIEW — NOT CANON.",failed:"SUBMISSION FAILED.",none:"NO APPROVED CONTRIBUTIONS YET.",openMedia:"OPEN APPROVED MEDIA ↗"
+    };
+    const p=participationCopy||{};
+    container.insertAdjacentHTML("beforeend",
+      '<section class="glass-participation" aria-labelledby="glass-participation-title">'+
+        '<div class="glass-participation-head"><p class="eyebrow">'+esc(p.open)+'</p><h3 id="glass-participation-title">'+esc(p.title)+'</h3><p>'+esc(p.intro)+'</p></div><div class="glass-participation-path"><div><span class="eyebrow">01 / '+esc(p.notice)+'</span><strong>'+esc(p.observe)+'</strong><p>'+esc(p.noticeText)+'</p></div><div><span class="eyebrow">02 / '+esc(p.send)+'</span><strong>'+esc(p.contribute)+'</strong><p>'+esc(p.sendText)+'</p></div><div><span class="eyebrow">03 / '+esc(p.review)+'</span><strong>'+esc(p.record)+'</strong><p>'+esc(p.reviewText)+'</p></div></div>'+
+        '<form class="glass-participation-form" data-glass-participation-form>'+
+          '<div class="glass-participation-types" role="group" aria-label="'+esc(p.submission)+'">'+
+            ["COMMENT","THEORY","FINDING","MENTION"].map((kind,i)=>'<button type="button" class="'+(i===0?"is-active":"")+'" aria-pressed="'+(i===0?"true":"false")+'" data-glass-kind="'+kind+'">'+kind+'</button>').join("")+
+          '</div>'+
+          '<input type="hidden" name="kind" value="COMMENT">'+
+          '<label>'+esc(p.name)+'<input name="displayName" maxlength="80" placeholder="'+esc(p.placeholderName)+'"></label>'+
+          '<label>'+esc(p.location)+'<input name="location" maxlength="160" placeholder="'+esc(p.placeholderOptional)+'"></label>'+
+          '<label>'+esc(p.contribution)+'<textarea name="body" maxlength="5000" rows="5" placeholder="'+esc(p.placeholderBody)+'"></textarea></label>'+
+          '<label>'+esc(p.upload)+'<input name="file" type="file" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,audio/mpeg,audio/wav,audio/ogg"></label>'+
+          '<button type="submit" class="glass-submit">'+esc(p.submit)+'</button>'+
+          '<p class="glass-participation-status" data-glass-participation-status aria-live="polite"></p>'+
+        '</form>'+
+        '<div class="glass-approved" data-glass-approved><p class="eyebrow">'+esc(p.approved)+'</p><div data-glass-approved-list><span class="inspector-note">'+esc(p.loading)+'</span></div></div>'+
+      '</section>');
+    const participation=window.ESCIE_GLASS_EYE_PARTICIPATION;
+    const form=container.querySelector("[data-glass-participation-form]");
+    const status=container.querySelector("[data-glass-participation-status]");
+    const submitButton=form&&form.querySelector(".glass-submit");
+    container.querySelectorAll("[data-glass-kind]").forEach(button=>button.addEventListener("click",()=>{
+      container.querySelectorAll("[data-glass-kind]").forEach(b=>{
+        const active=b===button;
+        b.classList.toggle("is-active",active);
+        b.setAttribute("aria-pressed",active?"true":"false");
+      });
+      form.querySelector('[name="kind"]').value=button.getAttribute("data-glass-kind")||"COMMENT";
+    }));
+    if(form&&participation&&typeof participation.submit==="function")form.addEventListener("submit",async event=>{
+      event.preventDefault();
+      const data=new FormData(form);
+      if(status)status.textContent="SENDING…";
+      if(form)form.setAttribute("aria-busy","true");
+      if(submitButton){submitButton.disabled=true;submitButton.setAttribute("aria-disabled","true");}
+      try{
+        await participation.submit({kind:data.get("kind"),displayName:data.get("displayName"),location:data.get("location"),body:data.get("body"),file:data.get("file")});
+        form.reset();
+        form.querySelector('[name="kind"]').value="COMMENT";
+        container.querySelectorAll("[data-glass-kind]").forEach((b,i)=>{
+          const active=i===0;
+          b.classList.toggle("is-active",active);
+          b.setAttribute("aria-pressed",active?"true":"false");
+        });
+        if(status)status.textContent=p.received;
+        loadApproved();
+      }catch(error){if(status)status.textContent=error&&error.message?error.message:p.failed;}
+      finally{
+        if(form)form.setAttribute("aria-busy","false");
+        if(submitButton){submitButton.disabled=false;submitButton.setAttribute("aria-disabled","false");}
+      }
+    });
+    async function loadApproved(){
+      if(!participation||typeof participation.approved!=="function")return;
+      const list=container.querySelector("[data-glass-approved-list]");
+      if(!list)return;
+      const rows=await participation.approved(12);
+      list.innerHTML=rows.length?rows.map(row=>{
+        const media=String(row.media_url||"");
+        const path=String(row.media_path||"").toLowerCase();
+        const safeMedia=/^https:\/\//i.test(media)?escapeHTML(media):"";
+        let mediaMarkup="";
+        if(safeMedia&&/\.(png|jpe?g|gif|webp|avif)(?:$|\?)/i.test(path))mediaMarkup='<img class="glass-approved-media" src="'+safeMedia+'" alt="Approved Glass Eye contribution" loading="lazy" decoding="async">';
+        else if(safeMedia&&/\.(mp4|webm|mov|m4v)(?:$|\?)/i.test(path))mediaMarkup='<video class="glass-approved-media" controls preload="metadata" src="'+safeMedia+'"></video>';
+        else if(safeMedia&&/\.(mp3|wav|m4a|ogg|aac)(?:$|\?)/i.test(path))mediaMarkup='<audio class="glass-approved-media" controls preload="metadata" src="'+safeMedia+'"></audio>';
+        else if(safeMedia)mediaMarkup='<a class="glass-approved-media-link" href="'+safeMedia+'" target="_blank" rel="noopener noreferrer">'+esc(p.openMedia)+'</a>';
+        return '<article class="glass-approved-item"><div><strong>'+esc(row.display_name||p.placeholderName)+'</strong><span>'+esc(row.kind||"COMMENT")+(row.location_label?" / "+esc(row.location_label):"")+'</span></div>'+(row.body?'<p>'+esc(row.body)+'</p>':"")+mediaMarkup+'</article>';
+      }).join("") :'<span class="inspector-note">'+esc(p.none)+'</span>';
+    }
+    loadApproved();
+
+    const response=container.querySelector(".glass-eye-response");
+    let hearRequested=false;
+    const previousBridge=ESCIE_RUNTIME.glassEyeAudioBridge;
+    if(previousBridge&&previousBridge.handler)window.removeEventListener("message",previousBridge.handler);
+    if(videoURL){
+      const iframe=container.querySelector(".glass-video-frame iframe");
+      const handler=function(event){
+        if(event.origin!=="https://www.youtube-nocookie.com"||!event.data||typeof event.data!=="string")return;
+        let payload=null;
+        try{payload=JSON.parse(event.data);}catch(error){return;}
+        if(!payload||payload.event!=="onStateChange")return;
+        if(Number(payload.info)===1&&hearRequested&&memory&&typeof memory.record==="function"){
+          hearRequested=false;
+          memory.record({type:"LISTENED",target_id:"glass-eye",timestamp:new Date().toISOString(),data:{source:"approved-youtube-playback-start"}});
+          if(response)response.textContent="PLAYBACK STARTED. LISTEN.";
+          renderGlassEye();
+        }
+      };
+      window.addEventListener("message",handler);
+      ESCIE_RUNTIME.glassEyeAudioBridge={handler};
+      const signalListening=function(){
+        try{
+          if(iframe&&iframe.contentWindow){
+            iframe.contentWindow.postMessage(JSON.stringify({event:"listening",id:"glass-eye"}),"https://www.youtube-nocookie.com");
+            iframe.contentWindow.postMessage(JSON.stringify({event:"command",func:"addEventListener",args:["onStateChange"]}),"https://www.youtube-nocookie.com");
+          }
+        }catch(error){}
+      };
+      if(iframe){
+        iframe.addEventListener("load",signalListening,{once:true});
+        window.setTimeout(signalListening,0);
+      }
+    }
     container.querySelectorAll("[data-glass-eye-action]").forEach(button=>button.addEventListener("click",()=>{
       const action=button.getAttribute("data-glass-eye-action");
       if(action==="clear-memory"){if(memory&&typeof memory.clear==="function")memory.clear();renderGlassEye();return;}
