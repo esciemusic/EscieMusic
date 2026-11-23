@@ -322,8 +322,8 @@ function allPublicRecords(){
     });
     const released=releaseVisible(record);
     const sections=released
-      ? {work,web:hasPublicConnection,archive,investigation,glassEye}
-      : {work:false,web:false,archive:false,investigation:false,glassEye:false};
+      ? {work,trace:hasPublicConnection,archive,investigation,glassEye}
+      : {work:false,trace:false,archive:false,investigation:false,glassEye:false};
     const search=record.search!==false&&released;
     return {
       id, work, archive, investigation, glassEye, search, released,
