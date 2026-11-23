@@ -9,7 +9,7 @@ test("Content lifecycle CREATE → RELEASE → DISCOVER → TRACE → RETURN sta
   window.ESCIE_RELATIONSHIP={validate:()=>({valid:true}),canDisclose:()=>true,toPublicView:r=>r,getCategory:()=> "context"};
   const publish=require("../data/public-publishing.js"); delete require.cache[require.resolve("../data/registry.js")]; require("../data/registry.js");
   const place=record("lifecycle-place","location",{release_status:"released",approved:true});
-  const art=record("lifecycle-art","visual",{release_status:"locked",approved:false,media:[{type:"image",url:"https://example.test/art.jpg"}],public_sections:["art","world","web"]});
+  const art=record("lifecycle-art","visual",{release_status:"locked",approved:false,media:[{type:"image",url:"https://example.test/art.jpg"}],public_sections:["art","world","trace"]});
   window.ESCIE_LOCATIONS.push(place); window.ESCIE_VISUAL_ART.push(art);
   window.ESCIE_RELATIONSHIPS.push({id:"lifecycle-rel",from:"lifecycle-art",type:"located_at",to:"lifecycle-place",status:"active",confidence:"verified",canonical_status:"canonical",visibility:"public",public_disclosure:true});
   assert.ok(window.ESCIE_RECORD_REGISTRY.get("lifecycle-art")); assert.equal(window.ESCIE_RECORD_REGISTRY.relationshipAudit().ok,true);
