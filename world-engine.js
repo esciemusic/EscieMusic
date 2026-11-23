@@ -1027,10 +1027,10 @@ function worldLensMarkup(){
  return '<div class="world-index-shell">'+
    '<div class="world-discovery-bar">'+
     '<span class="world-kicker">THE WORLD</span>'+
-    (!advanced?primary.map(function(t){
+    (!advanced?'<div class="world-lens-nav world-primary-nav" role="tablist" aria-label="ESCIE World navigation">'+primary.map(function(t){
       const active=state.tab===t[0];
       return '<button type="button" role="tab" class="world-primary-door" '+lensAttrs[t[0]]+' aria-selected="'+(active?"true":"false")+'" aria-label="'+esc(t[1])+'">'+glyph(t[2],t[1])+'<span>'+esc(t[1])+'</span></button>';
-    }).join(""):"")+
+    }).join("")+'</div>':"")+
     (!advanced?'<a class="world-primary-door world-primary-link" href="#art" aria-label="ART">'+glyph("art","ART")+'<span>ART</span></a>':"")+
     '<button type="button" class="world-index-toggle" data-world-explore aria-expanded="'+(advanced?"true":"false")+'"><span class="world-kicker">'+(advanced?"LOOK CLOSER":"DEEPER")+'</span><strong>'+(advanced?"CLOSE":"OPEN")+'</strong><span aria-hidden="true">'+(advanced?"−":"+")+'</span></button>'+
    '</div>'+
