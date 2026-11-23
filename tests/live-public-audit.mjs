@@ -31,6 +31,17 @@ const forbidden = [
 ];
 
 const sameOrigin = new URL(baseURL).origin;
+const visibleVoiceDenylist = [
+  /\\bTHE WEB\\b/i,
+  /\\bARG\\b/i,
+  /\\bMETADATA\\b/i,
+  /TRANSMISSION PLAYER/i,
+  /CURRENT TRANSMISSION/i,
+  /SIGNAL STATUS/i,
+  /TRANSMISSION COUNTDOWN/i,
+  /REALITY FILTER/i
+];
+
 const transientConsoleErrors = [];
 page.on("console", m => {
   if (m.type() === "error") {
@@ -63,7 +74,7 @@ page.on("response", response => {
 });
 
 async function scanRenderedBoundary(label) {
-  const html = await page.locator("html").evaluate(el => el.outerHTML);
+  const html = await page.locator("html").evaluate(el => el.outerHTML);\n  const visibleText = await page.locator("body").innerText();\n  for (const pattern of visibleVoiceDenylist) check(!pattern.test(visibleText), label + " visible copy drifted outside the ESCIE voice: " + pattern);
   for (const secret of forbidden) {
     check(!html.toLowerCase().includes(secret.toLowerCase()), label + " exposes forbidden material: " + secret);
   }
