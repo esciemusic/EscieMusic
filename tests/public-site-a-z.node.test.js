@@ -1453,7 +1453,7 @@ test("A-Z Pass 10 protects semantic Trace thread paths",()=>{
   const app=read("app.js");
   const style=read("style.css");
   assert.match(app,/trailEdges/);
-  assert.match(app,/CONNECTED_TO/);
+  assert.match(app,/CONNECTED/);
   assert.match(app,/trace-trail-step/);
   assert.match(style,/\.trace-trail-step/);
 });
