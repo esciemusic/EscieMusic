@@ -7,8 +7,10 @@ Scope: Public ESCIE doorway + EscieCentral synchronized control layer
 
 The system has been rebuilt around the approved ESCIE architecture rather than the earlier legacy navigation model.
 
-Canonical public order:
-NOW → ART → THE WORLD → TRACE → THE ARCHIVES → THE CASE FILES → GLASS EYE → ESCIE
+Canonical public surface:
+HOME → THE WORLD → TRACE
+
+Deep World elements remain discoverable underneath the surface rather than competing as top-level navigation.
 
 Canonical identity:
 ESCIE THE ARTIST. THE ART SPEAKS FOR ITSELF.
