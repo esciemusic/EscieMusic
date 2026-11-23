@@ -207,6 +207,13 @@ test("A-Z Pass 1 preserves the approved public experience surfaces",()=>{
   assert.match(app,/glassEyeYouTubeURL/);
 });
 
+test("Glass Eye hearing control captures state before the shared action reset",()=>{
+  const app=read("app.js");
+  assert.match(app,/if\(action!=="hear"\) button\.setAttribute\("aria-pressed","true"\);\s*if\(action==="hear"\)/);
+  assert.match(app,/const wasPressed=button\.getAttribute\("aria-pressed"\)==="true";/);
+  assert.match(app,/button\.setAttribute\("aria-pressed",wasPressed\?"false":"true"\);/);
+});
+
 test("A-Z Pass 1 keeps game exploration out of the public doorway",()=>{
   const index=read("index.html");
   const app=read("app.js");
