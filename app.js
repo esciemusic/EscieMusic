@@ -514,30 +514,57 @@
     if (!nav) return;
 
     const nodes = getInformationNodes();
+    const index = normalizeCollection(getGlobal("ESCIE_INDEX", []));
     const rawRoute = (window.location.hash || "").replace(/^#/, "");
     const router = getRouter();
     const currentRoute = router && typeof router.resolve === "function"
       ? (router.resolve(rawRoute) || rawRoute)
       : rawRoute;
 
+    const primaryMarkup = nodes.map(node => {
+      const target = node.target || "#";
+      const route = target.replace(/^#/, "");
+      const targetId = route;
+      const exists = targetId === "entry" || !!byId(targetId);
+      if (!exists) return "";
+      return '<a class="nav-link node-link" href="' + escapeHTML(target) + '"' +
+        (route === currentRoute ? ' aria-current="page"' : '') +
+        ' data-node-target="' + escapeHTML(targetId) + '"' +
+        ' data-nav-number="' + String(Number(node.order) || 0).padStart(2, "0") + '"' +
+        ' data-symbol="' + escapeHTML(node.symbol || "") + '"' +
+        ' data-symbol-meaning="' + escapeHTML(node.symbolMeaning || "") + '"' +
+        ' data-symbol-purpose="' + escapeHTML(node.symbolPurpose || "") + '"' +
+        ' title="' + escapeHTML(node.symbolPurpose || node.label || node.id || "") + '">' +
+        '<span class="node-link-label">' + escapeHTML((window.ESCIE_LANGUAGE_ENGINE && typeof window.ESCIE_LANGUAGE_ENGINE.interfaceLabel === "function") ? window.ESCIE_LANGUAGE_ENGINE.interfaceLabel(node.label || node.id || "", (window.ESCIE_STATE && window.ESCIE_STATE.language) || "en") : (node.label || node.id || "")) + '</span>' +
+        '<span class="node-link-symbol">' + customSymbolMarkup(node.symbol || "", node.label || node.id || "") + '</span>' +
+        '</a>';
+    }).join("");
+
+    const sectionMarkup = index.map(section => {
+      if (!section || !section.label) return "";
+      const entries = normalizeCollection(section.entries).filter(entry => entry && entry.target && entry.label);
+      if (!entries.length) return "";
+      return '<section class="index-map-section" data-index-section="' + escapeHTML(section.id || section.label) + '">' +
+        '<h2 class="index-map-heading">' + escapeHTML(section.label) + '</h2>' +
+        '<div class="index-map-links">' +
+        entries.map(entry =>
+          '<a class="index-map-link" href="' + escapeHTML(entry.target) + '">' +
+          '<span>' + escapeHTML(entry.label) + '</span>' +
+          '<span class="index-map-arrow" aria-hidden="true">↳</span>' +
+          '</a>'
+        ).join("") +
+        '</div></section>';
+    }).join("");
+
     nav.innerHTML =
-      nodes.map(node => {
-        const target = node.target || "#";
-        const route = target.replace(/^#/, "");
-        const targetId = route;
-        const exists = targetId === "entry" || !!byId(targetId);
-        if (!exists) return "";
-        return '<a class="nav-link node-link' + (route === currentRoute ? ' is-current' : '') + '" href="' + escapeHTML(target) + '"' +
-          (route === currentRoute ? ' aria-current="page"' : '') + ' data-node-target="' + escapeHTML(targetId) + '"' +
-          ' data-nav-number="' + String(Number(node.order) || 0).padStart(2, "0") + '"' +
-          ' data-symbol="' + escapeHTML(node.symbol || "") + '"' +
-          ' data-symbol-meaning="' + escapeHTML(node.symbolMeaning || "") + '"' +
-          ' data-symbol-purpose="' + escapeHTML(node.symbolPurpose || "") + '"' +
-          ' title="' + escapeHTML(node.symbolPurpose || node.label || node.id || "") + '">' +
-          '<span class="node-link-label">' + escapeHTML((window.ESCIE_LANGUAGE_ENGINE && typeof window.ESCIE_LANGUAGE_ENGINE.interfaceLabel === "function") ? window.ESCIE_LANGUAGE_ENGINE.interfaceLabel(node.label || node.id || "", (window.ESCIE_STATE && window.ESCIE_STATE.language) || "en") : (node.label || node.id || "")) + '</span>' +
-          '<span class="node-link-symbol">' + customSymbolMarkup(node.symbol || "", node.label || node.id || "") + '</span>' +
-          '</a>';
-      }).join("");
+      '<div class="index-map" aria-label="ESCIE Index">' +
+        '<div class="index-map-primary">' +
+          '<span class="index-map-kicker">INDEX</span>' +
+          '<span class="index-map-title">EVERYTHING THAT HAS A DOOR</span>' +
+          primaryMarkup +
+        '</div>' +
+        '<div class="index-map-detail">' + sectionMarkup + '</div>' +
+      '</div>';
   }
 
   function refreshNavigationState() {
