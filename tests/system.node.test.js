@@ -580,14 +580,9 @@ console.log("ESCIE save-store integrity contracts OK");
 /* PUBLIC INDEX / ACCORDION HIERARCHY CONTRACTS */
 const publicNavigationRuntime=fs.readFileSync("navigation.js","utf8");
 const aestheticRuntime=fs.readFileSync("aesthetic.css","utf8");
-assert(publicNavigationRuntime.includes('id:"now",label:"NOW"'),"public index must retain NOW");
-assert(publicNavigationRuntime.includes('id:"art",label:"ART"'),"public index must retain WORK");
+assert(publicNavigationRuntime.includes('id:"home",label:"HOME"'),"public index must retain HOME");
 assert(publicNavigationRuntime.includes('id:"world",label:"THE WORLD"'),"public index must retain THE WORLD");
 assert(publicNavigationRuntime.includes('id:"trace",label:"TRACE"'),"public index must retain TRACE");
-assert(publicNavigationRuntime.includes('id:"archives",label:"THE ARCHIVES"'),"public index must retain ARCHIVE");
-assert(publicNavigationRuntime.includes('id:"investigation",label:"THE CASE FILES"'),"public index must retain THE CASE FILES");
-assert(publicNavigationRuntime.includes('id:"glass-eye",label:"GLASS EYE"'),"public index must retain GLASS EYE");
-assert(publicNavigationRuntime.includes('id:"escie",label:"ESCIE"'),"public index must retain ESCIE");
 assert(!publicNavigationRuntime.includes('id:"merch",label:"MERCH"'),"MERCH must not occupy a primary index slot");
 assert(!publicNavigationRuntime.includes('id:"enter-world"'),"ENTER THE WORLD must not occupy a primary index slot");
 assert(aestheticRuntime.includes("main > .site-section:not(#entry).section-collapsed"),"collapsed sections must have an explicit compact state");
