@@ -158,7 +158,7 @@ async function auditWorldLenses(label){
   check(await world.count()===1, label+" THE WORLD section missing");
   const trigger=world.locator(".section-drop-trigger");
   if(await trigger.count() && !(await world.evaluate(el=>el.classList.contains("section-open")).catch(()=>false))) await trigger.click();
-  const primaryTabs=["people","places","moments"];
+  const primaryTabs=["people","places","moments","objects"];
   for(const tab of primaryTabs){
     const button=page.locator('[data-world-tab="'+tab+'"]').first();
     check(await button.count()===1, label+" THE WORLD primary lens missing: "+tab);
@@ -173,7 +173,7 @@ async function auditWorldLenses(label){
     await explorer.click();
     await page.waitForTimeout(80);
   }
-  const deeperTabs=["trace"];
+  const deeperTabs=["fragments","proof","bodies"];;
   for(const tab of deeperTabs){
     const button=page.locator('[data-world-tab="'+tab+'"]').first();
     check(await button.count()===1, label+" THE WORLD deeper lens missing: "+tab);
