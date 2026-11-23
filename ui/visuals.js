@@ -166,7 +166,7 @@
   const sections=Array.from(document.querySelectorAll(".section-visual[data-visual-section]"));
   const bySection=new Map();
   allVisuals.forEach(item=>{
-   const key=item.section==="the-web"?"web":(item.section==="archive"?"archives":(item.section==="work"?"art":item.section));
+   const key=item.section==="the-web"?"trace":(item.section==="web"?"trace":(item.section==="archive"?"archives":(item.section==="work"?"art":item.section)));
    if(!bySection.has(key))bySection.set(key,[]);
    bySection.get(key).push(item);
   });
