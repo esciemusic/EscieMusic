@@ -1011,36 +1011,37 @@ function homeRooms(){
 // Canonical World entry contracts: data-world-tab="places" data-world-tab="people" data-world-tab="moments" href="#art"
 // Entry tone: Come in. Look around.
 function worldLensMarkup(){
- const lensAttrs={atlas:'data-world-tab="atlas"',objects:'data-world-tab="objects"',people:'data-world-tab="people"',places:'data-world-tab="places"',moments:'data-world-tab="moments"',fragments:'data-world-tab="fragments"',bodies:'data-world-tab="bodies"',proof:'data-world-tab="proof"',path:'data-world-tab="path"',trace:'data-world-tab="trace"',timeline:'data-world-tab="timeline"',symbols:'data-world-tab="symbols"',trails:'data-world-tab="trails"'};
+ const lensAttrs={atlas:'data-world-tab="atlas"',objects:'data-world-tab="objects"',people:'data-world-tab="people"',places:'data-world-tab="places"',moments:'data-world-tab="moments"',fragments:'data-world-tab="fragments"',bodies:'data-world-tab="bodies"',proof:'data-world-tab="proof"',path:'data-world-tab="path"',timeline:'data-world-tab="timeline"',symbols:'data-world-tab="symbols"',trails:'data-world-tab="trails"'};
  const primary=[
-  ["places","PLACES","world"],
   ["people","PEOPLE","person"],
-  ["moments","MOMENTS","moment"]
+  ["places","PLACES","world"],
+  ["moments","MOMENTS","moment"],
+  ["objects","OBJECTS","world"]
+ ];
+ const deeper=[
+  ["fragments","FRAGMENTS","photo-negative"],
+  ["proof","PROOF","key"],
+  ["bodies","BODIES","empty-chair"]
  ];
  const advanced=state.exploreOpen;
- const closer=[
-  ["objects","OBJECTS","world"],
-  ["trace","TRACE","web"]
- ];
  return '<div class="world-index-shell">'+
    '<div class="world-discovery-bar">'+
-    '<button type="button" class="world-index-toggle" data-world-explore aria-expanded="'+(advanced?"true":"false")+'"><span class="world-kicker">DISCOVER</span><strong>'+(advanced?"LOOK CLOSER":"EXPLORE")+'</strong><span aria-hidden="true">'+(advanced?"−":"+")+'</span></button>'+
+    '<span class="world-kicker">THE WORLD</span>'+
     (!advanced?primary.map(function(t){
       const active=state.tab===t[0];
       return '<button type="button" role="tab" class="world-primary-door" '+lensAttrs[t[0]]+' aria-selected="'+(active?"true":"false")+'" aria-label="'+esc(t[1])+'">'+glyph(t[2],t[1])+'<span>'+esc(t[1])+'</span></button>';
     }).join(""):"")+
+    (!advanced?'<a class="world-primary-door world-primary-link" href="#art" aria-label="ART">'+glyph("art","ART")+'<span>ART</span></a>':"")+
+    '<button type="button" class="world-index-toggle" data-world-explore aria-expanded="'+(advanced?"true":"false")+'"><span class="world-kicker">'+(advanced?"LOOK CLOSER":"DEEPER")+'</span><strong>'+(advanced?"CLOSE":"OPEN")+'</strong><span aria-hidden="true">'+(advanced?"−":"+")+'</span></button>'+
    '</div>'+
-   '<div class="world-lens-nav world-deeper-nav" role="tablist" aria-label="ESCIE World navigation"'+(advanced?"":" hidden")+'>'+
-    '<span class="world-deeper-label">LOOK CLOSER</span>'+
-    closer.map(function(t){
+   '<div class="world-lens-nav world-deeper-nav" role="tablist" aria-label="Deeper World navigation"'+(advanced?"":" hidden")+'>'+
+    '<span class="world-deeper-label">DEEPER</span>'+
+    deeper.map(function(t){
       const active=state.tab===t[0];
       return '<button type="button" role="tab" aria-selected="'+(active?"true":"false")+'" '+lensAttrs[t[0]]+'>'+glyph(t[2],t[1])+'<span>'+esc(t[1])+'</span></button>';
     }).join("")+
-    '<button type="button" class="world-more-door" data-world-more aria-expanded="'+(state.moreOpen?"true":"false")+'"><span>'+(state.moreOpen?"LESS":"MORE")+'</span></button>'+
-    (state.moreOpen?tabs.filter(function(t){return !["people","places","moments","trace","path","trails"].includes(t[0]);}).map(function(t){
-      const active=state.tab===t[0];
-      return '<button type="button" role="tab" aria-selected="'+(active?"true":"false")+'" '+lensAttrs[t[0]]+'>'+glyph(t[2],t[1])+'<span>'+esc(t[1])+'</span></button>';
-    }).join(""):"")+ 
+    '<a class="world-deeper-door" href="#archives" aria-label="ARCHIVES">'+glyph("archives","ARCHIVES")+'<span>ARCHIVES</span></a>'+
+    '<a class="world-deeper-door" href="#trace" aria-label="CONNECTIONS">'+glyph("web","CONNECTIONS")+'<span>CONNECTIONS</span></a>'+
    '</div>'+
   '</div>';
 }
