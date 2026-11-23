@@ -5,7 +5,7 @@ const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
 const safeDecode=value=>{try{return decodeURIComponent(String(value??""));}catch(_e){return String(value??"");}};
 const coll=(name,fallback=[])=>{const v=window[name];return Array.isArray(v)?v:(v&&Array.isArray(v.records)?v.records:fallback)};
-const state={tab:"atlas",q:"",type:"ALL",selected:null,trail:[],visited:[],eyeOpen:false,exploreOpen:false,outsideOpen:false,moreOpen:false,returningFrom:null,returnFlash:null,street:null,roomOrigin:null,depthOpenFor:null,attentionSince:0,attentionNoticed:false,focusOrigin:null,focusDetailRequest:false,focusRestoreRequest:false};
+const state={tab:"atlas",q:"",type:"ALL",selected:null,trail:[],visited:[],eyeOpen:false,exploreOpen:false,outsideOpen:false,returningFrom:null,returnFlash:null,street:null,roomOrigin:null,depthOpenFor:null,attentionSince:0,attentionNoticed:false,focusOrigin:null,focusDetailRequest:false,focusRestoreRequest:false};
 const tabs=[["atlas","ATLAS","world"],["people","THE PEOPLE","person"],["places","PLACES","world"],["moments","MOMENTS","moment"],["objects","OBJECTS","world"],["fragments","FRAGMENTS","photo-negative"],["bodies","BODIES","empty-chair"],["proof","PROOF","key"],["path","PATH","web"],["timeline","TIMELINE","now"],["symbols","SYMBOLS","daisy"],["trace","TRACE","web"],["trails","TRAILS","web"]];function glyph(name,label){const safe=String(name||"").replace(/[^a-z0-9-]/gi,"");if(!safe)return "";return '<svg class="escie-symbol-glyph world-entry-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#'+esc(safe)+'"></use></svg>';}
 const raf=typeof requestAnimationFrame==="function"?requestAnimationFrame:fn=>setTimeout(fn,0);
 const caf=typeof cancelAnimationFrame==="function"?cancelAnimationFrame:clearTimeout;
@@ -1209,13 +1209,11 @@ function draw(){
      draw();
      return;
    }
-   const more=event.target.closest("[data-world-more]");
-   if(more){state.moreOpen=!state.moreOpen;draw();return;}
    const explore=event.target.closest("[data-world-explore]");
    if(explore){
      state.exploreOpen=!state.exploreOpen;
      state.outsideOpen=false;
-     if(!state.exploreOpen){state.tab="atlas";state.moreOpen=false;}
+     if(!state.exploreOpen){state.tab="atlas";}
      state.selected=null;
      history.replaceState(null,"","#world");
      draw();
