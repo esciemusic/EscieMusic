@@ -4306,3 +4306,8 @@ body.light .world-object-origin{border-color:rgba(0,0,0,.1)}
   .world-more-door,
   .world-more-door::after{transition:none}
 }
+
+
+/* VISUAL IDENTITY LOCK — the ESCIE mark and Index stay purple in both themes. */
+.site-logo,.index-trigger{color:var(--escie-aesthetic-purple)!important;text-shadow:0 0 18px var(--escie-aesthetic-purple-soft);}
+html[data-theme="light"] .site-logo,html[data-theme="light"] .index-trigger{color:#6336a2!important;text-shadow:0 0 12px rgba(99,54,162,.12);}
