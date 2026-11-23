@@ -1420,7 +1420,8 @@ test("A-Z Pass 13 separates relationship threads from wandering discovery",()=>{
   assert.match(engine,/Established relationships only\./);
   assert.match(engine,/WANDER/);
   assert.match(engine,/not established connections/);
-  assert.match(engine,/const baseLinks=current\?related\(current\.id\):\[\]/);\n  assert.match(engine,/const connected=!!relation/);
+  assert.match(engine,/const baseLinks=current\?related\(current\.id\):\[\]/);
+  assert.match(engine,/const connected=!!relation/);
 });
 
 test("A-Z Pass 12 distinguishes wandering from relationship threads",()=>{
