@@ -78,8 +78,10 @@ test("A-Z Pass 1 locks the live shell to the eight-section model",()=>{
   assert.doesNotMatch(visuals,/section:"work"/);
   assert.doesNotMatch(visuals,/section:"the-web"/);
   assert.doesNotMatch(visuals,/section:"archive"/);
-  assert.match(navigation,/id:"now".*order:1/);
-  assert.match(navigation,/id:"escie".*order:8/);
+  assert.match(navigation,/order:\["home","world","trace"\]/);
+  assert.match(navigation,/id:"home".*target:"#entry".*primary:true.*order:1/);
+  assert.match(navigation,/id:"world".*target:"#world".*primary:true.*order:2/);
+  assert.match(navigation,/id:"trace".*target:"#trace".*primary:true.*order:3/);
 });
 
 
@@ -110,14 +112,10 @@ test("A-Z Pass 3 public index follows visitor priority and restrained palette",(
   const nodes=read("data/nodes.js");
   const aesthetic=read("aesthetic.css");
   const language=read("language.js");
-  assert.match(navigation,/id:"now".*order:1/);
-  assert.match(navigation,/id:"art".*order:2/);
-  assert.match(navigation,/id:"world".*order:3/);
-  assert.match(navigation,/id:"glass-eye".*order:4/);
-  assert.match(navigation,/id:"trace".*order:5/);
-  assert.match(navigation,/id:"archives".*order:6/);
-  assert.match(navigation,/id:"investigation".*order:7/);
-  assert.match(navigation,/id:"escie".*order:8/);
+  assert.match(navigation,/order:\["home","world","trace"\]/);
+  assert.match(navigation,/id:"home".*primary:true.*order:1/);
+  assert.match(navigation,/id:"world".*primary:true.*order:2/);
+  assert.match(navigation,/id:"trace".*primary:true.*order:3/);
   assert.match(nodes,/id:"node-glass-eye"[\s\S]*?order:4/);
   assert.match(nodes,/id:"node-trace"[\s\S]*?order:5/);
   assert.match(nodes,/id:"node-archives"[\s\S]*?order:6/);
