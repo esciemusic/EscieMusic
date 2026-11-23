@@ -1,16 +1,11 @@
 const ESCIE_NAVIGATION=[
-{id:"now",label:"NOW",target:"#now",primary:true,order:1,symbol:"now",symbolMeaning:"Present state",symbolPurpose:"See what is current"},
-{id:"art",label:"ART",target:"#art",primary:true,order:2,symbol:"art",symbolMeaning:"Creation",symbolPurpose:"Enter the work"},
-{id:"world",label:"THE WORLD",target:"#world",primary:true,order:3,symbol:"world",symbolMeaning:"The shared world environment",symbolPurpose:"Enter the World"},
-{id:"glass-eye",label:"GLASS EYE",target:"#glass-eye",primary:true,order:4,symbol:"glass-eye",symbolMeaning:"Witness",symbolPurpose:"See through the screen"},
-{id:"trace",label:"TRACE",target:"#trace",primary:true,order:5,symbol:"web",symbolMeaning:"Connections",symbolPurpose:"Follow the thread"},
-{id:"archives",label:"THE ARCHIVES",target:"#archives",primary:true,order:6,symbol:"archives",symbolMeaning:"Record",symbolPurpose:"Open the preserved record"},
-{id:"investigation",label:"THE CASE FILES",target:"#investigation",primary:true,order:7,symbol:"case-files",symbolMeaning:"Inquiry",symbolPurpose:"Follow the evidence"},
-{id:"escie",label:"ESCIE",target:"#escie",primary:true,order:8,symbol:"escie",symbolMeaning:"Identity",symbolPurpose:"Return to ESCIE"}
+{id:"home",label:"HOME",target:"#entry",primary:true,order:1,symbol:"escie",symbolMeaning:"Home",symbolPurpose:"Return to the surface"},
+{id:"world",label:"THE WORLD",target:"#world",primary:true,order:2,symbol:"world",symbolMeaning:"The shared world",symbolPurpose:"Enter the World"},
+{id:"trace",label:"TRACE",target:"#trace",primary:true,order:3,symbol:"web",symbolMeaning:"Connections",symbolPurpose:"Follow the thread"}
 ];
 
 const ESCIE_NAVIGATION_CONTRACT={
-  order:["now","art","world","glass-eye","web","archives","investigation","escie"],
+  order:["home","world","trace"],
   validate:function(items){
     const list=Array.isArray(items)?items:[];
     const errors=[];
