@@ -40,9 +40,12 @@ test("public section IDs remain canonical",()=>{
   const nav=read("navigation.js");
   const sections=read("data/public-sections.js");
   for(const id of ["now","art","world","trace","archives","investigation","glass-eye","escie"]){
-    assert.match(nav,new RegExp('id:"'+id+'"'));
     assert.match(sections,new RegExp('id:"'+id+'"'));
   }
+  assert.match(nav,/order:\["home","world","trace"\]/);
+  assert.match(nav,/id:"home"/);
+  assert.match(nav,/id:"world"/);
+  assert.match(nav,/id:"trace"/);
 });
 
 test("public shell keeps the sealed release boundary",()=>{
@@ -193,14 +196,10 @@ test("A-Z Pass 1 restores saved language preference on boot",()=>{
 test("A-Z Pass 1 preserves the approved public experience surfaces",()=>{
   const app=read("app.js");
   const nav=read("navigation.js");
-  assert.match(nav,/id:"now"/);
-  assert.match(nav,/id:"art"/);
-  assert.match(nav,/id:"world"/);
-  assert.match(nav,/id:"trace"/);
-  assert.match(nav,/id:"archives"/);
-  assert.match(nav,/id:"investigation"/);
-  assert.match(nav,/id:"glass-eye"/);
-  assert.match(nav,/id:"escie"/);
+  assert.match(nav,/order:\["home","world","trace"\]/);
+  for(const id of ["now","art","world","trace","archives","investigation","glass-eye","escie"]){
+    assert.match(sections,new RegExp('id:"'+id+'"'));
+  }
   assert.match(app,/function renderGlassEye\(\)/);
   assert.match(app,/function renderWorld\(\)/);
   assert.match(app,/function renderArchive\(\)/);
