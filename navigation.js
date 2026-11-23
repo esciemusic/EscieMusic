@@ -120,7 +120,6 @@ const ESCIE_INDEX=[
     entries:[
       {label:"BAM",target:"#projects"},
       {label:"CLOTHING",target:"#projects"},
-      {label:"GAME",target:"#glass-eye"}
     ]
   },
   {
@@ -140,7 +139,6 @@ const ESCIE_INDEX=[
     entries:[
       {label:"MUSIC",target:"#art/music"},
       {label:"SOCIAL",target:"#glass-eye"},
-      {label:"GAME",target:"#glass-eye"}
     ]
   }
 ];
