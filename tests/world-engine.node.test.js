@@ -57,6 +57,13 @@ assert(/YOUR MEMORY/.test(src)&&/you noticed this before/.test(src),"World memor
 assert(/function meaningSignals\(r\)/.test(src),"World meaning needs an evidence-based signal collector");
 assert(/function meaningMarkup\(r\)/.test(src),"World meaning needs a visitor-facing accumulation renderer");
 assert(/function curiosityMarkup\(r\)/.test(src),"World curiosity needs an evidence-based curiosity renderer");
+assert(/function discoveryDepthData\(r\)/.test(src),"World discovery depth needs an evidence-derived context collector");
+assert(/function discoveryDepthMarkup\(r\)/.test(src),"World discovery depth needs a visitor-facing deeper-context renderer");
+assert(/GO DEEPER/.test(src)&&/There is more here\./.test(src),"World curiosity should offer depth without adding a new navigation layer");
+assert(/WHERE/.test(src)&&/WHEN/.test(src)&&/SOURCE/.test(src)&&/SIGNALS/.test(src)&&/MOTIFS/.test(src),"World discovery depth should reuse existing record evidence");
+assert(/data-depth-toggle/.test(src)&&/state\.depthOpenFor/.test(src),"World discovery depth must be an explicit visitor choice");
+assert(/aria-expanded=/.test(src)&&/Follow the evidence beneath the first impression/.test(src),"World discovery depth must be accessible and explain its purpose");
+
 assert(/LOOK CLOSER/.test(src),"World curiosity should invite closer attention without a puzzle");
 assert(/recurring motif appears here/.test(src),"World curiosity should use recurring motifs as real evidence");
 assert(/opens more than one thread/.test(src),"World curiosity should use multiple public connections as real evidence");
