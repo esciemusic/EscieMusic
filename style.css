@@ -670,7 +670,7 @@ body.menu-open .index-navigation.is-open {
   min-width:0;
   padding:5px 4px!important;
   color:var(--muted)!important;
-  font:500 9px/1.2 var(--escie-font-body,Arial,sans-serif)!important;
+  font:500 9px/1.2 var(--escie-font-signal,monospace)!important;
   letter-spacing:.04em!important;
   text-transform:uppercase;
   transform:none!important;
@@ -680,7 +680,7 @@ body.menu-open .index-navigation.is-open {
   display:block;
   max-width:46ch;
   color:var(--faint);
-  font:400 9px/1.35 var(--escie-font-body,Arial,sans-serif);
+  font:400 8px/1.35 var(--escie-font-body,Arial,sans-serif);
   letter-spacing:0;
   text-transform:none;
 }
