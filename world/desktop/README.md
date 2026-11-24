@@ -86,3 +86,12 @@ The desktop app is **not** a replacement for the ESCIE public World.
 It is the playable layer of the same ecosystem:
 
 **PUBLIC WORLD → doorway → ESCIE WORLD → deeper playable experience**
+
+
+### Runtime hardening
+
+The desktop package stages the game into `world/desktop/app/` and bundles the exact Three.js 0.160.0 browser runtime into `app/vendor/three.min.js`. This keeps the packaged game independent of an internet connection for its core 3D renderer. The public/PWA version continues to use the same pinned Three.js version from jsDelivr.
+
+### Mobile-first input
+
+The game remains full-screen and 3D-first on phones. Touch players get explicit movement and action controls with safe-area support, while the existing swipe-to-move/look gesture remains available. Keyboard and gamepad input remain first-class inputs.
