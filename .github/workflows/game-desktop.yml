@@ -21,6 +21,10 @@ jobs:
           node-version: 20
       - name: Validate desktop package contract
         run: node --test tests/game-desktop-package.node.test.js
+      - name: Validate desktop build boundary
+        run: node --test tests/game-desktop-build.node.test.js
+      - name: Validate mobile-first game surface
+        run: node --test tests/game-mobile-first.node.test.js
       - name: Validate game entrypoints
         run: |
           test -f world/index.html
