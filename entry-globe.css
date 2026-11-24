@@ -12,8 +12,8 @@
 .entry-globe-latitude{position:absolute;left:9%;right:9%;height:20%;top:40%;border:1px solid rgba(255,255,255,.12);border-radius:50%;transform-origin:center;pointer-events:none;z-index:1}
 .entry-globe-orbit{position:absolute;inset:-9%;border:1px solid rgba(255,255,255,.06);border-radius:50%;transform:rotate(18deg) scaleX(.618);pointer-events:none;z-index:0}
 .entry-globe-home{position:absolute;left:57%;top:39%;border-radius:50%;background:#fff;box-shadow:0 0 0 5px rgba(255,255,255,.08),0 0 18px rgba(255,255,255,.42);z-index:3;pointer-events:none}
-.entry-globe-point{position:absolute;width:7px;height:7px;border:1px solid rgba(255,255,255,.5);border-radius:50%;background:rgba(255,255,255,.08);transform:translate(-50%,-50%);transition:opacity .25s ease,transform .25s ease,filter .25s ease;z-index:4}
-.entry-globe-point:hover,.entry-globe-point:focus-visible{opacity:1!important;transform:translate(-50%,-50%) scale(1.35)!important;filter:drop-shadow(0 0 8px rgba(255,255,255,.45))}
+.entry-globe-point{position:absolute;width:24px;height:24px;border:0;border-radius:50%;background:transparent;transform:translate(-50%,-50%);transition:opacity .25s ease,transform .25s ease,filter .25s ease;z-index:4;display:grid;place-items:center}
+.entry-globe-point:hover,.entry-globe-point:focus-visible{opacity:1!important;transform:translate(-50%,-50%) scale(1.18)!important;filter:drop-shadow(0 0 9px var(--node-signal,rgba(255,255,255,.45)))}
 .entry-globe-label{position:absolute;bottom:-24px;left:50%;transform:translateX(-50%);font:500 8px/1 var(--escie-font-mono,monospace);letter-spacing:.22em;color:rgba(255,255,255,.48);text-transform:uppercase;white-space:nowrap;pointer-events:none}
 .entry-globe-core{position:absolute;inset:0;display:grid;place-items:center;z-index:5;pointer-events:none}
 .entry-globe-enter{width:48%;aspect-ratio:1;border:1px solid rgba(255,255,255,.12);border-radius:50%;background:transparent;color:transparent;cursor:pointer;pointer-events:auto}
@@ -22,13 +22,13 @@
 .entry-section .hero-symbol-doors{display:flex;align-items:center;justify-content:center;gap:clamp(18px,3.2vw,34px);margin:24px auto 0;max-width:760px;}
 @media(max-width:600px){.entry-world-globe{width:190px;margin-top:18px}.entry-globe-label{bottom:-18px}.entry-section .hero-symbol-doors{gap:12px;margin-top:18px;padding:0 4px}}
 /* Canonical World marks: symbols identify nodes without permanent labels. */
-.entry-globe-point-symbol{position:absolute;left:50%;top:50%;width:15px;height:15px;transform:translate(-50%,-50%);color:var(--node-signal,rgba(255,255,255,.82));opacity:.76;pointer-events:none}
+.entry-globe-point-symbol{position:absolute;left:50%;top:50%;width:18px;height:18px;transform:translate(-50%,-50%);color:var(--node-signal,rgba(255,255,255,.82));opacity:.78;pointer-events:none;filter:drop-shadow(0 0 5px color-mix(in srgb,var(--node-signal,white) 45%,transparent))}
 .entry-globe-point-symbol .escie-symbol-glyph{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.15;stroke-linecap:round;stroke-linejoin:round}
-.entry-globe-point::before{content:"";position:absolute;inset:-7px;border-radius:50%;background:var(--node-signal,rgba(255,255,255,.18));filter:blur(5px);opacity:.3;pointer-events:none;z-index:-1}
+.entry-globe-point::before{content:"";position:absolute;inset:2px;border-radius:50%;background:var(--node-signal,rgba(255,255,255,.18));filter:blur(7px);opacity:.22;pointer-events:none;z-index:-1}
 .entry-globe-point.home{--node-signal:var(--escie-blue-bright)}
 .entry-globe-point.music{--node-signal:var(--escie-ultraviolet)}
 .entry-globe-point.archive{--node-signal:var(--escie-cold-grey)}
 .entry-globe-point.case{--node-signal:var(--escie-purple)}
 .entry-globe-point.glass{--node-signal:var(--escie-blue-bright)}
-.entry-globe-point:hover .entry-globe-point-symbol,.entry-globe-point:focus-visible .entry-globe-point-symbol{opacity:1}
+.entry-globe-point:hover .entry-globe-point-symbol,.entry-globe-point:focus-visible .entry-globe-point-symbol{opacity:1;filter:drop-shadow(0 0 8px var(--node-signal,white))}
 .entry-globe-legend{display:none!important}
