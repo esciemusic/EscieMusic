@@ -622,6 +622,42 @@ body.menu-open .index-navigation.is-open {
   gap:5px;
 }
 
+.index-map-description{
+  max-width:62ch;
+  margin:0 0 3px;
+  color:var(--muted);
+  font:400 9px/1.55 var(--escie-font-mono,monospace);
+  letter-spacing:.06em;
+}
+.index-map-link-copy{
+  display:grid;
+  gap:2px;
+  min-width:0;
+}
+.index-map-link-label{
+  color:inherit;
+}
+.index-map-link-description{
+  display:block;
+  max-width:46ch;
+  color:var(--faint);
+  font:400 8px/1.4 var(--escie-font-mono,monospace);
+  letter-spacing:.025em;
+  text-transform:none;
+}
+.index-map-link:hover .index-map-link-description,
+.index-map-link:focus-visible .index-map-link-description{
+  color:var(--muted);
+}
+@media(max-width:700px){
+  .index-map-description{
+    font-size:8px;
+    line-height:1.6;
+  }
+  .index-map-link-description{
+    font-size:7px;
+  }
+}
 .index-map-heading{
   margin:0 0 2px;
   color:var(--faint);
