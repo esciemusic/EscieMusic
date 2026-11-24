@@ -14,26 +14,6 @@
 .entry-globe-home{position:absolute;left:57%;top:39%;border-radius:50%;background:#fff;box-shadow:0 0 0 5px rgba(255,255,255,.08),0 0 18px rgba(255,255,255,.42);z-index:3;pointer-events:none}
 .entry-globe-point{position:absolute;width:7px;height:7px;border:1px solid rgba(255,255,255,.5);border-radius:50%;background:rgba(255,255,255,.08);transform:translate(-50%,-50%);transition:opacity .25s ease,transform .25s ease,filter .25s ease;z-index:4}
 .entry-globe-point:hover,.entry-globe-point:focus-visible{opacity:1!important;transform:translate(-50%,-50%) scale(1.35)!important;filter:drop-shadow(0 0 8px rgba(255,255,255,.45))}
-.entry-globe-point::before{
-  content:attr(data-node-key);
-  position:absolute;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-  color:rgba(5,5,5,.95);
-  font:700 4px/1 var(--escie-font-signal,monospace);
-  letter-spacing:0;
-  pointer-events:none;
-  z-index:2;
-}
-.entry-globe-legend-key{
-  display:inline-block;
-  min-width:1.45em;
-  margin-right:2px;
-  color:var(--escie-aesthetic-purple);
-  font-size:.85em;
-  opacity:.9;
-}
 .entry-globe-label{position:absolute;bottom:-24px;left:50%;transform:translateX(-50%);font:500 8px/1 var(--escie-font-mono,monospace);letter-spacing:.22em;color:rgba(255,255,255,.48);text-transform:uppercase;white-space:nowrap;pointer-events:none}
 .entry-globe-core{position:absolute;inset:0;display:grid;place-items:center;z-index:5;pointer-events:none}
 .entry-globe-enter{width:48%;aspect-ratio:1;border:1px solid rgba(255,255,255,.12);border-radius:50%;background:transparent;color:transparent;cursor:pointer;pointer-events:auto}
