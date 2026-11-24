@@ -139,7 +139,7 @@
   function customSymbolMarkup(glyph, label) {
     const safeGlyph = String(glyph || "").replace(/[^a-z0-9-]/gi, "");
     if (!safeGlyph) return "";
-    return '<svg class="escie-symbol-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#' + escapeHTML(safeGlyph) + '"></use></svg>';
+    return '<svg class="escie-symbol-glyph symbol-' + escapeHTML(safeGlyph) + '" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#' + escapeHTML(safeGlyph) + '"></use></svg>';
   }
 
   function motifMarkup(sectionId) {
