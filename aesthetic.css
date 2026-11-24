@@ -4980,3 +4980,118 @@ html[data-theme="light"] .site-logo,html[data-theme="light"] .index-trigger{colo
   .world-detail-signal .world-entry-glyph{width:22px;height:22px}
   .world-encounter-threshold{margin-top:7px}
 }
+
+
+/* WORLD PASS 7 — Montréal is the center of gravity, not just the first place record. */
+.world-home-montréal{
+  --home-signal:var(--escie-blue-bright);
+  position:relative;
+}
+.world-home-threshold{
+  position:relative;
+}
+.world-home-threshold:after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:0;
+  width:clamp(90px,32vw,240px);
+  height:1px;
+  background:linear-gradient(90deg,var(--home-signal),transparent);
+  opacity:.65;
+}
+.world-home-core-line{
+  display:grid;
+  grid-template-columns:34px minmax(0,1fr);
+  gap:10px;
+  align-items:center;
+}
+.world-home-core-mark{
+  width:32px;
+  height:32px;
+  display:grid;
+  place-items:center;
+  color:var(--home-signal);
+  filter:drop-shadow(0 0 8px rgba(47,128,255,.18));
+}
+.world-home-core-mark .world-entry-glyph{
+  width:28px;
+  height:28px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.1;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.world-home-montréal .record-identity{
+  font-family:var(--escie-font-escie);
+  font-size:clamp(28px,7vw,58px);
+  letter-spacing:.035em;
+}
+.world-home-live-surface{
+  border-left:1px solid color-mix(in srgb,var(--home-signal) 34%,transparent);
+  background:linear-gradient(90deg,color-mix(in srgb,var(--home-signal) 5%,transparent),transparent 70%);
+}
+.world-home-montréal .world-home-place-copy{
+  max-width:680px;
+  padding:4px 2px;
+}
+.world-home-montréal .world-home-place-copy p{
+  font-family:var(--escie-font-signal);
+  font-size:13px;
+  line-height:1.75;
+  color:rgba(216,212,202,.7);
+}
+.world-home-presence{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  border-top:1px solid rgba(216,212,202,.08);
+  border-bottom:1px solid rgba(216,212,202,.08);
+}
+.world-home-presence span{
+  min-width:0;
+  padding:12px 8px;
+  border-right:1px solid rgba(216,212,202,.07);
+}
+.world-home-presence span:last-child{border-right:0}
+.world-home-presence b{
+  display:block;
+  color:var(--home-signal);
+  font-family:var(--escie-font-signal);
+  font-size:18px;
+  font-weight:500;
+}
+.world-home-presence small{
+  display:block;
+  margin-top:3px;
+  color:rgba(216,212,202,.42);
+  font-family:var(--escie-font-signal);
+  font-size:8px;
+  letter-spacing:.08em;
+}
+.world-home-montréal .world-room-life-head{
+  padding-top:2px;
+}
+.world-home-montréal .world-room{
+  border-left:0;
+  border-right:0;
+}
+.world-home-montréal .world-room:hover,
+.world-home-montréal .world-room:focus-visible{
+  background:linear-gradient(90deg,rgba(47,128,255,.045),transparent);
+}
+.world-home-montréal .world-home-place-outside{
+  border-top-color:rgba(155,89,255,.2);
+}
+html[data-theme="light"] .world-home-montréal .world-home-place-copy p{color:rgba(23,23,26,.62)}
+html[data-theme="light"] .world-home-presence{border-color:rgba(23,23,26,.1)}
+html[data-theme="light"] .world-home-presence span{border-color:rgba(23,23,26,.08)}
+@media(max-width:700px){
+  .world-home-core-line{grid-template-columns:29px minmax(0,1fr);gap:8px}
+  .world-home-core-mark{width:27px;height:27px}
+  .world-home-core-mark .world-entry-glyph{width:23px;height:23px}
+  .world-home-montréal .record-identity{font-size:clamp(27px,10vw,42px)}
+  .world-home-presence span{padding:10px 5px}
+  .world-home-presence b{font-size:16px}
+  .world-home-presence small{font-size:7px}
+}
