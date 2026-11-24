@@ -171,7 +171,7 @@
       </div>
     </section>
 
-    <section id="world" class="site-section world-section"><div class="section-inner"><div class="section-visual section-visual-world" data-visual-section="world" aria-hidden="true"><span class="visual-map-grid"></span><span class="visual-montreal-mark">M</span><span class="visual-route-line"></span><span class="visual-location-dot"></span></div><h2>THE WORLD</h2><div id="world-container" class="content-container"></div></div></section>
+    <section id="world" class="site-section world-section"><div class="section-inner"><div class="section-visual section-visual-world" data-visual-section="world" aria-hidden="true"><span class="visual-map-grid"></span><span class="visual-montreal-mark" aria-hidden="true"><svg class="escie-symbol-glyph" viewBox="0 0 32 32" focusable="false"><use href="./assets/escie-symbols.svg#montreal-mark"></use></svg></span><span class="visual-route-line"></span><span class="visual-location-dot"></span></div><h2>THE WORLD</h2><div id="world-container" class="content-container"></div></div></section>
 
     <section id="trace" class="site-section trace-section">
       <div class="section-inner">
@@ -193,7 +193,7 @@
 
     <section id="investigation" class="site-section investigation-section">
       <div class="section-inner">
-        <div class="section-visual section-visual-investigation" data-visual-section="investigation" aria-hidden="true"><span class="visual-lens"></span><span class="visual-cross"></span><span class="visual-evidence e1"></span><span class="visual-evidence e2"></span></div>
+        <div class="section-visual section-visual-investigation" data-visual-section="investigation" aria-hidden="true"><span class="visual-lens" aria-hidden="true"><svg class="escie-symbol-glyph" viewBox="0 0 32 32" focusable="false"><use href="./assets/escie-symbols.svg#case-files"></use></svg></span><span class="visual-cross"></span><span class="visual-evidence e1"></span><span class="visual-evidence e2"></span></div>
         <h2>THE CASE FILES</h2>
         <p class="section-lede">QUESTIONS, EVIDENCE, CONTRADICTIONS AND UNRESOLVED THREADS — FOLLOW WHAT THE RECORD CAN SUPPORT.</p>
         <div id="investigation-container" class="content-container"></div>
@@ -202,7 +202,7 @@
 
     <section id="glass-eye" class="site-section glass-eye-section">
       <div class="section-inner">
-        <div class="section-visual section-visual-glass-eye" data-visual-section="glass-eye" aria-hidden="true"><span class="visual-eye-ring"></span><span class="visual-eye-dot"></span><span class="visual-glass-scan"></span></div>
+        <div class="section-visual section-visual-glass-eye" data-visual-section="glass-eye" aria-hidden="true"><span class="visual-eye-ring" aria-hidden="true"><svg class="escie-symbol-glyph" viewBox="0 0 32 32" focusable="false"><use href="./assets/escie-symbols.svg#aperture"></use></svg></span><span class="visual-eye-dot"></span><span class="visual-glass-scan"></span></div>
         <h2>GLASS EYE</h2>
         <p class="section-lede">SEE · HEAR · FOLLOW · MISS · RETURN</p>
         <div id="glass-eye-panel" role="region" aria-label="The Glass Eye"><div id="glass-eye-container" class="content-container"></div></div>
@@ -300,10 +300,10 @@
       sections.forEach(function(section){
         if(section.dataset.accordionReady==="1")return;
         var heading=section.querySelector("h2"),inner=section.querySelector(".section-inner")||section,button=document.createElement("button");
-        var symbols={now:"now",art:"art",world:"world",trace:"web",web:"web",archives:"archives",investigation:"case-files","glass-eye":"glass-eye",escie:"escie"};
-        var symbol=symbols[section.id]||"·";
-        button.type="button";button.className="section-drop-trigger";button.setAttribute("aria-controls",section.id+"-panel");button.setAttribute("aria-expanded","false");button.setAttribute("aria-label","Open "+heading.textContent.trim());
-        button.dataset.section=section.id;button.innerHTML='<span class="section-drop-index">'+String(Array.prototype.indexOf.call(sections,section)+1).padStart(2,"0")+'</span><span class="section-drop-title"></span><span class="section-drop-symbol"><svg class="escie-symbol-glyph" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#'+symbol+'"></use></svg></span><span class="section-drop-state" aria-hidden="true">+</span>';button.querySelector(".section-drop-title").textContent=heading.textContent.trim();heading.hidden=true;
+        var symbols={now:{glyph:"now",meaning:"THE PRESENT"},art:{glyph:"art",meaning:"CREATION"},world:{glyph:"world",meaning:"THE SHARED WORLD"},trace:{glyph:"web",meaning:"CONNECTION"},web:{glyph:"web",meaning:"CONNECTION"},archives:{glyph:"archives",meaning:"PRESERVED MEMORY"},investigation:{glyph:"case-files",meaning:"EXAMINATION"}, "glass-eye":{glyph:"aperture",meaning:"PERCEPTION"},escie:{glyph:"escie",meaning:"IDENTITY"}};
+        var symbol=symbols[section.id]||{glyph:"world",meaning:"THE WORLD"};
+        button.type="button";button.className="section-drop-trigger";button.setAttribute("aria-controls",section.id+"-panel");button.setAttribute("aria-expanded","false");button.setAttribute("aria-label","Open "+heading.textContent.trim()+" — "+symbol.meaning);
+        button.dataset.section=section.id;button.dataset.symbol=symbol.glyph;button.dataset.symbolMeaning=symbol.meaning;button.innerHTML='<span class="section-drop-index">'+String(Array.prototype.indexOf.call(sections,section)+1).padStart(2,"0")+'</span><span class="section-drop-title"></span><span class="section-drop-symbol"><svg class="escie-symbol-glyph symbol-'+symbol.glyph+'" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#'+symbol.glyph+'"></use></svg></span><span class="section-drop-meaning">'+symbol.meaning+'</span><span class="section-drop-state" aria-hidden="true">+</span>';button.querySelector(".section-drop-title").textContent=heading.textContent.trim();heading.hidden=true;
         var panel=document.createElement("div");panel.className="section-drop-panel";panel.id=section.id+"-panel";panel.setAttribute("role","region");panel.hidden=true;
         var content=document.createElement("div");content.className="section-drop-content";
         Array.from(inner.children).forEach(function(child){if(child!==heading)content.appendChild(child);});
