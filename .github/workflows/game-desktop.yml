@@ -1,0 +1,31 @@
+name: ESCIE Game Desktop
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "world/desktop/**"
+      - "world/**"
+      - ".github/workflows/game-desktop.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Validate desktop manifest
+        run: node --test tests/game-desktop-package.node.test.js
+      - name: Validate game entrypoints
+        run: |
+          test -f world/index.html
+          test -f world/world.js
+          test -f world/world-simulation.js
+          test -f world/3d-reality.js
+          test -f world/desktop/main.cjs
+          test -f world/desktop/preload.cjs
