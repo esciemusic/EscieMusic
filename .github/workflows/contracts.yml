@@ -45,6 +45,7 @@ jobs:
           - content-lifecycle.node.test.js
           - world-elements-contract.node.test.js
           - symbol-consistency.node.test.js
+          - animated-series-contract.node.test.js
     runs-on: ubuntu-latest
     name: Contract · ${{ matrix.test }}
     steps:
