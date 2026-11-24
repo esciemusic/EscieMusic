@@ -693,6 +693,24 @@ body.menu-open .index-navigation.is-open {
 .index-map-link:hover .index-map-link-description,
 .index-map-link:focus-visible .index-map-link-description{color:var(--muted)}
 .index-map-arrow{color:var(--escie-blue-bright);opacity:.55;flex:0 0 auto}
+.entry-globe-legend{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:5px 10px;
+  margin:10px auto 0;
+  max-width:520px;
+}
+.entry-globe-legend a{
+  color:var(--faint);
+  font:500 8px/1 var(--escie-font-signal,monospace);
+  letter-spacing:.1em;
+  text-decoration:none;
+}
+.entry-globe-legend a:hover,
+.entry-globe-legend a:focus-visible{
+  color:var(--escie-aesthetic-purple);
+}
 .entry-globe-point::after{
   content:attr(data-node-label);
   position:absolute;
