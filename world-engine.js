@@ -1118,12 +1118,12 @@ function worldHome(){ const returnWelcome=returnWelcomeMarkup(); rememberWorldRe
  const roomCards=rooms.map(function(room){
    return '<button type="button" class="world-room" data-node="'+esc(room.id)+'"><span class="world-room-mark" aria-hidden="true"></span><div><span class="world-kicker">ROOM</span><strong>'+esc(title(room))+'</strong><p>'+esc(room.description||"A room in the Montréal home.")+'</p></div><span class="world-arrow" aria-hidden="true">↗</span></button>';
  }).join("");
- const currentTab=state.tab!=="atlas"; const atlasActive=state.tab==="atlas";
+ const currentTab=state.tab!=="atlas";
+ const atlasActive=state.tab==="atlas";
  const outside=outsideWorldMarkup();
  const returnChange=returnChangeMarkup(); const contentChange=worldContentChangeMarkup(); const returnThread=worldReturnTrailMarkup(); rememberWorldSnapshot(); return '<div class="world-home">'+
    '<div class="world-home-intro"><span class="world-kicker">THE WORLD</span><h3>START HERE</h3><p>Montréal is home. Everything else is still the world.</p></div>'+worldNowMarkup()+returnWelcome+returnChange+contentChange+returnThread+
-   (atlasActive?worldLensContent():(currentTab?worldLensContent():'<div class="world-home-house"><button type="button" class="world-home-city" data-node="world-montreal"><span class="world-kicker">HOME / PLACE</span><strong>'+esc(city&&city.title||"MONTRÉAL")+'</strong><p>WHERE HOME AND THE WORLD INTERTWINE.</p><span class="world-arrow" aria-hidden="true">↗</span></button><div class="world-home-rooms"><div class="world-room-life-head"><span class="world-kicker">WHAT’S HERE</span><p>Look around first. People, places, moments, objects and art can enter through what is actually here.</p></div>'+(roomCards||'<span class="world-empty">Nothing has been opened yet.</span>')+'</div></div>')+
-
+   (atlasActive?atlasMarkup():(currentTab?worldLensContent():'<div class="world-home-house"><button type="button" class="world-home-city" data-node="world-montreal"><span class="world-kicker">HOME / PLACE</span><strong>'+esc(city&&city.title||"MONTRÉAL")+'</strong><p>WHERE HOME AND THE WORLD INTERTWINE.</p><span class="world-arrow" aria-hidden="true">↗</span></button><div class="world-home-rooms"><div class="world-room-life-head"><span class="world-kicker">WHAT’S HERE</span><p>Look around first. People, places, moments, objects and art can enter through what is actually here.</p></div>'+(roomCards||'<span class="world-empty">Nothing has been opened yet.</span>')+'</div></div>'))+
    worldLensMarkup()+
    (currentTab?'':'<button type="button" class="world-home-outside" data-outside-world aria-expanded="'+(state.outsideOpen?"true":"false")+'"><span class="world-kicker">WANDER</span><strong>'+(state.outsideOpen?"COME BACK INSIDE":"THE WORLD CONTINUES")+'</strong><p>'+(state.outsideOpen?"Return to Montréal home.":"Leave the immediate thread and see what exists beyond Home.")+'</p></button>'+outside)+
    (currentTab?'':'<p class="world-home-note">The World gets deeper as you move through it. Nothing here asks you to solve it.</p>')+
