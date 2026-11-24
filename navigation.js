@@ -89,14 +89,14 @@ const ESCIE_INDEX=[
     label:"RECORDS",
     description:"The forms the World can take when something is kept.",
     entries:[
-      {label:"PEOPLE",target:"#world-tab=people"},
-      {label:"PLACES",target:"#world-tab=places"},
-      {label:"MOMENTS",target:"#world-tab=moments"},
-      {label:"OBJECTS",target:"#world-tab=objects"},
-      {label:"FRAGMENTS",target:"#world-tab=fragments"},
-      {label:"PROOF",target:"#world-tab=proof"},
-      {label:"BODIES",target:"#world-tab=bodies"},
-      {label:"ARCHIVES",target:"#archives"}
+      {label:"PEOPLE",target:"#world-tab=people",symbol:"people"},
+      {label:"PLACES",target:"#world-tab=places",symbol:"place"},
+      {label:"MOMENTS",target:"#world-tab=moments",symbol:"moon"},
+      {label:"OBJECTS",target:"#world-tab=objects",symbol:"object"},
+      {label:"FRAGMENTS",target:"#world-tab=fragments",symbol:"fragment"},
+      {label:"PROOF",target:"#world-tab=proof",symbol:"proof"},
+      {label:"BODIES",target:"#world-tab=bodies",symbol:"body"},
+      {label:"ARCHIVES",target:"#archives",symbol:"archives"}
     ]
   },
   {
@@ -105,10 +105,10 @@ const ESCIE_INDEX=[
     description:"The part of the World that lets you look, listen, respond, and return.",
     entries:[
       {label:"GLASS EYE",target:"#glass-eye",description:"The screen as an active point of contact." ,symbol:"aperture"},
-      {label:"OBSERVE",target:"#glass-eye"},
-      {label:"HEAR",target:"#glass-eye"},
-      {label:"FOLLOW",target:"#glass-eye"},
-      {label:"RETURN",target:"#glass-eye"}
+      {label:"OBSERVE",target:"#glass-eye",symbol:"aperture"},
+      {label:"HEAR",target:"#glass-eye",symbol:"aperture"},
+      {label:"FOLLOW",target:"#glass-eye",symbol:"aperture"},
+      {label:"RETURN",target:"#glass-eye",symbol:"aperture"}
     ]
   },
   {
@@ -117,9 +117,9 @@ const ESCIE_INDEX=[
     description:"Questions, evidence, and records that may not resolve cleanly.",
     entries:[
       {label:"CASE FILES",target:"#investigation" ,symbol:"case-files"},
-      {label:"EVIDENCE",target:"#investigation"},
-      {label:"QUESTIONS",target:"#investigation"},
-      {label:"UNRESOLVED",target:"#investigation"}
+      {label:"EVIDENCE",target:"#investigation",symbol:"proof"},
+      {label:"QUESTIONS",target:"#investigation",symbol:"unknown"},
+      {label:"UNRESOLVED",target:"#investigation",symbol:"unknown"}
     ]
   },
   {
@@ -127,11 +127,11 @@ const ESCIE_INDEX=[
     label:"ARCHIVE",
     description:"Preserved material that gives the World a memory.",
     entries:[
-      {label:"DOCUMENTS",target:"#archives"},
-      {label:"PHOTOGRAPHS",target:"#archives"},
-      {label:"AUDIO",target:"#archives"},
-      {label:"VIDEO",target:"#archives"},
-      {label:"PRESERVED RECORDS",target:"#archives"}
+      {label:"DOCUMENTS",target:"#archives",symbol:"archives"},
+      {label:"PHOTOGRAPHS",target:"#archives",symbol:"visual"},
+      {label:"AUDIO",target:"#archives",symbol:"music"},
+      {label:"VIDEO",target:"#archives",symbol:"visual"},
+      {label:"PRESERVED RECORDS",target:"#archives",symbol:"archives"}
     ]
   },
   {
@@ -139,8 +139,8 @@ const ESCIE_INDEX=[
     label:"PROJECTS",
     description:"Work that extends beyond a single record.",
     entries:[
-      {label:"CLOTHING",target:"#projects",description:"The wearable side of the work."},
-      {label:"CURRENT WORK",target:"#projects",description:"Projects become public when they are ready."}
+      {label:"CLOTHING",target:"#projects",description:"The wearable side of the work.",symbol:"project"},
+      {label:"CURRENT WORK",target:"#projects",description:"Projects become public when they are ready.",symbol:"project"}
     ]
   }
 ];
