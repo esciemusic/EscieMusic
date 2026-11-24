@@ -545,9 +545,11 @@
       const entries = normalizeCollection(section.entries).filter(entry => entry && entry.target && entry.label);
       if (!entries.length) return "";
       return '<section class="index-map-section" data-index-section="' + escapeHTML(section.id || section.label) + '">' +
-        '<h2 class="index-map-heading">' + escapeHTML(section.label) + '</h2>' +
-        (section.description ? '<p class="index-map-description">' + escapeHTML(section.description) + '</p>' : '') +
-        '<div class="index-map-links">' +
+        '<button type="button" class="index-map-section-toggle" aria-expanded="false">' +
+          '<span class="index-map-heading">' + escapeHTML(section.label) + '</span><span class="index-map-plus" aria-hidden="true">+</span>' +
+        '</button>' +
+        (section.description ? '<p class="index-map-description" hidden>' + escapeHTML(section.description) + '</p>' : '') +
+        '<div class="index-map-links" hidden>' +
         entries.map(entry =>
           '<a class="index-map-link" href="' + escapeHTML(entry.target) + '">' +
           '<span class="index-map-link-copy"><span class="index-map-link-label">' + escapeHTML(entry.label) + '</span>' +
@@ -567,6 +569,19 @@
         '</div>' +
         '<div class="index-map-detail">' + sectionMarkup + '</div>' +
       '</div>';
+    nav.querySelectorAll(".index-map-section-toggle").forEach(toggle => {
+      toggle.addEventListener("click", function () {
+        const section = toggle.closest(".index-map-section");
+        if (!section) return;
+        const links = section.querySelector(".index-map-links");
+        const description = section.querySelector(".index-map-description");
+        const open = toggle.getAttribute("aria-expanded") === "true";
+        toggle.setAttribute("aria-expanded", open ? "false" : "true");
+        toggle.querySelector(".index-map-plus").textContent = open ? "+" : "−";
+        if (links) links.hidden = open;
+        if (description) description.hidden = open;
+      });
+    });
   }
 
   function refreshNavigationState() {
@@ -1896,6 +1911,20 @@ function renderClothing(){
     });
 
     document.addEventListener("click", event => {
+      const heroWorldLink = event.target.closest(".hero-location-link,.hero-skyline-link");
+      if (heroWorldLink) {
+        const target = heroWorldLink.getAttribute("href") || "";
+        if (target.indexOf("#world-node=") === 0) {
+          event.preventDefault();
+          try { history.pushState(null, "", target); } catch (error) { window.location.hash = target.slice(1); }
+          window.dispatchEvent(new Event("hashchange"));
+          window.setTimeout(() => {
+            const world = byId("world");
+            if (world) world.scrollIntoView({ behavior: reduceMotion() ? "auto" : "smooth", block: "start" });
+          }, 40);
+          return;
+        }
+      }
       const traceConnection=event.target.closest("[data-trace-connection-toggle]");
       if(traceConnection){
         const detail=traceConnection.parentElement&&traceConnection.parentElement.querySelector(".trace-connection-detail");
