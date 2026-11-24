@@ -404,12 +404,15 @@
           item.removeAttribute("tabindex");
           var status=item.querySelector(":scope > .world-place-state,:scope > .merch-card-top .merch-status,:scope > .clothing-card-head .pill");
           var original=Array.from(item.children);
+          var recordSymbol=(item.matches(".world-place")?"place":item.matches(".archive-record")?"archives":item.matches(".investigation-case")?"case-files":"project");
+          var recordMeaning=(item.matches(".world-place")?"PLACE":item.matches(".archive-record")?"ARCHIVE":item.matches(".investigation-case")?"CASE FILE":"PROJECT");
           var trigger=document.createElement("button");
           trigger.type="button";
           trigger.className="nested-drop-trigger";
           trigger.setAttribute("aria-expanded","false");
           var panelId=(item.id||"nested-item")+"-panel";if(document.getElementById(panelId)){var suffix=1;while(document.getElementById(panelId+"-"+suffix))suffix++;panelId=panelId+"-"+suffix;}trigger.setAttribute("aria-controls",panelId);
-          trigger.innerHTML='<span class="nested-drop-index" aria-hidden="true">▸</span><span class="nested-drop-title"></span><span class="nested-drop-meta"></span><span class="nested-drop-state" aria-hidden="true">+</span>';
+          trigger.dataset.symbol=recordSymbol;trigger.dataset.symbolMeaning=recordMeaning;
+          trigger.innerHTML='<span class="nested-drop-index" aria-hidden="true">▸</span><span class="nested-drop-symbol"><svg class="escie-symbol-glyph symbol-'+recordSymbol+'" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="./assets/escie-symbols.svg#'+recordSymbol+'"></use></svg></span><span class="nested-drop-title"></span><span class="nested-drop-meta"></span><span class="nested-drop-state" aria-hidden="true">+</span>';
           trigger.querySelector(".nested-drop-title").textContent=title;
           trigger.querySelector(".nested-drop-meta").textContent=(eyebrow?eyebrow.textContent.trim():"")+(status?" · "+status.textContent.trim():"");
           var panel=document.createElement("div");
