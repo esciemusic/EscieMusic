@@ -1919,10 +1919,6 @@ function renderClothing(){
           event.preventDefault();
           try { history.pushState(null, "", target); } catch (error) { window.location.hash = target.slice(1); }
           window.dispatchEvent(new Event("hashchange"));
-          window.setTimeout(() => {
-            const world = byId("world");
-            if (world) world.scrollIntoView({ behavior: reduceMotion() ? "auto" : "smooth", block: "start" });
-          }, 40);
           return;
         }
       }
