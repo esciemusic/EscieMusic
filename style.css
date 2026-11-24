@@ -577,14 +577,14 @@ body.menu-open .index-navigation.is-open {
 
 .index-map{
   display:grid;
-  gap:8px;
+  gap:6px;
   color:var(--white);
   font-family:var(--escie-font-signal,monospace);
 }
 .index-map-primary{
   display:grid;
   gap:2px;
-  padding-bottom:7px;
+  padding-bottom:6px;
   border-bottom:1px solid rgba(79,134,173,.24);
 }
 .index-map-kicker{
@@ -620,8 +620,8 @@ body.menu-open .index-navigation.is-open {
   align-items:center;
   justify-content:space-between;
   width:100%;
-  min-height:30px;
-  padding:5px 3px;
+  min-height:28px;
+  padding:4px 3px;
   border:0;
   background:transparent;
   color:var(--white);
@@ -659,8 +659,8 @@ body.menu-open .index-navigation.is-open {
 .index-map-links{
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:1px 10px;
-  padding:0 0 5px;
+  gap:1px 8px;
+  padding:0 0 4px;
 }
 .index-map-link{
   display:flex!important;
@@ -668,7 +668,7 @@ body.menu-open .index-navigation.is-open {
   justify-content:space-between;
   gap:8px;
   min-width:0;
-  padding:5px 4px!important;
+  padding:4px 4px!important;
   color:var(--muted)!important;
   font:500 9px/1.2 var(--escie-font-signal,monospace)!important;
   letter-spacing:.04em!important;
@@ -2799,7 +2799,7 @@ body.inspector-open{overflow:hidden}
 .index-map-section-toggle .index-map-heading{display:inline-flex;align-items:center;gap:8px}
 
 .world-home-identity{display:inline-flex;align-items:center;gap:7px}
-.world-home-identity .escie-symbol-glyph{width:14px;height:14px;color:#4da3ff;fill:none;stroke:currentColor;stroke-width:1.15}
+.world-home-identity .escie-symbol-glyph{width:14px;height:14px;color:var(--escie-blue-bright);fill:none;stroke:currentColor;stroke-width:1.15}
 .world-primary-door .symbol-people,.world-primary-door .symbol-place,.world-primary-door .symbol-moment,.world-primary-door .symbol-object{color:var(--escie-blue-bright)}
 .world-deeper-nav .symbol-fragment,.world-deeper-nav .symbol-proof{color:var(--escie-ultraviolet)}
 .world-deeper-nav .symbol-body{color:var(--escie-blue)}
