@@ -1,0 +1,34 @@
+{
+  "name": "escie-world",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ESCIE World desktop shell for the downloadable game.",
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "package:win": "electron-builder --win",
+    "package:mac": "electron-builder --mac",
+    "package:linux": "electron-builder --linux"
+  },
+  "devDependencies": {
+    "electron": "^39.0.0",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "com.escie.world",
+    "productName": "ESCIE World",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "../**/*",
+      "main.cjs",
+      "preload.cjs",
+      "package.json",
+      "!../desktop/dist/**",
+      "!../desktop/node_modules/**"
+    ],
+    "asar": true
+  }
+}
