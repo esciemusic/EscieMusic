@@ -12,9 +12,13 @@ test("desktop packaging uses a staged game boundary", () => {
   const main = fs.readFileSync(path.join(desktop, "main.cjs"), "utf8");
 
   assert.match(pkg.scripts["package:win"], /npm run stage/);
+  assert.equal(pkg.dependencies.three, "0.160.0");
   assert.deepEqual(pkg.build.files, ["app/**/*", "main.cjs", "preload.cjs", "package.json"]);
   assert.match(stage, /fs\.cpSync/);
   assert.match(stage, /!rel\.startsWith\("desktop"\)/);
+  assert.match(stage, /node_modules.*three.*build.*three\.min\.js/);
+  assert.match(stage, /vendor/);
+  assert.match(stage, /MISSING_THREE_RUNTIME/);
   assert.match(main, /app.isPackaged/);
   assert.match(main, /path\.join\(__dirname, "app", "index\.html"\)/);
 });
