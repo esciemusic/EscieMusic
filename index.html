@@ -104,22 +104,22 @@
                 <span class="entry-globe-latitude l4" aria-hidden="true"></span>
                 <span class="entry-globe-orbit" aria-hidden="true"></span>
                 <span class="entry-globe-home" aria-hidden="true"></span>
-                <a class="entry-globe-point home" href="#world-node=world-montreal" aria-label="Enter Montréal, Home" data-node-label="HOME · MONTRÉAL"></a>
-                <a class="entry-globe-point music" href="#art/music" aria-label="Enter music" data-node-label="MUSIC"></a>
-                <a class="entry-globe-point archive" href="#archives" aria-label="Enter the Archives" data-node-label="ARCHIVES"></a>
-                <a class="entry-globe-point case" href="#investigation" aria-label="Enter the Case Files" data-node-label="CASE FILES"></a>
-                <a class="entry-globe-point glass" href="#glass-eye" aria-label="Enter Glass Eye" data-node-label="GLASS EYE"></a>
+                <a class="entry-globe-point home" href="#world-node=world-montreal" aria-label="Enter Montréal, Home" data-node-label="HOME · MONTRÉAL" data-node-key="01"></a>
+                <a class="entry-globe-point music" href="#art/music" aria-label="Enter music" data-node-label="MUSIC" data-node-key="02"></a>
+                <a class="entry-globe-point archive" href="#archives" aria-label="Enter the Archives" data-node-label="ARCHIVES" data-node-key="03"></a>
+                <a class="entry-globe-point case" href="#investigation" aria-label="Enter the Case Files" data-node-label="CASE FILES" data-node-key="04"></a>
+                <a class="entry-globe-point glass" href="#glass-eye" aria-label="Enter Glass Eye" data-node-label="GLASS EYE" data-node-key="05"></a>
                 <span class="entry-globe-core">
                   <a class="entry-globe-enter" href="#world" aria-label="Open THE WORLD"></a>
                 </span>
               </div>
               <span class="entry-globe-label">THE WORLD</span>
               <nav class="entry-globe-legend" aria-label="World nodes">
-                <a href="#world-node=world-montreal">HOME</a>
-                <a href="#art/music">MUSIC</a>
-                <a href="#archives">ARCHIVES</a>
-                <a href="#investigation">CASE FILES</a>
-                <a href="#glass-eye">GLASS EYE</a>
+                <a href="#world-node=world-montreal"><span class="entry-globe-legend-key">01</span> HOME</a>
+                <a href="#art/music"><span class="entry-globe-legend-key">02</span> MUSIC</a>
+                <a href="#archives"><span class="entry-globe-legend-key">03</span> ARCHIVES</a>
+                <a href="#investigation"><span class="entry-globe-legend-key">04</span> CASE FILES</a>
+                <a href="#glass-eye"><span class="entry-globe-legend-key">05</span> GLASS EYE</a>
               </nav>
             </div>
             <nav class="hero-art-doors hero-symbol-doors" aria-label="World doors">
@@ -370,6 +370,29 @@
       window.addEventListener("hashchange",function(){openFromHash(true);});
       openFromHash(false);
     }
+    function initHeroWorldDoors(){
+      if(document.documentElement.dataset.heroWorldDoorsReady==="1")return;
+      document.documentElement.dataset.heroWorldDoorsReady="1";
+      document.addEventListener("click",function(event){
+        var link=event.target.closest(".hero-location-link,.hero-skyline-link");
+        if(!link)return;
+        var href=link.getAttribute("href")||"";
+        if(href.indexOf("#world-node=")!==0)return;
+        event.preventDefault();
+        var world=document.getElementById("world");
+        var worldTrigger=world&&world.querySelector(".section-drop-trigger");
+        if(worldTrigger&&world&&!world.classList.contains("section-open"))worldTrigger.click();
+        try{history.pushState(null,"",href);}catch(_e){location.hash=href.slice(1);}
+        window.dispatchEvent(new Event("hashchange"));
+        window.requestAnimationFrame(function(){
+          if(!world)return;
+          var header=document.querySelector(".site-header");
+          var offset=(header?header.getBoundingClientRect().height:0)+12;
+          var top=world.getBoundingClientRect().top+window.pageYOffset-offset;
+          window.scrollTo({top:Math.max(0,top),behavior:window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+        });
+      });
+    }
     function initNestedDropdowns(){
       var selector=".world-place,.archive-record,.investigation-case,.merch-card,.clothing-card";
       function enhance(root){
@@ -445,7 +468,7 @@
       });
       window.ESCIE_NESTED_DROPDOWNS={refresh:function(){enhance(document);}};
     }
-    if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initSectionAccordion,{once:true});else initSectionAccordion();
+    if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){initSectionAccordion();initHeroWorldDoors();},{once:true});else {initSectionAccordion();initHeroWorldDoors();}
     initNestedDropdowns();
 
     function initRecordCarousels(){
