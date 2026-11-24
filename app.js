@@ -552,6 +552,7 @@
         '<div class="index-map-links" hidden>' +
         entries.map(entry =>
           '<a class="index-map-link" href="' + escapeHTML(entry.target) + '">' +
+          (entry.symbol ? '<span class="index-map-link-symbol">' + customSymbolMarkup(entry.symbol, entry.label) + '</span>' : '') +
           '<span class="index-map-link-copy"><span class="index-map-link-label">' + escapeHTML(entry.label) + '</span>' +
           (entry.description ? '<span class="index-map-link-description">' + escapeHTML(entry.description) + '</span>' : '') +
           '</span><span class="index-map-arrow" aria-hidden="true">↳</span>' +
