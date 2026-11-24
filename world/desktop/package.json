@@ -29,5 +29,8 @@
       "package.json"
     ],
     "asar": true
+  },
+  "dependencies": {
+    "three": "0.160.0"
   }
 }
