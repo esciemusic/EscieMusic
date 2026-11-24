@@ -42,6 +42,7 @@ const ESCIE_INDEX=[
     label:"THE WORLD",
     description:"The shared place where people, places, moments, objects, and art meet.",
     entries:[
+      {label:"MONTRÉAL",target:"#world-node=world-montreal",description:"HOME / THE PLACE WHERE THE WORLD IS HERE.",symbol:"montreal-mark"},
       {label:"PEOPLE",target:"#world-tab=people",description:"The people inside the World." ,symbol:"people"},
       {label:"PLACES",target:"#world-tab=places",description:"Places with memory, presence, and connection." ,symbol:"place"},
       {label:"MOMENTS",target:"#world-tab=moments",description:"Moments that give the World its time." ,symbol:"moon"},
