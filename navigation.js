@@ -144,3 +144,4 @@ const ESCIE_INDEX=[
     ]
   }
 ];
+if(typeof window!=="undefined") window.ESCIE_INDEX=ESCIE_INDEX;
