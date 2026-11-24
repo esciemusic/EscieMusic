@@ -249,3 +249,31 @@ This is the standing audit contract for every subsequent public-site optimizatio
 - Minute refresh now uses a one-shot timer aligned to the next minute boundary and reschedules itself, rather than a persistent setInterval loop.
 - The public A–Z contract now explicitly protects the present-state surface and rejects interval-based refresh.
 - This keeps the present state alive without turning it into a heavy recurring runtime loop.
+
+
+## Pass 4 — symbolism consistency checkpoint — 2026-11-24
+
+- Canonical symbols now use one shared SVG vocabulary across the public Index, nested records, World tabs, World records and encounter surfaces.
+- Section symbols expose semantic meaning on desktop and remain visually identifiable on mobile through the symbol itself and focus state.
+- Montréal, THE CASE FILES, GLASS EYE, THE WORLD, TRACE and ESCIE now use their canonical marks rather than mixed legacy glyphs.
+- Record identity now follows canonical semantic type marks; portal/entry glyphs remain reserved for portals and entry points.
+- Symbol signal colors are synchronized between Index and World.
+- Globe nodes remain identifiable without a permanent legend.
+- Symbol consistency regression coverage is present in tests/symbol-consistency.node.test.js and included in the Contracts workflow.
+- The symbol pass does not publish unreleased BAM, lyric, case-file or private Central material.
+
+## Current public-site release status
+
+Source architecture: GREEN.
+Public/private disclosure boundary: GREEN.
+Canonical navigation model: GREEN.
+World / Atlas / Montréal relationship architecture: GREEN.
+Trace / visitor-thread architecture: GREEN.
+Typography and symbol system: GREEN.
+Glass Eye boundary and participation model: GREEN.
+Language/theme/accessibility contracts: GREEN.
+Game doorway boundary while game is paused: GREEN.
+Automated contract evidence after the latest symbol changes: PENDING VERIFICATION.
+Live deployed browser evidence after the latest symbol changes: PENDING VERIFICATION.
+
+The site is therefore a RELEASE CANDIDATE, not yet a certified 100% pass under PASS-GATE-STANDARD.md until Contract and Live gates are evidenced for the latest public-site commit.
