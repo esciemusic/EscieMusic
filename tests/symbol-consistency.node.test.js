@@ -41,7 +41,8 @@ assert.match(app,/proof:\s*"symbol-proof"/);
 assert.match(app,/archive:\s*"symbol-archives"/);
 assert.match(app,/investigation:\s*"symbol-case-files"/);
 
-["montreal-mark","now","web","archives","case-files","aperture","escie"].forEach(glyph => assert.match(index,new RegExp("escie-symbols\\.svg#"+glyph)));
+["montreal-mark","now","archives","case-files","aperture","escie"].forEach(glyph => assert.match(index,new RegExp("escie-symbols\\.svg#"+glyph)));
+assert.match(app,/glyph:"web"|symbol-trace|symbol-web/);
 assert.match(index,/assets\/escie-symbols\.svg#world|symbol-world/);
 
 assert.match(aesthetic,/\.section-drop-meaning/);
