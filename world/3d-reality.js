@@ -1196,6 +1196,40 @@ function setMode(v){
  thirdPerson=!!v;avatar.visible=thirdPerson;
  const log=document.getElementById("world-log");if(log)log.textContent=thirdPerson?"3D REALITY · THIRD PERSON":"3D REALITY · FIRST PERSON";
 }
+function bindMobileControls(){
+ const controls=document.getElementById("world-mobile-controls");
+ if(!controls)return;
+ const movement={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]};
+ const release=button=>{
+   const d=button?.dataset.mobileMove;
+   if(d){touchPad.moveX=touchPad.moveY=0;}
+   if(button?.dataset.mobileAction==="SPRINT")touchPad.buttons.b=false;
+ };
+ controls.querySelectorAll("[data-mobile-move]").forEach(button=>{
+   const press=e=>{
+     e.preventDefault();
+     activeInputDevice("TOUCH");
+     const v=movement[button.dataset.mobileMove]||[0,0];
+     touchPad.moveX=v[0];touchPad.moveY=v[1];
+     if(button.setPointerCapture&&e.pointerId!=null)try{button.setPointerCapture(e.pointerId)}catch(_e){}
+   };
+   button.addEventListener("pointerdown",press,{passive:false});
+   ["pointerup","pointercancel","pointerleave"].forEach(type=>button.addEventListener(type,()=>release(button),{passive:true}));
+ });
+ controls.querySelectorAll("[data-mobile-action]").forEach(button=>{
+   const press=e=>{
+     e.preventDefault();
+     activeInputDevice("TOUCH");
+     const action=String(button.dataset.mobileAction||"").toUpperCase();
+     if(action==="PAUSE"){togglePause();return;}
+     if(action==="SPRINT"){touchPad.buttons.b=true;return;}
+     if(action==="FIGHT"){fight3D();return;}
+     if(action==="OPEN"){interact();return;}
+   };
+   button.addEventListener("pointerdown",press,{passive:false});
+   ["pointerup","pointercancel","pointerleave"].forEach(type=>button.addEventListener(type,()=>release(button),{passive:true}));
+ });
+}
 function bind(){
  if(inputBound)return;
  inputBound=true;
@@ -1218,7 +1252,7 @@ function start(){
  if(started)return;
  if(document.getElementById("game-boot")&&!document.body.classList.contains("game-live"))return;
  started=true;if(!setup()){started=false;return;}
- bind();const s=stage();s.classList.add("three-active");setMode(true);togglePause(false);render();
+ bind();bindMobileControls();const s=stage();s.classList.add("three-active");setMode(true);togglePause(false);render();
 }
 root.ESCIE_3D_WORLD={start,stop,ready:()=>!!renderer,toggleCamera:()=>setMode(!thirdPerson),pause:()=>togglePause(true),resume:()=>togglePause(false),isPaused:()=>paused,interact,fight:fight3D,setSprint:(v)=>{move._touchSprint=!!v},status:()=>({ready:!!renderer,paused,quality:perf.quality,frameMs:Math.round(perf.frameMs)})};
 root.addEventListener?.("escie:world-enter",()=>start());
