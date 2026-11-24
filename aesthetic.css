@@ -1,4 +1,29 @@
 /* SYMBOL SYSTEM — one visible grammar across the entire public surface. */
+.nested-drop-symbol{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:1.35rem;
+  height:1.35rem;
+  flex:0 0 1.35rem;
+  color:var(--escie-symbol-signal);
+  opacity:.82;
+  transition:opacity 180ms ease,transform 180ms ease,filter 180ms ease;
+}
+.nested-drop-symbol .escie-symbol-glyph{width:100%;height:100%}
+.nested-drop-trigger:hover .nested-drop-symbol,
+.nested-drop-trigger:focus-visible .nested-drop-symbol,
+.nested-drop-trigger[aria-expanded="true"] .nested-drop-symbol{
+  opacity:1;
+  transform:scale(1.06);
+  filter:drop-shadow(0 0 6px currentColor);
+}
+.nested-drop-trigger .symbol-place{color:var(--escie-blue-bright)}
+.nested-drop-trigger .symbol-archives{color:var(--escie-cold-grey)}
+.nested-drop-trigger .symbol-case-files{color:var(--escie-ultraviolet)}
+.nested-drop-trigger .symbol-project{color:var(--escie-ultraviolet)}
+
+
 :root{
   --escie-symbol-stroke:1.25;
   --escie-symbol-signal:var(--escie-blue-bright);
