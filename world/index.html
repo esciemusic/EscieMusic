@@ -115,7 +115,12 @@
 <script>
 (function(){try{if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js",{scope:"./"}).catch(function(){});});}}catch(e){}})();
 </script>
-<script src="vendor/three.min.js" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js';"></script>
+<script>
+(function(){
+  var src=window.ESCIE_DESKTOP?"vendor/three.min.js":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js";
+  document.write('<script src="'+src+'"><\\/script>');
+})();
+</script>
 <script src="../core/performance.js" defer></script>
 <script src="../data/universe-contract.js" defer></script>
 <script src="../data/layer-balance.js" defer></script>
