@@ -4710,3 +4710,150 @@ html[data-theme="light"] .site-logo,html[data-theme="light"] .index-trigger{colo
   .world-deeper-nav button:after,
   .world-deeper-door:after{transition:none}
 }
+
+
+/* WORLD PASS 5 — record identity is carried by the kind of thing being encountered. */
+.world-list{
+  display:grid;
+  gap:0;
+  border-top:0;
+}
+.world-node-card{
+  --record-signal:var(--escie-blue-bright);
+  position:relative;
+  display:grid;
+  grid-template-columns:30px minmax(0,1fr) auto;
+  align-items:start;
+  gap:11px;
+  width:100%;
+  min-height:88px;
+  padding:13px 4px 13px 2px;
+  border:0;
+  border-bottom:1px solid rgba(216,212,202,.075);
+  border-radius:0;
+  background:transparent;
+  color:var(--escie-white);
+  text-align:left;
+  cursor:pointer;
+  transition:background var(--escie-motion-fast),padding-left var(--escie-motion-fast);
+}
+.world-node-card:before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width:1px;
+  background:linear-gradient(180deg,transparent,var(--record-signal),transparent);
+  opacity:.28;
+  transition:opacity var(--escie-motion-fast);
+}
+.world-node-card:hover,
+.world-node-card:focus-visible{
+  padding-left:6px;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--record-signal) 5%,transparent),transparent 58%);
+  outline:none;
+}
+.world-node-card:hover:before,
+.world-node-card:focus-visible:before{opacity:.72}
+.world-card-signal{
+  display:grid;
+  place-items:center;
+  width:28px;
+  height:28px;
+  margin-top:2px;
+  color:var(--record-signal);
+  opacity:.72;
+}
+.world-card-signal .world-entry-glyph{
+  width:22px;
+  height:22px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.15;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  filter:drop-shadow(0 0 4px color-mix(in srgb,var(--record-signal) 32%,transparent));
+}
+.world-node-card:hover .world-card-signal,
+.world-node-card:focus-visible .world-card-signal{
+  opacity:1;
+  filter:drop-shadow(0 0 8px color-mix(in srgb,var(--record-signal) 35%,transparent));
+}
+.world-node-card .world-card-main{min-width:0}
+.world-node-card .world-kicker{
+  color:var(--record-signal);
+  opacity:.72;
+}
+.world-node-card .record-identity{
+  margin:3px 0 4px;
+  font-family:var(--escie-font-signal);
+  font-size:clamp(14px,2.4vw,18px);
+  line-height:1.15;
+  font-weight:500;
+  letter-spacing:.045em;
+  text-transform:uppercase;
+}
+.world-node-card p{
+  margin:0;
+  max-width:680px;
+  color:rgba(216,212,202,.56);
+  font-size:9px;
+  line-height:1.55;
+}
+.world-node-card .world-card-thread{
+  display:block;
+  margin-top:6px;
+  color:rgba(216,212,202,.34);
+  font:500 7px/1 var(--escie-font-signal);
+  letter-spacing:.13em;
+}
+.world-node-card .world-arrow{
+  align-self:center;
+  color:rgba(216,212,202,.28);
+  font:500 7px/1 var(--escie-font-signal);
+  letter-spacing:.12em;
+  transition:color var(--escie-motion-fast),transform var(--escie-motion-fast);
+}
+.world-node-card:hover .world-arrow,
+.world-node-card:focus-visible .world-arrow{
+  color:var(--record-signal);
+  transform:translateX(2px);
+}
+.world-card-people,.world-card-person{--record-signal:var(--escie-blue)}
+.world-card-place,.world-card-location{--record-signal:var(--escie-blue-bright)}
+.world-card-moment{--record-signal:var(--escie-cold-grey)}
+.world-card-object{--record-signal:var(--escie-blue-bright)}
+.world-card-fragment{--record-signal:var(--escie-ultraviolet)}
+.world-card-body,.world-card-bodies{--record-signal:var(--escie-blue)}
+.world-card-proof{--record-signal:var(--escie-ultraviolet)}
+.world-card-art,.world-card-music,.world-card-words,.world-card-visual,.world-card-project{--record-signal:var(--escie-ultraviolet)}
+.world-card-archive,.world-card-archives{--record-signal:var(--escie-cold-grey)}
+.world-node-card[data-depth="deep"] .world-card-signal:after{
+  content:"";
+  position:absolute;
+  left:17px;
+  margin-top:34px;
+  width:1px;
+  height:18px;
+  background:linear-gradient(180deg,var(--record-signal),transparent);
+  opacity:.3;
+}
+@media(max-width:700px){
+  .world-node-card{
+    grid-template-columns:25px minmax(0,1fr) auto;
+    gap:9px;
+    min-height:82px;
+    padding:11px 2px;
+  }
+  .world-card-signal{width:24px;height:24px}
+  .world-card-signal .world-entry-glyph{width:19px;height:19px}
+  .world-node-card .record-identity{font-size:14px}
+  .world-node-card p{font-size:8px;line-height:1.5}
+  .world-node-card .world-card-thread{font-size:6px}
+  .world-node-card .world-arrow{font-size:6px}
+}
+@media(prefers-reduced-motion:reduce){
+  .world-node-card{transition:none}
+  .world-node-card .world-arrow{transition:none}
+}
