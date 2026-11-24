@@ -627,11 +627,16 @@ function homePlaceDetail(place){
  const roomCards=neighborhoods.map(function(place){
    return '<button type="button" class="world-room world-neighborhood-entry" data-node="'+esc(place.id)+'"><span class="world-room-mark" aria-hidden="true"></span><div><span class="world-kicker">NEIGHBORHOOD</span><strong>'+esc(title(place))+'</strong><p>'+esc(place.description||"A Montréal neighborhood in the World.")+'</p></div><span class="world-arrow" aria-hidden="true">↗</span></button>';
  }).join("");
- return '<div class="world-home-place">'+
-   '<div class="world-home-place-threshold"><button type="button" class="world-home-return" data-close-node>← WORLD</button><span class="world-kicker">HOME // MONTRÉAL</span><h3 data-no-translate class="record-identity">'+esc(live.name||title(place)||"MONTRÉAL")+'</h3><p>'+esc(place.description||"The place where ESCIE\'s world and the wider world meet.")+'</p></div>'+
-   '<div class="world-home-place-atmosphere" data-atmosphere-character="'+esc(atmosphere.character)+'" data-atmosphere-layer="'+esc(atmosphere.layer)+'" data-world-celestial-surface><span class="world-kicker">RIGHT NOW</span><strong>'+esc(atmosphere.weather)+'</strong><span>'+esc(atmosphere.light)+' · '+esc(atmosphere.surface)+' · '+esc(atmosphere.sound)+'</span></div>'+
-   '<div class="world-home-place-copy"><span class="world-kicker">HOME IS A PLACE, NOT A BORDER</span><p>Montréal is where this World is entered from. Streets, rooms, people, memories and everything beyond them can continue outward.</p></div>'+
-   '<div class="world-home-rooms"><div class="world-room-life-head"><span class="world-kicker">ENTER THE CITY</span><p>Start with a neighborhood. Streets lead to places, and places lead inside.</p></div>'+roomCards+'</div>'+
+ const publicRecords=records().filter(function(r){return r&&isPublicWorldRecord(r);});
+ const people=publicRecords.filter(function(r){return /PERSON|PEOPLE/i.test(String(type(r)))}).length;
+ const places=publicRecords.filter(function(r){return /PLACE|LOCATION|ROOM|BUILDING|STREET/i.test(String(type(r)))}).length;
+ const moments=publicRecords.filter(function(r){return /MOMENT|TIME/i.test(String(type(r)))}).length;
+ return '<div class="world-home-place world-home-montréal">'+
+   '<div class="world-home-place-threshold world-home-threshold-core"><button type="button" class="world-home-return" data-close-node>← WORLD</button><div class="world-home-core-line"><div class="world-home-core-mark" aria-hidden="true">'+glyph("montreal-mark","PLACE")+'</div><div><span class="world-kicker">HOME // MONTRÉAL // CORE</span><h3 data-no-translate class="record-identity">'+esc(live.name||title(place)||"MONTRÉAL")+'</h3></div></div><p>'+esc(place.description||"The place where ESCIE's world and the wider world meet.")+'</p></div>'+
+   '<div class="world-home-place-atmosphere world-home-live-surface" data-atmosphere-character="'+esc(atmosphere.character)+'" data-atmosphere-layer="'+esc(atmosphere.layer)+'" data-world-celestial-surface><span class="world-kicker">THE WORLD, RIGHT NOW</span><strong>'+esc(atmosphere.weather)+'</strong><span>'+esc(atmosphere.light)+' · '+esc(atmosphere.surface)+' · '+esc(atmosphere.sound)+'</span></div>'+
+   '<div class="world-home-place-copy"><span class="world-kicker">THIS IS HOME</span><p>Montréal is not a backdrop and not a border. It is the center from which the World opens: streets, rooms, people, memories, art and everything beyond them.</p></div>'+
+   '<div class="world-home-presence" aria-label="Public World presence"><span><b>'+esc(String(neighborhoods.length))+'</b><small>NEIGHBORHOODS</small></span><span><b>'+esc(String(people))+'</b><small>PEOPLE</small></span><span><b>'+esc(String(places))+'</b><small>PLACES</small></span><span><b>'+esc(String(moments))+'</b><small>MOMENTS</small></span></div>'+
+   '<div class="world-home-rooms"><div class="world-room-life-head"><span class="world-kicker">ENTER THE CITY</span><p>Start close. A neighborhood becomes a street, a place, a room, a person, a moment.</p></div>'+roomCards+'</div>'+
    '<div class="world-home-place-outside"><span class="world-kicker">BEYOND HOME</span><button type="button" data-outside-world><strong>THE WORLD CONTINUES</strong><small>Leave Montréal without leaving the World.</small></button></div>'+
  '</div>';
 }
