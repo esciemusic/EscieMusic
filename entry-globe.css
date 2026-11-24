@@ -41,3 +41,14 @@
 @media(prefers-reduced-motion:reduce){.entry-globe-point{transition:none}.entry-world-globe .world-globe{scroll-behavior:auto}}
 .entry-section .hero-symbol-doors{display:none}
 @media(max-width:600px){.entry-world-globe{width:190px;margin-top:18px}.entry-globe-label{bottom:-18px}}
+/* Canonical World marks: symbols identify nodes without permanent labels. */
+.entry-globe-point-symbol{position:absolute;left:50%;top:50%;width:15px;height:15px;transform:translate(-50%,-50%);color:var(--node-signal,rgba(255,255,255,.82));opacity:.76;pointer-events:none}
+.entry-globe-point-symbol .escie-symbol-glyph{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.15;stroke-linecap:round;stroke-linejoin:round}
+.entry-globe-point::before{content:"";position:absolute;inset:-7px;border-radius:50%;background:var(--node-signal,rgba(255,255,255,.18));filter:blur(5px);opacity:.3;pointer-events:none;z-index:-1}
+.entry-globe-point.home{--node-signal:#4da3ff}
+.entry-globe-point.music{--node-signal:#9b59ff}
+.entry-globe-point.archive{--node-signal:#b8b8d8}
+.entry-globe-point.case{--node-signal:#a75a91}
+.entry-globe-point.glass{--node-signal:#5bc7d9}
+.entry-globe-point:hover .entry-globe-point-symbol,.entry-globe-point:focus-visible .entry-globe-point-symbol{opacity:1}
+.entry-globe-legend{display:none!important}
