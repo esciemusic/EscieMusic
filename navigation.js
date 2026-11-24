@@ -40,48 +40,53 @@ const ESCIE_INDEX=[
   {
     id:"world",
     label:"THE WORLD",
+    description:"The shared place where people, places, moments, objects, and art meet.",
     entries:[
-      {label:"PEOPLE",target:"#world-tab=people"},
-      {label:"PLACES",target:"#world-tab=places"},
-      {label:"MOMENTS",target:"#world-tab=moments"},
-      {label:"OBJECTS",target:"#world-tab=objects"},
-      {label:"ART",target:"#art"}
+      {label:"PEOPLE",target:"#world-tab=people",description:"The people inside the World."},
+      {label:"PLACES",target:"#world-tab=places",description:"Places with memory, presence, and connection."},
+      {label:"MOMENTS",target:"#world-tab=moments",description:"Moments that give the World its time."},
+      {label:"OBJECTS",target:"#world-tab=objects",description:"Physical things that carry meaning."},
+      {label:"ART",target:"#art",description:"Where life becomes the medium."}
     ]
   },
   {
     id:"depth",
-    label:"DEPTH",
+    label:"DEEPER",
+    description:"The layers beneath the first view.",
     entries:[
-      {label:"FRAGMENTS",target:"#world-tab=fragments"},
-      {label:"PROOF",target:"#world-tab=proof"},
-      {label:"BODIES",target:"#world-tab=bodies"},
-      {label:"ARCHIVES",target:"#archives"},
-      {label:"CONNECTIONS",target:"#trace"}
+      {label:"FRAGMENTS",target:"#world-tab=fragments",description:"Pieces that do not tell the whole story alone."},
+      {label:"PROOF",target:"#world-tab=proof",description:"Records, sources, and things that can be examined."},
+      {label:"BODIES",target:"#world-tab=bodies",description:"The physical and human record."},
+      {label:"ARCHIVES",target:"#archives",description:"What has been preserved."},
+      {label:"CONNECTIONS",target:"#trace",description:"Where separate records begin to touch."}
     ]
   },
   {
     id:"trace",
     label:"TRACE",
+    description:"The thread you build by moving through what you find.",
     entries:[
-      {label:"YOUR THREAD",target:"#trace"},
-      {label:"WORLD THREADS",target:"#trace"},
-      {label:"CONNECTED RECORDS",target:"#trace"},
-      {label:"DISCOVERIES",target:"#trace"}
+      {label:"YOUR THREAD",target:"#trace",description:"Your path through the World."},
+      {label:"WORLD THREADS",target:"#trace",description:"Connections already present between records."},
+      {label:"CONNECTED RECORDS",target:"#trace",description:"What becomes related as you discover it."},
+      {label:"DISCOVERIES",target:"#trace",description:"The marks your passage leaves behind."}
     ]
   },
   {
     id:"art",
     label:"ART",
+    description:"Different forms of the same life.",
     entries:[
-      {label:"MUSIC",target:"#art/music"},
-      {label:"WORDS",target:"#art/words"},
-      {label:"VISUAL",target:"#art/visual"},
-      {label:"PROJECTS",target:"#art/projects"}
+      {label:"MUSIC",target:"#art/music",description:"Sound, tracks, and musical work."},
+      {label:"WORDS",target:"#art/words",description:"Writing, poetry, and language."},
+      {label:"VISUAL",target:"#art/visual",description:"Drawings, painting, photography, and film."},
+      {label:"PROJECTS",target:"#art/projects",description:"Larger bodies of work."}
     ]
   },
   {
     id:"records",
     label:"RECORDS",
+    description:"The forms the World can take when something is kept.",
     entries:[
       {label:"PEOPLE",target:"#world-tab=people"},
       {label:"PLACES",target:"#world-tab=places"},
@@ -96,8 +101,9 @@ const ESCIE_INDEX=[
   {
     id:"eye",
     label:"THE EYE",
+    description:"The part of the World that lets you look, listen, respond, and return.",
     entries:[
-      {label:"GLASS EYE",target:"#glass-eye"},
+      {label:"GLASS EYE",target:"#glass-eye",description:"The screen as an active point of contact."},
       {label:"OBSERVE",target:"#glass-eye"},
       {label:"HEAR",target:"#glass-eye"},
       {label:"FOLLOW",target:"#glass-eye"},
@@ -107,6 +113,7 @@ const ESCIE_INDEX=[
   {
     id:"investigations",
     label:"INVESTIGATIONS",
+    description:"Questions, evidence, and records that may not resolve cleanly.",
     entries:[
       {label:"CASE FILES",target:"#investigation"},
       {label:"EVIDENCE",target:"#investigation"},
@@ -115,16 +122,9 @@ const ESCIE_INDEX=[
     ]
   },
   {
-    id:"projects",
-    label:"PROJECTS",
-    entries:[
-      {label:"BAM",target:"#projects"},
-      {label:"CLOTHING",target:"#projects"},
-    ]
-  },
-  {
     id:"archive",
     label:"ARCHIVE",
+    description:"Preserved material that gives the World a memory.",
     entries:[
       {label:"DOCUMENTS",target:"#archives"},
       {label:"PHOTOGRAPHS",target:"#archives"},
@@ -134,14 +134,12 @@ const ESCIE_INDEX=[
     ]
   },
   {
-    id:"outside",
-    label:"OUTSIDE",
+    id:"projects",
+    label:"PROJECTS",
+    description:"Work that extends beyond a single record.",
     entries:[
-      {label:"MUSIC",target:"#art/music"},
-      {label:"SOCIAL",target:"#glass-eye"},
+      {label:"CLOTHING",target:"#projects",description:"The wearable side of the work."},
+      {label:"CURRENT WORK",target:"#projects",description:"Projects become public when they are ready."}
     ]
   }
 ];
-
-if(typeof window!=="undefined") window.ESCIE_INDEX=ESCIE_INDEX;
-if(typeof module!=="undefined"&&module.exports) module.exports.index=ESCIE_INDEX;
