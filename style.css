@@ -577,147 +577,155 @@ body.menu-open .index-navigation.is-open {
 
 .index-map{
   display:grid;
-  gap:18px;
+  gap:14px;
   color:var(--white);
+  font-family:var(--escie-font-escie,Arial,Helvetica,sans-serif);
 }
-
 .index-map-primary{
   display:grid;
   gap:4px;
-  padding-bottom:12px;
+  padding-bottom:10px;
   border-bottom:1px solid rgba(79,134,173,.28);
 }
-
 .index-map-kicker{
   color:var(--escie-aesthetic-purple);
-  font:500 8px/1 var(--escie-font-mono,monospace);
-  letter-spacing:.28em;
+  font:500 8px/1 var(--escie-font-signal,monospace);
+  letter-spacing:.24em;
 }
-
 .index-map-title{
-  margin:2px 0 10px;
+  margin:2px 0 7px;
   color:var(--muted);
-  font:400 9px/1.5 var(--escie-font-mono,monospace);
-  letter-spacing:.14em;
+  font:400 10px/1.35 var(--escie-font-escie,Arial,sans-serif);
+  letter-spacing:.08em;
   text-transform:uppercase;
 }
-
 .index-map-primary .nav-link{
-  padding:8px 6px;
+  padding:6px 5px;
+  font-family:var(--escie-font-escie,Arial,sans-serif);
   font-size:clamp(14px,2vw,17px);
-  letter-spacing:.1em;
-}
-
-.index-map-primary .nav-link:hover{
-  letter-spacing:.16em;
-}
-
-.index-map-detail{
-  display:grid;
-  gap:16px;
-}
-
-.index-map-section{
-  display:grid;
-  gap:5px;
-}
-
-.index-map-description{
-  max-width:62ch;
-  margin:0 0 3px;
-  color:var(--muted);
-  font:400 9px/1.55 var(--escie-font-mono,monospace);
   letter-spacing:.06em;
 }
-.index-map-link-copy{
+.index-map-primary .nav-link:hover{letter-spacing:.1em}
+.index-map-detail{
   display:grid;
   gap:2px;
-  min-width:0;
 }
-.index-map-link-label{
-  color:inherit;
+.index-map-section{
+  display:grid;
+  gap:0;
+  border-bottom:1px solid rgba(79,134,173,.13);
 }
-.index-map-link-description{
-  display:block;
-  max-width:46ch;
-  color:var(--faint);
-  font:400 8px/1.4 var(--escie-font-mono,monospace);
-  letter-spacing:.025em;
-  text-transform:none;
-}
-.index-map-link:hover .index-map-link-description,
-.index-map-link:focus-visible .index-map-link-description{
-  color:var(--muted);
-}
-@media(max-width:700px){
-  .index-map-description{
-    font-size:8px;
-    line-height:1.6;
-  }
-  .index-map-link-description{
-    font-size:7px;
-  }
+.index-map-section-toggle{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  width:100%;
+  min-height:36px;
+  padding:7px 3px;
+  border:0;
+  background:transparent;
+  color:var(--white);
+  cursor:pointer;
+  text-align:left;
 }
 .index-map-heading{
-  margin:0 0 2px;
-  color:var(--faint);
-  font:500 8px/1 var(--escie-font-mono,monospace);
-  letter-spacing:.22em;
+  margin:0;
+  color:var(--muted);
+  font:600 12px/1 var(--escie-font-escie,Arial,sans-serif);
+  letter-spacing:.08em;
   text-transform:uppercase;
 }
-
+.index-map-plus{
+  color:var(--escie-aesthetic-purple);
+  font:400 18px/1 var(--escie-font-escie,Arial,sans-serif);
+  width:18px;
+  text-align:center;
+}
+.index-map-section-toggle:hover .index-map-heading,
+.index-map-section-toggle:focus-visible .index-map-heading{
+  color:var(--white);
+}
+.index-map-section-toggle:focus-visible{
+  outline:1px solid rgba(155,89,255,.42);
+  outline-offset:2px;
+}
+.index-map-description{
+  max-width:62ch;
+  margin:0 3px 7px;
+  color:var(--muted);
+  font:400 10px/1.45 var(--escie-font-body,Arial,sans-serif);
+  letter-spacing:.02em;
+}
 .index-map-links{
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
   gap:1px 10px;
+  padding:0 0 7px;
 }
-
 .index-map-link{
   display:flex!important;
   align-items:center;
   justify-content:space-between;
   gap:8px;
   min-width:0;
-  padding:6px 4px!important;
+  padding:5px 4px!important;
   color:var(--muted)!important;
-  font:400 9px/1.25 var(--escie-font-mono,monospace)!important;
-  letter-spacing:.1em!important;
+  font:500 10px/1.25 var(--escie-font-escie,Arial,sans-serif)!important;
+  letter-spacing:.04em!important;
   text-transform:uppercase;
   transform:none!important;
 }
-
-.index-map-link:hover,
-.index-map-link:focus-visible{
+.index-map-link-copy{display:grid;gap:2px;min-width:0}
+.index-map-link-description{
+  display:block;
+  max-width:46ch;
+  color:var(--faint);
+  font:400 9px/1.35 var(--escie-font-body,Arial,sans-serif);
+  letter-spacing:0;
+  text-transform:none;
+}
+.index-map-link:hover,.index-map-link:focus-visible{
   color:var(--white)!important;
-  letter-spacing:.13em!important;
+  letter-spacing:.06em!important;
   background:rgba(155,89,255,.045);
   outline:none;
 }
-
-.index-map-arrow{
-  color:var(--escie-blue-bright);
-  opacity:.55;
-  flex:0 0 auto;
+.index-map-link:hover .index-map-link-description,
+.index-map-link:focus-visible .index-map-link-description{color:var(--muted)}
+.index-map-arrow{color:var(--escie-blue-bright);opacity:.55;flex:0 0 auto}
+.entry-globe-point::after{
+  content:attr(data-node-label);
+  position:absolute;
+  left:50%;
+  top:calc(100% + 8px);
+  transform:translateX(-50%) translateY(3px);
+  padding:4px 7px;
+  white-space:nowrap;
+  pointer-events:none;
+  opacity:0;
+  color:var(--white);
+  background:rgba(5,5,5,.88);
+  border:1px solid rgba(155,89,255,.28);
+  font:500 8px/1 var(--escie-font-signal,monospace);
+  letter-spacing:.12em;
+  z-index:20;
+  transition:opacity .16s ease,transform .16s ease;
 }
-
+.entry-globe-point:hover::after,
+.entry-globe-point:focus-visible::after{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
 @media(max-width:700px){
-  .index-navigation{
-    top:calc(var(--header-height) + 6px);
-    right:10px;
-    width:calc(100vw - 20px);
-    max-height:min(82svh,760px);
-    padding:12px;
-  }
-  .index-map-detail{
-    gap:14px;
-  }
-  .index-map-links{
-    grid-template-columns:1fr 1fr;
-  }
+  .index-map-detail{gap:0}
+  .index-map-links{grid-template-columns:1fr 1fr}
+  .index-map-heading{font-size:11px}
+  .index-map-link{font-size:9px!important}
+  .index-map-link-description{font-size:8px}
+  .entry-globe-point::after{display:none}
 }
-
 @media(prefers-reduced-motion:reduce){
-  .index-map-link,.index-map-primary .nav-link{transition:none!important}
+  .index-map-link,.index-map-primary .nav-link,.entry-globe-point::after{transition:none!important}
 }
 
 /* =========================================================
