@@ -1382,7 +1382,7 @@ test("A-Z Pass 9 protects Trace thread path navigation",()=>{
   const app=read("app.js");
   const style=read("style.css");
   assert.match(app,/traceTrail/);
-  assert.match(app,/THREAD PATH/);
+  assert.match(app,/YOUR THREAD/);
   assert.match(app,/renderTrace\(\);/);
   assert.match(style,/\.trace-thread-trail/);
   assert.match(style,/\.trace-trail-node/);
