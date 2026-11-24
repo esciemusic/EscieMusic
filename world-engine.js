@@ -1074,8 +1074,28 @@ function lensRows(){
  const rows=state.tab==="atlas"?records():coll(map[state.tab],[]);
  return rows.filter(function(r){return r&&String(r.visibility||"").toLowerCase()!=="withheld"&&r.public_disclosure!==false;}).slice(0,60);
 }
+function atlasMarkup(){
+ const rs=records();
+ const home=rs.find(function(r){return String(r.id)==="world-montreal";})||montrealRecord()||{id:"world-montreal",type:"PLACE",title:"Montréal",description:"Home."};
+ const homeId=String(home.id);
+ const direct=related(homeId).map(function(x){return x.node;}).filter(Boolean);
+ const pool=rs.filter(function(r){return String(r.id)!==homeId;});
+ const score=function(r){
+   const rel=related(r.id);
+   const directHit=direct.some(function(x){return String(x.id)===String(r.id);});
+   return (directHit?1000:0)+rel.length*10+(type(r)==="PLACE"?4:0);
+ };
+ const nodes=pool.sort(function(a,b){return score(b)-score(a);}).slice(0,8);
+ const nodeMarkup=nodes.map(function(r,i){
+   const rel=related(r.id).some(function(x){return String(x.node.id)===homeId;});
+   return '<button type="button" class="world-atlas-node world-atlas-node-'+(i+1)+' '+(rel?"is-home-linked":"")+'" data-node="'+esc(r.id)+'"><span class="world-atlas-node-symbol" aria-hidden="true">'+glyph(({"PEOPLE":"people","PERSON":"people","PLACE":"place","LOCATION":"place","MOMENT":"moment","OBJECT":"object","FRAGMENT":"fragment","BODY":"body","BODIES":"body","PROOF":"proof","ART":"art","MUSIC":"music","ARCHIVE":"archives","ARCHIVES":"archives"}[type(r)]||"world"),type(r))+'</span><span><strong>'+esc(title(r))+'</strong><small>'+esc(type(r))+(rel?" · HOME LINK":"")+'</small></span></button>';
+ }).join("");
+ const directCount=direct.length;
+ const density=rs.length?Math.round((rels().length/Math.max(1,rs.length))*10)/10:0;
+ return '<section class="world-atlas" aria-label="World atlas"><div class="world-atlas-head"><div><span class="world-kicker">ATLAS // THE WORLD</span><h4>HOME IS A CENTER, NOT AN EDGE.</h4><p>The globe is the first view. This is what its signal becomes when you enter it: a living set of places, people, moments and things connected around what you chose to notice.</p></div><div class="world-atlas-meta"><span>'+esc(String(rs.length))+' PUBLIC RECORDS</span><span>'+esc(String(rels().length))+' PUBLIC LINKS</span><span>'+esc(String(directCount))+' HOME LINKS</span></div></div><div class="world-atlas-field"><div class="world-atlas-rings" aria-hidden="true"></div><button type="button" class="world-atlas-home" data-node="'+esc(homeId)+'"><span class="world-kicker">HOME</span><strong>MONTRÉAL</strong><small>'+esc(String(directCount))+' direct connections</small></button>'+nodeMarkup+'</div><div class="world-atlas-foot"><span>NETWORK DENSITY · '+esc(String(density))+'</span><span>SELECT A NODE TO ENTER IT</span></div></section>';
+}
 function worldLensContent(){
- if(state.tab==="atlas")return '<div class="world-home-house"><div class="world-home-city"><span class="world-kicker">THE HOME</span><strong>MONTRÉAL</strong><p>MONTRÉAL IS HOME.</p></div></div>';
+ if(state.tab==="atlas")return atlasMarkup();
  if(state.tab==="trace")return traceView();
  const rows=lensRows();
  return '<div class="world-list">'+(rows.length?rows.map(card).join(""):'<div class="world-empty">Nothing has been opened here yet.</div>')+'</div>';
