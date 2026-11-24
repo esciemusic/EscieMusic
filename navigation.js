@@ -45,7 +45,7 @@ const ESCIE_INDEX=[
       {label:"MONTRÉAL",target:"#world-node=world-montreal",description:"HOME / THE PLACE WHERE THE WORLD IS HERE.",symbol:"montreal-mark"},
       {label:"PEOPLE",target:"#world-tab=people",description:"The people inside the World." ,symbol:"people"},
       {label:"PLACES",target:"#world-tab=places",description:"Places with memory, presence, and connection." ,symbol:"place"},
-      {label:"MOMENTS",target:"#world-tab=moments",description:"Moments that give the World its time." ,symbol:"moon"},
+      {label:"MOMENTS",target:"#world-tab=moments",description:"Moments that give the World its time." ,symbol:"moment"},
       {label:"OBJECTS",target:"#world-tab=objects",description:"Physical things that carry meaning." ,symbol:"object"},
       {label:"ART",target:"#art",description:"Where life becomes the medium." ,symbol:"art"}
     ]
@@ -91,7 +91,7 @@ const ESCIE_INDEX=[
     entries:[
       {label:"PEOPLE",target:"#world-tab=people",symbol:"people"},
       {label:"PLACES",target:"#world-tab=places",symbol:"place"},
-      {label:"MOMENTS",target:"#world-tab=moments",symbol:"moon"},
+      {label:"MOMENTS",target:"#world-tab=moments",symbol:"moment"},
       {label:"OBJECTS",target:"#world-tab=objects",symbol:"object"},
       {label:"FRAGMENTS",target:"#world-tab=fragments",symbol:"fragment"},
       {label:"PROOF",target:"#world-tab=proof",symbol:"proof"},
