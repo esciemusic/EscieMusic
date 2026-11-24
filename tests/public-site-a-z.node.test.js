@@ -1322,7 +1322,7 @@ test("A-Z World home architecture uses Montréal as home and direct room routes"
    const index=read("index.html");
    const engine=read("world-engine.js");
    const app=read("app.js");
-   assert.match(index,/href="#world-node=montreal"/);
+   assert.match(index,/href="#world-node=world-montreal"/);
    assert.match(engine,/function worldHome\(\)/);
    assert.match(engine,/parc-extension/);
    assert.match(engine,/Montréal is home\. Everything else is still the world\./);
