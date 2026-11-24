@@ -793,7 +793,7 @@ test("A-Z Pass 2 World includes the physical clothing layer without exposing loc
   const merch=read("data/merch.js");
   assert.ok(app.includes('id="merch-filters" class="merch-controls"'));
   assert.ok(app.includes('id="merch-container" class="merch-container" hidden'));
-  assert.ok(app.includes('THE WORLD YOU CAN WEAR'));
+  assert.ok(app.includes('THE WORLD, WORN'));
   assert.ok(css.includes(".world-wear-layer{"));
   assert.ok(css.includes(".world-wear-layer .merch-container[hidden]{display:none!important}"));
   assert.match(merch,/public_visibility:"hidden"/);
