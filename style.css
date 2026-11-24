@@ -2784,3 +2784,20 @@ body.inspector-open{overflow:hidden}
 .site-logo .escie-symbol-glyph{width:1.05em;height:1.05em;fill:none;stroke:currentColor;stroke-width:1.15;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.12em;}
 .escie-master-sigil{display:inline-flex;align-items:center;justify-content:center;}
 .escie-master-sigil .escie-symbol-glyph{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.15;stroke-linecap:round;stroke-linejoin:round;}
+
+
+/* =========================================================
+   WORLD SYMBOL LANGUAGE
+   Established symbols identify World concepts; ESCIE supplies
+   the restrained signal treatment.
+   ========================================================= */
+.index-map-link{display:grid!important;grid-template-columns:20px minmax(0,1fr) auto;align-items:center;gap:9px}
+.index-map-link-symbol{width:17px;height:17px;display:inline-flex;align-items:center;justify-content:center;color:var(--escie-symbol-signal,var(--escie-blue-bright));opacity:.72;filter:drop-shadow(0 0 5px color-mix(in srgb,var(--escie-symbol-signal,var(--escie-blue-bright)) 28%,transparent))}
+.index-map-link-symbol .escie-symbol-glyph{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.15;stroke-linecap:round;stroke-linejoin:round}
+.index-map-link:hover .index-map-link-symbol,.index-map-link:focus-visible .index-map-link-symbol{opacity:1}
+.index-map-link:nth-child(1){--escie-symbol-signal:#4da3ff}
+.index-map-link:nth-child(2){--escie-symbol-signal:#9b59ff}
+.index-map-link:nth-child(3){--escie-symbol-signal:#c46b91}
+.index-map-link:nth-child(4){--escie-symbol-signal:#4da3ff}
+.index-map-link:nth-child(5){--escie-symbol-signal:#b8b8d8}
+.index-map-section-toggle .index-map-heading{display:inline-flex;align-items:center;gap:8px}
