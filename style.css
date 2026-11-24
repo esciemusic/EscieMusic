@@ -579,7 +579,7 @@ body.menu-open .index-navigation.is-open {
   display:grid;
   gap:8px;
   color:var(--white);
-  font-family:var(--escie-font-body,Arial,Helvetica,sans-serif);
+  font-family:var(--escie-font-signal,monospace);
 }
 .index-map-primary{
   display:grid;
@@ -595,13 +595,13 @@ body.menu-open .index-navigation.is-open {
 .index-map-title{
   margin:1px 0 4px;
   color:var(--muted);
-  font:500 9px/1.25 var(--escie-font-body,Arial,sans-serif);
+  font:500 8px/1.25 var(--escie-font-signal,monospace);
   letter-spacing:.08em;
   text-transform:uppercase;
 }
 .index-map-primary .nav-link{
   padding:4px 4px;
-  font-family:var(--escie-font-body,Arial,sans-serif);
+  font-family:var(--escie-font-signal,monospace);
   font-size:clamp(13px,1.8vw,16px);
   letter-spacing:.06em;
 }
@@ -631,13 +631,13 @@ body.menu-open .index-navigation.is-open {
 .index-map-heading{
   margin:0;
   color:var(--muted);
-  font:600 10px/1 var(--escie-font-body,Arial,sans-serif);
+  font:600 9px/1 var(--escie-font-signal,monospace);
   letter-spacing:.08em;
   text-transform:uppercase;
 }
 .index-map-plus{
   color:var(--escie-aesthetic-purple);
-  font:400 16px/1 var(--escie-font-body,Arial,sans-serif);
+  font:400 15px/1 var(--escie-font-signal,monospace);
   width:18px;
   text-align:center;
 }
@@ -653,7 +653,7 @@ body.menu-open .index-navigation.is-open {
   max-width:62ch;
   margin:0 3px 5px;
   color:var(--muted);
-  font:400 10px/1.45 var(--escie-font-body,Arial,sans-serif);
+  font:400 9px/1.45 var(--escie-font-body,Arial,sans-serif);
   letter-spacing:.02em;
 }
 .index-map-links{
