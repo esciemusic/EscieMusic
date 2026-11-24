@@ -349,9 +349,15 @@ function filtered(){
 }
 function card(r){
  const links=related(r.id);
+ const kind=type(r);
+ const symbol={PEOPLE:"people",PERSON:"people",PLACE:"place",LOCATION:"place",MOMENT:"moment",OBJECT:"object",FRAGMENT:"fragment",BODY:"body",BODIES:"body",PROOF:"proof",ART:"art",MUSIC:"music",WORDS:"words",VISUAL:"visual",PROJECT:"project",ARCHIVE:"archives",ARCHIVES:"archives"}[kind]||"world";
  const depth=links.length?"DEEPER THREAD":"SURFACE";
  const why=links.length?"CONNECTED TO "+links.length+" THREAD"+(links.length===1?"":"S"):"";
- return '<button type="button" class="world-card world-node-card" data-node="'+esc(r.id)+'" data-depth="'+(links.length?"deep":"surface")+'"><div class="world-card-main"><span class="world-kicker">'+esc(type(r))+' // '+depth+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3><p>'+esc(String(r.description||r.summary||r.story||"A doorway into the World.").slice(0,220))+'</p>'+(why?'<small class="world-card-thread">'+esc(why)+'</small>':'')+'</div><span class="world-arrow" aria-hidden="true">OPEN</span></button>';
+ const description=String(r.description||r.summary||r.story||"A doorway into the World.").slice(0,220);
+ return '<button type="button" class="world-card world-node-card world-card-'+esc(kind.toLowerCase())+'" data-node="'+esc(r.id)+'" data-depth="'+(links.length?"deep":"surface")+'" data-world-kind="'+esc(kind)+'">'+
+   '<div class="world-card-signal" aria-hidden="true">'+glyph(symbol,kind)+'</div>'+
+   '<div class="world-card-main"><span class="world-kicker">'+esc(kind)+' // '+depth+'</span><h3 data-no-translate class="record-identity">'+esc(title(r))+'</h3><p>'+esc(description)+'</p>'+(why?'<small class="world-card-thread">'+esc(why)+'</small>':'')+'</div>'+
+   '<span class="world-arrow" aria-hidden="true">OPEN</span></button>';
 }
 function persistTrace(){try{localStorage.setItem("escie_world_trail",JSON.stringify(state.trail));localStorage.setItem("escie_world_visited",JSON.stringify(state.visited));}catch(e){}}
 function remember(id){if(id==null)return;const value=String(id).trim();if(!value)return;if(!state.visited.includes(value))state.visited.push(value);if(state.trail[state.trail.length-1]!==value)state.trail.push(value);state.trail=state.trail.slice(-12);state.visited=state.visited.slice(-100);persistTrace()}
