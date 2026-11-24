@@ -7,9 +7,10 @@
   "scripts": {
     "start": "electron .",
     "dev": "electron .",
-    "package:win": "electron-builder --win",
-    "package:mac": "electron-builder --mac",
-    "package:linux": "electron-builder --linux"
+    "stage": "node stage.cjs",
+    "package:win": "npm run stage && electron-builder --win",
+    "package:mac": "npm run stage && electron-builder --mac",
+    "package:linux": "npm run stage && electron-builder --linux"
   },
   "devDependencies": {
     "electron": "^39.0.0",
@@ -22,12 +23,10 @@
       "output": "dist"
     },
     "files": [
-      "../**/*",
+      "app/**/*",
       "main.cjs",
       "preload.cjs",
-      "package.json",
-      "!../desktop/dist/**",
-      "!../desktop/node_modules/**"
+      "package.json"
     ],
     "asar": true
   }
