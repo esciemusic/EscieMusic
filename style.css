@@ -2795,9 +2795,12 @@ body.inspector-open{overflow:hidden}
 .index-map-link-symbol{width:17px;height:17px;display:inline-flex;align-items:center;justify-content:center;color:var(--escie-symbol-signal,var(--escie-blue-bright));opacity:.72;filter:drop-shadow(0 0 5px color-mix(in srgb,var(--escie-symbol-signal,var(--escie-blue-bright)) 28%,transparent))}
 .index-map-link-symbol .escie-symbol-glyph{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.15;stroke-linecap:round;stroke-linejoin:round}
 .index-map-link:hover .index-map-link-symbol,.index-map-link:focus-visible .index-map-link-symbol{opacity:1}
-.index-map-link:nth-child(1){--escie-symbol-signal:#4da3ff}
-.index-map-link:nth-child(2){--escie-symbol-signal:#9b59ff}
-.index-map-link:nth-child(3){--escie-symbol-signal:#c46b91}
-.index-map-link:nth-child(4){--escie-symbol-signal:#4da3ff}
-.index-map-link:nth-child(5){--escie-symbol-signal:#b8b8d8}
+.index-map-link-symbol .symbol-montreal-mark{color:#4da3ff}.index-map-link-symbol .symbol-music{color:#9b59ff}.index-map-link-symbol .symbol-people{color:#c46b91}.index-map-link-symbol .symbol-place{color:#4da3ff}.index-map-link-symbol .symbol-moon{color:#b8b8d8}.index-map-link-symbol .symbol-object{color:#b8b8d8}.index-map-link-symbol .symbol-fragment{color:#9b59ff}.index-map-link-symbol .symbol-proof{color:#9b59ff}.index-map-link-symbol .symbol-body{color:#c46b91}.index-map-link-symbol .symbol-connection{color:#4da3ff}.index-map-link-symbol .symbol-trace{color:#4da3ff}.index-map-link-symbol .symbol-aperture{color:#5bc7d9}.index-map-link-symbol .symbol-case-files{color:#a75a91}.index-map-link-symbol .symbol-art{color:#9b59ff}
 .index-map-section-toggle .index-map-heading{display:inline-flex;align-items:center;gap:8px}
+
+.world-home-identity{display:inline-flex;align-items:center;gap:7px}
+.world-home-identity .escie-symbol-glyph{width:14px;height:14px;color:#4da3ff;fill:none;stroke:currentColor;stroke-width:1.15}
+.world-primary-door .symbol-people,.world-primary-door .symbol-place,.world-primary-door .symbol-moon,.world-primary-door .symbol-object{color:#4da3ff}
+.world-deeper-nav .symbol-fragment,.world-deeper-nav .symbol-proof{color:#9b59ff}
+.world-deeper-nav .symbol-body{color:#c46b91}
+.world-deeper-nav .symbol-connection,.world-deeper-nav .symbol-trace{color:#4da3ff}
