@@ -4857,3 +4857,126 @@ html[data-theme="light"] .site-logo,html[data-theme="light"] .index-trigger{colo
   .world-node-card{transition:none}
   .world-node-card .world-arrow{transition:none}
 }
+
+
+/* WORLD PASS 6 — encounters feel like objects in the World, not generic detail dialogs. */
+.world-detail{
+  --encounter-signal:var(--escie-blue-bright);
+  position:relative;
+  overflow:hidden;
+  padding:0 0 24px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--encounter-signal) 3%,transparent),transparent 28%);
+}
+.world-detail:before{
+  left:0;
+  width:96px;
+  background:linear-gradient(90deg,var(--encounter-signal),transparent);
+}
+.world-detail-identity{
+  display:grid;
+  grid-template-columns:34px minmax(0,1fr);
+  align-items:center;
+  gap:10px;
+}
+.world-detail-signal{
+  display:grid;
+  place-items:center;
+  width:32px;
+  height:32px;
+  color:var(--encounter-signal);
+  opacity:.82;
+}
+.world-detail-signal .world-entry-glyph{
+  width:26px;
+  height:26px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.1;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  filter:drop-shadow(0 0 6px color-mix(in srgb,var(--encounter-signal) 32%,transparent));
+}
+.world-detail .record-identity{
+  font-family:var(--escie-font-signal);
+  font-weight:500;
+  letter-spacing:.055em;
+  text-transform:uppercase;
+}
+.world-encounter-threshold{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin:8px 0 13px;
+  padding:7px 4px;
+  border-top:1px solid color-mix(in srgb,var(--encounter-signal) 16%,transparent);
+  border-bottom:1px solid rgba(216,212,202,.055);
+}
+.world-encounter-threshold .world-kicker{
+  color:var(--encounter-signal);
+  opacity:.68;
+}
+.world-encounter-line{
+  flex:1;
+  height:1px;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--encounter-signal) 35%,transparent),transparent);
+}
+.world-encounter-section-label{
+  color:var(--encounter-signal);
+  opacity:.68;
+  margin-top:18px;
+}
+.world-encounter-people,.world-encounter-person{--encounter-signal:var(--escie-blue)}
+.world-encounter-place,.world-encounter-location{--encounter-signal:var(--escie-blue-bright)}
+.world-encounter-moment{--encounter-signal:var(--escie-cold-grey)}
+.world-encounter-object{--encounter-signal:var(--escie-blue-bright)}
+.world-encounter-fragment{--encounter-signal:var(--escie-ultraviolet)}
+.world-encounter-body,.world-encounter-bodies{--encounter-signal:var(--escie-blue)}
+.world-encounter-proof{--encounter-signal:var(--escie-ultraviolet)}
+.world-encounter-art,.world-encounter-music,.world-encounter-words,.world-encounter-visual,.world-encounter-project{--encounter-signal:var(--escie-ultraviolet)}
+.world-encounter-archive,.world-encounter-archives{--encounter-signal:var(--escie-cold-grey)}
+.world-detail-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+}
+.world-detail-meta span{
+  border-color:color-mix(in srgb,var(--encounter-signal) 18%,transparent);
+}
+.world-encounter-description{
+  max-width:680px;
+  font-family:var(--escie-font-signal);
+  line-height:1.7;
+}
+.world-encounter-context{
+  border-left-color:color-mix(in srgb,var(--encounter-signal) 45%,transparent);
+}
+.world-encounter-media{
+  border-color:color-mix(in srgb,var(--encounter-signal) 16%,transparent);
+}
+.world-connections{
+  border-top-color:color-mix(in srgb,var(--encounter-signal) 12%,transparent);
+}
+.world-connections button{
+  position:relative;
+}
+.world-connections button:before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:12px;
+  bottom:12px;
+  width:1px;
+  background:var(--encounter-signal);
+  opacity:.25;
+}
+.world-detail-actions button:hover,
+.world-detail-actions button:focus-visible{
+  color:var(--encounter-signal);
+  border-color:color-mix(in srgb,var(--encounter-signal) 38%,transparent);
+}
+@media(max-width:700px){
+  .world-detail-identity{grid-template-columns:29px minmax(0,1fr);gap:8px}
+  .world-detail-signal{width:27px;height:27px}
+  .world-detail-signal .world-entry-glyph{width:22px;height:22px}
+  .world-encounter-threshold{margin-top:7px}
+}
