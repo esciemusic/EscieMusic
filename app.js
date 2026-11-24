@@ -546,11 +546,13 @@
       if (!entries.length) return "";
       return '<section class="index-map-section" data-index-section="' + escapeHTML(section.id || section.label) + '">' +
         '<h2 class="index-map-heading">' + escapeHTML(section.label) + '</h2>' +
+        (section.description ? '<p class="index-map-description">' + escapeHTML(section.description) + '</p>' : '') +
         '<div class="index-map-links">' +
         entries.map(entry =>
           '<a class="index-map-link" href="' + escapeHTML(entry.target) + '">' +
-          '<span>' + escapeHTML(entry.label) + '</span>' +
-          '<span class="index-map-arrow" aria-hidden="true">↳</span>' +
+          '<span class="index-map-link-copy"><span class="index-map-link-label">' + escapeHTML(entry.label) + '</span>' +
+          (entry.description ? '<span class="index-map-link-description">' + escapeHTML(entry.description) + '</span>' : '') +
+          '</span><span class="index-map-arrow" aria-hidden="true">↳</span>' +
           '</a>'
         ).join("") +
         '</div></section>';
@@ -560,7 +562,7 @@
       '<div class="index-map" aria-label="ESCIE Index">' +
         '<div class="index-map-primary">' +
           '<span class="index-map-kicker">INDEX</span>' +
-          '<span class="index-map-title">EVERYTHING THAT HAS A DOOR</span>' +
+          '<span class="index-map-title">A FIELD GUIDE TO THE WORLD</span>' +
           primaryMarkup +
         '</div>' +
         '<div class="index-map-detail">' + sectionMarkup + '</div>' +
