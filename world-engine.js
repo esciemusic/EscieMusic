@@ -1013,15 +1013,15 @@ function homeRooms(){
 function worldLensMarkup(){
  const lensAttrs={atlas:'data-world-tab="atlas"',objects:'data-world-tab="objects"',people:'data-world-tab="people"',places:'data-world-tab="places"',moments:'data-world-tab="moments"',fragments:'data-world-tab="fragments"',bodies:'data-world-tab="bodies"',proof:'data-world-tab="proof"',path:'data-world-tab="path"',timeline:'data-world-tab="timeline"',symbols:'data-world-tab="symbols"',trails:'data-world-tab="trails"'};
  const primary=[
-  ["people","PEOPLE","person"],
-  ["places","PLACES","world"],
-  ["moments","MOMENTS","moment"],
-  ["objects","OBJECTS","world"]
+  ["people","PEOPLE","people"],
+  ["places","PLACES","place"],
+  ["moments","MOMENTS","moon"],
+  ["objects","OBJECTS","object"]
  ];
  const deeper=[
-  ["fragments","FRAGMENTS","photo-negative"],
-  ["proof","PROOF","key"],
-  ["bodies","BODIES","empty-chair"]
+  ["fragments","FRAGMENTS","fragment"],
+  ["proof","PROOF","proof"],
+  ["bodies","BODIES","body"]
  ];
  const advanced=state.exploreOpen;
  return '<div class="world-index-shell">'+
