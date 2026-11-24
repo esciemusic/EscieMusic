@@ -44,6 +44,7 @@ jobs:
           - world-synthetic.node.test.js
           - content-lifecycle.node.test.js
           - world-elements-contract.node.test.js
+          - symbol-consistency.node.test.js
     runs-on: ubuntu-latest
     name: Contract · ${{ matrix.test }}
     steps:
