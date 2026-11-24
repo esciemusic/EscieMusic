@@ -34,5 +34,20 @@
   <symbol id="path" viewBox="0 0 32 32"><path d="M5 25c8-12 14-12 22-18"/><circle cx="5" cy="25" r="2"/><circle cx="27" cy="7" r="2"/></symbol>
   <symbol id="gravity" viewBox="0 0 32 32"><circle cx="16" cy="16" r="3"/><circle cx="16" cy="16" r="10"/><path d="M16 3v5M16 24v5M3 16h5M24 16h5"/></symbol>
   <symbol id="unknown" viewBox="0 0 32 32"><circle cx="16" cy="16" r="11" stroke-dasharray="3 4"/><path d="M12 12c1-3 7-4 9 0 2 4-3 5-5 7v2M16 25h.01"/></symbol>
+  <symbol id="montreal-mark" viewBox="0 0 32 32"><circle cx="16" cy="16" r="13"/><path d="M16 7c-2 3-2 6 0 8 2-2 2-5 0-8Z"/><path d="M16 15v10M13 24h6M8 12l4 4-4 2 3 3M24 12l-4 4 4 2-3 3"/></symbol>
+  <symbol id="music" viewBox="0 0 32 32"><path d="M22 5v16.5a4.5 4.5 0 1 1-2-3.8V9l8-2v9.5a4.5 4.5 0 1 1-2-3.8V5Z"/><path d="M22 5h6"/></symbol>
+  <symbol id="people" viewBox="0 0 32 32"><circle cx="11" cy="10" r="3"/><circle cx="21" cy="10" r="3"/><circle cx="16" cy="23" r="3"/><path d="M11 13v5M21 13v5M13 18h6M13 20l-2-5M19 20l2-5"/></symbol>
+  <symbol id="place" viewBox="0 0 32 32"><path d="M16 28s8-7.6 8-14a8 8 0 1 0-16 0c0 6.4 8 14 8 14Z"/><circle cx="16" cy="14" r="2.5"/></symbol>
+  <symbol id="moon" viewBox="0 0 32 32"><path d="M22 6a11 11 0 1 0 4 17A10 10 0 0 1 22 6Z"/></symbol>
+  <symbol id="object" viewBox="0 0 32 32"><rect x="7" y="7" width="18" height="18" rx="2"/><path d="M11 11h10v10H11z"/></symbol>
+  <symbol id="fragment" viewBox="0 0 32 32"><path d="M6 8h9l4 4-4 4 5 5-4 5H7l5-5-4-4 4-4Z"/></symbol>
+  <symbol id="proof" viewBox="0 0 32 32"><path d="M9 11h7l-3-3M23 21h-7l3 3M16 8v16"/></symbol>
+  <symbol id="body" viewBox="0 0 32 32"><circle cx="16" cy="7" r="3"/><path d="M16 10v10M10 15h12M12 29l4-9 4 9"/></symbol>
+  <symbol id="connection" viewBox="0 0 32 32"><circle cx="8" cy="16" r="2.5"/><circle cx="24" cy="9" r="2.5"/><circle cx="24" cy="23" r="2.5"/><path d="M10 15l11-5M10 17l11 5"/></symbol>
+  <symbol id="trace" viewBox="0 0 32 32"><path d="M6 25C12 12 18 20 26 7"/><circle cx="6" cy="25" r="2"/><circle cx="26" cy="7" r="2"/></symbol>
+  <symbol id="aperture" viewBox="0 0 32 32"><circle cx="16" cy="16" r="10"/><path d="M12 9l4 7 4-7M23 12l-7 4 7 4M20 23l-4-7-4 7M9 20l7-4-7-4"/></symbol>
+  <symbol id="words" viewBox="0 0 32 32"><path d="M7 9h18M7 15h13M7 21h18M7 27h10"/></symbol>
+  <symbol id="visual" viewBox="0 0 32 32"><rect x="6" y="7" width="20" height="18"/><circle cx="12" cy="13" r="2"/><path d="M8 22l6-6 4 4 3-3 3 5"/></symbol>
+  <symbol id="project" viewBox="0 0 32 32"><rect x="6" y="8" width="20" height="16"/><path d="M10 8v-2h12v2M10 14h12M10 19h7"/></symbol>
 </defs>
 </svg>
