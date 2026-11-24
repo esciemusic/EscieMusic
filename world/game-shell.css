@@ -600,3 +600,40 @@ body.escie-game-page.is-world-paused .world-3d-tools{
   body.escie-game-page .world-pause{inset:2vh 2vw;padding:8px}
   body.escie-game-page .world-pause-head h2{font-size:.72rem}
 }
+
+
+/* MOBILE-FIRST GAME CONTROLS */
+.world-mobile-controls{display:none}
+@media (pointer:coarse){
+  body.escie-game-page .world-mobile-controls{position:fixed;left:0;right:0;bottom:0;z-index:46;display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:10px max(10px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));box-sizing:border-box;pointer-events:none}
+  body.escie-game-page .mobile-stick,body.escie-game-page .mobile-actions{pointer-events:auto}
+  body.escie-game-page .mobile-stick{width:132px;height:132px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:4px}
+  body.escie-game-page .mobile-stick button{border:1px solid rgba(47,128,255,.48);background:rgba(5,5,5,.82);color:var(--escie-paper,#f0ede4);border-radius:6px;font:800 .7rem monospace;-webkit-tap-highlight-color:transparent;touch-action:none}
+  body.escie-game-page .mobile-stick [data-mobile-move="up"]{grid-column:2;grid-row:1}
+  body.escie-game-page .mobile-stick [data-mobile-move="left"]{grid-column:1;grid-row:2}
+  body.escie-game-page .mobile-stick [data-mobile-move="down"]{grid-column:2;grid-row:3}
+  body.escie-game-page .mobile-stick [data-mobile-move="right"]{grid-column:3;grid-row:2}
+  body.escie-game-page .mobile-actions{width:min(42vw,210px);display:grid;grid-template-columns:repeat(2,minmax(72px,1fr));gap:6px}
+  body.escie-game-page .mobile-actions button{min-height:48px;border:1px solid rgba(216,212,202,.18);background:rgba(5,5,5,.84);color:var(--escie-paper,#f0ede4);font:800 .55rem monospace;letter-spacing:.08em;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+  body.escie-game-page .mobile-actions button[data-mobile-action="FIGHT"]{border-color:rgba(142,31,45,.72)}
+  body.escie-game-page .mobile-actions button[data-mobile-action="SPRINT"]{border-color:rgba(143,175,114,.62)}
+  body.escie-game-page .mobile-actions button:active,body.escie-game-page .mobile-stick button:active{transform:scale(.96);background:rgba(47,128,255,.14)}
+}
+@media (pointer:coarse) and (orientation:portrait){
+  body.escie-game-page .world-mobile-controls{padding-bottom:max(12px,env(safe-area-inset-bottom))}
+  body.escie-game-page .world-log{bottom:160px;max-width:48vw}
+}
+@media (pointer:coarse) and (max-width:430px){
+  body.escie-game-page .mobile-stick{width:116px;height:116px}
+  body.escie-game-page .mobile-actions{width:44vw;grid-template-columns:repeat(2,minmax(64px,1fr))}
+  body.escie-game-page .mobile-actions button{min-height:44px;font-size:.5rem}
+}
+@media (pointer:coarse) and (orientation:landscape) and (max-height:520px){
+  body.escie-game-page .world-mobile-controls{padding:6px 8px}
+  body.escie-game-page .mobile-stick{width:92px;height:92px}
+  body.escie-game-page .mobile-actions{width:190px}
+  body.escie-game-page .mobile-actions button{min-height:38px}
+}
+@media (prefers-reduced-motion:reduce){
+  body.escie-game-page .mobile-actions button,body.escie-game-page .mobile-stick button{transition:none}
+}
