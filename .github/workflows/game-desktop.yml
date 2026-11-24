@@ -19,7 +19,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Validate desktop manifest
+      - name: Validate desktop package contract
         run: node --test tests/game-desktop-package.node.test.js
       - name: Validate game entrypoints
         run: |
@@ -29,3 +29,25 @@ jobs:
           test -f world/3d-reality.js
           test -f world/desktop/main.cjs
           test -f world/desktop/preload.cjs
+          test -f world/desktop/stage.cjs
+
+  package-windows:
+    needs: validate
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install desktop dependencies
+        working-directory: world/desktop
+        run: npm install
+      - name: Package Windows prototype
+        working-directory: world/desktop
+        run: npm run package:win
+      - name: Upload Windows prototype
+        uses: actions/upload-artifact@v4
+        with:
+          name: escie-world-windows-prototype
+          path: world/desktop/dist/*
+          if-no-files-found: error
