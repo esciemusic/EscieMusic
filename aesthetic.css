@@ -5328,3 +5328,10 @@ html[data-theme="light"] .world-home-presence span{border-color:rgba(23,23,26,.0
 @media(prefers-reduced-motion:reduce){
   .entry-globe-point::after{transition:none}
 }
+
+
+/* Final globe accessibility refinement: identification remains available on touch/small screens. */
+@media(max-width:600px){
+  .entry-globe-point::after{display:block;opacity:0}
+  .entry-globe-point:focus-visible::after{opacity:1}
+}
